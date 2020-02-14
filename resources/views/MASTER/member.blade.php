@@ -839,7 +839,7 @@
                         <div class="row">
                             <div class="loader" id="loader"></div>
                             <div class="col-sm-12">
-                                <label for="">LOADING...s</label>
+                                <label for="">LOADING...</label>
                             </div>
                         </div>
                     </div>
