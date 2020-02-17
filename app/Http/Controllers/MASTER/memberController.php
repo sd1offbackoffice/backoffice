@@ -18,13 +18,33 @@ class memberController extends Controller
             ->limit(100)
             ->get();
 
-        $hobby = DB::table('tbtabel_hobby')->select('*')->get();
+        $hobby = DB::table('tbtabel_hobby')
+            ->select('*')
+            ->get();
 
-        $kodepos = DB::table('tbmaster_kodepos')->select('*')->limit(100)->get();
+        $kodepos = DB::table('tbmaster_kodepos')
+            ->select('*')->limit(100)
+            ->get();
 
-        $fasilitasperbankan = DB::table('tbmaster_fasilitasperbankan')->get();
+        $fasilitasperbankan = DB::table('tbmaster_fasilitasperbankan')
+            ->get();
 
-        return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos']));
+        $jenismember = DB::table('tbmaster_jenismember')
+            ->select('jm_kode','jm_keterangan')
+            ->orderBy('jm_keterangan')
+            ->get();
+
+        $jenisoutlet = DB::table('tbmaster_outlet')
+            ->select('out_kodeoutlet','out_namaoutlet')
+            ->orderBy('out_kodeoutlet')
+            ->get();
+
+        $group = DB::table('tbtabel_groupkategori')
+            ->select('grp_group','grp_subgroup','grp_kategori','grp_subkategori','grp_idgroupkat')
+            ->orderBy('grp_group')
+            ->get();
+
+        return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos','jenismember','jenisoutlet','group']));
     }
 
     public function lov_member_select(Request $request){
@@ -43,7 +63,7 @@ class memberController extends Controller
         }
         else if($member->cus_alamatmember3 != '' && $member->cus_alamatmember3 != null){
             $ktp = DB::table('tbmaster_kodepos')
-                ->select('*')
+                ->select('pos_kecamatan')
                 ->where('pos_kode','=',$member->cus_alamatmember3)
                 ->first();
         }
@@ -58,7 +78,7 @@ class memberController extends Controller
         }
         else if($member->cus_alamatmember7 != '' && $member->cus_alamatmember7 != null){
             $surat = DB::table('tbmaster_kodepos')
-                ->select('*')
+                ->select('pos_kecamatan')
                 ->where('pos_kode', '=', $member->cus_alamatmember7)
                 ->first();
         }
@@ -140,6 +160,25 @@ class memberController extends Controller
         else return compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp']);
     }
 
+    public function lov_kodepos_select(Request $request){
+        if($request->kode == 'x' && $request->kecamatan == 'x' && $request->kabupaten == 'x'){
+            $data = DB::table('tbmaster_kodepos')
+                ->select('*')
+                ->where('pos_kelurahan','=',$request->kelurahan)
+                ->first();
+        }
+        else {
+            $data = DB::table('tbmaster_kodepos')
+                ->select('*')
+                ->where('pos_kode','=',$request->kode)
+                ->where('pos_kecamatan','=',$request->kecamatan)
+                ->where('pos_kelurahan','=',$request->kelurahan)
+                ->first();
+        }
+
+        return response()->json($data);
+    }
+
     public function lov_member_search(Request $request){
         if(!ctype_alpha($request->value)){
             $result = DB::table('tbmaster_customer')
@@ -159,21 +198,12 @@ class memberController extends Controller
     }
 
     public function lov_kodepos_search(Request $request){
-        if(is_numeric($request->value)){
-            $result = DB::table('tbmaster_customer')
-                ->select('*')
-                ->where('cus_kodemember',$request->value)
-                ->get();
-        }
+        $data = DB::table('tbmaster_kodepos')
+            ->select('*')
+            ->where('pos_kelurahan','=',$request->value)
+            ->orderBy('pos_kecamatan')
+            ->get();
 
-        else{
-            $result = DB::table('tbmaster_customer')
-                ->select('*')
-                ->where('cus_namamember','like','%'.$request->value.'%')
-                ->orderBy('cus_namamember')
-                ->get();
-        }
-
-        return response()->json($result);
+        return response()->json($data);
     }
 }

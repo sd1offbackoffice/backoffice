@@ -48,6 +48,9 @@ Route::get('/mstkubikasiplano/index','MASTER\kubikasiPlanoController@index');
 Route::post('/mstkubikasiplano/lov_subrak','MASTER\kubikasiPlanoController@lov_subrak');
 Route::post('/mstkubikasiplano/lov_shelving','MASTER\kubikasiPlanoController@lov_shelving');
 Route::post('/mstkubikasiplano/dataRakKecil','MASTER\kubikasiPlanoController@dataRakKecil');
+Route::post('/mstkubikasiplano/lov_search','MASTER\kubikasiPlanoController@lov_search');
+Route::post('/mstkubikasiplano/save_kubikasi','MASTER\kubikasiPlanoController@save_kubikasi');
+
 
 /******** Leo ********/
 /*MASTER SUPPLIER*/
@@ -76,8 +79,10 @@ Route::get('/msthargabeli/lov_select','MASTER\hargaBeliController@lov_select');
 Route::get('/mstmember/index','MASTER\memberController@index');
 Route::get('/mstmember/lov_member_search','MASTER\memberController@lov_member_search');
 Route::get('/mstmember/lov_kodepos_search','MASTER\memberController@lov_kodepos_search');
-Route::get('/mstmember/lov_select','MASTER\memberController@lov_member_select');
-Route::get('/mstmember/lov_select','MASTER\memberController@lov_kodepos_select');
+Route::get('/mstmember/lov_member_select','MASTER\memberController@lov_member_select');
+Route::get('/mstmember/lov_kodepos_select','MASTER\memberController@lov_kodepos_select');
+
+
 
 /******** Jefri ********/
 // MASTER_CABANG

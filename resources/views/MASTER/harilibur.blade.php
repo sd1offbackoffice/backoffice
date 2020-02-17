@@ -9,7 +9,7 @@
                     <legend  class="w-auto ml-5">Master Hari Libur</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="my-custom-scrollbar table-wrapper-scroll-y">
-                            <table class="table table-sm border-bottom  justify-content-md-center" id="table-barcode">
+                            <table class="table table-sm border-bottom  justify-content-md-center" id="table-harilibur">
                                 <thead class="thead-dark">
                                 <tr class="row justify-content-md-center p-0">
                                     <th class="col-sm-5">Tanggal</th>
@@ -17,16 +17,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {{--@foreach($barcode as $dataBarcode)
+                                @foreach($harilibur as $dataHariLibur)
                                     <tr class="row baris justify-content-md-center p-0">
                                         <td class="col-sm-5 pt-0 pb-0" >
-                                            <input type="text" class="form-control" disabled value="{{$dataBarcode->brc_barcode}}">
+                                            <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_tgllibur}}">
                                         </td>
                                         <td class="col-sm-4 pt-0 pb-0">
-                                            <input type="text" class="form-control" disabled value="{{$dataBarcode->brc_prdcd}}">
+                                            <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_keteranganlibur}}">
                                         </td>
                                     </tr>
-                                @endforeach--}}
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -48,3 +48,5 @@
             </div>
         </div>
     </div>
+
+@endsection

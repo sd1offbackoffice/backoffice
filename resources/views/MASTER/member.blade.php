@@ -15,8 +15,8 @@
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="i_kodemember">
                                     </div>
-                                    <div class="col-sm-1">
-                                        <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                    <div class="col-sm-1 p-0">
+                                        <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     </div>
                                     <label for="i_statusmember" class="col-sm-2 col-form-label"></label>
                                     <label for="i_statusmember" class="col-sm-2 col-form-label">Status</label>
@@ -37,10 +37,10 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#p_identitas">Identitas</a>
+                            <a class="nav-link active" id="btn-p-identitas" data-toggle="tab" href="#p_identitas">Identitas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#p_identitas2">Identitas 2</a>
+                            <a class="nav-link" id="btn-p-identitas2" data-toggle="tab" href="#p_identitas2">Identitas 2</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#p_identitas3">Identitas 3</a>
@@ -65,7 +65,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_noktp" class="col-sm-2 col-form-label">No. KTP<span class="wajib">*</span></label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_noktp">
+                                                <input type="number" class="form-control" id="i_noktp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
@@ -79,8 +79,8 @@
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="i_kelurahanktp">
                                             </div>
-                                            <div class="col-sm-1">
-                                                <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            <div class="col-sm-1 p-0">
+                                                <button id="btn-modal-ktp" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <label for="i_kecamatanktp" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
@@ -108,8 +108,8 @@
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="i_kelurahansurat">
                                             </div>
-                                            <div class="col-sm-1">
-                                                <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            <div class="col-sm-1 p-0">
+                                                <button id="btn-modal-surat" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <label for="i_kecamatansurat" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
@@ -129,7 +129,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_telepon" class="col-sm-2 col-form-label">Telepon<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_telepon">
+                                                <input type="number" class="form-control" id="i_telepon">
                                             </div>
                                             <label for="i_hp" class="col-sm-3 col-form-label">HP<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
@@ -143,7 +143,7 @@
                                             </div>
                                             <label for="i_tgllahir" class="col-sm-3 col-form-label">Tgl. Lahir<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_tgllahir">
+                                                <input type="text" class="form-control" id="i_tgllahir" placeholder="DD-MON-YYYY">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
@@ -154,24 +154,30 @@
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
                                             </div>
-                                            <label for="i_jenisoutlet" class="col-sm-3 col-form-label">Jenis Outlet</label>
+                                            <div class="col-sm-1 p-0">
+                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenismemberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            </div>
+                                            <label for="i_jenisoutlet" class="col-sm-2 col-form-label">Jenis Outlet</label>
                                             <div class="col-sm-1 pr-0">
                                                 <input type="text" class="form-control" id="i_jenisoutlet1">
                                             </div>
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jenisoutlet2">
                                             </div>
+                                            <div class="col-sm-1 p-0">
+                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenisoutletHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jarak" class="col-sm-2 col-form-label">Jarak</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_jarak">
+                                                <input type="number" class="form-control" id="i_jarak">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_pkp" class="col-sm-2 col-form-label">PKP</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_pkp">
+                                                <input type="text" maxlength="1" class="form-control" id="i_pkp">
                                             </div>
                                             <label for="i_pkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
                                             <label for="i_npwp" class="col-sm-4 col-form-label">NPWP</label>
@@ -182,16 +188,16 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_flagkredit" class="col-sm-2 col-form-label">Flag Kredit</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_flagkredit">
+                                                <input type="text" maxlength="1" class="form-control" id="i_flagkredit">
                                             </div>
                                             <label for="i_flagkredit" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
                                             <label for="i_limit" class="col-sm-1 col-form-label">Limit</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_limit">
+                                                <input type="number" class="form-control" id="i_limit">
                                             </div>
                                             <label for="i_top" class="col-sm-1 col-form-label">TOP</label>
                                             <div class="col-sm-1 pr-0">
-                                                <input type="text" class="form-control" id="i_top">
+                                                <input type="number" class="form-control" id="i_top">
                                             </div>
                                             <label for="i_limit" class="col-sm-1 col-form-label text-left pl-0">Hari</label>
                                         </div>
@@ -202,13 +208,14 @@
                                             </div>
                                             <label for="i_memberkhusus" class="col-sm-4 col-form-label">Member Khusus</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_memberkhusus">
+                                                <input type="text" maxlength="1" class="form-control" id="i_memberkhusus">
                                             </div>
+                                            <label for="i_pkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y /  ]</label>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_kirimsms" class="col-sm-2 col-form-label">Kirim SMS</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_kirimsms">
+                                                <input type="text" maxlength="1" class="form-control" id="i_kirimsms">
                                             </div>
                                             <label for="i_kirimsms" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
                                         </div>
@@ -225,7 +232,10 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_group">
                                             </div>
-                                            <label for="i_kategori" class="col-sm-4 col-form-label">Kategori</label>
+                                            <div class="col-sm-1 p-0">
+                                                <button id="btn-modal-group" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_groupHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            </div>
+                                            <label for="i_kategori" class="col-sm-3 col-form-label">Kategori</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="i_kategori">
                                             </div>
@@ -326,7 +336,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_tgllahirpasangan" class="col-sm-2 col-form-label">Tgl. Lahir Pasangan</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_tgllahirpasangan">
+                                                <input type="text" class="form-control" id="i_tgllahirpasangan" placeholder="DD-MON-YYYY">
                                             </div>
                                             <label for="i_jmlanak" class="col-sm-3 col-form-label">Jumlah Anak</label>
                                             <div class="col-sm-1">
@@ -423,8 +433,11 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_kelurahanusaha" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="i_kelurahanusaha">
+                                            </div>
+                                            <div class="col-sm-1 p-0">
+                                                <button id="btn-modal-usaha" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <label for="i_kecamatanusaha" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
@@ -593,13 +606,13 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_tglmulai" class="col-sm-3 pl-0 col-form-label">Tanggal Mulai</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_tglmulai">
+                                                <input type="text" class="form-control" id="i_tglmulai"  placeholder="DD-MON-YYYY">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_tglregis" class="col-sm-3 pl-0 col-form-label">Tanggal Registrasi</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_tglregis">
+                                                <input type="text" class="form-control" id="i_tglregis" placeholder="DD-MON-YYYY">
                                             </div>
                                             <label for="i_bebasiuran" class="col-sm-4 pl-0 col-form-label">Bebas Iuran</label>
                                             <div class="col-sm-1">
@@ -642,27 +655,27 @@
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
                                                         <div class="form-group row mb-0">
-                                                            <label for="i_npwpalamat" class="col-sm-3 pl-0 col-form-label">Alamat</label>
+                                                            <label for="i_alamatnpwp" class="col-sm-3 pl-0 col-form-label">Alamat</label>
                                                             <div class="col-sm-8 pl-0">
-                                                                <input type="text" class="form-control" id="i_npwpalamat">
+                                                                <input type="text" class="form-control" id="i_alamatnpwp">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="i_npwpkelurahan" class="col-sm-3 pl-0 col-form-label">Kelurahan</label>
+                                                            <label for="i_kelurahannpwp" class="col-sm-3 pl-0 col-form-label">Kelurahan</label>
                                                             <div class="col-sm-3 pl-0">
-                                                                <input type="text" class="form-control" id="i_npwpkelurahan">
+                                                                <input type="text" class="form-control" id="i_kelurahannpwp">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="i_npwpkota" class="col-sm-3 pl-0 col-form-label">Kota</label>
+                                                            <label for="i_kotanpwp" class="col-sm-3 pl-0 col-form-label">Kota</label>
                                                             <div class="col-sm-3 pl-0">
-                                                                <input type="text" class="form-control" id="i_npwpkota">
+                                                                <input type="text" class="form-control" id="i_kotanpwp">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="i_npwpkodepos" class="col-sm-3 pl-0 col-form-label">Kode Pos</label>
+                                                            <label for="i_kodeposnpwp" class="col-sm-3 pl-0 col-form-label">Kode Pos</label>
                                                             <div class="col-sm-2 pl-0">
-                                                                <input type="text" class="form-control" id="i_npwpkodepos">
+                                                                <input type="text" class="form-control" id="i_kodeposnpwp">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -720,16 +733,19 @@
 
                                     </div>
                                     <div class="col-sm-1">
-                                        <button class="btn btn-primary">REKAM</button>
+                                        <button id="btn-rekam" class="btn btn-primary">REKAM</button>
                                     </div>
                                     <div class="col-sm-2 pl-0">
-                                        <button class="btn btn-primary">AKTIF / NONAKTIF</button>
+                                        <button id="btn-aktif-nonaktif" class="btn btn-primary">AKTIF / NONAKTIF</button>
                                     </div>
                                     <div class="col-sm-1 pl-0">
-                                        <button class="btn btn-danger">HAPUS</button>
+                                        <button id="btn-hapus" class="btn btn-danger">HAPUS</button>
+                                    </div>
+                                    <div class="col-sm-1 pl-0">
+                                        <button id="btn-quisioner" class="btn btn-info">QUISIONER</button>
                                     </div>
                                     <div class="col-sm-5">
-                                        <button class="btn btn-success">EXPORT KE CRM</button>
+                                        <button id="btn-export-crm" class="btn btn-success">EXPORT KE CRM</button>
                                     </div>
                                 </div>
                             </div>
@@ -757,7 +773,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov">
+                                <table class="table table-sm mb-0" id="table_lov_member">
                                     <thead>
                                     <tr>
                                         <td>Nama Member</td>
@@ -766,7 +782,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($member as $m)
-                                        <tr onclick="lov_select('{{ $m->cus_kodemember }}')" class="row_lov">
+                                        <tr onclick="lov_member_select('{{ $m->cus_kodemember }}',true)" class="row_lov">
                                             <td>{{ $m->cus_namamember }}</td>
                                             <td>{{ $m->cus_kodemember }}</td>
                                         </tr>
@@ -798,7 +814,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov">
+                                <table class="table table-sm mb-0" id="table_lov_kodepos">
                                     <thead>
                                     <tr>
                                         <td>Kelurahan</td>
@@ -810,12 +826,117 @@
                                     </thead>
                                     <tbody>
                                     @foreach($kodepos as $k)
-                                        <tr onclick="lov_select('{{ $m->cus_kodemember }}')" class="row_lov">
+                                        <tr onclick="lov_kodepos_select('{{ $k->pos_kode }}','{{ $k->pos_kecamatan }}','{{ $k->pos_kelurahan }}','{{ $k->pos_kabupaten }}')" class="row_lov">
                                             <td>{{ $k->pos_kelurahan }}</td>
                                             <td>{{ $k->pos_kecamatan }}</td>
                                             <td>{{ $k->pos_kabupaten }}</td>
                                             <td>{{ $k->pos_propinsi }}</td>
                                             <td>{{ $k->pos_kode }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_jenismemberHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0" id="table_lov_jenismember">
+                                    <thead>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td>Kode</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($jenismember as $jm)
+                                        <tr onclick="lov_jenismember_select('{{ $jm->jm_kode }}','{{ $jm->jm_keterangan }}')" class="row_lov">
+                                            <td>{{ $jm->jm_keterangan }}</td>
+                                            <td>{{ $jm->jm_kode }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_jenisoutletHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0" id="table_lov_jenisoutlet">
+                                    <thead>
+                                    <tr>
+                                        <td>Kode</td>
+                                        <td>Nama</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($jenisoutlet as $jo)
+                                        <tr onclick="lov_jenioutlet_select('{{ $jo->out_kodeoutlet }}','{{ $jo->out_namaoutlet }}')" class="row_lov">
+                                            <td>{{ $jo->out_kodeoutlet }}</td>
+                                            <td>{{ $jo->out_namaoutlet }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_groupHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0" id="table_lov_jenisoutlet">
+                                    <thead>
+                                    <tr>
+                                        <td>Group</td>
+                                        <td>Subgroup</td>
+                                        <td>Kategori</td>
+                                        <td>Subkategori</td>
+                                        <td>ID Group</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($group as $g)
+                                        <tr onclick="lov_group_select('{{ $g->grp_idgroupkat }}')" class="row_lov">
+                                            <td>{{ $g->grp_group }}</td>
+                                            <td>{{ $g->grp_subgroup }}</td>
+                                            <td>{{ $g->grp_kategori }}</td>
+                                            <td>{{ $g->grp_subkategori }}</td>
+                                            <td>{{ $g->grp_idgroupkat }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -905,11 +1026,24 @@
             color: red;
         }
 
+        input{
+            text-transform: uppercase;
+        }
+
     </style>
 
     <script>
+
+        // lov_member_select('1',false);
+
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
-        trlov = $('#table_lov tbody').html();
+        trlovmember = $('#table_lov_member tbody').html();
+        trlovkodepos = $('#table_lov_kodepos tbody').html();
+        field = 'ktp';
+
+        jenismember = @php echo($jenismember); @endphp;
+        jenisoutlet = @php echo($jenisoutlet); @endphp;
+        group = @php echo($group); @endphp;
 
         $('#i_pendidikanX').hide();
         $('#i_metodeinformasiX').hide();
@@ -918,21 +1052,359 @@
         $('#i_mobil').hide();
         $('#i_mobilX').hide();
 
-        // $(':input').prop('readonly',true);
-        $('#search_lov').prop('readonly',false);
-        $('#i_kodemember').prop('readonly',false);
+        $('#btn-quisioner').hide();
+
+        $('#i_statusmember').prop('readonly',true);
+        $('#i_kodeposktp').prop('readonly',true);
+        $('#i_kecamatanktp').prop('readonly',true);
+        $('#i_kotaktp').prop('readonly',true);
+        $('#i_kodepossurat').prop('readonly',true);
+        $('#i_kecamatansurat').prop('readonly',true);
+        $('#i_kotasurat').prop('readonly',true);
+        $('#i_kodeposusaha').prop('readonly',true);
+        $('#i_kecamatanusaha').prop('readonly',true);
+        $('#i_kotausaha').prop('readonly',true);
+        $('#i_jeniscustomer2').prop('readonly',true);
+        $('#i_jenisoutlet2').prop('readonly',true);
+        $('#i_subgroup').prop('readonly',true);
+        $('#i_kategori').prop('readonly',true);
+        $('#i_subkategori').prop('readonly',true);
+        $('#i_tglmulai').prop('readonly',true);
+        $('#i_tglregis').prop('readonly',true);
+        $('#i_nomorkartu').prop('readonly',true);
+        $('#i_alamatnpwp').prop('readonly',true);
+        $('#i_kelurahannpwp').prop('readonly',true);
+        $('#i_kodeposnpwp').prop('readonly',true);
+        $('#i_kotanpwp').prop('readonly',true);
+
+        $(':input').on('click',function(){
+            $(this).select();
+        });
+
+        $('#i_kodemember').focus();
+
+        //----------------------MULAI-------------------
 
         $('#i_kodemember').on('keypress',function (event) {
             if(event.which == 13){
-                lov_select(this.value);
+                if(this.value.length == 0){
+                    swal({
+                        title: "Isikan Nomor Anggota terlebih dahulu!",
+                        icon: "error"
+                    }).then(function(){
+                        swal.close();
+                        $(':input').val('');
+                        $(':input').prop('checked',false);
+                        $('#i_kodemember').select();
+                    });
+                }
+                else{
+                    lov_member_select(this.value);
+                }
             }
         });
 
-        function lov_member_select(value){
+        $('#i_namamember').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_noktp').select();
+                }
+            }
+        });
+
+        $('#i_noktp').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_alamatktp').select();
+                }
+            }
+        });
+
+        $('#i_alamatktp').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_kelurahanktp').select();
+                }
+            }
+        });
+
+        $('#i_kelurahanktp').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    field = 'ktp';
+                    lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+                }
+            }
+        });
+
+        $('#i_alamatsurat').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_kelurahansurat').select();
+                }
+            }
+        });
+
+        $('#i_kelurahansurat').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_telepon').select();
+                }
+            }
+        });
+
+        $('#i_kelurahansurat').on('change',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    field = 'surat';
+                    lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+                }
+            }
+        });
+
+        $('#i_telepon').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_hp').select();
+                }
+            }
+        });
+
+        $('#i_hp').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_tempatlahir').select();
+                }
+            }
+        });
+
+        $('#i_tempatlahir').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#i_tgllahir').select();
+                }
+            }
+        });
+
+        $('#i_tgllahir').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    this.value = this.value.toUpperCase();
+                    tgl = '';
+                    found = false;
+                    if($.isNumeric(this.value[0]) && $.isNumeric(this.value[1]) && $.isNumeric(this.value.substr(7,4)) && this.value[2] == '-' && this.value[6] == '-' && this.value.length == 11){
+                        for(i=0;i<12;i++){
+                            if(this.value.substr(3,3) == month[i]){
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    else if($.isNumeric(this.value[0]) && $.isNumeric(this.value.substr(6,4)) && this.value[1] == '-' && this.value[5] == '-' && this.value.length == 10){
+                        for(i=0;i<12;i++){
+                            if(this.value.substr(2,3) == month[i]){
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!found){
+                        swal({
+                            title: "Format Tanggal Salah",
+                            icon: "error",
+                            closeModal: false
+                        }).then(function(){
+                            swal.close();
+                            $('#i_tgllahir').select();
+                        });
+                    }
+                    else{
+                        $('#i_jeniscustomer1').select();
+                    }
+                }
+            }
+        });
+
+        $('#i_jeniscustomer1').on('keypress',function(event){
+            if(event.which == 13){
+                found = false;
+                if(this.value == ''){
+                    $('#i_jeniscustomer1').val(jenismember[0].jm_kode);
+                    $('#i_jeniscustomer2').val(jenismember[0].jm_keterangan);
+                    $('#i_jenisoutlet1').select();
+                    found = true;
+                }
+                for(i=0;i<jenismember.length;i++){
+                    if(this.value.toUpperCase() == jenismember[i].jm_kode){
+                        found = true;
+                        $('#i_jeniscustomer1').val(jenismember[i].jm_kode);
+                        $('#i_jeniscustomer2').val(jenismember[i].jm_keterangan);
+                        $('#i_jenisoutlet1').select();
+                        break;
+                    }
+                }
+                if(!found){
+                    swal({
+                        title: "Jenis Member Tidak Ditemukan",
+                        icon: "error"
+                    }).then(function(){
+                        swal.close();
+                        $('#i_jeniscustomer1').select();
+                    });
+                }
+                else{
+                    $('#i_jenisoutlet1').select();
+                }
+            }
+        });
+
+        $('#i_jenisoutlet1').on('keypress',function(event){
+            if(event.which == 13){
+                found = false;
+
+                for(i=0;i<jenisoutlet.length;i++){
+                    if(this.value == jenisoutlet[i].out_kodeoutlet){
+                        found = true;
+                        $('#i_jenisoutlet1').val(jenisoutlet[i].out_kodeoutlet);
+                        $('#i_jenisoutlet2').val(jenisoutlet[i].out_namaoutlet);
+                        $('#i_jarak').select();
+                        break;
+                    }
+                }
+                if(!found){
+                    swal({
+                        title: "Jenis Outlet Tidak Ditemukan",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#i_jenisoutlet1').select();
+                    });
+                }
+                else{
+                    $('#i_jarak').select();
+                }
+            }
+        });
+
+        $('#i_pkp').on('keypress', function(event){
+            if(event.which == 13){
+                this.value = this.value.toUpperCase();
+                if(this.value != 'Y' && this.value != 'T'){
+                    swal({
+                        title: "Pastikan inputan hanya berupa Y atau T",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#i_pkp').select();
+                    });
+                }
+                else{
+                    $('#i_npwp').select();
+                }
+            }
+        });
+
+        $('#i_npwp').on('keypress',function(event){
+            if(event.which == 13){
+
+                $('#i_flagkredit').select();
+            }
+        });
+
+        $('#i_flagkredit').on('keypress', function(event){
+            if(event.which == 13){
+                this.value = this.value.toUpperCase();
+                if(this.value != 'Y' && this.value != 'T'){
+                    swal({
+                        title: "Pastikan inputan hanya berupa Y atau T!",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#i_flagkredit').select();
+                    });
+                }
+                else{
+                    $('#i_limit').select();
+                }
+            }
+        });
+
+        $('#i_limit').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value < 0){
+                    swal({
+                        title: "Pastikan nilai limit tidak kurang dari nol!",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#i_limit').select();
+                    });
+                }
+                else{
+                    $('#i_top').select();
+                }
+            }
+        });
+
+        $('#i_top').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value < 0){
+                    swal({
+                        title: "Pastikan nilai TOP tidak kurang dari nol!",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#i_limit').select();
+                    });
+                }
+                else{
+                    $('#i_salesman').select();
+                }
+            }
+        });
+
+        $('#i_salesman').on('keypress',function(event){
+            if(event.which == 13){
+
+                $('#i_memberkhusus').select();
+            }
+        });
+
+        $('#i_memberkhusus').on('keypress',function(event){
+            if(event.which == 13){
+
+                $('#i_kirimsms').select();
+            }
+        });
+
+        $('#i_kirimsms').on('keypress',function(event){
+            if(event.which == 13){
+
+                $('#btn-p-identitas2').click();
+                $('#i_group').select();
+            }
+        });
+
+
+
+
+        function lov_member_select(value, load){
             $.ajax({
                 url: '/BackOffice/public/mstmember/lov_member_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
+                beforeSend: function(){
+                    if(load) {
+                        $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: false});
+                    }
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function(response){
                     if(response == 'not-found'){
                         swal({
@@ -941,6 +1413,7 @@
                         });
                         $(':input').val('');
                         $('#i_kodemember').val(value);
+                        $(':input').prop('checked',false);
                     }
                     else {
                         member = response['member'];
@@ -952,17 +1425,37 @@
                         group = response['group'];
                         npwp = response['npwp'];
 
+                        skipKTP = false;
+
+                        if(ktp == null){
+                            swal({
+                                title: "Kecamatan tidak terdaftar di database!",
+                                icon: "error"
+                            });
+
+                            skipKTP = true;
+                        }
+
                         $(':input').val('');
                         $(':input').prop('checked',false);
 
                         $('#i_kodemember').val(member.cus_kodemember);
                         $('#i_namamember').val(member.cus_namamember);
 
+                        $('#i_updateterakhir').val(member.cus_modify_by + ' ' + toDate(member.cus_modify_dt));
+
+                        if(member.cus_flagmemberkhusus == 'Y' && member.cus_recordid == null){
+                            $('#btn-quisioner').show();
+                        }
+
                         //######################################################### panel identitas 1 ######################################################################
-                        $('#i_noktp').val(member.cus_ktp);
+                        $('#i_noktp').val(member.cus_noktp);
                         $('#i_alamatktp').val(member.cus_alamatmember1);
-                        $('#i_kelurahanktp').val(ktp.pos_kelurahan);
-                        $('#i_kecamatanktp').val(ktp.pos_kecamatan);
+                        $('#i_kelurahanktp').val(member.cus_alamatmember4);
+
+                        if(!skipKTP)
+                            $('#i_kecamatanktp').val(ktp.pos_kecamatan);
+
                         $('#i_kotaktp').val(member.cus_alamatmember2);
                         $('#i_kodeposktp').val(member.cus_alamatmember3);
                         $('#i_alamatsurat').val(member.cus_alamatmember5);
@@ -1112,27 +1605,32 @@
                         $('#i_flagpemerintah').val(member.cus_flaginstitusipemerintah);
 
                         if(npwp != '' && npwp != null){
-                            $('#i_npwpalamat').val(npwp.pwp_alamat);
-                            $('#i_npwpkelurahan').val(npwp.pwp_kelurahan);
-                            $('#i_npwpkota').val(npwp.pwp_kota);
-                            $('#i_npwpkodepos').val(npwp.pwp_kodepos);
+                            $('#i_alamatnpwp').val(npwp.pwp_alamat);
+                            $('#i_kelurahannpwp').val(npwp.pwp_kelurahan);
+                            $('#i_kotanpwp').val(npwp.pwp_kota);
+                            $('#i_kodeposnpwp').val(npwp.pwp_kodepos);
                         }
                         else{
-                            $('#i_npwpalamat').val(member.cus_alamatmember1);
-                            $('#i_npwpkelurahan').val(member.cus_alamatmember4);
-                            $('#i_npwpkota').val(member.cus_alamatmember2);
-                            $('#i_npwpkodepos').val(member.cus_alamatmember3);
+                            $('#i_alamatnpwp').val(member.cus_alamatmember1);
+                            $('#i_kelurahannpwp').val(member.cus_alamatmember4);
+                            $('#i_kotanpwp').val(member.cus_alamatmember2);
+                            $('#i_kodeposnpwp').val(member.cus_alamatmember3);
                         }
 
                     }
                 },
                 complete: function(){
-                    if($('#m_kodememberHelp').is(':visible')) {
-                        $('.modal').modal('toggle');
-                        $('#search_lov').val('');
-                        $('#table_lov .row_lov').remove();
-                        $('#table_lov').append(trlov);
+                    if(load){
+                        if($('#m_kodememberHelp').is(':visible')) {
+                            $('#m_kodememberHelp').modal('toggle');
+                            $('#search_lov_member').val('');
+                            $('#table_lov_member .row_lov').remove();
+                            $('#table_lov_member').append(trlovmember);
+                            $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: true});
+                        }
                     }
+                    $('#modal-loader').modal('hide');
+                    $('#i_namamember').select();
                 }
             });
         }
@@ -1141,8 +1639,8 @@
             if (e.which == 13) {
                 if(this.value.length == 0) {
                     $('.invalid-feedback').hide();
-                    $('#table_lov .row_lov').remove();
-                    $('#table_lov').append(trlov);
+                    $('#table_lov_member .row_lov').remove();
+                    $('#table_lov_member').append(trlovmember);
                 }
                 else if(this.value.length >= 4) {
                     $('.invalid-feedback').hide();
@@ -1155,12 +1653,12 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
-                            $('#table_lov .row_lov').remove();
+                            $('#table_lov_member .row_lov').remove();
                             html = "";
                             console.log(response.length);
                             for (i = 0; i < response.length; i++) {
-                                html = '<tr class="row_lov" onclick=lov_member_select("' + response[i].cus_kodemember + '")><td>' + response[i].cus_namamember + '</td><td>' + response[i].cus_kodemember + '</td></tr>';
-                                $('#table_lov').append(html);
+                                html = '<tr class="row_lov" onclick=lov_member_select("' + response[i].cus_kodemember + '",true)><td>' + response[i].cus_namamember + '</td><td>' + response[i].cus_kodemember + '</td></tr>';
+                                $('#table_lov_member').append(html);
                             }
                         },
                         complete: function(){
@@ -1174,6 +1672,152 @@
                 }
             }
         });
+
+        $('#btn-modal-ktp').on('click',function(){
+            field = 'ktp';
+        });
+
+        $('#btn-modal-surat').on('click',function(){
+            field = 'surat';
+        });
+
+        $('#btn-modal-usaha').on('click',function(){
+            field = 'usaha';
+        });
+
+        function lov_kodepos_select(kode, kecamatan, kelurahan, kabupaten){
+            if(kode == 'x' && kecamatan == 'x' && kabupaten == 'x'){
+                $.ajax({
+                    url: '/BackOffice/public/mstmember/lov_kodepos_select',
+                    type: 'GET',
+                    data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
+                    beforeSend: function(){
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (response) {
+                        if(response == null){
+                            swal({
+                                title: "Kelurahan tidak terdaftar di database!",
+                                icon: "error"
+                            }).then(function(){
+                                swal.close();
+                                $('#i_kelurahanktp').select();
+                            });
+                        }
+                        else{
+                            kode = response.pos_kode;
+                            kecamatan = response.pos_kecamatan;
+                            kelurahan = response.pos_kelurahan;
+                            kabupaten = response.pos_kabupaten;
+
+                            insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
+                        }
+                    },
+                    complete: function(){
+                        $('#modal-loader').modal('hide');
+                        if(field == 'ktp'){
+                            $('#i_alamatsurat').select();
+                        }
+                        else if(field == 'surat'){
+                            $('#i_telepon').select();
+                        }
+                    }
+                });
+            }
+            else{
+                insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
+            }
+        }
+
+        function insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten){
+            if(field == 'ktp'){
+                $('#i_kelurahanktp').val(kelurahan);
+                $('#i_kecamatanktp').val(kecamatan);
+                $('#i_kodeposktp').val(kode);
+                $('#i_kotaktp').val(kabupaten);
+
+                if($('#i_kodepossurat').val() == ''){
+                    $('#i_kelurahansurat').val(kelurahan);
+                    $('#i_kecamatansurat').val(kecamatan);
+                    $('#i_kodepossurat').val(kode);
+                    $('#i_kotasurat').val(kabupaten);
+                }
+            }
+            else if(field == 'surat'){
+                $('#i_kelurahansurat').val(kelurahan);
+                $('#i_kecamatansurat').val(kecamatan);
+                $('#i_kodepossurat').val(kode);
+                $('#i_kotasurat').val(kabupaten);
+            }
+            else if(field == 'usaha'){
+                $('#i_kelurahanusaha').val(kelurahan);
+                $('#i_kecamatanusaha').val(kecamatan);
+                $('#i_kodeposusaha').val(kode);
+                $('#i_kotausaha').val(kabupaten);
+            }
+        }
+
+        $('#search_lov_kodepos').keypress(function (e) {
+            if (e.which == 13) {
+                if(this.value.length == 0) {
+                    $('.invalid-feedback').hide();
+                    $('#table_lov_kodepos .row_lov').remove();
+                    $('#table_lov_kodepos').append(trlovkodepos);
+                }
+                else if(this.value.length >= 4) {
+                    $('.invalid-feedback').hide();
+                    $.ajax({
+                        url: '/BackOffice/public/mstmember/lov_kodepos_search',
+                        type: 'GET',
+                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        beforeSend: function(){
+                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (response) {
+                            $('#table_lov_kodepos .row_lov').remove();
+                            html = "";
+                            for (i = 0; i < response.length; i++) {
+                                html = '<tr class="row_lov" onclick="lov_kodepos_select(\'' + response[i].pos_kode + '\',\''+ response[i].pos_kecamatan +'\',\''+ response[i].pos_kelurahan +'\',\''+ response[i].pos_kabupaten+'\')"><td>' + response[i].pos_kelurahan + '</td><td>' + response[i].pos_kecamatan + '</td><td>' + response[i].pos_kabupaten + '</td><td>' + response[i].pos_propinsi + '</td><td>' + response[i].pos_kode + '</td></tr>';
+                                $('#table_lov_kodepos').append(html);
+                            }
+                        },
+                        complete: function(){
+                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: true});
+                            $('#modal-loader').modal('hide');
+                        }
+                    });
+                }
+                else{
+                    $('.invalid-feedback').show();
+                }
+            }
+        });
+
+        function lov_group_select(id){
+            for(i=0;i<group.length;i++){
+                if(id == group[i].grp_idgroupkat){
+                    $('#i_group').val(group[i].grp_group);
+                    $('#i_subgroup').val(group[i].grp_subgroup);
+                    $('#i_kategori').val(group[i].grp_kategori);
+                    $('#i_subkategori').val(group[i].grp_subkategori);
+                    break;
+                }
+            }
+
+            if($('#m_groupHelp').is(':visible')){
+                $('#m_groupHelp').modal('toggle');
+            }
+        }
+
+        function lov_jenismember_select(kode, keterangan){
+            $('#i_jeniscustomer1').val(kode);
+            $('#i_jeniscustomer2').val(keterangan);
+
+            if($('#m_jenismemberHelp').is(':visible')) {
+                $('#m_jenismemberHelp').modal('toggle');
+            }
+        }
 
         $('#i_jenisanggotaR').on('change',function(){
             if($('#i_jenisanggotaR').is(':checked')){
