@@ -5,7 +5,7 @@
     </head>
 
 
-    <div class="container-fluid mt-3 pr-5 pl-5">
+    <div class="container col-sm-7 mt-3 pr-5 pl-5">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -14,7 +14,7 @@
                         <form>
                             <div class="row text-right">
                                 <div class="col-sm-12">
-                                    <fieldset class="card border-secondary col-sm-8">
+                                    <fieldset class="card border-secondary">
                                         <legend  class="w-auto ml-5 text-left"><small>Header Harga Beli</small></legend>
                                         <div class="form-group row mb-0">
                                             <label for="i_plu" class="col-sm-2 col-form-label">PLU</label>
@@ -150,7 +150,7 @@
                                             <div class="col-sm-1 pl-0">
 
                                             </div>
-                                            <label for="i_tglberlakudisc1" class="col-sm-1 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc1" class="col-sm col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc1a">
                                             </div>
@@ -158,6 +158,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc1b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2" class="col-sm-1 col-form-label">DISC 2</label>
@@ -175,7 +176,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2">
                                             </div>
-                                            <label for="i_tglberlakudisc2" class="col-sm-1 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2" class="col-sm col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2a">
                                             </div>
@@ -183,6 +184,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2A" class="col-sm-1 col-form-label">DISC 2 A</label>
@@ -200,7 +202,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2A">
                                             </div>
-                                            <label for="i_tglberlakudisc2A" class="col-sm-1 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2A" class="col-sm col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Aa">
                                             </div>
@@ -208,6 +210,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Ab">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2B" class="col-sm-1 col-form-label">DISC 2 B</label>
@@ -225,7 +228,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2B">
                                             </div>
-                                            <label for="i_tglberlakudisc2B" class="col-sm-1 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2B" class="col-sm col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Ba">
                                             </div>
@@ -233,6 +236,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Bb">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label">DISC 3</label>
@@ -250,7 +254,7 @@
                                             <div class="col-sm-1 pl-0">
 
                                             </div>
-                                            <label for="i_tglberlakudisc3" class="col-sm-1 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc3" class="col-sm col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc3a">
                                             </div>
@@ -258,6 +262,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc3b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc4" class="col-sm-1 col-form-label">DISC 4</label>
@@ -273,7 +278,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk4">
                                             </div>
-                                            <label for="i_tglberlakudisc4" class="col-sm-1 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc4" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc4a">
                                             </div>
@@ -281,6 +286,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc4b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label"></label>
@@ -296,7 +302,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk5">
                                             </div>
-                                            <label for="i_tglberlakudisc5" class="col-sm-1 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc5" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc5a">
                                             </div>
@@ -304,6 +310,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc5b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;">NO RETURN</label>
@@ -318,7 +325,7 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk6">
                                             </div>
-                                            <label for="i_tglberlakudisc6" class="col-sm-1 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc6" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc6a">
                                             </div>
@@ -326,6 +333,7 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc6b">
                                             </div>
+                                            <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;"></label>
@@ -336,13 +344,13 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <div class="col-sm-4 pr-5 ml-5">
+                                            <div class="col-sm-4 pr-4 ml-5">
                                                 <input type="text" class="form-control" id="i_namasupplier">
                                             </div>
                                         </div>
                                     </fieldset>
 
-                                    <fieldset class="card border-secondary col-sm-11">
+                                    <fieldset class="card border-secondary">
                                         <legend  class="w-auto ml-5 text-left"><small>Bonus</small></legend>
                                         <div class="container-fluid">
                                             <div class="row">
@@ -607,15 +615,13 @@
 
         // lov_select('0060610');
 
-        month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
-
-        $(document).ready(function () {
-
-        })
+        $(':input').on('click',function(){
+            $(this).select();
+        });
 
         $('#i_plu').on('keypress',function (event) {
             if(event.which == 13){
-                lov_select(this.value);
+                lov_select(convertPlu(this.value));
             }
         });
 
@@ -630,6 +636,8 @@
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 success: function(response){
                     $(':input').val('');
+
+
                     prd = response['produk'];
                     sup = response['supplier'];
                     tag = response['tag'];
@@ -662,113 +670,154 @@
                     }
 
                     if(hgb != null){
-                        $('#i_tglberlaku').val(toDate(hgb.hgb_tglberlaku01));
+                        $('#i_tglberlaku').val(formatDate(hgb.hgb_tglberlaku01));
                         $('#i_hargaomi').val(Math.round(hgb.hgb_nilaidpp));
                         $('#i_jenisharga').val(hgb.hgb_jenishrgbeli);
-                        $('#i_tglupdate').val(hgb.hgb_modify_dt.substr(0,10));
+                        $('#i_tglupdate').val(formatDate(hgb.hgb_modify_dt.substr(0,10)));
 
                         hgbhargabeli = parseFloat(hgb.hgb_hrgbeli * prd.prd_isibeli);
-                        $('#i_hgbhargabeli').val(toFixed(hgbhargabeli));
+                        $('#i_hgbhargabeli').val(convertToRupiah(hgbhargabeli));
                         ppn = parseFloat(hgb.hgb_ppn * prd.prd_isibeli);
-                        $('#i_ppn').val(toFixed(ppn));
+                        $('#i_ppn').val(convertToRupiah(ppn));
                         ppnbotol = parseFloat(hgb.hgb_ppnbotol)
-                        $('#i_botol').val(toFixed(ppnbotol));
+                        $('#i_botol').val(convertToRupiah(ppnbotol));
                         ppnbm = parseFloat(hgb.hgb_ppnbm);
-                        $('#i_ppnbm').val(toFixed(ppnbm));
-                        $('#i_hgbhargabelippn').val(toFixed(hgbhargabeli + ppn + ppnbm));
+                        $('#i_ppnbm').val(convertToRupiah(ppnbm));
+                        $('#i_hgbhargabelippn').val(convertToRupiah(hgbhargabeli + ppn + ppnbm));
 
                         hargaomi = parseFloat((hgbhargabeli + ppnbm + ppnbotol) / prd.prd_isibeli);
                         $('#i_hargaomi').val(hargaomi);
 
-                        $('#i_totaldiscount').val(parseFloat(hgb.hgb_rphdisc04 + hgb.hgb_rphdisc05 + hgb.hgb_rphdisc06));
+                        $('#i_totaldiscount').val(convertToRupiah(parseInt(hgb.hgb_rphdisc04) + parseInt(hgb.hgb_rphdisc05) + parseInt(hgb.hgb_rphdisc06)));
+                        console.log(hgb.hgb_rphdisc04 +  " - " + hgb.hgb_rphdisc05 + " - " + hgb.hgb_rphdisc06);
+                        console.log(hgb.hgb_rphdisc04 + hgb.hgb_rphdisc05 + hgb.hgb_rphdisc06);
 
                         if(hgb.hgb_tglmulaibonus01 != null){
+                            $('#i_bonus1a').val(formatDate(hgb.hgb_tglmulaibonus01));
+                            $('#i_bonus1b').val(formatDate(hgb.hgb_tglakhirbonus01));
                             if(hgb.hgb_flagkelipatanbonus01 == 'Y')
                                 $('#i_kel1').val('BERLAKU KELIPATAN');
                             else if(hgb.hgb_flagkelipatanbonus01 == 'N')
                                 $('#i_kel1').val('TIDAK BERLAKU KELIPATAN');
                         }
                         if(hgb.hgb_tglmulaibonus02 != null){
+                            $('#i_bonus2a').val(formatDate(hgb.hgb_tglmulaibonus02));
+                            $('#i_bonus2b').val(formatDate(hgb.hgb_tglakhirbonus02));
                             if(hgb.hgb_flagkelipatanbonus02 == 'Y')
-                                $('#i_kel1').val('BERLAKU KELIPATAN');
+                                $('#i_kel2').val('BERLAKU KELIPATAN');
                             else if(hgb.hgb_flagkelipatanbonus02 == 'N')
-                                $('#i_kel1').val('TIDAK BERLAKU KELIPATAN');
+                                $('#i_kel2').val('TIDAK BERLAKU KELIPATAN');
                         }
 
                         if(hgb.hgb_persendisc01 != 0 || hgb.hgb_rphdisc01 != 0){
                             $('#i_disc1').val(toFixed(hgb.hgb_persendisc01));
-                            $('#i_disc1rp').val(toFixed(hgb.hgb_rphdisc01));
+                            $('#i_disc1rp').val(convertToRupiah(hgb.hgb_rphdisc01));
                             $('#i_bk1').val(hgb.hgb_flagdisc01);
-                            $('#i_tglberlakudisc1a').val(toDate(hgb.hgb_tglmulaidisc01));
-                            $('#i_tglberlakudisc1b').val(toDate(hgb.hgb_tglakhirdisc01));
+                            $('#i_tglberlakudisc1a').val(formatDate(hgb.hgb_tglmulaidisc01));
+                            $('#i_tglberlakudisc1b').val(formatDate(hgb.hgb_tglakhirdisc01));
                         }
 
                         if(hgb.hgb_persendisc02 != 0 || hgb.hgb_rphdisc02 != 0){
                             $('#i_disc2').val(toFixed(hgb.hgb_persendisc02));
-                            $('#i_disc2rp').val(toFixed(hgb.hgb_rphdisc02));
+                            $('#i_disc2rp').val(convertToRupiah(hgb.hgb_rphdisc02));
                             $('#i_bk2').val(hgb.hgb_flagdisc02);
-                            $('#i_tglberlakudisc2a').val(toDate(hgb.hgb_tglmulaidisc02));
-                            $('#i_tglberlakudisc2b').val(toDate(hgb.hgb_tglakhirdisc02));
+                            $('#i_tglberlakudisc2a').val(formatDate(hgb.hgb_tglmulaidisc02));
+                            $('#i_tglberlakudisc2b').val(formatDate(hgb.hgb_tglakhirdisc02));
                         }
                         if(hgb.hgb_persendisc02ii != 0 || hgb.hgb_rphdisc02ii != 0){
                             $('#i_disc2A').val(toFixed(hgb.hgb_rphdisc02));
-                            $('#i_disc2Arp').val(toFixed(hgb.hgb_rphdisc02));
-                            $('#i_tglberlakudisc2Aa').val(toDate(hgb.hgb_tglmulaidisc02ii));
-                            $('#i_tglberlakudisc2Ab').val(toDate(hgb.hgb_tglakhirdisc02ii));
+                            $('#i_disc2Arp').val(convertToRupiah(hgb.hgb_rphdisc02));
+                            $('#i_tglberlakudisc2Aa').val(formatDate(hgb.hgb_tglmulaidisc02ii));
+                            $('#i_tglberlakudisc2Ab').val(formatDate(hgb.hgb_tglakhirdisc02ii));
                         }
                         if(hgb.hgb_persendisc02iii != 0 || hgb.hgb_rphdisc02iii != 0){
                             $('#i_disc2B').val(toFixed(hgb.hgb_persendisc02iii));
-                            $('#i_disc2Brp').val(toFixed(hgb.hgb_rphdisc02iii));
-                            $('#i_tglberlakudisc2Ba').val(toDate(hgb.hgb_tglmulaidisc02iii));
-                            $('#i_tglberlakudisc2Bb').val(toDate(hgb.hgb_tglakhirdisc02iii));
+                            $('#i_disc2Brp').val(convertToRupiah(hgb.hgb_rphdisc02iii));
+                            $('#i_tglberlakudisc2Ba').val(formatDate(hgb.hgb_tglmulaidisc02iii));
+                            $('#i_tglberlakudisc2Bb').val(formatDate(hgb.hgb_tglakhirdisc02iii));
                         }
                         if(hgb.hgb_persendisc03 != 0 || hgb.hgb_rphdisc03 != 0){
-                            $('#i_disc3').val(hgb.hgb_persendisc03);
-                            $('#i_disc3rp').val(hgb.hgb_rphdisc03);
+                            $('#i_disc3').val(toFixed(hgb.hgb_persendisc03));
+                            $('#i_disc3rp').val(convertToRupiah(hgb.hgb_rphdisc03));
                             $('#i_bk3').val(hgb.hgb_flagdisc03);
-                            $('#i_tglberlakudisc3a').val(toDate(hgb.hgb_tglmulaidisc03));
-                            $('#i_tglberlakudisc3b').val(toDate(hgb.hgb_tglakhirdisc03));
+                            $('#i_tglberlakudisc3a').val(formatDate(hgb.hgb_tglmulaidisc03));
+                            $('#i_tglberlakudisc3b').val(formatDate(hgb.hgb_tglakhirdisc03));
                         }
                         if(hgb.hgb_persendisc04 != 0 || hgb.hgb_rphdisc04 != 0){
                             $('#i_disc4').val(toFixed(hgb.hgb_persendisc04));
-                            $('#i_disc4rp').val(toFixed(hgb.hgb_rphdisc04));
+                            $('#i_disc4rp').val(convertToRupiah(hgb.hgb_rphdisc04));
                             $('#i_bk4').val(hgb.hgb_flagdisc04);
-                            $('#i_tglberlakudisc4a').val(toDate(hgb.hgb_tglmulaidisc04));
-                            $('#i_tglberlakudisc4b').val(toDate(hgb.hgb_tglakhirdisc04));
+                            $('#i_tglberlakudisc4a').val(formatDate(hgb.hgb_tglmulaidisc04));
+                            $('#i_tglberlakudisc4b').val(formatDate(hgb.hgb_tglakhirdisc04));
                         }
                         if(hgb.hgb_persendisc05 != 0 || hgb.hgb_rphdisc05 != 0){
                             $('#i_disc5').val(toFixed(hgb.hgb_persendisc05));
-                            $('#i_disc5rp').val(toFixed(hgb.hgb_persendisc05));
+                            $('#i_disc5rp').val(convertToRupiah(hgb.hgb_persendisc05));
                             $('#i_bk5').val(hgb.hgb_flagdisc05);
-                            $('#i_tglberlakudisc5a').val(toDate(hgb.hgb_tglmulaidisc05));
-                            $('#i_tglberlakudisc5b').val(toDate(hgb.hgb_tglakhirdisc05));
+                            $('#i_tglberlakudisc5a').val(formatDate(hgb.hgb_tglmulaidisc05));
+                            $('#i_tglberlakudisc5b').val(formatDate(hgb.hgb_tglakhirdisc05));
                         }
                         if(hgb.hgb_persendisc06 != 0 || hgb.hgb_rphdisc06 != 0){
                             $('#i_disc6').val(toFixed(hgb.hgb_persendisc06));
-                            $('#i_disc6rp').val(toFixed(hgb.hgb_persendisc06));
+                            $('#i_disc6rp').val(convertToRupiah(hgb.hgb_persendisc06));
                             $('#i_bk6').val(hgb.hgb_flagdisc06);
-                            $('#i_tglberlakudisc6a').val(toDate(hgb.hgb_tglmulaidisc06));
-                            $('#i_tglberlakudisc6b').val(toDate(hgb.hgb_tglakhirdisc06));
+                            $('#i_tglberlakudisc6a').val(formatDate(hgb.hgb_tglmulaidisc06));
+                            $('#i_tglberlakudisc6b').val(formatDate(hgb.hgb_tglakhirdisc06));
                         }
 
-                        if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null)
+                        if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null){
                             $('#i_flagbonus1-1').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai2bonus01 != 0 && hgb.hgb_qtymulai2bonus01 != null)
+                            $('#i_qtypembelian1-1').val(hgb.hgb_qtymulai1bonus01);
+                            $('#i_qtybonus1-1').val(hgb.hgb_qty1bonus01);
+                        }
+
+                        if(hgb.hgb_qtymulai2bonus01 != 0 && hgb.hgb_qtymulai2bonus01 != null){
                             $('#i_flagbonus1-2').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai3bonus01 != 0 && hgb.hgb_qtymulai3bonus01 != null)
+                            $('#i_qtypembelian1-2').val(hgb.hgb_qtymulai2bonus01);
+                            $('#i_qtybonus1-2').val(hgb.hgb_qty2bonus01);
+                        }
+
+                        if(hgb.hgb_qtymulai3bonus01 != 0 && hgb.hgb_qtymulai3bonus01 != null){
                             $('#i_flagbonus1-3').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai4bonus01 != 0 && hgb.hgb_qtymulai4bonus01 != null)
+                            $('#i_qtypembelian1-3').val(hgb.hgb_qtymulai3bonus01);
+                            $('#i_qtybonus1-3').val(hgb.hgb_qty3bonus01);
+                        }
+                        if(hgb.hgb_qtymulai4bonus01 != 0 && hgb.hgb_qtymulai4bonus01 != null){
                             $('#i_flagbonus1-4').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai5bonus01 != 0 && hgb.hgb_qtymulai5bonus01 != null)
+                            $('#i_qtypembelian1-4').val(hgb.hgb_qtymulai4bonus01);
+                            $('#i_qtybonus1-4').val(hgb.hgb_qty4bonus01);
+                        }
+
+                        if(hgb.hgb_qtymulai5bonus01 != 0 && hgb.hgb_qtymulai5bonus01 != null){
                             $('#i_flagbonus1-5').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai6bonus01 != 0 && hgb.hgb_qtymulai6bonus01 != null)
+                            $('#i_qtypembelian1-5').val(hgb.hgb_qtymulai5bonus01);
+                            $('#i_qtybonus1-5').val(hgb.hgb_qty5bonus01);
+                        }
+
+                        if(hgb.hgb_qtymulai6bonus01 != 0 && hgb.hgb_qtymulai6bonus01 != null){
                             $('#i_flagbonus1-6').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai1bonus02 != 0 && hgb.hgb_qtymulai1bonus02 != null)
+                            $('#i_qtypembelian1-6').val(hgb.hgb_qtymulai6bonus01);
+                            $('#i_qtybonus1-6').val(hgb.hgb_qty6bonus01);
+                        }
+
+                        if(hgb.hgb_qtymulai1bonus02 != 0 && hgb.hgb_qtymulai1bonus02 != null){
                             $('#i_flagbonus2-1').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai2bonus02 != 0 && hgb.hgb_qtymulai2bonus02 != null)
+                            $('#i_qtypembelian2-1').val(hgb.hgb_qtymulai1bonus02);
+                            $('#i_qtybonus2-1').val(hgb.hgb_qty1bonus02);
+                        }
+
+                        if(hgb.hgb_qtymulai2bonus02 != 0 && hgb.hgb_qtymulai2bonus02 != null){
                             $('#i_flagbonus2-2').val(hgb.hgb_jenisbonus);
-                        if(hgb.hgb_qtymulai3bonus02 != 0 && hgb.hgb_qtymulai3bonus02 != null)
+                            $('#i_qtypembelian2-2').val(hgb.hgb_qtymulai2bonus02);
+                            $('#i_qtybonus2-2').val(hgb.hgb_qty2bonus02);
+                        }
+
+                        if(hgb.hgb_qtymulai3bonus02 != 0 && hgb.hgb_qtymulai3bonus02 != null){
                             $('#i_flagbonus2-3').val(hgb.hgb_jenisbonus);
+                            $('#i_qtypembelian2-3').val(hgb.hgb_qtymulai3bonus02);
+                            $('#i_qtybonus2-3').val(hgb.hgb_qty3bonus02);
+                        }
+
 
                         now = new Date();
 
@@ -808,7 +857,9 @@
                             }
                         }
 
-                        $('#i_hargaomibaru').val(parseFloat( hgbhargabeli + ppnbm + ppnbotol ));
+                        $('#i_hargaomi').val(convertToRupiah($('#i_hargaomi').val()));
+
+                        $('#i_hargaomibaru').val(convertToRupiah(parseFloat( hgbhargabeli + ppnbm + ppnbotol )));
 
                         if(new Date(hgn.hgn_tglmulaidisc01) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc01){
                             if($('#i_flagdisc1').val() == 'K')
@@ -850,7 +901,7 @@
                     }
 
                     if(hgn != null){
-                        $('#i_tglberlakubaru').val(toDate(hgn.hgn_tglberlaku01));
+                        $('#i_tglberlakubaru').val(formatDate(hgn.hgn_tglberlaku01));
                     }
                 },
                 complete: function(){
@@ -902,12 +953,6 @@
 
         function toFixed(value){
             return parseFloat(value).toFixed(2);
-        }
-
-        function toDate(value) {
-            date = new Date(value);
-
-            return date.getDate() + '-' + month[date.getMonth()] + '-' + date.getFullYear();
         }
     </script>
 

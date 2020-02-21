@@ -78,7 +78,8 @@ class kubikasiPlanoController extends Controller
 
 
     public function dataRakKecil(){
-        $shelving =  DB::select('SELECT kbp_koderak,
+        try {
+            $shelving =  DB::select('SELECT kbp_koderak,
                                          kbp_kodesubrak,
                                          kbp_shelvingrak,
                                          kbp_volumeshell,
@@ -129,23 +130,89 @@ class kubikasiPlanoController extends Controller
                                     FROM tbmaster_kubikasiplano
                                 ORDER BY REPLACE (kbp_koderak, \'R\', \'E\'), kbp_kodesubrak, kbp_shelvingrak
                                 )');
+            return $shelving;
+        } catch (\Exception $e) {
+            report($e);
+            return $e->getTraceAsString();
+        }
+    }
+
+    public function dataRakKecilParam(Request $request){
+        $shelving =  DB::select('SELECT kbp_koderak,
+                                         kbp_kodesubrak,
+                                         kbp_shelvingrak,
+                                         kbp_volumeshell,
+                                         kbp_allowance,
+                                         vreal,
+                                         vexists,
+                                         vbook,
+                                         vbtb,
+                                         (vreal - (vexists+vbtb + 0)) vsisa
+                                  from(
+                                  SELECT kbp_koderak,
+                                         kbp_kodesubrak,
+                                         kbp_shelvingrak,
+                                         kbp_volumeshell,
+                                         kbp_allowance,
+                                         kbp_volumeshell * kbp_allowance / 100 vreal,
+                                         (SELECT SUM (
+                                                    NVL (
+                                                         (  prd_dimensilebar
+                                                          * prd_dimensipanjang
+                                                          * prd_dimensitinggi)
+                                                       * ROUND (lks_qty / prd_frac),
+                                                       0))
+                                            FROM tbmaster_lokasi left join tbmaster_prodmast on lks_kodeigr = prd_kodeigr
+                                                 AND lks_prdcd = prd_prdcd
+                                           WHERE lks_koderak = kbp_koderak
+                                                 AND lks_kodesubrak = kbp_kodesubrak
+                                                 AND lks_shelvingrak = kbp_shelvingrak
+                                                 AND lks_jenisrak = \'S\')
+                                            vexists,
+                                         (SELECT SUM (
+                                                    NVL (
+                                                         (  NVL (prd_dimensilebar, 0)
+                                                          * NVL (prd_dimensipanjang, 0)
+                                                          * NVL (prd_dimensitinggi, 0))
+                                                       * slp_qtycrt,
+                                                       0))
+                                                    vol_book
+                                            FROM TBMASTER_LOKASI, TBMASTER_PRODMAST, TBTR_SLP
+                                           WHERE     LKS_KODERAK = KBP_KODERAK
+                                                 AND LKS_KODESUBRAK = KBP_KODESUBRAK
+                                                 AND LKS_SHELVINGRAK = KBP_SHELVINGRAK
+                                                 AND LKS_JENISRAK = \'S\'
+                                                 AND LKS_BOOKED_SLPID = SLP_ID
+                                                 AND slp_prdcd = prd_prdcd)
+                                            vbook,
+                                            0 vbtb
+                                    FROM tbmaster_kubikasiplano
+                                    WHERE kbp_koderak = \''.$request->koderak.'\'
+                                         AND kbp_kodesubrak = \''.$request->kodesubrak.'\'
+                                         AND kbp_shelvingrak = \''.$request->shelvingrak.'\'
+                                ORDER BY REPLACE (kbp_koderak, \'R\', \'E\'), kbp_kodesubrak, kbp_shelvingrak
+                                )');
 
         return $shelving;
     }
     public function save_kubikasi(Request $request){
-        if(DB::table('tbmaster_kubikasiplano')
-            ->where('kbp_koderak', $request->koderak)
-            ->where('kbp_kodesubrak', $request->kodesubrak)
-            ->where('kbp_shelvingrak', $request->shelvingrak)
-            ->update(['kbp_volumeshell' => $request->volume,'kbp_allowance' => $request->allow])){
-
-            $message = 'Data Berhasil Terupdate!';
-            $status = 'success';
+//        dd(sizeof($request->value['koderak']));
+        for($i = 0 ; $i< sizeof($request->value['koderak']); $i++){
+            $opo = DB::table('tbmaster_kubikasiplano')
+                ->where('kbp_koderak', $request->value['koderak'][$i])
+                ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
+                ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])->get();
+//            dd($opo);
+            if($opo) {
+                DB::table('tbmaster_kubikasiplano')
+                    ->where('kbp_koderak', $request->value['koderak'][$i])
+                    ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
+                    ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])
+                    ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i]]);
+            }
         }
-        else{
-            $message = 'Data Gagal Terupdate!';
-            $status = 'warning';
-        }
+        $message = 'Data Berhasil Terupdate!';
+        $status = 'success';
 
         return compact(['message','status']);
     }

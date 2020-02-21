@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
 
     {{-- JS --}}
     <script src={{asset('/js/jquery.js')}}></script>
@@ -23,6 +24,7 @@
     <script src={{asset('/js/sweetalert.js')}}></script>
     <script src={{asset('/js/datatables.js')}}></script>
     <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
+    <script src="{{asset('/js/jquery-ui.js')}}"></script>
     {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
     <script src={{asset('/js/script.js')}}></script>
 
@@ -45,7 +47,8 @@
                         Master
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> <!-- TARO URUT BERDASARKAN ABJAD-->
-                        <a class="dropdown-item" href="{{url("/mstaktifhrgjual/index")}}">Aktifkan Harga Jual</a>
+                        <a class="dropdown-item" href="{{url("/mstaktifhrgjual/index")}}">Aktifkan Harga Jual Per Item</a>
+                        <a class="dropdown-item" href="{{url("/mstaktifallhrgjual/index")}}">Aktifkan Harga Jual All Item</a>
                         <a class="dropdown-item" href="{{url("/mstinformasihistoryproduct/index")}}">Informasi dan History Product</a>
                         <a class="dropdown-item" href="{{url("/mstapproval/index")}}">Master Approval</a>
                         <a class="dropdown-item" href="{{url("/mstbarcode/index")}}">Master Barcode</a>
@@ -64,6 +67,8 @@
                         <a class="dropdown-item" href="{{url("/mstperusahaan/index")}}">Master Perusahaan</a>
                         <a class="dropdown-item" href="{{url("/mstsuboutlet/index")}}">Master Sub Outlet</a>
                         <a class="dropdown-item" href="{{url("/mstsupplier/index")}}">Master Supplier</a>
+                        <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquery Supplier Produksi</a>
+                        <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquery Produksi Supplier</a>
                     </div>
                 </li>
             </div>

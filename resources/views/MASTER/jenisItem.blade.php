@@ -2,7 +2,7 @@
 @section('content')
 
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -12,12 +12,14 @@
                             <legend  class="w-auto ml-3 h5 ">Input Jenis Rak Untuk PLU Planogram</legend>
                             <div class="card-body">
                                 <div class="row ">
-                                    <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
-                                    <input type="text" class="col-sm-1 form-control" id="i_pluplanogram" placeholder="..." value="">
-                                    <input type="text" class="col-sm-5 form-control" disabled id="i_deskripsi" >
-                                    <button type="button" class="btn p-0 text-left" data-toggle="modal" data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                    <div class="col-sm-1"></div>
-                                    <button class="btn btn-primary col-sm-1" id="btn-save" onclick="save()">SAVE</button>
+                                        <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
+                                        {{--<div class="col-sm-1 row">--}}
+                                            <input type="text"  class="col-sm-1 form-control" id="i_pluplanogram" placeholder="..." value="">
+                                        {{--</div>--}}
+                                        <input type="text" class="col-sm-5 form-control" disabled id="i_deskripsi" >
+                                        <button type="button" class="btn p-0 text-left" data-toggle="modal" data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                        <div class="col-sm-1"></div>
+                                        <button class="btn btn-primary col-sm-1" id="btn-save" onclick="save()">SAVE</button>
                                 </div>
                                 <div class="row">
                                     <label for="i_unitfrac" class="col-sm-3 col-form-label text-right">Unit/Frac</label>
@@ -25,12 +27,16 @@
                                 </div>
                                 <div class="row">
                                     <label for="i_maxpalet" class="col-sm-3 col-form-label text-right">Max Palet</label>
-                                    <input type="text" class="col-sm-1 form-control" disabled id="i_maxpalet" >
+                                    <div class="col-sm-2 row">
+                                        <input type="text" class="col-sm-4 form-control" disabled id="i_maxpalet" >
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <label for="i_jenisrak" class="col-sm-3 col-form-label text-right">Jenis Rak</label>
-                                    <input type="text" class="col-sm-1 form-control" id="i_jenisrak" placeholder="..." >
-                                    <label id="l_jenisrak" class="col-sm-3 col-form-label text-left">D / N</label>
+                                    <div class="col-sm-2 row">
+                                        <input style="text-transform: uppercase;" type="text" class="col-sm-4 form-control" id="i_jenisrak" placeholder="..." >
+                                        <label id="l_jenisrak" class="col-sm-7 col-form-label text-left">D / N</label>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -49,135 +55,135 @@
                                             </thead>
                                             <tbody>
                                             <tr class="row justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;">
                                                     JAN
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_01">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_01">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_01">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_01">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     FEB
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_02">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_02">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_02">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_02">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     MAR
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_03">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_03">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_03">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_03">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     APR
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_04">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_04">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_04">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_04">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     MEI
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_05">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_05">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_05">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_05">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     JUN
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_06">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_06">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled  id="sls_rph_06">
+                                                    <input type="text" class="form-control text-right" disabled  id="sls_rph_06">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     JUL
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_07">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_07">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled  id="sls_rph_07">
+                                                    <input type="text" class="form-control text-right" disabled  id="sls_rph_07">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     AGU
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_08">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_08">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_08">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_08">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     SEP
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_09">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_09">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_09">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_09">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     OKT
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_10">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_10">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_10">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_10">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     NOV
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_11">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_11">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_11">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_11">
                                                 </td>
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
-                                                <td class="col-sm-2 p-0 text-center" >
+                                                <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
                                                     DES
                                                 </td>
                                                 <td class="col-sm-4 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_qty_12">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_qty_12">
                                                 </td>
                                                 <td class="col-sm-6 p-0">
-                                                    <input type="text" class="form-control" disabled id="sls_rph_12">
+                                                    <input type="text" class="form-control text-right" disabled id="sls_rph_12">
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -185,7 +191,7 @@
                                     </div>
                                 </fieldset>
                             </div>
-                            <div class="col-sm-3 p-0">
+                            <div class="col-sm-4 p-0">
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-3 h5">Daftar PO Yang Masih Aktif</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
@@ -214,15 +220,15 @@
                                     </div>
                                 </fieldset>
                             </div>
-                            <div class="col-sm-6 p-0">
+                            <div class="col-sm-5 p-0">
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-3 h5">Daftar Lokasi PLU</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-lokasi-plu">
                                             <thead class="thead-dark">
                                             <tr class="row justify-content-md-center">
-                                                <th class="col-sm-5 text-center small">Lokasi PLU</th>
-                                                <th class="col-sm-1 text-center small">Jenis</th>
+                                                <th class="col-sm-4 text-center small">Lokasi PLU</th>
+                                                <th class="col-sm-2 text-center small">Jenis</th>
                                                 <th class="col-sm-2 text-center small">Qty</th>
                                                 <th class="col-sm-2 text-center small">Max Plano</th>
                                                 <th class="col-sm-2 text-center small">Max Display</th>
@@ -230,10 +236,10 @@
                                             </thead>
                                             <tbody>
                                             <tr class="row baris justify-content-md-center p-0">
-                                                <td class="col-sm-5 p-0 text-center" >
+                                                <td class="col-sm-4 p-0 text-center" >
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
-                                                <td class="col-sm-1 p-0">
+                                                <td class="col-sm-2 p-0">
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
                                                 <td class="col-sm-2 p-0">
@@ -274,31 +280,31 @@
                                             <tbody>
                                             <tr class="justify-content-md-center p-0">
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="lokasi" disabled>
+                                                    <input type="text" class="form-control text-center" id="lokasi" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="awal" disabled>
+                                                    <input type="text" class="form-control text-center" id="awal" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="terima" disabled>
+                                                    <input type="text" class="form-control text-center" id="terima" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="keluar" disabled>
+                                                    <input type="text" class="form-control text-center" id="keluar" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="sales" disabled>
+                                                    <input type="text" class="form-control text-center" id="sales" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="retur" disabled>
+                                                    <input type="text" class="form-control text-center" id="retur" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="adj" disabled>
+                                                    <input type="text" class="form-control text-center" id="adj" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="instrst" disabled>
+                                                    <input type="text" class="form-control text-center" id="instrst" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" id="akhir" disabled>
+                                                    <input type="text" class="form-control text-center" id="akhir" disabled>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -384,23 +390,24 @@
         <div class="modal-dialog modal-dialog-scrollable modal-xl " role="document" >
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4>TABEL PENERIMAAN</h4>
                 </div>
                 <div class="modal-body" style="height: 650px">
                     <div class="container">
                         <div class="row">
                             <div class="col">
                                 <table class="table table-sm table-striped table-bordered display compact" id="table_penerimaan">
-                                    <thead style="background-color: #5AA4DD; color: white">
+                                    <thead class="thead-dark">
                                     <tr class="thNormal text-center">
                                         <th width="15%">Supplier</th>
                                         <th width="10%">Qty BPB</th>
                                         <th width="10%">Bonus 1</th>
                                         <th width="10%">Bonus 2</th>
                                         <th width="12.5%">Dokumen</th>
-                                        <th width="12.5%">Tanggal</th>
+                                        <th style="width: 100px;" width="22.5%">Tanggal</th>
                                         <th width="5%">Top</th>
-                                        <th width="12.5%">Last Cost (pcs)</th>
-                                        <th width="12.5%">Avg Cost (pcs)</th>
+                                        <th width="7.5%">Last Cost (pcs)</th>
+                                        <th width="7.5%">Avg Cost (pcs)</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody_table_penerimaan"></tbody>
@@ -411,7 +418,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -474,7 +480,8 @@
         $(document).ready(function () {
             $('#table_penerimaan').DataTable({
                 "lengthChange": false,
-                "pageLength": 15
+                "pageLength": 15,
+                "order": [[ 5, "asc" ]]
             });
         });
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
@@ -495,7 +502,7 @@
         }
         function get_data(value) {
             $.ajax({
-                url: '/BackOffice/public/mstjenisitem/lov_select',
+                url: '/BackOffice/public/api/mstjenisitem/lov_select',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -535,21 +542,21 @@
 
                     $('.baris').remove();
                     for (var i = 0; i < response['po'].length ; i++ ){
-                        $('#table-po').append('<tr class="row baris justify-content-md-center p-0"> <td class="col-sm-4 p-0 text-center" > <input type="text" class="form-control" disabled value="'+response['po'][i].tpoh_nopo+'"> </td> <td class="col-sm-5 p-0"><input type="text" class="form-control" disabled value="'+toDate(response['po'][i].tpoh_tglpo.substr(0,10))+'"> </td> <td class="col-sm-3 p-0"><input type="text" class="form-control" disabled  value="'+response['po'][i].tpod_qtypo+'"></td></tr>');
+                        $('#table-po').append('<tr class="row baris justify-content-md-center p-0"> <td class="col-sm-5 p-0 text-center" > <input type="text" class="form-control" disabled value="'+response['po'][i].tpoh_nopo+'"> </td> <td class="col-sm-4 p-0"><input type="text" class="form-control" disabled value="'+toDate(response['po'][i].tpoh_tglpo.substr(0,10))+'"> </td> <td class="col-sm-3 p-0"><input type="text" class="form-control" disabled  value="'+response['po'][i].tpod_qtypo+'"></td></tr>');
                     }
                     for (var i = 0; i < response['lokasi'].length ; i++ ){
                         $('#table-lokasi-plu').append('<tr class="row baris justify-content-md-center p-0"><td class="col-sm-4 p-0 text-center" ><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_koderak+'.'+response['lokasi'][i].lks_kodesubrak+'.'+response['lokasi'][i].lks_tiperak+'.'+response['lokasi'][i].lks_shelvingrak+'.'+response['lokasi'][i].lks_nourut+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_jenisrak+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_qty+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxplano+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxdisplay+'"></td></tr>');
                     }
-                    $('#lokasi').val(format_currency(response['prodstock'].st_lokasi));
-                    $('#awal').val(format_currency(response['prodstock'].st_saldoawal));
-                    $('#terima').val(format_currency(response['prodstock'].st_trfin));
-                    $('#keluar').val(format_currency(response['prodstock'].st_trfout));
-                    $('#sales').val(format_currency(response['prodstock'].st_sales));
-                    $('#retur').val(format_currency(response['prodstock'].st_retur));
-                    $('#adj').val(format_currency(response['prodstock'].st_adj));
-                    $('#instrst').val(format_currency(response['prodstock'].st_intransit));
-                    $('#akhir').val(format_currency(response['prodstock'].st_saldoakhir));
-                    $('#avgsales').val(format_currency(response['AVGSALES']));
+                    $('#lokasi').val(response['prodstock'].st_lokasi);
+                    $('#awal').val(response['prodstock'].st_saldoawal);
+                    $('#terima').val(response['prodstock'].st_trfin);
+                    $('#keluar').val(response['prodstock'].st_trfout);
+                    $('#sales').val(response['prodstock'].st_sales);
+                    $('#retur').val(response['prodstock'].st_retur);
+                    $('#adj').val(response['prodstock'].st_adj);
+                    $('#instrst').val(response['prodstock'].st_intransit);
+                    $('#akhir').val(response['prodstock'].st_saldoakhir);
+                    $('#avgsales').val(response['AVGSALES']);
 
                     $('#table_penerimaan').DataTable().clear();
 
@@ -560,7 +567,7 @@
                             response['supplier'][i].trm_bonus,
                             response['supplier'][i].trm_bonus2,
                             response['supplier'][i].trm_dokumen,
-                            response['supplier'][i].trm_tanggal,
+                            toDate(response['supplier'][i].trm_tanggal),
                             response['supplier'][i].trm_top,
                             response['supplier'][i].trm_hpp,
                             format_currency(response['supplier'][i].trm_acost)
@@ -594,7 +601,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/mstjenisitem/lov_search',
+                        url: '/BackOffice/public/api/mstjenisitem/lov_search',
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {
@@ -618,7 +625,7 @@
 
         function save() {
             $('#l_jenisrak').css("color", "black");
-
+            $('#i_jenisrak').val($('#i_jenisrak').val().toUpperCase());
             if( $('#i_jenisrak').val()!='D' && $('#i_jenisrak').val()!='N'){
                 $('#i_jenisrak').val("");
                 $('#i_jenisrak').select();
@@ -629,7 +636,7 @@
                 var jenisrak = $('#i_jenisrak').val();
                 var prdcd = $('#i_pluplanogram').val();
                 $.ajax({
-                    url: '/BackOffice/public/mstjenisitem/savedata',
+                    url: '/BackOffice/public/api/mstjenisitem/savedata',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", prdcd:prdcd,jenisrak:jenisrak},
                     success: function (response) {

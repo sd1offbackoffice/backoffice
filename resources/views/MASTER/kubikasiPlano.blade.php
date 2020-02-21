@@ -2,7 +2,7 @@
 @section('content')
 
 
-    <div class="container-fluid">
+    <div class="container">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -73,7 +73,7 @@
                             <div class="col-sm-12 p-0">
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-3 h5 ">KUBIKASI</legend>
-                                    <div class="card-body p-1">
+                                    <div class="card-body p-1 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm table-striped table-bordered display compact" id="table_kubikasi">
                                             <thead class="thead-dark">
                                             <tr class="thNormal text-center">
@@ -89,16 +89,17 @@
                                                 <th class="text-center small">Sisa (cm<sup>3</sup>)</th>
                                             </tr>
                                             </thead>
-                                            <tbody id="tbody_table_penerimaan">
+                                            <tbody >
                                             </tbody>
                                         </table>
                                     </div>
                                 </fieldset>
                             </div>
-                            {{--<br>--}}
-                            {{--<div class="col-sm-12 ">--}}
-                                    {{--<button class="btn btn-primary float-right mt-1" id="btn-save">SAVE</button>--}}
-                            {{--</div>--}}
+                            <br>
+                            <label for="ket_save"></label>
+                            <div class="col-sm-12 ">
+                                    <button class="btn btn-primary float-right mt-1" id="btn-save">SAVE</button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -306,6 +307,7 @@
 
     <script>
         var kubikasi;
+        var count_data=0;
         $(document).ready(function () {
             $('#table_lovkoderak').DataTable({
                 "lengthChange": false,
@@ -316,10 +318,21 @@
             $('#table_lovshelving').DataTable({
                 "lengthChange": false,
             });
-            $('#table_kubikasi').DataTable({
-                "lengthChange": false,
-            });
-            $('#i_koderak').focus();
+
+            // $('#i_koderak').val('GTAC');
+            // $('#i_subrak').val('01');
+            // $('#i_shelving').val('01');
+
+
+            var e = $.Event("keypress");
+            e.keyCode = 13;
+            $('#i_shelving').trigger(e);
+
+            // $('#i_plu').val('410');
+            // $('#i_plu').trigger(e);
+            // $('#i_qty').val('5');
+            // $('#i_qty').trigger(e);
+
 
         });
 
@@ -327,7 +340,7 @@
             $('#m_koderak').modal('hide');
             $('#i_koderak').val(koderak);
             $.ajax({
-                url: '/BackOffice/public/mstkubikasiplano/lov_subrak',
+                url: '/BackOffice/public/api/mstkubikasiplano/lov_subrak',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", koderak:koderak},
                 beforeSend: function(){
@@ -357,7 +370,7 @@
             $('#i_koderak').val(koderak);
             $('#i_subrak').val(subrak);
             $.ajax({
-                url: '/BackOffice/public/mstkubikasiplano/lov_shelving',
+                url: '/BackOffice/public/api/mstkubikasiplano/lov_shelving',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", koderak:koderak ,subrak:subrak},
                 beforeSend: function(){
@@ -382,6 +395,7 @@
                 }
             });
         }
+
         function shelving_lov_select(koderak,subrak,shelving) {
             $('#m_shelving').modal('hide');
             $('#i_koderak').val(koderak);
@@ -407,9 +421,7 @@
             $('#i_deskripsi').val("");
             $('#i_satuan').val("");
             $('#i_volume').val("");
-            $('#table_kubikasi').DataTable().clear();
-            $('#table_kubikasi').DataTable().destroy();
-            $('#table_kubikasi').DataTable();
+            $('.baris').remove();
         }
         $('#i_koderak').keypress(function (e) {
             if (e.keyCode == 13) {
@@ -441,59 +453,173 @@
 
         $('#i_shelving').keypress(function (e) {
             if (e.keyCode == 13) {
-                $('#i_koderak').prop("disabled","disabled");
-                $('#i_subrak').prop("disabled","disabled");
-                $('#i_shelving').prop("disabled","disabled");
-                $('#i_plu').prop("disabled",false);
-                $('#i_qty').prop("disabled",false);
-                $('#btn-plu').prop("disabled",false);
-                $('#i_plu').select();
                 if ($('#i_koderak').val() != "" && $('#i_subrak').val() != "" && $('#i_shelving').val() != ""){
+                    $.ajax({
+                        url: '/BackOffice/public/api/mstkubikasiplano/dataRakKecilParam',
+                        type: 'POST',
+                        data: {"_token": "{{ csrf_token() }}",koderak:$('#i_koderak').val() ,kodesubrak: $('#i_subrak').val(),shelvingrak: $('#i_shelving').val()},
+                        beforeSend: function(){
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (response) {
+                            if(response.length!=0){
+                                count_data=response.length;
+                                kubikasi = response;
+                                for (var i = 0; i < response.length ; i++ ){
+                                    $('#table_kubikasi').append(
+                                        '<tr class="baris">' +
+                                        '      <td class="kr-'+i+'">'+response[i].kbp_koderak+'</td>\n' +
+                                        '      <td class="ksr-'+i+'">'+response[i].kbp_kodesubrak+'</td>\n' +
+                                        '      <td class="sr-'+i+'">'+response[i].kbp_shelvingrak+'</td>\n' +
+                                        '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
+                                        '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
+                                        '      <td>'+addDotInNumber(response[i].vreal)+'</td>\n' +
+                                        '      <td>'+addDotInNumber(response[i].vexists)+'</td>\n' +
+                                        '      <td>'+addDotInNumber(response[i].vbook)+'</td>\n' +
+                                        '      <td>'+addDotInNumber(response[i].vbtb)+'</td>\n' +
+                                        '      <td>'+addDotInNumber(response[i].vsisa)+'</td>\n' +
+                                        '</tr>'
+                                    );
+                                }
+                                null_check();
+                                $('#i_koderak').prop("disabled","disabled");
+                                $('#i_subrak').prop("disabled","disabled");
+                                $('#i_shelving').prop("disabled","disabled");
+                                $('#i_plu').prop("disabled",false);
+                                $('#i_qty').prop("disabled",false);
+                                $('#btn-plu').prop("disabled",false);
+                                $('#i_plu').select();
+                            }
+                            else{
+                                swal({
+                                    title: "Data tidak ditemukan!",
+                                    icon: "warning"
+                                }).then((createData) => {
+                                });
+                            }
+                        },
+                        complete: function(){
+                            $('#modal-loader').modal('hide');
 
+                        }
+                    });
+                }
+                else if($('#i_koderak').val() != "" && $('#i_subrak').val() == "" && $('#i_shelving').val() == ""){
+                    swal({
+                        title: 'Subrak belum diisi!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        if (createData) {
+                            $('#i_subrak').focus();
+                        }
+                    });
+                    return;
+                }
+                else if($('#i_koderak').val() != "" && $('#i_subrak').val() != "" && $('#i_shelving').val() == ""){
+                    swal({
+                        title: 'Shelving belum diisi!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        if (createData) {
+                            $('#i_shelving').focus();
+                        }
+                    });
+                    return;
                 }
                 else {
                     getdatarakkecil();
+                    $('#i_koderak').prop("disabled","disabled");
+                    $('#i_subrak').prop("disabled","disabled");
+                    $('#i_shelving').prop("disabled","disabled");
+                    $('#i_plu').prop("disabled",false);
+                    $('#i_qty').prop("disabled",false);
+                    $('#btn-plu').prop("disabled",false);
+                    $('#i_plu').select();
                 }
+
             }
         });
+
         function getdatarakkecil(){
             $.ajax({
-                url: '/BackOffice/public/mstkubikasiplano/dataRakKecil',
+                url: '/BackOffice/public/api/mstkubikasiplano/dataRakKecil',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}"},
                 beforeSend: function(){
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    $('#table_kubikasi').DataTable().clear();
                 },
                 success: function (response) {
-                    $('#table_kubikasi').DataTable().destroy();
+                    console.log(response);
                     kubikasi = response;
+                    count_data=response.length;
                     for (var i = 0; i < response.length ; i++ ){
                         $('#table_kubikasi').append(
-                            '<tr>' +
-                            '      <td>'+response[i].kbp_koderak+'</td>\n' +
-                            '      <td>'+response[i].kbp_kodesubrak+'</td>\n' +
-                            '      <td>'+response[i].kbp_shelvingrak+'</td>\n' +
-                            '      <td><input type="number" class="col-sm-12 form-control" onchange="save_vol(\''+kubikasi[i].kbp_koderak+'\',\''+kubikasi[i].kbp_kodesubrak+'\',\''+kubikasi[i].kbp_shelvingrak+'\',\''+kubikasi[i].kbp_volumeshell+'\',this.value,\''+kubikasi[i].kbp_allowance+'\')" value="'+kubikasi[i].kbp_volumeshell+'" ></td>\n' +
-                            '      <td><input type="number" class="col-sm-12 form-control" onchange="save_allow(\''+kubikasi[i].kbp_koderak+'\',\''+kubikasi[i].kbp_kodesubrak+'\',\''+kubikasi[i].kbp_shelvingrak+'\',\''+kubikasi[i].kbp_allowance+'\',this.value,\''+kubikasi[i].kbp_volumeshell+'\')" value="'+kubikasi[i].kbp_allowance+'" ></td>\n' +
-                            '      <td>'+response[i].vreal+'</td>\n' +
-                            '      <td>'+response[i].vexists+'</td>\n' +
-                            '      <td>'+response[i].vbook+'</td>\n' +
-                            '      <td>'+response[i].vbtb+'</td>\n' +
-                            '      <td>'+response[i].vsisa+'</td>\n' +
+                            '<tr class="baris">' +
+                            '      <td class="kr-'+i+'">'+response[i].kbp_koderak+'</td>\n' +
+                            '      <td class="ksr-'+i+'">'+response[i].kbp_kodesubrak+'</td>\n' +
+                            '      <td class="sr-'+i+'">'+response[i].kbp_shelvingrak+'</td>\n' +
+                            '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
+                            '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
+                            '      <td>'+addDotInNumber(response[i].vreal)+'</td>\n' +
+                            '      <td>'+addDotInNumber(response[i].vexists)+'</td>\n' +
+                            '      <td>'+addDotInNumber(response[i].vbook)+'</td>\n' +
+                            '      <td>'+addDotInNumber(response[i].vbtb)+'</td>\n' +
+                            '      <td>'+addDotInNumber(response[i].vsisa)+'</td>\n' +
                             '</tr>'
                         );
                     }
                     null_check();
                 },
+                error: function(response){
+                    console.log(response);
+                    // if(response=='error')
+                    //     getdatarakkecil();
+                },
                 complete: function(){
                     $('#modal-loader').modal('hide');
-                    $('#table_kubikasi').DataTable();
                     $('#i_plu').focus();
 
                 }
             });
         }
+
+        $(document).on('keydown','.num', function(e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl/cmd+A
+                (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: Ctrl/cmd+C
+                (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: Ctrl/cmd+X
+                (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+        $(document).on('keyup','.num', function(e) {
+            $(this).val( addDotInNumber(replaceDotInNumber($(this).val())));
+        });
+        function replaceDotInNumber(number) {
+            if (!number)
+                return 0;
+            else
+                return number.toString().replace(/\,/g, '');
+        }
+
+        function addDotInNumber(number) {
+            if (!number)
+                return 0;
+            else
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function null_check() {
             $("#table_kubikasi td").each(function(){
                 var $this = $(this);
@@ -513,7 +639,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/mstkubikasiplano/lov_search',
+                        url: '/BackOffice/public/api/mstkubikasiplano/lov_search',
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {
@@ -534,7 +660,7 @@
         });
         function lov_select(value){
             $.ajax({
-                url: '/BackOffice/public/mstkubikasiplano/lov_search',
+                url: '/BackOffice/public/api/mstkubikasiplano/lov_search',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -545,7 +671,7 @@
                     $('#i_plu').val(response[0].prd_prdcd);
                     $('#i_deskripsi').val(response[0].prd_deskripsipanjang);
                     $('#i_satuan').val(response[0].s_sat);
-                    $('#i_volume').val(response[0].s_vol);
+                    $('#i_volume').val(addDotInNumber(response[0].s_vol));
                 },
                 complete: function(){
                     if($('#m_pluHelp').is(':visible')){
@@ -581,6 +707,7 @@
                 }
             }
         });
+
         var editor;
         $('#i_qty').keypress(function (e) {
             if (e.keyCode == 13) {
@@ -595,137 +722,104 @@
                     });
                 }
                 else{
-                    $('#table_kubikasi').DataTable().clear();
-                    $('#table_kubikasi').DataTable().destroy();
+                    $('.baris').remove();
                     for (var i = 0; i < kubikasi.length ; i++ ){
-                        var vbtb = $('#i_volume').val() * $('#i_qty').val();
-                        var vsisa = kubikasi[i].vreal -(kubikasi[i].vexists  + kubikasi[i].vbook + vbtb);
+                        var vbtb = replaceDotInNumber($('#i_volume').val()) * $('#i_qty').val();
+                        var vsisa = replaceDotInNumber(kubikasi[i].vreal) -(replaceDotInNumber(kubikasi[i].vexists)  + replaceDotInNumber(kubikasi[i].vbook) + vbtb);
+                        if ( vsisa <= 0){
+                            tr = '<tr class="baris red">';
+                        }
+                        else{
+                            tr = '<tr class="baris">';
+                        }
                         $('#table_kubikasi').append(
-                            '<tr>' +
-                            '      <td>'+kubikasi[i].kbp_koderak+'</td>\n' +
-                            '      <td>'+kubikasi[i].kbp_kodesubrak+'</td>\n' +
-                            '      <td>'+kubikasi[i].kbp_shelvingrak+'</td>\n' +
-                            '      <td><input type="number" class="col-sm-12 form-control" onchange="save_vol(\''+kubikasi[i].kbp_koderak+'\',\''+kubikasi[i].kbp_kodesubrak+'\',\''+kubikasi[i].kbp_shelvingrak+'\',\''+kubikasi[i].kbp_volumeshell+'\',this.value,\''+kubikasi[i].kbp_allowance+'\')" value="'+kubikasi[i].kbp_volumeshell+'" ></td>\n' +
-                            '      <td><input type="number" class="col-sm-12 form-control" onchange="save_allow(\''+kubikasi[i].kbp_koderak+'\',\''+kubikasi[i].kbp_kodesubrak+'\',\''+kubikasi[i].kbp_shelvingrak+'\',\''+kubikasi[i].kbp_allowance+'\',this.value,\''+kubikasi[i].kbp_volumeshell+'\')" value="'+kubikasi[i].kbp_allowance+'" ></td>\n' +
-                            '      <td>'+kubikasi[i].vreal+'</td>\n' +
-                            '      <td>'+kubikasi[i].vexists+'</td>\n' +
-                            '      <td>'+kubikasi[i].vbook+'</td>\n' +
-                            '      <td>'+vbtb+'</td>\n' +
-                            '      <td>'+vsisa+'</td>\n' +
+                            tr +
+                            '      <td class="kr-'+i+'">'+kubikasi[i].kbp_koderak+'</td>\n' +
+                            '      <td class="ksr-'+i+'">'+kubikasi[i].kbp_kodesubrak+'</td>\n' +
+                            '      <td class="sr-'+i+'">'+kubikasi[i].kbp_shelvingrak+'</td>\n' +
+                            '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(kubikasi[i].kbp_volumeshell)+'" ></td>\n' +
+                            '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(kubikasi[i].kbp_allowance)+'" ></td>\n' +
+                            '      <td>'+addDotInNumber(kubikasi[i].vreal)+'</td>\n' +
+                            '      <td>'+addDotInNumber(kubikasi[i].vexists)+'</td>\n' +
+                            '      <td>'+addDotInNumber(kubikasi[i].vbook)+'</td>\n' +
+                            '      <td>'+addDotInNumber(vbtb)+'</td>\n' +
+                            '      <td>'+addDotInNumber(vsisa)+'</td>\n' +
                             '</tr>'
                         );
                     }
                     null_check();
-
-                    table = $('#table_kubikasi').DataTable({
-                        "createdRow": function( row, data, dataIndex){
-                            console.log(data);
-                            if( data[9] <=  0){
-                                $(row).addClass('red');
-                            }
-                        }
-                    });
-
-
-
                 }
             }
         });
-        function save_vol(koderak,kodesubrak,shelvingrak,volumeold,volume,allow) {
-            swal({
-                title: "Simpan Perubahan Data?",
-                icon: "info",
-                buttons: true,
-                dangerMode: true,
-            }).then((editData) => {
-                if (editData) {
-                    if (volume == 0 && allow > 0){
+        $( "#btn-save" ).click(function() {
+            arr = {};
+            arr.koderak = [];
+            arr.kodesubrak = [];
+            arr.shelvingrak = [];
+            arr.volume = [];
+            arr.allowance = [];
+
+            for(i = 0; i<count_data; i++) {
+                volume = replaceDotInNumber($('.vol-' + i).val());
+                allow = $('.allow-' + i).val();
+                koderak = $('.kr-' + i).text();
+                kodesubrak = $('.ksr-' + i).text();
+                shelvingrak = $('.sr-' + i).text();
+                if(kubikasi[i].kbp_volumeshell != volume || kubikasi[i].kbp_allowance != allow){
+                    arr.koderak.push(koderak);
+                    arr.kodesubrak.push(kodesubrak);
+                    arr.shelvingrak.push(shelvingrak);
+                    arr.volume.push(replaceDotInNumber(volume));
+                    arr.allowance.push(allow);
+
+                    if (volume == 0 && allow > 0) {
                         swal({
                             title: 'Volume tidak boleh 0!',
                             icon: 'warning'
                         }).then((createData) => {
                         });
+                        return;
                     }
-                    else {
-                        $.ajax({
-                        url: '/BackOffice/public/mstkubikasiplano/save_kubikasi',
-                        type:'POST',
-                        data:{"_token":"{{ csrf_token() }}",koderak: koderak,kodesubrak:kodesubrak,shelvingrak:shelvingrak,volume:volume,allow:allow},
-                        beforeSend: function(){
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function(response){
-                            console.log(response);
-                            swal({
-                                title: response.message,
-                                icon: response.status
-                            }).then((createData) => {
-                            });
-                        },
-                        complete: function(){
-                            $('#modal-loader').modal('hide');
-                            getdatarakkecil();
-                        }
-                    });
-                    }
-                } else {
-                    console.log('Data tidak disimpan');
-                }
-            });
-        }
-
-        function save_allow(koderak,kodesubrak,shelvingrak,allowold,allow,volume) {
-            swal({
-                title: "Simpan Perubahan Data?",
-                icon: "info",
-                buttons: true,
-                dangerMode: true,
-            }).then((editData) => {
-                if (editData) {
-                    if (allow < 0 || allow > 100){
+                    else if (allow < 0 || allow > 100) {
                         swal({
                             title: 'Persentase Allowance 0..100',
                             icon: 'warning'
                         }).then((createData) => {
                         });
+                        return;
                     }
-                    else if (volume > 0 && allow == 100){
+                    else if (volume > 0 && allow == 100) {
                         swal({
                             title: 'Allowance tidak boleh 0!',
                             icon: 'warning'
                         }).then((createData) => {
                         });
+                        return;
                     }
-                    else {
-                        $.ajax({
-                            url: '/BackOffice/public/mstkubikasiplano/save_kubikasi',
-                            type:'POST',
-                            data:{"_token":"{{ csrf_token() }}",koderak: koderak,kodesubrak:kodesubrak,shelvingrak:shelvingrak,volume:volume,allow:allow},
-                            beforeSend: function(){
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function(response){
-                                console.log(response);
-                                swal({
-                                    title: response.message,
-                                    icon: response.status
-                                }).then((createData) => {
-                                });
-                            },
-                            complete: function(){
-                                $('#modal-loader').modal('hide');
-                                getdatarakkecil();
-                            }
-                        });
-                    }
-                } else {
-                    console.log('Data tidak disimpan');
+                }
+            }
+            console.log(arr);
+            $.ajax({
+                url: '/BackOffice/public/api/mstkubikasiplano/save_kubikasi',
+                type:'POST',
+                data:{"_token":"{{ csrf_token() }}",value: arr},
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function(response){
+                    swal({
+                        title: response.message,
+                        icon: response.status
+                    }).then((createData) => {
+                    });
+                },
+                complete: function(){
+                    $('#modal-loader').modal('hide');
                 }
             });
+        });
 
 
-
-        }
     </script>
 
 @endsection

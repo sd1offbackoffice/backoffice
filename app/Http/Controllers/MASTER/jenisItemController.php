@@ -9,7 +9,7 @@ use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
 
 
-class jenisitemController extends Controller
+class jenisItemController extends Controller
 {
     public function index(){
         $produk = DB::table('tbmaster_prodmast')
@@ -18,7 +18,7 @@ class jenisitemController extends Controller
             ->orderBy('prd_deskripsipanjang')
             ->limit(1000)
             ->get();
-        return view('MASTER.jenisitem')->with('produk',$produk);
+        return view('MASTER.jenisItem')->with('produk',$produk);
     }
 
     public function lov_search(Request $request){
@@ -157,18 +157,6 @@ class jenisitemController extends Controller
         }
         $AVGSALES = $VAVG / 3;
 
-//        $po = db::select('SELECT   TPOH_RECORDID, TPOH_NOPO, TPOH_TGLPO, TPOD_QTYPO, PBD_NOPO
-//                    FROM TBTR_PO_H, TBTR_PO_D, TBTR_PB_D
-//                   WHERE TPOD_KODEIGR = \'22\'
-//                     AND TPOD_PRDCD = '.$request->value.'
-//                     AND TPOH_NOPO = TPOD_NOPO
-//                     AND NVL (TPOH_RECORDID, \'0\') NOT IN (\'2\', \'*\', \'1\')
-//                     AND TRUNC (TPOH_TGLPO + TPOH_JWPB) >= TRUNC (SYSDATE)
-//                     AND PBD_NOPO(+) = TPOD_NOPO
-//                     AND PBD_PRDCD(+) = TPOD_PRDCD
-//                ORDER BY TPOH_TGLPO DESC');
-//        dd($po);
-
         $po = DB::table('tbtr_po_h')->join('tbtr_po_d','TPOH_NOPO','=','TPOD_NOPO')->leftJoin('TBTR_PB_D', function ($join) {
             $join->on('TPOD_NOPO', '=', 'PBD_NOPO')->On('TPOD_PRDCD', '=', 'PBD_PRDCD');
         })
@@ -180,13 +168,19 @@ class jenisitemController extends Controller
             ->orderby('tpoh_tglpo','desc')
             ->get();
 
+        for($i=0;$i<sizeof($po);$i++){
+            if($po[$i]->pbd_nopo == ''){
+                $po[$i]->tpoh_nopo = $po[$i]->tpoh_nopo.' ( * )';
+//                dd($po[0]->pbd_nopo);
+            }
+        }
 
-        $supplier = DB::table('tbtr_mstran_d')->rightJoin('tbmaster_supplier','mstd_kodesupplier','=','sup_kodesupplier')
+        $supplier = DB::table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER','MSTD_KODESUPPLIER','=','SUP_KODESUPPLIER')
             ->select('*')
-            ->where('mstd_prdcd', '=', $request->value)
+            ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
             ->where('mstd_kodeigr', '=', '22')
-            ->whereRaw('substr(tbtr_mstran_d.mstd_prdcd, 1, 6) = substr ('.$request->value.', 1, 6)')
             ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
+            ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
             ->orderBy('mstd_prdcd')
             ->orderBy('mstd_tgldoc')
             ->get();
@@ -251,7 +245,7 @@ class jenisitemController extends Controller
                 if ($this->ceknull($TEMP, 0) == 0) {
 
                     DB::table('TBMASTER_PLUPLANO')->insert(
-                        ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'web', 'PLN_CREATE_DT' => $date]
+                        ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                     );
                     $message = 'Data Berhasil Tersimpan!';
                     $status = 'success';
@@ -260,7 +254,7 @@ class jenisitemController extends Controller
                 else {
                     DB::table('TBMASTER_PLUPLANO')
                         ->where('PLN_PRDCD', $request->prdcd)
-                        ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'web','PLN_MODIFY_DT' => $date]);
+                        ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
                     $message = 'Data Berhasil Terupdate!';
                     $status = 'success';
                     return compact(['message','status']);
@@ -286,7 +280,7 @@ class jenisitemController extends Controller
             if ($this->ceknull(TEMP, 0) == 0 ) {
 
                 DB::table('TBMASTER_PLUPLANO')->insert(
-                    ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'web', 'PLN_CREATE_DT' => $date]
+                    ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                 );
                 $message = 'Data Berhasil Tersimpan!';
                 $status = 'success';
@@ -295,7 +289,7 @@ class jenisitemController extends Controller
             else {
                 DB::table('TBMASTER_PLUPLANO')
                     ->where('PLN_PRDCD', $request->prdcd)
-                    ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'web','PLN_MODIFY_DT' => $date]);
+                    ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
                 $message = 'Data Berhasil Terupdate!';
                 $status = 'success';
                 return compact(['message','status']);

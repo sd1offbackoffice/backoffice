@@ -27,7 +27,7 @@
                         </div>
                         <div class="form-group row">
                             <label for="i_keterangan" class="col-sm-3 col-form-label text-right">Keterangan</label>
-                            <input type="text" class="col-sm-5 form-control" id="i_keterangan" placeholder="...">
+                            <input style="text-transform: uppercase;" type="text" class="col-sm-5 form-control" id="i_keterangan" placeholder="...">
                         </div>
                     </div>
                 </fieldset>
@@ -45,7 +45,22 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="loader" id="loader"></div>
+                            <div class="col-sm-12">
+                                <label for="">LOADING...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
         body {
             background-color: #edece9;
@@ -75,6 +90,7 @@
     <script>
         var count_data;
         var page = 1;
+        var newr = 0;
         get_kategoritoko();
         $('#btn-next').on('click',function () {
             next_page();
@@ -85,12 +101,14 @@
             get_kategoritoko();
         });
         function next_page() {
+            newr=0;
             page = page + 1;
             if(count_data<page){
                 page = 1;
             }
         }
         function previous_page() {
+            newr=0;
             page = page - 1;
             if(0 == page){
                 page = count_data;
@@ -98,24 +116,28 @@
         }
         function get_kategoritoko() {
             $.ajax({
-                url: '/BackOffice/public/mstkategoritoko/getDataKtk',
+                url: '/BackOffice/public/api/mstkategoritoko/getDataKtk',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}"},
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function(response){
                     $('#i_kodekategoritoko').prop( "disabled", true );
                     count_data = response.length;
                     clear_value();
                     $('#i_kodekategoritoko').val(response[page-1].ktk_kodekategoritoko);
                     $('#i_keterangan').val(response[page-1].ktk_keterangan);
-                    console.log(response[page-1].ktk_classkodeigr);
                     if (response[page-1].ktk_classkodeigr!=null){
                         var splitedData = response[page-1].ktk_classkodeigr.split(",");
-                        console.log(response[page-1].ktk_classkodeigr);
                         for(i=0;i<splitedData.length;i++){
                             $('#'+splitedData[i]).prop('checked',true);
                         }
                     }
 
+                },
+                complete: function(){
+                    $('#modal-loader').modal('hide');
                 }
             });
         }
@@ -128,6 +150,7 @@
         function new_record() {
             $('#i_kodekategoritoko').prop( "disabled", false );
             clear_value();
+            newr = 1;
         }
 
         function save_record() {
@@ -142,7 +165,6 @@
                 }
             });
             kodeigrString=kodeigr.toString();
-            console.log(kodeigrString);
             kodektk = $('#i_kodekategoritoko').val();
             keterangan = $('#i_keterangan').val();
 
@@ -179,13 +201,16 @@
             }
             else {
                 $.ajax({
-                    url: '/BackOffice/public/mstkategoritoko/saveDataKtk',
+                    url: '{{url('api/mstkategoritoko/saveDataKtk')}}',
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
                         kodeigr: kodeigrString,
                         kodektk: kodektk,
                         keterangan: keterangan
+                    },
+                    beforeSend: function(){
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (response) {
                         if (response == 'save') {
@@ -206,8 +231,14 @@
                                 icon: "warning"
                             });
                         }
-                        page = count_data+1;
+                        if(newr==1){
+                            page = count_data+1;
+                            newr=0;
+                        }
                         get_kategoritoko();
+                    },
+                    complete: function(){
+                        $('#modal-loader').modal('hide');
                     }
                 });
             }

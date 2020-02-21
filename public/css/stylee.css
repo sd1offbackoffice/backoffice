@@ -1,16 +1,21 @@
+ /*Created By : JR(10/02/2020) | Modify By :  */
 .cardForm {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-
+ /*Created By : JR(10/02/2020) | Modify By :  */
 .thNormal th{
     font-weight: normal !important;
 }
 
+ /*Created By : JR(10/02/2020) | Modify By :  */
 label {
     color: #232443 !important;
     font-weight: bold !important;
 }
+
+/*UNTUK LOADING*/
+ /*Created By : Denni(10/02/2020) | Modify By :  */
 .loader {
     position: relative;
     text-align: center;
@@ -25,13 +30,11 @@ label {
     animation: spin 1s ease-in-out infinite;
     -webkit-animation: spin 1s ease-in-out infinite;
 }
-
 @keyframes spin {
     to {
         -webkit-transform: rotate(360deg);
     }
 }
-
 @-webkit-keyframes spin {
     to {
         -webkit-transform: rotate(360deg);

@@ -11,23 +11,23 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="form-group row mb-0">
-                                    <label for="i_kodemember" class="col-sm-2 col-form-label">Nomor Anggota</label>
+                                    <label for="cus_kodemember" class="col-sm-2 col-form-label">Nomor Anggota</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="i_kodemember">
+                                        <input type="text" class="form-control diisi" id="cus_kodemember">
                                     </div>
                                     <div class="col-sm-1 p-0">
-                                        <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                        <button type="button" id="btn-modal-member" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     </div>
-                                    <label for="i_statusmember" class="col-sm-2 col-form-label"></label>
-                                    <label for="i_statusmember" class="col-sm-2 col-form-label">Status</label>
+
+                                    <label for="i_statusmember" class="col-sm-4 col-form-label">Status</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="i_statusmember">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_namamember" class="col-sm-2 col-form-label">Nama Anggota</label>
+                                    <label for="cus_namamember" class="col-sm-2 col-form-label wajib">Nama Anggota<span class="wajib">*</span></label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="i_namamember">
+                                        <input type="text" class="form-control diisi" id="cus_namamember">
                                     </div>
                                 </div>
                             </div>
@@ -37,22 +37,22 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="btn-p-identitas" data-toggle="tab" href="#p_identitas">Identitas</a>
+                            <a class="nav-link active" id="btn-p_identitas" data-toggle="tab" href="#p_identitas">Identitas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-p-identitas2" data-toggle="tab" href="#p_identitas2">Identitas 2</a>
+                            <a class="nav-link" id="btn-p_identitas2" data-toggle="tab" href="#p_identitas2">Identitas 2</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#p_identitas3">Identitas 3</a>
+                            <a class="nav-link" id="btn-p_identitas3" data-toggle="tab" href="#p_identitas3">Identitas 3</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#p_hobby">Hobby</a>
+                            <a class="nav-link" id="btn-p_hobby" data-toggle="tab" href="#p_hobby">Hobby</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#p_alamatnpwp">Alamat NPWP</a>
+                            <a class="nav-link" id="btn-p_npwp" data-toggle="tab" href="#p_alamatnpwp">Alamat NPWP</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#p_fasilitasbank">Fasilitas Perbankan</a>
+                            <a class="nav-link" id="btn-p_fasilitasbank" data-toggle="tab" href="#p_fasilitasbank">Fasilitas Perbankan</a>
                         </li>
                     </ul>
 
@@ -63,93 +63,93 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="i_noktp" class="col-sm-2 col-form-label">No. KTP<span class="wajib">*</span></label>
+                                            <label for="cus_noktp" class="col-sm-2 col-form-label">No. KTP<span class="wajib">*</span></label>
                                             <div class="col-sm-4">
-                                                <input type="number" class="form-control" id="i_noktp">
+                                                <input type="number" class="form-control diisi" id="cus_noktp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_alamatktp" class="col-sm-2 col-form-label">Alamat KTP<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember1" class="col-sm-2 col-form-label">Alamat KTP<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="i_alamatktp">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kelurahanktp" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember4" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kelurahanktp">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember4">
                                             </div>
                                             <div class="col-sm-1 p-0">
                                                 <button id="btn-modal-ktp" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <label for="i_kecamatanktp" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kecamatanktp">
+                                                <input type="text" class="form-control diisi" id="i_kecamatanktp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kodeposktp" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember3" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_kodeposktp">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember3">
                                             </div>
-                                            <label for="i_kotaktp" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember2" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kotaktp">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_alamatsurat" class="col-sm-2 col-form-label">Alamat Surat<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember5" class="col-sm-2 col-form-label">Alamat Surat<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="i_alamatsurat">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember5">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kelurahansurat" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember8" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kelurahansurat">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember8">
                                             </div>
                                             <div class="col-sm-1 p-0">
                                                 <button id="btn-modal-surat" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <label for="i_kecamatansurat" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kecamatansurat">
+                                                <input type="text" class="form-control diisi" id="i_kecamatansurat">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kodepossurat" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember7" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_kodepossurat">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember7">
                                             </div>
-                                            <label for="i_kotasurat" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember6" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kotasurat">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-0">
-                                            <label for="i_telepon" class="col-sm-2 col-form-label">Telepon<span class="wajib">*</span></label>
-                                            <div class="col-sm-3">
-                                                <input type="number" class="form-control" id="i_telepon">
-                                            </div>
-                                            <label for="i_hp" class="col-sm-3 col-form-label">HP<span class="wajib">*</span></label>
-                                            <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_hp">
+                                                <input type="text" class="form-control diisi" id="cus_alamatmember6">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_tempatlahir" class="col-sm-2 col-form-label">Tempat Lahir<span class="wajib">*</span></label>
+                                            <label for="cus_tlpmember" class="col-sm-2 col-form-label">Telepon<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_tempatlahir">
+                                                <input type="text" class="form-control diisi" id="cus_tlpmember">
                                             </div>
-                                            <label for="i_tgllahir" class="col-sm-3 col-form-label">Tgl. Lahir<span class="wajib">*</span></label>
+                                            <label for="cus_hpmember" class="col-sm-3 col-form-label">HP<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_tgllahir" placeholder="DD-MON-YYYY">
+                                                <input type="text" class="form-control diisi" id="cus_hpmember">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-0">
+                                            <label for="crm_tmptlahir" class="col-sm-2 col-form-label">Tempat Lahir<span class="wajib">*</span></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control diisi" id="crm_tmptlahir">
+                                            </div>
+                                            <label for="cus_tgllahir" class="col-sm-3 col-form-label">Tgl. Lahir<span class="wajib">*</span></label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control diisi" id="cus_tgllahir" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jeniscustomer" class="col-sm-2 col-form-label">Jenis Customer</label>
                                             <div class="col-sm-1 pr-0">
-                                                <input type="text" class="form-control" id="i_jeniscustomer1">
+                                                <input type="text" class="form-control" id="cus_jenismember">
                                             </div>
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
@@ -159,7 +159,7 @@
                                             </div>
                                             <label for="i_jenisoutlet" class="col-sm-2 col-form-label">Jenis Outlet</label>
                                             <div class="col-sm-1 pr-0">
-                                                <input type="text" class="form-control" id="i_jenisoutlet1">
+                                                <input type="text" class="form-control" id="cus_kodeoutlet">
                                             </div>
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jenisoutlet2">
@@ -169,55 +169,55 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jarak" class="col-sm-2 col-form-label">Jarak</label>
+                                            <label for="cus_jarak" class="col-sm-2 col-form-label">Jarak</label>
                                             <div class="col-sm-2">
-                                                <input type="number" class="form-control" id="i_jarak">
+                                                <input type="number" min="0" class="form-control" id="cus_jarak">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_pkp" class="col-sm-2 col-form-label">PKP</label>
+                                            <label for="cus_flagpkp" class="col-sm-2 col-form-label">PKP</label>
                                             <div class="col-sm-1">
-                                                <input type="text" maxlength="1" class="form-control" id="i_pkp">
+                                                <input type="text" maxlength="1" class="form-control" id="cus_flagpkp">
                                             </div>
-                                            <label for="i_pkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
-                                            <label for="i_npwp" class="col-sm-4 col-form-label">NPWP</label>
+                                            <label for="cus_flagpkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
+                                            <label for="cus_npwp" class="col-sm-4 col-form-label">NPWP</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_npwp">
+                                                <input type="text" class="form-control" id="cus_npwp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_flagkredit" class="col-sm-2 col-form-label">Flag Kredit</label>
+                                            <label for="cus_flagkredit" class="col-sm-2 col-form-label">Flag Kredit</label>
                                             <div class="col-sm-1">
-                                                <input type="text" maxlength="1" class="form-control" id="i_flagkredit">
+                                                <input type="text" maxlength="1" class="form-control" id="cus_flagkredit">
                                             </div>
-                                            <label for="i_flagkredit" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
-                                            <label for="i_limit" class="col-sm-1 col-form-label">Limit</label>
+                                            <label for="cus_flagkredit" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
+                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label">Limit</label>
                                             <div class="col-sm-2">
-                                                <input type="number" class="form-control" id="i_limit">
+                                                <input type="number" min="0" class="form-control" id="cus_creditlimit">
                                             </div>
-                                            <label for="i_top" class="col-sm-1 col-form-label">TOP</label>
-                                            <div class="col-sm-1 pr-0">
-                                                <input type="number" class="form-control" id="i_top">
+                                            <label for="cus_top" class="col-sm-1 col-form-label">TOP</label>
+                                            <div class="col-sm-1">
+                                                <input type="number" min="0" class="form-control" id="cus_top">
                                             </div>
-                                            <label for="i_limit" class="col-sm-1 col-form-label text-left pl-0">Hari</label>
+                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label text-left pl-0">Hari</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_salesman" class="col-sm-2 col-form-label">Salesman</label>
+                                            <label for="cus_nosalesman" class="col-sm-2 col-form-label">Salesman</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_salesman">
+                                                <input type="text" class="form-control" id="cus_nosalesman">
                                             </div>
-                                            <label for="i_memberkhusus" class="col-sm-4 col-form-label">Member Khusus</label>
+                                            <label for="cus_flagmemberkhusus" class="col-sm-4 col-form-label">Member Khusus</label>
                                             <div class="col-sm-1">
-                                                <input type="text" maxlength="1" class="form-control" id="i_memberkhusus">
+                                                <input type="text" maxlength="1" class="form-control" id="cus_flagmemberkhusus">
                                             </div>
-                                            <label for="i_pkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y /  ]</label>
+                                            <label for="cus_flagpkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y /  ]</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kirimsms" class="col-sm-2 col-form-label">Kirim SMS</label>
+                                            <label for="cus_flagkirimsms" class="col-sm-2 col-form-label">Kirim SMS</label>
                                             <div class="col-sm-1">
-                                                <input type="text" maxlength="1" class="form-control" id="i_kirimsms">
+                                                <input type="text" maxlength="1" class="form-control" id="cus_flagkirimsms">
                                             </div>
-                                            <label for="i_kirimsms" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
+                                            <label for="cus_flagkirimsms" class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
                                         </div>
                                     </div>
                                 </div>
@@ -228,86 +228,86 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="i_group" class="col-sm-2 col-form-label">Group<span class="wajib">*</span></label>
+                                            <label for="grp_group" class="col-sm-2 col-form-label">Group<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_group">
+                                                <input type="text" class="form-control diisi" id="grp_group">
                                             </div>
                                             <div class="col-sm-1 p-0">
                                                 <button id="btn-modal-group" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_groupHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
-                                            <label for="i_kategori" class="col-sm-3 col-form-label">Kategori</label>
+                                            <label for="grp_kategori" class="col-sm-3 col-form-label">Kategori</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kategori">
+                                                <input type="text" class="form-control diisi" id="grp_kategori">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_subgroup" class="col-sm-2 col-form-label">Sub Group</label>
+                                            <label for="grp_subgroup" class="col-sm-2 col-form-label">Sub Group</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_subgroup">
+                                                <input type="text" class="form-control diisi" id="grp_subgroup">
                                             </div>
-                                            <label for="i_subkategori" class="col-sm-3 col-form-label">Sub Kategori</label>
+                                            <label for="grp_subkategori" class="col-sm-3 col-form-label">Sub Kategori</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_subkategori">
+                                                <input type="text" class="form-control diisi" id="grp_subkategori">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jenisanggota" class="col-sm-2 col-form-label">Jenis Anggota<span class="wajib">*</span></label>
                                             <div class="col-sm-1">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenisanggotaR">
-                                                    <label class="custom-control-label" for="i_jenisanggotaR">Regular</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaR">
+                                                    <label class="custom-control-label" for="cb_jenisanggotaR">Regular</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-1">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenisanggotaK">
-                                                    <label class="custom-control-label" for="i_jenisanggotaK">Khusus</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaK">
+                                                    <label class="custom-control-label" for="cb_jenisanggotaK">Khusus</label>
                                                 </div>
                                             </div>
                                             <label for="i_jeniskelamin" class="col-sm-4 col-form-label">Jenis Kelamin<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="checkbox-inline custom-control-input" id="i_jeniskelaminL">
-                                                    <label class="custom-control-label" for="i_jeniskelaminL">Laki-laki</label>
+                                                    <input type="checkbox" class="checkbox-inline custom-control-input diisi_cb" id="cb_jeniskelaminL">
+                                                    <label class="custom-control-label" for="cb_jeniskelaminL">Laki-laki</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-1">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jeniskelaminP">
-                                                    <label class="custom-control-label" for="i_jeniskelaminP">Perempuan</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jeniskelaminP">
+                                                    <label class="custom-control-label" for="cb_jeniskelaminP">Perempuan</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_cp1" class="col-sm-2 col-form-label">Contact Person 1</label>
+                                            <label for="crm_pic1" class="col-sm-2 col-form-label">Contact Person 1</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_cp1">
+                                                <input type="text" class="form-control" id="crm_pic1">
                                             </div>
-                                            <label for="i_nohp1" class="col-sm-2 col-form-label">No. HP 1</label>
+                                            <label for="crm_nohppic1" class="col-sm-2 col-form-label">No. HP 1</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_nohp1">
+                                                <input type="text" class="form-control" id="crm_nohppic1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_cp2" class="col-sm-2 col-form-label">Contact Person 2</label>
+                                            <label for="crm_pic2" class="col-sm-2 col-form-label">Contact Person 2</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_cp2">
+                                                <input type="text" class="form-control" id="crm_pic2">
                                             </div>
-                                            <label for="i_nohp2" class="col-sm-2 col-form-label">No. HP 2</label>
+                                            <label for="crm_nohppic2" class="col-sm-2 col-form-label">No. HP 2</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_nohp2">
+                                                <input type="text" class="form-control" id="crm_nohppic2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_email" class="col-sm-2 col-form-label">Alamat Email<span class="wajib">*</span></label>
+                                            <label for="crm_email" class="col-sm-2 col-form-label">Alamat Email<span class="wajib">*</span></label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_email">
+                                                <input type="email" class="form-control diisi" id="crm_email">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_agama" class="col-sm-2 col-form-label">Agama<span class="wajib">*</span></label>
+                                            <label for="crm_agama" class="col-sm-2 col-form-label">Agama<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <select class="browser-default custom-select" id="i_agama">
+                                                <select class="browser-default custom-select diisi" id="crm_agama">
                                                     <option selected disabled>Pilih Agama</option>
                                                     <option value="ISLAM">Islam</option>
                                                     <option value="KRISTEN">Kristen</option>
@@ -317,9 +317,9 @@
                                                     <option value="ALIRAN">Aliran Kepercayaan</option>
                                                 </select>
                                             </div>
-                                            <label for="i_pekerjaan" class="col-sm-3 col-form-label">Pekerjaan</label>
+                                            <label for="crm_pekerjaan" class="col-sm-3 col-form-label">Pekerjaan</label>
                                             <div class="col-sm-3">
-                                                <select class="browser-default custom-select" id="i_pekerjaan">
+                                                <select class="browser-default custom-select" id="crm_pekerjaan">
                                                     <option selected disabled>Pilih Pekerjaan</option>
                                                     <option value="wiraswasta">Wiraswasta</option>
                                                     <option value="pegawainegeri">Pegawai Negeri</option>
@@ -328,21 +328,21 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_namasuami-istri" class="col-sm-2 col-form-label">Nama Suami / Istri</label>
+                                            <label for="crm_namapasangan" class="col-sm-2 col-form-label">Nama Suami / Istri</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_namasuami-istri">
+                                                <input type="text" class="form-control" id="crm_namapasangan">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_tgllahirpasangan" class="col-sm-2 col-form-label">Tgl. Lahir Pasangan</label>
+                                            <label for="crm_tgllhrpasangan" class="col-sm-2 col-form-label">Tgl. Lahir Pasangan</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_tgllahirpasangan" placeholder="DD-MON-YYYY">
+                                                <input type="text" class="form-control" id="crm_tgllhrpasangan" placeholder="DD-MON-YYYY">
                                             </div>
-                                            <label for="i_jmlanak" class="col-sm-3 col-form-label">Jumlah Anak</label>
+                                            <label for="crm_jmlanak" class="col-sm-3 col-form-label">Jumlah Anak</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_jmlanak">
+                                                <input type="number" min="0" class="form-control" id="crm_jmlanak">
                                             </div>
-                                            <label for="i_jmlanak" class="col-sm-1 pl-0 text-left col-form-label">Anak</label>
+                                            <label for="crm_jmlanak" class="col-sm-1 pl-0 text-left col-form-label">Anak</label>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_pendidikan" class="col-sm-2 col-form-label">Pendidikan Terakhir</label>
@@ -363,42 +363,42 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_nof" class="col-sm-2 col-form-label">No. F</label>
+                                            <label for="crm_nofax" class="col-sm-2 col-form-label">No. F</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_nof">
+                                                <input type="text" class="form-control" id="crm_nofax">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_internet" class="col-sm-5 col-form-label">Apakah HP Anda menggunakan Layanan Data / Internet<span class="wajib">*</span></label>
                                             <div class="col-sm-1">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_internetY">
-                                                    <label class="custom-control-label" for="i_internetY">Ya</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetY">
+                                                    <label class="custom-control-label" for="cb_internetY">Ya</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-1">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_internetT">
-                                                    <label class="custom-control-label" for="i_internetT">Tidak</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetT">
+                                                    <label class="custom-control-label" for="cb_internetT">Tidak</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_merktipehp" class="col-sm-5 col-form-label">Merk dan Tipe HP yang digunakan</label>
+                                            <label for="crm_tipehp" class="col-sm-5 col-form-label">Merk dan Tipe HP yang digunakan</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_merktipehp">
+                                                <input type="text" class="form-control" id="crm_tipehp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_banksekarang" class="col-sm-5 col-form-label">Bank yang sekarang digunakan<span class="wajib">*</span></label>
+                                            <label for="crm_namabank" class="col-sm-5 col-form-label">Bank yang sekarang digunakan<span class="wajib">*</span></label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_banksekarang">
+                                                <input type="text" class="form-control diisi" id="crm_namabank">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_metodeinformasi" class="col-sm-5 col-form-label">Metode yang paling disukai dalam<br> menyampaikan informasi<span class="wajib">*</span></label>
+                                            <label for="c_metodekirim" class="col-sm-5 col-form-label">Metode yang paling disukai dalam<br> menyampaikan informasi<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <select class="browser-default custom-select" id="i_metodeinformasi">
+                                                <select class="browser-default custom-select diisi" id="c_metodekirim">
                                                     <option selected disabled>...</option>
                                                     <option value="POSR">Pos ke alamat rumah</option>
                                                     <option value="POSK">Pos ke alamat tempat usaha</option>
@@ -408,7 +408,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-sm-3 pl-0">
-                                                <input type="text" class="form-control" id="i_metodeinformasiX">
+                                                <input type="text" class="form-control" id="c_metodekirimX">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
@@ -426,95 +426,95 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="i_alamatusaha" class="col-sm-2 pl-0 col-form-label">Alamat Tempat Usaha<span class="wajib">*</span></label>
+                                            <label for="crm_alamatusaha1" class="col-sm-2 pl-0 col-form-label">Alamat Tempat Usaha<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="i_alamatusaha">
+                                                <input type="text" class="form-control diisi" id="crm_alamatusaha1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kelurahanusaha" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
+                                            <label for="crm_alamatusaha4" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kelurahanusaha">
+                                                <input type="text" class="form-control diisi" id="crm_alamatusaha4">
                                             </div>
                                             <div class="col-sm-1 p-0">
                                                 <button id="btn-modal-usaha" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
-                                            <label for="i_kecamatanusaha" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
+                                            <label for="pos_kecamatan" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kecamatanusaha">
+                                                <input type="text" class="form-control diisi" id="pos_kecamatan">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kodeposusaha" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
+                                            <label for="crm_alamatusaha3" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_kodeposusaha">
+                                                <input type="text" class="form-control diisi" id="crm_alamatusaha3">
                                             </div>
-                                            <label for="i_kotausaha" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
+                                            <label for="crm_alamatusaha2" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="i_kotausaha">
+                                                <input type="text" class="form-control diisi" id="crm_alamatusaha2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jenisusaha" class="col-sm-4 col-form-label">Apakah jenis Tempat Usaha Anda?<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenisbangunanP">
-                                                    <label class="custom-control-label" for="i_jenisbangunanP">Permanen</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanP">
+                                                    <label class="custom-control-label" for="cb_jenisbangunanP">Permanen</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenisbangunanS">
-                                                    <label class="custom-control-label" for="i_jenisbangunanS">Semi Permanen</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanS">
+                                                    <label class="custom-control-label" for="cb_jenisbangunanS">Semi Permanen</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenisbangunanN">
-                                                    <label class="custom-control-label" for="i_jenisbangunanN">Non Permanen</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanN">
+                                                    <label class="custom-control-label" for="cb_jenisbangunanN">Non Permanen</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_lamamenempati" class="col-sm-2 col-form-label">Lama menempati<span class="wajib">*</span></label>
+                                            <label for="crm_lamatmpt" class="col-sm-2 col-form-label">Lama menempati<span class="wajib">*</span></label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_lamamenempati">
+                                                <input type="number" min="0" class="form-control diisi" id="crm_lamatmpt">
                                             </div>
-                                            <label for="i_lamamenempati" class="col-sm-1 pl-0 text-left col-form-label">Tahun</label>
+                                            <label for="crm_lamatmpt" class="col-sm-1 pl-0 text-left col-form-label">Tahun</label>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_statusbangunan" class="col-sm-2 col-form-label">Status Bangunan<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_statusbangunanM">
-                                                    <label class="custom-control-label" for="i_statusbangunanM">Milik Sendiri</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_statusbangunanM">
+                                                    <label class="custom-control-label" for="cb_statusbangunanM">Milik Sendiri</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_statusbangunanS">
-                                                    <label class="custom-control-label" for="i_statusbangunanS">Sewa</label>
+                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_statusbangunanS">
+                                                    <label class="custom-control-label" for="cb_statusbangunanS">Sewa</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kreditusaha" class="col-sm-2 col-form-label">Kredit Usaha</label>
+                                            <label for="crm_kreditusaha" class="col-sm-2 col-form-label">Kredit Usaha</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_kreditusaha">
+                                                <input type="text" class="form-control" id="crm_kreditusaha">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_kreditbank" class="col-sm-2 pl-0 col-form-label">Bank Penerima Kredit</label>
+                                            <label for="crm_bankkredit" class="col-sm-2 pl-0 col-form-label">Bank Penerima Kredit</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_kreditbank">
+                                                <input type="text" class="form-control" id="crm_bankkredit">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jenikendaraan" class="col-sm-2 col-form-label">Jenis Kendaraan</label>
+                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label">Jenis Kendaraan</label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenikendaraanMotor">
-                                                    <label class="custom-control-label" for="i_jenikendaraanMotor">Motor</label>
+                                                    <input type="checkbox" class="custom-control-input" id="cb_jeniskendaraanMotor">
+                                                    <label class="custom-control-label" for="cb_jeniskendaraanMotor">Motor</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 pl-0 pr-0">
@@ -532,11 +532,11 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jenikendaraan" class="col-sm-2 col-form-label">Jenis Kendaraan</label>
+                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label">Jenis Kendaraan</label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input" id="i_jenikendaraanMobil">
-                                                    <label class="custom-control-label" for="i_jenikendaraanMobil">Mobil</label>
+                                                    <input type="checkbox" class="custom-control-input" id="cb_jeniskendaraanMobil">
+                                                    <label class="custom-control-label" for="cb_jeniskendaraanMobil">Mobil</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 pl-0 pr-0">
@@ -576,19 +576,19 @@
                                                     <tbody>
                                                     @php $i = 0 @endphp
                                                     @foreach($hobby as $h)
-                                                    @php $i++ @endphp
                                                     <tr class="row_hobby_{{ $i }} d-flex" id="{{ $h->hob_kodehobby }}">
-                                                        <td class="col-sm-5"><label for="i_group" class="col-sm-12 col-form-label">{{ $h->hob_namahobby }}</label></td>
+                                                        <td class="col-sm-5"><label for="grp_group" class="col-sm-12 col-form-label">{{ $h->hob_namahobby }}</label></td>
                                                         <td class="col-sm-1">
                                                             <div class="custom-control custom-checkbox text-center">
-                                                                <input onchange="hobby(event)" type="checkbox" class="custom-control-input" id="i_{{ $h->hob_kodehobby }}">
-                                                                <label class="custom-control-label mt-2" for="i_{{ $h->hob_kodehobby }}"></label>
+                                                                <input onchange="check_hobby(event)" type="checkbox" class="custom-control-input" id="cb_h{{ $h->hob_kodehobby }}">
+                                                                <label class="custom-control-label mt-2" for="cb_h{{ $h->hob_kodehobby }}"></label>
                                                             </div>
                                                         </td>
                                                         <td class="col-sm-6">
-                                                            <input disabled type="text" class="form-control" id="i_{{ $h->hob_kodehobby }}_ket">
+                                                            <input disabled type="text" class="form-control" id="cb_h{{ $h->hob_kodehobby }}_ket">
                                                         </td>
                                                     </tr>
+                                                    @php $i++ @endphp
                                                     @endforeach
                                                     </tbody>
                                                 </table>
@@ -604,47 +604,47 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="i_tglmulai" class="col-sm-3 pl-0 col-form-label">Tanggal Mulai</label>
+                                            <label for="cus_tglmulai" class="col-sm-3 pl-0 col-form-label">Tanggal Mulai</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_tglmulai"  placeholder="DD-MON-YYYY">
+                                                <input type="text" class="form-control" id="cus_tglmulai"  placeholder="DD-MON-YYYY">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_tglregis" class="col-sm-3 pl-0 col-form-label">Tanggal Registrasi</label>
+                                            <label for="cus_tglregistrasi" class="col-sm-3 pl-0 col-form-label">Tanggal Registrasi</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_tglregis" placeholder="DD-MON-YYYY">
+                                                <input type="text" class="form-control" id="cus_tglregistrasi" placeholder="DD-MON-YYYY">
                                             </div>
-                                            <label for="i_bebasiuran" class="col-sm-4 pl-0 col-form-label">Bebas Iuran</label>
+                                            <label for="cus_flagbebasiuran" class="col-sm-4 pl-0 col-form-label">Bebas Iuran</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_bebasiuran">
+                                                <input type="text" class="form-control" id="cus_flagbebasiuran">
                                             </div>
-                                            <label for="i_bebasiuran" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
+                                            <label for="cus_flagbebasiuran" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_emailnpwp" class="col-sm-3 pl-0 col-form-label">Alamat Email</label>
+                                            <label for="cus_alamatemail" class="col-sm-3 pl-0 col-form-label">Alamat Email</label>
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" id="i_emailnpwp">
+                                                <input type="text" class="form-control" id="cus_alamatemail">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_nomorkartu" class="col-sm-3 pl-0 col-form-label">Nomor Kartu</label>
+                                            <label for="cus_nokartumember" class="col-sm-3 pl-0 col-form-label">Nomor Kartu</label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="i_nomorkartu">
+                                                <input type="text" class="form-control" id="cus_nokartumember">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_blockpengiriman" class="col-sm-3 pl-0 col-form-label">Blocking Pengiriman</label>
+                                            <label for="cus_flagblockingpengiriman" class="col-sm-3 pl-0 col-form-label">Blocking Pengiriman</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_blockpengiriman">
+                                                <input type="text" class="form-control" id="cus_flagblockingpengiriman">
                                             </div>
-                                            <label for="i_bebasiuran" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
+                                            <label for="cus_flagbebasiuran" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="i_flagpemerintah" class="col-sm-3 pl-0 col-form-label">Flag Institusi Pemerintah</label>
+                                            <label for="cus_flaginstitusipemerintah" class="col-sm-3 pl-0 col-form-label">Flag Institusi Pemerintah</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control" id="i_flagpemerintah">
+                                                <input type="text" class="form-control" id="cus_flaginstitusipemerintah">
                                             </div>
-                                            <label for="i_flagpemerintah" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
+                                            <label for="cus_flaginstitusipemerintah" class="col-sm-1 pl-0 text-left col-form-label">( Y /  )</label>
                                         </div>
 
                                         <fieldset class="card border-secondary">
@@ -697,16 +697,18 @@
                                                     <thead>
                                                     </thead>
                                                     <tbody>
+                                                    @php $i = 0; @endphp
                                                     @foreach($fasilitasperbankan as $fp)
-                                                    <tr class="row_fasilitasperbankan d-flex">
+                                                    <tr class="row_fasilitasperbankan_{{ $i }} d-flex" id="{{ $fp->fba_kodefasilitasbank }}">
                                                         <td class="col-sm-1">
                                                             <div class="custom-control custom-checkbox text-center">
-                                                                <input type="checkbox" class="custom-control-input" id="i_fp_{{ $fp->fba_kodefasilitasbank }}">
-                                                                <label class="custom-control-label ml-1" for="i_fp_{{ $fp->fba_kodefasilitasbank }}"></label>
+                                                                <input type="checkbox" class="custom-control-input" id="cb_b{{ $fp->fba_kodefasilitasbank }}">
+                                                                <label class="custom-control-label ml-1" for="cb_b{{ $fp->fba_kodefasilitasbank }}"></label>
                                                             </div>
                                                         </td>
                                                         <td class="col-sm-11">{{ $fp->fba_namafasilitasbank }}</td>
                                                     </tr>
+                                                    @php $i++; @endphp
                                                     @endforeach
                                                     </tbody>
                                                 </table>
@@ -742,7 +744,7 @@
                                         <button id="btn-hapus" class="btn btn-danger">HAPUS</button>
                                     </div>
                                     <div class="col-sm-1 pl-0">
-                                        <button id="btn-quisioner" class="btn btn-info">QUISIONER</button>
+                                        <button id="btn-quisioner" class="btn btn-info d-none">QUISIONER</button>
                                     </div>
                                     <div class="col-sm-5">
                                         <button id="btn-export-crm" class="btn btn-success">EXPORT KE CRM</button>
@@ -895,7 +897,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($jenisoutlet as $jo)
-                                        <tr onclick="lov_jenioutlet_select('{{ $jo->out_kodeoutlet }}','{{ $jo->out_namaoutlet }}')" class="row_lov">
+                                        <tr onclick="lov_jenisoutlet_select('{{ $jo->out_kodeoutlet }}','{{ $jo->out_namaoutlet }}')" class="row_lov">
                                             <td>{{ $jo->out_kodeoutlet }}</td>
                                             <td>{{ $jo->out_namaoutlet }}</td>
                                         </tr>
@@ -959,7 +961,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="loader" id="loader"></div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-12 text-center">
                                 <label for="">LOADING...</label>
                             </div>
                         </div>
@@ -1030,6 +1032,38 @@
             text-transform: uppercase;
         }
 
+
+        input.tanggal {
+            position: relative;
+        }
+
+        input.tanggal:before {
+            position: absolute;
+            top: 3px; left: 3px;
+            content: attr(data-date);
+            display: inline-block;
+            color: black;
+        }
+
+        input.tanggal::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
+            display: none;
+        }
+
+        input.tanggal::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 3px;
+            right: 0;
+            color: black;
+            opacity: 1;
+        }
+
+        .kosong{
+            border-radius: 3px !important;
+            outline: none !important;
+            border-color: red !important;
+            box-shadow: 0 0 10px red !important;
+        }
+
     </style>
 
     <script>
@@ -1041,12 +1075,17 @@
         trlovkodepos = $('#table_lov_kodepos tbody').html();
         field = 'ktp';
 
-        jenismember = @php echo($jenismember); @endphp;
-        jenisoutlet = @php echo($jenisoutlet); @endphp;
-        group = @php echo($group); @endphp;
+        arrjenismember = @php echo($jenismember); @endphp;
+        arrjenisoutlet = @php echo($jenisoutlet); @endphp;
+        arrgroup = @php echo($group); @endphp;
+        arrhobby = @php echo($hobby); @endphp;
+        arrbank = @php echo($fasilitasperbankan); @endphp;
+
+        member = '';
+        idgroupkat = '';
 
         $('#i_pendidikanX').hide();
-        $('#i_metodeinformasiX').hide();
+        $('#c_metodekirimX').hide();
         $('#i_motor').hide();
         $('#i_motorX').hide();
         $('#i_mobil').hide();
@@ -1054,48 +1093,136 @@
 
         $('#btn-quisioner').hide();
 
-        $('#i_statusmember').prop('readonly',true);
-        $('#i_kodeposktp').prop('readonly',true);
-        $('#i_kecamatanktp').prop('readonly',true);
-        $('#i_kotaktp').prop('readonly',true);
-        $('#i_kodepossurat').prop('readonly',true);
-        $('#i_kecamatansurat').prop('readonly',true);
-        $('#i_kotasurat').prop('readonly',true);
-        $('#i_kodeposusaha').prop('readonly',true);
-        $('#i_kecamatanusaha').prop('readonly',true);
-        $('#i_kotausaha').prop('readonly',true);
-        $('#i_jeniscustomer2').prop('readonly',true);
-        $('#i_jenisoutlet2').prop('readonly',true);
-        $('#i_subgroup').prop('readonly',true);
-        $('#i_kategori').prop('readonly',true);
-        $('#i_subkategori').prop('readonly',true);
-        $('#i_tglmulai').prop('readonly',true);
-        $('#i_tglregis').prop('readonly',true);
-        $('#i_nomorkartu').prop('readonly',true);
-        $('#i_alamatnpwp').prop('readonly',true);
-        $('#i_kelurahannpwp').prop('readonly',true);
-        $('#i_kodeposnpwp').prop('readonly',true);
-        $('#i_kotanpwp').prop('readonly',true);
+        // $('#btn-p_identitas2').click();
+
+        $(':input').on('keyup',function(){
+            $(this).val(this.value.toUpperCase());
+        });
+
+        $('.diisi').on('change',function(){
+            if($(this).val() == null){
+                ok = false;
+                $(this).addClass('kosong');
+            }
+            else if($(this).val().length == 0){
+                ok = false;
+                $(this).addClass('kosong');
+            }
+            else{
+                $(this).removeClass('kosong');
+            }
+        });
+
+        $(':input').prop('readonly',true);
+
+
+
+        // $('#btn-rekam').prop('disabled',true);
+        // $('#btn-aktif-nonaktif').prop('disabled',true);
+        // $('#btn-hapus').prop('disabled',true);
+        // $('#btn-export-crm').prop('disabled',true);
 
         $(':input').on('click',function(){
             $(this).select();
         });
 
-        $('#i_kodemember').focus();
+        initial();
+
+
+
+        function initial(){
+            $('#btn-p_identitas').click();
+            $('.kosong').each(function(){
+                $(this).removeClass('kosong');
+            });
+
+            $(':input').prop('checked',false);
+            $('input[id^="cb_"]').each(function(){
+                $(this).prop('disabled',true);
+                $(this).prop('checked',false);
+            });
+            $(':input').prop('readonly',true);
+            $(':input').val('');
+            $('select').prop('disabled',true);
+
+            $('button').each(function(){
+                $(this).prop('disabled',true);
+            });
+            $('#btn-modal-member').prop('disabled',false);
+
+            // $('#btn-rekam').prop('disabled',true);
+            // $('#btn-aktif-nonaktif').prop('disabled',true);
+            // $('#btn-hapus').prop('disabled',true);
+            // $('#btn-quisioner').prop('disabled',true);
+            // $('#btn-export-crm').prop('disabled',true);
+            $('#cus_kodemember').prop('readonly',false);
+            $('#cus_kodemember').focus();
+        }
+
+        function ready(){
+            initial();
+
+            $(':input').prop('readonly',false);
+            $('input[id^="cb_"]').each(function(){
+                $(this).prop('disabled',false);
+            });
+            $('select').prop('disabled',false);
+            // $('#btn-rekam').prop('disabled',false);
+            // $('#btn-aktif-nonaktif').prop('disabled',false);
+            // $('#btn-hapus').prop('disabled',false);
+            // $('#btn-quisioner').prop('disabled',false);
+            // $('#btn-export-crm').prop('disabled',false);
+
+            $('button').each(function(){
+                $(this).prop('disabled',false);
+            });
+
+            $('#i_statusmember').prop('readonly',true);
+            $('#i_updateterakhir').prop('readonly',true);
+            $('#cus_alamatmember3').prop('readonly',true);
+            $('#i_kecamatanktp').prop('readonly',true);
+            $('#cus_alamatmember2').prop('readonly',true);
+            $('#cus_alamatmember7').prop('readonly',true);
+            $('#i_kecamatansurat').prop('readonly',true);
+            $('#cus_alamatmember6').prop('readonly',true);
+            $('#crm_alamatusaha3').prop('readonly',true);
+            $('#pos_kecamatan').prop('readonly',true);
+            $('#crm_alamatusaha2').prop('readonly',true);
+            $('#i_jeniscustomer2').prop('readonly',true);
+            $('#i_jenisoutlet2').prop('readonly',true);
+            $('#grp_subgroup').prop('readonly',true);
+            $('#grp_kategori').prop('readonly',true);
+            $('#grp_subkategori').prop('readonly',true);
+            $('#crm_nohppic1').prop('readonly',true);
+            $('#crm_nohppic2').prop('readonly',true);
+            $('#cus_tglmulai').prop('readonly',true);
+            $('#cus_tglregistrasi').prop('readonly',true);
+            $('#cus_nokartumember').prop('readonly',true);
+            $('#i_alamatnpwp').prop('readonly',true);
+            $('#i_kelurahannpwp').prop('readonly',true);
+            $('#i_kodeposnpwp').prop('readonly',true);
+            $('#i_kotanpwp').prop('readonly',true);
+
+            $('input[id$="_ket"]').each(function (){
+                $(this).prop('disabled',true);
+            });
+        }
+
 
         //----------------------MULAI-------------------
 
-        $('#i_kodemember').on('keypress',function (event) {
-            if(event.which == 13){
-                if(this.value.length == 0){
+        $('#cus_kodemember').on('keypress blur',function (event) {
+            if(event.which == 13) {
+                if(this.value.length == 0) {
                     swal({
                         title: "Isikan Nomor Anggota terlebih dahulu!",
-                        icon: "error"
-                    }).then(function(){
+                        icon: "error",
+                        timer: 750,
+                        buttons: false,
+                    }).then(function () {
                         swal.close();
                         $(':input').val('');
-                        $(':input').prop('checked',false);
-                        $('#i_kodemember').select();
+                        $(':input').prop('checked', false);
                     });
                 }
                 else{
@@ -1104,31 +1231,31 @@
             }
         });
 
-        $('#i_namamember').on('keypress',function(event){
+        $('#cus_namamember').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_noktp').select();
+                    $('#cus_noktp').select();
                 }
             }
         });
 
-        $('#i_noktp').on('keypress',function(event){
+        $('#cus_noktp').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_alamatktp').select();
+                    $('#cus_alamatmember1').select();
                 }
             }
         });
 
-        $('#i_alamatktp').on('keypress',function(event){
+        $('#cus_alamatmember1').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_kelurahanktp').select();
+                    $('#cus_alamatmember4').select();
                 }
             }
         });
 
-        $('#i_kelurahanktp').on('keypress',function(event){
+        $('#cus_alamatmember4').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
                     field = 'ktp';
@@ -1137,23 +1264,22 @@
             }
         });
 
-        $('#i_alamatsurat').on('keypress',function(event){
+        $('#cus_alamatmember4').on('blur',function(event){
+            if(this.value.length > 0){
+                field = 'ktp';
+                lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+            }
+        });
+
+        $('#cus_alamatmember5').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_kelurahansurat').select();
+                    $('#cus_alamatmember8').select();
                 }
             }
         });
 
-        $('#i_kelurahansurat').on('keypress',function(event){
-            if(event.which == 13){
-                if(this.value.length > 0){
-                    $('#i_telepon').select();
-                }
-            }
-        });
-
-        $('#i_kelurahansurat').on('change',function(event){
+        $('#cus_alamatmember8').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
                     field = 'surat';
@@ -1162,86 +1288,59 @@
             }
         });
 
-        $('#i_telepon').on('keypress',function(event){
+        $('#cus_alamatmember8').on('blur',function(event){
+            if(this.value.length > 0){
+                field = 'surat';
+                lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+            }
+        });
+
+        $('#cus_tlpmember').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_hp').select();
+                    $('#cus_hpmember').select();
                 }
             }
         });
 
-        $('#i_hp').on('keypress',function(event){
+        $('#cus_hpmember').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_tempatlahir').select();
+                    $('#crm_tmptlahir').select();
                 }
             }
         });
 
-        $('#i_tempatlahir').on('keypress',function(event){
+        $('#crm_tmptlahir').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    $('#i_tgllahir').select();
+                    $('#cus_tgllahir').select();
                 }
             }
         });
 
-        $('#i_tgllahir').on('keypress',function(event){
-            if(event.which == 13){
-                if(this.value.length > 0){
-                    this.value = this.value.toUpperCase();
-                    tgl = '';
-                    found = false;
-                    if($.isNumeric(this.value[0]) && $.isNumeric(this.value[1]) && $.isNumeric(this.value.substr(7,4)) && this.value[2] == '-' && this.value[6] == '-' && this.value.length == 11){
-                        for(i=0;i<12;i++){
-                            if(this.value.substr(3,3) == month[i]){
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                    else if($.isNumeric(this.value[0]) && $.isNumeric(this.value.substr(6,4)) && this.value[1] == '-' && this.value[5] == '-' && this.value.length == 10){
-                        for(i=0;i<12;i++){
-                            if(this.value.substr(2,3) == month[i]){
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(!found){
-                        swal({
-                            title: "Format Tanggal Salah",
-                            icon: "error",
-                            closeModal: false
-                        }).then(function(){
-                            swal.close();
-                            $('#i_tgllahir').select();
-                        });
-                    }
-                    else{
-                        $('#i_jeniscustomer1').select();
-                    }
-                }
-            }
+        $('#cus_tgllahir').on('change',function(){
+            $('#cus_jenismember').select();
         });
 
-        $('#i_jeniscustomer1').on('keypress',function(event){
+        $('#cus_jenismember').on('keypress',function(event){
             if(event.which == 13){
                 found = false;
                 if(this.value == ''){
-                    $('#i_jeniscustomer1').val(jenismember[0].jm_kode);
-                    $('#i_jeniscustomer2').val(jenismember[0].jm_keterangan);
-                    $('#i_jenisoutlet1').select();
+                    $('#cus_jenismember').val(arrjenismember[0].jm_kode);
+                    $('#i_jeniscustomer2').val(arrjenismember[0].jm_keterangan);
+                    $('#cus_kodeoutlet').select();
                     found = true;
                 }
-                for(i=0;i<jenismember.length;i++){
-                    if(this.value.toUpperCase() == jenismember[i].jm_kode){
-                        found = true;
-                        $('#i_jeniscustomer1').val(jenismember[i].jm_kode);
-                        $('#i_jeniscustomer2').val(jenismember[i].jm_keterangan);
-                        $('#i_jenisoutlet1').select();
-                        break;
+                else{
+                    for(i=0;i<arrjenismember.length;i++){
+                        if(this.value == arrjenismember[i].jm_kode){
+                            found = true;
+                            $('#cus_jenismember').val(arrjenismember[i].jm_kode);
+                            $('#i_jeniscustomer2').val(arrjenismember[i].jm_keterangan);
+                            $('#cus_kodeoutlet').select();
+                            break;
+                        }
                     }
                 }
                 if(!found){
@@ -1250,25 +1349,25 @@
                         icon: "error"
                     }).then(function(){
                         swal.close();
-                        $('#i_jeniscustomer1').select();
+                        $('#cus_jenismember').select();
                     });
                 }
                 else{
-                    $('#i_jenisoutlet1').select();
+                    $('#cus_kodeoutlet').select();
                 }
             }
         });
 
-        $('#i_jenisoutlet1').on('keypress',function(event){
+        $('#cus_kodeoutlet').on('keypress',function(event){
             if(event.which == 13){
                 found = false;
 
-                for(i=0;i<jenisoutlet.length;i++){
-                    if(this.value == jenisoutlet[i].out_kodeoutlet){
+                for(i=0;i<arrjenisoutlet.length;i++){
+                    if(this.value == arrjenisoutlet[i].out_kodeoutlet){
                         found = true;
-                        $('#i_jenisoutlet1').val(jenisoutlet[i].out_kodeoutlet);
-                        $('#i_jenisoutlet2').val(jenisoutlet[i].out_namaoutlet);
-                        $('#i_jarak').select();
+                        $('#cus_kodeoutlet').val(arrjenisoutlet[i].out_kodeoutlet);
+                        $('#i_jenisoutlet2').val(arrjenisoutlet[i].out_namaoutlet);
+                        $('#cus_jarak').select();
                         break;
                     }
                 }
@@ -1279,61 +1378,66 @@
                         closeModal: false
                     }).then(function(){
                         swal.close();
-                        $('#i_jenisoutlet1').select();
+                        $('#cus_kodeoutlet').select();
                     });
                 }
                 else{
-                    $('#i_jarak').select();
+                    $('#cus_jarak').select();
                 }
             }
         });
 
-        $('#i_pkp').on('keypress', function(event){
+        $('#cus_jarak').on('keypress',function(event){
+            if(event.which == 13){
+                $('#cus_flagpkp').select();
+            }
+        });
+
+        $('#cus_flagpkp').on('keypress', function(event){
             if(event.which == 13){
                 this.value = this.value.toUpperCase();
-                if(this.value != 'Y' && this.value != 'T'){
+                if(this.value != 'Y' && this.value != 'T' && this.value != ''){
                     swal({
                         title: "Pastikan inputan hanya berupa Y atau T",
                         icon: "error",
                         closeModal: false
                     }).then(function(){
                         swal.close();
-                        $('#i_pkp').select();
+                        $('#cus_flagpkp').select();
                     });
                 }
                 else{
-                    $('#i_npwp').select();
+                    $('#cus_npwp').select();
                 }
             }
         });
 
-        $('#i_npwp').on('keypress',function(event){
+        $('#cus_npwp').on('keypress',function(event){
             if(event.which == 13){
-
-                $('#i_flagkredit').select();
+                $('#cus_flagkredit').select();
             }
         });
 
-        $('#i_flagkredit').on('keypress', function(event){
+        $('#cus_flagkredit').on('keypress', function(event){
             if(event.which == 13){
                 this.value = this.value.toUpperCase();
-                if(this.value != 'Y' && this.value != 'T'){
+                if(this.value != 'Y' && this.value != 'T' && this.value != ''){
                     swal({
                         title: "Pastikan inputan hanya berupa Y atau T!",
                         icon: "error",
                         closeModal: false
                     }).then(function(){
                         swal.close();
-                        $('#i_flagkredit').select();
+                        $('#cus_flagkredit').select();
                     });
                 }
                 else{
-                    $('#i_limit').select();
+                    $('#cus_creditlimit').select();
                 }
             }
         });
 
-        $('#i_limit').on('keypress',function(event){
+        $('#cus_creditlimit').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value < 0){
                     swal({
@@ -1342,16 +1446,16 @@
                         closeModal: false
                     }).then(function(){
                         swal.close();
-                        $('#i_limit').select();
+                        $('#cus_creditlimit').select();
                     });
                 }
                 else{
-                    $('#i_top').select();
+                    $('#cus_top').select();
                 }
             }
         });
 
-        $('#i_top').on('keypress',function(event){
+        $('#cus_top').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value < 0){
                     swal({
@@ -1360,39 +1464,679 @@
                         closeModal: false
                     }).then(function(){
                         swal.close();
-                        $('#i_limit').select();
+                        $('#cus_creditlimit').select();
                     });
                 }
                 else{
-                    $('#i_salesman').select();
+                    $('#cus_nosalesman').select();
                 }
             }
         });
 
-        $('#i_salesman').on('keypress',function(event){
+        $('#cus_nosalesman').on('keypress',function(event){
             if(event.which == 13){
 
-                $('#i_memberkhusus').select();
+                $('#cus_flagmemberkhusus').select();
             }
         });
 
-        $('#i_memberkhusus').on('keypress',function(event){
+        $('#cus_flagmemberkhusus').on('keypress',function(event){
             if(event.which == 13){
 
-                $('#i_kirimsms').select();
+                $('#cus_flagkirimsms').select();
             }
         });
 
-        $('#i_kirimsms').on('keypress',function(event){
+        $('#cus_flagkirimsms').on('keypress',function(event){
             if(event.which == 13){
 
-                $('#btn-p-identitas2').click();
-                $('#i_group').select();
+                $('#btn-p_identitas2').click();
+                $('#grp_group').select();
             }
         });
 
+        $('#grp_group').on('keypress',function(event){
+            if(event.which == 13 ){
+                if(this.value == ''){
+                    $('#m_groupHelp').modal('toggle');
+                }
+                else{
+                    if($('#cus_flagmemberkhusus').val() != 'Y' && this.value != 'BIRU'){
+                        swal({
+                            title: "Group harus diisi BIRU karena bukan member khusus",
+                            icon: "error",
+                            closeModal: false
+                        }).then(function(){
+                            swal.close();
+                            $('#grp_group').select();
+                            $('#grp_group').val('');
+                            $('#grp_subgroup').val('');
+                            $('#grp_kategori').val('');
+                            $('#grp_subkategori').val('');
+                        });
+                    }
+                    else{
+                        lov_group_select($(this).val());
+                    }
+                }
+            }
+        });
 
+        function lov_group_select(id){
+            for(i=0;i<arrgroup.length;i++){
+                if(id.match(/([A-z])/g).length == id.length){
+                    if(id == arrgroup[i].grp_group){
+                        $('#grp_group').val(arrgroup[i].grp_group);
+                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
+                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
+                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
+                        idgroupkat = arrgroup[i].grp_idgroupkat;
+                        break;
+                    }
+                }
+                else{
+                    if(id == arrgroup[i].grp_idgroupkat){
+                        $('#grp_group').val(arrgroup[i].grp_group);
+                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
+                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
+                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
+                        idgroupkat = arrgroup[i].grp_idgroupkat;
+                        break;
+                    }
+                }
+            }
 
+            $('.diisi').each(function(){
+                if($(this).val() != null && $(this).val().length > 0){
+                    ok = false;
+                    $(this).removeClass('kosong');
+                }
+            });
+
+            if($('#m_groupHelp').is(':visible')){
+                $('#m_groupHelp').modal('toggle');
+            }
+
+            $('#cb_jenisanggotaR').focus();
+        }
+
+        $('#cb_jenisanggotaR').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_jeniskelaminL').focus();
+            }
+            else if(event.which == 39){
+                $('#cb_jenisanggotaK').focus();
+            }
+        });
+
+        $('#cb_jenisanggotaK').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_jeniskelaminL').focus();
+            }
+            else if(event.which == 37){
+                $('#cb_jenisanggotaR').focus();
+            }
+        });
+
+        $('#cb_jenisanggotaR').on('change',function(){
+            if($('#cb_jenisanggotaR').is(':checked')){
+                $('#cb_jenisanggotaK').prop('checked',false);
+            }
+        });
+
+        $('#cb_jenisanggotaK').on('change',function(){
+            if($('#cb_jenisanggotaK').is(':checked')){
+                $('#cb_jenisanggotaR').prop('checked',false);
+            }
+        });
+
+        $('#cb_jeniskelaminL').on('keydown',function(event){
+            if(event.which == 13){
+                $('#cb_jeniskelaminL').click();
+                $('#crm_pic1').select();
+            }
+            else if(event.which == 39){
+                $('#cb_jeniskelaminP').focus();
+            }
+        });
+
+        $('#cb_jeniskelaminP').on('keydown',function(event){
+            event.preventDefault();
+            if(event.which == 13){
+                $('#cb_jeniskelaminP').click();
+                $('#crm_pic1').select();
+            }
+            else if(event.which == 37){
+                $('#cb_jeniskelaminL').focus();
+            }
+        });
+
+        $('#cb_jeniskelaminL').on('change',function(){
+            if($('#cb_jeniskelaminL').is(':checked')){
+                $('#cb_jeniskelaminP').prop('checked',false);
+            }
+        });
+
+        $('#cb_jeniskelaminP').on('change',function(){
+            if($('#cb_jeniskelaminP').is(':checked')){
+                $('#cb_jeniskelaminL').prop('checked',false);
+            }
+        });
+
+        $('#crm_pic1').on('keydown',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#crm_nohppic1').prop('readonly',false);
+                    $('#crm_nohppic1').select();
+                }
+                else{
+                    $('#crm_nohppic1').prop('readonly',true);
+                    $('#crm_pic2').select();
+                }
+            }
+        });
+
+        $('#crm_pic1').on('blur',function(){
+            if($(this).val().length == 0){
+                $('#crm_nohppic1').val('');
+                $('#crm_nohppic1').prop('readonly',true);
+            }
+            else{
+                $('#crm_nohppic1').prop('readonly',false);
+            }
+        });
+
+        $('#crm_nohppic1').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_pic2').select();
+            }
+        });
+
+        $('#crm_pic2').on('keydown',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    $('#crm_nohppic2').prop('readonly',false);
+                    $('#crm_nohppic2').select();
+                }
+                else{
+                    $('#crm_nohppic2').prop('readonly',true);
+                    $('#crm_email').select();
+                }
+            }
+        });
+
+        $('#crm_pic2').on('blur',function(){
+            if($(this).val().length == 0){
+                $('#crm_nohppic2').val('');
+                $('#crm_nohppic2').prop('readonly',true);
+            }
+            else{
+                $('#crm_nohppic2').prop('readonly',false);
+            }
+        });
+
+        $('#crm_nohppic2').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_email').select();
+            }
+        });
+
+        $('#crm_email').on('keydown',function(event){
+            if(event.which == 13 && this.value.length > 0){
+                $('#crm_agama').focus();
+            }
+        });
+
+        $('#crm_agama').on('keydown',function(event){
+            if(event.which == 13 && this.value != null){
+                $('#crm_pekerjaan').focus();
+            }
+            else{
+                swal({
+                    title: "Agama harus diisi!",
+                    icon: "error",
+                    closeModal: false
+                }).then(function(){
+                    swal.close();
+                    $('#crm_agama').select();
+                });
+            }
+        });
+
+        $('#crm_pekerjaan').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_namapasangan').select();
+            }
+        });
+
+        $('#crm_namapasangan').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_tgllhrpasangan').select();
+            }
+        });
+
+        $('#crm_tgllhrpasangan').on('keydown',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    found = cek_format_tanggal(this.value);
+
+                    if(!found){
+                        swal({
+                            title: "Format Tanggal Salah",
+                            icon: "error",
+                            closeModal: false
+                        }).then(function(){
+                            swal.close();
+                            $('#crm_tgllhrpasangan').select();
+                        });
+                    }
+                    else{
+                        $('#crm_jmlanak').select();
+                    }
+                }
+                else{
+                    $('#crm_jmlanak').select();
+                }
+            }
+        });
+
+        $('#crm_jmlanak').on('keydown',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0  && this.value < 0){
+                    swal({
+                        title: "Jumlah anak tidak boleh kurang dari nol!",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#crm_jmlanak').select();
+                    });
+                }
+                else{
+                    $('#i_pendidikan').focus();
+                }
+            }
+        });
+
+        $('#i_pendidikan').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_nofax').select();
+            }
+        });
+
+        $('#i_pendidikan').on('change',function(){
+            if(this.value == 'X'){
+                $('#i_pendidikanX').val('');
+                $('#i_pendidikanX').show();
+            }
+            else{
+                $('#i_pendidikanX').val('');
+                $('#i_pendidikanX').hide();
+            }
+        });
+
+        $('#crm_nofax').on('keydown',function(event){
+            if(event.which == 13){
+                $('#cb_internetY').focus();
+            }
+        });
+
+        $('#cb_internetY').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_internetT').prop('checked',false);
+                $('#crm_tipehp').focus();
+            }
+            else if(event.which == 39){
+                $('#cb_internetT').focus();
+            }
+        });
+
+        $('#cb_internetT').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_internetY').prop('checked',false);
+                $('#crm_tipehp').focus();
+            }
+            else if(event.which == 37){
+                $('#cb_internetY').focus();
+            }
+        });
+
+        $('#crm_tipehp').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_namabank').select();
+            }
+        });
+
+        $('#crm_namabank').on('keydown',function(event){
+            if(event.which == 13 && this.value.length > 0){
+                $('#c_metodekirim').focus();
+            }
+        });
+
+        $('#c_metodekirim').on('keydown',function(event){
+            if(event.which == 13 && this.value != null){
+                if(this.value == 'X'){
+                    $('#c_metodekirimX').focus();
+                }
+                else{
+                    $('#i_koordinat').focus();
+                }
+            }
+        });
+
+        $('#c_metodekirim').on('change',function(){
+            if(this.value == 'X'){
+                $('#c_metodekirimX').val('');
+                $('#c_metodekirimX').show();
+            }
+            else{
+                $('#c_metodekirimX').val('');
+                $('#c_metodekirimX').hide();
+            }
+        });
+
+        $('#c_metodekirimX').on('keydown',function(event){
+            if(event.which == 13 && this.value != ''){
+                $('#i_koordinat').select();
+            }
+        });
+
+        $('#i_koordinat').on('keydown',function(event){
+            if(event.which == 13){
+                $('#btn-p_identitas3').click();
+            }
+        });
+
+        $('#crm_alamatusaha1').on('keypress',function(event){
+            if(event.which == 13 && this.value.length > 0){
+                $('#crm_alamatusaha4').select();
+            }
+        });
+
+        $('#crm_alamatusaha4').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value.length > 0){
+                    field = 'usaha';
+                    lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+                }
+            }
+        });
+
+        $('#crm_alamatusaha4').on('blur',function(event){
+            if(this.value.length > 0){
+                field = 'usaha';
+                lov_kodepos_select('x','x',this.value.toUpperCase(),'x');
+            }
+        });
+
+        $('#cb_jenisbangunanP').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_jenisbangunanS').prop('checked',false);
+                $('#cb_jenisbangunanN').prop('checked',false);
+                $('#crm_lamatmpt').select();
+            }
+            else if(event.which == 39){
+                $('#cb_jenisbangunanS').focus();
+            }
+        });
+
+        $('#cb_jenisbangunanS').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_jenisbangunanP').prop('checked',false);
+                $('#cb_jenisbangunanN').prop('checked',false);
+                $('#crm_lamatmpt').select();
+            }
+            else if(event.which == 37){
+                $('#cb_jenisbangunanP').focus();
+            }
+            else if(event.which == 39){
+                $('#cb_jenisbangunanN').focus();
+            }
+        });
+
+        $('#cb_jenisbangunanN').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_jenisbangunanP').prop('checked',false);
+                $('#cb_jenisbangunanS').prop('checked',false);
+                $('#crm_lamatmpt').select();
+            }
+            else if(event.which == 37){
+                $('#cb_jenisbangunanS').focus();
+            }
+        });
+
+        $('#cb_jenisbangunanP').on('change',function () {
+            if($('#cb_jenisbangunanP').is(':checked')){
+                $('#cb_jenisbangunanS').prop('checked',false);
+                $('#cb_jenisbangunanN').prop('checked',false);
+            }
+        });
+
+        $('#cb_jenisbangunanS').on('change',function () {
+            if($('#cb_jenisbangunanS').is(':checked')){
+                $('#cb_jenisbangunanP').prop('checked',false);
+                $('#cb_jenisbangunanN').prop('checked',false);
+            }
+        });
+
+        $('#cb_jenisbangunanN').on('change',function () {
+            if($('#cb_jenisbangunanN').is(':checked')){
+                $('#cb_jenisbangunanP').prop('checked',false);
+                $('#cb_jenisbangunanS').prop('checked',false);
+            }
+        });
+
+        $('#crm_lamatmpt').on('keydown',function(event){
+            if(event.which == 13 && this.value >= 0){
+                $('#cb_statusbangunanM').focus();
+            }
+        });
+
+        $('#cb_statusbangunanM').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_statusbangunanS').prop('checked',false);
+                $('#crm_kreditusaha').select();
+            }
+            else if(event.which == 39){
+                $('#cb_statusbangunanS').focus();
+            }
+        });
+
+        $('#cb_statusbangunanS').on('keydown',function(event){
+            if(event.which == 13){
+                $(this).click();
+                $('#cb_statusbangunanM').prop('checked',false);
+                $('#crm_kreditusaha').select();
+            }
+            else if(event.which == 37){
+                $('#cb_statusbangunanM').focus();
+            }
+        });
+
+        $('#cb_statusbangunanM').on('change',function () {
+            if($('#cb_statusbangunanM').is(':checked')){
+                $('#cb_statusbangunanS').prop('checked',false);
+            }
+        });
+
+        $('#cb_statusbangunanS').on('change',function () {
+            if($('#cb_statusbangunanS').is(':checked')){
+                $('#cb_statusbangunanM').prop('checked',false);
+            }
+        });
+
+        $('#crm_kreditusaha').on('keydown',function(event){
+            if(event.which == 13){
+                $('#crm_bankkredit').select();
+            }
+        });
+
+        $('#crm_bankkredit').on('keydown',function(event){
+            if(event.which == 13){
+                $('#cb_jeniskendaraanMotor').focus();
+            }
+        });
+
+        $('#cb_jeniskendaraanMotor').on('change',function () {
+            if($('#cb_jeniskendaraanMotor').is(':checked')){
+                $('#i_motor').val('...');
+                $('#i_motor').show();
+                $('#i_motor').focus();
+            }
+            else{
+                $('#i_motor').val('...');
+                $('#i_motor').hide();
+                $('#i_motorX').val('');
+                $('#i_motorX').hide();
+            }
+        });
+
+        $('#cb_jeniskendaraanMotor').on('keydown',function (event) {
+            if(event.which == 13){
+                $('#cb_jeniskendaraanMobil').focus();
+            }
+        });
+
+        $('#i_motor').on('change',function () {
+            if(this.value == 'X'){
+                $('#i_motorX').val('');
+                $('#i_motorX').show();
+            }
+            else{
+                $('#i_motorX').val('');
+                $('#i_motorX').hide();
+            }
+        });
+
+        $('#i_motor').on('keypress',function(event){
+            event.preventDefault();
+            if(event.which == 13){
+                $('#cb_jeniskendaraanMobil').focus();
+            }
+        });
+
+        $('#i_motorX').on('keypress',function(event){
+            if(event.which == 13 && this.value.length > 0){
+                $('#cb_jeniskendaraanMobil').focus();
+            }
+        });
+
+        $('#cb_jeniskendaraanMobil').on('change',function () {
+            if($('#cb_jeniskendaraanMobil').is(':checked')){
+                $('#i_mobil').val('...');
+                $('#i_mobil').show();
+                $('#i_mobil').focus();
+            }
+            else{
+                $('#i_mobil').val('...');
+                $('#i_mobil').hide();
+                $('#i_mobilX').val('');
+                $('#i_mobilX').hide();
+            }
+        });
+
+        $('#cb_jeniskendaraanMobil').on('keydown',function(event){
+            if(event.which == 13){
+                $('#btn-p_hobby').click();
+            }
+        });
+
+        $('#i_mobil').on('change',function () {
+            if(this.value == 'X'){
+                $('#i_mobilX').val('');
+                $('#i_mobilX').show();
+                $('#i_mobilX').focus();
+            }
+            else{
+                $('#i_mobilX').val('');
+                $('#i_mobilX').hide();
+            }
+        });
+
+        $('#i_mobil').on('keypress',function(event){
+            event.preventDefault();
+            if(event.which == 13){
+                $('#btn-p_hobby').click();
+            }
+        });
+
+        $('#i_mobilX').on('keypress',function(event){
+            if(event.which == 13 && this.value.length > 0){
+                $('#btn-p_hobby').click();
+            }
+        });
+
+        $('#btn-p_npwp').on('click',function(){
+            $('#cus_flagbebasiuran').select();
+        });
+
+        $('#cus_flagbebasiuran').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value != 'Y' && this.value != ''){
+                    swal({
+                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#cus_flagbebasiuran').select();
+                    });
+                }
+                else{
+                    $('#cus_alamatemail').select();
+                }
+            }
+        });
+
+        $('#cus_alamatemail').on('keypress',function(event){
+            if(event.which == 13){
+                $('#cus_flagblockingpengiriman').select();
+            }
+        });
+
+        $('#cus_flagblockingpengiriman').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value != 'Y' && this.value != ''){
+                    swal({
+                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#cus_flagblockingpengiriman').select();
+                    });
+                }
+                else{
+                    $('#cus_flaginstitusipemerintah').select();
+                }
+            }
+        });
+
+        $('#cus_flaginstitusipemerintah').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value != 'Y' && this.value != ''){
+                    swal({
+                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        icon: "error",
+                        closeModal: false
+                    }).then(function(){
+                        swal.close();
+                        $('#cus_flaginstitusipemerintah').select();
+                    });
+                }
+                else{
+                    $('#btn-p_fasilitasbank').click();
+                }
+            }
+        });
 
         function lov_member_select(value, load){
             $.ajax({
@@ -1408,14 +2152,19 @@
                 success: function(response){
                     if(response == 'not-found'){
                         swal({
-                            title: "Data Tidak Ditemukan",
-                            icon: "error"
+                            title: "Data Member Tidak Ditemukan!",
+                            text: "Cek kembali kode member",
+                            icon: "error",
+                            buttons: false,
+                            timer: 1250
                         });
-                        $(':input').val('');
-                        $('#i_kodemember').val(value);
-                        $(':input').prop('checked',false);
+
+                        initial();
+                        $('#cus_kodemember').val(value);
                     }
                     else {
+                        ready();
+
                         member = response['member'];
                         ktp = response['ktp'];
                         surat = response['surat'];
@@ -1439,77 +2188,90 @@
                         $(':input').val('');
                         $(':input').prop('checked',false);
 
-                        $('#i_kodemember').val(member.cus_kodemember);
-                        $('#i_namamember').val(member.cus_namamember);
+                        $('#cus_kodemember').val(member.cus_kodemember);
+                        $('#cus_namamember').val(member.cus_namamember);
+                        if(member.cus_recordid == '1'){
+                            $('#i_statusmember').val('NON-AKTIF');
+                        }
+                        else $('#i_statusmember').val('AKTIF');
 
-                        $('#i_updateterakhir').val(member.cus_modify_by + ' ' + toDate(member.cus_modify_dt));
+                        $('#i_updateterakhir').val(member.cus_modify_by + ' ' + formatDate(member.cus_modify_dt));
 
                         if(member.cus_flagmemberkhusus == 'Y' && member.cus_recordid == null){
                             $('#btn-quisioner').show();
                         }
+                        else $('#btn-quisioner').hide();
 
                         //######################################################### panel identitas 1 ######################################################################
-                        $('#i_noktp').val(member.cus_noktp);
-                        $('#i_alamatktp').val(member.cus_alamatmember1);
-                        $('#i_kelurahanktp').val(member.cus_alamatmember4);
+                        $('#cus_noktp').val(member.cus_noktp);
+                        $('#cus_alamatmember1').val(member.cus_alamatmember1);
+                        $('#cus_alamatmember4').val(member.cus_alamatmember4);
 
-                        if(!skipKTP)
+                        if(!skipKTP) {
+                            $('#cus_alamatmember4').val(ktp.pos_kelurahan
+                            );
                             $('#i_kecamatanktp').val(ktp.pos_kecamatan);
+                        }
 
-                        $('#i_kotaktp').val(member.cus_alamatmember2);
-                        $('#i_kodeposktp').val(member.cus_alamatmember3);
-                        $('#i_alamatsurat').val(member.cus_alamatmember5);
-                        $('#i_kelurahansurat').val(member.cus_alamatmember8);
+                        $('#cus_alamatmember2').val(member.cus_alamatmember2);
+                        $('#cus_alamatmember3').val(member.cus_alamatmember3);
+                        $('#cus_alamatmember5').val(member.cus_alamatmember5);
+                        $('#cus_alamatmember8').val(member.cus_alamatmember8);
                         $('#i_kecamatansurat').val(surat.pos_kecamatan);
-                        $('#i_kotasurat').val(member.cus_alamatmember6);
-                        $('#i_kodepossurat').val(member.cus_alamatmember7);
-                        $('#i_telepon').val(member.cus_tlpmember);
-                        $('#i_hp').val(member.cus_hpmember);
-                        $('#i_tempatlahir').val(member.crm_tmptlahir);
-                        $('#i_tgllahir').val(toDate(member.cus_tgllahir));
-                        $('#i_jeniscustomer1').val(jenismember.jm_kode);
+                        $('#cus_alamatmember6').val(member.cus_alamatmember6);
+                        $('#cus_alamatmember7').val(member.cus_alamatmember7);
+                        $('#cus_tlpmember').val(member.cus_tlpmember);
+                        $('#cus_hpmember').val(member.cus_hpmember);
+                        $('#crm_tmptlahir').val(member.crm_tmptlahir);
+                        $('#cus_tgllahir').val(formatDate(member.cus_tgllahir));
+                        $('#cus_jenismember').val(jenismember.jm_kode);
                         $('#i_jeniscustomer2').val(jenismember.jm_keterangan);
-                        $('#i_jenisoutlet1').val(outlet.out_kodeoutlet);
+                        $('#cus_kodeoutlet').val(outlet.out_kodeoutlet);
                         $('#i_jenisoutlet2').val(outlet.out_namaoutlet);
-                        $('#i_jarak').val(member.cus_jarak);
-                        $('#i_pkp').val(member.cus_flagpkp);
-                        $('#i_npwp').val(member.cus_npwp);
-                        $('#i_flagkredit').val(member.cus_flagkredit);
-                        $('#i_limit').val(member.cus_creditlimit);
-                        $('#i_top').val(member.cus_top);
-                        $('#i_salesman').val(member.cus_nosalesman);
-                        $('#i_memberkhusus').val(member.cus_flagmemberkhusus);
-                        $('#i_kirimsms').val(member.cus_flagkirimsms);
+                        $('#cus_jarak').val(member.cus_jarak);
+                        $('#cus_flagpkp').val(member.cus_flagpkp);
+                        $('#cus_npwp').val(member.cus_npwp);
+                        $('#cus_flagkredit').val(member.cus_flagkredit);
+                        $('#cus_creditlimit').val(member.cus_creditlimit);
+                        $('#cus_top').val(member.cus_top);
+                        $('#cus_nosalesman').val(member.cus_nosalesman);
+                        $('#cus_flagmemberkhusus').val(member.cus_flagmemberkhusus);
+                        $('#cus_flagkirimsms').val(member.cus_flagkirimsms);
 
                         //######################################################### panel identitas 2 ######################################################################
-                        if(member.crm_kodemember != null){
-                            $('#i_group').val(group.grp_group);
-                            $('#i_subgroup').val(group.grp_subgroup);
-                            $('#i_kategori').val(group.grp_kategori);
-                            $('#i_subkategori').val(group.grp_subkategori);
+                        if(group != null){
+                            idgroupkat = group.grp_idgroupkat;
+                            $('#grp_group').val(group.grp_group);
+                            $('#grp_subgroup').val(group.grp_subgroup);
+                            $('#grp_kategori').val(group.grp_kategori);
+                            $('#grp_subkategori').val(group.grp_subkategori);
                         }
                         if(member.crm_jenisanggota == 'R'){
-                            $('#i_jenisanggotaR').prop('checked',true);
+                            $('#cb_jenisanggotaR').prop('checked',true);
                         }
                         else if(member.crm_jenisanggota == 'K'){
-                            $('#i_jenisanggotaK').prop('checked',true);
+                            $('#cb_jenisanggotaK').prop('checked',true);
                         }
                         if(member.crm_jeniskelamin == 'L'){
-                            $('#i_jeniskelaminL').prop('checked',true);
+                            $('#cb_jeniskelaminL').prop('checked',true);
                         }
                         else if(member.crm_jeniskelamin == 'P'){
-                            $('#i_jeniskelaminP').prop('checked',true);
+                            $('#cb_jeniskelaminP').prop('checked',true);
                         }
-                        $('#i_cp1').val(member.crm_pic1);
-                        $('#i_nohp1').val(member.crm_nohppic1);
-                        $('#i_cp2').val(member.crm_pic2);
-                        $('#i_nohp2').val(member.crm_nohppic2);
-                        $('#i_email').val(member.crm_email);
-                        $('#i_agama').val(to_uppercase(member.crm_agama));
-                        $('#i_pekerjaan').val(member.crm_pekerjaan);
-                        $('#i_namasuami-istri').val(member.crm_namapasangan);
-                        $('#i_tgllahirpasangan').val(toDate(member.crm_tgllahirpasangan));
-                        $('#i_jmlanak').val(member.crm_jmlanak);
+                        $('#crm_pic1').val(member.crm_pic1);
+                        $('#crm_nohppic1').val(member.crm_nohppic1);
+                        if($('#crm_nohppic1').val().length > 0)
+                            $('#crm_nohppic1').prop('readonly',false);
+                        $('#crm_pic2').val(member.crm_pic2);
+                        if($('#crm_nohppic2').val().length > 0)
+                            $('#crm_nohppic2').prop('readonly',false);
+                        $('#crm_nohppic2').val(member.crm_nohppic2);
+                        $('#crm_email').val(member.crm_email);
+                        $('#crm_agama').val(to_uppercase(member.crm_agama));
+                        $('#crm_pekerjaan').val(member.crm_pekerjaan);
+                        $('#crm_namapasangan').val(member.crm_namapasangan);
+                        $('#crm_tgllhrpasangan').val(formatDate(member.crm_tgllhrpasangan));
+                        $('#crm_jmlanak').val(member.crm_jmlanak);
                         if(member.crm_pendidikanakhir != ''){
                             $('#i_pendidikan').val(member.crm_pendidikanakhir);
                             $('#i_pendidikanX').hide();
@@ -1518,45 +2280,48 @@
                             $('#i_pendidikan').val('X');
                             $('#i_pendidikanX').show();
                         }
-                        $('#i_nof').val(member.crm_nofax);
+                        $('#crm_nofax').val(member.crm_nofax);
                         if(member.crm_internet == 'Y'){
-                            $('#i_internetY').prop('checked',true);
+                            $('#cb_internetY').prop('checked',true);
                         }
                         else if(member.crm_jeniskelamin == 'T'){
-                            $('#i_internetT').prop('checked',true);
+                            $('#cb_internetT').prop('checked',true);
                         }
-                        $('#i_merktipehp').val(member.crm_tipehp);
-                        $('#i_banksekarang').val(member.crm_namabank);
-                        $('#i_metodeinformasi').val(member.crm_metodekirim);
-                        if($('#i_metodeinformasi').val() == null || $('#i_metodeinformasi').val() == 'X'){
-                            $('#i_metodeinformasiX').show();
-                            $('#i_metodeinformasiX').val(member.crm_metodekirim);
+                        $('#crm_tipehp').val(member.crm_tipehp);
+                        $('#crm_namabank').val(member.crm_namabank);
+                        $('#c_metodekirim').val(member.crm_metodekirim);
+                        if($('#c_metodekirim').val() == null){
+                            $('#c_metodekirim').val('X');
+                            $('#c_metodekirimX').show();
+                            $('#c_metodekirimX').val(member.crm_metodekirim);
                         }
-                        else $('#i_metodeinformasiX').hide();
+                        else $('#c_metodekirimX').hide();
                         $('#i_koordinat').val(member.crm_koordinat);
 
                         //#########################################################panel identitas 3######################################################################
-                        $('#i_alamatusaha').val(member.crm_alamatusaha1);
-                        $('#i_kelurahanusaha').val(member.crm_alamatusaha4);
-                        $('#i_kecamatanusaha').val(usaha.pos_kecamatan);
-                        $('#i_kodeposusaha').val(usaha.pos_kode);
-                        $('#i_kotausaha').val(member.crm_alamatusaha2);
+                        $('#crm_alamatusaha1').val(member.crm_alamatusaha1);
+                        $('#crm_alamatusaha4').val(member.crm_alamatusaha4);
+                        $('#pos_kecamatan').val(usaha.pos_kecamatan);
+                        $('#crm_alamatusaha3').val(usaha.pos_kode);
+                        $('#crm_alamatusaha2').val(member.crm_alamatusaha2);
+
                         if(member.crm_jenisbangunan != '')
-                            $('#i_jenisbangunan'+member.crm_jenisbangunan).prop('checked',true);
-                        $('#i_lamamenempati').val(member.crm_lamatmpt);
+                            $('#cb_jenisbangunan'+member.crm_jenisbangunan).prop('checked',true);
+                        $('#crm_lamatmpt').val(member.crm_lamatmpt);
                         if(member.crm_statusbangunan != '')
-                            $('#i_statusbangunan'+member.crm_statusbangunan).prop('checked',true);
-                        $('#i_kreditusaha').val(member.crm_kreditusaha);
-                        $('#i_kreditbank').val(member.crm_bankkredit);
+                            $('#cb_statusbangunan'+member.crm_statusbangunan).prop('checked',true);
+                        $('#crm_kreditusaha').val(member.crm_kreditusaha);
+                        $('#crm_bankkredit').val(member.crm_bankkredit);
                         if(member.crm_motor != '' && member.crm_motor != null){
                             $('#i_motor').val(member.crm_motor);
+                            $('#cb_jeniskendaraanMotor').prop('checked', true);
                             if($('#i_motor').val() != null) {
-                                $('#i_jenikendaraanMotor').prop('checked', true);
                                 $('#i_motor').show();
                                 $('#i_motorX').hide();
                             }
                             else{
                                 $('#i_motor').val('X');
+                                $('#i_motor').show();
                                 $('#i_motorX').val(member.crm_motor);
                                 $('#i_motorX').show();
                             }
@@ -1567,13 +2332,14 @@
                         }
                         if(member.crm_mobil != '' && member.crm_mobil != null){
                             $('#i_mobil').val(member.crm_mobil);
+                            $('#cb_jeniskendaraanMobil').prop('checked', true);
                             if($('#i_mobil').val() != null) {
-                                $('#i_jenikendaraanMobil').prop('checked', true);
                                 $('#i_mobil').show();
                                 $('#i_mobilX').hide();
                             }
                             else{
                                 $('#i_mobil').val('X');
+                                $('#i_mobil').show();
                                 $('#i_mobilX').val(member.crm_mobil);
                                 $('#i_mobilX').show();
                             }
@@ -1585,24 +2351,24 @@
 
                         //######################################################### panel hobby ######################################################################
                         for(i=0;i<response['hobbymember'].length;i++){
-                            $('#i_'+response['hobbymember'][i].dhb_kodehobby).prop('checked',true);
-                            if(response['hobbymember'][i].dhb_keterangan != null && response['hobbymember'][i].dhb_keterangan != ''){
-                                $('#i_'+response['hobbymember'][i].dhb_kodehobby+'_ket').val(response['hobbymember'][i].dhb_keterangan);
-                                $('#i_'+response['hobbymember'][i].dhb_kodehobby+'_ket').prop('disabled',false);
+                            $('#cb_h'+response['hobbymember'][i].dhb_kodehobby).prop('checked',true);
+                            if(response['hobbymember'][i].dhb_keterangan != null || response['hobbymember'][i].dhb_keterangan != ''){
+                                $('#cb_h'+response['hobbymember'][i].dhb_kodehobby+'_ket').val(response['hobbymember'][i].dhb_keterangan);
+                                $('#cb_h'+response['hobbymember'][i].dhb_kodehobby+'_ket').prop('disabled',false);
                             }
                             else{
-                                $('#i_'+response['hobbymember'][i].dhb_kodehobby+'_ket').val('');
+                                $('#cb_h'+response['hobbymember'][i].dhb_kodehobby+'_ket').val('');
                             }
                         }
 
                         //######################################################### panel npwp ######################################################################
-                        $('#i_tglmulai').val(toDate(member.cus_tglmulai));
-                        $('#i_tglregis').val(toDate(member.cus_tglregistrasi));
-                        $('#i_bebasiuran').val(member.cus_flagbebasiuran);
-                        $('#i_emailnpwp').val(member.cus_alamatemail);
-                        $('#i_nomorkartu').val(member.cus_nokartumember);
-                        $('#i_blockpengiriman').val(member.cus_flagblockingpengiriman);
-                        $('#i_flagpemerintah').val(member.cus_flaginstitusipemerintah);
+                        $('#cus_tglmulai').val(formatDate(member.cus_tglmulai));
+                        $('#cus_tglregistrasi').val(formatDate(member.cus_tglregistrasi));
+                        $('#cus_flagbebasiuran').val(member.cus_flagbebasiuran);
+                        $('#cus_alamatemail').val(member.cus_alamatemail);
+                        $('#cus_nokartumember').val(member.cus_nokartumember);
+                        $('#cus_flagblockingpengiriman').val(member.cus_flagblockingpengiriman);
+                        $('#cus_flaginstitusipemerintah').val(member.cus_flaginstitusipemerintah);
 
                         if(npwp != '' && npwp != null){
                             $('#i_alamatnpwp').val(npwp.pwp_alamat);
@@ -1617,6 +2383,10 @@
                             $('#i_kodeposnpwp').val(member.cus_alamatmember3);
                         }
 
+                        //######################################################### panel bank ######################################################################
+                        for(i=0;i<response['bank'].length;i++){
+                            $('#cb_b'+response['bank'][i].cub_kodefasilitasbank).prop('checked',true);
+                        }
                     }
                 },
                 complete: function(){
@@ -1630,7 +2400,7 @@
                         }
                     }
                     $('#modal-loader').modal('hide');
-                    $('#i_namamember').select();
+                    $('#cus_namamember').select();
                 }
             });
         }
@@ -1686,74 +2456,109 @@
         });
 
         function lov_kodepos_select(kode, kecamatan, kelurahan, kabupaten){
-            if(kode == 'x' && kecamatan == 'x' && kabupaten == 'x'){
-                $.ajax({
-                    url: '/BackOffice/public/mstmember/lov_kodepos_select',
-                    type: 'GET',
-                    data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
-                    beforeSend: function(){
-                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    },
-                    success: function (response) {
-                        if(response == null){
-                            swal({
-                                title: "Kelurahan tidak terdaftar di database!",
-                                icon: "error"
-                            }).then(function(){
-                                swal.close();
-                                $('#i_kelurahanktp').select();
-                            });
-                        }
-                        else{
-                            kode = response.pos_kode;
-                            kecamatan = response.pos_kecamatan;
-                            kelurahan = response.pos_kelurahan;
-                            kabupaten = response.pos_kabupaten;
+            success = false;
+            $.ajax({
+                url: '/BackOffice/public/mstmember/lov_kodepos_select',
+                type: 'GET',
+                data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
+                beforeSend: function(){
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    if(response == 'not-found'){
+                        swal({
+                            title: "Kelurahan tidak terdaftar di database!",
+                            text: "Cek ulang inputan kelurahan",
+                            icon: "error",
+                            buttons: false,
+                            timer: 750
+                        }).then(function(){
+                            if(field == 'ktp'){
+                                $('#cus_alamatmember2').val('');
+                                $('#cus_alamatmember3').val('');
+                                $('#cus_alamatmember4').val('');
+                                $('#i_kecamatanktp').val('');
+                                $('#cus_alamatmember4').select();
+                            }
+                            else if(field == 'surat'){
+                                $('#cus_alamatmember6').val('');
+                                $('#cus_alamatmember7').val('');
+                                $('#cus_alamatmember8').val('');
+                                $('#i_kecamatansurat').val('');
+                                $('#cus_alamatmember8').select();
+                            }
+                            else if(field == 'usaha'){
+                                $('#crm_alamatusaha2').val('');
+                                $('#crm_alamatusaha3').val('');
+                                $('#crm_alamatusaha4').val('');
+                                $('#i_kecamatanusaha').val('');
+                                $('#crm_alamatusaha4').select();
+                            }
+                        });
+                        success = false;
+                    }
+                    else{
+                        success = true;
 
-                            insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
-                        }
-                    },
-                    complete: function(){
-                        $('#modal-loader').modal('hide');
+                        kode = response.pos_kode;
+                        kecamatan = response.pos_kecamatan;
+                        kelurahan = response.pos_kelurahan;
+                        kabupaten = response.pos_kabupaten;
+
+                        insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
+                    }
+                },
+                complete: function(){
+                    $('#modal-loader').modal('hide');
+                    if($('#m_kodeposHelp').is(':visible')){
+                        $('#m_kodeposHelp').modal('toggle');
+                    }
+                    if(success){
                         if(field == 'ktp'){
-                            $('#i_alamatsurat').select();
+                            $('#cus_alamatmember5').select();
                         }
                         else if(field == 'surat'){
-                            $('#i_telepon').select();
+                            $('#cus_tlpmember').select();
+                        }
+                        else if(field == 'usaha'){
+                            $('#cb_jenisbangunanP').select();
                         }
                     }
-                });
-            }
-            else{
-                insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
-            }
+
+                    $('.kosong').each(function(){
+                        if($(this).val() != null && $(this).val().length > 0){
+                            $(this).removeClass('kosong');
+                        }
+                    });
+                }
+            });
         }
 
         function insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten){
             if(field == 'ktp'){
-                $('#i_kelurahanktp').val(kelurahan);
+                $('#cus_alamatmember4').val(kelurahan);
                 $('#i_kecamatanktp').val(kecamatan);
-                $('#i_kodeposktp').val(kode);
-                $('#i_kotaktp').val(kabupaten);
+                $('#cus_alamatmember3').val(kode);
+                $('#cus_alamatmember2').val(kabupaten);
 
-                if($('#i_kodepossurat').val() == ''){
-                    $('#i_kelurahansurat').val(kelurahan);
+                if($('#cus_alamatmember7').val() == ''){
+                    $('#cus_alamatmember8').val(kelurahan);
                     $('#i_kecamatansurat').val(kecamatan);
-                    $('#i_kodepossurat').val(kode);
-                    $('#i_kotasurat').val(kabupaten);
+                    $('#cus_alamatmember7').val(kode);
+                    $('#cus_alamatmember6').val(kabupaten);
                 }
             }
             else if(field == 'surat'){
-                $('#i_kelurahansurat').val(kelurahan);
+                $('#cus_alamatmember8').val(kelurahan);
                 $('#i_kecamatansurat').val(kecamatan);
-                $('#i_kodepossurat').val(kode);
-                $('#i_kotasurat').val(kabupaten);
+                $('#cus_alamatmember7').val(kode);
+                $('#cus_alamatmember6').val(kabupaten);
             }
             else if(field == 'usaha'){
-                $('#i_kelurahanusaha').val(kelurahan);
-                $('#i_kecamatanusaha').val(kecamatan);
-                $('#i_kodeposusaha').val(kode);
-                $('#i_kotausaha').val(kabupaten);
+                $('#crm_alamatusaha4').val(kelurahan);
+                $('#pos_kecamatan').val(kecamatan);
+                $('#crm_alamatusaha3').val(kode);
+                $('#crm_alamatusaha2').val(kabupaten);
             }
         }
 
@@ -1794,24 +2599,8 @@
             }
         });
 
-        function lov_group_select(id){
-            for(i=0;i<group.length;i++){
-                if(id == group[i].grp_idgroupkat){
-                    $('#i_group').val(group[i].grp_group);
-                    $('#i_subgroup').val(group[i].grp_subgroup);
-                    $('#i_kategori').val(group[i].grp_kategori);
-                    $('#i_subkategori').val(group[i].grp_subkategori);
-                    break;
-                }
-            }
-
-            if($('#m_groupHelp').is(':visible')){
-                $('#m_groupHelp').modal('toggle');
-            }
-        }
-
         function lov_jenismember_select(kode, keterangan){
-            $('#i_jeniscustomer1').val(kode);
+            $('#cus_jenismember').val(kode);
             $('#i_jeniscustomer2').val(keterangan);
 
             if($('#m_jenismemberHelp').is(':visible')) {
@@ -1819,134 +2608,16 @@
             }
         }
 
-        $('#i_jenisanggotaR').on('change',function(){
-            if($('#i_jenisanggotaR').is(':checked')){
-                $('#i_jenisanggotaK').prop('checked',false);
-            }
-        });
+        function lov_jenisoutlet_select(kode, nama){
+            $('#cus_kodeoutlet').val(kode);
+            $('#i_jenisoutlet2').val(nama);
 
-        $('#i_jenisanggotaK').on('change',function(){
-            if($('#i_jenisanggotaK').is(':checked')){
-                $('#i_jenisanggotaR').prop('checked',false);
+            if($('#m_jenisoutletHelp').is(':visible')){
+                $('#m_jenisoutletHelp').modal('toggle');
             }
-        });
+        }
 
-        $('#i_jeniskelaminL').on('change',function(){
-            if($('#i_jeniskelaminL').is(':checked')){
-                $('#i_jeniskelaminP').prop('checked',false);
-            }
-        });
-
-        $('#i_jeniskelaminP').on('change',function(){
-            if($('#i_jeniskelaminP').is(':checked')){
-                $('#i_jeniskelaminL').prop('checked',false);
-            }
-        });
-
-        $('#i_pendidikan').on('change',function(){
-            if(this.value == 'X'){
-                $('#i_pendidikanX').val('');
-                $('#i_pendidikanX').show();
-            }
-            else{
-                $('#i_pendidikanX').val('');
-                $('#i_pendidikanX').hide();
-            }
-        })
-
-        $('#i_metodeinformasi').on('change',function(){
-            if(this.value == 'X'){
-                $('#i_metodeinformasiX').val('');
-                $('#i_metodeinformasiX').show();
-            }
-            else{
-                $('#i_metodeinformasiX').val('');
-                $('#i_metodeinformasiX').hide();
-            }
-        });
-
-        $('#i_jenisbangunanP').on('change',function () {
-            if($('#i_jenisbangunanP').is(':checked')){
-                $('#i_jenisbangunanS').prop('checked',false);
-                $('#i_jenisbangunanN').prop('checked',false);
-            }
-        });
-
-        $('#i_jenisbangunanS').on('change',function () {
-            if($('#i_jenisbangunanS').is(':checked')){
-                $('#i_jenisbangunanP').prop('checked',false);
-                $('#i_jenisbangunanN').prop('checked',false);
-            }
-        });
-
-        $('#i_jenisbangunanN').on('change',function () {
-            if($('#i_jenisbangunanN').is(':checked')){
-                $('#i_jenisbangunanP').prop('checked',false);
-                $('#i_jenisbangunanS').prop('checked',false);
-            }
-        });
-
-        $('#i_statusbangunanM').on('change',function () {
-            if($('#i_statusbangunanM').is(':checked')){
-                $('#i_statusbangunanS').prop('checked',false);
-            }
-        });
-
-        $('#i_statusbangunanS').on('change',function () {
-            if($('#i_statusbangunanS').is(':checked')){
-                $('#i_statusbangunanM').prop('checked',false);
-            }
-        });
-
-        $('#i_jenikendaraanMotor').on('change',function () {
-            if($('#i_jenikendaraanMotor').is(':checked')){
-                $('#i_motor').val('...');
-                $('#i_motor').show();
-            }
-            else{
-                $('#i_motor').val('...');
-                $('#i_motor').hide();
-                $('#i_motorX').val('');
-                $('#i_motorX').hide();
-            }
-        });
-
-        $('#i_motor').on('change',function () {
-            if(this.value == 'X'){
-                $('#i_motorX').val('');
-                $('#i_motorX').show();
-            }
-            else{
-                $('#i_motorX').val('');
-                $('#i_motorX').hide();
-            }
-        });
-
-        $('#i_jenikendaraanMobil').on('change',function () {
-            if($('#i_jenikendaraanMobil').is(':checked')){
-                $('#i_mobil').val('...');
-                $('#i_mobil').show();
-            }
-            else{
-                $('#i_mobil').val('...');
-                $('#i_mobil').hide();
-                $('#i_mobilX').val('');
-                $('#i_mobilX').hide();
-            }
-        });
-
-        $('#i_mobil').on('change',function () {
-            if(this.value == 'X'){
-                $('#i_mobilX').val('');
-                $('#i_mobilX').show();
-            }
-            else{
-                $('#i_mobilX').val('');
-                $('#i_mobilX').hide();
-            }
-        });
-
-        function hobby(event){
+        function check_hobby(event){
             if($('#'+event.target.id).is(':checked')){
                 $('#'+event.target.id+'_ket').prop('disabled',false);
             }
@@ -1962,15 +2633,356 @@
             else return value.toUpperCase();
         }
 
-        function toDate(value) {
-            if(value == null || value == '')
-                return '';
-            else {
-                date = new Date(value);
+        // function cek_format_tanggal(value){
+        //     tgl = '';
+        //     found = false;
+        //     if($.isNumeric(value[0]) && $.isNumeric(value[1]) && $.isNumeric(value.substr(7,4)) && value[2] == '-' && value[6] == '-' && value.length == 11){
+        //         for(i=0;i<12;i++){
+        //             if(value.substr(3,3) == month[i]){
+        //                 found = true;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //     else if($.isNumeric(value[0]) && $.isNumeric(value.substr(6,4)) && value[1] == '-' && value[5] == '-' && value.length == 10){
+        //         for(i=0;i<12;i++){
+        //             if(value.substr(2,3) == month[i]){
+        //                 found = true;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //
+        //     return found;
+        // }
 
-                return date.getDate() + '-' + month[date.getMonth()] + '-' + date.getFullYear();
+        $("#cus_tgllahir").datepicker({
+            "dateFormat" : "dd/mm/yy"
+        });
+
+        $('#btn-aktif-nonaktif').on('click',function(){
+            if(member.cus_recordid == '1'){
+                message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
+                status = '';
             }
+            else{
+                message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
+                status = '1';
+            }
+            swal({
+                title: message,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((createData) => {
+                if (createData) {
+                    swal({
+                        title: "Inputkan password untuk melanjutkan",
+                        text: "ADMIN (user saat ini)",
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Inputkan password",
+                                type: "password",
+                            },
+                        }
+                    }).then((password) => {
+                        if (password) {
+                            $.ajax({
+                                url: '/BackOffice/public/mstmember/check_password',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {username: 'VBU', password: password},
+                                beforeSend: function(){
+                                    $('#modal-loader').modal('show');
+                                },
+                                success: function (response) {
+                                    if(response == 'ok'){
+                                        $.ajax({
+                                            url: '/BackOffice/public/mstmember/set_status_member',
+                                            type: 'GET',
+                                            data: {"_token": "{{ csrf_token() }}", kode: member.cus_kodemember, status: status},
+                                            success: function (response) {
+                                                if(response == 'success'){
+                                                    $('#modal-loader').modal('hide');
+                                                    swal({
+                                                        title: "Berhasil mengubah status member!",
+                                                        icon: "success"
+                                                    }).then(function(){
+                                                        if(status == ''){
+                                                            member.cus_recordid = status;
+                                                            $('#i_statusmember').val('AKTIF');
+                                                        }
+                                                        else if(status == '1'){
+                                                            member.cus_recordid = status;
+                                                            $('#i_statusmember').val('NON-AKTIF');
+                                                        }
+                                                    });
+                                                }
+                                                else{
+                                                    swal({
+                                                        title: "Gagal mengubah status member!",
+                                                        icon: "error"
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        $('#modal-loader').modal('hide');
+                                        swal({
+                                            title: "Password salah!",
+                                            icon: "error"
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        function cek_field_wajib(){
+            ok = true;
+            $('.diisi').each(function(){
+                if($(this).val() != null && $(this).val().length > 0){
+                    $(this).removeClass('kosong');
+                }
+                else{
+                    $(this).addClass('kosong');
+                    ok = false;
+                }
+            });
+
+            if(ok){
+                id = 'xxxxx';
+                cb = '!ok';
+
+
+                $('.diisi_cb').each(function(){
+                    if(id != $(this).attr('id').substr(0,9)){
+                        // console.log('id : ' + id);
+                        // console.log('cek - ' + $(this).attr('id'));
+                        if($(this).is(':checked')){
+                            cb = 'ok';
+                            ok = true;
+                            id = $(this).attr('id').substr(0,9);
+                            console.log('ok - ' + $(this).attr('id'));
+                        }
+                        else ok = false;
+                    }
+                });
+            }
+
+            return ok;
         }
+
+        $('#btn-rekam').on('click',function(){
+            ok = true;//cek_field_wajib();
+
+            if(ok) {
+                swal({
+                    title: 'Yakin ingin menyimpan data?',
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((createData) => {
+                    if (createData) {
+                        var data = {};
+                        data['customer'] = {};
+                        data['keycustomer'] = [];
+                        data['customercrm'] = {};
+                        data['keycustomercrm'] = [];
+                        data['hobby'] = {};
+                        data['hobby_ket'] = {};
+                        data['bank'] = {};
+
+                        $('[id^="cus_"]').each(function () {
+                            data.customer[$(this).attr('id')] = $(this).val();
+                            data.keycustomer.push($(this).attr('id'));
+                            // inputValue.push($(this).val());
+                        });
+
+                        $('[id^="crm_"]').each(function () {
+                            data.customercrm[$(this).attr('id')] = $(this).val();
+                            data.keycustomercrm.push($(this).attr('id'));
+                            // inputValue.push($(this).val());
+                        });
+
+                        indexHobby = 0;
+                        for (i = 0; i < arrhobby.length; i++) {
+                            if ($('.row_hobby_' + i).find('#cb_h' + $('.row_hobby_' + i).attr('id')).is(':checked')) {
+                                data.hobby[indexHobby] = arrhobby[i].hob_kodehobby;
+                                data.hobby_ket[indexHobby] = $('.row_hobby_' + i).find('#cb_h' + $('.row_hobby_' + i).attr('id') + '_ket').val();
+                                indexHobby++;
+                            }
+                        }
+
+                        if ($('#cb_jenisanggotaR').is(':checked')) {
+                            data.customercrm['crm_jenisanggota'] = 'R';
+                        }
+                        else data.customercrm['crm_jenisanggota'] = 'K';
+                        data.keycustomercrm.push('crm_jenisanggota');
+
+                        if ($('#cb_jeniskelaminL').is(':checked')) {
+                            data.customercrm['crm_jeniskelamin'] = 'L';
+                        }
+                        else data.customercrm['crm_jeniskelamin'] = 'P';
+                        data.keycustomercrm.push('crm_jeniskelamin');
+
+                        if ($('#i_pendidikanX').is(':visible')) {
+                            data.customercrm['crm_pendidikanakhir'] = $('#i_pendidikanX').val();
+                        }
+                        else data.customercrm['crm_pendidikanakhir'] = $('#i_pendidikan').val();
+                        data.keycustomercrm.push('crm_pendidikanakhir');
+
+                        if ($('#cb_internetY').is(':checked')) {
+                            data.customercrm['crm_internet'] = 'Y';
+                        }
+                        else data.customercrm['crm_internet'] = 'T';
+                        data.keycustomercrm.push('crm_internet');
+
+                        if ($('#c_metodekirimX').is(':visible')) {
+                            data.customercrm['crm_metodekirim'] = $('#c_metodekirimX').val();
+                        }
+                        else data.customercrm['crm_metodekirim'] = $('#c_metodekirim').val();
+                        data.keycustomercrm.push('crm_metodekirim');
+
+                        if ($('#cb_jenisbangunanP').is(':checked')) {
+                            data.customercrm['crm_jenisbangunan'] = 'P';
+                        }
+                        else if ($('#cb_jenisbangunanS').is(':checked')) {
+                            data.customercrm['crm_jenisbangunan'] = 'S';
+                        }
+                        else data.customercrm['crm_jenisbangunan'] = 'N';
+                        data.keycustomercrm.push('crm_jenisbangunan');
+
+                        if ($('#i_statusbangunanM').is(':checked')) {
+                            data.customercrm['crm_statusbangunan'] = 'M';
+                        }
+                        else data.customercrm['crm_statusbangunan'] = 'S';
+                        data.keycustomercrm.push('crm_statusbangunan');
+
+                        if ($('#cb_jeniskendaraanMotor').is(':checked')) {
+                            if ($('#i_motorX').is(':visible'))
+                                data.customercrm['crm_motor'] = $('#i_motorX').val();
+                            else data.customercrm['crm_motor'] = $('#i_motor').val();
+                        }
+                        else data.customercrm['crm_motor'] = '';
+                        data.keycustomercrm.push('crm_motor');
+
+                        if ($('#cb_jeniskendaraanMobil').is(':checked')) {
+                            if ($('#i_mobilX').is(':visible'))
+                                data.customercrm['crm_mobil'] = $('#i_mobilX').val();
+                            else data.customercrm['crm_mobil'] = $('#i_mobil').val();
+                        }
+                        else data.customercrm['crm_mobil'] = '';
+                        data.keycustomercrm.push('crm_mobil');
+
+                        data.customercrm['crm_idgroupkat'] = idgroupkat;
+                        data.keycustomercrm.push('crm_idgroupkat');
+
+                        indexBank = 0;
+                        for (i = 0; i < arrbank.length; i++) {
+                            if ($('.row_fasilitasperbankan_' + i).find('#cb_b' + $('.row_fasilitasperbankan_' + i).attr('id')).is(':checked')) {
+                                data.bank[indexBank] = arrbank[i].fba_kodefasilitasbank;
+                                indexBank++;
+                            }
+                        }
+
+                        // console.log(data);
+
+                        $.ajax({
+                            url: '/BackOffice/public/mstmember/update_member',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            // data: {kodemember: member.cus_kodemember, member: memberNew, membercrm: membercrmNew},
+                            data: data,
+                            beforeSend: function () {
+                                $('#modal-loader').modal('toggle');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('toggle');
+                                if (response.status == 'success') {
+                                    swal({
+                                        title: response['message'],
+                                        icon: "success"
+                                    });
+                                }
+                                else {
+                                    swal({
+                                        title: response.message,
+                                        icon: "error"
+                                    }).then(function () {
+                                        $('#cus_kodemember').val(member.cus_kodemember);
+                                        $('#cus_kodemember').select();
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            else{
+                swal({
+                    title: 'Data  yang diinputkan belum lengkap!',
+                    icon: "warning",
+                    timer: 750,
+                    buttons: false,
+                }).then(function(){
+                    $('#btn-'+$('.kosong').parent().parent().parent().parent().parent().parent().attr('id')).click();
+                    $('.kosong').select();
+                });
+            }
+        });
+
+        $('#btn-export-crm').on('click',function(){
+            swal({
+                title: 'Apabila ada perubahan data, pastikan sudah disimpan sebelum diexport ke CRM! Lanjut export?',
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((createData) => {
+                if (createData) {
+                    $.ajax({
+                        url: '/BackOffice/public/mstmember/export_crm',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {kodemember: member.cus_kodemember},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('toggle');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('toggle');
+                            if (response.status == 'success') {
+                                swal({
+                                    title: response['message'],
+                                    icon: "success"
+                                });
+                            }
+                            else {
+                                swal({
+                                    title: response.message,
+                                    icon: "error"
+                                }).then(function () {
+                                    $('#cus_kodemember').val(member.cus_kodemember);
+                                    $('#cus_kodemember').select();
+                                });
+
+                            }
+                        }
+                    });
+                }
+            });
+        });
 
         //buat hobby $('.row_hobby_1').find('#i_'+$('.row_hobby_1').attr('id')).is(':checked')
     </script>

@@ -12,17 +12,17 @@
                             <table class="table table-sm border-bottom  justify-content-md-center" id="table-harilibur">
                                 <thead class="thead-dark">
                                 <tr class="row justify-content-md-center p-0">
-                                    <th class="col-sm-5">Tanggal</th>
-                                    <th class="col-sm-4">Keterangan</th>
+                                    <th class="col-sm-3">Tanggal</th>
+                                    <th class="col-sm-6">Keterangan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($harilibur as $dataHariLibur)
                                     <tr class="row baris justify-content-md-center p-0">
-                                        <td class="col-sm-5 pt-0 pb-0" >
+                                        <td class="col-sm-3 pt-0 pb-0" >
                                             <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_tgllibur}}">
                                         </td>
-                                        <td class="col-sm-4 pt-0 pb-0">
+                                        <td class="col-sm-6 pt-0 pb-0">
                                             <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_keteranganlibur}}">
                                         </td>
                                     </tr>

@@ -12,33 +12,33 @@
                                 <label class="col-sm-4 col-form-label text-md-right">Kode Plu</label>
                                 <input type="text" id="kodePlu" class="form-control col-sm-2 mx-sm-1" onchange="getDetailPlu(this.value)">
                                 <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_prodmast"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
-                                <input type="text" id="#" class="form-control col-sm-5 mx-sm-1" disabled>
+                                <input type="text" id="namaPlu" class="form-control col-sm-5 mx-sm-1" disabled>
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Divisi</label>
-                                <input type="text" id="#" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="#" class="form-control col-sm-4 mx-sm-1" disabled>
+                                <input type="text" id="kodeDivisi" class="form-control col-sm-1 mx-sm-1" disabled>
+                                <input type="text" id="namaDivisi" class="form-control col-sm-4 mx-sm-1" disabled>
                             </div>
                             <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Department</label>
-                                <input type="text" id="#" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="#" class="form-control col-sm-4 mx-sm-1" disabled>
+                                <label class="col-sm-4 col-form-label text-md-right">Departement</label>
+                                <input type="text" id="kodeDepartement" class="form-control col-sm-1 mx-sm-1" disabled>
+                                <input type="text" id="namaDepartement" class="form-control col-sm-4 mx-sm-1" disabled>
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Kategori Barang</label>
-                                <input type="text" id="#" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="#" class="form-control col-sm-4 mx-sm-1" disabled>
+                                <input type="text" id="kodeKategori" class="form-control col-sm-1 mx-sm-1" disabled>
+                                <input type="text" id="namaKategori" class="form-control col-sm-4 mx-sm-1" disabled>
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Harga Jual Lama</label>
-                                <input type="text" id="#" class="form-control col-sm-2 mx-sm-1" disabled>
+                                <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-1" disabled>
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Harga Jual Baru</label>
-                                <input type="text" id="#" class="form-control col-sm-2 mx-sm-1" disabled>
+                                <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-1" disabled>
                             </div>
 
-                            <button type="button" class="btn btn-primary pl-4 pr-4 float-right">Aktifkan</button>
+                            <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right btnAktifkanHrg" onclick="aktifkanHarga()">Aktifkan</button>
                         </form>
                     </div>
                 </fieldset>
@@ -65,13 +65,13 @@
                                 <table class="table table-sm mb-0" id="table_lov">
                                     <thead>
                                     <tr>
-                                        <td>Kode Barang</td>
-                                        <td>Nama Barang</td>
+                                        <th>Kode Barang</th>
+                                        <th>Nama Barang</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tbodyModalProdmast">
                                     @foreach($prodmast as $data)
-                                        <tr onclick="lov_select('{{ $data->prd_prdcd }}')" class="row_lov">
+                                        <tr onclick="getDetailPlu('{{ $data->prd_prdcd }}')" class="row_lov">
                                             <td>{{ $data->prd_prdcd }}</td>
                                             <td>{{ $data->prd_deskripsipanjang }}</td>
                                         </tr>
@@ -86,20 +86,46 @@
         </div>
     </div>
 
+    <style>
+        .row_lov:hover{
+            cursor: pointer;
+            background-color: #acacac;
+            color: white;
+        }
+
+    </style>
+
     <script>
-        // function getProdmast() {
-        //     ajaxSetup();
-        //     $.ajax({
-        //         url: '/BackOffice/public/mstaktifhrgjual/getprodmast',
-        //         type: 'post',
-        //         data:({}),
-        //         success: function (result) {
-        //             $('#m_prodmast').modal('show');
-        //         }, error : function () {
-        //             swal("Error",'','error');
-        //         }
-        //     })
-        // }
+        $('#kodePlu').keypress(function (e) {
+            if (e.which === 13){
+                $('.btnAktifkanHrg').focus()
+                getDetailPlu(this.value)
+            }
+        });
+
+        function aktifkanHarga() {
+            let plu     = $('#kodePlu').val();
+            let harga   = $('#hargaBaru').val();
+
+            if (harga < 1 ){
+                swal('Warning', 'Tidak Ada Perubahan Harga', 'warning')
+                clearField();
+            } else {
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/mstaktifhrgjual/aktifkanhrg',
+                    type: 'post',
+                    data:({plu:plu}),
+                    success: function (result) {
+                        swal('SUCCESS', result, 'success')
+                        clearField()
+                    }, error : function () {
+                        swal("Error",'','error');
+                    }
+                })
+            }
+        }
+
 
         $('#searchProdmast').keypress(function (e) {
             if (e.which === 13) {
@@ -107,13 +133,16 @@
                     $('.invalid-feedback').show();
                 } else {
                     $('.invalid-feedback').hide();
+                    $('#tbodyModalProdmast .row_lov').remove();
                     ajaxSetup();
                     $.ajax({
                         url: '/BackOffice/public/mstaktifhrgjual/getprodmast',
                         type: 'post',
                         data:({search:$(this).val()}),
                         success: function (result) {
-
+                            for(i =0; i < result.length; i++) {
+                                $('#tbodyModalProdmast').append("<tr onclick=getDetailPlu('"+ result[i].prd_prdcd +"') class='row_lov'> <td>"+ result[i].prd_prdcd +"</td><td>"+ result[i].prd_deskripsipanjang +"</td></tr>")
+                            }
                         }, error : function () {
                             swal("Error",'','error');
                         }
@@ -137,12 +166,43 @@
                     type: 'post',
                     data:({plu:plu}),
                     success: function (result) {
-                        console.log(result)
+                        if (result.length === 0){
+                            swal('Warning', 'Data PLU Tidak Ada', 'warning')
+                            clearField()
+                        } else {
+                            let data = result[0];
+                            $('#m_prodmast').modal('hide');
+                            clearField();
+                            $('#kodePlu').val(data.prd_prdcd)
+                            $('#namaPlu').val(data.prd_deskripsipanjang)
+                            $('#kodeDivisi').val(data.prd_kodedivisi)
+                            $('#namaDivisi').val(data.div_namadivisi)
+                            $('#kodeDepartement').val(data.prd_kodedepartement)
+                            $('#namaDepartement').val(data.dep_namadepartement)
+                            $('#kodeKategori').val(data.prd_kodekategoribarang)
+                            $('#namaKategori').val(data.kat_namakategori)
+                            $('#hargaLama').val(data.prd_hrgjual)
+                            $('#hargaBaru').val(data.prd_hrgjual3)
+                            $('.btnAktifkanHrg').focus()
+                        }
                     }, error : function () {
                         swal("Error",'','error');
                     }
                 })
             }
+        }
+
+        function clearField() {
+            $('#kodePlu').val('')
+            $('#namaPlu').val('')
+            $('#kodeDivisi').val('')
+            $('#namaDivisi').val('')
+            $('#kodeDepartement').val('')
+            $('#namaDepartement').val('')
+            $('#kodeKategori').val('')
+            $('#namaKategori').val('')
+            $('#hargaLama').val('')
+            $('#hargaBaru').val('')
         }
     </script>
 

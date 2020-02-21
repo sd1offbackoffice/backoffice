@@ -23,18 +23,20 @@ class cabangController extends Controller
         $kodeigr    = $request->kodeigr;
 
         $getDetail  = DB::table('tbmaster_cabang')->select('*')->where('cab_kodecabang', $kodeigr)->get();
+//        $test   = 1;
 
         return response()->json($getDetail);
+//        return response()->json(['getDetail' => $getDetail, 'test' => $test]);
     }
 
     public function editDataCabang(Request $request){
-        $kodeigr    = $request->kodeigr;
         $namacabang = $request->namacabang;
         $alamat1    = $request->alamat1;
         $alamat2    = $request->alamat2;
         $alamat3    = $request->alamat3;
-        $telephone  = $request->telephone;
         $faximile   = $request->faximile;
+        $telephone  = $request->telephone;
+        $kodeigr    = $request->kodeigr;
         $npwp       = $request->npwp;
         $nosk       = $request->nosk;
         $tglsk      = $request->tglsk;
@@ -65,7 +67,6 @@ class cabangController extends Controller
     public function transDataAnakCab(Request $request){
         $getKodeigr = DB::table('tbmaster_perusahaan')->select('prs_kodeigr')->first();
         $kodeigr    = $getKodeigr->prs_kodeigr;
-//        $kodeigr    = '23';
         date_default_timezone_set('Asia/Jakarta');
         $date       = date('ymd');
         $errm       = '';
@@ -102,6 +103,12 @@ class cabangController extends Controller
             return response()->json(["msg" => $msg, "kode" => 0]);
 
         }
+    }
+
+    public function test2(Request $request){
+        $test = $request->test;
+
+        return $test;
     }
 }
 

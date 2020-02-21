@@ -37,20 +37,35 @@
                                 <table class="table table-sm table-striped table-bordered display compact" id="tableTokoOmi">
                                     <thead style="background-color: #5AA4DD; color: white">
                                     <tr class=" thNormal">
-                                        <th width="20px">Kode</th>
-                                        <th width="130px">Nama</th>
-                                        <th width="20px">Fee</th>
-                                        <th width="50px">Distribution Fee</th>
-                                        <th width="30px">Kode</th>
-                                        <th width="110px">Member</th>
-                                        <th width="40px">Tgl Go</th>
-                                        <th width="40px">Tgl Tutup</th>
-                                        <th width="20px">Flag <br>  VB</th>
-                                        <th width="20px">Flag <br>  Margin</th>
-                                        <th width="40px">Sub Pemanjangan</th>
-                                        <th width="20px">Sub CLO</th>
-                                        <th width="20px">Sub Tipe</th>
-                                        <th width="30px">Action</th>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
+                                        <th>Fee</th>
+                                        <th>Distribution Fee</th>
+                                        <th>Kode</th>
+                                        <th>Member</th>
+                                        <th>Tgl Go</th>
+                                        <th>Tgl Tutup</th>
+                                        <th>Flag <br>  VB</th>
+                                        <th>Flag <br>  Margin</th>
+                                        <th>Sub Pemanjangan</th>
+                                        <th>Sub CLO</th>
+                                        <th>Sub Tipe</th>
+                                        <th>Action</th>
+
+                                        {{--<th width="20px">Kode</th>--}}
+                                        {{--<th width="130px">Nama</th>--}}
+                                        {{--<th width="20px">Fee</th>--}}
+                                        {{--<th width="50px">Distribution Fee</th>--}}
+                                        {{--<th width="30px">Kode</th>--}}
+                                        {{--<th width="110px">Member</th>--}}
+                                        {{--<th width="40px">Tgl Go</th>--}}
+                                        {{--<th width="40px">Tgl Tutup</th>--}}
+                                        {{--<th width="20px">Flag <br>  VB</th>--}}
+                                        {{--<th width="20px">Flag <br>  Margin</th>--}}
+                                        {{--<th width="40px">Sub Pemanjangan</th>--}}
+                                        {{--<th width="20px">Sub CLO</th>--}}
+                                        {{--<th width="20px">Sub Tipe</th>--}}
+                                        {{--<th width="30px">Action</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyTableOmi"></tbody>
@@ -311,7 +326,9 @@
 
         $(document).ready(function () {
             $('#tableTokoOmi').DataTable({
-                "lengthChange": false
+                "lengthChange": false,
+                "ordering" : false,
+                scrollY : 500,
             });
             $('.flagKph').hide();
             // $('#m_detailTokoOmi').modal('show');
@@ -350,8 +367,9 @@
                     hari:hari,
                 },
                 success: function (result) {
-                    console.log(result)
-                    swal('Success', result, 'success')
+                    swal('Success', result, 'success');
+                    $('#m_detailTokoOmi').modal('hide');
+                    getTokoOmi();
                 }, error: function () {
                     swal("Error",'','error');
                 }

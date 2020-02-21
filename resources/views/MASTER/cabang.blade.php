@@ -173,7 +173,7 @@
         $(document).on('keypress', '#i_kodeCabang', function (e) {
             if(e.which == 13) {
                 e.preventDefault();
-                let kodeigr = $('#i_kodeCabang').val();
+                let kodeigr = $('#i_kodeCabang').val(); console.log(kodeigr)
                 let proses = chooseBranch(kodeigr);
             }
         });
@@ -185,14 +185,13 @@
                 type: 'post',
                 data: {},
                 success: function (result) {
-                    console.log(result);
                     if (result.kode === 1){
                         swal("SUKSES",result.msg, "success");
                     } else {
                         swal("Error",result.msg, "error");
                     }
                 }, error: function () {
-
+                    alert('error');
                 }
             })
         }
@@ -221,6 +220,7 @@
                 type: 'post',
                 data:{kodeigr:kodeigr},
                 success: function (result) {
+                    // console.log(result)
                     let data = result[0];
 
                     if (!data){

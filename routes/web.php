@@ -20,37 +20,27 @@ Route::get('/', function () {
 //Route::get('/mstharilibur/index','MASTER\harilibur');
 Route::get('/mstharilibur/index','MASTER\hariliburController@index');
 
-/******** Denny ********/
+/******** Denni ********/
 //MST_PERUSAHAAN
 Route::get('/mstperusahaan/index','MASTER\perusahaanController@index');
 
 //MST_BARCODE
 Route::get('/mstbarcode/index','MASTER\barcodeController@index');
-Route::post('/mstbarcode/search_barcode','MASTER\barcodeController@search_barcode');
 
 //MST_KATEGORITOKO
 Route::get('/mstkategoritoko/index','MASTER\kategoritokoController@index');
-Route::post('/mstkategoritoko/getDataKtk','MASTER\kategoritokoController@getDataKtk');
-Route::post('/mstkategoritoko/saveDataKtk','MASTER\kategoritokoController@saveDataKtk');
 
 //MST_APPROVAL
 Route::get('/mstapproval/index','MASTER\approvalController@index');
-Route::post('/mstapproval/saveData','MASTER\approvalController@saveData');
 
 //MST_JENISITEM
-Route::get('/mstjenisitem/index','MASTER\jenisitemController@index');
-Route::post('/mstjenisitem/lov_search','MASTER\jenisitemController@lov_search');
-Route::post('/mstjenisitem/lov_select','MASTER\jenisitemController@lov_select');
-Route::post('/mstjenisitem/savedata','MASTER\jenisitemController@savedata');
+Route::get('/mstjenisitem/index','MASTER\jenisItemController@index');
 
 //MST_KUBIKASIPLANO
 Route::get('/mstkubikasiplano/index','MASTER\kubikasiPlanoController@index');
-Route::post('/mstkubikasiplano/lov_subrak','MASTER\kubikasiPlanoController@lov_subrak');
-Route::post('/mstkubikasiplano/lov_shelving','MASTER\kubikasiPlanoController@lov_shelving');
-Route::post('/mstkubikasiplano/dataRakKecil','MASTER\kubikasiPlanoController@dataRakKecil');
-Route::post('/mstkubikasiplano/lov_search','MASTER\kubikasiPlanoController@lov_search');
-Route::post('/mstkubikasiplano/save_kubikasi','MASTER\kubikasiPlanoController@save_kubikasi');
 
+//IGR_BO_INQUERY (INFORMASI DAN HISTORY PRODUK)
+Route::get('/mstinformasihistoryproduct/index','MASTER\informasiHistoryProductController@index');
 
 /******** Leo ********/
 /*MASTER SUPPLIER*/
@@ -81,6 +71,23 @@ Route::get('/mstmember/lov_member_search','MASTER\memberController@lov_member_se
 Route::get('/mstmember/lov_kodepos_search','MASTER\memberController@lov_kodepos_search');
 Route::get('/mstmember/lov_member_select','MASTER\memberController@lov_member_select');
 Route::get('/mstmember/lov_kodepos_select','MASTER\memberController@lov_kodepos_select');
+Route::get('/mstmember/set_status_member','MASTER\memberController@set_status_member');
+Route::post('/mstmember/check_password','MASTER\memberController@check_password');
+Route::post('/mstmember/update_member','MASTER\memberController@update_member');
+Route::post('/mstmember/export_crm','MASTER\memberController@export_crm');
+
+
+/******** Michelle ********/
+// Inquiry Supplier Produk
+Route::get('/inqsupprod/index','MASTER\inquerySuppProdController@index');
+
+// Inquiry Produk Supplier
+Route::get('/inqprodsupp/index','MASTER\inqueryProdSuppController@index');
+Route::post('/inqprodsupp/prodSupp','MASTER\inqueryProdSuppController@prodSupp');
+
+
+
+
 
 
 
@@ -110,3 +117,8 @@ Route::POST('/mstomi/updatetokoomi',        'MASTER\omiController@updateTokoOmi'
 Route::get('/mstaktifhrgjual/index',        'MASTER\aktifHargaJualController@index');
 Route::post('/mstaktifhrgjual/getdetailplu','MASTER\aktifHargaJualController@getDetailPlu');
 Route::post('/mstaktifhrgjual/getprodmast', 'MASTER\aktifHargaJualController@getProdmast');
+Route::post('/mstaktifhrgjual/aktifkanhrg', 'MASTER\aktifHargaJualController@aktifkanHarga');
+
+// MASTER_AKTIF_ALL_HARGA_JUAL
+Route::get('/mstaktifallhrgjual/index',     'MASTER\aktifAllHargaJualController@index');
+Route::post('mstaktifallhrgjual/aktifallitem', 'MASTER\aktifAllHargaJualController@aktifkanAllItem');

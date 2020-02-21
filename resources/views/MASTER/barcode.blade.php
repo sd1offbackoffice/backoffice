@@ -128,7 +128,7 @@
             convert_plu();
             var prdcd = $('#i_prdcd').val();
             $.ajax({
-                url: '/BackOffice/public/mstbarcode/search_barcode',
+                url: '/BackOffice/public/api/mstbarcode/search_barcode',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}",value:prdcd},
                 beforeSend: function(){
