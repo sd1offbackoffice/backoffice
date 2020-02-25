@@ -1,7 +1,6 @@
 @extends('navbar')
 @section('content')
 
-
     <div class="container mt-3">
         <div class="row">
             <div class="col-sm-12">
@@ -15,23 +14,23 @@
                                         <div class="row text-right">
                                             <div class="col-sm-12">
                                                 <div class="form-group row mb-0">
-                                                    <label for="i_kodesupplier" class="col-sm-2 col-form-label">PLU</label>
+                                                    <label for="i_kodeplu" class="col-sm-2 col-form-label">PLU</label>
                                                     <div class="col-sm-2">
-                                                        <input type="text" class="form-control" id="i_kodesupplier">
+                                                        <input type="text" class="form-control" id="i_kodeplu">
                                                     </div>
                                                     {{--<button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodesupplierHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
-                                                    <label for="i_namasupplier" class="col-sm-2 col-form-label">Nama PLU</label>
+                                                    <label for="i_deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
                                                     <div class="col-sm-5">
-                                                        <input type="text" class="form-control" id="i_namasupplier">
+                                                        <input type="text" class="form-control" id="i_deskripsi">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </form>
                                     <tbody>
-                                    @php
-                                        $i = 0;
-                                    @endphp
+                                    {{--@php--}}
+                                        {{--$i = 0;--}}
+                                    {{--@endphp--}}
                                     {{--@foreach($divisi as $div)--}}
                                     {{--<tr id="row_divisi_{{ $i }}"class="row_divisi d-flex" onclick="divisi_select('{{ $div->div_kodedivisi }}','{{ $i++ }}')">--}}
                                     {{--<td class="col-4">{{ $div->div_kodedivisi }}</td>--}}
@@ -47,7 +46,7 @@
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-4">Detail</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                        <table id="table_departement" class="table table-sm">
+                                        <table id="table_detail" class="table table-sm">
                                             <thead>
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
@@ -60,17 +59,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {{--@foreach($result as $r)--}}
-                                            {{--<tr class="row_detail d-flex">--}}
-                                            {{--<td class="col-sm-1">{{ $r->mstd_prdcd }}</td>--}}
-                                            {{--<td class="col-sm-3">{{ $r->prd_deskripsipendek }}</td>--}}
-                                            {{--<td class="col-sm-1 pl-0 pr-0">{{ $r->st_sales }}</td>--}}
-                                            {{--<td class="col-sm-2">{{ $r->st_saldoakhir }}</td>--}}
-                                            {{--<td class="col-sm-2">{{ $r->pkm_pkmt }}</td>--}}
-                                            {{--<td class="col-sm-2">{{ $r->prd_lastcost }}</td>--}}
-                                            {{--<td class="col-sm-1">{{ $r->prd_kodetag}}</td>--}}
-                                            {{--</tr>--}}
-                                            {{--@endforeach--}}
+                                            <tr class="row_detail d-flex">
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -83,6 +73,22 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="loader" id="loader"></div>
+                            <div class="col-sm-12 text-center">
+                                <label for="">LOADING...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -107,7 +113,7 @@
             margin: 0;
         }
 
-        .row_divisi:hover{
+        .row_detail:hover{
             cursor: pointer;
             background-color: grey;
         }
@@ -125,40 +131,64 @@
     </style>
 
     <script>
-        $(':input').prop('readonly',true);
-        $('.custom-select').prop('disabled',true);
-        $('#i_kodesupplier').prop('readonly',false);
-        $('#search_lov').prop('readonly',false);
+        // $(':input').prop('readonly',true);
+        // $('.custom-select').prop('disabled',true);
+        // $('#i_kodesupplier').prop('readonly',false);
+        // $('#search_lov').prop('readonly',false);
+        //
+        // $('#row_divisi_0').addClass('table-success');
+        //
+        // $(document).ready(function () {
+        //
+        // })
 
-        $('#row_divisi_0').addClass('table-success');
-
-        $(document).ready(function () {
-
-        })
-
-        function divisi_select(value, row) {
-            $('.row_divisi').removeClass('table-success');
-            $('#row_divisi_'+row).addClass('table-success');
-            $.ajax({
-                url: '/BackOffice/public/mstdepartement/divisi_select',
-                type:'GET',
-                data:{"_token":"{{ csrf_token() }}", value: value},
-                success: function(response){
-                    $('#table_departement .row_departement').remove();
-                    html = "";
-                    for(i=0;i<response.length;i++){
-                        html = '<tr class="row_departement d-flex"><td class="col-1">'+null_check(response[i].dep_kodedepartement)+'</td><td class="col-4">'+null_check(response[i].dep_namadepartement)+'</td><td class="col-1 pl-0 pr-0">'+null_check(response[i].dep_singkatandepartement)+'</td><td class="col-2">'+null_check(response[i].dep_kodemanager)+'</td><td class="col-2">'+null_check(response[i].dep_kodesecurity)+'</td><td class="col-2">'+null_check(response[i].dep_kodedepartement)+'</td></tr>';
-                        $('#table_departement').append(html);
+        $(document).on('keypress', '#i_kodeplu', function (e) {
+            if(e.which == 13) {
+                e.preventDefault();
+                let kodeplu = $('#i_kodeplu').val();
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/inqsupprod/suppProd',
+                    type: 'post',
+                    data: {kodeplu:kodeplu},
+                    beforeSend: function(){
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (result) {
+                        $('#modal-loader').modal('hide');
+                        console.log(result)
+                        $('#table_detail .row_detail').remove();
+                        if(result) {
+                            var html = "";
+                            var i;
+                            for (i = 0; i < result.data.length; i++) {
+                                    html =
+                                // '<tr class="rowdetail d-flex">' +
+                                //     '<td class="col-1">' + result.data[i].mstd_prdcd + '</td>' +
+                                //     '<td class="col-3">' + result.data[i].prd_deskripsipendek + '</td>' +
+                                //     '<td class="col-1 pl-0 pr-0">' + result.data[i].st_sales + '</td>' +
+                                //     '<td class="col-2">' + result.data[i].st_saldoakhir + '</td>' +
+                                //     '<td class="col-2">' + result.data[i].pkm_pkmt + '</td>' +
+                                //     '<td class="col-2">' + result.data[i].prd_lastcost + '</td>' +
+                                //     '<td class="col-1">' + result.data[i].prd_kodetag + '</td>' +
+                                //     '</tr>'
+                                // $('#i_namasupplier').val(result.data[i].sup_namasupplier);
+                                // $('#i_totalitem').val(result.count);
+                                $('#table_detail').append(html);
+                            }
+                        }
+                    }, error: function () {
+                        alert('error');
                     }
-                }
-            });
-        }
+                })
+            }
+        });
 
-        function null_check(value){
-            if(value == null)
-                return '';
-            else return value;
-        }
+        // function null_check(value){
+        //     if(value == null)
+        //         return '';
+        //     else return value;
+        // }
     </script>
 
 @endsection

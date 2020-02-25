@@ -73,7 +73,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-4 offset-sm-8">
-                                    <button type="button" class="btn btnOKC" onclick="trfDataAnakCab()">Trf Data Aak Cabang</button>
+                                    <button type="button" class="btn btnOKC" onclick="trfDataAnakCab()">Trf Data Anak Cabang</button>
                                     <button type="button" class="field field13 btn btn-primary" onclick="editBranch()" field="13">Submit</button>
                                     {{--<button type="button" class="field field13 btn btnSubmit" onclick="editBranch()" field="13">Submit</button>--}}
                                 </div>
@@ -247,6 +247,13 @@
                         $('#i_alamat1').val(data.cab_alamat1);
                         $('#i_alamat2').val(data.cab_alamat2);
                         $('#i_alamat3').val(data.cab_alamat3);
+                        $('#i_telephone').val(data.cab_teleponcabang);
+                        $('#i_faximile').val(data.cab_faxcabang);
+                        $('#i_npwp').val(data.cab_npwpcabang);
+                        $('#i_noSK').val(data.cab_nosk);
+                        $('#i_tglSK').val(data.cab_tglsk);
+                        $('#i_kodeAnakCabang').val(data.CAB_KODECABANG_ANAK);
+                        $('#i_namaAnakCabang').val(data.CAB_NAMACABANG_ANAK);
                         globalVar = 0;
                     }
                 }, error: function () {

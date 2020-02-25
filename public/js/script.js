@@ -24,6 +24,14 @@ function convertToRupiah(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// Untuk merubah angka biasa menjadi format Rupiah tanpa .00
+// Created By : Leo(25/02/2020) | Modify By :
+function convertToRupiah2(number) {
+    if (!number)
+        return 0;
+    else return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // Untuk merubah format Rupiah menjadi angka biasa
 // Created By : Denni(21/02/2020) | Modify By :
 function unconvertToRupiah(number) {

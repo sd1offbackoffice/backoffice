@@ -75,11 +75,20 @@ Route::get('/mstmember/set_status_member','MASTER\memberController@set_status_me
 Route::post('/mstmember/check_password','MASTER\memberController@check_password');
 Route::post('/mstmember/update_member','MASTER\memberController@update_member');
 Route::post('/mstmember/export_crm','MASTER\memberController@export_crm');
+Route::post('/mstmember/save_quisioner','MASTER\memberController@save_quisioner');
+Route::post('/mstmember/hapus_member','MASTER\memberController@hapus_member');
+
+/*BACK OFFICE - UPLOAD DAN MONITORING KKEI TOKO IGR*/
+Route::get('/bokirimkkei/index','BACKOFFICE\KirimKKEIController@index');
+
+/*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
+Route::get('/bokkei/index','BACKOFFICE\KKEIController@index');
 
 
 /******** Michelle ********/
 // Inquiry Supplier Produk
 Route::get('/inqsupprod/index','MASTER\inquerySuppProdController@index');
+Route::get('/inqsupprod/suppProd','MASTER\inquerySuppProdController@suppProd');
 
 // Inquiry Produk Supplier
 Route::get('/inqprodsupp/index','MASTER\inqueryProdSuppController@index');

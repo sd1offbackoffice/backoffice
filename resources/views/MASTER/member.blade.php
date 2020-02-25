@@ -19,7 +19,12 @@
                                         <button type="button" id="btn-modal-member" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     </div>
 
-                                    <label for="i_statusmember" class="col-sm-4 col-form-label">Status</label>
+                                    <div class="col-sm-3 text-center">
+                                        <div id="segment" class="segment rounded" style="display:none">
+                                            <label class="col-form-label">MEMBER PLATINUM</label>
+                                        </div>
+                                    </div>
+                                    <label for="i_statusmember" class="col-sm-1 col-form-label">Status</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="i_statusmember">
                                     </div>
@@ -735,19 +740,19 @@
 
                                     </div>
                                     <div class="col-sm-1">
-                                        <button id="btn-rekam" class="btn btn-primary">REKAM</button>
+                                        <button id="btn-rekam" class="btn btn-primary" disabled>REKAM</button>
                                     </div>
                                     <div class="col-sm-2 pl-0">
-                                        <button id="btn-aktif-nonaktif" class="btn btn-primary">AKTIF / NONAKTIF</button>
+                                        <button id="btn-aktif-nonaktif" class="btn btn-primary" disabled>AKTIF / NONAKTIF</button>
                                     </div>
                                     <div class="col-sm-1 pl-0">
-                                        <button id="btn-hapus" class="btn btn-danger">HAPUS</button>
+                                        <button id="btn-hapus" class="btn btn-danger" disabled>HAPUS</button>
                                     </div>
                                     <div class="col-sm-1 pl-0">
-                                        <button id="btn-quisioner" class="btn btn-info d-none">QUISIONER</button>
+                                        <button id="btn-quisioner" class="btn btn-info" style="display:none">QUISIONER</button>
                                     </div>
                                     <div class="col-sm-5">
-                                        <button id="btn-export-crm" class="btn btn-success">EXPORT KE CRM</button>
+                                        <button id="btn-export-crm" class="btn btn-success" disabled>EXPORT KE CRM</button>
                                     </div>
                                 </div>
                             </div>
@@ -953,6 +958,85 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_quisioner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <fieldset class="card border-secondary">
+                                    <legend  class="w-auto ml-3">Quisioner Member Khusus</legend>
+                                    <div class="card-body">
+                                        <div class="row text-right">
+                                            <form>
+                                            <div class="col-sm-12">
+                                                <div class="form-group row mb-0">
+                                                    <label for="q_kodemember" class="col-sm-3 col-form-label">Kode Member</label>
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" id="q_kodemember">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="q_namamember" class="col-sm-3 col-form-label wajib">Nama Member</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" id="q_namamember">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-wrapper-scroll-y my-custom-scrollbar-hobby mb-2">
+                                                <table class="table table-sm mb-0" id="table_quisioner">
+                                                    <thead>
+                                                    <tr>
+                                                        <td>Item</td>
+                                                        <td>Dijual</td>
+                                                        <td>Beli di IGR</td>
+                                                        <td>Beli Tempat Lain</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($produkmember as $pm)
+                                                        <tr class="row_quisioner" id="q_{{ $pm->mpm_kodeprdcd }}">
+                                                            <td>{{ $pm->mpm_namaprdcd }}</td>
+                                                            <td>
+                                                                <input type="text" maxlength="1" pattern="[Y|N]" class="quisioner dijual form-control">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" maxlength="1" class="quisioner beli-igr form-control">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" maxlength="1" class="quisioner beli-lain form-control">
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <div class="form-group row mb-0">
+                                                    <div class="col-sm-5 text-left">
+                                                        <label>Inputan Quisioner : [ Y / blank ]</label>
+                                                    </div>
+                                                    <div class="col-sm-5"></div>
+                                                    <div class="col-sm-1">
+                                                        <button type="submit" id="btn-q-save" class="btn btn-primary">SAVE</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{--LOADER--}}
     <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
         <div class="modal-dialog modal-dialog-centered" role="document" >
@@ -1064,6 +1148,19 @@
             box-shadow: 0 0 10px red !important;
         }
 
+        .segment{
+            background-color: lightgrey;
+        }
+
+        .segment label{
+            font-weight: bold !important;
+            color: red !important;
+        }
+        
+        .table-wrapper{
+            overflow-y: scroll;
+        }
+
     </style>
 
     <script>
@@ -1080,6 +1177,7 @@
         arrgroup = @php echo($group); @endphp;
         arrhobby = @php echo($hobby); @endphp;
         arrbank = @php echo($fasilitasperbankan); @endphp;
+        quisioner = '';
 
         member = '';
         idgroupkat = '';
@@ -1091,7 +1189,8 @@
         $('#i_mobil').hide();
         $('#i_mobilX').hide();
 
-        $('#btn-quisioner').hide();
+        // $('#btn-quisioner').hide();
+        // $('#m_quisioner').modal('toggle');
 
         // $('#btn-p_identitas2').click();
 
@@ -1127,87 +1226,6 @@
         });
 
         initial();
-
-
-
-        function initial(){
-            $('#btn-p_identitas').click();
-            $('.kosong').each(function(){
-                $(this).removeClass('kosong');
-            });
-
-            $(':input').prop('checked',false);
-            $('input[id^="cb_"]').each(function(){
-                $(this).prop('disabled',true);
-                $(this).prop('checked',false);
-            });
-            $(':input').prop('readonly',true);
-            $(':input').val('');
-            $('select').prop('disabled',true);
-
-            $('button').each(function(){
-                $(this).prop('disabled',true);
-            });
-            $('#btn-modal-member').prop('disabled',false);
-
-            // $('#btn-rekam').prop('disabled',true);
-            // $('#btn-aktif-nonaktif').prop('disabled',true);
-            // $('#btn-hapus').prop('disabled',true);
-            // $('#btn-quisioner').prop('disabled',true);
-            // $('#btn-export-crm').prop('disabled',true);
-            $('#cus_kodemember').prop('readonly',false);
-            $('#cus_kodemember').focus();
-        }
-
-        function ready(){
-            initial();
-
-            $(':input').prop('readonly',false);
-            $('input[id^="cb_"]').each(function(){
-                $(this).prop('disabled',false);
-            });
-            $('select').prop('disabled',false);
-            // $('#btn-rekam').prop('disabled',false);
-            // $('#btn-aktif-nonaktif').prop('disabled',false);
-            // $('#btn-hapus').prop('disabled',false);
-            // $('#btn-quisioner').prop('disabled',false);
-            // $('#btn-export-crm').prop('disabled',false);
-
-            $('button').each(function(){
-                $(this).prop('disabled',false);
-            });
-
-            $('#i_statusmember').prop('readonly',true);
-            $('#i_updateterakhir').prop('readonly',true);
-            $('#cus_alamatmember3').prop('readonly',true);
-            $('#i_kecamatanktp').prop('readonly',true);
-            $('#cus_alamatmember2').prop('readonly',true);
-            $('#cus_alamatmember7').prop('readonly',true);
-            $('#i_kecamatansurat').prop('readonly',true);
-            $('#cus_alamatmember6').prop('readonly',true);
-            $('#crm_alamatusaha3').prop('readonly',true);
-            $('#pos_kecamatan').prop('readonly',true);
-            $('#crm_alamatusaha2').prop('readonly',true);
-            $('#i_jeniscustomer2').prop('readonly',true);
-            $('#i_jenisoutlet2').prop('readonly',true);
-            $('#grp_subgroup').prop('readonly',true);
-            $('#grp_kategori').prop('readonly',true);
-            $('#grp_subkategori').prop('readonly',true);
-            $('#crm_nohppic1').prop('readonly',true);
-            $('#crm_nohppic2').prop('readonly',true);
-            $('#cus_tglmulai').prop('readonly',true);
-            $('#cus_tglregistrasi').prop('readonly',true);
-            $('#cus_nokartumember').prop('readonly',true);
-            $('#i_alamatnpwp').prop('readonly',true);
-            $('#i_kelurahannpwp').prop('readonly',true);
-            $('#i_kodeposnpwp').prop('readonly',true);
-            $('#i_kotanpwp').prop('readonly',true);
-
-            $('input[id$="_ket"]').each(function (){
-                $(this).prop('disabled',true);
-            });
-        }
-
 
         //----------------------MULAI-------------------
 
@@ -1521,44 +1539,6 @@
                 }
             }
         });
-
-        function lov_group_select(id){
-            for(i=0;i<arrgroup.length;i++){
-                if(id.match(/([A-z])/g).length == id.length){
-                    if(id == arrgroup[i].grp_group){
-                        $('#grp_group').val(arrgroup[i].grp_group);
-                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
-                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
-                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
-                        idgroupkat = arrgroup[i].grp_idgroupkat;
-                        break;
-                    }
-                }
-                else{
-                    if(id == arrgroup[i].grp_idgroupkat){
-                        $('#grp_group').val(arrgroup[i].grp_group);
-                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
-                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
-                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
-                        idgroupkat = arrgroup[i].grp_idgroupkat;
-                        break;
-                    }
-                }
-            }
-
-            $('.diisi').each(function(){
-                if($(this).val() != null && $(this).val().length > 0){
-                    ok = false;
-                    $(this).removeClass('kosong');
-                }
-            });
-
-            if($('#m_groupHelp').is(':visible')){
-                $('#m_groupHelp').modal('toggle');
-            }
-
-            $('#cb_jenisanggotaR').focus();
-        }
 
         $('#cb_jenisanggotaR').on('keydown',function(event){
             if(event.which == 13){
@@ -2138,6 +2118,208 @@
             }
         });
 
+        $('#search_lov_member').keypress(function (e) {
+            if (e.which == 13) {
+                if(this.value.length == 0) {
+                    $('.invalid-feedback').hide();
+                    $('#table_lov_member .not-found').remove();
+                    $('#table_lov_member .row_lov').remove();
+                    $('#table_lov_member').append(trlovmember);
+                }
+                else if(this.value.length >= 4) {
+                    $('.invalid-feedback').hide();
+                    $.ajax({
+                        url: '/BackOffice/public/mstmember/lov_member_search',
+                        type: 'GET',
+                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        beforeSend: function(){
+                            $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (response) {
+                            $('#table_lov_member .row_lov').remove();
+                            html = "";
+                            if(response.length == 0){
+                                html = '<tr class="not-found"><td>Member tidak ditemukan</td></tr>';
+                                $('#table_lov_member').append(html);
+                            }
+                            else{
+                                for (i = 0; i < response.length; i++) {
+                                    html = '<tr class="row_lov" onclick=lov_member_select("' + response[i].cus_kodemember + '",true)><td>' + response[i].cus_namamember + '</td><td>' + response[i].cus_kodemember + '</td></tr>';
+                                    $('#table_lov_member').append(html);
+                                }
+                            }
+                        },
+                        complete: function(){
+                            $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: true});
+                            $('#modal-loader').modal('hide');
+                        }
+                    });
+                }
+                else{
+                    $('.invalid-feedback').show();
+                }
+            }
+        });
+
+        $('#btn-modal-ktp').on('click',function(){
+            field = 'ktp';
+        });
+
+        $('#btn-modal-surat').on('click',function(){
+            field = 'surat';
+        });
+
+        $('#btn-modal-usaha').on('click',function(){
+            field = 'usaha';
+        });
+
+        $('#search_lov_kodepos').keypress(function (e) {
+            if (e.which == 13) {
+                if(this.value.length == 0) {
+                    $('.invalid-feedback').hide();
+                    $('#table_lov_kodepos .row_lov').remove();
+                    $('#table_lov_kodepos').append(trlovkodepos);
+                }
+                else if(this.value.length >= 4) {
+                    $('.invalid-feedback').hide();
+                    $.ajax({
+                        url: '/BackOffice/public/mstmember/lov_kodepos_search',
+                        type: 'GET',
+                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        beforeSend: function(){
+                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (response) {
+                            $('#table_lov_kodepos .row_lov').remove();
+                            html = "";
+                            for (i = 0; i < response.length; i++) {
+                                html = '<tr class="row_lov" onclick="lov_kodepos_select(\'' + response[i].pos_kode + '\',\''+ response[i].pos_kecamatan +'\',\''+ response[i].pos_kelurahan +'\',\''+ response[i].pos_kabupaten+'\')"><td>' + response[i].pos_kelurahan + '</td><td>' + response[i].pos_kecamatan + '</td><td>' + response[i].pos_kabupaten + '</td><td>' + response[i].pos_propinsi + '</td><td>' + response[i].pos_kode + '</td></tr>';
+                                $('#table_lov_kodepos').append(html);
+                            }
+                        },
+                        complete: function(){
+                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: true});
+                            $('#modal-loader').modal('hide');
+                        }
+                    });
+                }
+                else{
+                    $('.invalid-feedback').show();
+                }
+            }
+        });
+
+
+        $("#cus_tgllahir").datepicker({
+            "dateFormat" : "dd/mm/yy"
+        });
+
+        function initial(){
+            $('#btn-p_identitas').click();
+            $('.kosong').each(function(){
+                $(this).removeClass('kosong');
+            });
+
+            $(':input').prop('checked',false);
+            $('input[id^="cb_"]').each(function(){
+                $(this).prop('disabled',true);
+                $(this).prop('checked',false);
+            });
+            $(':input').prop('readonly',true);
+            $(':input').val('');
+            $('select').prop('disabled',true);
+
+            $('button').each(function(){
+                $(this).prop('disabled',true);
+            });
+            $('#btn-modal-member').prop('disabled',false);
+
+            $('#search_lov_member').prop('readonly',false);
+            $('#cus_kodemember').prop('readonly',false);
+            $('#cus_kodemember').focus();
+        }
+
+        function ready(){
+            initial();
+
+            $(':input').prop('readonly',false);
+            $('input[id^="cb_"]').each(function(){
+                $(this).prop('disabled',false);
+            });
+            $('select').prop('disabled',false);
+
+            $('button').each(function(){
+                $(this).prop('disabled',false);
+            });
+
+            $('#i_statusmember').prop('readonly',true);
+            $('#i_updateterakhir').prop('readonly',true);
+            $('#cus_alamatmember3').prop('readonly',true);
+            $('#i_kecamatanktp').prop('readonly',true);
+            $('#cus_alamatmember2').prop('readonly',true);
+            $('#cus_alamatmember7').prop('readonly',true);
+            $('#i_kecamatansurat').prop('readonly',true);
+            $('#cus_alamatmember6').prop('readonly',true);
+            $('#crm_alamatusaha3').prop('readonly',true);
+            $('#pos_kecamatan').prop('readonly',true);
+            $('#crm_alamatusaha2').prop('readonly',true);
+            $('#i_jeniscustomer2').prop('readonly',true);
+            $('#i_jenisoutlet2').prop('readonly',true);
+            $('#grp_subgroup').prop('readonly',true);
+            $('#grp_kategori').prop('readonly',true);
+            $('#grp_subkategori').prop('readonly',true);
+            $('#crm_nohppic1').prop('readonly',true);
+            $('#crm_nohppic2').prop('readonly',true);
+            $('#cus_tglmulai').prop('readonly',true);
+            $('#cus_tglregistrasi').prop('readonly',true);
+            $('#cus_nokartumember').prop('readonly',true);
+            $('#i_alamatnpwp').prop('readonly',true);
+            $('#i_kelurahannpwp').prop('readonly',true);
+            $('#i_kodeposnpwp').prop('readonly',true);
+            $('#i_kotanpwp').prop('readonly',true);
+
+            $('input[id$="_ket"]').each(function (){
+                $(this).prop('disabled',true);
+            });
+        }
+
+        function cek_field_wajib(){
+            ok = true;
+            $('.diisi').each(function(){
+                if($(this).val() != null && $(this).val().length > 0){
+                    $(this).removeClass('kosong');
+                }
+                else{
+                    $(this).addClass('kosong');
+                    ok = false;
+                }
+            });
+
+            if(ok){
+                id = 'xxxxx';
+                cb = '!ok';
+
+
+                $('.diisi_cb').each(function(){
+                    if(id != $(this).attr('id').substr(0,9)){
+                        // console.log('id : ' + id);
+                        // console.log('cek - ' + $(this).attr('id'));
+                        if($(this).is(':checked')){
+                            cb = 'ok';
+                            ok = true;
+                            id = $(this).attr('id').substr(0,9);
+                            console.log('ok - ' + $(this).attr('id'));
+                        }
+                        else ok = false;
+                    }
+                });
+            }
+
+            return ok;
+        }
+
         function lov_member_select(value, load){
             $.ajax({
                 url: '/BackOffice/public/mstmember/lov_member_select',
@@ -2194,6 +2376,10 @@
                             $('#i_statusmember').val('NON-AKTIF');
                         }
                         else $('#i_statusmember').val('AKTIF');
+
+                        if(member.crm_idsegment == '6')
+                            $('#segment').show();
+                        else $('#segment').hide();
 
                         $('#i_updateterakhir').val(member.cus_modify_by + ' ' + formatDate(member.cus_modify_dt));
 
@@ -2387,6 +2573,25 @@
                         for(i=0;i<response['bank'].length;i++){
                             $('#cb_b'+response['bank'][i].cub_kodefasilitasbank).prop('checked',true);
                         }
+
+                        quisioner = response['quisioner'];
+                        for(i=0;i<quisioner.length;i++){
+                            if(quisioner[i].fpm_flagjual == 'T')
+                                jual = 'Y';
+                            else jual = '';
+
+                            if(quisioner[i].fpm_flagbeliigr == 'T')
+                                beliigr = 'Y';
+                            else beliigr = '';
+
+                            if(quisioner[i].fpm_flagbelilain == 'T')
+                                belilain = 'Y';
+                            else belilain = '';
+
+                            $('#q_'+quisioner[i].fpm_kodeprdcd).find('.dijual').val(jual);
+                            $('#q_'+quisioner[i].fpm_kodeprdcd).find('.beli-igr').val(beliigr);
+                            $('#q_'+quisioner[i].fpm_kodeprdcd).find('.beli-lain').val(belilain);
+                        }
                     }
                 },
                 complete: function(){
@@ -2404,56 +2609,6 @@
                 }
             });
         }
-
-        $('#search_lov_member').keypress(function (e) {
-            if (e.which == 13) {
-                if(this.value.length == 0) {
-                    $('.invalid-feedback').hide();
-                    $('#table_lov_member .row_lov').remove();
-                    $('#table_lov_member').append(trlovmember);
-                }
-                else if(this.value.length >= 4) {
-                    $('.invalid-feedback').hide();
-                    $.ajax({
-                        url: '/BackOffice/public/mstmember/lov_member_search',
-                        type: 'GET',
-                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
-                        beforeSend: function(){
-                            $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: false});
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function (response) {
-                            $('#table_lov_member .row_lov').remove();
-                            html = "";
-                            console.log(response.length);
-                            for (i = 0; i < response.length; i++) {
-                                html = '<tr class="row_lov" onclick=lov_member_select("' + response[i].cus_kodemember + '",true)><td>' + response[i].cus_namamember + '</td><td>' + response[i].cus_kodemember + '</td></tr>';
-                                $('#table_lov_member').append(html);
-                            }
-                        },
-                        complete: function(){
-                            $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: true});
-                            $('#modal-loader').modal('hide');
-                        }
-                    });
-                }
-                else{
-                    $('.invalid-feedback').show();
-                }
-            }
-        });
-
-        $('#btn-modal-ktp').on('click',function(){
-            field = 'ktp';
-        });
-
-        $('#btn-modal-surat').on('click',function(){
-            field = 'surat';
-        });
-
-        $('#btn-modal-usaha').on('click',function(){
-            field = 'usaha';
-        });
 
         function lov_kodepos_select(kode, kecamatan, kelurahan, kabupaten){
             success = false;
@@ -2562,43 +2717,6 @@
             }
         }
 
-        $('#search_lov_kodepos').keypress(function (e) {
-            if (e.which == 13) {
-                if(this.value.length == 0) {
-                    $('.invalid-feedback').hide();
-                    $('#table_lov_kodepos .row_lov').remove();
-                    $('#table_lov_kodepos').append(trlovkodepos);
-                }
-                else if(this.value.length >= 4) {
-                    $('.invalid-feedback').hide();
-                    $.ajax({
-                        url: '/BackOffice/public/mstmember/lov_kodepos_search',
-                        type: 'GET',
-                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
-                        beforeSend: function(){
-                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: false});
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function (response) {
-                            $('#table_lov_kodepos .row_lov').remove();
-                            html = "";
-                            for (i = 0; i < response.length; i++) {
-                                html = '<tr class="row_lov" onclick="lov_kodepos_select(\'' + response[i].pos_kode + '\',\''+ response[i].pos_kecamatan +'\',\''+ response[i].pos_kelurahan +'\',\''+ response[i].pos_kabupaten+'\')"><td>' + response[i].pos_kelurahan + '</td><td>' + response[i].pos_kecamatan + '</td><td>' + response[i].pos_kabupaten + '</td><td>' + response[i].pos_propinsi + '</td><td>' + response[i].pos_kode + '</td></tr>';
-                                $('#table_lov_kodepos').append(html);
-                            }
-                        },
-                        complete: function(){
-                            $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: true});
-                            $('#modal-loader').modal('hide');
-                        }
-                    });
-                }
-                else{
-                    $('.invalid-feedback').show();
-                }
-            }
-        });
-
         function lov_jenismember_select(kode, keterangan){
             $('#cus_jenismember').val(kode);
             $('#i_jeniscustomer2').val(keterangan);
@@ -2633,155 +2751,46 @@
             else return value.toUpperCase();
         }
 
-        // function cek_format_tanggal(value){
-        //     tgl = '';
-        //     found = false;
-        //     if($.isNumeric(value[0]) && $.isNumeric(value[1]) && $.isNumeric(value.substr(7,4)) && value[2] == '-' && value[6] == '-' && value.length == 11){
-        //         for(i=0;i<12;i++){
-        //             if(value.substr(3,3) == month[i]){
-        //                 found = true;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     else if($.isNumeric(value[0]) && $.isNumeric(value.substr(6,4)) && value[1] == '-' && value[5] == '-' && value.length == 10){
-        //         for(i=0;i<12;i++){
-        //             if(value.substr(2,3) == month[i]){
-        //                 found = true;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //
-        //     return found;
-        // }
-
-        $("#cus_tgllahir").datepicker({
-            "dateFormat" : "dd/mm/yy"
-        });
-
-        $('#btn-aktif-nonaktif').on('click',function(){
-            if(member.cus_recordid == '1'){
-                message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
-                status = '';
-            }
-            else{
-                message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
-                status = '1';
-            }
-            swal({
-                title: message,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((createData) => {
-                if (createData) {
-                    swal({
-                        title: "Inputkan password untuk melanjutkan",
-                        text: "ADMIN (user saat ini)",
-                        content: {
-                            element: "input",
-                            attributes: {
-                                placeholder: "Inputkan password",
-                                type: "password",
-                            },
-                        }
-                    }).then((password) => {
-                        if (password) {
-                            $.ajax({
-                                url: '/BackOffice/public/mstmember/check_password',
-                                type: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                data: {username: 'VBU', password: password},
-                                beforeSend: function(){
-                                    $('#modal-loader').modal('show');
-                                },
-                                success: function (response) {
-                                    if(response == 'ok'){
-                                        $.ajax({
-                                            url: '/BackOffice/public/mstmember/set_status_member',
-                                            type: 'GET',
-                                            data: {"_token": "{{ csrf_token() }}", kode: member.cus_kodemember, status: status},
-                                            success: function (response) {
-                                                if(response == 'success'){
-                                                    $('#modal-loader').modal('hide');
-                                                    swal({
-                                                        title: "Berhasil mengubah status member!",
-                                                        icon: "success"
-                                                    }).then(function(){
-                                                        if(status == ''){
-                                                            member.cus_recordid = status;
-                                                            $('#i_statusmember').val('AKTIF');
-                                                        }
-                                                        else if(status == '1'){
-                                                            member.cus_recordid = status;
-                                                            $('#i_statusmember').val('NON-AKTIF');
-                                                        }
-                                                    });
-                                                }
-                                                else{
-                                                    swal({
-                                                        title: "Gagal mengubah status member!",
-                                                        icon: "error"
-                                                    });
-                                                }
-                                            }
-                                        });
-                                    }
-                                    else{
-                                        $('#modal-loader').modal('hide');
-                                        swal({
-                                            title: "Password salah!",
-                                            icon: "error"
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-        function cek_field_wajib(){
-            ok = true;
-            $('.diisi').each(function(){
-                if($(this).val() != null && $(this).val().length > 0){
-                    $(this).removeClass('kosong');
+        function lov_group_select(id){
+            for(i=0;i<arrgroup.length;i++){
+                if(id.match(/([A-z])/g).length == id.length){
+                    if(id == arrgroup[i].grp_group){
+                        $('#grp_group').val(arrgroup[i].grp_group);
+                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
+                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
+                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
+                        idgroupkat = arrgroup[i].grp_idgroupkat;
+                        break;
+                    }
                 }
                 else{
-                    $(this).addClass('kosong');
+                    if(id == arrgroup[i].grp_idgroupkat){
+                        $('#grp_group').val(arrgroup[i].grp_group);
+                        $('#grp_subgroup').val(arrgroup[i].grp_subgroup);
+                        $('#grp_kategori').val(arrgroup[i].grp_kategori);
+                        $('#grp_subkategori').val(arrgroup[i].grp_subkategori);
+                        idgroupkat = arrgroup[i].grp_idgroupkat;
+                        break;
+                    }
+                }
+            }
+
+            $('.diisi').each(function(){
+                if($(this).val() != null && $(this).val().length > 0){
                     ok = false;
+                    $(this).removeClass('kosong');
                 }
             });
 
-            if(ok){
-                id = 'xxxxx';
-                cb = '!ok';
-
-
-                $('.diisi_cb').each(function(){
-                    if(id != $(this).attr('id').substr(0,9)){
-                        // console.log('id : ' + id);
-                        // console.log('cek - ' + $(this).attr('id'));
-                        if($(this).is(':checked')){
-                            cb = 'ok';
-                            ok = true;
-                            id = $(this).attr('id').substr(0,9);
-                            console.log('ok - ' + $(this).attr('id'));
-                        }
-                        else ok = false;
-                    }
-                });
+            if($('#m_groupHelp').is(':visible')){
+                $('#m_groupHelp').modal('toggle');
             }
 
-            return ok;
+            $('#cb_jenisanggotaR').focus();
         }
 
         $('#btn-rekam').on('click',function(){
-            ok = true;//cek_field_wajib();
+            ok = cek_field_wajib();
 
             if(ok) {
                 swal({
@@ -2885,6 +2894,11 @@
                         data.customercrm['crm_idgroupkat'] = idgroupkat;
                         data.keycustomercrm.push('crm_idgroupkat');
 
+                        if($('#cus_flagmemberkhusus').val() == 'Y')
+                            data.customercrm['crm_idsegment'] = '1';
+                        else data.customercrm['crm_idsegment'] = '7';
+                        data.keycustomercrm.push('crm_idsegment');
+
                         indexBank = 0;
                         for (i = 0; i < arrbank.length; i++) {
                             if ($('.row_fasilitasperbankan_' + i).find('#cb_b' + $('.row_fasilitasperbankan_' + i).attr('id')).is(':checked')) {
@@ -2893,7 +2907,7 @@
                             }
                         }
 
-                        // console.log(data);
+                        console.log(data);
 
                         $.ajax({
                             url: '/BackOffice/public/mstmember/update_member',
@@ -2942,6 +2956,93 @@
             }
         });
 
+        $('#btn-aktif-nonaktif').on('click',function(){
+            if(member.cus_recordid == '1'){
+                message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
+                status = '';
+            }
+            else{
+                message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
+                status = '1';
+            }
+            swal({
+                title: message,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((createData) => {
+                if (createData) {
+                    swal({
+                        title: "Inputkan password untuk melanjutkan",
+                        text: "ADMIN (user saat ini)",
+                        buttons: true,
+                        dangerMode: true,
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Inputkan password",
+                                type: "password",
+                            },
+                        }
+                    }).then((password) => {
+                        if (password) {
+                            $.ajax({
+                                url: '/BackOffice/public/mstmember/check_password',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {username: 'VBU', password: password},
+                                beforeSend: function(){
+                                    $('#modal-loader').modal('show');
+                                },
+                                success: function (response) {
+                                    if(response == 'ok'){
+                                        $.ajax({
+                                            url: '/BackOffice/public/mstmember/set_status_member',
+                                            type: 'GET',
+                                            data: {"_token": "{{ csrf_token() }}", kode: member.cus_kodemember, status: status},
+                                            success: function (response) {
+                                                $('#modal-loader').modal('hide');
+                                                if(response == 'success'){
+                                                    swal({
+                                                        title: "Berhasil mengubah status member!",
+                                                        icon: "success"
+                                                    }).then(function(){
+                                                        if(status == ''){
+                                                            member.cus_recordid = status;
+                                                            $('#i_statusmember').val('AKTIF');
+                                                        }
+                                                        else if(status == '1'){
+                                                            member.cus_recordid = status;
+                                                            $('#i_statusmember').val('NON-AKTIF');
+                                                        }
+                                                    });
+                                                }
+                                                else{
+                                                    swal({
+                                                        title: "Gagal mengubah status member!",
+                                                        icon: "error"
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        $('#modal-loader').modal('hide');
+                                        swal({
+                                            title: "Password salah!",
+                                            icon: "error"
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
         $('#btn-export-crm').on('click',function(){
             swal({
                 title: 'Apabila ada perubahan data, pastikan sudah disimpan sebelum diexport ke CRM! Lanjut export?',
@@ -2984,7 +3085,175 @@
             });
         });
 
-        //buat hobby $('.row_hobby_1').find('#i_'+$('.row_hobby_1').attr('id')).is(':checked')
+        $('#btn-quisioner').on('click',function(){
+            $('#m_quisioner').modal('toggle');
+
+            $('#q_kodemember').prop('readonly',true);
+            $('#q_namamember').prop('readonly',true);
+
+            $('#q_kodemember').val(member.cus_kodemember);
+            $('#q_namamember').val(member.cus_namamember);
+        });
+
+        $('#btn-q-save').on('click',function(event){
+            event.preventDefault();
+
+            var data = {};
+            var arrdata = [];
+
+            $('tr[id^="q_"]').each(function() {
+                // console.log($(this).find('.dijual').val());
+                var data = {};
+
+                data['fpm_kodemember'] = member.cus_kodemember;
+                data['fpm_kodeprdcd'] = $(this).attr('id').substr(2);
+
+                if($(this).find('.dijual').val() == 'Y')
+                    dijual = 'T';
+                else dijual = 'F';
+
+                if($(this).find('.beli-igr').val() == 'Y')
+                    beliigr = 'T';
+                else beliigr = 'F';
+
+                if($(this).find('.beli-lain').val() == 'Y')
+                    belilain = 'T';
+                else belilain = 'F';
+
+                data['fpm_flagjual'] = dijual;
+                data['fpm_flagbeliigr'] = beliigr;
+                data['fpm_flagbelilain'] = belilain;
+
+                arrdata.push(data);
+            });
+
+            swal({
+                title: "Yakin ingin menyimpan data?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then((createData) => {
+                if (createData) {
+                    $.ajax({
+                        url: '/BackOffice/public/mstmember/save_quisioner',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {arrdata: arrdata},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('toggle');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('toggle');
+                            $('#m_quisioner').modal('toggle');
+
+                            if (response.status == 'success') {
+                                swal({
+                                    title: response['message'],
+                                    icon: "success"
+                                });
+                            }
+                            else {
+                                swal({
+                                    title: response.message,
+                                    icon: "error"
+                                }).then(function () {
+                                    $('#cus_kodemember').val(member.cus_kodemember);
+                                    $('#cus_kodemember').select();
+                                });
+
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#btn-hapus').on('click',function(){
+            if(member.cus_kodeigr != '22'){
+                swal({
+                    title: "Data yang akan diproses tidak sesuai dengan cabang anda!",
+                    icon: "error"
+                });
+            }
+            else{
+                swal({
+                    title: 'Kode anggota ' + member.cus_kodemember + ' dihapus permanen?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((createData) => {
+                    if(createData){
+                        swal({
+                            title: "Inputkan password untuk melanjutkan",
+                            text: "ADMIN (user saat ini)",
+                            buttons: true,
+                            dangerMode: true,
+                            content: {
+                                element: "input",
+                                attributes: {
+                                    placeholder: "Inputkan password",
+                                    type: "password",
+                                },
+                            }
+                        }).then((password) => {
+                            if (password) {
+                                $.ajax({
+                                    url: '/BackOffice/public/mstmember/check_password',
+                                    type: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    data: {username: 'VBU', password: password},
+                                    beforeSend: function(){
+                                        $('#modal-loader').modal('show');
+                                    },
+                                    success: function (response) {
+                                        if(response == 'ok'){
+                                            $.ajax({
+                                                url: '/BackOffice/public/mstmember/hapus_member',
+                                                type: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                                },
+                                                data: {kodemember: member.cus_kodemember},
+                                                success: function (response) {
+                                                    $('#modal-loader').modal('hide');
+                                                    if (response.status == 'success') {
+                                                        swal({
+                                                            title: response['message'],
+                                                            icon: "success"
+                                                        }).then((createData) => {
+                                                            initial();
+                                                        });
+
+                                                    }
+                                                    else {
+                                                        swal({
+                                                            title: response.message,
+                                                            icon: "error"
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else{
+                                            $('#modal-loader').modal('hide');
+                                            swal({
+                                                title: "Password salah!",
+                                                icon: "error"
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     </script>
 
 @endsection

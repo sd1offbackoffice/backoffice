@@ -43,7 +43,7 @@ class inqueryProdSuppController extends Controller
                 $join->on('pkmg_prdcd', '=', 'mstd_prdcd')
                     ->on('pkmg_kodeigr', '=', 'mstd_kodeigr');
             })
-            ->SELECT("mstd_prdcd", "prd_deskripsipendek", "st_sales", "st_saldoakhir", "pkm_pkmt", "prd_lastcost", "prd_kodetag")
+            ->SELECT("sup_namasupplier","mstd_prdcd", "prd_deskripsipendek", "st_sales", "st_saldoakhir", "pkm_pkmt", "prd_lastcost", "prd_kodetag")
             ->where('mstd_kodesupplier','=',$kodesupp)
             ->where('st_lokasi','=','01')
             ->distinct()

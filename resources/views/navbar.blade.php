@@ -71,6 +71,15 @@
                         <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquery Produksi Supplier</a>
                     </div>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Back Office
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> <!-- TARO URUT BERDASARKAN ABJAD-->
+                        <a class="dropdown-item" href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko IGR</a>
+                        <a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko IGR</a>
+                    </div>
+                </li>
             </div>
 
             <div class="navbar-nav ml-auto">

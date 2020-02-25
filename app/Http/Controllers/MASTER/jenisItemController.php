@@ -66,6 +66,7 @@ class jenisItemController extends Controller
             ->get();
 
 
+
         $produk = DB::table('tbmaster_prodmast')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
@@ -137,6 +138,16 @@ class jenisItemController extends Controller
             ->where('st_lokasi', '=', "01")
             ->first();
 
+        if($prodstock->st_lokasi =='01'){
+            $prodstock->st = 'BK';
+        }
+        else if($prodstock->st_lokasi ='02'){
+            $prodstock->st = 'RT';
+        }
+        else{
+            $prodstock->st = 'RS';
+        }
+
         $VUNIT = $prodstock->prd_unit;
         $VSALES = $prodstock->st_sales;
         $VLASTCOST = $prodstock->st_avgcost;
@@ -206,12 +217,13 @@ class jenisItemController extends Controller
 
             $supplier[$i]->trm_acost = $supplier[$i]->mstd_avgcost / $supplier[$i]->mstd_frac;
 
-            if( $this->ceknull($supplier[$i]->mstd_typetrn,'A') == 'L'){
+            if( $supplier[$i]->mstd_typetrn == 'L'){
                 $supplier[$i]->trm_hpp = 0;
             }
             else{
                 $supplier[$i]->trm_hpp = ($supplier[$i]->mstd_gross - ($supplier[$i]->mstd_discrph + $supplier[$i]->mstd_ppnbmrph + $supplier[$i]->mstd_ppnbtlrph)) /($supplier[$i]->mstd_qty / $supplier[$i]->mstd_frac) / $supplier[$i]->mstd_frac;
             }
+
         }
 
         return compact(['lokasi','produk','palet','prodstock','trendsales','AVGSALES','po','supplier']);

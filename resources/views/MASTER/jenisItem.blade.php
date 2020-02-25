@@ -198,20 +198,20 @@
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-po">
                                             <thead class="thead-dark">
                                             <tr class="row justify-content-md-center">
-                                                <th class="col-sm-4 text-center small">Nomor PO</th>
+                                                <th class="col-sm-5 text-center small">Nomor PO</th>
                                                 <th class="col-sm-5 text-center small">Tanggal PO</th>
-                                                <th class="col-sm-3 text-center small">Qty PO</th>
+                                                <th class="col-sm-2 text-center small">Qty PO</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr class="row baris justify-content-md-center p-0">
-                                                <td class="col-sm-4 p-0 text-center" >
+                                                <td class="col-sm-5 p-0 text-center" >
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
                                                 <td class="col-sm-5 p-0">
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
-                                                <td class="col-sm-3 p-0">
+                                                <td class="col-sm-2 p-0">
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
                                             </tr>
@@ -399,18 +399,48 @@
                                 <table class="table table-sm table-striped table-bordered display compact" id="table_penerimaan">
                                     <thead class="thead-dark">
                                     <tr class="thNormal text-center">
-                                        <th width="15%">Supplier</th>
+                                        <th width="20%">Supplier</th>
                                         <th width="10%">Qty BPB</th>
-                                        <th width="10%">Bonus 1</th>
-                                        <th width="10%">Bonus 2</th>
-                                        <th width="12.5%">Dokumen</th>
-                                        <th style="width: 100px;" width="22.5%">Tanggal</th>
-                                        <th width="5%">Top</th>
-                                        <th width="7.5%">Last Cost (pcs)</th>
-                                        <th width="7.5%">Avg Cost (pcs)</th>
+                                        <th width="7.5%">Bonus 1</th>
+                                        <th width="7.5%">Bonus 2</th>
+                                        <th width="10%">Dokumen</th>
+                                        <th width="12.5%">Tanggal</th>
+                                        <th width="10%">Top</th>
+                                        <th width="10%">Last Cost (pcs)</th>
+                                        <th width="10%">Avg Cost (pcs)</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="tbody_table_penerimaan"></tbody>
+                                    <tbody id="tbody_table_penerimaan">
+                                    <tr class="baris">
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" value="" disabled>
+                                        </td>
+                                    </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -478,11 +508,11 @@
 
     <script>
         $(document).ready(function () {
-            $('#table_penerimaan').DataTable({
-                "lengthChange": false,
-                "pageLength": 15,
-                "order": [[ 5, "asc" ]]
-            });
+            // $('#table_penerimaan').DataTable({
+            //     "lengthChange": false,
+            //     "pageLength": 15,
+            //     "order": [[ 5, "asc" ]]
+            // });
         });
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
         $('#i_pluplanogram').keypress(function(e) {
@@ -490,6 +520,20 @@
                 convert_plu();
                 var p = $('#i_pluplanogram').val();
                 get_data(p);
+            }
+        });
+        $('#i_jenisrak').on('change',function(e) {
+            $('#i_jenisrak').val($('#i_jenisrak').val().toUpperCase());
+            value = $('#i_jenisrak').val();
+            if(value != 'D' && value != 'N'){
+                swal({
+                    title: 'Jenis Rak Input D/N',
+                    icon: 'warning'
+                }).then((createData) => {
+                        $('#i_jenisrak').val('');
+                        $('#i_jenisrak').focus();
+                });
+
             }
         });
         function convert_plu() {
@@ -542,12 +586,12 @@
 
                     $('.baris').remove();
                     for (var i = 0; i < response['po'].length ; i++ ){
-                        $('#table-po').append('<tr class="row baris justify-content-md-center p-0"> <td class="col-sm-5 p-0 text-center" > <input type="text" class="form-control" disabled value="'+response['po'][i].tpoh_nopo+'"> </td> <td class="col-sm-4 p-0"><input type="text" class="form-control" disabled value="'+toDate(response['po'][i].tpoh_tglpo.substr(0,10))+'"> </td> <td class="col-sm-3 p-0"><input type="text" class="form-control" disabled  value="'+response['po'][i].tpod_qtypo+'"></td></tr>');
+                        $('#table-po').append('<tr class="row baris justify-content-md-center p-0"> <td class="col-sm-5 p-0 text-center" > <input type="text" class="form-control" disabled value="'+response['po'][i].tpoh_nopo+'"> </td> <td class="col-sm-5 p-0"><input type="text" class="form-control" disabled value="'+formatDate(response['po'][i].tpoh_tglpo.substr(0,10))+'"> </td> <td class="col-sm-2 p-0"><input type="text" class="form-control" disabled  value="'+response['po'][i].tpod_qtypo+'"></td></tr>');
                     }
                     for (var i = 0; i < response['lokasi'].length ; i++ ){
                         $('#table-lokasi-plu').append('<tr class="row baris justify-content-md-center p-0"><td class="col-sm-4 p-0 text-center" ><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_koderak+'.'+response['lokasi'][i].lks_kodesubrak+'.'+response['lokasi'][i].lks_tiperak+'.'+response['lokasi'][i].lks_shelvingrak+'.'+response['lokasi'][i].lks_nourut+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_jenisrak+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_qty+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxplano+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxdisplay+'"></td></tr>');
                     }
-                    $('#lokasi').val(response['prodstock'].st_lokasi);
+                    $('#lokasi').val(response['prodstock'].st);
                     $('#awal').val(response['prodstock'].st_saldoawal);
                     $('#terima').val(response['prodstock'].st_trfin);
                     $('#keluar').val(response['prodstock'].st_trfout);
@@ -556,24 +600,39 @@
                     $('#adj').val(response['prodstock'].st_adj);
                     $('#instrst').val(response['prodstock'].st_intransit);
                     $('#akhir').val(response['prodstock'].st_saldoakhir);
-                    $('#avgsales').val(response['AVGSALES']);
+                    $('#avgsales').val(format_currency(response['AVGSALES']));
 
-                    $('#table_penerimaan').DataTable().clear();
 
                     for (var i = 0; i < response['supplier'].length ; i++ ){
-                    $('#table_penerimaan').DataTable().row.add(
-                        [response['supplier'][i].trm_supp,
-                            format_currency(response['supplier'][i].trm_qtybns),
-                            response['supplier'][i].trm_bonus,
-                            response['supplier'][i].trm_bonus2,
-                            response['supplier'][i].trm_dokumen,
-                            toDate(response['supplier'][i].trm_tanggal),
-                            response['supplier'][i].trm_top,
-                            response['supplier'][i].trm_hpp,
-                            format_currency(response['supplier'][i].trm_acost)
-                        ]).draw();
-                    }
+                    $('#table_penerimaan').append('<tr class="baris"><td class="p-0">\n' +
+                        '<input type="text" class="form-control" value="'+response['supplier'][i].sup_namasupplier+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+formatDate(response['supplier'][i].trm_tanggal)+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_hpp+'" disabled>\n' +
+                        '</td>\n' +
+                        '<td class="p-0">\n' +
+                        '    <input type="text" class="form-control" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                        '</td><tr>');
                     null_check();
+                    }
                 },
                 complete: function(){
                     if($('#m_pluHelp').is(':visible')){
@@ -645,9 +704,6 @@
                             title: response['message'],
                             icon: response['status']
                         }).then((createData) => {
-                            if (createData) {
-
-                            }
                         });
                     }
                 });
@@ -658,10 +714,7 @@
             var val = (value/1).toFixed(2).replace('.', ',');
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
-        function toDate(value) {
-            date = new Date(value);
-            return date.getDate() + '-' + month[date.getMonth()] + '-' + date.getFullYear();
-        }
+
         function null_check() {
             $("input:text").each(function(){
                 var $this = $(this);

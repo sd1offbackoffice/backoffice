@@ -5,7 +5,7 @@
     </head>
 
 
-    <div class="container col-sm-7 mt-3 pr-5 pl-5">
+    <div class="container col-sm-7 pr-5 pl-5">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -97,35 +97,35 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">HGB Harga Beli</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hgbhargabeli">
                                             </div>
                                             <label for="i_ppn" class="col-sm-1 pr-0 pl-0 col-form-label">PPN</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_ppn">
                                             </div>
                                             <label for="i_hargaomi" class="col-sm-2 col-form-label">Harga OMI</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hargaomi">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_botol" class="col-sm-1 col-form-label">Botol</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_botol">
                                             </div>
                                             <label for="i_ppnbm" class="col-sm-1 pr-0 pl-0 col-form-label">PPN BM</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_ppnbm">
                                             </div>
                                             <label for="i_hargaomibaru" class="col-sm-2 col-form-label">Harga OMI Baru</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hargaomibaru">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">Hrg. Beli + PPN</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hgbhargabelippn">
                                             </div>
                                             <label for="i_ppn" class="col-sm-3 pr-0 pl-0 col-form-label text-center">B - K - 0 - 4</label>
@@ -141,7 +141,7 @@
                                             </div>
                                             <label for="i_disc1" class="col-form-label text-right">%</label>
                                             <label for="i_disc1rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc1rp">
                                             </div>
                                             <div class="col-sm-1">
@@ -167,7 +167,7 @@
                                             </div>
                                             <label for="i_disc2" class="col-form-label text-right">%</label>
                                             <label for="i_disc2rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2rp">
                                             </div>
                                             <div class="col-sm-1">
@@ -193,7 +193,7 @@
                                             </div>
                                             <label for="i_disc2A" class="col-form-label text-right">%</label>
                                             <label for="i_disc2Arp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2Arp">
                                             </div>
                                             <div class="col-sm-1">
@@ -219,7 +219,7 @@
                                             </div>
                                             <label for="i_disc2B" class="col-form-label text-right">%</label>
                                             <label for="i_disc2Brp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2Brp">
                                             </div>
                                             <div class="col-sm-1">
@@ -245,7 +245,7 @@
                                             </div>
                                             <label for="i_disc3" class="col-form-label text-right">%</label>
                                             <label for="i_disc3rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc3rp">
                                             </div>
                                             <div class="col-sm-1">
@@ -254,7 +254,7 @@
                                             <div class="col-sm-1 pl-0">
 
                                             </div>
-                                            <label for="i_tglberlakudisc3" class="col-sm col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc3" class="col-sm ml-0 col-form-label">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc3a">
                                             </div>
@@ -272,13 +272,13 @@
                                             </div>
                                             <label for="i_disc4" class="col-form-label text-right">%</label>
                                             <label for="i_disc4rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc4rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk4">
                                             </div>
-                                            <label for="i_tglberlakudisc4" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc4" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc4a">
                                             </div>
@@ -296,13 +296,13 @@
                                             </div>
                                             <label for="i_disc5" class="col-form-label text-right">%</label>
                                             <label for="i_disc5rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc5rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk5">
                                             </div>
-                                            <label for="i_tglberlakudisc5" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc5" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc5a">
                                             </div>
@@ -319,13 +319,13 @@
                                             </div>
                                             <label for="i_disc6" class="col-form-label text-right">%</label>
                                             <label for="i_disc6rp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc6rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk6">
                                             </div>
-                                            <label for="i_tglberlakudisc6" class="col-sm col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc6" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc6a">
                                             </div>
@@ -336,12 +336,13 @@
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;"></label>
-                                            <label for="i_totaldiscount" class="col-form-label col-sm-1 ml-3 text-right">Total Discount</label>
+                                            {{--<label class="col-sm col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;"></label>--}}
+                                            <label for="i_totaldiscount" class="col-form-label col-sm-2 ml-5 mr-5   text-right">Total Discount</label>
                                             <label for="i_totaldiscountrp" class="ml-3 pr-0 col-form-label">Rp.</label>
-                                            <div class="col-sm-1 pl-0 pr-0">
+                                            <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_totaldiscount">
                                             </div>
+                                            <div class="col-sm-7"></div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-sm-4 pr-4 ml-5">
@@ -568,10 +569,29 @@
         </div>
     </div>
 
+    {{--LOADER--}}
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="loader" id="loader"></div>
+                            <div class="col-sm-12 text-center">
+                                <label for="">LOADING...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <style>
         body {
             background-color: #edece9;
+            /*overflow: hidden;*/
             /*background-color: #ECF2F4  !important;*/
         }
         label {
@@ -599,6 +619,10 @@
             /*text-transform: uppercase;*/
         }
 
+        .number input{
+            text-align: right;
+        }
+
 
     </style>
 
@@ -613,6 +637,8 @@
         $('#i_plu').prop('readonly',false);
         $('#search_lov').prop('readonly',false);
 
+        $('#i_plu').select();
+
         // lov_select('0060610');
 
         $(':input').on('click',function(){
@@ -621,7 +647,24 @@
 
         $('#i_plu').on('keypress',function (event) {
             if(event.which == 13){
-                lov_select(convertPlu(this.value));
+                if(this.value.substr(-1) == '0' && this.value.length <= 7)
+                    lov_select(convertPlu(this.value));
+                else if(this.value.substr(-1) != '0'){
+                    swal({
+                        title: 'Hanya untuk PLU kode 0!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        $('#i_plu').select();
+                    });
+                }
+                else{
+                    swal({
+                        title: 'Cek kembali kode PLU!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        $('#i_plu').select();
+                    });
+                }
             }
         });
 
@@ -634,274 +677,312 @@
                 url: '/BackOffice/public/msthargabeli/lov_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function(response){
-                    $(':input').val('');
-
-
-                    prd = response['produk'];
-                    sup = response['supplier'];
-                    tag = response['tag'];
-                    hgb = response['hargabeli'];
-                    hgn = response['hargabelibaru'];
-
-
-                    $('#i_plu').val(prd.prd_prdcd);
-                    $('#i_deskripsipanjang').val(prd.prd_deskripsipanjang);
-                    if(tag != null){
-                        $('#i_statustag1').val(tag.tag_kodetag);
-                        $('#i_statustag2').val(tag.tag_keterangan);
+                    if(response == 'not-found'){
+                        swal({
+                            title: 'Data tidak ditemukan!',
+                            icon: 'error',
+                        }).then((createData) => {
+                            $('#i_plu').select();
+                        });
                     }
+                    else{
+                        $(':input').val('');
 
-                    $('#i_satuanbeli1').val(prd.prd_satuanbeli);
-                    $('#i_satuanbeli2').val(prd.prd_isibeli);
-                    $('#i_top').val(hgb.hgb_top)
-                    $('#i_flagbandrol').val(prd.prd_flagbandrol);
-                    $('#i_kondisi').val(prd.prd_perlakuanbarang);
-                    if(prd.prd_flagbkp1 == 'Y')
-                        $('#i_bkp1').val('Kena Pajak');
-                    else $('#i_bkp1').val('Tidak Kena Pajak');
+                        prd = response['produk'];
+                        sup = response['supplier'];
+                        tag = response['tag'];
+                        hgb = response['hargabeli'];
+                        hgn = response['hargabelibaru'];
 
-                    if(sup != null) {
-                        $('#i_kodesupplier').val(sup.sup_kodesupplier);
-                        $('#i_pkp').val(sup.sup_pkp);
-                        if(hgb.hgb_tipe == '2')
-                            $('#i_lastsupplier').val(sup.sup_kodesupplier + ' ADALAH SUPPLIER TERAKHIR')
-                        $('#i_namasupplier').val(sup.sup_namasupplier + ' / ' + null_check(sup.sup_singkatansupplier));
-                    }
-
-                    if(hgb != null){
-                        $('#i_tglberlaku').val(formatDate(hgb.hgb_tglberlaku01));
-                        $('#i_hargaomi').val(Math.round(hgb.hgb_nilaidpp));
-                        $('#i_jenisharga').val(hgb.hgb_jenishrgbeli);
-                        $('#i_tglupdate').val(formatDate(hgb.hgb_modify_dt.substr(0,10)));
-
-                        hgbhargabeli = parseFloat(hgb.hgb_hrgbeli * prd.prd_isibeli);
-                        $('#i_hgbhargabeli').val(convertToRupiah(hgbhargabeli));
-                        ppn = parseFloat(hgb.hgb_ppn * prd.prd_isibeli);
-                        $('#i_ppn').val(convertToRupiah(ppn));
-                        ppnbotol = parseFloat(hgb.hgb_ppnbotol)
-                        $('#i_botol').val(convertToRupiah(ppnbotol));
-                        ppnbm = parseFloat(hgb.hgb_ppnbm);
-                        $('#i_ppnbm').val(convertToRupiah(ppnbm));
-                        $('#i_hgbhargabelippn').val(convertToRupiah(hgbhargabeli + ppn + ppnbm));
-
-                        hargaomi = parseFloat((hgbhargabeli + ppnbm + ppnbotol) / prd.prd_isibeli);
-                        $('#i_hargaomi').val(hargaomi);
-
-                        $('#i_totaldiscount').val(convertToRupiah(parseInt(hgb.hgb_rphdisc04) + parseInt(hgb.hgb_rphdisc05) + parseInt(hgb.hgb_rphdisc06)));
-                        console.log(hgb.hgb_rphdisc04 +  " - " + hgb.hgb_rphdisc05 + " - " + hgb.hgb_rphdisc06);
-                        console.log(hgb.hgb_rphdisc04 + hgb.hgb_rphdisc05 + hgb.hgb_rphdisc06);
-
-                        if(hgb.hgb_tglmulaibonus01 != null){
-                            $('#i_bonus1a').val(formatDate(hgb.hgb_tglmulaibonus01));
-                            $('#i_bonus1b').val(formatDate(hgb.hgb_tglakhirbonus01));
-                            if(hgb.hgb_flagkelipatanbonus01 == 'Y')
-                                $('#i_kel1').val('BERLAKU KELIPATAN');
-                            else if(hgb.hgb_flagkelipatanbonus01 == 'N')
-                                $('#i_kel1').val('TIDAK BERLAKU KELIPATAN');
-                        }
-                        if(hgb.hgb_tglmulaibonus02 != null){
-                            $('#i_bonus2a').val(formatDate(hgb.hgb_tglmulaibonus02));
-                            $('#i_bonus2b').val(formatDate(hgb.hgb_tglakhirbonus02));
-                            if(hgb.hgb_flagkelipatanbonus02 == 'Y')
-                                $('#i_kel2').val('BERLAKU KELIPATAN');
-                            else if(hgb.hgb_flagkelipatanbonus02 == 'N')
-                                $('#i_kel2').val('TIDAK BERLAKU KELIPATAN');
-                        }
-
-                        if(hgb.hgb_persendisc01 != 0 || hgb.hgb_rphdisc01 != 0){
-                            $('#i_disc1').val(toFixed(hgb.hgb_persendisc01));
-                            $('#i_disc1rp').val(convertToRupiah(hgb.hgb_rphdisc01));
-                            $('#i_bk1').val(hgb.hgb_flagdisc01);
-                            $('#i_tglberlakudisc1a').val(formatDate(hgb.hgb_tglmulaidisc01));
-                            $('#i_tglberlakudisc1b').val(formatDate(hgb.hgb_tglakhirdisc01));
-                        }
-
-                        if(hgb.hgb_persendisc02 != 0 || hgb.hgb_rphdisc02 != 0){
-                            $('#i_disc2').val(toFixed(hgb.hgb_persendisc02));
-                            $('#i_disc2rp').val(convertToRupiah(hgb.hgb_rphdisc02));
-                            $('#i_bk2').val(hgb.hgb_flagdisc02);
-                            $('#i_tglberlakudisc2a').val(formatDate(hgb.hgb_tglmulaidisc02));
-                            $('#i_tglberlakudisc2b').val(formatDate(hgb.hgb_tglakhirdisc02));
-                        }
-                        if(hgb.hgb_persendisc02ii != 0 || hgb.hgb_rphdisc02ii != 0){
-                            $('#i_disc2A').val(toFixed(hgb.hgb_rphdisc02));
-                            $('#i_disc2Arp').val(convertToRupiah(hgb.hgb_rphdisc02));
-                            $('#i_tglberlakudisc2Aa').val(formatDate(hgb.hgb_tglmulaidisc02ii));
-                            $('#i_tglberlakudisc2Ab').val(formatDate(hgb.hgb_tglakhirdisc02ii));
-                        }
-                        if(hgb.hgb_persendisc02iii != 0 || hgb.hgb_rphdisc02iii != 0){
-                            $('#i_disc2B').val(toFixed(hgb.hgb_persendisc02iii));
-                            $('#i_disc2Brp').val(convertToRupiah(hgb.hgb_rphdisc02iii));
-                            $('#i_tglberlakudisc2Ba').val(formatDate(hgb.hgb_tglmulaidisc02iii));
-                            $('#i_tglberlakudisc2Bb').val(formatDate(hgb.hgb_tglakhirdisc02iii));
-                        }
-                        if(hgb.hgb_persendisc03 != 0 || hgb.hgb_rphdisc03 != 0){
-                            $('#i_disc3').val(toFixed(hgb.hgb_persendisc03));
-                            $('#i_disc3rp').val(convertToRupiah(hgb.hgb_rphdisc03));
-                            $('#i_bk3').val(hgb.hgb_flagdisc03);
-                            $('#i_tglberlakudisc3a').val(formatDate(hgb.hgb_tglmulaidisc03));
-                            $('#i_tglberlakudisc3b').val(formatDate(hgb.hgb_tglakhirdisc03));
-                        }
-                        if(hgb.hgb_persendisc04 != 0 || hgb.hgb_rphdisc04 != 0){
-                            $('#i_disc4').val(toFixed(hgb.hgb_persendisc04));
-                            $('#i_disc4rp').val(convertToRupiah(hgb.hgb_rphdisc04));
-                            $('#i_bk4').val(hgb.hgb_flagdisc04);
-                            $('#i_tglberlakudisc4a').val(formatDate(hgb.hgb_tglmulaidisc04));
-                            $('#i_tglberlakudisc4b').val(formatDate(hgb.hgb_tglakhirdisc04));
-                        }
-                        if(hgb.hgb_persendisc05 != 0 || hgb.hgb_rphdisc05 != 0){
-                            $('#i_disc5').val(toFixed(hgb.hgb_persendisc05));
-                            $('#i_disc5rp').val(convertToRupiah(hgb.hgb_persendisc05));
-                            $('#i_bk5').val(hgb.hgb_flagdisc05);
-                            $('#i_tglberlakudisc5a').val(formatDate(hgb.hgb_tglmulaidisc05));
-                            $('#i_tglberlakudisc5b').val(formatDate(hgb.hgb_tglakhirdisc05));
-                        }
-                        if(hgb.hgb_persendisc06 != 0 || hgb.hgb_rphdisc06 != 0){
-                            $('#i_disc6').val(toFixed(hgb.hgb_persendisc06));
-                            $('#i_disc6rp').val(convertToRupiah(hgb.hgb_persendisc06));
-                            $('#i_bk6').val(hgb.hgb_flagdisc06);
-                            $('#i_tglberlakudisc6a').val(formatDate(hgb.hgb_tglmulaidisc06));
-                            $('#i_tglberlakudisc6b').val(formatDate(hgb.hgb_tglakhirdisc06));
-                        }
-
-                        if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null){
-                            $('#i_flagbonus1-1').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-1').val(hgb.hgb_qtymulai1bonus01);
-                            $('#i_qtybonus1-1').val(hgb.hgb_qty1bonus01);
-                        }
-
-                        if(hgb.hgb_qtymulai2bonus01 != 0 && hgb.hgb_qtymulai2bonus01 != null){
-                            $('#i_flagbonus1-2').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-2').val(hgb.hgb_qtymulai2bonus01);
-                            $('#i_qtybonus1-2').val(hgb.hgb_qty2bonus01);
-                        }
-
-                        if(hgb.hgb_qtymulai3bonus01 != 0 && hgb.hgb_qtymulai3bonus01 != null){
-                            $('#i_flagbonus1-3').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-3').val(hgb.hgb_qtymulai3bonus01);
-                            $('#i_qtybonus1-3').val(hgb.hgb_qty3bonus01);
-                        }
-                        if(hgb.hgb_qtymulai4bonus01 != 0 && hgb.hgb_qtymulai4bonus01 != null){
-                            $('#i_flagbonus1-4').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-4').val(hgb.hgb_qtymulai4bonus01);
-                            $('#i_qtybonus1-4').val(hgb.hgb_qty4bonus01);
-                        }
-
-                        if(hgb.hgb_qtymulai5bonus01 != 0 && hgb.hgb_qtymulai5bonus01 != null){
-                            $('#i_flagbonus1-5').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-5').val(hgb.hgb_qtymulai5bonus01);
-                            $('#i_qtybonus1-5').val(hgb.hgb_qty5bonus01);
-                        }
-
-                        if(hgb.hgb_qtymulai6bonus01 != 0 && hgb.hgb_qtymulai6bonus01 != null){
-                            $('#i_flagbonus1-6').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian1-6').val(hgb.hgb_qtymulai6bonus01);
-                            $('#i_qtybonus1-6').val(hgb.hgb_qty6bonus01);
-                        }
-
-                        if(hgb.hgb_qtymulai1bonus02 != 0 && hgb.hgb_qtymulai1bonus02 != null){
-                            $('#i_flagbonus2-1').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian2-1').val(hgb.hgb_qtymulai1bonus02);
-                            $('#i_qtybonus2-1').val(hgb.hgb_qty1bonus02);
-                        }
-
-                        if(hgb.hgb_qtymulai2bonus02 != 0 && hgb.hgb_qtymulai2bonus02 != null){
-                            $('#i_flagbonus2-2').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian2-2').val(hgb.hgb_qtymulai2bonus02);
-                            $('#i_qtybonus2-2').val(hgb.hgb_qty2bonus02);
-                        }
-
-                        if(hgb.hgb_qtymulai3bonus02 != 0 && hgb.hgb_qtymulai3bonus02 != null){
-                            $('#i_flagbonus2-3').val(hgb.hgb_jenisbonus);
-                            $('#i_qtypembelian2-3').val(hgb.hgb_qtymulai3bonus02);
-                            $('#i_qtybonus2-3').val(hgb.hgb_qty3bonus02);
-                        }
+                        if(hgn != null)
+                            hargabelibaru = hgn.hgn_hrgbeli;
+                        else hargabelibaru = 0;
 
 
-                        now = new Date();
-
-                        if(new Date(hgb.hgb_tglmulaidisc01) <= now && now <= new Date(hgb.hgb_tglakhirdisc01)){
-                            if(hgb.hgb_flagdisc01 == 'K')
-                                $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc01));
-                            else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc01 / prd.prd_isibeli)));
-                        }
-                        if(new Date(hgb.hgb_tglmulaidisc02) <= now && now <= new Date(hgb.hgb_tglakhirdisc02)){
-                            if(hgb.hgb_flagdisc01 == 'K')
-                                $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02));
-                            else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02 / prd.prd_isibeli)));
-                        }
-                        if(new Date(hgb.hgb_tglmulaidisc02ii) <= now && now <= new Date(hgb.hgb_tglakhirdisc02ii)){
-                            if(hgb.hgb_flagdisc02ii == 'K')
-                                $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02ii));
-                            else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02ii / prd.prd_isibeli)));
-                        }
-                        if(new Date(hgb.hgb_tglmulaidisc02iii) <= now && now <= new Date(hgb.hgb_tglakhirdisc02iii)){
-                            if(hgb.hgb_flagdisc02iii == 'K')
-                                $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02iii));
-                            else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02iii / prd.prd_isibeli)));
+                        $('#i_plu').val(prd.prd_prdcd);
+                        $('#i_deskripsipanjang').val(prd.prd_deskripsipanjang);
+                        if(tag != null){
+                            $('#i_statustag1').val(tag.tag_kodetag);
+                            $('#i_statustag2').val(tag.tag_keterangan);
                         }
 
-                        $('#i_hargaomi').val(Math.round($('#i_hargaomi').val()));
+                        $('#i_satuanbeli1').val(prd.prd_satuanbeli);
+                        $('#i_satuanbeli2').val(prd.prd_isibeli);
+                        $('#i_top').val(hgb.hgb_top)
+                        $('#i_flagbandrol').val(prd.prd_flagbandrol);
+                        $('#i_kondisi').val(prd.prd_perlakuanbarang);
+                        if(prd.prd_flagbkp1 == 'Y')
+                            $('#i_bkp1').val('Kena Pajak');
+                        else $('#i_bkp1').val('Tidak Kena Pajak');
 
-                        if(new Date(hgb.hgb_tglmulaibonus01) <= now && now <= hgb.hgb_tglakhirbonus01){
-                            if(hgb.hgb_flagdisc01 == 'K'){
-                                if(prd.prd_unit == 'KG')
-                                    $('#i_hargaomi').val(parseFloat((($('#i_hargaomi').val() * hgb.hgb_qtymulai1bonus01) / (hgb.hgb_qty1bonus01 + hgb.hgb_qtymulai1bonus01)) * 100));
-                                else $('#i_hargaomi').val(parseFloat((($('#i_hargaomi').val() * hgb.hgb_qtymulai1bonus01) / (hgb.hgb_qty1bonus01 + hgb.hgb_qtymulai1bonus01)) * 1));
+                        if(sup != null) {
+                            $('#i_kodesupplier').val(sup.sup_kodesupplier);
+                            $('#i_pkp').val(sup.sup_pkp);
+                            if(hgb.hgb_tipe == '2')
+                                $('#i_lastsupplier').val(sup.sup_kodesupplier + ' ADALAH SUPPLIER TERAKHIR')
+                            $('#i_namasupplier').val(sup.sup_namasupplier + ' / ' + null_check(sup.sup_singkatansupplier));
+                        }
+
+                        if(hgb != null){
+                            $('#i_tglberlaku').val(formatDate(hgb.hgb_tglberlaku01));
+                            $('#i_hargaomi').val(Math.round(hgb.hgb_nilaidpp));
+                            $('#i_jenisharga').val(hgb.hgb_jenishrgbeli);
+                            $('#i_tglupdate').val(formatDate(hgb.hgb_modify_dt.substr(0,10)));
+
+                            hgbhargabeli = parseFloat(hgb.hgb_hrgbeli * prd.prd_isibeli);
+                            $('#i_hgbhargabeli').val(convertToRupiah(hgbhargabeli));
+                            ppn = parseFloat(hgb.hgb_ppn * prd.prd_isibeli);
+                            $('#i_ppn').val(convertToRupiah(ppn));
+                            ppnbotol = parseFloat(hgb.hgb_ppnbotol)
+                            $('#i_botol').val(convertToRupiah(ppnbotol));
+                            ppnbm = parseFloat(hgb.hgb_ppnbm);
+                            $('#i_ppnbm').val(convertToRupiah(ppnbm));
+                            $('#i_hgbhargabelippn').val(convertToRupiah(hgbhargabeli + ppn + ppnbm));
+
+                            hargaomi = parseFloat((hgbhargabeli + ppnbm + ppnbotol) / prd.prd_isibeli);
+                            $('#i_hargaomi').val(hargaomi);
+
+                            $('#i_totaldiscount').val(convertToRupiah(parseInt(hgb.hgb_rphdisc04) + parseInt(hgb.hgb_rphdisc05) + parseInt(hgb.hgb_rphdisc06)));
+
+                            if(hgb.hgb_tglmulaibonus01 != null){
+                                $('#i_bonus1a').val(formatDate(hgb.hgb_tglmulaibonus01));
+                                $('#i_bonus1b').val(formatDate(hgb.hgb_tglakhirbonus01));
+                                if(hgb.hgb_flagkelipatanbonus01 == 'Y')
+                                    $('#i_kel1').val('BERLAKU KELIPATAN');
+                                else if(hgb.hgb_flagkelipatanbonus01 == 'N')
+                                    $('#i_kel1').val('TIDAK BERLAKU KELIPATAN');
                             }
-                            else{
-                                if(prd.prd_unit == 'KG')
-                                    $('#i_hargaomi').val(parseFloat( (($('#i_hargaomi').val() * (hgb.hgb_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgb.hgb_qty1bonus01 * prd.prd_isibeli) + (hgb.hgb_qtymulai1bonus01 * prd.prd_isibeli)) )  * 1000 ));
-                                else $('#i_hargaomi').val(parseFloat( (($('#i_hargaomi').val() * (hgb.hgb_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgb.hgb_qty1bonus01 * prd.prd_isibeli) + (hgb.hgb_qtymulai1bonus01 * prd.prd_isibeli)) )  * 1 ));
+                            if(hgb.hgb_tglmulaibonus02 != null){
+                                $('#i_bonus2a').val(formatDate(hgb.hgb_tglmulaibonus02));
+                                $('#i_bonus2b').val(formatDate(hgb.hgb_tglakhirbonus02));
+                                if(hgb.hgb_flagkelipatanbonus02 == 'Y')
+                                    $('#i_kel2').val('BERLAKU KELIPATAN');
+                                else if(hgb.hgb_flagkelipatanbonus02 == 'N')
+                                    $('#i_kel2').val('TIDAK BERLAKU KELIPATAN');
+                            }
+
+                            if(hgb.hgb_persendisc01 != 0 || hgb.hgb_rphdisc01 != 0){
+                                $('#i_disc1').val(toFixed(hgb.hgb_persendisc01));
+                                $('#i_disc1rp').val(convertToRupiah(hgb.hgb_rphdisc01));
+                                $('#i_bk1').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc1a').val(formatDate(hgb.hgb_tglmulaidisc01));
+                                $('#i_tglberlakudisc1b').val(formatDate(hgb.hgb_tglakhirdisc01));
+                            }
+
+                            if(hgb.hgb_persendisc02 != 0 || hgb.hgb_rphdisc02 != 0){
+                                $('#i_disc2').val(toFixed(hgb.hgb_persendisc02));
+                                $('#i_disc2rp').val(convertToRupiah(hgb.hgb_rphdisc02));
+                                $('#i_bk2').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc2a').val(formatDate(hgb.hgb_tglmulaidisc02));
+                                $('#i_tglberlakudisc2b').val(formatDate(hgb.hgb_tglakhirdisc02));
+                            }
+                            if(hgb.hgb_persendisc02ii != 0 || hgb.hgb_rphdisc02ii != 0){
+                                $('#i_disc2A').val(toFixed(hgb.hgb_rphdisc02));
+                                $('#i_disc2Arp').val(convertToRupiah(hgb.hgb_rphdisc02));
+                                $('#i_tglberlakudisc2Aa').val(formatDate(hgb.hgb_tglmulaidisc02ii));
+                                $('#i_tglberlakudisc2Ab').val(formatDate(hgb.hgb_tglakhirdisc02ii));
+                            }
+                            if(hgb.hgb_persendisc02iii != 0 || hgb.hgb_rphdisc02iii != 0){
+                                $('#i_disc2B').val(toFixed(hgb.hgb_persendisc02iii));
+                                $('#i_disc2Brp').val(convertToRupiah(hgb.hgb_rphdisc02iii));
+                                $('#i_tglberlakudisc2Ba').val(formatDate(hgb.hgb_tglmulaidisc02iii));
+                                $('#i_tglberlakudisc2Bb').val(formatDate(hgb.hgb_tglakhirdisc02iii));
+                            }
+                            if(hgb.hgb_persendisc03 != 0 || hgb.hgb_rphdisc03 != 0){
+                                $('#i_disc3').val(toFixed(hgb.hgb_persendisc03));
+                                $('#i_disc3rp').val(convertToRupiah(hgb.hgb_rphdisc03));
+                                $('#i_bk3').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc3a').val(formatDate(hgb.hgb_tglmulaidisc03));
+                                $('#i_tglberlakudisc3b').val(formatDate(hgb.hgb_tglakhirdisc03));
+                            }
+                            if(hgb.hgb_persendisc04 != 0 || hgb.hgb_rphdisc04 != 0){
+                                $('#i_disc4').val(toFixed(hgb.hgb_persendisc04));
+                                $('#i_disc4rp').val(convertToRupiah(hgb.hgb_rphdisc04));
+                                $('#i_bk4').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc4a').val(formatDate(hgb.hgb_tglmulaidisc04));
+                                $('#i_tglberlakudisc4b').val(formatDate(hgb.hgb_tglakhirdisc04));
+                            }
+                            if(hgb.hgb_persendisc05 != 0 || hgb.hgb_rphdisc05 != 0){
+                                $('#i_disc5').val(toFixed(hgb.hgb_persendisc05));
+                                $('#i_disc5rp').val(convertToRupiah(hgb.hgb_persendisc05));
+                                $('#i_bk5').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc5a').val(formatDate(hgb.hgb_tglmulaidisc05));
+                                $('#i_tglberlakudisc5b').val(formatDate(hgb.hgb_tglakhirdisc05));
+                            }
+                            if(hgb.hgb_persendisc06 != 0 || hgb.hgb_rphdisc06 != 0){
+                                $('#i_disc6').val(toFixed(hgb.hgb_persendisc06));
+                                $('#i_disc6rp').val(convertToRupiah(hgb.hgb_persendisc06));
+                                $('#i_bk6').val(hgb.hgb_flagdisc01);
+                                $('#i_tglberlakudisc6a').val(formatDate(hgb.hgb_tglmulaidisc06));
+                                $('#i_tglberlakudisc6b').val(formatDate(hgb.hgb_tglakhirdisc06));
+                            }
+
+                            if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null){
+                                $('#i_flagbonus1-1').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-1').val(hgb.hgb_qtymulai1bonus01);
+                                $('#i_qtybonus1-1').val(hgb.hgb_qty1bonus01);
+                            }
+
+                            if(hgb.hgb_qtymulai2bonus01 != 0 && hgb.hgb_qtymulai2bonus01 != null){
+                                $('#i_flagbonus1-2').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-2').val(hgb.hgb_qtymulai2bonus01);
+                                $('#i_qtybonus1-2').val(hgb.hgb_qty2bonus01);
+                            }
+
+                            if(hgb.hgb_qtymulai3bonus01 != 0 && hgb.hgb_qtymulai3bonus01 != null){
+                                $('#i_flagbonus1-3').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-3').val(hgb.hgb_qtymulai3bonus01);
+                                $('#i_qtybonus1-3').val(hgb.hgb_qty3bonus01);
+                            }
+                            if(hgb.hgb_qtymulai4bonus01 != 0 && hgb.hgb_qtymulai4bonus01 != null){
+                                $('#i_flagbonus1-4').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-4').val(hgb.hgb_qtymulai4bonus01);
+                                $('#i_qtybonus1-4').val(hgb.hgb_qty4bonus01);
+                            }
+
+                            if(hgb.hgb_qtymulai5bonus01 != 0 && hgb.hgb_qtymulai5bonus01 != null){
+                                $('#i_flagbonus1-5').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-5').val(hgb.hgb_qtymulai5bonus01);
+                                $('#i_qtybonus1-5').val(hgb.hgb_qty5bonus01);
+                            }
+
+                            if(hgb.hgb_qtymulai6bonus01 != 0 && hgb.hgb_qtymulai6bonus01 != null){
+                                $('#i_flagbonus1-6').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian1-6').val(hgb.hgb_qtymulai6bonus01);
+                                $('#i_qtybonus1-6').val(hgb.hgb_qty6bonus01);
+                            }
+
+                            if(hgb.hgb_qtymulai1bonus02 != 0 && hgb.hgb_qtymulai1bonus02 != null){
+                                $('#i_flagbonus2-1').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian2-1').val(hgb.hgb_qtymulai1bonus02);
+                                $('#i_qtybonus2-1').val(hgb.hgb_qty1bonus02);
+                            }
+
+                            if(hgb.hgb_qtymulai2bonus02 != 0 && hgb.hgb_qtymulai2bonus02 != null){
+                                $('#i_flagbonus2-2').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian2-2').val(hgb.hgb_qtymulai2bonus02);
+                                $('#i_qtybonus2-2').val(hgb.hgb_qty2bonus02);
+                            }
+
+                            if(hgb.hgb_qtymulai3bonus02 != 0 && hgb.hgb_qtymulai3bonus02 != null){
+                                $('#i_flagbonus2-3').val(hgb.hgb_jenisbonus);
+                                $('#i_qtypembelian2-3').val(hgb.hgb_qtymulai3bonus02);
+                                $('#i_qtybonus2-3').val(hgb.hgb_qty3bonus02);
+                            }
+
+
+                            now = new Date();
+
+                            if(new Date(hgb.hgb_tglmulaidisc01) <= now && now <= new Date(hgb.hgb_tglakhirdisc01)){
+                                if(hgb.hgb_flagdisc01 == 'K') {
+                                    $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc01));
+                                }
+                                else{
+                                    $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc01 / prd.prd_isibeli)));
+                                }
+                            }
+                            if(new Date(hgb.hgb_tglmulaidisc02) <= now && now <= new Date(hgb.hgb_tglakhirdisc02)){
+                                if(hgb.hgb_flagdisc01 == 'K')
+                                    $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02));
+                                else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02 / prd.prd_isibeli)));
+                            }
+                            if(new Date(hgb.hgb_tglmulaidisc02ii) <= now && now <= new Date(hgb.hgb_tglakhirdisc02ii)){
+                                if(hgb.hgb_flagdisc01 == 'K')
+                                    $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02ii));
+                                else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02ii / prd.prd_isibeli)));
+                            }
+                            if(new Date(hgb.hgb_tglmulaidisc02iii) <= now && now <= new Date(hgb.hgb_tglakhirdisc02iii)){
+                                if(hgb.hgb_flagdisc01 == 'K')
+                                    $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - hgb.hgb_rphdisc02iii));
+                                else $('#i_hargaomi').val(parseFloat($('#i_hargaomi').val() - (hgb.hgb_rphdisc02iii / prd.prd_isibeli)));
+                            }
+
+                            $('#i_hargaomi').val(Math.round($('#i_hargaomi').val()));
+
+                            if(new Date(hgb.hgb_tglmulaibonus01) <= now && now <= new Date(hgb.hgb_tglakhirbonus01)){
+                                if(hgb.hgb_flagdisc01 == 'K'){
+                                    if(prd.prd_unit == 'KG')
+                                        $('#i_hargaomi').val(parseFloat( (($('#i_hargaomi').val() * parseInt(hgb.hgb_qtymulai1bonus01) ) / (parseInt(hgb.hgb_qty1bonus01) + parseInt(hgb.hgb_qtymulai1bonus01) )) * 1000));
+                                    else{
+                                        $('#i_hargaomi').val(($('#i_hargaomi').val() * parseInt(hgb.hgb_qtymulai1bonus01) ) / (parseInt(hgb.hgb_qty1bonus01) + parseInt(hgb.hgb_qtymulai1bonus01)) * 1);
+                                    }
+                                }
+                                else{
+                                    if(prd.prd_unit == 'KG')
+                                        $('#i_hargaomi').val(parseFloat( (($('#i_hargaomi').val() * (parseInt(hgb.hgb_qtymulai1bonus01) * parseInt(prd.prd_isibeli))) / ((parseInt(hgb.hgb_qty1bonus01) * parseInt(prd.prd_isibeli)) + (parseInt(hgb.hgb_qtymulai1bonus01) * parseInt(prd.prd_isibeli))) )  * 1000 ));
+                                    else $('#i_hargaomi').val(parseFloat( (($('#i_hargaomi').val() * (parseInt(hgb.hgb_qtymulai1bonus01) * parseInt(prd.prd_isibeli))) / ((parseInt(hgb.hgb_qty1bonus01) * parseInt(prd.prd_isibeli)) + (parseInt(hgb.hgb_qtymulai1bonus01) * parseInt(prd.prd_isibeli))) )  * 1 ));
+                                }
+                            }
+
+                            $('#i_flagdisc2').val(hgb.hgb_flagdisc02);
+                            $('#i_flagdisc2A').val(hgb.hgb_flagdisc02ii);
+                            $('#i_flagdisc2B').val(hgb.hgb_flagdisc02iii);
+
+                            $('#i_hargaomi').val(convertToRupiah2(Math.round($('#i_hargaomi').val())));
+
+                            $('#i_hargaomibaru').val(convertToRupiah(parseFloat(hargabelibaru) + parseFloat(ppnbm) + parseFloat(ppnbotol) ));
+
+                            if(hgn != null){
+                                if(hgn.hgn_tglmulaidisc01 != null && hgn.hgn_tglakhirdisc01 != null ){
+                                    if(new Date(hgn.hgn_tglmulaidisc01) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc01){
+                                        if($('#i_flagdisc1').val() == 'K')
+                                            $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc1rp').val() ));
+                                        else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc1rp').val() / prd.prd_isibeli) ));
+                                    }
+                                }
+
+                                if(hgn.hgn_tglmulaidisc02 != null && hgn.hgn_tglakhirdisc02 != null){
+                                    if(new Date(hgn.hgn_tglmulaidisc02) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02){
+                                        if($('#i_flagdisc1').val() == 'K')
+                                            $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2rp').val() ));
+                                        else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2rp').val() / prd.prd_isibeli) ));
+                                    }
+                                }
+
+                                if(hgn.hgn_tglmulaidisc02ii != null && hgn.hgn_tglakhirdisc02ii != null){
+                                    if(new Date(hgn.hgn_tglmulaidisc02ii) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02ii){
+                                        if($('#i_flagdisc1').val() == 'K')
+                                            $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2Arp').val() ));
+                                        else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2Arp').val() / prd.prd_isibeli) ));
+                                    }
+                                }
+
+                                if(hgn.hgn_tglmulaidisc02iii != null && hgn.hgn_tglakhirdisc02iii != null){
+                                    if(new Date(hgn.hgn_tglmulaidisc02iii) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02iii){
+                                        if($('#i_flagdisc1').val() == 'K')
+                                            $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2Brp').val() ));
+                                        else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2Brp').val() / prd.prd_isibeli) ));
+                                    }
+                                }
+
+                                if(hgn.hgn_tglmulaibonus01 != null && hgn.tglakhirbonus01 != null){
+                                    if(new Date(hgn.hgn_tglmulaibonus01) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.tglakhirbonus01 && hgn.hgn_tglakhirbonus01 != null && (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01 ) != 0){
+                                        if(hgb.hgb_flagdisc01 == 'K'){
+                                            if(prd.prd_unit == 'KG')
+                                                $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * hgn.hgn_qtymulai1bonus01) / (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01)) * 1000 ) );
+                                            else $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * hgn.hgn_qtymulai1bonus01) / (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01)) * 1 ) );
+                                        }
+                                        else{
+                                            if(prd.prd_unit == 'KG')
+                                                $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgn.hgn_qty1bonus01 * prd.prd_isibeli) + (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli))) * 1000 ) );
+                                            else $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgn.hgn_qty1bonus01 * prd.prd_isibeli) + (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli))) * 1 ) );
+                                        }
+                                    }
+                                }
+
+                                if($('#i_hargaomibaru').val() == 0){
+                                    $('#i_hargaomibaru').val('');
+                                }
                             }
                         }
 
-                        $('#i_hargaomi').val(convertToRupiah($('#i_hargaomi').val()));
-
-                        $('#i_hargaomibaru').val(convertToRupiah(parseFloat( hgbhargabeli + ppnbm + ppnbotol )));
-
-                        if(new Date(hgn.hgn_tglmulaidisc01) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc01){
-                            if($('#i_flagdisc1').val() == 'K')
-                                $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc1rp').val() ));
-                            else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc1rp').val() / prd.prd_isibeli) ));
+                        if(hgn != null){
+                            $('#i_tglberlakubaru').val(formatDate(hgn.hgn_tglberlaku01));
                         }
-
-                        if(new Date(hgn.hgn_tglmulaidisc02) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02){
-                            if($('#i_flagdisc1').val() == 'K')
-                                $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2rp').val() ));
-                            else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2rp').val() / prd.prd_isibeli) ));
-                        }
-
-                        if(new Date(hgn.hgn_tglmulaidisc02ii) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02ii){
-                            if($('#i_flagdisc1').val() == 'K')
-                                $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2Arp').val() ));
-                            else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2Arp').val() / prd.prd_isibeli) ));
-                        }
-
-                        if(new Date(hgn.hgn_tglmulaidisc02iii) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.hgn_tglakhirdisc02iii){
-                            if($('#i_flagdisc1').val() == 'K')
-                                $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - $('#i_disc2Brp').val() ));
-                            else $('#i_hargaomibaru').val( parseFloat( $('#i_hargaomibaru').val() - ( $('#i_disc2Brp').val() / prd.prd_isibeli) ));
-                        }
-
-                        if(new Date(hgn.hgn_tglmulaibonus01) <= new Date(hgn.hgn_tglberlaku01) && new Date(hgn.hgn_tglberlaku01) <= hgn.tglakhirbonus01 && hgn.hgn_tglakhirbonus01 != null && (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01 ) != 0){
-                            if(hgb.hgb_flagdisc01 == 'K'){
-                                if(prd.prd_unit == 'KG')
-                                    $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * hgn.hgn_qtymulai1bonus01) / (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01)) * 1000 ) );
-                                else $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * hgn.hgn_qtymulai1bonus01) / (hgn.hgn_qty1bonus01 + hgn.hgn_qtymulai1bonus01)) * 1 ) );
-                            }
-                            else{
-                                if(prd.prd_unit == 'KG')
-                                    $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgn.hgn_qty1bonus01 * prd.prd_isibeli) + (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli))) * 1000 ) );
-                                else $('#i_hargaomibaru').val( parseFloat( (($('#i_hargaomibaru').val() * (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli)) / ((hgn.hgn_qty1bonus01 * prd.prd_isibeli) + (hgn.hgn_qtymulai1bonus01 * prd.prd_isibeli))) * 1 ) );
-                            }
-                        }
-
-                    }
-
-                    if(hgn != null){
-                        $('#i_tglberlakubaru').val(formatDate(hgn.hgn_tglberlaku01));
                     }
                 },
                 complete: function(){
@@ -911,6 +992,8 @@
                         $('#table_lov .row_lov').remove();
                         $('#table_lov').append(trlov);
                     }
+                    $('#modal-loader').modal('hide');
+                    $('#i_plu').focus();
                 }
             });
         }
@@ -928,6 +1011,9 @@
                         url: '/BackOffice/public/msthargabeli/lov_search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        beforeSend: function(){
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
                         success: function (response) {
                             $('#table_lov .row_lov').remove();
                             html = "";
@@ -936,6 +1022,7 @@
                                 html = '<tr class="row_lov" onclick=lov_select("' + response[i].prd_prdcd + '")><td>' + response[i].prd_deskripsipanjang + '</td><td>' + response[i].prd_prdcd + '</td></tr>';
                                 $('#table_lov').append(html);
                             }
+                            $('#modal-loader').modal('hide');
                         }
                     });
                 }

@@ -138,6 +138,17 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
+
+        'simtgr' => [
+            'driver' => 'oracle',
+            'host' => '192.168.228.193',
+            'port' => '1521',
+            'database' => 'SIMTGR',
+            'username' => 'SIMTGR',
+            'password' => 'SIMTGR',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
     ],
 
     /*

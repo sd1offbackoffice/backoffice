@@ -495,7 +495,7 @@
                         for(i = 1; i< result.length; i++){
                             $('#tableTokoOmi').DataTable().row.add(
                                 [result[i].tko_kodeomi, result[i].tko_namaomi, result[i].tko_flagdistfee, result[i].tko_persendistributionfee,
-                                    result[i].tko_kodecustomer, result[i].cus_namamember, convertDate(result[i].tko_tglgo), convertDate(result[i].tko_tgltutup),
+                                    result[i].tko_kodecustomer, result[i].cus_namamember, formatDate(result[i].tko_tglgo), formatDate(result[i].tko_tgltutup),
                                     result[i].tko_flagvb, result[i].tko_persenmargin, result[i].tko_flagsubsidipemanjangan, result[i].tko_flagcreditlimitomi,
                                     result[i].tko_tipeomi, "<button class='btn btn-success btn-block text-center' data-toggle='modal' data-target='#m_detailTokoOmi' onclick='getDetailOmi(`"+ result[i].tko_kodeomi +"`)'>Edit</button>"
                                 ]).draw();
@@ -505,14 +505,6 @@
                     console.log('error');
                 }
             })
-        }
-
-        function convertDate(date) {
-            if (!date){
-                return date;
-            } else {
-                return date.substr(0,10);
-            }
         }
 
         function converttime(time, id) {

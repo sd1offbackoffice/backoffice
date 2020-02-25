@@ -40,3 +40,7 @@ Route::post('/mstkubikasiplano/dataRakKecil','MASTER\kubikasiPlanoController@dat
 Route::post('/mstkubikasiplano/dataRakKecilParam','MASTER\kubikasiPlanoController@dataRakKecilParam');
 Route::post('/mstkubikasiplano/lov_search','MASTER\kubikasiPlanoController@lov_search');
 Route::post('/mstkubikasiplano/save_kubikasi','MASTER\kubikasiPlanoController@save_kubikasi');
+
+//IGR_BO_INQUERY (INFORMASI DAN HISTORY PRODUK)
+Route::post('/mstinformasihistoryproduct/lov_search','MASTER\informasiHistoryProductController@lov_search');
+Route::post('/mstinformasihistoryproduct/lov_select','MASTER\informasiHistoryProductController@lov_select');

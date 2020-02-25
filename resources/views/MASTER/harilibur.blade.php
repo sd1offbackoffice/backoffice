@@ -49,4 +49,35 @@
         </div>
     </div>
 
+    <style>
+        /*body {*/
+            /*background-color: #edece9;*/
+            /*!*background-color: #ECF2F4  !important;*!*/
+        /*}*/
+        /*label {*/
+            /*color: #232443;*/
+            /*!*color: #8A8A8A;*!*/
+            /*font-weight: bold;*/
+        /*}*/
+        /*input[type=number]::-webkit-inner-spin-button,*/
+        /*input[type=number]::-webkit-outer-spin-button,*/
+        /*input[type=date]::-webkit-inner-spin-button,*/
+        /*input[type=date]::-webkit-outer-spin-button{*/
+            /*-webkit-appearance: none;*/
+            /*margin: 0;*/
+        /*}*/
+        /*.cardForm {*/
+            /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+        /*}*/
+        .my-custom-scrollbar {
+            position: relative;
+            height: 350px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+        .table-wrapper-scroll-y {
+            display: block;
+        }
+    </style>
+
 @endsection

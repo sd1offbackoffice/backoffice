@@ -52,30 +52,40 @@ class aktifHargaJualController extends Controller
         $model  = new AllModel();
         $kodeigr = $model->getKodeigr();
         $kodeigr = $kodeigr[0]->prs_kodeigr;
+        $errm  = '';
+        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 
         $getHarga   = DB::table('tbmaster_prodmast')->select('prd_hrgjual', 'prd_tglhrgjual', 'prd_hrgjual3', 'prd_tglhrgjual3')->where('prd_prdcd', $plu)->get()->toArray();
+
+//        DB::raw(DB::statement ("call sp_aktifkan_harga_peritem(?)", array($kodeigr)));
+
+        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:errm); END;");
+        oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+        oci_bind_by_name($exec, ':errm', $errm,1000);
+        oci_execute($exec);
+
 
 //        DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual2' => $getHarga[0]->prd_hrgjual, 'prd_hrgjual' => $getHarga[0]->prd_hrgjual3, 'prd_tglhrgjual2' => $getHarga[0]->prd_tglhrgjual, 'prd_tglhrgjual' => $getHarga[0]->prd_tglhrgjual3 ,
 //            'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
 //
 //        DB::table('TBTR_UPDATE_PLU_MD')->insert(['UPD_KODEIGR' => $kodeigr, 'UPD_PRDCD' => $plu, 'UPD_HARGA' => $getHarga[0]->prd_hrgjual3, 'UPD_CREATE_BY' => $user, 'UPD_CREATE_DT' => $date]);
-
-        $hargaJual  = DB::table('TBMASTER_HARGAJUAL')
-            ->where('HGJ_PRDCD', $plu)
-            ->where('HGJ_KODEIGR', $kodeigr)
-            ->orderBy('HGJ_PRDCD')
-            ->orderBy('HGJ_TGLBERLAKU')
-            ->get()->toArray();
-
-        if ($hargaJual == null){
-            DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual3' => '0', 'prd_tglhrgjual3' => '', 'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
-        } else {
-            dd('asd');
-        }
+//
+//        $hargaJual  = DB::table('TBMASTER_HARGAJUAL')
+//            ->where('HGJ_PRDCD', $plu)
+//            ->where('HGJ_KODEIGR', $kodeigr)
+//            ->orderBy('HGJ_PRDCD')
+//            ->orderBy('HGJ_TGLBERLAKU')
+//            ->get()->toArray();
+//
+//        if ($hargaJual == null){
+//            DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual3' => '0', 'prd_tglhrgjual3' => '', 'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
+//        } else {
+//            dd('asd');
+//        }
 
         $msg = "Data Berhasil Di Aktifkan";
 
-        return response()->json($msg);
+        return response()->json($errm);
     }
 
 }

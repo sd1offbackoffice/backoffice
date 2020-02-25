@@ -12,14 +12,10 @@ class memberController extends Controller
     //
 
     public function index(){
-//        $cus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//            ->where('cus_kodemember','789867')
+//        $c = DB::table('tbhistory_deletecustomer')
 //            ->first();
-//        $crm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//            ->select('crm_recordid','crm_kodeigr','crm_kodemember','crm_jenisanggota','crm_jeniskelamin','crm_pic1','crm_nohppic1','crm_pic2','crm_nohppic2','crm_agama','crm_namapasangan','crm_tgllhrpasangan','crm_jmlanak','crm_pendidikanakhir','crm_nofax','crm_koordinat','crm_namabank','crm_jenisbangunan','crm_lamatmpt','crm_statusbangunan','crm_internet','crm_tipehp','crm_metodekirim','crm_kreditusaha','crm_bankkredit','crm_email','crm_group','crm_subgroup','crm_kategori','crm_subkategori','crm_pekerjaan','crm_tmptlahir','crm_alamatusaha1','crm_alamatusaha2','crm_alamatusaha3','crm_alamatusaha4','crm_idgroupkat','crm_idsegment','crm_motor','crm_mobil','crm_create_by','crm_create_dt','crm_modify_by','crm_modify_dt')
-//            ->where('crm_kodemember','789867')
-//            ->first();
-//        dd(compact(['cus','crm']));
+//
+//        dd($c);
 
         $member = DB::table('tbmaster_customer')
             ->select('*')
@@ -54,13 +50,118 @@ class memberController extends Controller
             ->orderBy('grp_group')
             ->get();
 
-        return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos','jenismember','jenisoutlet','group']));
+        $produkmember = DB::table('tbtabel_produkmember')
+            ->select('mpm_kodeprdcd','mpm_namaprdcd')
+            ->orderBy('mpm_kodeprdcd')
+            ->get();
+
+        return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos','jenismember','jenisoutlet','group','produkmember']));
     }
 
     public function lov_member_select(Request $request){
         $member = DB::table('tbmaster_customer')
-            ->leftJoin('tbmaster_customercrm','cus_kodemember','=','crm_kodemember')
-            ->select('*')
+            ->leftJoin('tbmaster_customercrm','crm_kodemember','=','cus_kodemember')
+            ->select('cus_kodeigr',
+                'cus_recordid',
+                'cus_kodemember',
+                'cus_namamember',
+                'cus_alamatmember1',
+                'cus_alamatmember2',
+                'cus_alamatmember3',
+                'cus_alamatmember4',
+                'cus_tlpmember',
+                'cus_alamatmember5',
+                'cus_alamatmember6',
+                'cus_alamatmember7',
+                'cus_alamatmember8',
+                'cus_jenismember',
+                'cus_flagmemberkhusus',
+                'cus_jarak',
+                'cus_cfk',
+                'cus_kodeoutlet',
+                'cus_kodesuboutlet',
+                'cus_kodearea',
+                'cus_tglmulai',
+                'cus_tglregistrasi',
+                'cus_npwp',
+                'cus_flagpkp',
+                'cus_creditlimit',
+                'cus_top',
+                'cus_keterangan',
+                'cus_tglpajak',
+                'cus_nosalesman',
+                'cus_flaggantikartu',
+                'cus_nokartumember',
+                'cus_flagkredit',
+                'cus_flagblockingpengiriman',
+                'cus_flagbebasiuran',
+                'cus_tgllahir',
+                'cus_costcenter',
+                'cus_noaccount',
+                'cus_alamatemail',
+                'cus_hpmember',
+                'cus_flaginstitusipemerintah',
+                'cus_create_by',
+                'cus_create_dt',
+                'cus_modify_by',
+                'cus_modify_dt',
+                'cus_getpoint',
+                'cus_flagkirimsms',
+                'cus_flag_uptodate',
+                'cus_nonaktif_dt',
+                'cus_flag_ina',
+                'cus_tglmulai_va',
+                'cus_noacc_va',
+                'cus_noktp',
+                'cus_flag_verifikasi',
+                'cus_flag_mypoin',
+                'cus_flag_isaku',
+                'cus_mypoin_dt',
+                'cus_isaku_dt',
+                'crm_recordid',
+                'crm_kodeigr',
+                'crm_kodemember',
+                'crm_jenisanggota',
+                'crm_jeniskelamin',
+                'crm_pic1',
+                'crm_nohppic1',
+                'crm_pic2',
+                'crm_nohppic2',
+                'crm_agama',
+                'crm_namapasangan',
+                'crm_tgllhrpasangan',
+                'crm_jmlanak',
+                'crm_pendidikanakhir',
+                'crm_nofax',
+                'crm_koordinat',
+                'crm_namabank',
+                'crm_jenisbangunan',
+                'crm_lamatmpt',
+                'crm_statusbangunan',
+                'crm_internet',
+                'crm_tipehp',
+                'crm_metodekirim',
+                'crm_kreditusaha',
+                'crm_bankkredit',
+                'crm_email',
+                'crm_group',
+                'crm_subgroup',
+                'crm_kategori',
+                'crm_subkategori',
+                'crm_pekerjaan',
+                'crm_tmptlahir',
+                'crm_alamatusaha1',
+                'crm_alamatusaha2',
+                'crm_alamatusaha3',
+                'crm_alamatusaha4',
+                'crm_idgroupkat',
+                'crm_idsegment',
+                'crm_motor',
+                'crm_mobil',
+                'crm_create_by',
+                'crm_create_dt',
+                'crm_modify_by',
+                'crm_modify_dt')
             ->where('cus_kodemember',$request->value)
             ->first();
 
@@ -149,9 +250,19 @@ class memberController extends Controller
             ->where('pwp_kodemember','=',$member->cus_kodemember)
             ->first();
 
-//        dd(compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp']));
+        $quisioner = '';
+//        if($member->cus_flagmemberkhusus == 'Y' && $member->cus_recordid != null){
+            $quisioner = DB::table('tbtabel_flagprodukmember')
+                ->select('fpm_kodeprdcd','fpm_flagjual','fpm_flagbeliigr','fpm_flagbelilain')
+                ->where('fpm_kodemember',$member->cus_kodemember)
+//                    ->where('fpm_kodemember','578229')
+                ->orderBy('fpm_kodeprdcd')
+                ->get();
+//        }
 
-        return compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp']);
+//        dd(compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp','quisioner']));
+
+        return compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp','quisioner']);
     }
 
     public function lov_kodepos_select(Request $request){
@@ -397,48 +508,48 @@ class memberController extends Controller
             ->first();
 
         if($checkigr->cus_kodeigr == $kodeigr){
-//            $checkcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                ->where('cus_kodemember',$kodemember)
-//                ->first();
-//            if($checkcus){
-//                DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                    ->where('cus_kodemember',$kodemember)
-//                    ->delete();
-//            }
+            $checkcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                ->where('cus_kodemember',$kodemember)
+                ->first();
+            if($checkcus){
+                DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                    ->where('cus_kodemember',$kodemember)
+                    ->delete();
+            }
 
-//            $checkcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                ->where('crm_kodemember',$kodemember)
-//                ->first();
-//            if($checkcrm){
-//                DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                    ->where('crm_kodemember',$kodemember)
-//                    ->delete();
-//            }
+            $checkcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                ->where('crm_kodemember',$kodemember)
+                ->first();
+            if($checkcrm){
+                DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                    ->where('crm_kodemember',$kodemember)
+                    ->delete();
+            }
 
-//            $exportcus = DB::table('tbmaster_customer')
-//                ->where('cus_kodemember',$kodemember)
-//                ->first();
-//
-//
-//
-//            if($exportcus){
-//                $arrexportcus = (array) $exportcus;
-//                $resultcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                    ->insert($arrexportcus);
-//            }
-//
-//            $exportcrm = DB::table('tbmaster_customercrm')
-//                ->where('crm_kodemember',$kodemember)
-//                ->first();
-//
-//            if($exportcrm){
-//                $arrexportcrm = (array) $exportcrm;
-//                $resultcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                    ->insert($arrexportcrm);
-//            }
+            $exportcus = DB::table('tbmaster_customer')
+                ->where('cus_kodemember',$kodemember)
+                ->first();
 
-            $resultcus = true;
-            $resultcrm = true;
+
+
+            if($exportcus){
+                $arrexportcus = (array) $exportcus;
+                $resultcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                    ->insert($arrexportcus);
+            }
+
+            $exportcrm = DB::table('tbmaster_customercrm')
+                ->where('crm_kodemember',$kodemember)
+                ->first();
+
+            if($exportcrm){
+                $arrexportcrm = (array) $exportcrm;
+                $resultcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                    ->insert($arrexportcrm);
+            }
+
+//            $resultcus = true;
+//            $resultcrm = true;
 
             if($resultcus && $resultcrm){
                 $status = 'success';
@@ -453,6 +564,187 @@ class memberController extends Controller
             $status = 'failed';
             $message = 'Member tidak sesuai dengan cabang anda!';
         }
+
+        return compact(['status','message']);
+    }
+
+    public function save_quisioner(Request $request){
+        $arrquisioner = [];
+        $quisioner = '';
+        $kodemember = $request->arrdata[0]['fpm_kodemember'];
+
+        $oldQuisioner = DB::table('tbtabel_flagprodukmember')
+            ->where('fpm_kodemember',$kodemember)
+            ->orderBy('fpm_kodeprdcd')
+            ->get();
+
+        if(sizeof($oldQuisioner)){
+            if(sizeof($oldQuisioner) == sizeof($request->arrdata)){
+                for($i=0;$i<sizeof($request->arrdata);$i++){
+                    $quisioner = array(
+                        'fpm_kodeigr' => '22',
+                        'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                        'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                        'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                        'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                        'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                        'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
+                        'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
+                        'fpm_modify_by' => 'LEO',
+                        'fpm_modify_dt' => DB::RAW('sysdate')
+                    );
+                    $arrquisioner[] = $quisioner;
+                }
+            }
+            else{
+                $j = 0;
+                for($i=0;$i<sizeof($request->arrdata);$i++){
+                    if($request->arrdata[$i]['fpm_kodeprdcd'] == $oldQuisioner[$j]->fpm_kodeprdcd){
+                        $quisioner = array(
+                            'fpm_kodeigr' => '22',
+                            'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                            'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                            'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                            'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                            'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                            'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
+                            'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
+                            'fpm_modify_by' => 'LEO',
+                            'fpm_modify_dt' => DB::RAW('sysdate')
+                        );
+                        if($j < sizeof($oldQuisioner) - 1)
+                            $j++;
+                    }
+                    else{
+                        $quisioner = array(
+                            'fpm_kodeigr' => '22',
+                            'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                            'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                            'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                            'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                            'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                            'fpm_create_by' => 'LEO',
+                            'fpm_create_dt' => DB::RAW('sysdate'),
+                            'fpm_modify_by' => '',
+                            'fpm_modify_dt' => ''
+                        );
+                    }
+                    $arrquisioner[] = $quisioner;
+                }
+            }
+
+            DB::table('tbtabel_flagprodukmember')
+                ->where('fpm_kodemember', $kodemember)
+                ->delete();
+        }
+        else{
+            for($i=0;$i<sizeof($request->arrdata);$i++){
+                $quisioner = array(
+                    'fpm_kodeigr' => '22',
+                    'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                    'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                    'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                    'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                    'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                    'fpm_create_by' => 'LEO',
+                    'fpm_create_dt' => DB::RAW('sysdate'),
+                    'fpm_modify_by' => '',
+                    'fpm_modify_dt' => ''
+                );
+                $arrquisioner[] = $quisioner;
+            }
+        }
+
+        $insert = DB::table('tbtabel_flagprodukmember')
+            ->insert($arrquisioner);
+
+        if($insert){
+            $status = 'success';
+            $message = 'Berhasil menyimpan data quisioner!';
+        }
+        else{
+            $status = 'failed';
+            $message = 'Gagal menyimpan data quisioner!';
+        }
+
+        return compact(['status','message']);
+    }
+
+    public function hapus_member(Request $request){
+        $kodemember = $request->kodemember;
+
+        $cus = DB::table('tbmaster_customer')
+            ->select(
+                'CUS_KODEIGR',
+                'CUS_RECORDID',
+                'CUS_KODEMEMBER',
+                'CUS_NAMAMEMBER',
+                'CUS_ALAMATMEMBER1',
+                'CUS_ALAMATMEMBER2',
+                'CUS_ALAMATMEMBER3',
+                'CUS_ALAMATMEMBER4',
+                'CUS_TLPMEMBER',
+                'CUS_ALAMATMEMBER5',
+                'CUS_ALAMATMEMBER6',
+                'CUS_ALAMATMEMBER7',
+                'CUS_ALAMATMEMBER8',
+                'CUS_JENISMEMBER',
+                'CUS_FLAGMEMBERKHUSUS',
+                'CUS_JARAK',
+                'CUS_CFK',
+                'CUS_KODEOUTLET',
+                'CUS_KODESUBOUTLET',
+                'CUS_KODEAREA',
+                'CUS_TGLMULAI',
+                'CUS_TGLREGISTRASI',
+                'CUS_NPWP',
+                'CUS_FLAGPKP',
+                'CUS_CREDITLIMIT',
+                'CUS_TOP',
+                'CUS_KETERANGAN',
+                'CUS_TGLPAJAK',
+                'CUS_NOSALESMAN',
+                'CUS_FLAGGANTIKARTU',
+                'CUS_NOKARTUMEMBER',
+                'CUS_FLAGKREDIT',
+                'CUS_FLAGBLOCKINGPENGIRIMAN',
+                'CUS_FLAGBEBASIURAN',
+                'CUS_TGLLAHIR',
+                'CUS_COSTCENTER',
+                'CUS_NOACCOUNT',
+                'CUS_ALAMATEMAIL',
+                'CUS_HPMEMBER',
+                'CUS_FLAGINSTITUSIPEMERINTAH',
+                'CUS_MODIFY_BY',
+                'CUS_MODIFY_DT',
+                'CUS_GETPOINT'
+            )
+            ->where('cus_kodemember',$kodemember)
+            ->first();
+
+        $cus = (array) $cus;
+        $cus['cus_create_by'] = 'LEO';
+        $cus['cus_create_dt'] = DB::RAW('sysdate');
+
+        $insert = DB::table('tbhistory_deletecustomer')
+            ->insert($cus);
+
+        if($insert){
+            $deletecus = DB::table('tbmaster_customer')
+                ->where('cus_kodemember',$kodemember)
+                ->delete();
+
+            $deletecrm = DB::table('tbmaster_customercrm')
+                ->where('crm_kodemember',$kodemember)
+                ->delete();
+
+            $deletecub = DB::table('tbmaster_customerfasilitasbank')
+                ->where('cub_kodemember',$kodemember)
+                ->delete();
+        }
+
+        $status = 'success';
+        $message = 'Berhasil menghapus data member!';
 
         return compact(['status','message']);
     }

@@ -1099,111 +1099,13 @@
 
     <script>
         $(document).ready(function () {
-            // $('#table_penerimaan').DataTable({
-            //     "lengthChange": false,
-            //     "pageLength": 15
-            // });
             $('#input').focus();
+            var e = $.Event("keypress");
+            e.keyCode = 13;
+            $('#input').val('0000410');
+            $('#input').trigger(e);
         });
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
-
-        $('#input').keypress(function(e) {
-            if (e.keyCode == 13) {
-                plu = convertPlu($(this).val());
-                $(this).val(plu);
-            }
-        });
-
-        function get_data(value) {
-            $.ajax({
-                url: '/BackOffice/public/mstjenisitem/lov_select',
-                type:'POST',
-                data:{"_token":"{{ csrf_token() }}",value: value},
-                beforeSend: function(){
-                    $('#m_pluHelp').modal('hide');
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
-                success: function(response){
-                    console.log(response);
-                    $('#i_pluplanogram').val(value);
-                    $('#i_deskripsi').val(response['produk']['prd_deskripsipanjang']);
-                    $('#i_unitfrac').val(response['produk']['prd_unit']+'/'+response['produk']['prd_frac']);
-                    $('#i_maxpalet').val(response['palet']['mpt_maxqty']);
-                    $('#sls_qty_01').val(format_currency(response['trendsales']['sls_qty_01']));
-                    $('#sls_qty_02').val(format_currency(response['trendsales']['sls_qty_02']));
-                    $('#sls_qty_03').val(format_currency(response['trendsales']['sls_qty_03']));
-                    $('#sls_qty_04').val(format_currency(response['trendsales']['sls_qty_04']));
-                    $('#sls_qty_05').val(format_currency(response['trendsales']['sls_qty_05']));
-                    $('#sls_qty_06').val(format_currency(response['trendsales']['sls_qty_06']));
-                    $('#sls_qty_07').val(format_currency(response['trendsales']['sls_qty_07']));
-                    $('#sls_qty_08').val(format_currency(response['trendsales']['sls_qty_08']));
-                    $('#sls_qty_09').val(format_currency(response['trendsales']['sls_qty_09']));
-                    $('#sls_qty_10').val(format_currency(response['trendsales']['sls_qty_10']));
-                    $('#sls_qty_11').val(format_currency(response['trendsales']['sls_qty_11']));
-                    $('#sls_qty_12').val(format_currency(response['trendsales']['sls_qty_12']));
-                    $('#sls_rph_01').val(format_currency(response['trendsales']['sls_rph_01']));
-                    $('#sls_rph_02').val(format_currency(response['trendsales']['sls_rph_02']));
-                    $('#sls_rph_03').val(format_currency(response['trendsales']['sls_rph_03']));
-                    $('#sls_rph_04').val(format_currency(response['trendsales']['sls_rph_04']));
-                    $('#sls_rph_05').val(format_currency(response['trendsales']['sls_rph_05']));
-                    $('#sls_rph_06').val(format_currency(response['trendsales']['sls_rph_06']));
-                    $('#sls_rph_07').val(format_currency(response['trendsales']['sls_rph_07']));
-                    $('#sls_rph_08').val(format_currency(response['trendsales']['sls_rph_08']));
-                    $('#sls_rph_09').val(format_currency(response['trendsales']['sls_rph_09']));
-                    $('#sls_rph_10').val(format_currency(response['trendsales']['sls_rph_10']));
-                    $('#sls_rph_11').val(format_currency(response['trendsales']['sls_rph_11']));
-                    $('#sls_rph_12').val(format_currency(response['trendsales']['sls_rph_12']));
-
-                    $('.baris').remove();
-                    for (var i = 0; i < response['po'].length ; i++ ){
-                        $('#table-po').append('<tr class="row baris justify-content-md-center p-0"> <td class="col-sm-4 p-0 text-center" > <input type="text" class="form-control" disabled value="'+response['po'][i].tpoh_nopo+'"> </td> <td class="col-sm-5 p-0"><input type="text" class="form-control" disabled value="'+toDate(response['po'][i].tpoh_tglpo.substr(0,10))+'"> </td> <td class="col-sm-3 p-0"><input type="text" class="form-control" disabled  value="'+response['po'][i].tpod_qtypo+'"></td></tr>');
-                    }
-                    for (var i = 0; i < response['lokasi'].length ; i++ ){
-                        $('#table-lokasi-plu').append('<tr class="row baris justify-content-md-center p-0"><td class="col-sm-4 p-0 text-center" ><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_koderak+'.'+response['lokasi'][i].lks_kodesubrak+'.'+response['lokasi'][i].lks_tiperak+'.'+response['lokasi'][i].lks_shelvingrak+'.'+response['lokasi'][i].lks_nourut+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_jenisrak+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_qty+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxplano+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxdisplay+'"></td></tr>');
-                    }
-                    $('#lokasi').val(format_currency(response['prodstock'].st_lokasi));
-                    $('#awal').val(format_currency(response['prodstock'].st_saldoawal));
-                    $('#terima').val(format_currency(response['prodstock'].st_trfin));
-                    $('#keluar').val(format_currency(response['prodstock'].st_trfout));
-                    $('#sales').val(format_currency(response['prodstock'].st_sales));
-                    $('#retur').val(format_currency(response['prodstock'].st_retur));
-                    $('#adj').val(format_currency(response['prodstock'].st_adj));
-                    $('#instrst').val(format_currency(response['prodstock'].st_intransit));
-                    $('#akhir').val(format_currency(response['prodstock'].st_saldoakhir));
-                    $('#avgsales').val(format_currency(response['AVGSALES']));
-
-                    $('#table_penerimaan').DataTable().clear();
-
-                    for (var i = 0; i < response['supplier'].length ; i++ ){
-                        $('#table_penerimaan').DataTable().row.add(
-                            [response['supplier'][i].trm_supp,
-                                format_currency(response['supplier'][i].trm_qtybns),
-                                response['supplier'][i].trm_bonus,
-                                response['supplier'][i].trm_bonus2,
-                                response['supplier'][i].trm_dokumen,
-                                response['supplier'][i].trm_tanggal,
-                                response['supplier'][i].trm_top,
-                                response['supplier'][i].trm_hpp,
-                                format_currency(response['supplier'][i].trm_acost)
-                            ]).draw();
-                    }
-                    null_check();
-                },
-                complete: function(){
-                    if($('#m_pluHelp').is(':visible')){
-                        $('#search_lov').val('');
-                        $('#table_lov .row_lov').remove();
-                        $('#table_lov').append(trlov);
-                    }
-                    $('#modal-loader').modal('hide');
-                }
-            });
-        }
-        var trlov = $('#table_lov tbody').html();
-
-        function lov_select(value){
-            get_data(value);
-        }
 
         $('#search_lov').keypress(function (e) {
             if (e.which == 13) {
@@ -1215,7 +1117,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/mstjenisitem/lov_search',
+                        url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_search',
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {
@@ -1235,6 +1137,48 @@
                 }
             }
         });
+
+        $('#input').keypress(function(e) {
+            if (e.keyCode == 13) {
+                plu = $(this).val();
+                if(plu.length < 7){
+                    plu = convertPlu($(this).val());
+                }
+                $(this).val(plu);
+                get_data(plu);
+            }
+        });
+
+        function get_data(value) {
+            $.ajax({
+                url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_select',
+                type:'POST',
+                data:{"_token":"{{ csrf_token() }}",value: value},
+                beforeSend: function(){
+                    $('#m_pluHelp').modal('hide');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function(response){
+                    console.log(response);
+                    $('#cabang').val(response.produk['cab_namacabang']);
+                    null_check();
+                },
+                complete: function(){
+                    if($('#m_pluHelp').is(':visible')){
+                        $('#search_lov').val('');
+                        $('#table_lov .row_lov').remove();
+                        $('#table_lov').append(trlov);
+                    }
+                    $('#modal-loader').modal('hide');
+                }
+            });
+        }
+        var trlov = $('#table_lov tbody').html();
+
+        function lov_select(value){
+            get_data(value);
+        }
+
 
 
         function save() {
