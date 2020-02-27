@@ -52,6 +52,7 @@ class aktifHargaJualController extends Controller
         $model  = new AllModel();
         $kodeigr = $model->getKodeigr();
         $kodeigr = $kodeigr[0]->prs_kodeigr;
+        $jenistimbangan = $kodeigr[0]->PRS_JENISTIMBANGAN;
         $errm  = '';
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 
@@ -59,8 +60,11 @@ class aktifHargaJualController extends Controller
 
 //        DB::raw(DB::statement ("call sp_aktifkan_harga_peritem(?)", array($kodeigr)));
 
-        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:errm); END;");
+        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+        oci_bind_by_name($exec, ':prdcd',$plu,100);
+        oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
+        oci_bind_by_name($exec, ':user',$user,100);
         oci_bind_by_name($exec, ':errm', $errm,1000);
         oci_execute($exec);
 

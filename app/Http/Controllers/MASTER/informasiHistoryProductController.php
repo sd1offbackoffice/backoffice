@@ -41,10 +41,10 @@ class informasiHistoryProductController extends Controller
     }
     public function lov_select(Request $request)
     {
-        $message = '';
+        $message = array();
         $lCek = 1;
         $cprdcd = $request->value;
-        if (ord(substr($cprdcd,1,1)) < 48 || ord(substr($cprdcd,1,1)) >57) {
+        if (ord(substr($cprdcd,1,1)) < 48 OR ord(substr($cprdcd,1,1)) >57) {
           $lCek = 2;
         }
         else if(strlen(trim($cprdcd)) > 7 ) {
@@ -57,7 +57,7 @@ class informasiHistoryProductController extends Controller
                 ->where('prd_prdcd','=',$request->value)
                 ->first();
             if (is_null($plu)){
-                $message = 'Kode Tidak Terdaftar !!';
+                array_push($message,'Kode Tidak Terdaftar !!');
                 return $message;
             }
         }
@@ -67,7 +67,7 @@ class informasiHistoryProductController extends Controller
                 ->whereRaw('lower(prd_deskripsipendek) = \''.strtolower($request->value).'\'')
                 ->first();
             if (is_null($plu)){
-                $message = 'Deskripsi Tidak Terdaftar !!';
+                array_push($message,'Deskripsi Tidak Terdaftar !!');
                 return $message;
             }
         }
@@ -77,7 +77,7 @@ class informasiHistoryProductController extends Controller
                 ->where('brc_barcode','=',$request->value)
                 ->first();
             if (is_null($plu)){
-                $message = 'Barcode Tidak Terdaftar !!';
+                array_push($message,'Barcode Tidak Terdaftar !!');
                 return $message;
             }
         }
@@ -220,11 +220,11 @@ class informasiHistoryProductController extends Controller
         }
 
         $ketkat ='';
-        if($produk->prd_kodedivisi){
+        if($produk->prd_kodedivisi==3){
             $ketkat='G.M.S';
         }
         else{
-            $ketkat=$produk->DIV_NAMADIVISI;
+            $ketkat=$produk->div_namadivisi;
         }
 
         $KATBRG = $produk->prd_kodedivisi
@@ -241,7 +241,7 @@ class informasiHistoryProductController extends Controller
 
 
         if( is_null($produk->cab_namacabang) AND is_null($produk->prd_kategoritoko)){
-            $message = 'PLU tsb sdh tidak aktif di Cabang ini,; kalau masih ada di rak harap ditarik';
+            array_push($message,'PLU tsb sdh tidak aktif di Cabang ini,; kalau masih ada di rak harap ditarik');
         }
         if(!is_null($produk->prmd_prdcd)){
             $tglmulai = date('d/m/Y',strtotime(substr($produk->prm_tglmulai,0,10)));
@@ -266,7 +266,7 @@ class informasiHistoryProductController extends Controller
             }
         }
 
-        if ($this->ceknull ($produk->prd_minorder, 0) > 0){
+        if (self::ceknull ($produk->prd_minorder, 0) > 0){
             $NMINOR = $produk->prd_minorder;
         }
         else{
@@ -315,7 +315,13 @@ class informasiHistoryProductController extends Controller
         else{
             $IDM = ' ';
         }
-
+        $flag= [];
+        $flag['NAS'] = $NAS;
+        $flag['OMI'] = $OMI;
+        $flag['BRD'] = $BRD;
+        $flag['OBI'] = $OBI;
+        $flag['IGR'] = $IGR;
+        $flag['IDM'] = $IDM;
         $depo = DB::table('DEPO_LIST_IDM')->join('TBMASTER_PRODMAST','PLUIDM','PRD_PLUMCG')
             ->select('*')
             ->where('PRD_PRDCD','=',$produk->prd_prdcd)
@@ -328,11 +334,527 @@ class informasiHistoryProductController extends Controller
             $flagdepo = 'N';
             $depo = '';
         }
-        return compact(['produk']);
+
+        $produk->katbrg =$KATBRG;
+
+        //satuan jual
+        $sj = DB::table('TBMASTER_PRODMAST')->leftJoin('TBTR_PROMOMD', function ($join) {
+            $join->on('PRD_PRDCD', '=', 'PRMD_PRDCD')->On('PRD_KODEIGR', '=', 'PRMD_KODEIGR');
+        })->leftJoin('TBMASTER_STOCK', function ($join) {
+            $join->On(DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'),'=',DB::raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
+        })->SelectRaw('PRD_PRDCD, 
+                                PRD_MINJUAL MINJ, 
+                                PRD_FLAGBKP1 PKP,
+                                NVL (PRD_FLAGBKP2, \'xx\') PKP2, 
+                                PRD_HRGJUAL PRICE_A, 
+                                PRD_KODETAG PTAG,
+                                NVL (PRD_LASTCOST, 0) 
+                                PRD_LCOST, 
+                                PRD_UNIT UNIT, 
+                                PRD_FRAC FRAC,
+                                PRD_BARCODE BARC, 
+                                NVL (PRMD_PRDCD, \'xxx\') PRMD_PRDCD, 
+                                PRMD_HRGJUAL FMJUAL,
+                                PRMD_POTONGANPERSEN FMPOTP, 
+                                PRMD_POTONGANRPH FMPOTR, 
+                                PRD_FLAGBARANGORDERTOKO,
+                                NVL (ST_AVGCOST, 0) ST_LCOST, 
+                                NVL(ST_LASTCOST, 0) ST_LASTCOST, 
+                                MAX (PRMD_TGLAWAL) FMFRTG,
+                                MAX (PRMD_TGLAKHIR) FMTOTG,
+                                PRMD_JAMAWAL FMFRHR, 
+                                PRMD_JAMAKHIR FMTOHR ')
+            ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\''.$request->value.'\', 1, 6)')
+            ->groupBy(DB::raw('PRD_PRDCD,
+                         PRD_MINJUAL,
+                         PRD_FLAGBKP1,
+                         PRD_FLAGBKP2,
+                         PRD_HRGJUAL,
+                         PRD_BARCODE,
+                         PRD_KODETAG,
+                         PRD_LASTCOST,
+                         PRD_FLAGBARANGORDERTOKO,
+                         PRD_UNIT,
+                         PRD_FRAC,
+                         PRMD_PRDCD,
+                         PRMD_HRGJUAL,
+                         PRMD_POTONGANPERSEN,
+                         PRMD_POTONGANRPH,
+                         ST_AVGCOST,
+                         ST_LASTCOST,
+                         PRMD_JAMAWAL, 
+                         PRMD_JAMAKHIR'))
+            ->orderBy('PRD_PRDCD')
+            ->get();
+        for($i=0;$i<sizeof($sj);$i++){
+            if ($sj[$i]->unit == 'KG'){
+                $sj[$i]->frac = 1;
+            }
+            if($sj[$i]->prmd_prdcd != 'xxx'){
+                $tglrtg = date('d/m/Y H:i$sj[$i]->S',strtotime(substr($sj[$i]->fmfrtg,0,10).self::ceknull($sj[$i]->fmfrhr."",'00:00:00')));
+                $tglotg = date('d/m/Y H:i$sj[$i]->S',strtotime(substr($sj[$i]->fmtotg,0,10).self::ceknull($sj[$i]->fmtohr."",'23:59:59')));
+                $tglnow = date('d/m/Y H:i$sj[$i]->S');
+                if($tglnow >= $tglrtg AND $tglnow <= $tglotg){
+                    $cpromo = true;
+                    if($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp,['P','W','G'])){
+                        if ($sj[$i]->fmjual != 0) {
+                            $nfmjual = $sj[$i]->fmjual;
+                        }
+                        else if($sj[$i]->fmpotp != 0){
+                            $nfmjual = $sj[$i]->price_a - ($sj[$i]->price_a * ($sj[$i]->fmpotp / 100));
+                        }
+                        else{
+                            $nfmjual = $sj[$i]->price_a - $sj[$i]->fmpotr;
+                        }
+
+                        if ($sj[$i]->ptag == 'Q'){
+                            $marlcost = (1 - (($sj[$i]->st_lastcost * $sj[$i]->frac) / $nfmjual)) * 100;
+                            $maracost = (1 - (($sj[$i]->st_lcost * $sj[$i]->frac) / $nfmjual)) * 100;
+                        }
+                        else{
+                            $marlcost = (1 - 1.1 * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                            $maracost = (1 - 1.1 * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                        }
+                    }
+                    else{
+                        if ($sj[$i]->fmjual != 0){
+                            $nfmjual = $sj[$i]->fmjual;
+                        }
+                        else if($sj[$i]->fmpotp != 0){
+                            $nfmjual = $sj[$i]->price_a - ($sj[$i]->price_a * ($sj[$i]->fmpotp / 100));
+                        }
+                        else{
+                            $nfmjual = $sj[$i]->price_a - $sj[$i]->fmpotr;
+                        }
+                        $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $nfmjual) * 100;
+                        $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $nfmjual) * 100;
+                    }
+                }
+                else{
+                    $cpromo = false;
+                    if($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp,['P','W','G'])) {
+                        if ($sj[$i]->ptag == 'Q') {
+                            $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        }
+                        else {
+                            $marlcost = (1 - 1.1 * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - 1.1 * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        }
+                    }
+                    else {
+                        $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                    }
+                }
+            }
+            else{
+                $cpromo = false;
+                if($sj[$i]->price_a > 0) {
+                    if($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp,['P','W','G'])) {
+                        if ($sj[$i]->ptag == 'Q') {
+                            $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        } else {
+                            $marlcost = (1 - 1.1 * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - 1.1 * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        }
+                    }
+                    else{
+                        $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                        $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                    }
+
+                }
+                else{
+                    $marlcost = 0;
+                    $maracost = 0;
+                }
+            }
+            $sj[$i]->sj_sj = SUBSTR ($sj[$i]->prd_prdcd, -1);
+            $barcode = DB::table('tbmaster_barcode')
+                ->select('brc_barcode')
+                ->where('brc_status','=','BC')
+                ->where('brc_prdcd','=', $sj[$i]->prd_prdcd)
+                ->get();
+            $sj_barcode="";
+            $sj[$i]->sj_barcode="";
+            if(sizeof($barcode)!=0){
+                for($j=0;$j<sizeof($barcode);$j++) {
+                    $sj_barcode = $sj_barcode.$barcode[$j]->brc_barcode.'-' ;
+                }
+                $sj_barcode = substr($sj_barcode,0,strlen(trim($sj_barcode)) - 1);
+                $sj[$i]->sj_barcode = $sj_barcode;
+            }
+
+            $sj[$i]->sj_sat = $sj[$i]->unit.'/'.$sj[$i]->frac;
+
+            if($cpromo == true){
+                $sj[$i]->sj_hgjual = $nfmjual;
+            }
+            else{
+                $sj[$i]->sj_hgjual = $sj[$i]->price_a;
+            }
+            $sj[$i]->sj_lcost = $sj[$i]->st_lastcost * $sj[$i]->frac;
+            $sj[$i]->sj_acost = $sj[$i]->st_lcost * $sj[$i]->frac;
+            $sj[$i]->sj_mgna = $maracost;
+            $sj[$i]->sj_mgnl = $marlcost;
+            $sj[$i]->sj_minj = $sj[$i]->minj;
+            $sj[$i]->sj_tag = $sj[$i]->ptag;
+            $sj[$i]->sj_bkp = $sj[$i]->pkp;
+            $sj[$i]->sj_bkl = $sj[$i]->prd_flagbarangordertoko;
+        }
+
+        $trendsales = DB::table('TBTR_SALESBULANAN')
+            ->select('*')
+            ->where('sls_prdcd', '=', $request->value)
+            ->first();
+        $trendsales = (array)$trendsales;
+
+        $blnberjalan = DB::table('TBMASTER_PERUSAHAAN')
+            ->select('PRS_BULANBERJALAN')
+            ->first();
+
+        $VAVG = 0;
+        $N = 0;
+        $X = 0;
+        $X1 = 0;
+
+        $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
+
+        if ($FMPBLNA - 1 < 1) {
+            $N = 12;
+            $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+        } else {
+            $N = $FMPBLNA - 1;
+            if ($N < 10) {
+                $N = '0' . $N;
+            }
+            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $N];
+        }
+
+        if ($N - 1 < 1) {
+            $X = 12;
+            $VAVG  = $VAVG + (int)$trendsales['sls_qty_12'];
+        }
+        else{
+            $X = $N - 1;
+            if ($X < 10) {
+                $X = '0' . $X;
+            }
+            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X];
+        }
+
+        if( $X - 1 < 1){
+            $X1 = 12;
+            $VAVG  = $VAVG + (int)$trendsales['sls_qty_12'];
+        }
+        else{
+            $X1 = $X - 1;
+            if ($X1 < 10) {
+                $X1 = '0' . $X1;
+            }
+            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
+        }
+        $TEMP = date('m');
+        $prodstock = db::table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
+            ->select('*')
+            ->where('prd_prdcd', '=', $request->value)
+            ->where('prd_kodeigr', '=', "22")
+            ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
+            ->where('st_lokasi', '=', "01")
+            ->first();
+
+        if($prodstock->st_lokasi =='01'){
+            $prodstock->st = 'BK';
+        }
+        else if($prodstock->st_lokasi =='02'){
+            $prodstock->st = 'RT';
+        }
+        else{
+            $prodstock->st = 'RS';
+        }
+
+        $VUNIT = $prodstock->prd_unit;
+        $VSALES = $prodstock->st_sales;
+        $VLASTCOST = $prodstock->st_avgcost;
+        $VFRAC = 0;
+
+        if( $VUNIT == 'KG'){
+            $VFRAC = 1000;
+        }
+        else{
+            $VFRAC = 1;
+        }
+
+
+        $trendsales['sls_qty_' . $TEMP] = $VSALES / $VFRAC;
+        $trendsales['sls_rph_' . $TEMP] = $VLASTCOST * ($VSALES / $VFRAC);
+
+        if (!isset($VAVG) or $VAVG==0 or is_null($VAVG) ){
+            $VAVG = 0;
+        }
+        $AVGSALES = $VAVG / 3;
+
+        //stok
+        $stock =  db::table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
+            ->select('*')
+            ->where('prd_prdcd', '=', $request->value)
+            ->where('prd_kodeigr', '=', "22")
+            ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
+            ->orderBy('st_lokasi')
+            ->get();
+        for($i=0;$i<sizeof($stock);$i++) {
+            if($stock[$i]->st_lokasi == '01'){
+                $st = 'BK';
+            }
+            else if($stock[$i]->st_lokasi == '02'){
+                $st = 'RT';
+            }
+            else{
+                $st = 'RS';
+            }
+            $st_awal=self::ceknull($stock[$i]->st_saldoawal,0);
+            $st_terima=self::ceknull($stock[$i]->st_trfin,0);
+            $st_keluar=self::ceknull($stock[$i]->st_trfout,0);
+            $st_sales=self::ceknull($stock[$i]->st_sales,0);
+            $st_retur=self::ceknull($stock[$i]->st_retur,0);
+            $st_adj=self::ceknull($stock[$i]->st_adj,0);
+            $st_so=self::ceknull($stock[$i]->st_so,0);
+            $st_instrst=self::ceknull($stock[$i]->st_intransit,0);
+            $st_selisih_so=self::ceknull($stock[$i]->st_selisih_so,0);
+            $st_akhir=self::ceknull($stock[$i]->st_saldoakhir,0);
+
+            $lso = true;
+            $lsoic = true;
+
+
+             $temp = db::table('TBMASTER_SETTING_SO')
+                 ->select('*')
+                 ->whereRaw('to_char(MSO_TGLSO, \'yyyy-MM\') =  to_char(sysdate,\'yyyy-MM\')')
+                 ->count('*');
+
+             if(self::ceknull($temp,0)!=0){
+                 $freset = db::table('TBMASTER_SETTING_SO')
+                     ->selectRaw('NVL(MSO_FLAGRESET, \'N\')')
+                     ->whereRaw('to_char(MSO_TGLSO, \'yyyy-MM\') =  to_char(sysdate,\'yyyy-MM\')')
+                     ->first();
+
+                 if($freset!= 'Y'){
+                     $st_selisih_so=0;
+                     $st_akhir=self::ceknull($stock[$i]->st_saldoakhir,0)-self::ceknull($stock[$i]->st_selisih_so,0);
+                 }
+             }
+
+             if($stock[$i]->st_lokasi=='01'){
+                 $qty_soic = db::table('tbtr_reset_soic')
+                     ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
+                     ->whereRaw('substr(rso_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+                     ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
+                     ->where('rso_lokasi','=','01')
+                     ->first();
+
+                 $st_selisih_so = $st_selisih_so + self::ceknull($qty_soic->qty,0);
+                $st_akhir = self::ceknull($stock[$i]->st_saldoakhir,0) - self::ceknull($stock[$i]->st_selisih_soic,0) + self::ceknull($qty_soic->qty, 0);
+
+                 if($stock[$i]->st_sales > 0) {
+                     $dsi = ((($stock[$i]->st_saldoawal + $stock[$i]->st_saldoakhir) / 2) / $stock[$i]->st_sales) * ((int) date('d'));
+                     $to = ($stock[$i]->st_saldoakhir / $stock[$i]->st_sales) * ((int) date('d'));
+                 }
+                 else {
+                     $dsi = 0;
+                     $to = 0;
+                 }
+             }
+            if($stock[$i]->st_saldoakhir <= 0) {
+		    		if (in_array($stock[$i]->prd_kodetag ,['N', 'H'])){
+		    			 if ($stock[$i]->st_saldoakhir == 0 and $stock[$i]->prd_kodetag == 'H') {
+                             array_push($message,'STOCK BARANG ' . $stock[$i]->st_lokasi . ' NOL   (TAG H-> HABISKAN TOKO)');
+                         }
+		    			 else {
+                             array_push($message,'STOCK BARANG ' . $stock[$i]->st_lokasi . ' MINUS (TAG H-> HABISKAN TOKO)');
+                         }
+		    			 
+		    			 if ($stock[$i]->st_saldoakhir == 0 and $stock[$i]->prd_kodetag == 'N') {
+                             array_push($message,'STOCK BARANG ' . $stock[$i]->st_lokasi . ' NOL   (TAG N-> DISCONTINUE)');
+                         }
+		    			 else {
+                             array_push($message,'STOCK BARANG ' . $stock[$i]->st_lokasi . ' MINUS (TAG N-> DISCONTINUE)');
+                         }
+                        array_push($message, 'Buatkan MEMO BARANG ' . trim($stock[$i]->st_lokasi). ' Perubahan Tag -> Tag X,;Informasikan ke Merchandising & EDP;Apakah ANDA sudah mencatatnya?');
+		    		}
+
+            }
+		    
+            if($stock[$i]->st_saldoakhir != 0 and $stock[$i]->prd_kodetag =='X') {
+                array_push($message, 'STOCK BARANG ' . trim($stock[$i]->st_lokasi) . ' TAG X HARUS 0 (NOL),;Cari PLU pengganti (bila ada ->MPP);Apakah ANDA sudah mencatatnya?');
+            }
+            if (self::ceknull($stock[$i]->st_saldoawal,0)+self::ceknull($stock[$i]->st_trfin,0)-self::ceknull($stock[$i]->st_trfout,0)-self::ceknull($stock[$i]->st_sales,0)+ 0 + self::ceknull($stock[$i]->st_retur,0)+ self::ceknull($stock[$i]->st_intransit,0)+self::ceknull($stock[$i]->st_adj,0) != $stock[$i]->st_saldoakhir) {
+                $deskripsi = 'PERHITUNGAN STOCK BARANG ' . trim($st).' SALAH,;Lakukan proses HITUNG ULANG STOCK;Apakah ANDA sudah mencatatnya?';
+            }
+            $stock[$i]->st=self::ceknull($st,0);
+            $stock[$i]->st_awal=self::ceknull($st_awal,0);
+            $stock[$i]->st_terima=self::ceknull($st_terima,0);
+            $stock[$i]->st_keluar=self::ceknull($st_keluar,0);
+            $stock[$i]->st_sales=self::ceknull($st_sales,0);
+            $stock[$i]->st_retur=self::ceknull($st_retur,0);
+            $stock[$i]->st_adj=self::ceknull($st_adj,0);
+            $stock[$i]->st_so=self::ceknull($st_so,0);
+            $stock[$i]->st_instrst=self::ceknull($st_instrst,0);
+            $stock[$i]->st_selisih_so=self::ceknull($st_selisih_so,0);
+            $stock[$i]->st_akhir=self::ceknull($st_akhir,0);
+        }
+
+        $pkmt = db::table('tbmaster_hargabeli')
+            ->join('tbmaster_supplier','hgb_kodesupplier','=','sup_kodesupplier')
+            ->join('tbmaster_prodmast','hgb_prdcd','=','prd_prdcd')
+            ->selectRaw('hgb_top, hgb_hrgbeli, sup_kodesupplier||\' - \'||sup_namasupplier sup,sup_top, prd_isibeli')
+            ->whereRaw('substr(hgb_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('hgb_tipe','=','2')
+            ->first();
+
+        if ($VUNIT=='KG'){
+            $pkmt->hgb_hrgbeli = $pkmt->hgb_hrgbeli*$VFRAC;
+        }
+        else{
+            $pkmt->hgb_hrgbeli = $pkmt->hgb_hrgbeli*$pkmt->prd_isibeli;
+        }
+
+        $pkmt->dsi = round($dsi);
+        $pkmt->to = round($to);
+        if($pkmt->hgb_top>0){
+            $pkmt->top = $pkmt->hgb_top;
+        }
+        else{
+            $pkmt->top = $pkmt->sup_top;
+        }
+
+        $kkpkm = db::table('tbmaster_kkpkm')
+            ->leftJoin('tbmaster_pkmplus','pkmp_prdcd','=','pkm_prdcd')
+            ->leftJoin('tbmaster_minimumorder','min_prdcd','=','pkm_prdcd')
+            ->selectRaw('nvl(pkm_pkmt,0) vpkmt, nvl(pkm_mindisplay,0) vmindisplay, nvl(pkmp_qtyminor,0) vqtyminor, min_minorder vminor')
+            ->where('pkm_prdcd','=',$request->value)
+            ->first();
+
+        $pkm_qty = $kkpkm->vpkmt;
+        $min_qty = $NMINOR;
+        $md_qty = $kkpkm->vmindisplay;
+        if (self::ceknull($AVGSALES,0) > 0) {
+            $pkm_to = ($kkpkm->vpkmt / self::ceknull($AVGSALES, 0)) * 30;
+            $min_to = ($NMINOR / self::ceknull($AVGSALES, 0)) * 30;
+            $md_to = ($kkpkm->vmindisplay / self::ceknull($AVGSALES, 0)) * 30;
+        }
+        else {
+            $pkm_to = ($kkpkm->vpkmt / 1) * 30;
+            $min_to = ($NMINOR / 1) * 30;
+            $md_to = ($kkpkm->vmindisplay / 1) * 30;
+        }
+        $mplus = $kkpkm->vqtyminor;
+        $minory = $kkpkm->vminor;
+
+        $pkmt->pkm_qty = round($pkm_qty);
+        $pkmt->min_qty = round($min_qty);
+        $pkmt->md_qty = round($md_qty);
+        $pkmt->pkm_to = round($pkm_to);
+        $pkmt->min_to = round($min_to);
+        $pkmt->md_to = round($md_to);
+        $pkmt->mplus = round($mplus);
+        $pkmt->minory = round($minory);
+
+//        DETAIL SALES
+        $ds01 = db::table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_igr1, nvl(rsl_qty_02, 0) qty_igr2, nvl(rsl_qty_03, 0) qty_igr3 ,nvl(rsl_qty_04, 0) qty_igr4, nvl(rsl_qty_05, 0) qty_igr5, nvl(rsl_qty_06, 0) qty_igr6, nvl(rsl_qty_07, 0) qty_igr7, nvl(rsl_qty_08, 0) qty_igr8,nvl(rsl_qty_09, 0) qty_igr9,nvl(rsl_qty_10, 0) qty_igr10,nvl(rsl_qty_11, 0) qty_igr11,nvl(rsl_qty_12, 0) qty_igr12, nvl(rsl_rph_01, 0) rph_igr1, nvl(rsl_rph_02, 0) rph_igr2, nvl(rsl_rph_03, 0) rph_igr3, nvl(rsl_rph_04, 0) rph_igr4, nvl(rsl_rph_05, 0) rph_igr5, nvl(rsl_rph_06, 0) rph_igr6, nvl(rsl_rph_07, 0) rph_igr7, nvl(rsl_rph_08, 0) rph_igr8, nvl(rsl_rph_09, 0) rph_igr9, nvl(rsl_rph_10, 0) rph_igr10, nvl(rsl_rph_11, 0) rph_igr11, nvl(rsl_rph_12, 0) rph_igr12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('rsl_group','=','01')
+            ->first();
+
+        $ds02 = db::table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09 , 0)qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10 , 0)rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('rsl_group','=','02')
+            ->first();
+
+        $ds03 = db::table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_mrh1, nvl(rsl_qty_02, 0) qty_mrh2, nvl(rsl_qty_03, 0) qty_mrh3 ,nvl(rsl_qty_04, 0) qty_mrh4, nvl(rsl_qty_05, 0) qty_mrh5, nvl(rsl_qty_06, 0) qty_mrh6,nvl(rsl_qty_07, 0) qty_mrh7, nvl(rsl_qty_08, 0) qty_mrh8,nvl(rsl_qty_09, 0) qty_mrh9,nvl(rsl_qty_10, 0) qty_mrh10,nvl(rsl_qty_11, 0) qty_mrh11,nvl(rsl_qty_12, 0) qty_mrh12,nvl(rsl_rph_01, 0) rph_mrh1, nvl(rsl_rph_02, 0) rph_mrh2, nvl(rsl_rph_03, 0) rph_mrh3, nvl(rsl_rph_04, 0) rph_mrh4, nvl(rsl_rph_05, 0) rph_mrh5, nvl(rsl_rph_06, 0) rph_mrh6,nvl(rsl_rph_07, 0) rph_mrh7, nvl(rsl_rph_08, 0) rph_mrh8, nvl(rsl_rph_09 , 0)rph_mrh9, nvl(rsl_rph_10, 0) rph_mrh10, nvl(rsl_rph_11, 0) rph_mrh11, nvl(rsl_rph_12, 0) rph_mrh12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('rsl_group','=','03')
+            ->first();
+
+        $ds04 = db::table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09, 0) qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10, 0) rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('rsl_group','=','04')
+            ->first();
+
+        $ds01=(array)$ds01;
+        $ds02=(array)$ds02;
+        $ds03=(array)$ds03;
+        $ds04=(array)$ds04;
+
+        $avgigr = 0;
+        $avgomi = 0;
+        $avgmrh = 0;
+        $avgidm = 0;
+        $N = 0;
+        $X = 0;
+        $X1 = 0;
+        if ($FMPBLNA - 1 < 1) {
+            $N = 12;
+            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+        } else {
+            $N = $FMPBLNA - 1;
+            $avgigr = $avgigr + (int)$ds01['qty_igr' . $N];
+            $avgomi = $avgomi + (int)$ds02['qty_omi' . $N];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $N];
+            $avgomi = $avgomi + (int)$ds04['qty_omi' . $N];
+        }
+
+        if ($N - 1 < 1) {
+            $X = 12;
+            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+        }
+        else{
+            $X = $N - 1;
+            $avgigr = $avgigr + (int)$ds01['qty_igr' . $X];
+            $avgomi = $avgomi + (int)$ds02['qty_omi' . $X];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X];
+            $avgidm = $avgidm + (int)$ds04['qty_omi' . $X];
+        }
+
+        if( $X - 1 < 1){
+            $X1 = 12;
+            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            $avgidm = $avgidm+ (int)$ds04['qty_omi12'];
+        }
+        else{
+            $X1 = $X - 1;
+            $avgigr = $avgigr + (int)$ds01['qty_igr' . $X1];
+            $avgomi = $avgomi + (int)$ds02['qty_omi' . $X1];
+            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X1];
+            $avgidm = $avgidm + (int)$ds04['qty_omi' . $X1];
+        }
+        $detailsales =[];
+        $detailsales['igr'] = $ds01;
+        $detailsales['omi'] = $ds02;
+        $detailsales['mrh'] = $ds03;
+        $detailsales['idm'] = $ds04;
+        $detailsales['avgigr'] = $avgigr;
+        $detailsales['avgomi'] = $avgomi;
+        $detailsales['avgmrh'] = $avgmrh;
+        $detailsales['avgidm'] = $avgidm;
+        return compact(['produk','sj','trendsales','prodstock','AVGSALES','stock','pkmt','ITEM','flag','detailsales','message']);
     }
 
-    public function ceknull(string $value,string $ret){
-        if($value==""){
+    public function ceknull($value,$ret){
+        if($value=="" OR $value==null OR $value=="null" ){
             return $ret;
         }
         return $value;

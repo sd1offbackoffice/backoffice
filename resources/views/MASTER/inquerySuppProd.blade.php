@@ -21,7 +21,7 @@
                                                     {{--<button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodesupplierHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
                                                     <label for="i_deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
                                                     <div class="col-sm-5">
-                                                        <input type="text" class="form-control" id="i_deskripsi">
+                                                        <input type="text" class="form-control" id="i_deskripsi" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -50,9 +50,9 @@
                                             <thead>
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
-                                                <th class="col-sm-3">Nama Supplier</th>
+                                                <th class="col-sm-4">Nama Supplier</th>
                                                 <th class="col-sm-1 pl-0 pr-0">Kuantum</th>
-                                                <th class="col-sm-2">BTB</th>
+                                                <th class="col-sm-1">BTB</th>
                                                 <th class="col-sm-2">Tanggal</th>
                                                 <th class="col-sm-2">Term</th>
                                                 <th class="col-sm-1">H.P.P</th>
@@ -149,7 +149,7 @@
                 ajaxSetup();
                 $.ajax({
                     url: '/BackOffice/public/inqsupprod/suppProd',
-                    type: 'post',
+                    type: 'get',
                     data: {kodeplu:kodeplu},
                     beforeSend: function(){
                         $('#modal-loader').modal('show');
@@ -163,16 +163,16 @@
                             var i;
                             for (i = 0; i < result.data.length; i++) {
                                     html =
-                                // '<tr class="rowdetail d-flex">' +
-                                //     '<td class="col-1">' + result.data[i].mstd_prdcd + '</td>' +
-                                //     '<td class="col-3">' + result.data[i].prd_deskripsipendek + '</td>' +
-                                //     '<td class="col-1 pl-0 pr-0">' + result.data[i].st_sales + '</td>' +
-                                //     '<td class="col-2">' + result.data[i].st_saldoakhir + '</td>' +
-                                //     '<td class="col-2">' + result.data[i].pkm_pkmt + '</td>' +
-                                //     '<td class="col-2">' + result.data[i].prd_lastcost + '</td>' +
-                                //     '<td class="col-1">' + result.data[i].prd_kodetag + '</td>' +
-                                //     '</tr>'
-                                // $('#i_namasupplier').val(result.data[i].sup_namasupplier);
+                                '<tr class="row_detail d-flex">' +
+                                    '<td class="col-1">' + result.data[i].kodesup + '</td>' +
+                                    '<td class="col-4">' + result.data[i].namasup + '</td>' +
+                                    '<td class="col-1 pl-0 pr-0">' + result.data[i].qty + '</td>' +
+                                    '<td class="col-1">' + result.data[i].nobpb + '</td>' +
+                                    '<td class="col-2">' + formatDate(result.data[i].tglbpb) + '</td>' +
+                                    '<td class="col-2">' + result.data[i].term + '</td>' +
+                                    '<td class="col-1">' + convertToRupiah(result.data[i].hpp) + '</td>' +
+                                    '</tr>'
+                                //$('#i_deskripsi').val();
                                 // $('#i_totalitem').val(result.count);
                                 $('#table_detail').append(html);
                             }

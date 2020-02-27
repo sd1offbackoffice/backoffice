@@ -136,7 +136,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc1" class="col-sm-1 col-form-label">DISC 1</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc1">
                                             </div>
                                             <label for="i_disc1" class="col-form-label text-right">%</label>
@@ -162,7 +162,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2" class="col-sm-1 col-form-label">DISC 2</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2">
                                             </div>
                                             <label for="i_disc2" class="col-form-label text-right">%</label>
@@ -188,7 +188,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2A" class="col-sm-1 col-form-label">DISC 2 A</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2A">
                                             </div>
                                             <label for="i_disc2A" class="col-form-label text-right">%</label>
@@ -214,7 +214,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc2B" class="col-sm-1 col-form-label">DISC 2 B</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2B">
                                             </div>
                                             <label for="i_disc2B" class="col-form-label text-right">%</label>
@@ -240,7 +240,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label">DISC 3</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number>
                                                 <input type="text" class="form-control" id="i_disc3">
                                             </div>
                                             <label for="i_disc3" class="col-form-label text-right">%</label>
@@ -267,7 +267,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_disc4" class="col-sm-1 col-form-label">DISC 4</label>
                                             <label for="i_disc4" class="col-form-label pl-3 text-right">DIST. FEE</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc4">
                                             </div>
                                             <label for="i_disc4" class="col-form-label text-right">%</label>
@@ -291,7 +291,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label"></label>
                                             <label for="i_disc3" class="col-form-label pl-0 text-right">CASH DISC</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc5">
                                             </div>
                                             <label for="i_disc5" class="col-form-label text-right">%</label>
@@ -314,7 +314,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;">NO RETURN</label>
-                                            <div class="col-sm-1 pr-0">
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc6">
                                             </div>
                                             <label for="i_disc6" class="col-form-label text-right">%</label>

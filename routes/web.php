@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/test', function () {
+    return view('test');
+});
 
 /******** Arie ********/
 //Route::get('/mstharilibur/index','MASTER\harilibur');
@@ -83,6 +86,8 @@ Route::get('/bokirimkkei/index','BACKOFFICE\KirimKKEIController@index');
 
 /*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
 Route::get('/bokkei/index','BACKOFFICE\KKEIController@index');
+Route::post('/bokkei/get_detail_produk','BACKOFFICE\KKEIController@get_detail_produk');
+Route::post('/bokkei/get_detail_kkei','BACKOFFICE\KKEIController@get_detail_kkei');
 
 
 /******** Michelle ********/
@@ -93,8 +98,7 @@ Route::get('/inqsupprod/suppProd','MASTER\inquerySuppProdController@suppProd');
 // Inquiry Produk Supplier
 Route::get('/inqprodsupp/index','MASTER\inqueryProdSuppController@index');
 Route::post('/inqprodsupp/prodSupp','MASTER\inqueryProdSuppController@prodSupp');
-
-
+Route::get('inqprodsupp/helpSelect','MASTER\inqueryProdSuppController@helpSelect');
 
 
 

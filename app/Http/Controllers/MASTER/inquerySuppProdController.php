@@ -17,13 +17,27 @@ class inquerySuppProdController extends Controller
     public function suppProd(Request $request)
     {
         $kodeplu = $request->kodeplu;
+//
+//        $deskripsi = DB::table('tbmaster_prodmast')
+//            ->select('prd_deskripsipanjang')
+//            ->where('kodeigr','=','22')
+//            ->where('kodeplu','=',$kodeplu)
+//            ->get();
 
-        $result = DB::table('tbmaster_prodmast')
-            ->select('prd_deskripsipanjang')
-            ->where('prd_prdcd', '=', '$kodeplu')
+       // DB::table('tbmaster_prodmast')
+//            ->leftJoin('temp_inqsup',function($join){
+//                $join->on('prd_kodeigr', '=', 'kodeigr');
+//            })
+        
+        $result = DB::table('temp_inqsup')
+            ->select('kodesup','namasup','qty','nobpb', 'tglbpb', 'term', 'hpp')
+           // ->join('temp_inqsup','kodeigr','=','prd_kodeigr')
+            ->where('kodeigr','=','22')
+            ->where('kodeplu','=',$kodeplu)
             ->get();
 
         return response()
             ->json(['kodeplu' => $kodeplu, 'data' => $result]);
+
     }
 }

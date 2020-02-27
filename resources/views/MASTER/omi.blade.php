@@ -40,7 +40,7 @@
                                         <th>Kode</th>
                                         <th>Nama</th>
                                         <th>Fee</th>
-                                        <th>Distribution Fee</th>
+                                        <th>Distribution <br> Fee</th>
                                         <th>Kode</th>
                                         <th>Member</th>
                                         <th>Tgl Go</th>
@@ -143,11 +143,13 @@
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Tgl Go</label>
-                                                        <input type="date" id="tglGo" class="form-control col-sm-3 mx-sm-1">
+                                                        {{--<input type="date" id="tglGo" class="form-control col-sm-3 mx-sm-1">--}}
+                                                        <input type="text" id="tglGo" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Tgl Tutup</label>
-                                                        <input type="date" id="tglTutup" class="form-control col-sm-3 mx-sm-1">
+                                                        {{--<input type="date" id="tglTutup" class="form-control col-sm-3 mx-sm-1">--}}
+                                                        <input type="text" id="tglTutup" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                     </div>
                                                 </form>
                                             </div>
@@ -236,7 +238,8 @@
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Tgl Update Jadwal</label>
-                                                        <input type="date" id="tglUpdate" class="form-control col-sm-3 mx-sm-1">
+                                                        {{--<input type="date" id="tglUpdate" class="form-control col-sm-3 mx-sm-1">--}}
+                                                        <input type="text" id="tglUpdate" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Flag Edit PB di Toko</label>
@@ -332,6 +335,9 @@
             });
             $('.flagKph').hide();
             // $('#m_detailTokoOmi').modal('show');
+            $('.tanggal').datepicker({
+                "dateFormat" : "dd/mm/yy"
+            });
 
         });
 
@@ -440,8 +446,8 @@
                     $('#flagKph').val(identity.tko_flagkph);
                     $('#kodeCust').val(identity.tko_kodecustomer);
                     $('#namaCust').val(identity.cus_namamember);
-                    $('#tglGo').val(convertDate(identity.tko_tglgo));
-                    $('#tglTutup').val(convertDate(identity.tko_tgltutup));
+                    $('#tglGo').val(formatDateForInputType(identity.tko_tglgo));
+                    $('#tglTutup').val(formatDateForInputType(identity.tko_tgltutup));
 
                     $('#kodeDetailCust').val(detail.cus_kodemember);
                     $('#namaDetailCust').val(detail.cus_namamember);
@@ -454,7 +460,7 @@
                     $('#statusToko').val(identity.tko_statustoko);
                     $('#jamBuka').val(identity.tko_jambukatoko);
                     $('#jamTutup').val(identity.tko_jamtutuptoko);
-                    $('#tglUpdate').val(convertDate(identity.tko_tglberlakujadwal));
+                    $('#tglUpdate').val(formatDateForInputType(identity.tko_tglberlakujadwal));
                     $('#flagPB').val(identity.tko_flageditpb);
 
                     for(let i =0; i<identity.tko_jadwalkirimbrg.length; i++){

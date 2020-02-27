@@ -8,32 +8,34 @@
                 <fieldset class="card border-secondary">
                     <legend  class="w-auto ml-5">Master Barcode</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <div class="my-custom-scrollbar table-wrapper-scroll-y">
-                            <table class="table table-sm border-bottom  justify-content-md-center" id="table-barcode">
+                        {{--<div class="my-custom-scrollbar table-wrapper-scroll-y ">--}}
+                            <div class="tableFixedHeader">
+                            <table class="table table-sm" id="table-barcode">
                                 <thead class="thead-dark">
-                                <tr class="row justify-content-md-center p-0">
-                                    <th class="col-sm-5">Barcode</th>
-                                    <th class="col-sm-4">PRDCD</th>
-                                    <th class="col-sm-2">Status</th>
-                                </tr>
+                                    <tr class="">
+                                        <th width="20%" >Barcode</th>
+                                        <th width="20%">PRDCD</th>
+                                        <th width="10%">Status</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($barcode as $dataBarcode)
-                                <tr class="row baris justify-content-md-center p-0">
-                                    <td class="col-sm-5 pt-0 pb-0" >
+                                <tr class="p-0 baris">
+                                    <td class=" pt-0 pb-0" >
                                         <input type="text" class="form-control" disabled value="{{$dataBarcode->brc_barcode}}">
                                     </td>
-                                    <td class="col-sm-4 pt-0 pb-0">
+                                    <td class=" pt-0 pb-0">
                                         <input type="text" class="form-control" disabled value="{{$dataBarcode->brc_prdcd}}">
                                     </td>
-                                    <td class="col-sm-2 pt-0 pb-0">
+                                    <td class="pt-0 pb-0">
                                         <input type="text" class="form-control" disabled value="{{$dataBarcode->brc_status}}">
                                     </td>
                                 </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
+                            </div>
+                        {{--</div>--}}
                         <br>
                         <div class="form-group row">
                             <label for="i_prdcd" class=" col-sm-2 col-form-label text-right">PRDCD</label>
@@ -101,7 +103,7 @@
 
     <script>
         function tambah_row() {
-            $('#table-barcode').append('<tr class="row baris justify-content-md-center"><td class="col-sm-5 pt-0 pb-0" ><input type="number" class="form-control" disabled></td><td class="col-sm-4 pt-0 pb-0"><input type="number" class="form-control" disabled></td><td class="col-sm-2 pt-0 pb-0"><input type="text" class="form-control" disabled></td></tr>');
+            $('#table-barcode').append('<tr class="baris"><td ><input type="number" class="form-control" disabled></td><td><input type="number" class="form-control" disabled></td><td><input type="text" class="form-control" disabled></td></tr>');
         }
         function clear_table() {
             $('.baris').remove();
@@ -125,7 +127,8 @@
             $('#i_prdcd').val(plu);
         }
         function search_barcode() {
-            convert_plu();
+
+            console.log($('#i_prdcd').val());
             var prdcd = $('#i_prdcd').val();
             $.ajax({
                 url: '/BackOffice/public/api/mstbarcode/search_barcode',
@@ -148,7 +151,7 @@
                     }
                     else {
                         for(i=0;i<response.length;i++){
-                            html = '<tr class="row baris justify-content-md-center"><td class="col-sm-5 pt-0 pb-0" ><input type="text" class="form-control" disabled value="'+response[i].brc_barcode+'"></td><td class="col-sm-4 pt-0 pb-0"><input type="text" class="form-control" disabled value="'+response[i].brc_prdcd+'"></td><td class="col-sm-2 pt-0 pb-0"><input type="text" class="form-control" disabled value="'+response[i].brc_status+'"></td></tr>';
+                            html = '<tr class="baris "><td ><input type="text" class="form-control" disabled value="'+response[i].brc_barcode+'"></td><td><input type="text" class="form-control" disabled value="'+response[i].brc_prdcd+'"></td><td><input type="text" class="form-control" disabled value="'+response[i].brc_status+'"></td></tr>';
                             $('#table-barcode').append(html);
                         }
                     }

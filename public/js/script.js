@@ -29,7 +29,7 @@ function convertToRupiah(number) {
 function convertToRupiah2(number) {
     if (!number)
         return 0;
-    else return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    else return parseInt(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 // Untuk merubah format Rupiah menjadi angka biasa
@@ -57,7 +57,9 @@ function formatDate(value) {
     if(value == null || value == '')
         return '';
     else {
-        date = new Date(value.substr(0,10));
+        if(value == 'now')
+            date = new Date();
+        else date = new Date(value.substr(0,10));
 
         if(parseInt(date.getDate()) < 10)
             tgl = '0' + date.getDate().toString();
@@ -70,5 +72,23 @@ function formatDate(value) {
 
 
         return tgl + '/' + bulan + '/' + date.getFullYear();
+    }
+}
+
+function nvl(value,param) {
+    if(value==null || value=="" || value=="null" || value=="NaN" ){
+        return param;
+    }
+    else
+        return value;
+}
+
+// Untuk substring waktu yang ada di tanggal
+// Created By : JR (27/02/2020) | Modify By :
+function formatDateForInputType(value) {
+    if(value == null || value == '')
+        return '';
+    else {
+        return value.substr(0,10);
     }
 }

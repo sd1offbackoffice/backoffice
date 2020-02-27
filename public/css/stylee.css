@@ -40,3 +40,15 @@ label {
         -webkit-transform: rotate(360deg);
     }
 }
+
+/*UNTUK FIX HEADER TABLE*/
+ /*Created By : JR(27/02/2020) | Modify By :  */
+.tableFixedHeader          { overflow-y: auto; height: 500px; }
+.tableFixedHeader thead th { position: sticky; top: 0; }
+.tableFixedHeader th     { background: #3b3b3b; color: white }
+
+ /*UNTUK MERUBAH WARNA PADA FILED DATE*/
+ /*Created By : JR(27/02/2020) | Modify By :  */
+ .form-control[readonly] {
+     background-color: white;
+ }

@@ -93,22 +93,24 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <table class="table table-sm">
-                                    <thead>
-                                    <tr>
-                                        <th>Nama Cabang</th>
-                                        <th>Kode Cabang</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($getCabang as $data)
-                                        <tr onclick='chooseBranch("{{$data->cab_kodecabang}}")' class="modalRowBranch">
-                                            <td>{{$data->cab_kodecabang}}</td>
-                                            <td>{{$data->cab_namacabang}}</td>
+                                <div class="tableFixedHeader">
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Nama Cabang</th>
+                                            <th>Kode Cabang</th>
                                         </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($getCabang as $data)
+                                            <tr onclick='chooseBranch("{{$data->cab_kodecabang}}")' class="modalRowBranch">
+                                                <td>{{$data->cab_kodecabang}}</td>
+                                                <td>{{$data->cab_namacabang}}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

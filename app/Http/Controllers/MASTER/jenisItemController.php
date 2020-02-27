@@ -196,7 +196,6 @@ class jenisItemController extends Controller
             ->orderBy('mstd_tgldoc')
             ->get();
 
-
         for($i=0;$i<sizeof($supplier);$i++){
             $supplier[$i]->trm_qtybns =  $this->ceknull($supplier[$i]->mstd_qty,0);
             $supplier[$i]->trm_bonus = $this->ceknull($supplier[$i]->mstd_qtybonus1,0);
@@ -208,10 +207,10 @@ class jenisItemController extends Controller
             if( $supplier[$i]->mstd_typetrn == 'I'){
                 $supplier[$i]->trm_top = 'Surat Jln';
             }
-            elseif ($supplier[$i]->mstd_typetrn = 'L'){
+            elseif ($supplier[$i]->mstd_typetrn == 'L'){
                 $supplier[$i]->trm_top = 'Lain2/Bns';
             }
-            elseif ($supplier[$i]->mstd_typetrn = 'B'){
+            elseif ($supplier[$i]->mstd_typetrn == 'B'){
                 $supplier[$i]->trm_top = 'BPB';
             }
 
@@ -233,7 +232,7 @@ class jenisItemController extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $date       = date('Y-m-d H:i:s');
 
-        if ($request->jenisrak = 'N') {
+        if ($request->jenisrak == 'N') {
 
             $TEMP = db::table('TBMASTER_LOKASI')
                 ->select('*')

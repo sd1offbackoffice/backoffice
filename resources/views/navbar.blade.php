@@ -67,8 +67,8 @@
                         <a class="dropdown-item" href="{{url("/mstperusahaan/index")}}">Master Perusahaan</a>
                         <a class="dropdown-item" href="{{url("/mstsuboutlet/index")}}">Master Sub Outlet</a>
                         <a class="dropdown-item" href="{{url("/mstsupplier/index")}}">Master Supplier</a>
-                        <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquery Supplier Produksi</a>
-                        <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquery Produksi Supplier</a>
+                        <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquery Supplier Per Produksi</a>
+                        <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquery Produksi Per Supplier</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

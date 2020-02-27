@@ -8,7 +8,7 @@
                 <fieldset class="card border-secondary">
                     <legend  class="w-auto ml-5">Master Kubikasi Plano</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <div class="row">
+                        <div class="row cek">
                             <div class="col-sm-7 p-0">
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-3 h5 ">LOKASI</legend>
@@ -45,7 +45,7 @@
                                 <legend  class="w-auto ml-3 h5 "><u>Simulasi BPB</u></legend>
                                 <div class="row ">
                                     <label for="i_plu" class="col-sm-4 col-form-label text-right" >PLU :</label>
-                                    <input type="text" class="col-sm-6 form-control" id="i_plu" placeholder="..." value="" disabled>
+                                    <input type="text" class="col-sm-6 form-control" id="i_plu" onclick="validate()" placeholder="..." value="" disabled>
                                     <div class="col-sm-1 m-0">
                                         <button type="button" id="btn-plu" class="btn p-0" data-toggle="modal" data-target="#m_pluHelp" disabled><img src="{{asset('image/icon/help.png')}}" width="30px" ></button>
                                     </div>
@@ -61,11 +61,11 @@
                                 </div>
                                 <div class="row">
                                     <label for="i_volume" class="col-sm-4 col-form-label text-right">Volume (cm<sup>3</sup>) :</label>
-                                    <input type="text" class="col-sm-6 form-control" id="i_volume" value="" disabled>
+                                    <input type="text" class="col-sm-6 form-control text-right" id="i_volume" value="" disabled>
                                 </div>
                                 <div class="row">
-                                    <label for="i_qty" class="col-sm-4 col-form-label text-right">QTY (CTN) :</label>
-                                    <input type="text" class="col-sm-6 form-control" id="i_qty" placeholder="..." value="" disabled>
+                                    <label for="i_qty" class="col-sm-4 col-form-label text-right" >QTY (CTN) :</label>
+                                    <input type="text" class="col-sm-6 form-control text-right num" id="i_qty" onclick="validate()" placeholder="..." value="" disabled>
                                 </div>
                             </div>
                         </div>
@@ -307,6 +307,7 @@
 
     <script>
         var kubikasi;
+        var data;
         var count_data=0;
         $(document).ready(function () {
             $('#table_lovkoderak').DataTable({
@@ -322,11 +323,11 @@
             // $('#i_koderak').val('GTAC');
             // $('#i_subrak').val('01');
             // $('#i_shelving').val('01');
-
-
-            var e = $.Event("keypress");
-            e.keyCode = 13;
-            $('#i_shelving').trigger(e);
+            //
+            //
+            // var e = $.Event("keypress");
+            // e.keyCode = 13;
+            // $('#i_shelving').trigger(e);
 
             // $('#i_plu').val('410');
             // $('#i_plu').trigger(e);
@@ -465,19 +466,20 @@
                             if(response.length!=0){
                                 count_data=response.length;
                                 kubikasi = response;
+                                data = response;
                                 for (var i = 0; i < response.length ; i++ ){
                                     $('#table_kubikasi').append(
                                         '<tr class="baris">' +
                                         '      <td class="kr-'+i+'">'+response[i].kbp_koderak+'</td>\n' +
                                         '      <td class="ksr-'+i+'">'+response[i].kbp_kodesubrak+'</td>\n' +
                                         '      <td class="sr-'+i+'">'+response[i].kbp_shelvingrak+'</td>\n' +
-                                        '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
-                                        '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
-                                        '      <td>'+addDotInNumber(response[i].vreal)+'</td>\n' +
-                                        '      <td>'+addDotInNumber(response[i].vexists)+'</td>\n' +
-                                        '      <td>'+addDotInNumber(response[i].vbook)+'</td>\n' +
-                                        '      <td>'+addDotInNumber(response[i].vbtb)+'</td>\n' +
-                                        '      <td>'+addDotInNumber(response[i].vsisa)+'</td>\n' +
+                                        '      <td><input type="text" class="col-sm-12 num text-right vol-'+i+' form-control" onchange="cekVol('+i+')" value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
+                                        '      <td><input type="text" class="col-sm-12 num text-right allow-'+i+' form-control" onchange="cekAllow('+i+')" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
+                                        '      <td class="real-'+i+'">'+addDotInNumber(response[i].vreal)+'</td>\n' +
+                                        '      <td class="exists-'+i+'">'+addDotInNumber(response[i].vexists)+'</td>\n' +
+                                        '      <td class="book-'+i+'">'+addDotInNumber(response[i].vbook)+'</td>\n' +
+                                        '      <td class="btb-'+i+'">'+addDotInNumber(response[i].vbtb)+'</td>\n' +
+                                        '      <td class="sisa-'+i+'">'+addDotInNumber(response[i].vsisa)+'</td>\n' +
                                         '</tr>'
                                     );
                                 }
@@ -500,7 +502,6 @@
                         },
                         complete: function(){
                             $('#modal-loader').modal('hide');
-
                         }
                     });
                 }
@@ -536,7 +537,6 @@
                     $('#btn-plu').prop("disabled",false);
                     $('#i_plu').select();
                 }
-
             }
         });
 
@@ -549,22 +549,22 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                    console.log(response);
                     kubikasi = response;
+                    data = response;
                     count_data=response.length;
                     for (var i = 0; i < response.length ; i++ ){
                         $('#table_kubikasi').append(
-                            '<tr class="baris">' +
+                            '<tr class="baris b-'+i+'">' +
                             '      <td class="kr-'+i+'">'+response[i].kbp_koderak+'</td>\n' +
                             '      <td class="ksr-'+i+'">'+response[i].kbp_kodesubrak+'</td>\n' +
                             '      <td class="sr-'+i+'">'+response[i].kbp_shelvingrak+'</td>\n' +
-                            '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
-                            '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
-                            '      <td>'+addDotInNumber(response[i].vreal)+'</td>\n' +
-                            '      <td>'+addDotInNumber(response[i].vexists)+'</td>\n' +
-                            '      <td>'+addDotInNumber(response[i].vbook)+'</td>\n' +
-                            '      <td>'+addDotInNumber(response[i].vbtb)+'</td>\n' +
-                            '      <td>'+addDotInNumber(response[i].vsisa)+'</td>\n' +
+                            '      <td><input type="text" class="num text-right vol-'+i+' form-control" onchange="cekVol('+i+')" value="'+addDotInNumber(response[i].kbp_volumeshell)+'" ></td>\n' +
+                            '      <td><input type="text" class="num text-right allow-'+i+' form-control" onchange="cekAllow('+i+')" value="'+addDotInNumber(response[i].kbp_allowance)+'" ></td>\n' +
+                            '      <td class="real-'+i+'">'+addDotInNumber(response[i].vreal)+'</td>\n' +
+                            '      <td class="exists-'+i+'">'+addDotInNumber(response[i].vexists)+'</td>\n' +
+                            '      <td class="book-'+i+'">'+addDotInNumber(response[i].vbook)+'</td>\n' +
+                            '      <td class="btb-'+i+'">'+addDotInNumber(response[i].vbtb)+'</td>\n' +
+                            '      <td class="sisa-'+i+'">'+addDotInNumber(response[i].vsisa)+'</td>\n' +
                             '</tr>'
                         );
                     }
@@ -572,8 +572,6 @@
                 },
                 error: function(response){
                     console.log(response);
-                    // if(response=='error')
-                    //     getdatarakkecil();
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');
@@ -582,7 +580,92 @@
                 }
             });
         }
+        function cekVol(val) {
+           var  b = $('.b-'+val).text();
+            var volume = replaceDotInNumber($('.vol-'+val).val());
+            var allow = replaceDotInNumber($('.allow-'+val).val());
 
+            if(volume < 0){
+                swal({
+                    title: 'Volume harus > 0',
+                    icon: 'warning'
+                }).then((createData) => {
+                    $('.vol-'+val).focus();
+                });
+                return;
+            }
+            if(allow == 0){
+                $('.allow-'+val).val('100');
+                kubikasi[val].kbp_allowance = 100;
+                allow =100;
+            }
+            if (volume == 0 && allow > 0) {
+                swal({
+                    title: 'Volume tidak boleh 0!',
+                    icon: 'warning'
+                }).then((createData) => {
+                    $('.vol-'+val).focus();
+                });
+                return;
+            }
+            // kubikasi[val].kbp_volumeshell = volume;
+            // kubikasi[val].kbp_allowance = allow;
+            // kubikasi[val].vreal = volume * allow / 100;
+            // kubikasi[val].vsisa = kubikasi[val].vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
+
+            // kubikasi[val].kbp_volumeshell = volume;
+            // kubikasi[val].kbp_allowance = allow;
+            vreal = volume * allow / 100;
+            vsisa = vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
+            $('.real-'+val).text(addDotInNumber(vreal));
+            $('.sisa-'+val).text(addDotInNumber(vsisa));
+        }
+        function cekAllow(val) {
+            var  b = $('.b-'+val).text();
+            var volume = replaceDotInNumber($('.vol-'+val).val());
+            var allow = replaceDotInNumber($('.allow-'+val).val());
+
+            if (allow < 0 || allow > 100) {
+                swal({
+                    title: 'Persentase Allowance 0..100',
+                    icon: 'warning'
+                }).then((createData) => {
+                    $('.allow-'+val).focus();
+                });
+                return;
+            }
+            if (volume + allow > 0) {
+                if (volume == 0 && allow > 0) {
+                    swal({
+                        title: 'Volume tidak boleh 0!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        $('.vol-'+val).focus();
+                    });
+                    return;
+                }
+                if (volume > 0 && allow == 0) {
+                    swal({
+                        title: 'Allowance tidak boleh 0!',
+                        icon: 'warning'
+                    }).then((createData) => {
+                        $('.allow-'+val).focus();
+                    });
+                    return;
+                }
+            }
+            // kubikasi[val].kbp_volumeshell = volume;
+            // kubikasi[val].kbp_allowance = allow;
+            // kubikasi[val].vreal = volume * allow / 100;
+            // kubikasi[val].vsisa = kubikasi[val].vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
+
+            // kubikasi[val].kbp_volumeshell = volume;
+            // kubikasi[val].kbp_allowance = allow;
+            vreal = volume * allow / 100;
+            vsisa = vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
+            $('.real-'+val).text(addDotInNumber(vreal));
+            $('.sisa-'+val).text(addDotInNumber(vsisa));
+        }
         $(document).on('keydown','.num', function(e) {
             // Allow: backspace, delete, tab, escape, enter and .
             if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -724,7 +807,7 @@
                 else{
                     $('.baris').remove();
                     for (var i = 0; i < kubikasi.length ; i++ ){
-                        var vbtb = replaceDotInNumber($('#i_volume').val()) * $('#i_qty').val();
+                        var vbtb = replaceDotInNumber($('#i_volume').val()) * replaceDotInNumber($('#i_qty').val());
                         var vsisa = replaceDotInNumber(kubikasi[i].vreal) -(replaceDotInNumber(kubikasi[i].vexists)  + replaceDotInNumber(kubikasi[i].vbook) + vbtb);
                         if ( vsisa <= 0){
                             tr = '<tr class="baris red">';
@@ -737,46 +820,41 @@
                             '      <td class="kr-'+i+'">'+kubikasi[i].kbp_koderak+'</td>\n' +
                             '      <td class="ksr-'+i+'">'+kubikasi[i].kbp_kodesubrak+'</td>\n' +
                             '      <td class="sr-'+i+'">'+kubikasi[i].kbp_shelvingrak+'</td>\n' +
-                            '      <td><input type="text" class="col-sm-12 num vol-'+i+' form-control"  value="'+addDotInNumber(kubikasi[i].kbp_volumeshell)+'" ></td>\n' +
-                            '      <td><input type="text" class="col-sm-12 num allow-'+i+' form-control" value="'+addDotInNumber(kubikasi[i].kbp_allowance)+'" ></td>\n' +
-                            '      <td>'+addDotInNumber(kubikasi[i].vreal)+'</td>\n' +
-                            '      <td>'+addDotInNumber(kubikasi[i].vexists)+'</td>\n' +
-                            '      <td>'+addDotInNumber(kubikasi[i].vbook)+'</td>\n' +
-                            '      <td>'+addDotInNumber(vbtb)+'</td>\n' +
-                            '      <td>'+addDotInNumber(vsisa)+'</td>\n' +
+                            '      <td><input type="text" class="col-sm-12 text-right num vol-'+i+' form-control" onchange="cekVol('+i+')" value="'+addDotInNumber(kubikasi[i].kbp_volumeshell)+'" ></td>\n' +
+                            '      <td><input type="text" class="col-sm-12 text-right num allow-'+i+' form-control" onchange="cekAllow('+i+')" value="'+addDotInNumber(kubikasi[i].kbp_allowance)+'" ></td>\n' +
+                            '      <td class="real-'+i+'">'+addDotInNumber(kubikasi[i].vreal)+'</td>\n' +
+                            '      <td class="exists-'+i+'">'+addDotInNumber(kubikasi[i].vexists)+'</td>\n' +
+                            '      <td class="book-'+i+'">'+addDotInNumber(kubikasi[i].vbook)+'</td>\n' +
+                            '      <td class="btb-'+i+'">'+addDotInNumber(vbtb)+'</td>\n' +
+                            '      <td class="sisa-'+i+'">'+addDotInNumber(vsisa)+'</td>\n' +
                             '</tr>'
                         );
+                        kubikasi[i].vbtb =vbtb;
+                        kubikasi[i].vsisa =vsisa;
                     }
                     null_check();
                 }
             }
         });
-        $( "#btn-save" ).click(function() {
-            arr = {};
-            arr.koderak = [];
-            arr.kodesubrak = [];
-            arr.shelvingrak = [];
-            arr.volume = [];
-            arr.allowance = [];
-
+        function cek_data() {
             for(i = 0; i<count_data; i++) {
                 volume = replaceDotInNumber($('.vol-' + i).val());
                 allow = $('.allow-' + i).val();
                 koderak = $('.kr-' + i).text();
                 kodesubrak = $('.ksr-' + i).text();
                 shelvingrak = $('.sr-' + i).text();
-                if(kubikasi[i].kbp_volumeshell != volume || kubikasi[i].kbp_allowance != allow){
+                if(data[i].kbp_volumeshell != volume || data[i].kbp_allowance != allow){
                     arr.koderak.push(koderak);
                     arr.kodesubrak.push(kodesubrak);
                     arr.shelvingrak.push(shelvingrak);
                     arr.volume.push(replaceDotInNumber(volume));
                     arr.allowance.push(allow);
-
                     if (volume == 0 && allow > 0) {
                         swal({
                             title: 'Volume tidak boleh 0!',
                             icon: 'warning'
                         }).then((createData) => {
+                            $('.vol-' + i).focus();
                         });
                         return;
                     }
@@ -785,6 +863,7 @@
                             title: 'Persentase Allowance 0..100',
                             icon: 'warning'
                         }).then((createData) => {
+                            $('.allow-' + i).focus();
                         });
                         return;
                     }
@@ -793,12 +872,22 @@
                             title: 'Allowance tidak boleh 0!',
                             icon: 'warning'
                         }).then((createData) => {
+                            $('.allow-' + i).focus();
                         });
                         return;
                     }
                 }
             }
-            console.log(arr);
+        }
+        $( "#btn-save" ).click(function() {
+            arr = {};
+            arr.koderak = [];
+            arr.kodesubrak = [];
+            arr.shelvingrak = [];
+            arr.volume = [];
+            arr.allowance = [];
+
+            cek_data();
             $.ajax({
                 url: '/BackOffice/public/api/mstkubikasiplano/save_kubikasi',
                 type:'POST',
@@ -815,9 +904,42 @@
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');
+                    $('.baris').remove();
+                    var e = $.Event("keypress");
+                    e.keyCode = 13;
+                    $('#i_shelving').trigger(e);
                 }
             });
         });
+
+        function validate() {
+            for(i = 0; i<count_data; i++) {
+                volume = replaceDotInNumber($('.vol-' + i).val());
+                allow = $('.allow-' + i).val();
+                koderak = $('.kr-' + i).text();
+                kodesubrak = $('.ksr-' + i).text();
+                shelvingrak = $('.sr-' + i).text();
+                if(data[i].kbp_volumeshell != volume || data[i].kbp_allowance != allow){
+                    swal({
+                        title: 'Terjadi perubahan data! ',
+                        text: "Klik OK untuk simpan!",
+                        icon: "info",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((createData) => {
+                        if(createData)
+                            $( "#btn-save" ).click();
+                        else {
+                            $('.baris').remove();
+                            var e = $.Event("keypress");
+                            e.keyCode = 13;
+                            $('#i_shelving').trigger(e);
+                        }
+                    });
+                    return;
+                }
+            }
+        }
 
 
     </script>

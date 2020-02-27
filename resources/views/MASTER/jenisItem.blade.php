@@ -608,13 +608,13 @@
                         '<input type="text" class="form-control" value="'+response['supplier'][i].sup_namasupplier+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
                         '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
@@ -626,10 +626,10 @@
                         '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_hpp+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
                         '</td><tr>');
                     null_check();
                     }

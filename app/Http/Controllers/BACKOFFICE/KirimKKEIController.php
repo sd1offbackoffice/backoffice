@@ -11,7 +11,7 @@ class KirimKKEIController extends Controller
     //
 
     public function index(){
-        return view('BACKOFFICE.KKEI');
+        return view('BACKOFFICE.kirimKKEI');
     }
 
 }

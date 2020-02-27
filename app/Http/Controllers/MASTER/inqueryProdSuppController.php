@@ -11,8 +11,20 @@ class inqueryProdSuppController extends Controller
 {
     public function index()
     {
+        $supplier = DB::table('tbmaster_supplier')
+            ->select('sup_kodesupplier')
+            ->where('sup_kodeigr','=','22')
+            ->orderBy('sup_kodesupplier')
+            ->first();
 
-        return view('MASTER.inqueryProdSupp');
+        $supplier2 = DB::table('tbmaster_supplier')
+            ->select('sup_kodesupplier', 'sup_namasupplier')
+            ->where('sup_kodeigr','=','22')
+            ->orderBy('sup_namasupplier')
+            ->limit(100)
+            ->get();
+
+        return view('MASTER.inqueryProdSupp')->with(compact(['supplier','supplier2']));
     }
 
     public function prodSupp(Request $request){
@@ -43,20 +55,63 @@ class inqueryProdSuppController extends Controller
                 $join->on('pkmg_prdcd', '=', 'mstd_prdcd')
                     ->on('pkmg_kodeigr', '=', 'mstd_kodeigr');
             })
-            ->SELECT("sup_namasupplier","mstd_prdcd", "prd_deskripsipendek", "st_sales", "st_saldoakhir", "pkm_pkmt", "prd_lastcost", "prd_kodetag")
+            ->selectRaw("mstd_prdcd, prd_deskripsipendek, st_sales, st_saldoakhir, pkm_pkmt, prd_lastcost, prd_kodetag,
+          CASE WHEN (sysdate >= TRUNC(gdl_tglawal) - 2 AND sysdate <= TRUNC(gdl_tglawal) + 2) THEN
+                   pkmg_nilaigondola
+           ELSE
+                  0
+           END ngdl,
+           CASE WHEN SUBSTR(prd_prdcd, 7, 1) <> '1'  AND prd_unit <> 'KG' THEN
+                   prd_frac
+           ELSE
+                  1
+           END nfrac,
+          mstd_kodesupplier, sup_namasupplier")
             ->where('mstd_kodesupplier','=',$kodesupp)
             ->where('st_lokasi','=','01')
             ->distinct()
             ->orderBy('mstd_prdcd')
             ->get();
 
+//        if($result){
+//
+//        }
 //        dd($result);
 
         $count = $result->count();
 //dd($count);
         return response()
             ->json(['kodesupp' => strtoupper($kodesupp), 'data' => $result, 'count'=>$count]);
-
-//        return view('MASTER.inqueryProdSupp', compact('result', 'count'));
     }
+
+    public function helpSelect(Request $request){
+        $result = DB::table('tbmaster_supplier')
+            ->select('*')
+            ->where('sup_kodesupplier',$request->value)
+            ->first();
+
+        if(!$result){
+            return 'not-found';
+        }
+        else return response()->json($result);
+    }
+//
+//    public function helpSearch(Request $request){
+//        if(is_numeric(substr($request->value,1,4))){
+//            $result = DB::table('tbmaster_supplier')
+//                ->select('*')
+//                ->where('sup_kodesupplier','like', '%'.$request->value.'%')
+//                ->orderBy('sup_namasupplier')
+//                ->get();
+//        }
+//        else{
+//            $result = DB::table('tbmaster_supplier')
+//                ->select('*')
+//                ->where('sup_namasupplier','like','%'.$request->value.'%')
+//                ->orderBy('sup_namasupplier')
+//                ->get();
+//        }
+//
+//        return response()->json($result);
+//    }
 }

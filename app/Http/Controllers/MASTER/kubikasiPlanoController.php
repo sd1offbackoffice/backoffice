@@ -196,7 +196,7 @@ class kubikasiPlanoController extends Controller
         return $shelving;
     }
     public function save_kubikasi(Request $request){
-//        dd(sizeof($request->value['koderak']));
+//        dd(($request));
         for($i = 0 ; $i< sizeof($request->value['koderak']); $i++){
             $opo = DB::table('tbmaster_kubikasiplano')
                 ->where('kbp_koderak', $request->value['koderak'][$i])
@@ -208,7 +208,7 @@ class kubikasiPlanoController extends Controller
                     ->where('kbp_koderak', $request->value['koderak'][$i])
                     ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
                     ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])
-                    ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i]]);
+                    ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => date('y/m/d'), 'KBP_MODIFY_BY' => 'WEB']);
             }
         }
         $message = 'Data Berhasil Terupdate!';
