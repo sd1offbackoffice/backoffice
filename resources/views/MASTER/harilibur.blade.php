@@ -6,76 +6,52 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-6">Master Hari Libur</legend>
+                    <legend  class="w-auto ml-5">Master Hari Libur</legend>
                     <div class="card-body shadow-lg cardForm">
 
 
-
                         <div class="tableFixedHeader">
-
-                            {{--<table class="table table-sm border-bottom table-hover justify-content-md-center" id="table-harilibur">--}}
-                                <table class="table table-sm table-hover table-bordered">
-
+                            <table class="table table-sm table-hover table-bordered" id="table-harilibur">
                                 <thead class="thead-dark">
-                                {{--<tr class="row justify-content-md-center p-0" >--}}
-                                <table class="table table-sm table-hover table-bordered">
-                                    <th scope="col">Tanggal.</th>
-                                    <th scope="col">Keterangan</th>
+                                <tr>
+                                    {{--<th scope="col">#</th>--}}
+                                    {{--<th scope="col">First</th>--}}
+                                    <th class="col-sm-2">TANGGAL</th>
+                                    <th class="col-sm-5">KETERANGAN</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 @foreach($harilibur as $dataHariLibur)
-                                    <tr class="row baris justify-content-md-center p-0">
-                                        <td class="col-sm-3 pt-0 pb-0" >
-                                            <input type="text" class="form-control" disabled value=" {{ date('d-m-Y', strtotime($dataHariLibur->lib_tgllibur)) }}">
-                                        </td>
-                                        <td class="col-sm-6 pt-0 pb-0">
-                                            <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_keteranganlibur}}">
+                                    <tr class="row_harilibur justify-content-md-center p-0">
+                                        <td class="col-4">{{ date('d F Y', strtotime($dataHariLibur->lib_tgllibur)) }}</td>
+                                        <td class="col-8">{{$dataHariLibur->lib_keteranganlibur}}</td>
                                         </td>
                                     </tr>
                                 @endforeach
 
                                 </tbody>
                             </table>
-
-                            </div>
-
-                        <div class="tableFixedHeader">
-                            <table class="table table-sm table-hover table-bordered">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Tanggal</th>
-                                    <th scope="col">Keterangan</th>
-                                </tr>
-                                </thead>
-                                @foreach($harilibur as $dataHariLibur)
-                                    <tr class="row baris justify-content-md-center p-0">
-                                        <td class="col-sm-3 pt-0 pb-0" >
-                                            <input type="text" class="form-control" disabled value=" {{ date('d-m-Y', strtotime($dataHariLibur->lib_tgllibur)) }}">
-                                        </td>
-                                        <td class="col-sm-6 pt-0 pb-0">
-                                            <input type="text" class="form-control" disabled value="{{$dataHariLibur->lib_keteranganlibur}}">
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
                         </div>
 
                         <br>
-                        {{--<div class="form-group row">
-                            <label for="i_prdcd" class=" col-sm-2 col-form-label text-right">PRDCD</label>
+                        <div class="form-group row">
+                            <label for="i_tgl" class=" col-sm-2 col-form-label text-right">TANGGAL</label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="i_prdcd" placeholder="...">
+                                <td>
+                                    <input type="date" class="form-control col-sm-8 " data-date-format="DD MMMM YYYY" id="i_tgl" placeholder="..." )>
+                                </td>
+                                <td>
+                                <input type="text" class="form-control" id="i_keterangan" placeholder="...">
+                                </td>
                             </div>
-                            <div class="col-sm-3">
-                                <div >
-                                    <button class="btn btn-success" id="btn-search" onclick="search_barcode()">SEARCH</button>
-                                    <button class="btn btn-success" id="btn-clear" onclick="clear_table()">CLEAR</button>
-                                </div>
-                            </div>
-                        </div>--}}
+                            {{--<div class="col-sm-3">--}}
+                                {{--<div >--}}
+                                    {{--<button class="btn btn-success" id="btn-search" onclick="search_barcode()">SEARCH</button>--}}
+                                    {{--<button class="btn btn-success" id="btn-clear" onclick="clear_table()">CLEAR</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -111,12 +87,12 @@
         .table-wrapper-scroll-y {
             display: block;
         }
-        .navbar-fixed {
-            top: 0;
-            z-index: 100;
-            position: fixed;
-            width: 100%;
+
+        .row_harilibur:hover{
+            cursor: pointer;
+            background-color: grey;
         }
+
 
         /*.tableFixedHeader          { overflow-y: auto; height: 300px; }*/
         /*.tableFixedHeader thead th { position: sticky; top: 0; }*/
@@ -129,19 +105,12 @@
 
 
 
-    {{--<script>--}}
+    <script>
 
-        {{--$(document).ready(function () {--}}
-            {{--$('#table-harilibur').DataTable({--}}
-                {{--"lengthChange": false,--}}
-                {{--"ordering" : false,--}}
-                {{--"searching": false--}}
-                {{--sc--}}
-                {{--//scrollY : 500,--}}
-            {{--});--}}
-           {{--// $('.dataTables_length').addClass('bs-select');--}}
-        {{--});--}}
+        // $("#i_tgl").datepicker({
+        //     "dateFormat" : "dd/mm/yy"
+        // });
 
-    {{--</script>--}}
+    </script>
 
 @endsection

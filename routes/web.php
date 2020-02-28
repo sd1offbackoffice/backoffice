@@ -93,7 +93,8 @@ Route::post('/bokkei/get_detail_kkei','BACKOFFICE\KKEIController@get_detail_kkei
 /******** Michelle ********/
 // Inquiry Supplier Produk
 Route::get('/inqsupprod/index','MASTER\inquerySuppProdController@index');
-Route::get('/inqsupprod/suppProd','MASTER\inquerySuppProdController@suppProd');
+Route::post('/inqsupprod/suppProd','MASTER\inquerySuppProdController@suppProd');
+Route::get('inqsupprod/helpSelect','MASTER\inqueryProdSuppController@helpSelect');
 
 // Inquiry Produk Supplier
 Route::get('/inqprodsupp/index','MASTER\inqueryProdSuppController@index');

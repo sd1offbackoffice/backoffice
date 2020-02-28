@@ -12,7 +12,7 @@
                         <div class="row">
                             <label for="periode" class="col-sm-1 col-form-label">Tanggal</label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control tanggal" id="periode" readonly>
+                                <input maxlength="10" type="text" class="form-control tanggal" id="periode">
                             </div>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="keterangan" readonly value="DATA KKEI">
@@ -128,7 +128,7 @@
                                                 <th class="col-sm-2">3</th>
                                                 <th class="col-sm-2">Bulan</th>
                                                 <th class="col-sm-2">Hari</th>
-                                                <th class="col-sm-2">Saldo Awal</th>
+                                                <th class="col-sm-2">Saldo Akhir</th>
                                                 <th class="col-sm-2">Estimasi in PCS</th>
                                                 <th class="col-sm-2">Minggu 1</th>
                                                 <th class="col-sm-2">Minggu 2</th>
@@ -158,29 +158,29 @@
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control avgbulan"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control avghari"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control saldoawal"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control estimasi"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control minggu1"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control minggu2"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control minggu3"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control minggu4"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control minggu5"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control leadtime"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control safetystock"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek estimasi"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu1"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu2"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu3"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu4"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu5"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control leadtime"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control safetystock"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control saldoakhir"></td>
                                                 <td class="col-sm-1"><input disabled type="text" class="form-control total"></td>
                                                 <td class="col-sm-1"><input disabled type="text" class="form-control qty"></td>
-                                                <td class="col-sm-2"><input readonly type="text" class="form-control tanggal tglkirim1"></td>
-                                                <td class="col-sm-2"><input readonly type="text" class="form-control tanggal tglkirim2"></td>
-                                                <td class="col-sm-2"><input readonly type="text" class="form-control tanggal tglkirim3"></td>
-                                                <td class="col-sm-2"><input readonly type="text" class="form-control tanggal tglkirim4"></td>
-                                                <td class="col-sm-2"><input readonly type="text" class="form-control tanggal tglkirim5"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim1"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim2"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim3"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim4"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim5"></td>
                                             </tr>
                                             @php } @endphp
                                             </tbody>
                                             <tfoot>
                                                 <tr class="d-flex text-center">
                                                     <td class="col-sm-12"></td>
-                                                    <th class="col-sm-4 text-right">Total Kubikasi</th>
+                                                    <th class="col-sm-4 text-right"><h4 class="">Total Kubikasi</h4></th>
                                                     <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
                                                     <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
                                                     <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
@@ -196,8 +196,14 @@
                         </div>
 
                         <div class="row mt-2">
+                            <label for="periode" class="col-sm-1 col-form-label text-right pr-0">Search PLU :</label>
+                            <div class="col-sm-2 pr-0">
+                                <input type="text" class="form-control" id="i-search">
+                            </div>
+                        </div>
+                        <div class="row mt-1">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" id="txt_deskripsi" readonly>
+                                <input disabled type="text" class="form-control" id="txt_deskripsi">
                             </div>
                             <div class="col-sm-5 mb-1 text-right">
                                 <button id="btn-save" class="col-sm-3 btn btn-success">SAVE</button>
@@ -301,10 +307,6 @@
 
         $('#periode').val(formatDate('now'));
 
-        $('input').on('click',function(){
-            $(this).select();
-        });
-
         //scroll bersamaan
         $('.scroll-y').on('scroll', function(){
             $(".scroll-y").not(this).scrollTop($(this).scrollTop());
@@ -317,21 +319,55 @@
         special = false;
         rowCount = 10;
 
-        ready();
+        saldowal = 0;
+
+        $(document).ready(function(){
+            ready();
+
+            $('#periode').prop('disabled',false);
+        });
 
         function ready(){
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy"
             });
 
+            $('.tanggal').each(function(){
+                $(this).prop('disabled',true);
+            });
+
+            $('.tanggal').on('blur change',function(){
+                if($(this).val() != '' && !checkDate($(this).val())){
+                    if($(this).attr('id') == 'periode')
+                        id = $(this).attr('id');
+                    else id = $(this).parent().parent().attr('id');
+                    thisClass = $(this).attr('class').split(' ');
+                    idx = thisClass.length - 2;
+
+                    swal({
+                        title: 'Periksa kembali inputan tanggal!',
+                        icon: 'error',
+                    }).then(function(){
+                        if(id == 'periode'){
+                            $('#periode').val('');
+                            $('#periode').select();
+                        }
+                        else{
+                            $('#'+id).find('.'+thisClass[idx]).val('');
+                            $('#'+id).find('.'+thisClass[idx]).select();
+                        }
+                    });
+                }
+            });
+
+            $('input').on('click',function(){
+                $(this).select();
+            });
+
             $('input').on('keypress',function(event){
-                if(event.which == 13 && $(this).attr('class').substr(-5) != 'i-plu'){
+                if(event.which == 13 && $(this).attr('class').substr(-5) != 'i-plu' && $(this).attr('id') != 'i-search' && $(this).attr('class').substr(-9) != 'tglkirim5'){
                     if($(this).attr('class').substr(-11) == 'safetystock'){
                         $(this).parent().parent().find('.tglkirim1').select();
-                    }
-                    else if($(this).attr('class').substr(-9) == 'tglkirim5'){
-                        rowNext = parseInt($(this).parent().parent().attr('id').substr(-1)) + 1;
-                        $('#row_detail_'+rowNext).find('.i-plu').select();
                     }
                     else{
                         $(this).parent().next().find('input').select();
@@ -340,40 +376,16 @@
             });
 
             $('input').focus(function (event) {
-                if($(this).attr('id') != 'periode' && $(this).attr('id') != 'keterangan'){
-                    // console.log($(this).parent().parent().find('.deskripsi').val());
-                    currentRow = $(this).parent().parent().attr('id').substr(-1);
+                if($(this).attr('id') != 'periode' && $(this).attr('id') != 'keterangan' && $(this).attr('id') != 'txt_deskripsi' && $(this).attr('id') != 'i-search'){
+                    currentRow = $(this).parent().parent().attr('id').split('_');
+                    currentRow = currentRow[currentRow.length - 1];
+
                     $('#txt_deskripsi').val($('#row_detail_'+currentRow).find('.deskripsi').val());
+                    saldoawal = parseInt($('#row_form_'+currentRow).find('.saldoawal').val());
 
-
-                    if($(this).attr('class').substr(-5) == 'i-plu'){
-                        $('.table-wrapper-scroll-y').animate({ scrollLeft: 0 }, 300);
-                        currentPos = 0;
-                        currentIndex = 0;
-                    }
-                    else if(special){
-                        currentPos = ($(this).parent().index()) * $(this).parent().width();
-                        $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 300);
-                        special = false;
-                    }
-                    else if(currentIndex < $(this).parent().index()){
-                        if($(this).attr('class').substr(-8) == 'estimasi'){
-                            pos = $(this).parent().position().left;
-                            currentPos += pos;
-                            $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 300);
-                            currentIndex = $(this).parent().index();
-                        }
-                        else{
-                            pos = $(this).parent().position().left;
-                            currentPos += pos;
-                            $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 300);
-                            currentIndex = $(this).parent().index();
-                        }
-                    }
-                    else{
-                        currentIndex = $(this).parent().index();
-                        special = true;
-                    }
+                    idx = $(this).parent().index();
+                    currentPos  = $('#row_form_0:nth-child(1)').find('td').innerWidth() * (idx - 1);
+                    $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 300);
                 }
 
             });
@@ -381,109 +393,197 @@
             $('.tglkirim5').on('change',function(){
                 rowNext = parseInt($(this).parent().parent().attr('id').substr(-1)) + 1;
 
+                if($('#row_detail_'+rowNext).attr('id') != 'row_detail_'+rowNext){
+                    addRow();
+                }
+
                 $('#row_detail_'+rowNext).find('.i-plu').select();
             });
 
             $('#periode').on('change',function(){
-                get_detail_kkei($(this).val());
+                if(checkDate($(this).val())){
+                    get_detail_kkei($(this).val());
+                }
             });
-        }
 
-        function get_detail_produk(event,row){
-            if(event.which == 13){
-                if($(event.target).val().length <= 7 && $(event.target).val().length > 0){
-                    prdcd = convertPlu($(event.target).val());
+            $('.cek').on('change blur',function(){
+                thisClass = $(this).attr('class').split(' ');
+                id = $(this).parent().parent().attr('id');
+                idx = thisClass.length - 1;
 
-                    ada = false;
+                if(thisClass[idx] != 'estimasi' && $(this).val() < 0){
+                    swal({
+                        title: 'Nilai yang diinputkan tidak boleh kurang dari 0!',
+                        icon: 'error',
+                    }).then(function () {
+                        $('#'+id).find('.'+thisClass[idx]).select();
+                    });
+                }
+                else{
+                    estimasi = 0;
+                    pb = 0;
 
-                    $('.i-plu').each(function(){
-                        if($(this).parent().parent().attr('id') != 'row_detail_'+row){
-                            if($(this).val() == prdcd){
-                                ada = true;
-                                return 0;
-                            }
+                    $('#'+id).find('.cek').each(function(){
+                        if($(this).attr('class').substr(-8) == 'estimasi')
+                            estimasi = parseInt($(this).val());
+                        else{
+                            pb += parseInt($(this).val());
                         }
                     });
 
-                    if(!ada){
-                        $.ajax({
-                            url: '/BackOffice/public/bokkei/get_detail_produk',
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {prdcd: prdcd, periode: $('#periode').val()},
-                            beforeSend: function () {
-                                $('#modal-loader').modal('toggle');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('toggle');
-
-                                console.log(response);
-                                if (response.status == 'success') {
-                                    $('#row_form_'+row).find('input').each(function () {
-                                        $(this).val('0');
-                                    });
-                                    $('#row_form_'+row).find('.tanggal').each(function () {
-                                        $(this).val('');
-                                    });
-
-                                    $('#row_detail_'+row).find('.i-plu').val(response.data.prd_prdcd);
-                                    $('#row_detail_'+row).find('.unit').val(response.data.unit);
-                                    $('#row_detail_'+row).find('.frac').val(response.data.frac);
-                                    $('#row_form_'+row).find('.hargabeli').val(convertToRupiah2(response.data.hargabeli));
-                                    $('#row_form_'+row).find('.discount').val(convertToRupiah(response.data.diskon));
-                                    $('#row_form_'+row).find('.sales1').val(convertToRupiah2(response.data.sales1));
-                                    $('#row_form_'+row).find('.sales2').val(convertToRupiah2(response.data.sales2));
-                                    $('#row_form_'+row).find('.sales3').val(convertToRupiah2(response.data.sales3));
-                                    $('#row_form_'+row).find('.avgbulan').val(convertToRupiah(response.data.avgslsbln));
-                                    $('#row_form_'+row).find('.avghari').val(convertToRupiah(response.data.avgslshari));
-                                    $('#row_form_'+row).find('.saldoawal').val(response.data.saldoawal);
-                                    $('#row_form_'+row).find('.saldoakhir').val(response.data.saldoakhir);
-
-                                    $('#row_detail_'+row).find('.deskripsi').val(response.data.deskripsi);
-
-
-                                    $('#row_form_'+row).find('.estimasi').prop('disabled',false);
-                                    $('#row_form_'+row).find('.estimasi').select();
-                                    $('#txt_deskripsi').val($('#row_detail_'+row).find('.deskripsi').val());
-
-                                    $('#row_detail_'+row).find('.panjangproduk').val(response.data.panjangproduk);
-                                    $('#row_detail_'+row).find('.lebarproduk').val(response.data.lebarproduk);
-                                    $('#row_detail_'+row).find('.tinggiproduk').val(response.data.tinggiproduk);
-                                    $('#row_detail_'+row).find('.panjangkemasan').val(response.data.panjangkemasan);
-                                    $('#row_detail_'+row).find('.lebarkemasan').val(response.data.lebarkemasan);
-                                    $('#row_detail_'+row).find('.tinggikemasan').val(response.data.tinggikemasan);
-                                    $('#row_detail_'+row).find('.beratprod').val(response.data.beratprod);
-                                    $('#row_detail_'+row).find('.beratkmsn').val(response.data.beratkmsn);
-                                    $('#row_detail_'+row).find('.kubikasiprod').val(response.data.kubikasiprod);
-                                    $('#row_detail_'+row).find('.kubikasikemasan').val(response.data.kubikasikemasan);
-                                    $('#row_detail_'+row).find('.kodesupplier').val(response.data.kodesupplier);
-                                    $('#row_detail_'+row).find('.namasupplier').val(response.data.namasupplier);
-                                }
-                                else {
-                                    swal({
-                                        title: response.message,
-                                        icon: "error"
-                                    }).then(function () {
-                                        $(event.target).select();
-                                    });
-                                }
-                            }
+                    if(estimasi <= 0 || $('#'+id).find('.estimasi').val().length == 0){
+                        swal({
+                            title: 'Nilai estimasi harus lebih dari 0!',
+                            icon: 'error',
+                        }).then(function () {
+                            $('#'+id).find('.'+thisClass[idx]).select();
                         });
+                    }
+                    else if(pb > estimasi){
+                        if($(this).attr('class').substr(-8) == 'estimasi'){
+                            swal({
+                                title: 'Nilai estimasi tidak boleh lebih kecil dari total Breakdown PB!',
+                                icon: 'error',
+                            }).then(function () {
+                                $('#'+id).find('.'+thisClass[idx]).select();
+                            });
+                        }
+                        else {
+                            swal({
+                                title: 'Total Breakdown PB tidak boleh melebihi nilai estimasi!',
+                                icon: 'error'
+                            }).then(function () {
+                                $('#'+id).find('.'+thisClass[idx]).select();
+                            });
+                        }
                     }
                     else{
-                        swal({
-                            title: 'Kode produk '+prdcd+' sudah ada!',
-                            icon: 'error'
-                        }).then(function(){
-                            $(event.target).select();
-                        });
+                        saldoakhir = saldoawal + parseInt($('#'+id).find('.estimasi').val());
+                        $('#'+id).find('.saldoakhir').val(saldoakhir);
+
+                        if($(this).attr('class').substr(-8) == 'estimasi'){
+
+                        }
                     }
+                }
+            });
+        }
+
+        $('#i-search').on('keypress',function(event){
+            if(event.which == 13){
+                search($(this).val());
+            }
+        });
+
+        function get_detail_produk(event,row){
+            if(event.which == 13){
+                prdcd = convertPlu($(event.target).val());
+
+                ada = false;
+
+                $('.i-plu').each(function(){
+                    if($(this).parent().parent().attr('id') != 'row_detail_'+row){
+                        if($(this).val() == prdcd){
+                            ada = true;
+                            return 0;
+                        }
+                    }
+                });
+
+                if(!ada){
+                    $.ajax({
+                        url: '/BackOffice/public/bokkei/get_detail_produk',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {prdcd: prdcd, periode: $('#periode').val()},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('toggle');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('toggle');
+
+                            if (response.status == 'success') {
+                                $('#row_form_'+row).find('input').each(function () {
+                                    $(this).val('0');
+                                });
+                                $('#row_form_'+row).find('.tanggal').each(function () {
+                                    $(this).val('');
+                                });
+
+                                $('#row_detail_'+row).find('.i-plu').val(response.data.prd_prdcd);
+                                $('#row_detail_'+row).find('.unit').val(response.data.unit);
+                                $('#row_detail_'+row).find('.frac').val(response.data.frac);
+                                $('#row_form_'+row).find('.hargabeli').val(convertToRupiah2(response.data.hargabeli));
+                                $('#row_form_'+row).find('.discount').val(convertToRupiah(response.data.diskon));
+                                $('#row_form_'+row).find('.sales1').val(convertToRupiah2(response.data.sales1));
+                                $('#row_form_'+row).find('.sales2').val(convertToRupiah2(response.data.sales2));
+                                $('#row_form_'+row).find('.sales3').val(convertToRupiah2(response.data.sales3));
+                                $('#row_form_'+row).find('.avgbulan').val(convertToRupiah(response.data.avgslsbln));
+                                $('#row_form_'+row).find('.avghari').val(convertToRupiah(response.data.avgslshari));
+                                $('#row_form_'+row).find('.saldoawal').val(nvl(response.data.saldoawal,0));
+                                $('#row_form_'+row).find('.saldoakhir').val(nvl(response.data.saldoakhir,0));
+
+                                $('#row_detail_'+row).find('.deskripsi').val(response.data.deskripsi);
+
+                                $('#txt_deskripsi').val($('#row_detail_'+row).find('.deskripsi').val());
+
+                                $('#row_detail_'+row).find('.panjangproduk').val(response.data.panjangproduk);
+                                $('#row_detail_'+row).find('.lebarproduk').val(response.data.lebarproduk);
+                                $('#row_detail_'+row).find('.tinggiproduk').val(response.data.tinggiproduk);
+                                $('#row_detail_'+row).find('.panjangkemasan').val(response.data.panjangkemasan);
+                                $('#row_detail_'+row).find('.lebarkemasan').val(response.data.lebarkemasan);
+                                $('#row_detail_'+row).find('.tinggikemasan').val(response.data.tinggikemasan);
+                                $('#row_detail_'+row).find('.beratprod').val(response.data.beratprod);
+                                $('#row_detail_'+row).find('.beratkmsn').val(response.data.beratkmsn);
+                                $('#row_detail_'+row).find('.kubikasiprod').val(response.data.kubikasiprod);
+                                $('#row_detail_'+row).find('.kubikasikemasan').val(response.data.kubikasikemasan);
+                                $('#row_detail_'+row).find('.kodesupplier').val(response.data.kodesupplier);
+                                $('#row_detail_'+row).find('.namasupplier').val(response.data.namasupplier);
+
+                                $('#row_form_'+row).find('.estimasi').prop('disabled',false);
+                                $('#row_form_'+row).find('.minggu1').prop('disabled',false);
+                                $('#row_form_'+row).find('.minggu2').prop('disabled',false);
+                                $('#row_form_'+row).find('.minggu3').prop('disabled',false);
+                                $('#row_form_'+row).find('.minggu4').prop('disabled',false);
+                                $('#row_form_'+row).find('.minggu5').prop('disabled',false);
+                                $('#row_form_'+row).find('.leadtime').prop('disabled',false);
+                                $('#row_form_'+row).find('.safetystock').prop('disabled',false);
+                                $('#row_form_'+row).find('.tanggal').prop('disabled',false);
+
+                                if(response.kkei != null){
+                                    $('#row_form_'+row).find('.estimasi').val(response.kkei.kke_estimasi);
+                                    $('#row_form_'+row).find('.minggu1').val(response.kkei.kke_breakpb01);
+                                    $('#row_form_'+row).find('.minggu2').val(response.kkei.kke_breakpb02);
+                                    $('#row_form_'+row).find('.minggu3').val(response.kkei.kke_breakpb03);
+                                    $('#row_form_'+row).find('.minggu4').val(response.kkei.kke_breakpb04);
+                                    $('#row_form_'+row).find('.minggu5').val(response.kkei.kke_breakpb05);
+                                    $('#row_form_'+row).find('.leadtime').val(response.kkei.kke_bufferlt);
+                                    $('#row_form_'+row).find('.safetystock').val(response.kkei.kke_bufferss);
+                                    $('#row_form_'+row).find('.tglkirim1').val(formatDate(response.kkei.kke_tglkirim01));
+                                    $('#row_form_'+row).find('.tglkirim2').val(formatDate(response.kkei.kke_tglkirim02));
+                                    $('#row_form_'+row).find('.tglkirim3').val(formatDate(response.kkei.kke_tglkirim03));
+                                    $('#row_form_'+row).find('.tglkirim4').val(formatDate(response.kkei.kke_tglkirim04));
+                                    $('#row_form_'+row).find('.tglkirim5').val(formatDate(response.kkei.kke_tglkirim05));
+                                }
+
+                                $('#row_form_'+row).find('.estimasi').select();
+                            }
+                            else {
+                                swal({
+                                    title: response.message,
+                                    icon: "error"
+                                }).then(function () {
+                                    $(event.target).select();
+                                });
+                            }
+                        }
+                    });
                 }
                 else{
                     swal({
-                        title: 'Cek kembali PLU',
+                        title: 'Kode produk '+prdcd+' sudah ada!',
                         icon: 'error'
                     }).then(function(){
                         $(event.target).select();
@@ -508,7 +608,6 @@
                 success: function (response) {
                     $('#modal-loader').modal('toggle');
 
-                    console.log(response.data[0]);
                     if (response.status == 'success') {
                         $('#table-detail').find('tbody tr').remove();
                         $('#table-form').find('tbody tr').remove();
@@ -631,6 +730,8 @@
                             addRow();
                         }
 
+                        ready();
+
                         if(response.data[0].kke_upload == 'Y'){
                             $('#keterangan').val('DATA SUDAH DIUPLOAD');
                             $('input').each(function(){
@@ -645,8 +746,6 @@
                         else{
                             $('#keterangan').val('DATA BELUM DIUPLOAD');
                         }
-
-                        ready();
                     }
                     else {
                         swal({
@@ -715,7 +814,7 @@
                             '</td>'
                         '</tr>';
 
-            trForm = '<tr id="row_form_' + i + '" class="d-flex baris number">' +
+            trForm = '<tr id="row_form_' + rowCount + '" class="d-flex baris number">' +
                         '<td class="col-sm-2">' +
                         '<input disabled type="text" class="form-control hargabeli">' +
                         '<td class="col-sm-2">' +
@@ -733,21 +832,21 @@
                         '<td class="col-sm-2">' +
                         '<input disabled type="text" class="form-control saldoawal">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control estimasi">' +
+                        '<input disabled type="number" min="0" class="form-control estimasi">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control minggu1">' +
+                        '<input disabled type="number" min="0" class="form-control minggu1">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control minggu2">' +
+                        '<input disabled type="number" min="0" class="form-control minggu2">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control minggu3">' +
+                        '<input disabled type="number" min="0" class="form-control minggu3">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control minggu4">' +
+                        '<input disabled type="number" min="0" class="form-control minggu4">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control minggu5">' +
+                        '<input disabled type="number" min="0" class="form-control minggu5">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control leadtime">' +
+                        '<input disabled type="number" min="0" class="form-control leadtime">' +
                         '<td class="col-sm-2">' +
-                        '<input type="text" class="form-control safetystock">' +
+                        '<input disabled type="number" min="0" class="form-control safetystock">' +
                         '<td class="col-sm-2">' +
                         '<input disabled type="text" class="form-control saldoakhir">' +
                         '<td class="col-sm-1">' +
@@ -755,21 +854,23 @@
                         '<td class="col-sm-1">' +
                         '<input disabled type="text" class="form-control qty">' +
                         '<td class="col-sm-2">' +
-                        '<input readonly type="text" class="form-control tanggal tglkirim1">' +
+                        '<input disabled type="text" class="form-control tanggal tglkirim1">' +
                         '<td class="col-sm-2">' +
-                        '<input readonly type="text" class="form-control tanggal tglkirim2">' +
+                        '<input disabled type="text" class="form-control tanggal tglkirim2">' +
                         '<td class="col-sm-2">' +
-                        '<input readonly type="text" class="form-control tanggal tglkirim3">' +
+                        '<input disabled type="text" class="form-control tanggal tglkirim3">' +
                         '<td class="col-sm-2">' +
-                        '<input readonly type="text" class="form-control tanggal tglkirim4">' +
+                        '<input disabled type="text" class="form-control tanggal tglkirim4">' +
                         '<td class="col-sm-2">' +
-                        '<input readonly type="text" class="form-control tanggal tglkirim5">' +
+                        '<input disabled type="text" class="form-control tanggal tglkirim5">' +
                     '</tr>';
 
             $('#table-detail').append(trDetail);
             $('#table-form').append(trForm);
 
             rowCount++;
+
+            ready();
         }
 
         function deleteRow(row){
@@ -783,6 +884,29 @@
 
             if(count < 10){
                 addRow();
+            }
+        }
+
+        function search(plu){
+            found = false;
+
+            // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            $('.i-plu').each(function(){
+                if($(this).val() == convertPlu(plu)){
+                    // $('#modal-loader').modal('toggle');
+                    $(this).select();
+                    found = true;
+                    return false;
+                }
+            });
+            if(!found){
+                swal({
+                    title: 'Data tidak ada!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#modal-loader').hide('toggle');
+                    $('#i-search').select();
+                });
             }
         }
 

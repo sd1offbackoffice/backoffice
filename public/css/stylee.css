@@ -50,5 +50,5 @@ label {
  /*UNTUK MERUBAH WARNA PADA FILED DATE*/
  /*Created By : JR(27/02/2020) | Modify By :  */
  .form-control[readonly] {
-     background-color: white;
- }
+      background-color: white;
+  }

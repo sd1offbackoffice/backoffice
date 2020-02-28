@@ -91,74 +91,6 @@ class KKEIController extends Controller
             $data['kubikasiprod'] = ($data['panjangproduk'] * $data['lebarproduk'] * $data['tinggiproduk']) / 1000000;
             $data['kubikasikemasan'] = ($data['panjangkemasan'] * $data['lebarkemasan'] * $data['tinggikemasan']) / 1000000;
 
-            if(substr($periode,3,2) == '01')
-                $n = '12';
-            else $n = substr($periode,3,2) - 1;
-            if($n < 10)
-                $n = '0'.$n;
-
-            if(substr($periode,3,2) == '01')
-                $x1 = '11';
-            else if(substr($periode,3,2) == '02')
-                $x1 = '12';
-            else $x1 = substr($periode,3,2) - 2;
-            if($x1 < 10)
-                $x1 = '0'.$x1;
-
-            if(substr($periode,3,2) == '01')
-                $x2 = '10';
-            else if(substr($periode,3,2) == '02')
-                $x2 = '11';
-            else if(substr($periode,3,2) == '03')
-                $x2 = '12';
-            else $x2 = substr($periode,3,2) - 3;
-            if($x2 < 10)
-                $x2 = '0'.$x2;
-
-
-            $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
-            $exec = oci_parse($connection, "BEGIN  SP_SLTREND (:kodeigr, :x2, :x1, :n, :prdcd, :sales01, :sales02, :sales03); END;");
-            oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
-            oci_bind_by_name($exec, ':x2',$x2,100);
-            oci_bind_by_name($exec, ':x1',$x1,100);
-            oci_bind_by_name($exec, ':n',$n,100);
-            oci_bind_by_name($exec, ':prdcd',$prdcd,100);
-            oci_bind_by_name($exec, ':sales01',$sales01,100);
-            oci_bind_by_name($exec, ':sales02',$sales02,100);
-            oci_bind_by_name($exec, ':sales03',$sales03,100);
-            oci_execute($exec);
-
-            $data['sales1'] = $sales01;
-            $data['sales2'] = $sales02;
-            $data['sales3'] = $sales03;
-
-            if($sales01 > 0 && $sales02 > 0 && $sales03 > 0){
-                $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 3;
-                $data['avgslshari'] = $data['avgslsbln'] / 30;
-            }
-            else{
-                if(($sales01 > 0 && $sales02 > 0 && $sales03 == 0) || ($sales01 > 0 && $sales02 == 0 && $sales03 > 0) || ($sales01 == 0 && $sales02 > 0 && $sales03 > 0)){
-                    $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 2;
-                    $data['avgslshari'] = $data['avgslsbln'] / 30;
-                }
-                else{
-                    $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 1;
-                    $data['avgslshari'] = $data['avgslsbln'] / 30;
-                }
-            }
-
-            $stock = DB::table('tbmaster_stock')
-                ->select('st_saldoakhir')
-                ->where('st_kodeigr',$kodeigr)
-                ->where('st_lokasi','01')
-                ->where('st_prdcd',$prdcd)
-                ->first();
-
-            if($stock){
-                $data['saldoawal'] = $stock->st_saldoakhir;
-                $data['saldoakhir'] = $stock->st_saldoakhir;
-            }
-
             $hgb = DB::table('tbmaster_hargabeli')
                 ->where('hgb_kodeigr',$kodeigr)
                 ->where('hgb_tipe','2')
@@ -191,6 +123,74 @@ class KKEIController extends Controller
 
                 $data['diskon'] = $diskon;
 
+                if(substr($periode,3,2) == '01')
+                    $n = '12';
+                else $n = substr($periode,3,2) - 1;
+                if($n < 10)
+                    $n = '0'.$n;
+
+                if(substr($periode,3,2) == '01')
+                    $x1 = '11';
+                else if(substr($periode,3,2) == '02')
+                    $x1 = '12';
+                else $x1 = substr($periode,3,2) - 2;
+                if($x1 < 10)
+                    $x1 = '0'.$x1;
+
+                if(substr($periode,3,2) == '01')
+                    $x2 = '10';
+                else if(substr($periode,3,2) == '02')
+                    $x2 = '11';
+                else if(substr($periode,3,2) == '03')
+                    $x2 = '12';
+                else $x2 = substr($periode,3,2) - 3;
+                if($x2 < 10)
+                    $x2 = '0'.$x2;
+
+
+                $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+                $exec = oci_parse($connection, "BEGIN  SP_SLTREND (:kodeigr, :x2, :x1, :n, :prdcd, :sales01, :sales02, :sales03); END;");
+                oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+                oci_bind_by_name($exec, ':x2',$x2,100);
+                oci_bind_by_name($exec, ':x1',$x1,100);
+                oci_bind_by_name($exec, ':n',$n,100);
+                oci_bind_by_name($exec, ':prdcd',$prdcd,100);
+                oci_bind_by_name($exec, ':sales01',$sales01,100);
+                oci_bind_by_name($exec, ':sales02',$sales02,100);
+                oci_bind_by_name($exec, ':sales03',$sales03,100);
+                oci_execute($exec);
+
+                $data['sales1'] = $sales01;
+                $data['sales2'] = $sales02;
+                $data['sales3'] = $sales03;
+
+                if($sales01 > 0 && $sales02 > 0 && $sales03 > 0){
+                    $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 3;
+                    $data['avgslshari'] = $data['avgslsbln'] / 30;
+                }
+                else{
+                    if(($sales01 > 0 && $sales02 > 0 && $sales03 == 0) || ($sales01 > 0 && $sales02 == 0 && $sales03 > 0) || ($sales01 == 0 && $sales02 > 0 && $sales03 > 0)){
+                        $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 2;
+                        $data['avgslshari'] = $data['avgslsbln'] / 30;
+                    }
+                    else{
+                        $data['avgslsbln'] = ($sales01 + $sales02 + $sales03) / 1;
+                        $data['avgslshari'] = $data['avgslsbln'] / 30;
+                    }
+                }
+
+                $stock = DB::table('tbmaster_stock')
+                    ->select('st_saldoakhir')
+                    ->where('st_kodeigr',$kodeigr)
+                    ->where('st_lokasi','01')
+                    ->where('st_prdcd',$prdcd)
+                    ->first();
+
+                if($stock){
+                    $data['saldoawal'] = $stock->st_saldoakhir;
+                    $data['saldoakhir'] = $stock->st_saldoakhir;
+                }
+
                 $supplier = DB::table('tbmaster_supplier')
                     ->select('sup_kodesupplier','sup_namasupplier')
                     ->where('sup_kodesupplier',$hgb->hgb_kodesupplier)
@@ -199,6 +199,13 @@ class KKEIController extends Controller
                 $data['kodesupplier'] = $supplier->sup_kodesupplier;
                 $data['namasupplier'] = $supplier->sup_namasupplier;
             }
+
+            $po = DB::table('tbtr_po_d')
+                ->select('tpod_qtypo')
+                ->where('tpod_kodeigr',$kodeigr)
+                ->where('tpod_recordid',null)
+                ->where('tpod_prdcd',$prdcd)
+                ->sum('tpod_qtypo');
 
             $kkei = DB::table('temp_kkei')
                 ->select(
@@ -229,7 +236,7 @@ class KKEIController extends Controller
             $status = 'success';
 
 //            dd(compact(['data','kkei']));
-            return compact(['status','data','kkei']);
+            return compact(['status','data','kkei','po']);
         }
         else{
             $status = 'not-found';
@@ -243,7 +250,7 @@ class KKEIController extends Controller
             ->where('kke_periode',$request->periode)
             ->get();
 
-        if($data){
+        if(count($data) > 0){
             $status = 'success';
             $message = 'Data ditemukan!';
         }

@@ -47,7 +47,7 @@
                                         <th>Tgl Tutup</th>
                                         <th>Flag <br>  VB</th>
                                         <th>Flag <br>  Margin</th>
-                                        <th>Sub Pemanjangan</th>
+                                        <th>Sub <br> Pemanjangan</th>
                                         <th>Sub CLO</th>
                                         <th>Sub Tipe</th>
                                         <th>Action</th>

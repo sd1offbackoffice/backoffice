@@ -12,46 +12,41 @@ class inqueryProdSuppController extends Controller
     public function index()
     {
         $supplier = DB::table('tbmaster_supplier')
-            ->select('sup_kodesupplier')
-            ->where('sup_kodeigr','=','22')
-            ->orderBy('sup_kodesupplier')
-            ->first();
-
-        $supplier2 = DB::table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier')
-            ->where('sup_kodeigr','=','22')
-            ->orderBy('sup_namasupplier')
+            ->where('sup_kodeigr', '=', '22')
+            ->orderBy('sup_kodesupplier')
             ->limit(100)
             ->get();
 
-        return view('MASTER.inqueryProdSupp')->with(compact(['supplier','supplier2']));
+        return view('MASTER.inqueryProdSupp')->with(compact(['supplier']));
     }
 
-    public function prodSupp(Request $request){
+    public function prodSupp(Request $request)
+    {
         $kodesupp = $request->kodesupp;
 
         $result = DB::table('tbtr_mstran_d')
-            ->join('tbmaster_supplier',function($join){
+            ->join('tbmaster_supplier', function ($join) {
                 $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
                     ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
             })
-            ->join('tbmaster_prodmast',function($join){
+            ->join('tbmaster_prodmast', function ($join) {
                 $join->on('prd_kodeigr', '=', 'mstd_kodeigr')
                     ->on('prd_prdcd', '=', 'mstd_prdcd');
             })
-            ->join('tbmaster_stock',function($join){
+            ->join('tbmaster_stock', function ($join) {
                 $join->on('st_kodeigr', '=', 'mstd_kodeigr')
                     ->on('st_prdcd', '=', 'mstd_prdcd');
             })
-            ->join('tbmaster_kkpkm',function($join){
-                $join->on('pkm_kodeigr', '=' , 'mstd_kodeigr')
+            ->join('tbmaster_kkpkm', function ($join) {
+                $join->on('pkm_kodeigr', '=', 'mstd_kodeigr')
                     ->on('pkm_prdcd', '=', 'mstd_prdcd');
             })
-            ->leftJoin('tbtr_gondola',function($join){
+            ->leftJoin('tbtr_gondola', function ($join) {
                 $join->on('gdl_kodeigr', '=', 'mstd_kodeigr')
                     ->on('gdl_prdcd', '=', 'mstd_prdcd');
             })
-            ->leftJoin('tbtr_pkmgondola',function($join){
+            ->leftJoin('tbtr_pkmgondola', function ($join) {
                 $join->on('pkmg_prdcd', '=', 'mstd_prdcd')
                     ->on('pkmg_kodeigr', '=', 'mstd_kodeigr');
             })
@@ -67,51 +62,25 @@ class inqueryProdSuppController extends Controller
                   1
            END nfrac,
           mstd_kodesupplier, sup_namasupplier")
-            ->where('mstd_kodesupplier','=',$kodesupp)
-            ->where('st_lokasi','=','01')
+            ->where('mstd_kodesupplier', '=', $kodesupp)
+            ->where('st_lokasi', '=', '01')
             ->distinct()
             ->orderBy('mstd_prdcd')
             ->get();
 
-//        if($result){
-//
-//        }
-//        dd($result);
-
         $count = $result->count();
-//dd($count);
+
         return response()
-            ->json(['kodesupp' => strtoupper($kodesupp), 'data' => $result, 'count'=>$count]);
+            ->json(['kodesupp' => strtoupper($kodesupp), 'data' => $result, 'count' => $count]);
     }
 
-    public function helpSelect(Request $request){
+    public function helpSelect(Request $request)
+    {
         $result = DB::table('tbmaster_supplier')
             ->select('*')
-            ->where('sup_kodesupplier',$request->value)
+            ->where('sup_kodesupplier', $request->value)
             ->first();
 
-        if(!$result){
-            return 'not-found';
-        }
-        else return response()->json($result);
+        return response()->json($result);
     }
-//
-//    public function helpSearch(Request $request){
-//        if(is_numeric(substr($request->value,1,4))){
-//            $result = DB::table('tbmaster_supplier')
-//                ->select('*')
-//                ->where('sup_kodesupplier','like', '%'.$request->value.'%')
-//                ->orderBy('sup_namasupplier')
-//                ->get();
-//        }
-//        else{
-//            $result = DB::table('tbmaster_supplier')
-//                ->select('*')
-//                ->where('sup_namasupplier','like','%'.$request->value.'%')
-//                ->orderBy('sup_namasupplier')
-//                ->get();
-//        }
-//
-//        return response()->json($result);
-//    }
 }

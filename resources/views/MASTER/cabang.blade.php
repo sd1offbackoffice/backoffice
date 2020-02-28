@@ -56,7 +56,8 @@
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label for="">Tgl. SK</label>
-                                    <input type="text" class="field field10 form-control" id="i_tglSK" placeholder="..." field="10">
+                                    {{--<input type="text" class="field field10 form-control" id="i_tglSK" placeholder="..." field="10">--}}
+                                    <input type="text" id="i_tglSK" class="field field10  form-control tanggal" field="10">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -159,8 +160,11 @@
 
     <script>
         var globalVar = 0;
-        $(document).ready(function () {
 
+        $(document).ready(function () {
+            $('.tanggal').datepicker({
+                "dateFormat" : "dd/mm/yy"
+            });
         });
 
         $(document).on('keypress', '.field', function (e) {
@@ -254,8 +258,8 @@
                         $('#i_npwp').val(data.cab_npwpcabang);
                         $('#i_noSK').val(data.cab_nosk);
                         $('#i_tglSK').val(data.cab_tglsk);
-                        $('#i_kodeAnakCabang').val(data.CAB_KODECABANG_ANAK);
-                        $('#i_namaAnakCabang').val(data.CAB_NAMACABANG_ANAK);
+                        $('#i_kodeAnakCabang').val(data.cab_kodecabang_anak);
+                        $('#i_namaAnakCabang').val(data.cab_namacabang_anak);
                         globalVar = 0;
                     }
                 }, error: function () {

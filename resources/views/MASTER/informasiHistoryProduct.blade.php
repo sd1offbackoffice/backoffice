@@ -28,9 +28,7 @@
                         <div class="row mr-2">
                             <label for="plu" class="col-sm-1 col-form-label text-right">PLU</label>
                             <input type="text" class="col-sm-1 form-control" id="plu" value="" disabled>
-                            <label for="barcode" class="col-sm-2 col-form-label text-right">Barcode</label>
-                            <input type="text" class="col-sm-2 form-control" id="barcode" value="" disabled>
-                            <label for="flaggdg" class="col-sm-2 col-form-label text-right">Flag Gdg</label>
+                            <label for="flaggdg" class="col-sm-6 col-form-label text-right">Flag Gdg</label>
                             <input type="text" class="col-sm-1 form-control" id="flaggdg" value="" disabled>
                             <label for="kdcabang" class="col-sm-2 col-form-label text-right">Kd Cabang</label>
                             <input type="text" class="col-sm-1 form-control" id="kdcabang" value="" disabled>
@@ -109,7 +107,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <div class="card-body p-0">
                                     <table class="table table-sm justify-content-md-center col-sm-12 p-0" id="table-barcode">
                                         <thead class="thead-dark">
@@ -128,10 +126,10 @@
                                                 JAN
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_01">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_01">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_01">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_01">
                                             </td>
                                         </tr>
                                         <tr>
@@ -139,10 +137,10 @@
                                                 FEB
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_02">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_02">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_02">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_02">
                                             </td>
                                         </tr>
                                         <tr>
@@ -150,10 +148,10 @@
                                                 MAR
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_03">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_03">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_03">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_03">
                                             </td>
                                         </tr>
                                         <tr>
@@ -161,10 +159,10 @@
                                                 APR
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_04">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_04">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_04">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_04">
                                             </td>
                                         </tr>
                                         <tr>
@@ -172,10 +170,10 @@
                                                 MEI
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_05">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_05">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_05">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_05">
                                             </td>
                                         </tr>
                                         <tr>
@@ -183,10 +181,10 @@
                                                 JUN
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_06">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_06">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_06">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_06">
                                             </td>
                                         </tr>
                                         <tr>
@@ -194,10 +192,10 @@
                                                 JUL
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_07">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_07">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_07">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_07">
                                             </td>
                                         </tr>
                                         <tr>
@@ -205,10 +203,10 @@
                                                 AGU
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_08">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_08">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_08">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_08">
                                             </td>
                                         </tr>
                                         <tr>
@@ -216,10 +214,10 @@
                                                 SEP
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_09">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_09">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_09">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_09">
                                             </td>
                                         </tr>
                                         <tr>
@@ -227,10 +225,10 @@
                                                 OKT
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_10">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_10">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_10">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_10">
                                             </td>
                                         </tr>
                                         <tr>
@@ -238,10 +236,10 @@
                                                 NOV
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_11">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_11">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_11">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_11">
                                             </td>
                                         </tr>
                                         <tr>
@@ -249,10 +247,10 @@
                                                 DES
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_qty_12">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_12">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control" disabled id="sls_rph_12">
+                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_12">
                                             </td>
                                         </tr>
 
@@ -260,7 +258,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <div class="card-body p-0">
                                     <table class="table table-sm justify-content-md-center p-0" id="table-stock">
                                         <thead class="thead-dark">
@@ -403,25 +401,25 @@
                                 <tbody>
                                 <tr class="justify-content-md-center p-0">
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagnas" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagnas" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagigr" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagigr" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagidm" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagidm" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagomi" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagomi" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagbrd" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagbrd" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagobi" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagobi" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-danger" id="flagdepo" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagdepo" value="" disabled>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -553,19 +551,19 @@
                                 <tr>
                                     <td class="text-center" colspan="2" style="padding-top: .55rem!important;" ><b> Average Sales</b></td>
                                     <td>
-                                        <input type="text" class="form-control" id="avgsls-igr" value="123" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-igr" value="" disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control" id="avgsls-omi" value="123" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-omi" value="" disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control" id="avgsls-idm" value="123" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-idm" value="" disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control" id="avgsls-mm" value="123" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-mrh" value="" disabled>
                                     </td>
                                 </tr>
                                 </tfoot>
@@ -589,54 +587,60 @@
                     <h5>Penerimaan</h5>
                 </div>
                 <div class="modal-body" style="height: 650px;">
+                        <div class="row">
+                            <label for="prod" class="col-sm-1 text-right">Produk </label>
+                            <input type="text" id="produk-penerimaan" class="form-control p-0 col-sm-6" disabled>
+                        </div>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm justify-content-md-center p-0 col-sm-12" id="table-penerimaan">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th width="30%" class="text-center small">Supplier</th>
-                                    <th width="5%" class="text-center small">Qty BPB</th>
-                                    <th width="7%" class="text-center small">Bonus 1</th>
-                                    <th width="7%" class="text-center small">Bonus 2</th>
-                                    <th width="10%" class="text-center small">Dokumen</th>
-                                    <th width="13%" class="text-center small">Tanggal</th>
-                                    <th width="5%" class="text-center small">Top</th>
-                                    <th width="10%" class="text-center small">Last Cost (pcs)</th>
-                                    <th width="10%" class="text-center small">Avg Cost (pcs)</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="justify-content-md-center p-0">
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                    <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <div class="tableFixedHeader">
+                                <table class="table table-sm justify-content-md-center p-0 col-sm-12" id="table-penerimaan">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th width="30%" class="text-center small">Supplier</th>
+                                        <th width="5%" class="text-center small">Qty BPB</th>
+                                        <th width="7%" class="text-center small">Bonus 1</th>
+                                        <th width="7%" class="text-center small">Bonus 2</th>
+                                        <th width="10%" class="text-center small">Dokumen</th>
+                                        <th width="13%" class="text-center small">Tanggal</th>
+                                        <th width="5%" class="text-center small">Top</th>
+                                        <th width="10%" class="text-center small">Last Cost (pcs)</th>
+                                        <th width="10%" class="text-center small">Avg Cost (pcs)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="justify-content-md-center p-0 baris">
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                        <td class="p-0">
+                                            <input type="text" class="form-control" disabled>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1106,11 +1110,16 @@
 
     <script>
         $(document).ready(function () {
+            $('#item').hide();
             $('#input').focus();
+
+
             var e = $.Event("keypress");
             e.keyCode = 13;
-            $('#input').val('410');//1358840
+            $('#input').val('1358840');//1358840
             $('#input').trigger(e);
+            // $('#m-pb').modal();
+
         });
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
 
@@ -1180,13 +1189,13 @@
                     $('.baris').remove();
                     $('#cabang').val(response.produk['cab_namacabang']);
                         $('#plu').val(response.produk['prd_prdcd']);
-                        $('#barcode').val(response.produk['brc_barcode']);
                         $('#produk').val(response.produk['prd_deskripsipanjang']);
                         $('#katbarang').val(response.produk['katbrg']);
                         $('#kdcabang').val(response.produk['prd_kodecabang']);
                         $('#flaggdg').val(response.produk['prd_flaggudang']);
                         $('#kattoko').val(response.produk['prd_kategoritoko']);
                         $('#upd').val(formatDate(response.produk['prd_create_dt']));
+
                         for (i=0;i<response.sj.length;i++){
                             $('#table-satuan').append('<tr class="baris">\n' +
                                 '                                    <td class="p-0">\n' +
@@ -1258,57 +1267,48 @@
                                 '                                                <input type="text" class="form-control" value="'+response.stock[i].st+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_saldoawal+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_saldoawal)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_trfin+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_trfin)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_trfout+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_trfout)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_sales+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_sales)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_retur+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_retur)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_adj+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_adj)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_intransit+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_intransit)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_selisih_so+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_selisih_so)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+response.stock[i].st_saldoakhir+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_saldoakhir)+'" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                        </tr>');
                         }
-                        /*STOK*/
-                        $('#lokasi').val(response['prodstock'].st);
-                        $('#awal').val(response['prodstock'].st_saldoawal);
-                        $('#terima').val(response['prodstock'].st_trfin);
-                        $('#keluar').val(response['prodstock'].st_trfout);
-                        $('#sales').val(response['prodstock'].st_sales);
-                        $('#retur').val(response['prodstock'].st_retur);
-                        $('#adj').val(response['prodstock'].st_adj);
-                        $('#instrst').val(response['prodstock'].st_intransit);
-                        $('#akhir').val(response['prodstock'].st_saldoakhir);
+
                         $('#avgsales').val(format_currency(response['AVGSALES']));
                         /*PKMT*/
-                        $('#dsi').val(response['pkmt'].dsi);
-                        $('#to').val(response['pkmt'].to);
-                        $('#top').val(response['pkmt'].top);
-                        $('#pkmtqty').val(response['pkmt'].pkm_qty);
-                        $('#pkmtto').val(response['pkmt'].pkm_to);
-                        $('#minorqty').val(response['pkmt'].min_qty);
-                        $('#minorto').val(response['pkmt'].min_to);
-                        $('#mindisqty').val(response['pkmt'].md_qty);
-                        $('#mindisto').val(response['pkmt'].md_to);
+                        $('#dsi').val(convertToRupiah2(response['pkmt'].dsi));
+                        $('#to').val(convertToRupiah2(response['pkmt'].to));
+                        $('#top').val(convertToRupiah2(response['pkmt'].top));
+                        $('#pkmtqty').val(convertToRupiah2(response['pkmt'].pkm_qty));
+                        $('#pkmtto').val(convertToRupiah2(response['pkmt'].pkm_to));
+                        $('#minorqty').val(convertToRupiah2(response['pkmt'].min_qty));
+                        $('#minorto').val(convertToRupiah2(response['pkmt'].min_to));
+                        $('#mindisqty').val(convertToRupiah2(response['pkmt'].md_qty));
+                        $('#mindisto').val(convertToRupiah2(response['pkmt'].md_to));
                         $('#mplus').val(format_currency(response['pkmt'].mplus));
-                        $('#minory').val(response['pkmt'].minory);
+                        $('#minory').val(convertToRupiah2(response['pkmt'].minory));
                         $('#suppterakhir').val(response['pkmt'].sup);
                         $('#hargabeli').val(format_currency(response['pkmt'].hgb_hrgbeli));
                         /*FLAG*/
@@ -1321,37 +1321,74 @@
                         /*ITEM*/
                         $('#item').text(response['ITEM']);
                         for (i=0;i<12;i++) {
+                            c=i+1;
                             $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
                                 '                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >\n' +
                                 '                                        '+month[i]+' \n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].igr['qty_igr'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].igr['rph_igr'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].omi['qty_omi'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].omi['rph_omi'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].idm['qty_omi'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].idm['rph_omi'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].mrh['qty_mrh'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].mrh['rph_mrh'+c])+'" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                </tr>');
                         }
-                            null_check();
+                        $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang']+' ['+response.produk['prd_prdcd']+']');
+
+                        $('#avgsls-igr').val(response['detailsales'].avgigr);
+                        $('#avgsls-idm').val(response['detailsales'].avgidm);
+                        $('#avgsls-omi').val(response['detailsales'].avgomi);
+                        $('#avgsls-mrh').val(response['detailsales'].avgmrh);
+
+                        for (var i = 0; i < response['supplier'].length ; i++ ){
+                            $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
+                                '<input type="text" class="form-control" value="'+response['supplier'][i].sup_namasupplier+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control text-right" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control" value="'+formatDate(response['supplier'][i].trm_tanggal)+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
+                                '</td>\n' +
+                                '<td class="p-0">\n' +
+                                '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                                '</td><tr>');
+                        }
+                        null_check();
                     }
 
                 },
@@ -1402,7 +1439,7 @@
             $("input:text").each(function(){
                 var $this = $(this);
                 if($this.val()=="null"){
-                    $this.val("0");
+                    $this.val("");
                 }
             });
         }

@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquery Produksi Per Supplier</legend>
+                    <legend  class="w-auto ml-5">Inquery Produk Per Supplier</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-10">
@@ -124,7 +124,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($supplier2 as $s)
+                                @foreach($supplier as $s)
                                     <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
                                         <td>{{ $s->sup_kodesupplier }}</td>
                                         <td>{{ $s->sup_namasupplier }}</td>
@@ -214,9 +214,9 @@
                             html = '<tr class="rowdetail d-flex">' +
                                 '<td class="col-1">' + result.data[i].mstd_prdcd + '</td>' +
                                 '<td class="col-3">' + result.data[i].prd_deskripsipendek + '</td>' +
-                                '<td class="col-1 pl-0 pr-0 text-right">' + result.data[i].st_saldoakhir + '</td>' +
-                                '<td class="col-2 text-right">' + result.data[i].st_sales + '</td>' +
-                                '<td class="col-2 text-right">' + pkm + '</td>' +
+                                '<td class="col-1 pl-0 pr-0 text-right">' + convertToRupiah2(result.data[i].st_saldoakhir) + '</td>' +
+                                '<td class="col-2 text-right">' + convertToRupiah2(result.data[i].st_sales) + '</td>' +
+                                '<td class="col-2 text-right">' + convertToRupiah2(pkm) + '</td>' +
                                 '<td class="col-2 text-right">' + convertToRupiah(hpp) + '</td>' +
                                 '<td class="col-1 text-right">' + result.data[i].prd_kodetag + '</td>' +
                                 '</tr>'

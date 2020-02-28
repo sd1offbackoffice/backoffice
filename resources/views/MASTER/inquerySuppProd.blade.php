@@ -5,22 +5,22 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquery Supplier Produksi</legend>
+                    <legend  class="w-auto ml-5">Inquery Supplier Per Produk</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
-                            <div class="col-sm-8">
+                            <div class="col-sm-10">
                                 <fieldset class="card border-secondary">
                                     <form>
                                         <div class="row text-right">
                                             <div class="col-sm-12">
                                                 <div class="form-group row mb-0">
-                                                    <label for="i_kodeplu" class="col-sm-2 col-form-label">PLU</label>
+                                                    <label for="i_kodeplu" class="col-sm-1 col-form-label">PLU</label>
                                                     <div class="col-sm-2">
                                                         <input type="text" class="form-control" id="i_kodeplu">
                                                     </div>
-                                                    {{--<button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodesupplierHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+                                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                                     <label for="i_deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
-                                                    <div class="col-sm-5">
+                                                    <div class="col-sm-6">
                                                         <input type="text" class="form-control" id="i_deskripsi" disabled>
                                                     </div>
                                                 </div>
@@ -50,12 +50,12 @@
                                             <thead>
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
-                                                <th class="col-sm-4">Nama Supplier</th>
+                                                <th class="col-sm-5">Nama Supplier</th>
                                                 <th class="col-sm-1 pl-0 pr-0">Kuantum</th>
-                                                <th class="col-sm-1">BTB</th>
-                                                <th class="col-sm-2">Tanggal</th>
-                                                <th class="col-sm-2">Term</th>
-                                                <th class="col-sm-1">H.P.P</th>
+                                                <th class="col-sm-1 text-right">BTB</th>
+                                                <th class="col-sm-2 text-right">Tanggal</th>
+                                                <th class="col-sm-1 text-right">Term</th>
+                                                <th class="col-sm-1 text-right">H.P.P</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -87,6 +87,47 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                {{--<div class="modal-header">--}}
+                {{--<div class="form-row col-sm">--}}
+                {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                {{--<div class="invalid-feedback">--}}
+                {{--Inputkan minimal 3 karakter</div>--}}
+                {{--</div>--}}
+                {{--</div>--}}
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <table class="table table-sm" id="table_lov">
+                                <thead>
+                                <tr>
+                                    <td>Kode PLU</td>
+                                    <td>Deskripsi</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($plu as $p)
+                                    <tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">
+                                        <td>{{ $p->prd_prdcd }}</td>
+                                        <td>{{ $p->prd_deskripsipanjang }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {{--<div class="modal-footer">--}}
+                {{--</div>--}}
+            </div>
+
         </div>
     </div>
 
@@ -143,46 +184,50 @@
         // })
 
         $(document).on('keypress', '#i_kodeplu', function (e) {
-            if(e.which == 13) {
+            if (e.which == 13) {
                 e.preventDefault();
                 let kodeplu = $('#i_kodeplu').val();
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/inqsupprod/suppProd',
-                    type: 'get',
-                    data: {kodeplu:kodeplu},
-                    beforeSend: function(){
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (result) {
-                        $('#modal-loader').modal('hide');
-                        console.log(result)
-                        $('#table_detail .row_detail').remove();
-                        if(result) {
-                            var html = "";
-                            var i;
-                            for (i = 0; i < result.data.length; i++) {
-                                    html =
-                                '<tr class="row_detail d-flex">' +
-                                    '<td class="col-1">' + result.data[i].kodesup + '</td>' +
-                                    '<td class="col-4">' + result.data[i].namasup + '</td>' +
-                                    '<td class="col-1 pl-0 pr-0">' + result.data[i].qty + '</td>' +
-                                    '<td class="col-1">' + result.data[i].nobpb + '</td>' +
-                                    '<td class="col-2">' + formatDate(result.data[i].tglbpb) + '</td>' +
-                                    '<td class="col-2">' + result.data[i].term + '</td>' +
-                                    '<td class="col-1">' + convertToRupiah(result.data[i].hpp) + '</td>' +
-                                    '</tr>'
-                                //$('#i_deskripsi').val();
-                                // $('#i_totalitem').val(result.count);
-                                $('#table_detail').append(html);
-                            }
-                        }
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
+                helpSelect(kodeplu);
             }
         });
+
+        function helpSelect(kodeplu) {
+            $('#modal_plu').modal('hide');
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/inqsupprod/suppProd',
+                type: 'post',
+                data: {kodeplu: kodeplu},
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (result) {
+                    $('#modal-loader').modal('hide');
+                    //console.log(result);
+                    $('#table_detail .row_detail').remove();
+                    if (result) {
+                        console.log(result.data[0]);
+                        var html = "";
+                        var i;
+                        for (i = 0; i < result.data.length; i++) {
+                            html = '<tr class="row_detail d-flex">' +
+                                '<td class="col-1">' + result.data[i].kodesup + '</td>' +
+                                '<td class="col-4">' + result.data[i].namasup + '</td>' +
+                                '<td class="col-1 pl-0 pr-0 text-right">' + convertToRupiah2(result.data[i].qty) + '</td>' +
+                                '<td class="col-1 text-right">' + result.data[i].nobpb + '</td>' +
+                                '<td class="col-2 text-right">' + formatDate(result.data[i].tglbpb) + '</td>' +
+                                '<td class="col-1 text-right">' + result.data[i].term + '</td>' +
+                                '<td class="col-2 text-right">' + convertToRupiah(result.data[i].hpp) + '</td>' +
+                                '</tr>'
+                            $('#i_deskripsi').val(result.data[i].prd_deskripsipanjang);
+                            $('#table_detail').append(html);
+                        }
+                    }
+                }, error: function () {  
+                    alert('error');
+                }
+            })
+        }
 
         // function null_check(value){
         //     if(value == null)

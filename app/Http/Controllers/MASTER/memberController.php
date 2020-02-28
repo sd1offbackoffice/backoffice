@@ -329,12 +329,15 @@ class memberController extends Controller
 
     public function check_password(Request $request){
         $data = DB::table('tbmaster_user')
+            ->select('userlevel')
             ->where('userid','=',$request->username)
             ->where('userpassword','=',$request->password)
             ->first();
 
         if($data != null){
-            return 'ok';
+            if($data->userlevel == '1')
+                return 'ok';
+            else return 'userlevel';
         }
         else{
             return 'error';

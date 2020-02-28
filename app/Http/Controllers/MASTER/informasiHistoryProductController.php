@@ -790,67 +790,206 @@ class informasiHistoryProductController extends Controller
         $ds02=(array)$ds02;
         $ds03=(array)$ds03;
         $ds04=(array)$ds04;
-
         $avgigr = 0;
         $avgomi = 0;
         $avgmrh = 0;
         $avgidm = 0;
-        $N = 0;
-        $X = 0;
-        $X1 = 0;
-        if ($FMPBLNA - 1 < 1) {
-            $N = 12;
-            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            $avgidm = $avgidm + (int)$ds04['qty_omi12'];
-        } else {
-            $N = $FMPBLNA - 1;
-            $avgigr = $avgigr + (int)$ds01['qty_igr' . $N];
-            $avgomi = $avgomi + (int)$ds02['qty_omi' . $N];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $N];
-            $avgomi = $avgomi + (int)$ds04['qty_omi' . $N];
+        if (sizeof($ds01)>0){
+
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $X = $N - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $X1 = $X - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X1];
+            }
+        }
+        if (sizeof($ds02)>0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $X = $N - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $X1 = $X - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X1];
+            }
+        }
+        if (sizeof($ds03)>0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $X = $N - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $X1 = $X - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X1];
+            }
+        }
+        if (sizeof($ds04)>0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $X = $N - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $X1 = $X - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X1];
+            }
+        }
+            $avgigr = round(self::ceknull(round($avgigr), 0) / 3);
+            $avgomi = round(self::ceknull(round($avgomi), 0) / 3);
+            $avgmrh = round(self::ceknull(round($avgmrh), 0) / 3);
+            $avgidm = round(self::ceknull(round($avgidm), 0) / 3);
+            $detailsales = [];
+            $detailsales['igr'] = $ds01;
+            $detailsales['omi'] = $ds02;
+            $detailsales['mrh'] = $ds03;
+            $detailsales['idm'] = $ds04;
+            $detailsales['avgigr'] = $avgigr;
+            $detailsales['avgomi'] = $avgomi;
+            $detailsales['avgmrh'] = $avgmrh;
+            $detailsales['avgidm'] = $avgidm;
+
+        /*PENERIMAAN*/
+        $supplier = DB::table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER','MSTD_KODESUPPLIER','=','SUP_KODESUPPLIER')
+            ->select('*')
+            ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('mstd_kodeigr', '=', '22')
+            ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
+            ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
+            ->orderBy('mstd_prdcd')
+            ->orderBy('mstd_tgldoc')
+            ->get();
+
+        for($i=0;$i<sizeof($supplier);$i++){
+            $supplier[$i]->trm_qtybns =  $this->ceknull($supplier[$i]->mstd_qty,0);
+            $supplier[$i]->trm_bonus = $this->ceknull($supplier[$i]->mstd_qtybonus1,0);
+            $supplier[$i]->trm_bonus2 = $this->ceknull($supplier[$i]->mstd_qtybonus2,0);
+            $supplier[$i]->trm_dokumen = $supplier[$i]->mstd_nodoc;
+            $supplier[$i]->trm_tanggal = $supplier[$i]->mstd_tgldoc;
+            $supplier[$i]->trm_supp = $supplier[$i]->sup_namasupplier;
+
+            if( $supplier[$i]->mstd_typetrn == 'I'){
+                $supplier[$i]->trm_top = 'Surat Jln';
+            }
+            elseif ($supplier[$i]->mstd_typetrn == 'L'){
+                $supplier[$i]->trm_top = 'Lain2/Bns';
+            }
+            elseif ($supplier[$i]->mstd_typetrn == 'B'){
+                $supplier[$i]->trm_top = 'BPB';
+            }
+
+            $supplier[$i]->trm_acost = $supplier[$i]->mstd_avgcost / $supplier[$i]->mstd_frac;
+
+            if( $supplier[$i]->mstd_typetrn == 'L'){
+                $supplier[$i]->trm_hpp = 0;
+            }
+            else{
+                $supplier[$i]->trm_hpp = ($supplier[$i]->mstd_gross - ($supplier[$i]->mstd_discrph + $supplier[$i]->mstd_ppnbmrph + $supplier[$i]->mstd_ppnbtlrph)) /($supplier[$i]->mstd_qty / $supplier[$i]->mstd_frac) / $supplier[$i]->mstd_frac;
+            }
         }
 
-        if ($N - 1 < 1) {
-            $X = 12;
-            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            $avgidm = $avgidm + (int)$ds04['qty_omi12'];
-        }
-        else{
-            $X = $N - 1;
-            $avgigr = $avgigr + (int)$ds01['qty_igr' . $X];
-            $avgomi = $avgomi + (int)$ds02['qty_omi' . $X];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X];
-            $avgidm = $avgidm + (int)$ds04['qty_omi' . $X];
-        }
+        $ntotalpo = 0;
+        $ntotalpb = 0;
+        $temppo = 'A,';
+        $temppb = 'A,';
 
-        if( $X - 1 < 1){
-            $X1 = 12;
-            $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            $avgidm = $avgidm+ (int)$ds04['qty_omi12'];
-        }
-        else{
-            $X1 = $X - 1;
-            $avgigr = $avgigr + (int)$ds01['qty_igr' . $X1];
-            $avgomi = $avgomi + (int)$ds02['qty_omi' . $X1];
-            $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X1];
-            $avgidm = $avgidm + (int)$ds04['qty_omi' . $X1];
-        }
-        $detailsales =[];
-        $detailsales['igr'] = $ds01;
-        $detailsales['omi'] = $ds02;
-        $detailsales['mrh'] = $ds03;
-        $detailsales['idm'] = $ds04;
-        $detailsales['avgigr'] = $avgigr;
-        $detailsales['avgomi'] = $avgomi;
-        $detailsales['avgmrh'] = $avgmrh;
-        $detailsales['avgidm'] = $avgidm;
-        return compact(['produk','sj','trendsales','prodstock','AVGSALES','stock','pkmt','ITEM','flag','detailsales','message']);
+        $pb = DB::table('tbtr_po_d')
+            ->join('tbtr_po_h','tpoh_nopo','=','tpod_nopo')
+            ->select('*')
+            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->whereRaw('SUBSTR (pbd_prdcd, 1, 6)=SUBSTR (tpod_prdcd, 1, 6)')
+            ->get();
+
+//        SELECT DISTINCT NVL (tpod_recordid, '9') recid, tpod_prdcd, tpod_nopo, tpoh_tglpo,
+//                       NVL (tpod_qtypb, 0) tpod_qtypb, tpoh_tglpo + tpoh_jwpb jwpb,
+//                       pbh_keteranganpb, pbh_nopb, pbh_tglpb, NVL (pbh_qtypb, 0) pbh_qtypb,
+//                       pbd_nopo, pbd_prdcd, pbd_qtypb
+//
+//                  FROM tbtr_po_d, tbtr_po_h, tbtr_pb_d, tbtr_pb_h
+//
+//                 WHERE tpod_kodeigr = :parameter.kodeigr
+//    AND SUBSTR (tpod_prdcd, 1, 6) = SUBSTR (:prdcd, 1, 6)
+//                   AND tpoh_nopo = tpod_nopo
+//    AND tpoh_kodeigr = tpod_kodeigr
+//    AND SUBSTR (pbd_prdcd, 1, 6) = SUBSTR (tpod_prdcd, 1, 6)
+//    AND pbd_nopo = tpod_nopo
+//    AND pbd_kodeigr = tpod_kodeigr
+//    AND pbh_kodeigr = pbd_kodeigr
+//    AND pbh_nopb = pbd_nopb
+//                 ORDER BY PBH_TGLPB, PBH_NOPB
+        return compact(['produk','sj','trendsales','prodstock','AVGSALES','stock','pkmt','ITEM','flag','detailsales','supplier','message']);
     }
 
     public function ceknull($value,$ret){

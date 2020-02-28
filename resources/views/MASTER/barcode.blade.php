@@ -9,7 +9,7 @@
                     <legend  class="w-auto ml-5">Master Barcode</legend>
                     <div class="card-body shadow-lg cardForm">
                         {{--<div class="my-custom-scrollbar table-wrapper-scroll-y ">--}}
-                            <div class="tableFixedHeader">
+                        <div class="tableFixedHeader">
                             <table class="table table-sm" id="table-barcode">
                                 <thead class="thead-dark">
                                     <tr class="">
@@ -34,7 +34,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            </div>
+                        </div>
                         {{--</div>--}}
                         <br>
                         <div class="form-group row">

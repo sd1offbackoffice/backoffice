@@ -208,7 +208,7 @@ class kubikasiPlanoController extends Controller
                     ->where('kbp_koderak', $request->value['koderak'][$i])
                     ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
                     ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])
-                    ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => date('y/m/d'), 'KBP_MODIFY_BY' => 'WEB']);
+                    ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => DB::RAW('sysdate'), 'KBP_MODIFY_BY' => 'WEB']);
             }
         }
         $message = 'Data Berhasil Terupdate!';
