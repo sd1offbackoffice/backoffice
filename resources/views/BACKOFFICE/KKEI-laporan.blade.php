@@ -114,7 +114,6 @@
     </thead>
     <tbody>
     @php $i = 0; @endphp
-    @php for($j=0;$j<25;$j++){ @endphp
     @foreach($data as $k)
         @php $i++; @endphp
         <tr style="text-align: right">
@@ -159,17 +158,16 @@
             <td>{{ substr($k->kke_tglkirim05,0,10) }}</td>
         </tr>
     @endforeach
-    @php } @endphp
     </tbody>
     <tfoot>
     <tr style="text-align: right">
         <td colspan="23"></td>
         <td>Total</td>
-        <td>{{ $k->kke_breakpb01 }}</td>
-        <td>{{ $k->kke_breakpb02 }}</td>
-        <td>{{ $k->kke_breakpb03 }}</td>
-        <td>{{ $k->kke_breakpb04 }}</td>
-        <td>{{ $k->kke_breakpb05 }}</td>
+        <td>X</td>
+        <td>X</td>
+        <td>X</td>
+        <td>X</td>
+        <td>X</td>
         <td colspan="10"></td>
     </tr>
     </tfoot>

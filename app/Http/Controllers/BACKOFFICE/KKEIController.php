@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use PDF;
 
 class KKEIController extends Controller
 {
@@ -352,27 +353,33 @@ class KKEIController extends Controller
     }
 
     public function laporan1(){
-        $result = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-        if (count($result) == 0)
-            return 'not-found';
+        $data = DB::table('temp_kkei')
+            ->where('kke_periode','17102015')
+            ->get();
 
         $data = [
-            'data' => $result
+            'data' => $data,
+            'perusahaan' => $perusahaan
         ];
+
+//        return view('BACKOFFICE.KKEI-laporan')->with($data);
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('laporan-sortir-barang', $data);
+        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
 
         $dompdf = $pdf;
 
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('a4', 'landscape');
 
         // Render the HTML as PDF
 
-        return $dompdf->download('laporan-sortir.pdf');
+        return $dompdf->download('laporan-kkei.pdf');
     }
 }

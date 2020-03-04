@@ -89,7 +89,7 @@ Route::get('/bokkei/index','BACKOFFICE\KKEIController@index');
 Route::post('/bokkei/get_detail_produk','BACKOFFICE\KKEIController@get_detail_produk');
 Route::post('/bokkei/get_detail_kkei','BACKOFFICE\KKEIController@get_detail_kkei');
 Route::post('/bokkei/save','BACKOFFICE\KKEIController@save');
-Route::get('/bokkei/laporan','BACKOFFICE\KKEIController@laporan');
+Route::get('/bokkei/laporan','BACKOFFICE\KKEIController@laporan1');
 
 
 /******** Michelle ********/
