@@ -88,18 +88,23 @@ Route::get('/bokirimkkei/index','BACKOFFICE\KirimKKEIController@index');
 Route::get('/bokkei/index','BACKOFFICE\KKEIController@index');
 Route::post('/bokkei/get_detail_produk','BACKOFFICE\KKEIController@get_detail_produk');
 Route::post('/bokkei/get_detail_kkei','BACKOFFICE\KKEIController@get_detail_kkei');
+Route::post('/bokkei/save','BACKOFFICE\KKEIController@save');
+Route::get('/bokkei/laporan','BACKOFFICE\KKEIController@laporan');
 
 
 /******** Michelle ********/
 // Inquiry Supplier Produk
 Route::get('/inqsupprod/index','MASTER\inquerySuppProdController@index');
 Route::post('/inqsupprod/suppProd','MASTER\inquerySuppProdController@suppProd');
-Route::get('inqsupprod/helpSelect','MASTER\inqueryProdSuppController@helpSelect');
+Route::get('inqsupprod/helpSelect','MASTER\inquerySuppProdController@helpSelect');
 
 // Inquiry Produk Supplier
 Route::get('/inqprodsupp/index','MASTER\inqueryProdSuppController@index');
 Route::post('/inqprodsupp/prodSupp','MASTER\inqueryProdSuppController@prodSupp');
 Route::get('inqprodsupp/helpSelect','MASTER\inqueryProdSuppController@helpSelect');
+
+// Master Barang
+Route::get('mstbarang/index','MASTER\barangController@index');
 
 
 

@@ -6,11 +6,11 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquery Produk Per Supplier</legend>
+                    <legend  class="w-auto ml-5">Inquiry Produk Per Supplier</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-10">
-                                <fieldset class="card border-secondary">
+                                {{--<fieldset class="card border-secondary">--}}
                                     <form>
                                         <div class="row text-right">
                                             <div class="col-sm-12">
@@ -31,10 +31,11 @@
                                     <tbody>
                                     </tbody>
                                     </table>
-                                </fieldset>
+                                {{--</fieldset>--}}
                             </div>
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
+                                    <legend  class="w-auto ml-4">Detail</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="tabledetail" class="table table-sm">
                                             <thead>
@@ -188,7 +189,7 @@
                 let kodesupp = $('#i_kodesupplier').val()
                 helpSelect(kodesupp);
                 }
-            });
+            })
 
         function helpSelect(kodesupp) {
             $('#modal_supp').modal('hide')
@@ -220,6 +221,7 @@
                                 '<td class="col-2 text-right">' + convertToRupiah(hpp) + '</td>' +
                                 '<td class="col-1 text-right">' + result.data[i].prd_kodetag + '</td>' +
                                 '</tr>'
+                            $('#i_kodesupplier').val(result.data[i].mstd_kodesupplier);
                             $('#i_namasupplier').val(result.data[i].sup_namasupplier);
                             $('#i_totalitem').val(result.count);
                             $('#tabledetail').append(html);

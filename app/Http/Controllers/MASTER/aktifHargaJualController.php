@@ -50,9 +50,9 @@ class aktifHargaJualController extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $date   = date('Y-m-d H:i:s');
         $model  = new AllModel();
-        $kodeigr = $model->getKodeigr();
-        $kodeigr = $kodeigr[0]->prs_kodeigr;
-        $jenistimbangan = $kodeigr[0]->PRS_JENISTIMBANGAN;
+        $getData= $model->getKodeigr();
+        $kodeigr = $getData[0]->prs_kodeigr;
+        $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $errm  = '';
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 

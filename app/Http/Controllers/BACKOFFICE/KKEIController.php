@@ -12,6 +12,9 @@ class KKEIController extends Controller
     //
 
     public function index(){
+//        $kkei = DB::table('temp_kkei')->first();
+//
+//        dd($kkei);
 
         return view('BACKOFFICE.KKEI');
     }
@@ -262,5 +265,114 @@ class KKEIController extends Controller
         return compact(['status','message','data']);
     }
 
+    public function save(Request $request){
+        $kodeigr = '22';
+        $kkeis = array();
+        $prdcd = array();
 
+        if(!empty($request->deleted)){
+            DB::table('temp_kkei')
+                ->whereIn('kke_prdcd',$request->deleted)
+                ->delete();
+            $status = 'success';
+            $message = 'Berhasil menghapus data!';
+        }
+
+        if(!empty($request->kkei)){
+            for($i=0;$i<count($request->kkei);$i++){
+                $kkei = $request->kkei[$i];
+                $kkei['kke_kodeigr'] = $kodeigr;
+
+                if($kkei['kke_tglkirim01'] != '' || $kkei['kke_tglkirim01'] != null)
+                    $kkei['kke_tglkirim01'] = DB::RAW("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
+                else $kkei['kke_tglkirim01'] = '';
+                if($kkei['kke_tglkirim02'] != '' || $kkei['kke_tglkirim02'] != null)
+                    $kkei['kke_tglkirim02'] = DB::RAW("to_date('".$kkei['kke_tglkirim02']."','dd/mm/yyyy')");
+                else $kkei['kke_tglkirim02'] = '';
+                if($kkei['kke_tglkirim03'] != '' || $kkei['kke_tglkirim03'] != null)
+                    $kkei['kke_tglkirim03'] = DB::RAW("to_date('".$kkei['kke_tglkirim03']."','dd/mm/yyyy')");
+                else $kkei['kke_tglkirim03'] = '';
+                if($kkei['kke_tglkirim04'] != '' || $kkei['kke_tglkirim04'] != null)
+                    $kkei['kke_tglkirim04'] = DB::RAW("to_date('".$kkei['kke_tglkirim04']."','dd/mm/yyyy')");
+                else $kkei['kke_tglkirim04'] = '';
+                if($kkei['kke_tglkirim05'] != '' || $kkei['kke_tglkirim05'] != null)
+                    $kkei['kke_tglkirim05'] = DB::RAW("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
+                else $kkei['kke_tglkirim05'] = '';
+//            $kkei['kke_tglkirim02'] = DB::RAW("to_date(".$kkei['kke_tglkirim02'].",'dd/mm/yyyy')");
+//            $kkei['kke_tglkirim03'] = DB::RAW("to_date(".$kkei['kke_tglkirim03'].",'dd/mm/yyyy')");
+//            $kkei['kke_tglkirim04'] = DB::RAW("to_date(".$kkei['kke_tglkirim04'].",'dd/mm/yyyy')");
+//            $kkei['kke_tglkirim05'] = DB::RAW("to_date(".$kkei['kke_tglkirim05'].",'dd/mm/yyyy')");
+
+                array_push($prdcd, $kkei['kke_prdcd']);
+                array_push($kkeis, $kkei);
+            }
+
+            $delete = DB::table('temp_kkei')
+                ->whereIn('kke_prdcd',$prdcd)
+                ->delete();
+            $insert = DB::table('temp_kkei')
+                ->insert($kkeis);
+
+            if($insert){
+                $status = 'success';
+                $message = 'Berhasil menyimpan data!';
+            }
+            else{
+                $status = 'failed';
+                $message = 'Gagal menyimpan data!';
+            }
+        }
+
+
+        return compact(['status','message']);
+    }
+
+    public function laporan(){
+
+
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::table('temp_kkei')
+            ->where('kke_periode','03032020')
+            ->get();
+
+        $kkei[0] = $perusahaan->prs_namaperusahaan;
+//        $kkei[0]['prs_namacabang = $perusahaan->prs_namacabang;
+//        $kkei[0]['prs_namaregional'] = $perusahaan->prs_namaregional;
+//        return view('laporan-kke')->with(compact(['perusahaan','data']));
+
+        $data = [
+            'data' => $data,
+            'perusahaan' => $perusahaan
+        ];
+
+        return view('BACKOFFICE.KKEI-laporan')->with($data);
+    }
+
+    public function laporan1(){
+        $result = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        if (count($result) == 0)
+            return 'not-found';
+
+        $data = [
+            'data' => $result
+        ];
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('laporan-sortir-barang', $data);
+
+        $dompdf = $pdf;
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+
+        return $dompdf->download('laporan-sortir.pdf');
+    }
 }

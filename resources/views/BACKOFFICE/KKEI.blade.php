@@ -15,7 +15,7 @@
                                 <input maxlength="10" type="text" class="form-control tanggal" id="periode">
                             </div>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="keterangan" readonly value="DATA KKEI">
+                                <input type="text" class="form-control" id="keterangan" disabled value="DATA KKEI">
                             </div>
                         </div>
                         <div class="row">
@@ -43,52 +43,52 @@
                                                     <button onclick="deleteRow({{ $i }})" class="col-sm btn btn-danger btn-delete">X</button>
                                                 </td>
                                                 <td class="col-sm-4">
-                                                    <input type="number" class="form-control i-plu" onkeypress="get_detail_produk(event,'{{ $i }}')">
+                                                    <input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'{{ $i }}')">
                                                 </td>
                                                 <td class="col-sm-3">
-                                                    <input disabled type="text" class="form-control unit">
+                                                    <input disabled type="text" class="form-control kke_unit">
                                                 </td>
                                                 <td class="col-sm-3">
-                                                    <input disabled type="text" class="form-control frac">
+                                                    <input disabled type="text" class="form-control kke_frac">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control deskripsi">
+                                                    <input type="text" class="form-control kke_deskripsi">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control panjangproduk">
+                                                    <input type="text" class="form-control kke_panjangprod">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control lebarproduk">
+                                                    <input type="text" class="form-control kke_lebarprod">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control tinggiproduk">
+                                                    <input type="text" class="form-control kke_tinggiprod">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control panjangkemasan">
+                                                    <input type="text" class="form-control kke_panjangkmsn">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control lebarkemasan">
+                                                    <input type="text" class="form-control kke_lebarkmsn">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control tinggikemasan">
+                                                    <input type="text" class="form-control kke_tinggikmsn">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control beratprod">
+                                                    <input type="text" class="form-control kke_beratproduk">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control beratkmsn">
+                                                    <input type="text" class="form-control kke_beratkmsn">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control kubikasiprod">
+                                                    <input type="text" class="form-control kke_kubikasiprod">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control kubikasikemasan">
+                                                    <input type="text" class="form-control kke_kubikasikmsn">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control kodesupplier">
+                                                    <input type="text" class="form-control kke_kdsup">
                                                 </td>
                                                 <td hidden>
-                                                    <input type="text" class="form-control namasupplier">
+                                                    <input type="text" class="form-control kke_nmsup">
                                                 </td>
                                             </tr>
                                             @php } @endphp
@@ -150,30 +150,30 @@
                                             <tbody>
                                             @php for($i=0;$i<10;$i++){ @endphp
                                             <tr id="row_form_{{ $i }}" class="d-flex baris number">
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control hargabeli"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control discount"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control sales1"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control sales2"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control sales3"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control avgbulan"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control avghari"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control saldoawal"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek estimasi"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu1"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu2"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu3"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu4"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek minggu5"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control leadtime"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control safetystock"></td>
-                                                <td class="col-sm-2"><input disabled type="text" class="form-control saldoakhir"></td>
-                                                <td class="col-sm-1"><input disabled type="text" class="form-control total"></td>
-                                                <td class="col-sm-1"><input disabled type="text" class="form-control qty"></td>
-                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim1"></td>
-                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim2"></td>
-                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim3"></td>
-                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim4"></td>
-                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal tglkirim5"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_hargabeli"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_discount"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales01"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales02"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales03"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_avgbln"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_avghari"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoawal"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_estimasi"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb01"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb02"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb03"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb04"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb05"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control kke_bufferlt"></td>
+                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control kke_bufferss"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoakhir"></td>
+                                                <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpototal"></td>
+                                                <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpoqty"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim01"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim02"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim03"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim04"></td>
+                                                <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim05"></td>
                                             </tr>
                                             @php } @endphp
                                             </tbody>
@@ -181,12 +181,12 @@
                                                 <tr class="d-flex text-center">
                                                     <td class="col-sm-12"></td>
                                                     <th class="col-sm-4 text-right"><h4 class="">Total Kubikasi</h4></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
-                                                    <th class="col-sm-2"><input disabled type="text" class="form-control"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_estimasi"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb01"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb02"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb03"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb04"></th>
+                                                    <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb05"></th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -206,8 +206,8 @@
                                 <input disabled type="text" class="form-control" id="txt_deskripsi">
                             </div>
                             <div class="col-sm-5 mb-1 text-right">
-                                <button id="btn-save" class="col-sm-3 btn btn-success">SAVE</button>
-                                <button id="btn-print" class="col-sm-3 btn btn-primary">PRINT</button>
+                                <button id="btn-save" class="col-sm-3 btn btn-success" onclick="save()">SAVE</button>
+                                <a target="_blank" href="http://192.168.71.234:8080/BackOffice/public/bokkei/laporan"><button id="btn-print" class="col-sm-3 btn btn-primary">PRINT</button></a>
                             </div>
                         </div>
                         <div class="row">
@@ -312,12 +312,15 @@
             $(".scroll-y").not(this).scrollTop($(this).scrollTop());
         });
 
-        $('#row_detail_0').find('.i-plu').select();
+        $('#row_detail_0').find('.kke_prdcd').select();
 
         currentPos = 0;
         currentIndex = 0;
         special = false;
         rowCount = 10;
+        deleted = [];
+
+        edit = true;
 
         saldowal = 0;
 
@@ -325,24 +328,61 @@
             ready();
 
             $('#periode').prop('disabled',false);
+            // $('#periode').on('keypress',function(event){
+            //     if(event.which == 13 && !onchange){
+            //         console.log('x');
+            //         get_detail_kkei($(this).val());
+            //     }
+            // });
+
+            $('#periode').on('change',function(){
+                if(checkDate($(this).val())){
+                    get_detail_kkei($(this).val());
+                }
+            });
         });
 
         function ready(){
+            $('#total_kke_estimasi').val(0);
+            $('#total_kke_breakpb01').val(0);
+            $('#total_kke_breakpb02').val(0);
+            $('#total_kke_breakpb03').val(0);
+            $('#total_kke_breakpb04').val(0);
+            $('#total_kke_breakpb05').val(0);
+            $('#txt_deskripsi').val('');
+
+            $('.tanggal').off('blur change');
+            $('input').off('click');
+            $('input').off('keypress');
+            $('.kke_tglkirim05').off('change');
+            $('#periode').off('change');
+            $('.cek').off('change blur');
+
+            $('#i-search').on('keypress',function(event){
+                if(event.which == 13){
+                    search($(this).val());
+                }
+            });
+
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy"
             });
 
             $('.tanggal').each(function(){
-                $(this).prop('disabled',true);
+                if($(this).attr('class').split(' ').pop() == 'hasDatepicker'){
+                    thisClass = $(this).attr('class').split(' ');
+                    thisClass = thisClass[thisClass.length - 2];
+                    $(this).removeClass(thisClass).addClass(thisClass);
+                }
             });
+
 
             $('.tanggal').on('blur change',function(){
                 if($(this).val() != '' && !checkDate($(this).val())){
                     if($(this).attr('id') == 'periode')
                         id = $(this).attr('id');
                     else id = $(this).parent().parent().attr('id');
-                    thisClass = $(this).attr('class').split(' ');
-                    idx = thisClass.length - 2;
+                    thisClass = $(this).attr('class').split(' ').pop();
 
                     swal({
                         title: 'Periksa kembali inputan tanggal!',
@@ -353,70 +393,71 @@
                             $('#periode').select();
                         }
                         else{
-                            $('#'+id).find('.'+thisClass[idx]).val('');
-                            $('#'+id).find('.'+thisClass[idx]).select();
+                            $('#'+id).find('.'+thisClass).val('');
+                            $('#'+id).find('.'+thisClass).select();
                         }
                     });
                 }
             });
 
-            $('input').on('click',function(){
+
+
+
+            $('input').on('focus',function(){
                 $(this).select();
             });
 
+
             $('input').on('keypress',function(event){
-                if(event.which == 13 && $(this).attr('class').substr(-5) != 'i-plu' && $(this).attr('id') != 'i-search' && $(this).attr('class').substr(-9) != 'tglkirim5'){
-                    if($(this).attr('class').substr(-11) == 'safetystock'){
-                        $(this).parent().parent().find('.tglkirim1').select();
+                if(event.which == 13 && $(this).attr('class').split(' ').pop() != 'kke_prdcd' && $(this).attr('id') != 'i-search' && $(this).attr('class').split(' ').pop() != 'kke_tglkirim05'){
+                    if($(this).attr('class').split(' ').pop() == 'kke_bufferss'){
+                        $(this).parent().parent().find('.kke_tglkirim01').select();
                     }
                     else{
                         $(this).parent().next().find('input').select();
                     }
                 }
+                else if($(this).attr('class').split(' ').pop() == 'kke_tglkirim05'){
+                    row = parseInt($(this).parent().parent().attr('id').split('_').pop())+1;
+                    $('#row_detail_'+row).find('.kke_prdcd').select();
+                }
             });
 
-            $('input').focus(function (event) {
-                if($(this).attr('id') != 'periode' && $(this).attr('id') != 'keterangan' && $(this).attr('id') != 'txt_deskripsi' && $(this).attr('id') != 'i-search'){
-                    currentRow = $(this).parent().parent().attr('id').split('_');
-                    currentRow = currentRow[currentRow.length - 1];
 
-                    $('#txt_deskripsi').val($('#row_detail_'+currentRow).find('.deskripsi').val());
-                    saldoawal = parseInt($('#row_form_'+currentRow).find('.saldoawal').val());
+            $('input').on('focus',function (event) {
+                if($(this).attr('id') != 'periode' && $(this).attr('id') != 'keterangan' && $(this).attr('id') != 'txt_deskripsi' && $(this).attr('id') != 'i-search'){
+                    currentRow = $(this).parent().parent().attr('id').split('_').pop();
+
+                    $('#txt_deskripsi').val($('#row_detail_'+currentRow).find('.kke_deskripsi').val());
+                    saldoawal = parseInt($('#row_form_'+currentRow).find('.kke_saldoawal').val());
 
                     idx = $(this).parent().index();
                     currentPos  = $('#row_form_0:nth-child(1)').find('td').innerWidth() * (idx - 1);
-                    $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 300);
+                    $('.table-wrapper-scroll-y').animate({ scrollLeft: currentPos }, 100);
                 }
-
             });
 
-            $('.tglkirim5').on('change',function(){
-                rowNext = parseInt($(this).parent().parent().attr('id').substr(-1)) + 1;
+
+            $('.kke_tglkirim05').on('change',function(){
+                rowNext = parseInt($(this).parent().parent().attr('id').split('_').pop()) + 1;
 
                 if($('#row_detail_'+rowNext).attr('id') != 'row_detail_'+rowNext){
                     addRow();
                 }
 
-                $('#row_detail_'+rowNext).find('.i-plu').select();
-            });
-
-            $('#periode').on('change',function(){
-                if(checkDate($(this).val())){
-                    get_detail_kkei($(this).val());
-                }
+                $('#row_detail_'+rowNext).find('.kke_prdcd').select();
             });
 
             $('.cek').on('change blur',function(){
-                thisClass = $(this).attr('class').split(' ');
+                thisClass = $(this).attr('class').split(' ').pop();
                 id = $(this).parent().parent().attr('id');
-                idx = thisClass.length - 1;
 
-                if(thisClass[idx] != 'estimasi' && $(this).val() < 0){
+                if(thisClass != 'kke_estimasi' && $(this).val() < 0){
                     swal({
                         title: 'Nilai yang diinputkan tidak boleh kurang dari 0!',
                         icon: 'error',
                     }).then(function () {
-                        $('#'+id).find('.'+thisClass[idx]).select();
+                        $('#'+id).find('.'+thisClass).select();
                     });
                 }
                 else{
@@ -424,28 +465,29 @@
                     pb = 0;
 
                     $('#'+id).find('.cek').each(function(){
-                        if($(this).attr('class').substr(-8) == 'estimasi')
+                        if($(this).attr('class').split(' ').pop() == 'kke_estimasi') {
                             estimasi = parseInt($(this).val());
+                        }
                         else{
                             pb += parseInt($(this).val());
                         }
                     });
 
-                    if(estimasi <= 0 || $('#'+id).find('.estimasi').val().length == 0){
+                    if(estimasi <= 0 || $('#'+id).find('.kke_estimasi').val().length == 0){
                         swal({
                             title: 'Nilai estimasi harus lebih dari 0!',
                             icon: 'error',
                         }).then(function () {
-                            $('#'+id).find('.'+thisClass[idx]).select();
+                            $('#'+id).find('.'+thisClass).select();
                         });
                     }
                     else if(pb > estimasi){
-                        if($(this).attr('class').substr(-8) == 'estimasi'){
+                        if($(this).attr('class').split(' ').pop() == 'kke_estimasi'){
                             swal({
                                 title: 'Nilai estimasi tidak boleh lebih kecil dari total Breakdown PB!',
                                 icon: 'error',
                             }).then(function () {
-                                $('#'+id).find('.'+thisClass[idx]).select();
+                                $('#'+id).find('.'+thisClass).select();
                             });
                         }
                         else {
@@ -453,147 +495,172 @@
                                 title: 'Total Breakdown PB tidak boleh melebihi nilai estimasi!',
                                 icon: 'error'
                             }).then(function () {
-                                $('#'+id).find('.'+thisClass[idx]).select();
+                                $('#'+id).find('.'+thisClass).select();
                             });
                         }
                     }
                     else{
-                        saldoakhir = saldoawal + parseInt($('#'+id).find('.estimasi').val());
-                        $('#'+id).find('.saldoakhir').val(saldoakhir);
+                        saldoakhir = saldoawal + parseInt($('#'+id).find('.kke_estimasi').val());
+                        $('#'+id).find('.kke_saldoakhir').val(saldoakhir);
 
-                        if($(this).attr('class').substr(-8) == 'estimasi'){
+                        totalKubikasi = 0;
+                        totalBerat = 0;
+                        $('.'+thisClass).each(function(){
+                            if($(this).val() > 0) {
+                                currId = $(this).parent().parent().attr('id').split('_').pop();
+                                totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * $(this).val();
+                                totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * $(this).val();
+                            }
+                        });
 
+                        totalKubikasi = totalKubikasi / 28.5;
+                        totalBerat = totalBerat / 20900;
+
+                        if(totalKubikasi > totalBerat){
+                            total = Math.ceil(totalKubikasi);
                         }
+                        else{
+                            total = Math.ceil(totalBerat);
+                        }
+                        $('#total_'+thisClass).val(total);
                     }
                 }
             });
         }
 
-        $('#i-search').on('keypress',function(event){
-            if(event.which == 13){
-                search($(this).val());
-            }
-        });
-
         function get_detail_produk(event,row){
             if(event.which == 13){
-                prdcd = convertPlu($(event.target).val());
+                if(edit){
+                    prdcd = convertPlu($(event.target).val());
 
-                ada = false;
+                    ada = false;
 
-                $('.i-plu').each(function(){
-                    if($(this).parent().parent().attr('id') != 'row_detail_'+row){
-                        if($(this).val() == prdcd){
-                            ada = true;
-                            return 0;
-                        }
-                    }
-                });
-
-                if(!ada){
-                    $.ajax({
-                        url: '/BackOffice/public/bokkei/get_detail_produk',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {prdcd: prdcd, periode: $('#periode').val()},
-                        beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('toggle');
-
-                            if (response.status == 'success') {
-                                $('#row_form_'+row).find('input').each(function () {
-                                    $(this).val('0');
-                                });
-                                $('#row_form_'+row).find('.tanggal').each(function () {
-                                    $(this).val('');
-                                });
-
-                                $('#row_detail_'+row).find('.i-plu').val(response.data.prd_prdcd);
-                                $('#row_detail_'+row).find('.unit').val(response.data.unit);
-                                $('#row_detail_'+row).find('.frac').val(response.data.frac);
-                                $('#row_form_'+row).find('.hargabeli').val(convertToRupiah2(response.data.hargabeli));
-                                $('#row_form_'+row).find('.discount').val(convertToRupiah(response.data.diskon));
-                                $('#row_form_'+row).find('.sales1').val(convertToRupiah2(response.data.sales1));
-                                $('#row_form_'+row).find('.sales2').val(convertToRupiah2(response.data.sales2));
-                                $('#row_form_'+row).find('.sales3').val(convertToRupiah2(response.data.sales3));
-                                $('#row_form_'+row).find('.avgbulan').val(convertToRupiah(response.data.avgslsbln));
-                                $('#row_form_'+row).find('.avghari').val(convertToRupiah(response.data.avgslshari));
-                                $('#row_form_'+row).find('.saldoawal').val(nvl(response.data.saldoawal,0));
-                                $('#row_form_'+row).find('.saldoakhir').val(nvl(response.data.saldoakhir,0));
-
-                                $('#row_detail_'+row).find('.deskripsi').val(response.data.deskripsi);
-
-                                $('#txt_deskripsi').val($('#row_detail_'+row).find('.deskripsi').val());
-
-                                $('#row_detail_'+row).find('.panjangproduk').val(response.data.panjangproduk);
-                                $('#row_detail_'+row).find('.lebarproduk').val(response.data.lebarproduk);
-                                $('#row_detail_'+row).find('.tinggiproduk').val(response.data.tinggiproduk);
-                                $('#row_detail_'+row).find('.panjangkemasan').val(response.data.panjangkemasan);
-                                $('#row_detail_'+row).find('.lebarkemasan').val(response.data.lebarkemasan);
-                                $('#row_detail_'+row).find('.tinggikemasan').val(response.data.tinggikemasan);
-                                $('#row_detail_'+row).find('.beratprod').val(response.data.beratprod);
-                                $('#row_detail_'+row).find('.beratkmsn').val(response.data.beratkmsn);
-                                $('#row_detail_'+row).find('.kubikasiprod').val(response.data.kubikasiprod);
-                                $('#row_detail_'+row).find('.kubikasikemasan').val(response.data.kubikasikemasan);
-                                $('#row_detail_'+row).find('.kodesupplier').val(response.data.kodesupplier);
-                                $('#row_detail_'+row).find('.namasupplier').val(response.data.namasupplier);
-
-                                $('#row_form_'+row).find('.estimasi').prop('disabled',false);
-                                $('#row_form_'+row).find('.minggu1').prop('disabled',false);
-                                $('#row_form_'+row).find('.minggu2').prop('disabled',false);
-                                $('#row_form_'+row).find('.minggu3').prop('disabled',false);
-                                $('#row_form_'+row).find('.minggu4').prop('disabled',false);
-                                $('#row_form_'+row).find('.minggu5').prop('disabled',false);
-                                $('#row_form_'+row).find('.leadtime').prop('disabled',false);
-                                $('#row_form_'+row).find('.safetystock').prop('disabled',false);
-                                $('#row_form_'+row).find('.tanggal').prop('disabled',false);
-
-                                if(response.kkei != null){
-                                    $('#row_form_'+row).find('.estimasi').val(response.kkei.kke_estimasi);
-                                    $('#row_form_'+row).find('.minggu1').val(response.kkei.kke_breakpb01);
-                                    $('#row_form_'+row).find('.minggu2').val(response.kkei.kke_breakpb02);
-                                    $('#row_form_'+row).find('.minggu3').val(response.kkei.kke_breakpb03);
-                                    $('#row_form_'+row).find('.minggu4').val(response.kkei.kke_breakpb04);
-                                    $('#row_form_'+row).find('.minggu5').val(response.kkei.kke_breakpb05);
-                                    $('#row_form_'+row).find('.leadtime').val(response.kkei.kke_bufferlt);
-                                    $('#row_form_'+row).find('.safetystock').val(response.kkei.kke_bufferss);
-                                    $('#row_form_'+row).find('.tglkirim1').val(formatDate(response.kkei.kke_tglkirim01));
-                                    $('#row_form_'+row).find('.tglkirim2').val(formatDate(response.kkei.kke_tglkirim02));
-                                    $('#row_form_'+row).find('.tglkirim3').val(formatDate(response.kkei.kke_tglkirim03));
-                                    $('#row_form_'+row).find('.tglkirim4').val(formatDate(response.kkei.kke_tglkirim04));
-                                    $('#row_form_'+row).find('.tglkirim5').val(formatDate(response.kkei.kke_tglkirim05));
-                                }
-
-                                $('#row_form_'+row).find('.estimasi').select();
-                            }
-                            else {
-                                swal({
-                                    title: response.message,
-                                    icon: "error"
-                                }).then(function () {
-                                    $(event.target).select();
-                                });
+                    $('.kke_prdcd').each(function(){
+                        if($(this).parent().parent().attr('id') != 'row_detail_'+row){
+                            if($(this).val() == prdcd){
+                                ada = true;
+                                return 0;
                             }
                         }
                     });
+
+                    if(!ada){
+                        $.ajax({
+                            url: '/BackOffice/public/bokkei/get_detail_produk',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {prdcd: prdcd, periode: $('#periode').val()},
+                            beforeSend: function () {
+                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('toggle');
+
+                                if (response.status == 'success') {
+                                    $('#row_form_'+row).find('input').each(function () {
+                                        $(this).val('0');
+                                    });
+                                    $('#row_form_'+row).find('.tanggal').each(function () {
+                                        $(this).val('');
+                                    });
+
+                                    $('#row_detail_'+row).find('.kke_prdcd').val(response.data.prd_prdcd);
+                                    $('#row_detail_'+row).find('.kke_unit').val(response.data.unit);
+                                    $('#row_detail_'+row).find('.kke_frac').val(response.data.frac);
+                                    $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah2(response.data.hargabeli));
+                                    $('#row_form_'+row).find('.kke_discount').val(convertToRupiah(response.data.diskon));
+                                    $('#row_form_'+row).find('.kke_sales01').val(convertToRupiah2(response.data.sales1));
+                                    $('#row_form_'+row).find('.kke_sales02').val(convertToRupiah2(response.data.sales2));
+                                    $('#row_form_'+row).find('.kke_sales03').val(convertToRupiah2(response.data.sales3));
+                                    $('#row_form_'+row).find('.kke_avgbln').val(convertToRupiah(response.data.avgslsbln));
+                                    $('#row_form_'+row).find('.kke_avghari').val(convertToRupiah(response.data.avgslshari));
+                                    $('#row_form_'+row).find('.kke_saldoawal').val(nvl(response.data.saldoawal,0));
+                                    $('#row_form_'+row).find('.kke_saldoakhir').val(nvl(response.data.saldoakhir,0));
+
+                                    $('#row_detail_'+row).find('.kke_deskripsi').val(response.data.deskripsi);
+
+                                    $('#txt_deskripsi').val($('#row_detail_'+row).find('.kke_deskripsi').val());
+
+                                    $('#row_detail_'+row).find('.kke_panjangprod').val(response.data.panjangproduk);
+                                    $('#row_detail_'+row).find('.kke_lebarprod').val(response.data.lebarproduk);
+                                    $('#row_detail_'+row).find('.kke_tinggiprod').val(response.data.tinggiproduk);
+                                    $('#row_detail_'+row).find('.kke_panjangkmsn').val(response.data.panjangkemasan);
+                                    $('#row_detail_'+row).find('.kke_lebarkmsn').val(response.data.lebarkemasan);
+                                    $('#row_detail_'+row).find('.kke_tinggikmsn').val(response.data.tinggikemasan);
+                                    $('#row_detail_'+row).find('.kke_beratproduk').val(response.data.beratprod);
+                                    $('#row_detail_'+row).find('.kke_beratkmsn').val(response.data.beratkmsn);
+                                    $('#row_detail_'+row).find('.kke_kubikasiprod').val(response.data.kubikasiprod);
+                                    $('#row_detail_'+row).find('.kke_kubikasikmsn').val(response.data.kubikasikemasan);
+                                    $('#row_detail_'+row).find('.kke_kdsup').val(response.data.kodesupplier);
+                                    $('#row_detail_'+row).find('.kke_nmsup').val(response.data.namasupplier);
+
+                                    $('#row_form_'+row).find('.kke_estimasi').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_breakpb01').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_breakpb02').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_breakpb03').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_breakpb04').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_breakpb05').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_bufferlt').prop('disabled',false);
+                                    $('#row_form_'+row).find('.kke_bufferss').prop('disabled',false);
+                                    $('#row_form_'+row).find('.tanggal').prop('disabled',false);
+
+                                    if(response.kkei != null){
+                                        $('#row_form_'+row).find('.kke_estimasi').val(response.kkei.kke_estimasi);
+                                        $('#row_form_'+row).find('.kke_breakpb01').val(response.kkei.kke_breakpb01);
+                                        $('#row_form_'+row).find('.kke_breakpb02').val(response.kkei.kke_breakpb02);
+                                        $('#row_form_'+row).find('.kke_breakpb03').val(response.kkei.kke_breakpb03);
+                                        $('#row_form_'+row).find('.kke_breakpb04').val(response.kkei.kke_breakpb04);
+                                        $('#row_form_'+row).find('.kke_breakpb05').val(response.kkei.kke_breakpb05);
+                                        $('#row_form_'+row).find('.kke_bufferlt').val(response.kkei.kke_bufferlt);
+                                        $('#row_form_'+row).find('.kke_bufferss').val(response.kkei.kke_bufferss);
+                                        $('#row_form_'+row).find('.kke_tglkirim01').val(formatDate(response.kkei.kke_tglkirim01));
+                                        $('#row_form_'+row).find('.kke_tglkirim02').val(formatDate(response.kkei.kke_tglkirim02));
+                                        $('#row_form_'+row).find('.kke_tglkirim03').val(formatDate(response.kkei.kke_tglkirim03));
+                                        $('#row_form_'+row).find('.kke_tglkirim04').val(formatDate(response.kkei.kke_tglkirim04));
+                                        $('#row_form_'+row).find('.kke_tglkirim05').val(formatDate(response.kkei.kke_tglkirim05));
+                                    }
+
+                                    ready();
+                                    $('#row_form_'+row).find('.hasDatepicker').prop('disabled',false);
+                                    $('#row_form_'+row).find('.hasDatepicker').prop('readonly',false);
+
+                                    cek();
+
+                                    $('#row_form_'+row).find('.kke_estimasi').select();
+                                }
+                                else {
+                                    swal({
+                                        title: response.message,
+                                        icon: "error"
+                                    }).then(function () {
+                                        $(event.target).select();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        swal({
+                            title: 'Kode produk '+prdcd+' sudah ada!',
+                            icon: 'error'
+                        }).then(function(){
+                            $(event.target).select();
+                        });
+                    }
                 }
                 else{
                     swal({
-                        title: 'Kode produk '+prdcd+' sudah ada!',
+                        title: 'Data tidak bisa diubah!',
                         icon: 'error'
-                    }).then(function(){
-                        $(event.target).select();
                     });
                 }
             }
         }
 
         function get_detail_kkei(periode){
-            periode = periode.replace(/\//g, '')
+            periode = periode.replace(/\//g, '');
 
             $.ajax({
                 url: '/BackOffice/public/bokkei/get_detail_kkei',
@@ -603,7 +670,7 @@
                 },
                 data: {periode: periode},
                 beforeSend: function () {
-                    $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
                     $('#modal-loader').modal('toggle');
@@ -615,109 +682,110 @@
                         rowCount = 0;
 
                         for(i=0;i<response.data.length;i++){
+                            deskripsi = response.data[i].kke_deskripsi;
                             trDetail = '<tr class="d-flex baris"  id="row_detail_'+rowCount+'">' +
                                 '<td class="col-sm-2 text-center">' +
                                 '<button class="col-sm btn btn-danger btn-delete" onclick="deleteRow('+rowCount+')">X</button>' +
                                 '</td>' +
                                 '<td class="col-sm-4">' +
-                                '<input type="number" class="form-control i-plu" onkeypress="get_detail_produk(event,'+rowCount+')" value="'+response.data[i].kke_prdcd+'">' +
+                                '<input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'+rowCount+')" value="'+response.data[i].kke_prdcd+'">' +
                                 '</td>' +
                                 '<td class="col-sm-3">' +
-                                '<input disabled type="text" class="form-control unit" value='+response.data[i].kke_unit+'>' +
+                                '<input disabled type="text" class="form-control kke_unit" value='+response.data[i].kke_unit+'>' +
                                 '</td>' +
                                 '<td class="col-sm-3">' +
-                                '<input disabled type="text" class="form-control frac" value='+response.data[i].kke_frac+'>' +
+                                '<input disabled type="text" class="form-control kke_frac" value='+response.data[i].kke_frac+'>' +
                                 '</td>' +
                                 '<td hidden>'+
-                                '<input type="text" class="form-control deskripsi" value='+response.data[i].kke_deskripsi+'>'+
+                                '<input type="text" class="form-control kke_deskripsi" value="'+response.data[i].kke_deskripsi+'">'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control panjangproduk" value='+response.data[i].kke_panjangproduk+'>'+
+                                '<input type="text" class="form-control kke_panjangprod" value='+response.data[i].kke_panjangprod+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control lebarproduk" value='+response.data[i].kke_lebarprod+'>'+
+                                '<input type="text" class="form-control kke_lebarprod" value='+response.data[i].kke_lebarprod+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control tinggiproduk" value='+response.data[i].kke_tinggiprod+'>'+
+                                '<input type="text" class="form-control kke_tinggiprod" value='+response.data[i].kke_tinggiprod+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control panjangkemasan" value='+response.data[i].kke_panjangkmsn+'>'+
+                                '<input type="text" class="form-control kke_panjangkmsn" value='+response.data[i].kke_panjangkmsn+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control lebarkemasan" value='+response.data[i].kke_lebarkmsn+'>'+
+                                '<input type="text" class="form-control kke_lebarkmsn" value='+response.data[i].kke_lebarkmsn+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control tinggikemasan" value='+response.data[i].kke_tinggikmsn+'>'+
+                                '<input type="text" class="form-control kke_tinggikmsn" value='+response.data[i].kke_tinggikmsn+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control beratprod" value='+response.data[i].kke_beratproduk+'>'+
+                                '<input type="text" class="form-control kke_beratproduk" value='+response.data[i].kke_beratproduk+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control beratkmsn" value='+response.data[i].kke_beratkmsn+'>'+
+                                '<input type="text" class="form-control kke_beratkmsn" value='+response.data[i].kke_beratkmsn+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control kubikasiprod" value='+response.data[i].kke_kubikasiprod+'>'+
+                                '<input type="text" class="form-control kke_kubikasiprod" value='+response.data[i].kke_kubikasiprod+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control kubikasikemasan" value='+response.data[i].kke_kubikasikmsn+'>'+
+                                '<input type="text" class="form-control kke_kubikasikmsn" value='+response.data[i].kke_kubikasikmsn+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control kodesupplier" value='+response.data[i].kke_kdsup+'>'+
+                                '<input type="text" class="form-control kke_kdsup" value='+response.data[i].kke_kdsup+'>'+
                                 '</td>'+
                                 '<td hidden>'+
-                                '<input type="text" class="form-control namasupplier" value='+response.data[i].kke_nmsup+'>'+
+                                '<input type="text" class="form-control kke_nmsup" value='+response.data[i].kke_nmsup+'>'+
                                 '</td>'
                                 '</tr>';
 
                             trForm = '<tr id="row_form_' + i + '" class="d-flex baris number">' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control hargabeli" value=' + convertToRupiah2(response.data[i].kke_hargabeli) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah2(response.data[i].kke_hargabeli) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control discount" value=' + convertToRupiah2(Math.round(response.data[i].kke_discount)) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah2(Math.round(response.data[i].kke_discount)) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control sales1" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_sales01" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control sales2" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_sales02" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control sales3" value=' + convertToRupiah2(response.data[i].kke_sales03) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_sales03" value=' + convertToRupiah2(response.data[i].kke_sales03) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control avgbulan" value=' + convertToRupiah(response.data[i].kke_avgbln) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_avgbln" value=' + convertToRupiah(response.data[i].kke_avgbln) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control avghari" value=' + convertToRupiah(response.data[i].kke_avghari) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_avghari" value=' + convertToRupiah(response.data[i].kke_avghari) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control saldoawal" value=' + response.data[i].kke_saldoawal + '></td>' +
+                                '<input disabled type="text" class="form-control kke_saldoawal" value=' + response.data[i].kke_saldoawal + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control estimasi" value=' + convertToRupiah2(response.data[i].kke_estimasi) + '></td>' +
+                                '<input type="text" class="form-control cek kke_estimasi" value=' + convertToRupiah2(response.data[i].kke_estimasi) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control minggu1" value=' + convertToRupiah2(response.data[i].kke_breakpb01) + '></td>' +
+                                '<input type="text" class="form-control cek kke_breakpb01" value=' + convertToRupiah2(response.data[i].kke_breakpb01) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control minggu2" value=' + convertToRupiah2(response.data[i].kke_breakpb02) + '></td>' +
+                                '<input type="text" class="form-control cek kke_breakpb02" value=' + convertToRupiah2(response.data[i].kke_breakpb02) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control minggu3" value=' + convertToRupiah2(response.data[i].kke_breakpb03) + '></td>' +
+                                '<input type="text" class="form-control cek kke_breakpb03" value=' + convertToRupiah2(response.data[i].kke_breakpb03) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control minggu4" value=' + convertToRupiah2(response.data[i].kke_breakpb04) + '></td>' +
+                                '<input type="text" class="form-control cek kke_breakpb04" value=' + convertToRupiah2(response.data[i].kke_breakpb04) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control minggu5" value=' + convertToRupiah2(response.data[i].kke_breakpb05) + '></td>' +
+                                '<input type="text" class="form-control cek kke_breakpb05" value=' + convertToRupiah2(response.data[i].kke_breakpb05) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control leadtime" value=' + response.data[i].kke_bufferlt + '></td>' +
+                                '<input type="text" class="form-control kke_bufferlt" value=' + response.data[i].kke_bufferlt + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control safetystock" value=' + response.data[i].kke_bufferss + '></td>' +
+                                '<input type="text" class="form-control kke_bufferss" value=' + response.data[i].kke_bufferss + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control saldoakhir" value=' + response.data[i].kke_saldoakhir + '></td>' +
+                                '<input disabled type="text" class="form-control kke_saldoakhir" value=' + response.data[i].kke_saldoakhir + '></td>' +
                                 '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control total" value=' + response.data[i].kke_outpototal + '></td>' +
+                                '<input disabled type="text" class="form-control kke_outpototal" value=' + response.data[i].kke_outpototal + '></td>' +
                                 '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control qty" value=' + response.data[i].kke_outpoqty + '></td>' +
+                                '<input disabled type="text" class="form-control kke_outpoqty" value=' + response.data[i].kke_outpoqty + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input readonly type="text" class="form-control tanggal tglkirim1" value=' + formatDate(response.data[i].kke_tglkirim01) + '></td>' +
+                                '<input type="text" class="form-control tanggal kke_tglkirim01" value=' + formatDate(response.data[i].kke_tglkirim01) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input readonly type="text" class="form-control tanggal tglkirim2" value=' + formatDate(response.data[i].kke_tglkirim02) + '></td>' +
+                                '<input type="text" class="form-control tanggal kke_tglkirim02" value=' + formatDate(response.data[i].kke_tglkirim02) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input readonly type="text" class="form-control tanggal tglkirim3" value=' + formatDate(response.data[i].kke_tglkirim03) + '></td>' +
+                                '<input type="text" class="form-control tanggal kke_tglkirim03" value=' + formatDate(response.data[i].kke_tglkirim03) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input readonly type="text" class="form-control tanggal tglkirim4" value=' + formatDate(response.data[i].kke_tglkirim04) + '></td>' +
+                                '<input type="text" class="form-control tanggal kke_tglkirim04" value=' + formatDate(response.data[i].kke_tglkirim04) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input readonly type="text" class="form-control tanggal tglkirim5" value=' + formatDate(response.data[i].kke_tglkirim05) + '></td> value=' + response.data[i].kke_asdfka + '' +
+                                '<input type="text" class="form-control tanggal kke_tglkirim05" value=' + formatDate(response.data[i].kke_tglkirim05) + '></td> value=' + response.data[i].kke_asdfka + '' +
                                 '</tr>';
 
                             $('#table-detail').append(trDetail);
@@ -732,29 +800,71 @@
 
                         ready();
 
+
+
+                        totalKubikasi = 0;
+                        totalBerat = 0;
+                        $('.kke_estimasi').each(function(){
+                            if($(this).val() > 0) {
+                                currId = $(this).parent().parent().attr('id').split('_').pop();
+                                totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * $(this).val();
+                                totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * $(this).val();
+                            }
+                        });
+
+                        totalKubikasi = totalKubikasi / 28.5;
+                        totalBerat = totalBerat / 20900;
+
+                        if(totalKubikasi > totalBerat){
+                            total = Math.ceil(totalKubikasi);
+                        }
+                        else{
+                            total = Math.ceil(totalBerat);
+                        }
+                        $('#total_kke_estimasi').val(total);
+
+                        $('#total_kke_breakpb01').val(response.data[0].kke_kubik1);
+                        $('#total_kke_breakpb02').val(response.data[0].kke_kubik2);
+                        $('#total_kke_breakpb03').val(response.data[0].kke_kubik3);
+                        $('#total_kke_breakpb04').val(response.data[0].kke_kubik4);
+                        $('#total_kke_breakpb05').val(response.data[0].kke_kubik5);
+
                         if(response.data[0].kke_upload == 'Y'){
                             $('#keterangan').val('DATA SUDAH DIUPLOAD');
-                            $('input').each(function(){
-                                $(this).prop('readonly',true);
+                            $('#table-detail').find('input').each(function(){
+                                if($(this).attr('class').split(' ').pop() == 'kke_prdcd')
+                                    $(this).prop('readonly',true);
+                                else $(this).prop('disabled',true);
+                            });
+                            $('#table-form').find('input').each(function(){
+                                $(this).prop('disabled',true);
                             });
                             $('button').each(function(){
                                 $(this).prop('disabled',true);
                             });
-
-                            $('#periode').prop('disabled',false);
+                            edit = false;
                         }
                         else{
                             $('#keterangan').val('DATA BELUM DIUPLOAD');
+                            cek();
                         }
+
+
+
+                        $('#periode').prop('disabled',false);
+                        $('#periode').prop('readonly',false);
+                        $('#row_detail_0').find('.kke_prdcd').select();
                     }
                     else {
                         swal({
                             title: response.message,
                             icon: "error"
                         }).then(function () {
-                            $(event.target).select();
+                            $('#periode').select();
                         });
                     }
+
+                    // ready();
                 }
             });
         }
@@ -765,115 +875,115 @@
                             '<button class="col-sm btn btn-danger btn-delete" onclick="deleteRow('+rowCount+')">X</button>' +
                             '</td>' +
                             '<td class="col-sm-4">' +
-                            '<input type="number" class="form-control i-plu" onkeypress="get_detail_produk(event,'+rowCount+')">' +
+                            '<input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'+rowCount+')">' +
                             '</td>' +
                             '<td class="col-sm-3">' +
-                            '<input disabled type="text" class="form-control unit">' +
+                            '<input disabled type="text" class="form-control kke_unit">' +
                             '</td>' +
                             '<td class="col-sm-3">' +
-                            '<input disabled type="text" class="form-control frac">' +
+                            '<input disabled type="text" class="form-control kke_frac">' +
                             '</td>' +
                             '<td hidden>'+
-                            '<input type="text" class="form-control deskripsi">' +
+                            '<input type="text" class="form-control kke_deskripsi">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control panjangproduk">' +
+                            '<input type="text" class="form-control kke_panjangprod">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control lebarproduk">' +
+                            '<input type="text" class="form-control kke_lebarprod">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control tinggiproduk">' +
+                            '<input type="text" class="form-control kke_tinggiprod">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control panjangkemasan">' +
+                            '<input type="text" class="form-control kke_panjangkmsn">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control lebarkemasan">' +
+                            '<input type="text" class="form-control kke_lebarkmsn">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control tinggikemasan">' +
+                            '<input type="text" class="form-control kke_tinggikmsn">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control beratprod">' +
+                            '<input type="text" class="form-control kke_beratproduk">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control beratkmsn">' +
+                            '<input type="text" class="form-control kke_beratkmsn">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control kubikasiprod">' +
+                            '<input type="text" class="form-control kke_kubikasiprod">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control kubikasikemasan">' +
+                            '<input type="text" class="form-control kke_kubikasikmsn">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control kodesupplier">' +
+                            '<input type="text" class="form-control kke_kdsup">' +
                             '</td>'+
                             '<td hidden>'+
-                            '<input type="text" class="form-control namasupplier">' +
+                            '<input type="text" class="form-control kke_nmsup">' +
                             '</td>'
                         '</tr>';
 
             trForm = '<tr id="row_form_' + rowCount + '" class="d-flex baris number">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control hargabeli">' +
+                        '<input disabled type="text" class="form-control kke_hargabeli">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control discount">' +
+                        '<input disabled type="text" class="form-control kke_discount">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control sales1">' +
+                        '<input disabled type="text" class="form-control kke_sales01">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control sales2">' +
+                        '<input disabled type="text" class="form-control kke_sales02">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control sales3">' +
+                        '<input disabled type="text" class="form-control kke_sales03">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control avgbulan">' +
+                        '<input disabled type="text" class="form-control kke_avgbln">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control avghari">' +
+                        '<input disabled type="text" class="form-control kke_avghari">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control saldoawal">' +
+                        '<input disabled type="text" class="form-control kke_saldoawal">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control estimasi">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_estimasi">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control minggu1">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb01">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control minggu2">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb02">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control minggu3">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb03">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control minggu4">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb04">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control minggu5">' +
+                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb05">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control leadtime">' +
+                        '<input disabled type="number" min="0" class="form-control kke_bufferlt">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control safetystock">' +
+                        '<input disabled type="number" min="0" class="form-control kke_bufferss">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control saldoakhir">' +
+                        '<input disabled type="text" class="form-control kke_saldoakhir">' +
                         '<td class="col-sm-1">' +
-                        '<input disabled type="text" class="form-control total">' +
+                        '<input disabled type="text" class="form-control kke_outpototal">' +
                         '<td class="col-sm-1">' +
-                        '<input disabled type="text" class="form-control qty">' +
+                        '<input disabled type="text" class="form-control kke_outpoqty">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control tanggal tglkirim1">' +
+                        '<input disabled type="text" class="form-control tanggal kke_tglkirim01">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control tanggal tglkirim2">' +
+                        '<input disabled type="text" class="form-control tanggal kke_tglkirim02">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control tanggal tglkirim3">' +
+                        '<input disabled type="text" class="form-control tanggal kke_tglkirim03">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control tanggal tglkirim4">' +
+                        '<input disabled type="text" class="form-control tanggal kke_tglkirim04">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="text" class="form-control tanggal tglkirim5">' +
+                        '<input disabled type="text" class="form-control tanggal kke_tglkirim05">' +
                     '</tr>';
 
             $('#table-detail').append(trDetail);
             $('#table-form').append(trForm);
 
             rowCount++;
-
-            ready();
         }
 
         function deleteRow(row){
+            deleted.push($('#row_detail_'+row).find('.kke_prdcd').val());
+
             $('#row_detail_'+row).remove();
             $('#row_form_'+row).remove();
 
@@ -885,16 +995,18 @@
             if(count < 10){
                 addRow();
             }
+            ready();
         }
 
         function search(plu){
             found = false;
 
             // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-            $('.i-plu').each(function(){
+            $('.kke_prdcd').each(function(){
                 if($(this).val() == convertPlu(plu)){
                     // $('#modal-loader').modal('toggle');
                     $(this).select();
+                    console.log('x');
                     found = true;
                     return false;
                 }
@@ -910,6 +1022,79 @@
             }
         }
 
+        function save(){
+            datas = [];
+
+            $('#table-detail').find('tbody tr').each(function(){
+                row = $(this).attr('id').split('_').pop();
+
+                if($('#row_detail_'+row).find('.kke_prdcd').val().length > 0){
+                    data = {};
+                    $('#row_detail_'+row).find('input').each(function(){
+                        data[$(this).attr('class').split(' ').pop()] = $(this).val();
+                    });
+
+                    $('#row_form_'+row).find('input').each(function(){
+                        if($(this).hasClass('kke_hargabeli') || $(this).hasClass('kke_discount') || $(this).hasClass('kke_sales01') || $(this).hasClass('kke_sales02') || $(this).hasClass('kke_sales03') || $(this).hasClass('kke_avgbln') || $(this).hasClass('kke_avghari')){
+                            data[$(this).attr('class').split(' ').pop()] = unconvertToRupiah($(this).val());
+                        }
+                        else data[$(this).attr('class').split(' ').pop()] = $(this).val();
+                    });
+
+                    data['kke_kubik1'] = $('#total_kke_breakpb01').val();
+                    data['kke_kubik2'] = $('#total_kke_breakpb02').val();
+                    data['kke_kubik3'] = $('#total_kke_breakpb03').val();
+                    data['kke_kubik4'] = $('#total_kke_breakpb04').val();
+                    data['kke_kubik5'] = $('#total_kke_breakpb05').val();
+                    data['kke_periode'] = $('#periode').val().replace(/\//g, '');
+
+                    datas.push(data);
+                }
+            });
+
+            $.ajax({
+                url: '/BackOffice/public/bokkei/save',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {kkei: datas, deleted: deleted},
+                beforeSend: function () {
+                    $('#modal-loader').modal('toggle');
+                    console.log(datas);
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('toggle');
+                    if(response.status == 'success'){
+                        swal({
+                            title: response.message,
+                            icon: "success"
+                        });
+                    }
+                }
+            });
+
+
+        }
+
+        function cek(){
+            if(edit){
+                $('#table-detail').find('.kke_prdcd').each(function(){
+                    if($(this).val().length > 0){
+                        row = $(this).parent().parent().attr('id').split('_').pop();
+                        $('#row_form_'+row).find('.tanggal').prop('disabled',false);
+                    }
+                });
+            }
+            else{
+                $('#table-detail').find('.kke_prdcd').each(function(){
+                    if($(this).val().length > 0){
+                        row = $(this).parent().parent().attr('id').split('_').pop();
+                        $('#row_form_'+row).find('.tanggal').prop('disabled',true);
+                    }
+                });
+            }
+        }
 
     </script>
 

@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
-
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\File;
 
 class informasiHistoryProductController extends Controller
 {
@@ -50,7 +52,6 @@ class informasiHistoryProductController extends Controller
         else if(strlen(trim($cprdcd)) > 7 ) {
             $lCek = 3;
         }
-
         if($lCek == 1){
             $plu = DB::table('tbmaster_barcode')->rightJoin('tbmaster_prodmast','brc_prdcd','=','prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
@@ -64,7 +65,7 @@ class informasiHistoryProductController extends Controller
         else if ($lCek == 2){
             $plu = DB::table('tbmaster_barcode')->rightJoin('tbmaster_prodmast','brc_prdcd','=','prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
-                ->whereRaw('lower(prd_deskripsipendek) = \''.strtolower($request->value).'\'')
+                ->whereRaw('lower(prd_deskripsipendek) = \''.strtolower((string)$request->value).'\'')
                 ->first();
             if (is_null($plu)){
                 array_push($message,'Deskripsi Tidak Terdaftar !!');
@@ -244,11 +245,8 @@ class informasiHistoryProductController extends Controller
             array_push($message,'PLU tsb sdh tidak aktif di Cabang ini,; kalau masih ada di rak harap ditarik');
         }
         if(!is_null($produk->prmd_prdcd)){
-            $tglmulai = date('d/m/Y',strtotime(substr($produk->prm_tglmulai,0,10)));
-            $tglakhir = date('d/m/Y',strtotime(substr($produk->prm_tglakhir,0,10)));
-            $tglnow = date('d/m/Y');
-            if($tglnow >= $tglmulai AND $tglnow <= $tglakhir){
-                $tglpromo  = $tglmulai.' s/d '.$tglakhir;
+            if(Carbon::now() >= $produk->prm_tglmulai AND Carbon::now() <= $produk->prm_tglakhir){
+                $tglpromo  = Carbon::now().' s/d '.$produk->prm_tglakhir;
             }
 
             if (!is_null($produk->prm_jammulai)){
@@ -391,9 +389,9 @@ class informasiHistoryProductController extends Controller
                 $sj[$i]->frac = 1;
             }
             if($sj[$i]->prmd_prdcd != 'xxx'){
-                $tglrtg = date('d/m/Y H:i$sj[$i]->S',strtotime(substr($sj[$i]->fmfrtg,0,10).self::ceknull($sj[$i]->fmfrhr."",'00:00:00')));
-                $tglotg = date('d/m/Y H:i$sj[$i]->S',strtotime(substr($sj[$i]->fmtotg,0,10).self::ceknull($sj[$i]->fmtohr."",'23:59:59')));
-                $tglnow = date('d/m/Y H:i$sj[$i]->S');
+                $tglrtg = date('d/m/Y H:i:S',strtotime(substr($sj[$i]->fmfrtg,0,10).self::ceknull($sj[$i]->fmfrhr."",'00:00:00')));
+                $tglotg = date('d/m/Y H:i:S',strtotime(substr($sj[$i]->fmtotg,0,10).self::ceknull($sj[$i]->fmtohr."",'23:59:59')));
+                $tglnow = date('d/m/Y H:i:S');
                 if($tglnow >= $tglrtg AND $tglnow <= $tglotg){
                     $cpromo = true;
                     if($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp,['P','W','G'])){
@@ -965,31 +963,309 @@ class informasiHistoryProductController extends Controller
         $temppo = 'A,';
         $temppb = 'A,';
 
+        $permintaan = array();
         $pb = DB::table('tbtr_po_d')
             ->join('tbtr_po_h','tpoh_nopo','=','tpod_nopo')
-            ->select('*')
+            ->join('tbtr_pb_d', function ($join) {
+                $join->On(DB::raw('SUBSTR (pbd_prdcd, 1, 6)'),'=',DB::raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
+            })->join('tbtr_pb_h','pbh_nopb','=','pbd_nopb')
+            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
+                                    tpod_prdcd,
+                                    tpod_nopo,
+                                    tpoh_tglpo,
+                                    NVL (tpod_qtypb, 0) tpod_qtypb, 
+                                    tpoh_tglpo + tpoh_jwpb jwpb,
+                                    pbh_keteranganpb, 
+                                    pbh_nopb, 
+                                    pbh_tglpb, 
+                                    NVL (pbh_qtypb, 0) pbh_qtypb,
+                                    pbd_nopo, 
+                                    pbd_prdcd, 
+                                    pbd_qtypb')
             ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
-            ->whereRaw('SUBSTR (pbd_prdcd, 1, 6)=SUBSTR (tpod_prdcd, 1, 6)')
+            ->orderBy('PBH_TGLPB')
+            ->orderBy('PBH_NOPB')
             ->get();
 
-//        SELECT DISTINCT NVL (tpod_recordid, '9') recid, tpod_prdcd, tpod_nopo, tpoh_tglpo,
-//                       NVL (tpod_qtypb, 0) tpod_qtypb, tpoh_tglpo + tpoh_jwpb jwpb,
-//                       pbh_keteranganpb, pbh_nopb, pbh_tglpb, NVL (pbh_qtypb, 0) pbh_qtypb,
-//                       pbd_nopo, pbd_prdcd, pbd_qtypb
-//
-//                  FROM tbtr_po_d, tbtr_po_h, tbtr_pb_d, tbtr_pb_h
-//
-//                 WHERE tpod_kodeigr = :parameter.kodeigr
-//    AND SUBSTR (tpod_prdcd, 1, 6) = SUBSTR (:prdcd, 1, 6)
-//                   AND tpoh_nopo = tpod_nopo
-//    AND tpoh_kodeigr = tpod_kodeigr
-//    AND SUBSTR (pbd_prdcd, 1, 6) = SUBSTR (tpod_prdcd, 1, 6)
-//    AND pbd_nopo = tpod_nopo
-//    AND pbd_kodeigr = tpod_kodeigr
-//    AND pbh_kodeigr = pbd_kodeigr
-//    AND pbh_nopb = pbd_nopb
-//                 ORDER BY PBH_TGLPB, PBH_NOPB
-        return compact(['produk','sj','trendsales','prodstock','AVGSALES','stock','pkmt','ITEM','flag','detailsales','supplier','message']);
+        for($i=0;$i<sizeof($pb);$i++) {
+            $pb_ketbpb ='';
+            $pb_no = '';
+            $pb_tgl = '';
+            $pb_qty = '';
+            $pb_ket = '';
+            $pb_nopo = '';
+            $pb_tglpo = '';
+            $pb_ketbpb = '';
+            $pb_qtybpb = '';
+            $step= 1;
+            $temppo = $temppo . $pb[$i]->tpod_nopo . ',';
+            $temppb = $temppb . $pb[$i]->pbh_nopb . ',';
+            $step = 2;
+            $pb_no = $pb[$i]->pbh_nopb;
+            $pb_tgl = $pb[$i]->pbh_tglpb;
+            $pb_qty = $pb[$i]->pbd_qtypb;
+            $pb_ket = $pb[$i]->pbh_keteranganpb;
+
+            $step = 3;
+            $pb_nopo = $pb[$i]->tpod_nopo;
+            $pb_tglpo = $pb[$i]->tpoh_tglpo;
+
+            $step = 4;
+            $pb_qtybpb = $pb[$i]->tpod_qtypb;
+
+
+
+            if(Self::ceknull($pb[$i]->tpod_qtypb, 0) == 0) {
+                if ($pb[$i]->recid == '9') {
+                    if ($pb[$i]->jwpb < Carbon::now()){
+                        $step = 5;
+                        $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                    }
+                    else{
+                        $step = 6;
+                        $pb_ketbpb = 'Brg.blm dikirim';
+                    }
+                }
+                else{
+                    $step = 7;
+                    $pb_ketbpb = 'Qty BPB 0 (null)';
+                }
+            }
+            $step = 8;
+            if(Self::ceknull($pb[$i]->tpod_nopo,'')!='' AND Self::ceknull($pb[$i]->tpoh_tglpo,'')==''){
+        		$step = 9;
+                $pb_ketbpb = 'PO Mati/Kdlwarsa';
+            }
+
+            $step = 10;
+            $ntotalpo = Self::ceknull ($ntotalpo, 0) + Self::ceknull ($pb[$i]->tpod_qtypb, 0);
+            
+            if (Self::ceknull($pb[$i]->tpod_nopo,'')=='') {
+                if ($pb[$i]->pbh_tglpb < Carbon::now() + 2){
+                    $step = 11;
+                    $pb_ketbpb = 'PB tdk.tRealiss';
+                }
+                else{
+                    $step = 12;
+                    $pb_ketbpb = 'Blm.Transfer PO';
+                }
+            }
+
+//            if($pb[$i]->pbh_nopb=='221404027'){
+//                dd($pb[$i]->tpod_qtypb.'-'.$pb[$i]->tpod_nopo.'-'.$pb[$i]->tpoh_tglpo.'-'.$pb[$i]->tpod_qtypb.'-'.$step);
+//            }
+            $dataPenerimaan["pb_no"] =$pb_no;
+            $dataPenerimaan["pb_tgl"] =$pb_tgl;
+            $dataPenerimaan["pb_qty"] =$pb_qty;
+            $dataPenerimaan["pb_ket"] =$pb_ket;
+            $dataPenerimaan["pb_nopo"] =$pb_nopo;
+            $dataPenerimaan["pb_tglpo"] =$pb_tglpo;
+            $dataPenerimaan["pb_ketbpb"] =$pb_ketbpb;
+            $dataPenerimaan["pb_qtybpb"] =$pb_qtybpb;
+            array_push($permintaan,$dataPenerimaan);
+        }
+
+        $step = 13;
+        $pb2 = DB::table('tbtr_pb_d')
+            ->join('tbtr_pb_h','pbh_nopb','=','pbd_nopb')
+            ->selectRaw('DISTINCT pbh_keteranganpb,
+                                     pbh_nopb, 
+                                     pbh_tglpb, 
+                                     NVL (pbh_qtypb, 0) pbh_qtypb,                       
+                                     pbd_nopo, 
+                                     pbd_prdcd, 
+                                     pbd_qtypb')
+            ->whereRaw('substr(pbd_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->orderBy('PBH_TGLPB')
+            ->orderBy('PBH_NOPB')
+            ->get();
+        for($i=0;$i<sizeof($pb2);$i++) {
+            if(strpos($temppb, $pb2[$i]->pbh_nopb)==0){
+                $pb_ketbpb ='';
+                $pb_no = '';
+                $pb_tgl = '';
+                $pb_qty = '';
+                $pb_ket = '';
+                $pb_nopo = '';
+                $pb_tglpo = '';
+                $pb_ketbpb = '';
+                $pb_qtybpb = '';
+                $step = 14;
+                $pb_no = $pb2[$i]->pbh_nopb;
+                $pb_tgl = $pb2[$i]->pbh_tglpb;
+                $pb_ket = $pb2[$i]->pbh_keteranganpb;
+                $pb_nopo = $pb2[$i]->pbd_nopo;
+                $pb_qty = $pb2[$i]->pbd_qtypb;
+
+                if(Self::ceknull($pb2[$i]->pbd_nopo,'')==''){
+	        		if ($pb2[$i]->pbh_tglpb < Carbon::now() + 2) {
+                        $step = 15;
+                        $pb_ketbpb = 'PB tdk.tRealiss';
+                    }
+	        		else {
+                        $step = 16;
+                        $pb_ketbpb = 'Blm.Transfer PO';
+                    }
+	            }
+	            //nextrecord
+                $dataPenerimaan["pb_no"] =$pb_no;
+                $dataPenerimaan["pb_tgl"] =$pb_tgl;
+                $dataPenerimaan["pb_qty"] =$pb_qty;
+                $dataPenerimaan["pb_ket"] =$pb_ket;
+                $dataPenerimaan["pb_nopo"] =$pb_nopo;
+                $dataPenerimaan["pb_tglpo"] =$pb_tglpo;
+                $dataPenerimaan["pb_ketbpb"] =$pb_ketbpb;
+                $dataPenerimaan["pb_qtybpb"] =$pb_qtybpb;
+                array_push($permintaan,$dataPenerimaan);
+            }
+        }
+       $step = 17;
+        $po = DB::table('tbtr_po_d')
+            ->join('tbtr_po_h','tpoh_nopo','=','tpod_nopo')
+            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid, 
+                                tpod_prdcd, 
+                                tpod_nopo, 
+                                tpoH_tglpo,
+                                NVL (tpod_qtypb, 0) tpod_qtypb, 
+                                tpoh_tglpo + tpoh_jwpb jwpb')
+            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->orderBy('TPOH_TGLPO')
+            ->orderBy('TPOD_NOPO')
+            ->get();
+        for($i=0;$i<sizeof($po);$i++) {
+            if (strpos($temppo, $po[$i]->tpod_nopo) == 0) {
+                $pb_ketbpb ='';
+                $pb_no = '';
+                $pb_tgl = '';
+                $pb_qty = '';
+                $pb_ket = '';
+                $pb_nopo = '';
+                $pb_tglpo = '';
+                $pb_ketbpb = '';
+                $pb_qtybpb = '';
+                $step = 18;
+                $pb_nopo = $po[$i]->tpod_nopo;
+                $pb_tglpo = $po[$i]->tpoh_tglpo;
+                $step = 19;
+                $pb_qtybpb = $po[$i]->tpod_qtypb;
+                if(Self::ceknull($po[$i]->tpod_qtypb, 0) == 0) {
+                    if($po[$i]->recid == '9') {
+                        if ($po[$i]->jwpb < Carbon::now()) {
+                            $step = 20;
+                            $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                        }
+                        else {
+                            $step = 21;
+                            $pb_ketbpb = 'Brg.blm dikirim';
+                        }
+                    }
+                    else{
+                            $step = 22;
+                            $pb_ketbpb = 'Qty BPB 0 (nul)';
+                    }
+                }
+
+	        if(Self::ceknull($po[$i]->tpod_nopo,'')!='' AND Self::ceknull($po[$i]->tpoh_tglpo,'')==''){
+                $step = 23;
+	            $pb_ketbpb = 'PO Mati/Kdlwarsa';
+	        }
+	
+            $step = 24;
+	        $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($po[$i]->tpod_qtypb, 0);
+	        
+	        $step = 25;
+	        $pb_ketbpb = 'PO Alokasi';
+	        if(Self::ceknull($pb_qtybpb,0) == 0 ) {
+                $step = 26;
+                $pb_ketbpb = 'PO Alokasi/Mati';
+            }
+	        $step = 27;
+	        if(Self::ceknull($pb_nopo,'') == '' AND Self::ceknull($pb_tglpo,'') == '') {
+                $step = 28;
+                $pb_ketbpb = 'PO Mati/Kdlwarsa';
+            }
+//	        NEXT_RECORD;
+            $dataPenerimaan["pb_no"] =$pb_no;
+            $dataPenerimaan["pb_tgl"] =$pb_tgl;
+            $dataPenerimaan["pb_qty"] =$pb_qty;
+            $dataPenerimaan["pb_ket"] =$pb_ket;
+            $dataPenerimaan["pb_nopo"] =$pb_nopo;
+            $dataPenerimaan["pb_tglpo"] =$pb_tglpo;
+            $dataPenerimaan["pb_ketbpb"] =$pb_ketbpb;
+            $dataPenerimaan["pb_qtybpb"] =$pb_qtybpb;
+            array_push($permintaan,$dataPenerimaan);
+	      }
+        }
+        $step = 29;
+
+        $temp = DB::table('tbtr_ba_stockopname')
+            ->selectRaw('distinct sop_tglso')
+            ->where('sop_kodeigr','=','22')
+            ->orderBy('sop_tglso','desc')
+            ->get();
+
+        if (sizeof($temp) != 0) {
+                for($i=0;$i<sizeof($temp);$i++) {
+                    $so_tgl = date('Y-m-d',strtotime(substr($temp[$i]->sop_tglso,0,10)));
+                    break;
+                }
+        }
+        else {
+            $so_tgl = date('Y-m-d');
+        }
+
+        $tempadjustso = DB::Raw('(Select ADJ_KODEIGR,
+                                ADJ_TGLSO,
+                                ADJ_PRDCD,
+                                ADJ_LOKASI,
+                                SUM (NVL (ADJ_QTY, 0)) QTY_ADJ
+                                from TBTR_ADJUSTSO
+                                Group by ADJ_KODEIGR,
+                            ADJ_TGLSO,
+                            ADJ_PRDCD,
+                            ADJ_LOKASI) B');
+
+        $so = DB::table('TBTR_BA_STOCKOPNAME')
+            ->join('TBMASTER_PRODMAST','PRD_PRDCD','=','SOP_PRDCD')
+            ->leftJoin($tempadjustso ,function ($join) {
+                $join->On(DB::raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::raw('trunc(B.ADJ_TGLSO)'), '=', DB::raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
+            })
+            ->selectRaw('SOP_QTYSO,
+                        SOP_QTYLPP,
+                        NVL (B.QTY_ADJ, 0) QTY_ADJ,
+                        SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0) SELISIH, 
+                        SOP_NEWAVGCOST,
+                        CASE
+                           WHEN PRD_UNIT = \'KG\'
+                               THEN ((SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST) / 1000
+                           ELSE (SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST
+                        END RUPIAH,
+                        PRD_UNIT')
+            ->whereRaw('substr(SOP_PRDCD, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->where('SOP_LOKASI','=','01')
+            ->whereRaw('SOP_TGLSO = to_date(\''.$so_tgl.'\',\'yyyy-mm-dd\')')
+            ->get();
+
+        $adjustso = DB::table('TBTR_ADJUSTSO')
+            ->select('*')
+            ->where('adj_kodeigr','=','22')
+            ->where('adj_lokasi','=','01')
+            ->whereRaw('substr(adj_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->whereRaw('adj_tglso = to_date(\''.$so_tgl.'\',\'yyyy-mm-dd\')')
+            ->orderBy('adj_create_dt')
+            ->get();
+
+        $resetsoic = DB::table('TBTR_RESET_SOIC')
+            ->select('*')
+            ->where('rso_kodeigr','=','22')
+            ->where('rso_lokasi','=','01')
+            ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
+            ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
+            ->orderBy('rso_tglso')
+            ->orderBy('rso_kodeso')
+            ->get();
+
+        return compact(['produk','sj','trendsales','prodstock','AVGSALES','stock','pkmt','ITEM','flag','detailsales','supplier','permintaan','so_tgl','so','adjustso','resetsoic','message']);
     }
 
     public function ceknull($value,$ret){
@@ -998,4 +1274,59 @@ class informasiHistoryProductController extends Controller
         }
         return $value;
     }
+
+    public function cetak()
+    {
+//        $so=$request->value['so'];
+//        $adjustso=$request->value['adjustso'];
+//        $resetsoic=$request->value['resetsoic'];
+        $so= ['a','b','c'];
+        $content = "Logs \n";
+        foreach ($so as $data) {
+            $content .= $data;
+            $content .= "\n";
+        }
+
+        // file name that will be used in the download
+        $fileName = "logs.txt";
+
+        // use headers in order to generate the download
+        $headers = [
+            'Content-type' => 'text/plain',
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+            'Content-Length' => strlen($content)
+        ];
+
+        // make a response, with the content, a 200 response code and the headers
+        return Response::make($content, 200, $headers);
+
+    }
+
+//    public function cetak(Request $request)
+//    {
+//        $so=$request->value['so'];
+////        $adjustso=$request->value['adjustso'];
+////        $resetsoic=$request->value['resetsoic'];
+//
+//        $content = "Logs \n";
+//        foreach ($so as $data) {
+//            $content .= $data['sop_qtyso'];
+//            $content .= "\n";
+//        }
+//
+//        // file name that will be used in the download
+//        $fileName = "cetakso.txt";
+//
+//        // use headers in order to generate the download
+//        $headers = [
+//            'Content-type' => 'text/plain',
+//            'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+//            'Content-Length' => strlen($content)
+//        ];
+//
+//        // make a response, with the content, a 200 response code and the headers
+////        return Response::download($content, 200, $headers);
+//        return Response::make($fileName, 200, $headers);
+//
+//    }
 }

@@ -3,16 +3,16 @@
 
     <div class="container mt-3">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-11">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquery Supplier Per Produk</legend>
+                    <legend  class="w-auto ml-5">Inquiry Supplier Per Produk</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
-                            <div class="col-sm-10">
-                                <fieldset class="card border-secondary">
+                            <div class="col-sm-12">
+                                {{--<fieldset class="card border-secondary">--}}
                                     <form>
                                         <div class="row text-right">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12 ">
                                                 <div class="form-group row mb-0">
                                                     <label for="i_kodeplu" class="col-sm-1 col-form-label">PLU</label>
                                                     <div class="col-sm-2">
@@ -39,7 +39,7 @@
                                     {{--@endforeach--}}
                                     </tbody>
                                     </table>
-                                </fieldset>
+                                {{--</fieldset>--}}
                             </div>
 
                             <div class="col-sm-12">
@@ -50,9 +50,9 @@
                                             <thead>
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
-                                                <th class="col-sm-5">Nama Supplier</th>
-                                                <th class="col-sm-1 pl-0 pr-0">Kuantum</th>
-                                                <th class="col-sm-1 text-right">BTB</th>
+                                                <th class="col-sm-4">Nama Supplier</th>
+                                                <th class="col-sm-1 pl-0 pr-0 ">Kuantum</th>
+                                                <th class="col-sm-2 text-right">BTB</th>
                                                 <th class="col-sm-2 text-right">Tanggal</th>
                                                 <th class="col-sm-1 text-right">Term</th>
                                                 <th class="col-sm-1 text-right">H.P.P</th>
@@ -98,8 +98,7 @@
                 {{--<div class="modal-header">--}}
                 {{--<div class="form-row col-sm">--}}
                 {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                {{--<div class="invalid-feedback">--}}
-                {{--Inputkan minimal 3 karakter</div>--}}
+                {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
                 {{--</div>--}}
                 {{--</div>--}}
                 <div class="modal-body">
@@ -187,7 +186,7 @@
             if (e.which == 13) {
                 e.preventDefault();
                 let kodeplu = $('#i_kodeplu').val();
-                helpSelect(kodeplu);
+                helpSelect(convertPlu(kodeplu));
             }
         });
 
@@ -203,7 +202,7 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    //console.log(result);
+                    console.log(result);
                     $('#table_detail .row_detail').remove();
                     if (result) {
                         console.log(result.data[0]);
@@ -214,16 +213,17 @@
                                 '<td class="col-1">' + result.data[i].kodesup + '</td>' +
                                 '<td class="col-4">' + result.data[i].namasup + '</td>' +
                                 '<td class="col-1 pl-0 pr-0 text-right">' + convertToRupiah2(result.data[i].qty) + '</td>' +
-                                '<td class="col-1 text-right">' + result.data[i].nobpb + '</td>' +
+                                '<td class="col-2 text-right">' + result.data[i].nobpb + '</td>' +
                                 '<td class="col-2 text-right">' + formatDate(result.data[i].tglbpb) + '</td>' +
                                 '<td class="col-1 text-right">' + result.data[i].term + '</td>' +
-                                '<td class="col-2 text-right">' + convertToRupiah(result.data[i].hpp) + '</td>' +
+                                '<td class="col-1 text-right">' + convertToRupiah(result.data[i].hpp) + '</td>' +
                                 '</tr>'
+                            $('#i_kodeplu').val(result.data[i].prd_prdcd);
                             $('#i_deskripsi').val(result.data[i].prd_deskripsipanjang);
                             $('#table_detail').append(html);
                         }
                     }
-                }, error: function () {  
+                }, error: function () {
                     alert('error');
                 }
             })

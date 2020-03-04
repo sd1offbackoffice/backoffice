@@ -16,7 +16,9 @@
             </div>
         </div>
     </div>
+    <div id="test">
 
+    </div>
     <div class="container">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
@@ -680,30 +682,30 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="justify-content-md-center p-0">
+                                <tr class="justify-content-md-center p-0 baris">
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control" disabled>
+                                        <input type="text" class="form-control" value="" disabled>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -728,7 +730,7 @@
                             <legend  align="middle" class="w-auto h5 ">Stock Opname Nasional</legend>
                             <div class="row">
                                     <label for="periode-so" class="col-sm-2 col-form-label text-right">Periode SO</label>
-                                    <input type="text" class="form-control col-sm-2">
+                                    <input type="text" class="form-control col-sm-2" id="periode-so" disabled>
                             </div>
                             <br>
                             <div class="row">
@@ -745,7 +747,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr class="justify-content-md-center p-0">
+                                        <tr class="p-0 baris">
                                             <td class="p-0">
                                                 <input type="text" class="form-control" disabled>
                                             </td>
@@ -786,18 +788,18 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr class="justify-content-md-center p-0">
+                                            <tr class="p-0 baris">
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" disabled>
+                                                    <input type="text" class="form-control text-center" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" disabled>
+                                                    <input type="text" class="form-control text-center" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" disabled>
+                                                    <input type="text" class="form-control text-center" disabled>
                                                 </td>
                                                 <td class="p-0">
-                                                    <input type="text" class="form-control" disabled>
+                                                    <input type="text" class="form-control text-center" disabled>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -822,7 +824,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr class="justify-content-md-center p-0">
+                                            <tr class="p-0 baris">
                                                 <td class="p-0">
                                                     <input type="text" class="form-control" disabled>
                                                 </td>
@@ -842,7 +844,7 @@
                                 </div>
                             </fieldset>
                             <div class="col-sm-12 text-center p-2">
-                                <button class="btn btn-primary btn-lg " id="btn-cetak">Cetak</button>
+                                <a class="btn btn-primary btn-lg " id="btn-cetak-soic" >Cetak</a>
                             </div>
                         </div>
 
@@ -1116,13 +1118,14 @@
 
             var e = $.Event("keypress");
             e.keyCode = 13;
-            $('#input').val('1358840');//1358840
+            $('#input').val('410');//1358840
             $('#input').trigger(e);
-            // $('#m-pb').modal();
+            $('#m-so').modal();
 
         });
-        month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+        cetakso = {};
 
+        month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
         $('#search_lov').keypress(function (e) {
             if (e.which == 13) {
                 if(this.value.length == 0) {
@@ -1139,7 +1142,6 @@
                         success: function (response) {
                             $('#table_lov .row_lov').remove();
                             html = "";
-                            console.log(response.length);
                             for (i = 0; i < response.length; i++) {
                                 html = '<tr class="row_lov" onclick=lov_select("' + response[i].prd_prdcd + '")><td>' + response[i].prd_deskripsipanjang + '</td><td>' + response[i].prd_prdcd + '</td></tr>';
                                 trlov += html;
@@ -1388,7 +1390,103 @@
                                 '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
                                 '</td><tr>');
                         }
-                        null_check();
+                        for (var i = 0; i < response['permintaan'].length ; i++ ) {
+                            $('#table-pb').append('<tr class="justify-content-md-center p-0 baris">\n' +
+                                '                                    <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_no+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                    <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+formatDate(response['permintaan'][i].pb_tgl)+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                    <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+nvl(convertToRupiah2(response['permintaan'][i].pb_qty),'')+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                   <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_ket+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                    <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_nopo+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                   <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+formatDate(response['permintaan'][i].pb_tglpo)+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                   <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control text-right" value="'+nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb,''))+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                   <td class="p-0">\n' +
+                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_ketbpb+'" disabled>\n' +
+                                '                                    </td>\n' +
+                                '                                </tr>');
+                        }
+                        //SO
+                        cetakso.so = response['so'];
+                        cetakso.adjustso = response['adjustso'];
+                        cetakso.resetsoic = response['resetsoic'];
+
+                        $('#periode-so').val(formatDate(response['so_tgl']));
+                        for (var i = 0; i < response['so'].length ; i++ ) {
+                            $('#table-so').append(
+                                '<tr class="p-0 baris">\n' +
+                                '    <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_qtyso)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '     <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_qtylpp)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].qty_adj)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].selisih)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_newavgcost)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].rupiah)+'" disabled>\n' +
+                                '    </td>\n' +
+                                '</tr>');
+                        }
+
+                        for (var i = 0; i < response['adjustso'].length ; i++ ) {
+                            $('#table-detailadj').append(
+                                '<tr class="p-0 baris">\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+response['adjustso'].adj_seq+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+convertToRupiah2(response['adjustso'].adj_qty)+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+response['adjustso'].adj_keterangan+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+formatDate(response['adjustso'].adj_create_dt)+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '</tr>'
+                            );
+                        }
+
+                        for (var i = 0; i < response['resetsoic'].length ; i++ ) {
+                            $('#table-soic').append(
+                                '<tr class="p-0 baris">\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+formatDate(response['resetsoic'].rso_tglso)+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+response['resetsoic'].rso_kodeso+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+convertToRupiah2(response['resetsoic'].rso_qty)+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '    <td class="p-0">\n' +
+                                '       <input type="text" value="'+convertToRupiah2(response['resetsoic'].rso_avgcostreset)+'" class="form-control text-center" disabled>\n' +
+                                '    </td>\n' +
+                                '</tr>'
+                            );
+                        }
+
+                            null_check();
                     }
 
                 },
@@ -1419,7 +1517,44 @@
                 });
             }
         }
+        $('#btn-cetak-soic').on('click',function () {
+            window.location.href ='/BackOffice/public/api/mstinformasihistoryproduct/cetak';
 
+            {{--$.ajax({--}}
+                {{--url: '/BackOffice/public/api/mstinformasihistoryproduct/cetak',--}}
+                {{--content: 'application/download',--}}
+                {{--type: 'GET',--}}
+                {{--data: {"_token": "{{ csrf_token() }}", value: cetakso},--}}
+                {{--beforeSend: function(){--}}
+                    {{--$('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                {{--},--}}
+                {{--success: function (data) {--}}
+                {{--},--}}
+                {{--complete: function(){--}}
+                    {{--$('#modal-loader').modal('hide');--}}
+                {{--}--}}
+            // });
+        });
+
+        // $('#btn-cetak-soic').on('click', function () {
+        //     $.ajax({
+        //         url: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/172905/test.pdf',
+        //         method: 'GET',
+        //         xhrFields: {
+        //             responseType: 'blob'
+        //         },
+        //         success: function (data) {
+        //             var a = document.createElement('a');
+        //             var url = window.URL.createObjectURL(data);
+        //             a.href = url;
+        //             a.download = 'myfile.pdf';
+        //             document.body.append(a);
+        //             a.click();
+        //             a.remove();
+        //             window.URL.revokeObjectURL(url);
+        //         }
+        //     });
+        // });
 
         function format_currency(value) {
             var val = (value/1).toFixed(2).replace('.', ',');

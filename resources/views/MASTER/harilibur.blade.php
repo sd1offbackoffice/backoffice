@@ -35,22 +35,17 @@
                         </div>
 
                         <br>
-                        <div class="form-group row">
-                            <label for="i_tgl" class=" col-sm-2 col-form-label text-right">TANGGAL</label>
-                            <div class="col-sm-3">
-                                <td>
-                                    <input type="date" class="form-control col-sm-8 " data-date-format="DD MMMM YYYY" id="i_tgl" placeholder="..." )>
-                                </td>
-                                <td>
-                                <input type="text" class="form-control" id="i_keterangan" placeholder="...">
-                                </td>
+                        <div class="form-row">
+                            <div>
+                                <input type="date" class="form-control col-sm-8 " data-date-format="DD MMMM YYYY" id="i_tgl" placeholder="..." )>
+                                <label for="i_tgl" class="col-sm-4 col-form-label text-right">TANGGAL</label>
+
+                                    <input type="text" class="form-control" id="i_keterangan" placeholder="...">
+                                    <button class="btn btn-success" id="btn-insert" onclick="insert_harilibur()">INSERT</button>
+                                    <button class="btn btn-success" id="btn-save" onclick="save_harilibur()">SAVE</button>
+                                    <button class="btn btn-success" id="btn-delete" onclick="delete_harilibur()">DELETE</button>
+                                </div>
                             </div>
-                            {{--<div class="col-sm-3">--}}
-                                {{--<div >--}}
-                                    {{--<button class="btn btn-success" id="btn-search" onclick="search_barcode()">SEARCH</button>--}}
-                                    {{--<button class="btn btn-success" id="btn-clear" onclick="clear_table()">CLEAR</button>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
                         </div>
                     </div>
                 </fieldset>

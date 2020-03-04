@@ -50,8 +50,11 @@
                         <a class="dropdown-item" href="{{url("/mstaktifhrgjual/index")}}">Aktifkan Harga Jual Per Item</a>
                         <a class="dropdown-item" href="{{url("/mstaktifallhrgjual/index")}}">Aktifkan Harga Jual All Item</a>
                         <a class="dropdown-item" href="{{url("/mstinformasihistoryproduct/index")}}">Informasi dan History Product</a>
+                        <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a>
+                        <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a>
                         <a class="dropdown-item" href="{{url("/mstapproval/index")}}">Master Approval</a>
                         <a class="dropdown-item" href="{{url("/mstbarcode/index")}}">Master Barcode</a>
+                        <a class="dropdown-item" href="{{url("/mstbarang/index")}}">Master Barang</a>
                         <a class="dropdown-item" href="{{url("/mstcabang/index")}}">Master Cabang</a>
                         <a class="dropdown-item" href="{{url("/mstdepartement/index")}}">Master Departement</a>
                         <a class="dropdown-item" href="{{url("/mstdivisi/index")}}">Master Divisi</a>
@@ -67,8 +70,7 @@
                         <a class="dropdown-item" href="{{url("/mstperusahaan/index")}}">Master Perusahaan</a>
                         <a class="dropdown-item" href="{{url("/mstsuboutlet/index")}}">Master Sub Outlet</a>
                         <a class="dropdown-item" href="{{url("/mstsupplier/index")}}">Master Supplier</a>
-                        <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquery Supplier Per Produk</a>
-                        <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquery Produk Per Supplier</a>
+
                     </div>
                 </li>
                 <li class="nav-item dropdown">
