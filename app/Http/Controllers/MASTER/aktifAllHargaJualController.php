@@ -10,27 +10,45 @@ use Illuminate\Support\Facades\DB;
 class aktifAllHargaJualController extends Controller
 {
     public function index(){
-        return view('MASTER.aktifAllHargaJual');
-    }
-
-    public function aktifkanAllItem(){
         $model  = new AllModel();
         $date   = $model->getDate();
 
+//        $getData    = DB::table('tbmaster_prodmast')
+//            ->where('PRD_HRGJUAL3', '>', 0)
+//            ->whereRaw('PRD_HRGJUAL <> PRD_HRGJUAL3')
+//            ->whereRaw('PRD_TGLHRGJUAL3 IS NOT NULL')
+//            ->where('PRD_TGLHRGJUAL3', '<=', $date)
+//            ->whereRaw('PRD_TGLHRGJUAL3 >= PRD_TGLHRGJUAL')
+//            ->get()->toArray();
+
         $getData    = DB::table('tbmaster_prodmast')
             ->where('PRD_HRGJUAL3', '>', 0)
-            ->whereRaw('PRD_HRGJUAL <> PRD_HRGJUAL3')
-            ->whereRaw('PRD_TGLHRGJUAL3 IS NOT NULL')
-            ->where('PRD_TGLHRGJUAL3', '<=', $date)
-            ->whereRaw('PRD_TGLHRGJUAL3 >= PRD_TGLHRGJUAL')
-            ->get()->toArray();
+            ->limit(100)->get()->toArray();
 
-        foreach ($getData as $data){
-//            DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual2' => $getHarga[0]->prd_hrgjual, 'prd_hrgjual' => $getHarga[0]->prd_hrgjual3, 'prd_tglhrgjual2' => $getHarga[0]->prd_tglhrgjual, 'prd_tglhrgjual' => $getHarga[0]->prd_tglhrgjual3 ,
-//            'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
-        }
+        return view('MASTER.aktifAllHargaJual', compact('getData'));
+    }
 
-        return response()->json($getData);
+    public function aktifkanAllItem(){
+        $user   = 'JEP';
+        $model  = new AllModel();
+        $getData= $model->getKodeigr();
+        $kodeigr = $getData[0]->prs_kodeigr;
+        $jenistimbangan = 1;
+//      $jenistimbangan = $getData[0]->prs_jenistimbangan;
+      $ppn            = $getData[0]->prs_nilaippn;
+        $errm  = '';
+
+        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+
+        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_allitem(:kodeigr,:jtim, :ppn, :user,:errm); END;");
+        oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+        oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
+        oci_bind_by_name($exec, ':ppn',$ppn,100);
+        oci_bind_by_name($exec, ':user',$user,100);
+        oci_bind_by_name($exec, ':errm', $errm,1000);
+        oci_execute($exec);
+
+        return response()->json($errm);
     }
 }
 

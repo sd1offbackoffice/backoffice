@@ -53,8 +53,8 @@
                         <a class="dropdown-item" href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a>
                         <a class="dropdown-item" href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a>
                         <a class="dropdown-item" href="{{url("/mstapproval/index")}}">Master Approval</a>
-                        <a class="dropdown-item" href="{{url("/mstbarcode/index")}}">Master Barcode</a>
                         <a class="dropdown-item" href="{{url("/mstbarang/index")}}">Master Barang</a>
+                        <a class="dropdown-item" href="{{url("/mstbarcode/index")}}">Master Barcode</a>
                         <a class="dropdown-item" href="{{url("/mstcabang/index")}}">Master Cabang</a>
                         <a class="dropdown-item" href="{{url("/mstdepartement/index")}}">Master Departement</a>
                         <a class="dropdown-item" href="{{url("/mstdivisi/index")}}">Master Divisi</a>

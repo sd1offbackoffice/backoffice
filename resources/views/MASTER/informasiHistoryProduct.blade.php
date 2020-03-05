@@ -5,11 +5,13 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  align="middle" class="w-auto h5 ">KETIKAN PLU / DESKRIPSI /SCAN BARCODE BARANG</legend>
+                    <legend align="middle" class="w-auto h5 ">KETIKAN PLU / DESKRIPSI /SCAN BARCODE BARANG</legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
                             <input type="text" class="col-sm-8 form-control" id="input" placeholder="..." value="">
-                            <button type="button" class="btn p-0 text-left" data-toggle="modal" data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                            <button type="button" class="btn p-0 text-left" data-toggle="modal"
+                                    data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px">
+                            </button>
                         </div>
                     </div>
                 </fieldset>
@@ -51,7 +53,7 @@
                         <div class="row">
                             <table class="table table-sm  justify-content-md-center m-3" id="table-satuan">
                                 <thead class="thead-dark">
-                                <tr >
+                                <tr>
                                     <th width="5.5%" class="text-center small">SJ</th>
                                     <th width="9.5%" class="text-center small">Satuan / Frac</th>
                                     <th width="20%" class="text-center small">Barcode</th>
@@ -111,148 +113,173 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="card-body p-0">
-                                    <table class="table table-sm justify-content-md-center col-sm-12 p-0" id="table-barcode">
+                                    <table class="table table-sm justify-content-md-center col-sm-12 p-0"
+                                           id="table-barcode">
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th class="text-center"  colspan="3" scope="colgroup">TREND SALES</th>
+                                            <th class="text-center" colspan="3" scope="colgroup">TREND SALES</th>
                                         </tr>
                                         <tr>
                                             <th width="20%"></th>
                                             <th width="40%" class="text-center small">QTY</th>
-                                            <th width="40%"class="text-center small">RUPIAH</th>
+                                            <th width="40%" class="text-center small">RUPIAH</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 JAN
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_01">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_01">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_01">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_01">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 FEB
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_02">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_02">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_02">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_02">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 MAR
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_03">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_03">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_03">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_03">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 APR
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_04">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_04">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_04">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_04">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 MEI
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_05">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_05">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_05">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_05">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 JUN
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_06">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_06">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_06">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_06">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 JUL
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_07">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_07">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_07">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_07">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 AGU
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_08">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_08">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_08">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_08">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 SEP
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_09">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_09">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_09">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_09">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 OKT
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_10">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_10">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_10">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_10">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 NOV
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_11">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_11">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_11">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_11">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="p-0 text-center" >
+                                            <td class="p-0 text-center">
                                                 DES
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_qty_12">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_qty_12">
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class=" form-control text-right" disabled id="sls_rph_12">
+                                                <input type="text" class=" form-control text-right" disabled
+                                                       id="sls_rph_12">
                                             </td>
                                         </tr>
 
@@ -265,7 +292,7 @@
                                     <table class="table table-sm justify-content-md-center p-0" id="table-stock">
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th class="text-center"  colspan="10" scope="colgroup">S T O K</th>
+                                            <th class="text-center" colspan="10" scope="colgroup">S T O K</th>
                                         </tr>
                                         <tr class="justify-content-md-center">
                                             <th width="10%" class="text-center small">LOKASI</th>
@@ -320,23 +347,56 @@
                                     <table class="table table-sm justify-content-md-center p-0" id="table-stock">
                                         <thead class="thead-dark">
                                         <tr>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="1" scope="colgroup"></th>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="1" scope="colgroup"></th>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="1" scope="colgroup"></th>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">PKMT</th>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">MINOR</th>
-                                            <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">MIN DISPLAY</th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="1"
+                                                scope="colgroup"></th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="1"
+                                                scope="colgroup"></th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="1"
+                                                scope="colgroup"></th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="2"
+                                                scope="colgroup">PKMT
+                                            </th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="2"
+                                                scope="colgroup">MINOR
+                                            </th>
+                                            <th class="text-center small"
+                                                style="border: 1px solid;border-bottom: 0px solid" colspan="2"
+                                                scope="colgroup">MIN DISPLAY
+                                            </th>
                                         </tr>
                                         <tr>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">DSI</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">TO</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">TOP</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">TO</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">TO</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                            <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">TO</th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">DSI
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">TO
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">TOP
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">QTY
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">TO
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">QTY
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">TO
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">QTY
+                                            </th>
+                                            <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                                class="text-center small">TO
+                                            </th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -351,22 +411,27 @@
                                                 <input type="text" class="form-control text-right" id="top" disabled>
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control text-right" id="pkmtqty" disabled>
+                                                <input type="text" class="form-control text-right" id="pkmtqty"
+                                                       disabled>
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class="form-control text-right" id="pkmtto" disabled>
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control text-right" id="minorqty" disabled>
+                                                <input type="text" class="form-control text-right" id="minorqty"
+                                                       disabled>
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control text-right" id="minorto" disabled>
+                                                <input type="text" class="form-control text-right" id="minorto"
+                                                       disabled>
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control text-right" id="mindisqty" disabled>
+                                                <input type="text" class="form-control text-right" id="mindisqty"
+                                                       disabled>
                                             </td>
                                             <td class="p-0">
-                                                <input type="text" class="form-control text-right" id="mindisto" disabled>
+                                                <input type="text" class="form-control text-right" id="mindisto"
+                                                       disabled>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -374,20 +439,28 @@
                                     <div class="row mr-0">
                                         <label for="mplus" class="col-sm-2 col-form-label text-right">M+</label>
                                         <input type="text" class="col-sm-2 form-control text-right" id="mplus" disabled>
-                                        <label for="minory" class="col-sm-6 col-form-label text-right">(PKMT Sudah termasuk M+) MINOR Y</label>
-                                        <input type="text" class="col-sm-2 form-control text-right" id="minory"  disabled>
+                                        <label for="minory" class="col-sm-6 col-form-label text-right">(PKMT Sudah
+                                            termasuk M+) MINOR Y</label>
+                                        <input type="text" class="col-sm-2 form-control text-right" id="minory"
+                                               disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="suppterakhir" class="col-sm-2 col-form-label text-right">Supplier Terakhir</label>
-                                        <input type="text" class="col-sm-6 form-control" id="suppterakhir" value="" disabled>
+                                        <label for="suppterakhir" class="col-sm-2 col-form-label text-right">Supplier
+                                            Terakhir</label>
+                                        <input type="text" class="col-sm-6 form-control" id="suppterakhir" value=""
+                                               disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="hargabeli" class="col-sm-2 col-form-label text-right">Harga Beli</label>
-                                        <input type="text" class="col-sm-3 form-control text-right" id="hargabeli" value="" disabled>
+                                        <label for="hargabeli" class="col-sm-2 col-form-label text-right">Harga
+                                            Beli</label>
+                                        <input type="text" class="col-sm-3 form-control text-right" id="hargabeli"
+                                               value="" disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="avgsales" class="col-sm-2 col-form-label text-right">Average Sales</label>
-                                        <input type="text" class="col-sm-3 form-control text-right" id="avgsales" value="" disabled>
+                                        <label for="avgsales" class="col-sm-2 col-form-label text-right">Average
+                                            Sales</label>
+                                        <input type="text" class="col-sm-3 form-control text-right" id="avgsales"
+                                               value="" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -403,25 +476,32 @@
                                 <tbody>
                                 <tr class="justify-content-md-center p-0">
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagnas" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagnas"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagigr" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagigr"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagidm" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagidm"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagomi" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagomi"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagbrd" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagbrd"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagobi" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagobi"
+                                               value="" disabled>
                                     </td>
                                     <td class="p-0">
-                                        <input type="text" class="form-control text-center text-danger" id="flagdepo" value="" disabled>
+                                        <input type="text" class="form-control text-center text-danger" id="flagdepo"
+                                               value="" disabled>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -429,13 +509,26 @@
                         </div>
                         <br>
                         <div class="row justify-content-md-center">
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-detailsales" data-toggle="modal" data-target="#m-detailsales">Detail Sales</button>
-                            <button class="btn btn-primary  m-1" id="btn-penerimaan"  data-toggle="modal" data-target="#m-penerimaan">Penerimaan</button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-pb" data-toggle="modal" data-target="#m-pb">PB</button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-so" data-toggle="modal" data-target="#m-so">SO</button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-hargabeli" data-toggle="modal" data-target="#m-hargabeli">Harga Beli</button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-stockcarton" data-toggle="modal" data-target="#m-stockcarton">Stock Carton</button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak" data-toggle="modal" data-target="#m-cetak">Cetak</button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-detailsales" data-toggle="modal"
+                                    data-target="#m-detailsales">Detail Sales
+                            </button>
+                            <button class="btn btn-primary  m-1" id="btn-penerimaan" data-toggle="modal"
+                                    data-target="#m-penerimaan">Penerimaan
+                            </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-pb" data-toggle="modal"
+                                    data-target="#m-pb">PB
+                            </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-so" data-toggle="modal"
+                                    data-target="#m-so">SO
+                            </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-hargabeli" data-toggle="modal"
+                                    data-target="#m-hargabeli">Harga Beli
+                            </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-stockcarton" data-toggle="modal"
+                                    data-target="#m-stockcarton">Stock Carton
+                            </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak">Cetak
+                            </button>
                         </div>
                     </div>
                 </fieldset>
@@ -443,12 +536,14 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
+                        <input id="search_lov" class="form-control search_lov" type="text"
+                               placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
                         <div class="invalid-feedback">
                             Inputkan minimal 3 karakter
                         </div>
@@ -487,8 +582,9 @@
     </div>
 
     {{--MODAL DETAIL SALES--}}
-    <div class="modal fade" id="m-detailsales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal-xl"  role="document" >
+    <div class="modal fade" id="m-detailsales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Rekap Trend Sales</h5>
@@ -497,30 +593,58 @@
                     {{--<div class="container">--}}
                     <div class="row">
                         <div class="col">
-                            <table class="table table-sm justify-content-md-center p-0 col-sm-12" id="table-detailsales">
+                            <table class="table table-sm justify-content-md-center p-0 col-sm-12"
+                                   id="table-detailsales">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid" colspan="1" scope="colgroup"></th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">INDOGROSIR</th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">OMI</th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">IDM</th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">MEMBER MERAH</th>
+                                    <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="1" scope="colgroup"></th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">INDOGROSIR
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">OMI
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">IDM
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">MEMBER MERAH
+                                    </th>
                                 </tr>
                                 <tr>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">BULAN</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">RUPIAH</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">RUPIAH</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">RUPIAH</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">QTY</th>
-                                    <th style="border: 1px solid;border-top: 0px solid" width="11%" class="text-center small">RUPIAH</th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">BULAN
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">QTY
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">RUPIAH
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">QTY
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">RUPIAH
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">QTY
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">RUPIAH
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">QTY
+                                    </th>
+                                    <th style="border: 1px solid;border-top: 0px solid" width="11%"
+                                        class="text-center small">RUPIAH
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr class="justify-content-md-center p-0 baris">
-                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >
+                                    <td class="p-0 text-center" style="padding-top: .45rem!important;">
                                         JAN
                                     </td>
                                     <td class="p-0">
@@ -551,21 +675,26 @@
                                 </tbody>
                                 <tfoot class="table-secondary">
                                 <tr>
-                                    <td class="text-center" colspan="2" style="padding-top: .55rem!important;" ><b> Average Sales</b></td>
+                                    <td class="text-center" colspan="2" style="padding-top: .55rem!important;"><b>
+                                            Average Sales</b></td>
                                     <td>
-                                        <input type="text" class="form-control text-right" id="avgsls-igr" value="" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-igr" value=""
+                                               disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control text-right" id="avgsls-omi" value="" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-omi" value=""
+                                               disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control text-right" id="avgsls-idm" value="" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-idm" value=""
+                                               disabled>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <input type="text" class="form-control text-right" id="avgsls-mrh" value="" disabled>
+                                        <input type="text" class="form-control text-right" id="avgsls-mrh" value=""
+                                               disabled>
                                     </td>
                                 </tr>
                                 </tfoot>
@@ -582,21 +711,23 @@
     </div>
 
     {{--MODAL Penerimaan--}}
-    <div class="modal fade" id="m-penerimaan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document" >
+    <div class="modal fade" id="m-penerimaan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Penerimaan</h5>
                 </div>
                 <div class="modal-body" style="height: 650px;">
-                        <div class="row">
-                            <label for="prod" class="col-sm-1 text-right">Produk </label>
-                            <input type="text" id="produk-penerimaan" class="form-control p-0 col-sm-6" disabled>
-                        </div>
+                    <div class="row">
+                        <label for="prod" class="col-sm-1 text-right">Produk </label>
+                        <input type="text" id="produk-penerimaan" class="form-control p-0 col-sm-6" disabled>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <div class="tableFixedHeader">
-                                <table class="table table-sm justify-content-md-center p-0 col-sm-12" id="table-penerimaan">
+                                <table class="table table-sm justify-content-md-center p-0 col-sm-12"
+                                       id="table-penerimaan">
                                     <thead class="thead-dark">
                                     <tr>
                                         <th width="30%" class="text-center small">Supplier</th>
@@ -654,8 +785,9 @@
     </div>
 
     {{--MODAL PB--}}
-    <div class="modal fade" id="m-pb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document" >
+    <div class="modal fade" id="m-pb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>PB</h5>
@@ -666,9 +798,16 @@
                             <table class="table table-sm justify-content-md-center p-0 col-sm-12" id="table-pb">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid" colspan="4" scope="colgroup">PB</th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">PO</th>
-                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid" colspan="2" scope="colgroup">BPB</th>
+                                    <th class="text-center"
+                                        style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid"
+                                        colspan="4" scope="colgroup">PB
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">PO
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        colspan="2" scope="colgroup">BPB
+                                    </th>
                                 </tr>
                                 <tr>
                                     <th width="10%" class="text-center small">Dokumen</th>
@@ -721,16 +860,17 @@
     </div>
 
     {{--MODAL SO--}}
-    <div class="modal fade" id="m-so" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document" >
+    <div class="modal fade" id="m-so" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 800px;">
                     <div class="row">
                         <fieldset class="card border-secondary p-2 col-sm-8">
-                            <legend  align="middle" class="w-auto h5 ">Stock Opname Nasional</legend>
+                            <legend align="middle" class="w-auto h5 ">Stock Opname Nasional</legend>
                             <div class="row">
-                                    <label for="periode-so" class="col-sm-2 col-form-label text-right">Periode SO</label>
-                                    <input type="text" class="form-control col-sm-2" id="periode-so" disabled>
+                                <label for="periode-so" class="col-sm-2 col-form-label text-right">Periode SO</label>
+                                <input type="text" class="form-control col-sm-2" id="periode-so" disabled>
                             </div>
                             <br>
                             <div class="row">
@@ -772,13 +912,15 @@
                                 </div>
                             </div>
 
-                            <label for="keterangan-so" class=" col-form-label">&nbsp;Selisih = Qty SO - Qty LPP - Qty Adjustment</label>
+                            <label for="keterangan-so" class=" col-form-label">&nbsp;Selisih = Qty SO - Qty LPP - Qty
+                                Adjustment</label>
 
                             <fieldset class="card border-secondary m-2 p-2">
-                                <legend  class="w-auto h5 ml-5">Detail Adjustment</legend>
+                                <legend class="w-auto h5 ml-5">Detail Adjustment</legend>
                                 <div class="row">
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
-                                        <table class="table table-sm justify-content-md-center col-sm-12" id="table-detailadj">
+                                        <table class="table table-sm justify-content-md-center col-sm-12"
+                                               id="table-detailadj">
                                             <thead class="thead-dark">
                                             <tr>
                                                 <th width="10%" class="text-center small">Seq</th>
@@ -811,10 +953,11 @@
 
                         <div class="col-sm-4">
                             <fieldset class="card border-secondary p-2 ">
-                                <legend  align="middle" class="w-auto h5 ">Stock Opname IC</legend>
+                                <legend align="middle" class="w-auto h5 ">Stock Opname IC</legend>
                                 <div class="row">
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
-                                        <table class="table table-sm justify-content-md-center col-sm-12 " id="table-soic">
+                                        <table class="table table-sm justify-content-md-center col-sm-12 "
+                                               id="table-soic">
                                             <thead class="thead-dark">
                                             <tr>
                                                 <th width="10%" class="text-center small">Tgl SO</th>
@@ -844,7 +987,7 @@
                                 </div>
                             </fieldset>
                             <div class="col-sm-12 text-center p-2">
-                                <a class="btn btn-primary btn-lg " id="btn-cetak-soic" >Cetak</a>
+                                <button class="btn btn-primary btn-lg " id="btn-cetak-soic">Cetak</button>
                             </div>
                         </div>
 
@@ -859,156 +1002,161 @@
     </div>
 
     {{--MODAL Harga Beli--}}
-    <div class="modal fade" id="m-hargabeli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document" >
+    <div class="modal fade" id="m-hargabeli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 800px;">
                     <fieldset class="card border-secondary col-sm-12">
-                        <legend  align="middle" class="w-auto h5">Harga Beli</legend>
+                        <legend align="middle" class="w-auto h5">Harga Beli</legend>
                         <div class="row m-1">
                             <label for="supp-terakhir" class="col-sm-2 col-form-label text-right">Supp Terakhir</label>
-                            <input type="text" class="form-control col-sm-10" id="hb-supp-terakhir">
+                            <input type="text" class="form-control col-sm-10" id="hb-supp-terakhir" disabled>
                         </div>
                         <div class="row m-1">
                             <label for="plu" class="col-sm-2 col-form-label text-right">PLU</label>
-                            <input type="text" class="form-control col-sm-10" id="hb-plu">
+                            <input type="text" class="form-control col-sm-10" id="hb-plu" disabled>
                         </div>
                         <div class="row m-1">
                             <label for="status-tag" class="col-sm-2 col-form-label text-right">Status Tag</label>
-                            <input type="text" class="form-control col-sm-5" id="hb-status-tag">
+                            <input type="text" class="form-control col-sm-5" id="hb-status-tag" disabled>
                             <label for="satuan-beli" class="col-sm-2 col-form-label text-right">Satuan Beli</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-satuan-beli">
+                            <input type="text" class="form-control col-sm-3 text-right" id="hb-satuan-beli" disabled>
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">BKP</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-bkp">
+                            <input type="text" class="form-control col-sm-1" id="hb-bkp" disabled>
                             <label class="col-sm-3 col-form-label text-right">Flag Bandrol</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-flag-bandrol">
+                            <input type="text" class="form-control col-sm-1" id="hb-flag-bandrol" disabled>
                             <label class="col-sm-2 col-form-label text-right">Harga Omi</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-harga-omi">
+                            <input type="text" class="form-control col-sm-3" id="hb-harga-omi" disabled>
                         </div>
                     </fieldset>
                     <fieldset class="card border-secondary col-sm-12 mt-2">
                         <div class="row m-1">
                             <label for="supp" class="col-sm-2 col-form-label text-right">Supp</label>
-                            <input type="text" class="form-control col-sm-8" id="hb-supp">
+                            <input type="text" class="form-control col-sm-8" id="hb-supp" disabled>
                             <label for="plu" class="col-sm-1 col-form-label text-right">PKP</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-pkp">
+                            <input type="text" class="form-control col-sm-1 text-center" id="hb-pkp" disabled>
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Jenis Harga</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-jenis-harga">
+                            <input type="text" class="form-control col-sm-3" id="hb-jenis-harga" disabled>
                             <label class="col-sm-2 col-form-label text-right">Tgl Berlaku</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-tgl-berlaku">
+                            <input type="text" class="form-control col-sm-3" id="hb-tgl-berlaku" disabled>
                             <label class="col-sm-1 col-form-label text-right">TOP</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-top">
+                            <input type="text" class="form-control col-sm-1" id="hb-top" disabled>
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Harga Beli</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-harga-beli">
+                            <input type="text" class="form-control col-sm-3 text-right" id="hb-harga-beli" disabled>
                             <label class="col-sm-2 col-form-label text-right">Kondisi</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-kondisi">
+                            <input type="text" class="form-control col-sm-3" id="hb-kondisi" disabled>
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">PPN BM</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-ppn-bm">
+                            <input type="text" class="form-control col-sm-3 text-right" id="hb-ppn-bm" disabled>
                             <label class="col-sm-2 col-form-label text-right">PPN</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-ppn">
+                            <input type="text" class="form-control col-sm-3 text-right" id="hb-ppn" disabled>
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Botol</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-botol">
+                            <input type="text" class="form-control col-sm-3 text-right" disabled id="hb-botol">
                             <label class="col-sm-2 col-form-label text-right">Total</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-total">
+                            <input type="text" class="form-control col-sm-3 text-right" disabled id="hb-total">
                         </div>
                         <div class="row m-1 mt-2">
                             <label class="col-sm-2 col-form-label text-right">Discount 1 %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-discount-1">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-1">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-1">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-1">
                             <label class="col-sm-1 col-form-label text-right">Satuan</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-satuan">
+                            <input type="text" class="form-control col-sm-1" disabled id="hb-satuan">
                             <label class="col-sm-1 col-form-label text-right">Bonus I</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-bonus-1">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-bonus-1">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Discount 2 %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-discount-2">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-2">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2">
                             <label class="col-sm-1 col-form-label text-right">Periode</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-periode-2">
+                            <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Discount 2 A %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-discount-2a">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2a">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-2a">
-                            <label class="col-sm-1 col-form-label text-right">Periode</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-periode-2a">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2a">
+                            <label class="col-sm-1 col-form-label text-right tex">Periode</label>
+                            <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2a">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Discount 2 B %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-discount-2b">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2b">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-2b">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2b">
                             <label class="col-sm-1 col-form-label text-right">Periode</label>
-                            <input type="text" class="form-control col-sm-3" id="hb-periode-2b">
+                            <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2b">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">Discount 3 %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-discount-3">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-3">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-3">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-3">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-3 col-form-label text-right">Discount 4: &nbsp; No. Return %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-no-return">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-no-return">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-no-return">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-no-return">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-3 col-form-label text-right">Cash Discount %</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-cash-discount">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-cash-discount">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-cash-discount">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled
+                                   id="hb-rp-cash-discount">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-3 col-form-label text-right">Distribution Fee</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-distribution-fee">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled
+                                   id="hb-distribution-fee">
                             <label class="col-sm-1 col-form-label text-right">Rp.</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-rp-distribution-fee">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled
+                                   id="hb-rp-distribution-fee">
                             <label class="col-sm-1 col-form-label text-right">Total</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-total-discount">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-total-discount">
                         </div>
                         <div class="row m-1 mt-3">
                             <label class="col-sm-2 col-form-label text-right">Bonus Kelipatan</label>
-                            <input type="text" class="form-control col-sm-1" id="hb-bonus-kelipatan">
+                            <input type="text" class="form-control col-sm-1 text-right" disabled
+                                   id="hb-bonus-kelipatan">
                             <label class="col-sm-2 col-form-label text-right">Periode</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-periode">
+                            <input type="text" class="form-control col-sm-2" disabled id="hb-periode">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">QTY BELI --> #1</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-beli1">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli1">
                             <label class="col-sm-1 col-form-label text-right">#2</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-beli2">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli2">
                             <label class="col-sm-1 col-form-label text-right">#3</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-beli3">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli3">
                         </div>
                         <div class="row m-1">
                             <label class="col-sm-2 col-form-label text-right">QTY BNS --> #1</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-bns1">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns1">
                             <label class="col-sm-1 col-form-label text-right">#2</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-bns2">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns2">
                             <label class="col-sm-1 col-form-label text-right">#3</label>
-                            <input type="text" class="form-control col-sm-2" id="hb-qty-bns3">
+                            <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns3">
                         </div>
                     </fieldset>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"><<< PREV </button>
-                    <button type="button" class="btn btn-secondary">NEXT >>></button>
+                    <button type="button" class="btn btn-secondary" id="btn-hb-prev"><<< PREV</button>
+                    <button type="button" class="btn btn-secondary" id="btn-hb-next">NEXT >>></button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -1016,14 +1164,15 @@
     </div>
 
     {{--MODAL Stock Carton--}}
-    <div class="modal fade" id="m-stockcarton" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable modal"  role="document" >
-            <div class="modal-content" style="max-height: 50%;">
+    <div class="modal fade" id="m-stockcarton" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal" role="document">
+            <div class="modal-content" style="max-height: 60%;">
                 <div class="modal-header">
                     <h5>Stock Carton</h5>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="stock-akhir-satuan-carton" disabled>
+                    <input type="text" class="form-control text-center" id="title-stock-carton" disabled>
                     <div class="row">
                         <table class="table table-sm justify-content-md-center m-2" id="table-stockcarton">
                             <thead class="thead-dark">
@@ -1034,7 +1183,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr class="justify-content-md-center p-0">
+                            <tr class="baris p-0">
                                 <td class="p-0">
                                     <input type="text" class="form-control" disabled>
                                 </td>
@@ -1057,8 +1206,9 @@
     </div>
 
     {{--LOADING--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="container">
@@ -1079,31 +1229,37 @@
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
         }
+
         label {
             color: #232443;
             /*color: #8A8A8A;*/
             font-weight: bold;
         }
+
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button,
         input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
+        input[type=date]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+
         .cardForm {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
+
         .my-custom-scrollbar {
             position: relative;
             height: 300px;
             overflow-x: hidden;
             overflow-y: scroll;
         }
+
         .table-wrapper-scroll-y {
             display: block;
         }
-        .row_lov:hover{
+
+        .row_lov:hover {
             cursor: pointer;
             background-color: grey;
             color: white;
@@ -1114,26 +1270,29 @@
         $(document).ready(function () {
             $('#item').hide();
             $('#input').focus();
+            $('#btn-hb-prev').prop('disabled', true);
 
-
-            var e = $.Event("keypress");
-            e.keyCode = 13;
-            $('#input').val('410');//1358840
-            $('#input').trigger(e);
-            $('#m-so').modal();
+            // var e = $.Event("keypress");
+            // e.keyCode = 13;
+            // $('#input').val('410');//1358840//1344890//0079630
+            // $('#input').trigger(e);
+            // $('#m-stockcarton').modal();
 
         });
         cetakso = {};
-
-        month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+        cetak = {};
+        hbke = 0;
+        data_hb = '';
+        total_data_hb = 0;
+        month = ['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'];
         $('#search_lov').keypress(function (e) {
             if (e.which == 13) {
-                if(this.value.length == 0) {
+                if (this.value.length == 0) {
                     $('#table_lov .row_lov').remove();
                     $('#table_lov').append(trlov);
                     $('.invalid-feedback').hide();
                 }
-                else if(this.value.length >= 3) {
+                else if (this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
                         url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_search',
@@ -1150,16 +1309,16 @@
                         }
                     });
                 }
-                else{
+                else {
                     $('.invalid-feedback').show();
                 }
             }
         });
 
-        $('#input').keypress(function(e) {
+        $('#input').keypress(function (e) {
             if (e.keyCode == 13) {
                 plu = $(this).val();
-                if(plu.length < 7){
+                if (plu.length < 7) {
                     plu = convertPlu($(this).val());
                 }
                 $(this).val(plu);
@@ -1170,15 +1329,15 @@
         function get_data(value) {
             $.ajax({
                 url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_select',
-                type:'POST',
-                data:{"_token":"{{ csrf_token() }}",value: value},
-                beforeSend: function(){
+                type: 'POST',
+                data: {"_token": "{{ csrf_token() }}", value: value},
+                beforeSend: function () {
                     $('#m_pluHelp').modal('hide');
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
-                success: function(response){
+                success: function (response) {
                     console.log(response);
-                    if(response.length==1){
+                    if (response.length == 1) {
                         clearpage();
                         swal({
                             title: response,
@@ -1186,10 +1345,11 @@
                         }).then((createData) => {
                         });
                     }
-                    else  {
+                    else {
                         notif(response.message, -1, response.message.length);
-                    $('.baris').remove();
-                    $('#cabang').val(response.produk['cab_namacabang']);
+
+                        $('.baris').remove();
+                        $('#cabang').val(response.produk['cab_namacabang']);
                         $('#plu').val(response.produk['prd_prdcd']);
                         $('#produk').val(response.produk['prd_deskripsipanjang']);
                         $('#katbarang').val(response.produk['katbrg']);
@@ -1198,43 +1358,43 @@
                         $('#kattoko').val(response.produk['prd_kategoritoko']);
                         $('#upd').val(formatDate(response.produk['prd_create_dt']));
 
-                        for (i=0;i<response.sj.length;i++){
+                        for (i = 0; i < response.sj.length; i++) {
                             $('#table-satuan').append('<tr class="baris">\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_sj+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_sj + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_sat+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_sat + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_barcode+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_barcode + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+format_currency(response.sj[i].sj_hgjual)+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_hgjual) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+format_currency(response.sj[i].sj_lcost)+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_lcost) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+format_currency(response.sj[i].sj_acost)+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_acost) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+format_currency(response.sj[i].sj_mgnl)+'%'+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_mgnl) + '%' + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+format_currency(response.sj[i].sj_mgna)+'%'+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_mgna) + '%' + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_tag+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_tag + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_minj+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_minj + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_bkp+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_bkp + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response.sj[i].sj_bkl+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_bkl + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                </tr>');
                         }
@@ -1263,37 +1423,37 @@
                         $('#sls_rph_11').val(format_currency(response['trendsales']['sls_rph_11']));
                         $('#sls_rph_12').val(format_currency(response['trendsales']['sls_rph_12']));
 
-                        for (i=0;i<response.sj.length;i++) {
+                        for (i = 0; i < response.sj.length; i++) {
                             $('#table-stock').append('<tr class="justify-content-md-center p-0 baris">\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control" value="'+response.stock[i].st+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control" value="' + response.stock[i].st + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_saldoawal)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_saldoawal) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_trfin)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_trfin) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_trfout)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_trfout) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_sales)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_sales) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_retur)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_retur) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_adj)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_adj) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_intransit)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_intransit) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_selisih_so)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_selisih_so) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                            <td class="p-0">\n' +
-                                '                                                <input type="text" class="form-control text-right" value="'+convertToRupiah2(response.stock[i].st_saldoakhir)+'" disabled>\n' +
+                                '                                                <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.stock[i].st_saldoakhir) + '" disabled>\n' +
                                 '                                            </td>\n' +
                                 '                                        </tr>');
                         }
@@ -1322,176 +1482,291 @@
                         $('#flagidm').val(response['flag'].IDM);
                         /*ITEM*/
                         $('#item').text(response['ITEM']);
-                        for (i=0;i<12;i++) {
-                            c=i+1;
+                        for (i = 0; i < 12; i++) {
+                            c = i + 1;
                             $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
                                 '                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >\n' +
-                                '                                        '+month[i]+' \n' +
+                                '                                        ' + month[i] + ' \n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].igr['qty_igr'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['qty_igr' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].igr['rph_igr'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['rph_igr' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].omi['qty_omi'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['qty_omi' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].omi['rph_omi'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['rph_omi' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].idm['qty_omi'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['qty_omi' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].idm['rph_omi'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['rph_omi' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].mrh['qty_mrh'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['qty_mrh' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+convertToRupiah2(response['detailsales'].mrh['rph_mrh'+c])+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['rph_mrh' + c]) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                </tr>');
                         }
-                        $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang']+' ['+response.produk['prd_prdcd']+']');
+                        $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
 
                         $('#avgsls-igr').val(response['detailsales'].avgigr);
                         $('#avgsls-idm').val(response['detailsales'].avgidm);
                         $('#avgsls-omi').val(response['detailsales'].avgomi);
                         $('#avgsls-mrh').val(response['detailsales'].avgmrh);
 
-                        for (var i = 0; i < response['supplier'].length ; i++ ){
+                        for (var i = 0; i < response['supplier'].length; i++) {
                             $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
-                                '<input type="text" class="form-control" value="'+response['supplier'][i].sup_namasupplier+'" disabled>\n' +
+                                '<input type="text" class="form-control" value="' + response['supplier'][i].sup_namasupplier + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control text-right" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
+                                '    <input type="text" class="form-control text-right" value="' + (response['supplier'][i].trm_qtybns) + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
+                                '    <input type="text" class="form-control text-right" value="' + response['supplier'][i].trm_bonus + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
+                                '    <input type="text" class="form-control text-right" value="' + response['supplier'][i].trm_bonus2 + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
+                                '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_dokumen + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control" value="'+formatDate(response['supplier'][i].trm_tanggal)+'" disabled>\n' +
+                                '    <input type="text" class="form-control" value="' + formatDate(response['supplier'][i].trm_tanggal) + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
+                                '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_top + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
+                                '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_hpp) + '" disabled>\n' +
                                 '</td>\n' +
                                 '<td class="p-0">\n' +
-                                '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                                '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_acost) + '" disabled>\n' +
                                 '</td><tr>');
                         }
-                        for (var i = 0; i < response['permintaan'].length ; i++ ) {
+                        for (var i = 0; i < response['permintaan'].length; i++) {
                             $('#table-pb').append('<tr class="justify-content-md-center p-0 baris">\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_no+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_no + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+formatDate(response['permintaan'][i].pb_tgl)+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tgl) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+nvl(convertToRupiah2(response['permintaan'][i].pb_qty),'')+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qty), '') + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                   <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_ket+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ket + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                    <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_nopo+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_nopo + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                   <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+formatDate(response['permintaan'][i].pb_tglpo)+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tglpo) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                   <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control text-right" value="'+nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb,''))+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb, '')) + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                   <td class="p-0">\n' +
-                                '                                        <input type="text" class="form-control" value="'+response['permintaan'][i].pb_ketbpb+'" disabled>\n' +
+                                '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ketbpb + '" disabled>\n' +
                                 '                                    </td>\n' +
                                 '                                </tr>');
                         }
                         //SO
                         cetakso.so = response['so'];
+                        cetakso.sotgl = response['so_tgl'];
                         cetakso.adjustso = response['adjustso'];
                         cetakso.resetsoic = response['resetsoic'];
+                        cetakso.plu = response.produk['prd_prdcd'];
+                        cetakso.barcode = response.produk['brc_barcode'];
+                        cetakso.produk = response.produk['prd_deskripsipanjang'];
 
                         $('#periode-so').val(formatDate(response['so_tgl']));
-                        for (var i = 0; i < response['so'].length ; i++ ) {
+                        for (var i = 0; i < response['so'].length; i++) {
                             $('#table-so').append(
                                 '<tr class="p-0 baris">\n' +
                                 '    <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_qtyso)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtyso) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '     <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_qtylpp)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtylpp) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].qty_adj)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].qty_adj) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].selisih)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].selisih) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].sop_newavgcost)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_newavgcost) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '         <input type="text" class="form-control text-center" value="'+convertToRupiah2(response['so'][i].rupiah)+'" disabled>\n' +
+                                '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].rupiah) + '" disabled>\n' +
                                 '    </td>\n' +
                                 '</tr>');
                         }
 
-                        for (var i = 0; i < response['adjustso'].length ; i++ ) {
+                        for (var i = 0; i < response['adjustso'].length; i++) {
                             $('#table-detailadj').append(
                                 '<tr class="p-0 baris">\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+response['adjustso'].adj_seq+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + response['adjustso'].adj_seq + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+convertToRupiah2(response['adjustso'].adj_qty)+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + convertToRupiah2(response['adjustso'].adj_qty) + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+response['adjustso'].adj_keterangan+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + response['adjustso'].adj_keterangan + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+formatDate(response['adjustso'].adj_create_dt)+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + formatDate(response['adjustso'].adj_create_dt) + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '</tr>'
                             );
                         }
 
-                        for (var i = 0; i < response['resetsoic'].length ; i++ ) {
+                        for (var i = 0; i < response['resetsoic'].length; i++) {
                             $('#table-soic').append(
                                 '<tr class="p-0 baris">\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+formatDate(response['resetsoic'].rso_tglso)+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + formatDate(response['resetsoic'].rso_tglso) + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+response['resetsoic'].rso_kodeso+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + response['resetsoic'].rso_kodeso + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+convertToRupiah2(response['resetsoic'].rso_qty)+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_qty) + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '    <td class="p-0">\n' +
-                                '       <input type="text" value="'+convertToRupiah2(response['resetsoic'].rso_avgcostreset)+'" class="form-control text-center" disabled>\n' +
+                                '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_avgcostreset) + '" class="form-control text-center" disabled>\n' +
                                 '    </td>\n' +
                                 '</tr>'
                             );
                         }
 
-                            null_check();
+                        //HARGA BELI
+                        total_data_hb = response['hargabeli'].length;
+                        data_hb = response['hargabeli'];
+                        if (total_data_hb == 1) {
+                            $('#btn-hb-next').prop('disabled', true);
+                        }
+                        else {
+                            $('#btn-hb-next').removeAttr('disabled');
+                        }
+                        $('#hb-supp-terakhir').val(response['hargabeli'][0].hb_supplier);
+                        $('#hb-plu').val(response['hargabeli'][0].hb_plu);
+                        $('#hb-status-tag').val(response['hargabeli'][0].hb_statustag);
+                        $('#hb-satuan-beli').val(response['hargabeli'][0].hb_satuanbl);
+                        $('#hb-bkp').val(response['hargabeli'][0].hb_bkp);
+                        $('#hb-flag-bandrol').val(response['hargabeli'][0].hb_flagbandrol);
+                        $('#hb-harga-omi').val(convertToRupiah(response['hargabeli'][0].hb_hrgomi));
+
+                        $('#hb-supp').val(response['hargabeli'][0].hb_supplier);
+                        $('#hb-pkp').val(response['hargabeli'][0].hb_pkp);
+                        $('#hb-jenis-harga').val(response['hargabeli'][0].hb_jnshg);
+                        $('#hb-tgl-berlaku').val(formatDate(response['hargabeli'][0].hb_tglberlaku));
+                        $('#hb-top').val(response['hargabeli'][0].hb_top);
+                        $('#hb-harga-beli').val(convertToRupiah(response['hargabeli'][0].hb_hgbeli));
+                        $('#hb-kondisi').val(response['hargabeli'][0].hb_kondisi);
+                        $('#hb-ppn-bm').val(convertToRupiah(response['hargabeli'][0].hb_ppnbm));
+                        $('#hb-ppn').val(convertToRupiah(response['hargabeli'][0].hb_ppn));
+                        $('#hb-botol').val(convertToRupiah(response['hargabeli'][0].hb_btl));
+                        $('#hb-total').val(convertToRupiah(response['hargabeli'][0].hb_total));
+
+                        $('#hb-discount-1').val(convertToRupiah(response['hargabeli'][0].hb_persendisc1));
+                        $('#hb-rp-1').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc1));
+                        $('#hb-satuan').val(response['hargabeli'][0].hb_satuan);
+                        $('#hb-bonus-1').val(response['hargabeli'][0].hb_bns1);
+
+                        $('#hb-discount-2').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2));
+                        $('#hb-rp-2').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2));
+                        $('#hb-periode-2').val(formatDate(response['hargabeli'][0].hb_periode));
+
+                        $('#hb-discount-2a').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2ii));
+                        $('#hb-rp-2a').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2ii));
+                        $('#hb-periode-2a').val(formatDate(response['hargabeli'][0].hb_periodeii));
+
+                        $('#hb-discount-2b').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2iii));
+                        $('#hb-rp-2b').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2iii));
+                        $('#hb-periode-2b').val(formatDate(response['hargabeli'][0].hb_periodeiii));
+
+                        $('#hb-discount-3').val(convertToRupiah(response['hargabeli'][0].hb_persendisc3));
+                        $('#hb-rp-3').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc3));
+
+                        $('#hb-no-return').val(convertToRupiah(response['hargabeli'][0].hb_persendisc4));
+                        $('#hb-rp-no-return').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc4));
+
+                        $('#hb-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_persencd));
+                        $('#hb-rp-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_rpcd));
+
+                        $('#hb-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_persendf));
+                        $('#hb-rp-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_rpdf));
+                        $('#hb-total-discount').val(convertToRupiah(response['hargabeli'][0].hb_total2));
+
+                        $('#hb-bonus-kelipatan').val(convertToRupiah2(response['hargabeli'][0].hb_bnslipat));
+                        $('#hb-periode').val(response['hargabeli'][0].hb_periodbns);
+
+                        $('#hb-qty-beli1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli1));
+                        $('#hb-qty-beli2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli2));
+                        $('#hb-qty-beli3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli3));
+
+                        $('#hb-qty-bns1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns1));
+                        $('#hb-qty-bns2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns2));
+                        $('#hb-qty-bns3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns3));
+
+
+                        //STOCK CARTON
+                        $('#title-stock-carton').val(response['stockcarton'].STC_TITLE);
+
+                        $('#table-stockcarton').append(
+                            '<tr class="baris p-0">\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_baik + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT1 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS1 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>' +
+                            '<tr class="baris p-0">\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_retur + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT2 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS2 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>' +
+                            '<tr class="baris p-0">\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_rsk + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT3 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS3 + '" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>');
+
+                        //CETAK
+                        cetak = response;
+                        null_check();
                     }
 
                 },
-                complete: function(){
-                    if($('#m_pluHelp').is(':visible')){
+                complete: function () {
+                    if ($('#m_pluHelp').is(':visible')) {
                         $('#search_lov').val('');
                         $('#table_lov .row_lov').remove();
                         $('#table_lov').append(trlov);
@@ -1500,80 +1775,188 @@
                 }
             });
         }
+
         var trlov = $('#table_lov tbody').html();
 
-        function lov_select(value){
+        function lov_select(value) {
             get_data(value);
         }
 
-        function notif(value,arr,leng){
-            arr=arr+1;
-            if (arr<leng){
+        function notif(value, arr, leng) {
+            arr = arr + 1;
+            if (arr < leng) {
                 swal({
                     title: value[arr],
                     icon: 'info'
                 }).then((createData) => {
-                    notif(value,arr,leng);
+                    notif(value, arr, leng);
                 });
             }
         }
-        $('#btn-cetak-soic').on('click',function () {
-            window.location.href ='/BackOffice/public/api/mstinformasihistoryproduct/cetak';
 
-            {{--$.ajax({--}}
-                {{--url: '/BackOffice/public/api/mstinformasihistoryproduct/cetak',--}}
-                {{--content: 'application/download',--}}
-                {{--type: 'GET',--}}
-                {{--data: {"_token": "{{ csrf_token() }}", value: cetakso},--}}
-                {{--beforeSend: function(){--}}
-                    {{--$('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
-                {{--},--}}
-                {{--success: function (data) {--}}
-                {{--},--}}
-                {{--complete: function(){--}}
-                    {{--$('#modal-loader').modal('hide');--}}
-                {{--}--}}
-            // });
+        $('#btn-hb-next').on('click', function () {
+            hbke++;
+            data_hargabeli(hbke);
+
+            if (hbke == total_data_hb - 1) {
+                $('#btn-hb-next').prop('disabled', true);
+            }
+            else if (hbke == 0) {
+                $('#btn-hb-prev').prop('disabled', true);
+            }
+            else {
+                $('#btn-hb-prev').removeAttr('disabled');
+                $('#btn-hb-next').removeAttr('disabled');
+            }
         });
 
-        // $('#btn-cetak-soic').on('click', function () {
-        //     $.ajax({
-        //         url: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/172905/test.pdf',
-        //         method: 'GET',
-        //         xhrFields: {
-        //             responseType: 'blob'
-        //         },
-        //         success: function (data) {
-        //             var a = document.createElement('a');
-        //             var url = window.URL.createObjectURL(data);
-        //             a.href = url;
-        //             a.download = 'myfile.pdf';
-        //             document.body.append(a);
-        //             a.click();
-        //             a.remove();
-        //             window.URL.revokeObjectURL(url);
-        //         }
-        //     });
-        // });
+        $('#btn-hb-prev').on('click', function () {
+            hbke--;
+            data_hargabeli(hbke);
+            if (hbke == total_data_hb - 1) {
+                $('#btn-hb-next').prop('disabled', true);
+            }
+            else if (hbke == 0) {
+                $('#btn-hb-prev').prop('disabled', true);
+            }
+            else {
+                $('#btn-hb-prev').removeAttr('disabled');
+                $('#btn-hb-next').removeAttr('disabled');
+            }
+        });
+
+        function data_hargabeli(value) {
+            console.log(data_hb);
+            $('#hb-supp').val(data_hb[value].hb_supplier);
+            $('#hb-pkp').val(data_hb[value].hb_pkp);
+            $('#hb-jenis-harga').val(data_hb[value].hb_jnshg);
+            $('#hb-tgl-berlaku').val(formatDate(data_hb[value].hb_tglberlaku));
+            $('#hb-top').val(data_hb[value].hb_top);
+            $('#hb-harga-beli').val(convertToRupiah(data_hb[value].hb_hgbeli));
+            $('#hb-kondisi').val(data_hb[value].hb_kondisi);
+            $('#hb-ppn-bm').val(convertToRupiah(data_hb[value].hb_ppnbm));
+            $('#hb-ppn').val(convertToRupiah(data_hb[value].hb_ppn));
+            $('#hb-botol').val(convertToRupiah(data_hb[value].hb_btl));
+            $('#hb-total').val(convertToRupiah(data_hb[value].hb_total));
+
+            $('#hb-discount-1').val(convertToRupiah(data_hb[value].hb_persendisc1));
+            $('#hb-rp-1').val(convertToRupiah(data_hb[value].hb_rpdisc1));
+            $('#hb-satuan').val(data_hb[value].hb_satuan);
+            $('#hb-bonus-1').val(data_hb[value].hb_bns1);
+
+            $('#hb-discount-2').val(convertToRupiah(data_hb[value].hb_persendisc2));
+            $('#hb-rp-2').val(convertToRupiah(data_hb[value].hb_rpdisc2));
+            $('#hb-periode-2').val(formatDate(data_hb[value].hb_periode));
+
+            $('#hb-discount-2a').val(convertToRupiah(data_hb[value].hb_persendisc2ii));
+            $('#hb-rp-2a').val(convertToRupiah(data_hb[value].hb_rpdisc2ii));
+            $('#hb-periode-2a').val(formatDate(data_hb[value].hb_periodeii));
+
+            $('#hb-discount-2b').val(convertToRupiah(data_hb[value].hb_persendisc2iii));
+            $('#hb-rp-2b').val(convertToRupiah(data_hb[value].hb_rpdisc2iii));
+            $('#hb-periode-2b').val(formatDate(data_hb[value].hb_periodeiii));
+
+            $('#hb-discount-3').val(convertToRupiah(data_hb[value].hb_persendisc3));
+            $('#hb-rp-3').val(convertToRupiah(data_hb[value].hb_rpdisc3));
+
+            $('#hb-no-return').val(convertToRupiah(data_hb[value].hb_persendisc4));
+            $('#hb-rp-no-return').val(convertToRupiah(data_hb[value].hb_rpdisc4));
+
+            $('#hb-cash-discount').val(convertToRupiah(data_hb[value].hb_persencd));
+            $('#hb-rp-cash-discount').val(convertToRupiah(data_hb[value].hb_rpcd));
+
+            $('#hb-distribution-fee').val(convertToRupiah(data_hb[value].hb_persendf));
+            $('#hb-rp-distribution-fee').val(convertToRupiah(data_hb[value].hb_rpdf));
+            $('#hb-total-discount').val(convertToRupiah(data_hb[value].hb_total2));
+
+            $('#hb-bonus-kelipatan').val(convertToRupiah2(data_hb[value].hb_bnslipat));
+            $('#hb-periode').val(data_hb[value].hb_periodbns);
+
+            $('#hb-qty-beli1').val(convertToRupiah2(data_hb[value].hb_qtybeli1));
+            $('#hb-qty-beli2').val(convertToRupiah2(data_hb[value].hb_qtybeli2));
+            $('#hb-qty-beli3').val(convertToRupiah2(data_hb[value].hb_qtybeli3));
+
+            $('#hb-qty-bns1').val(convertToRupiah2(data_hb[value].hb_qtybns1));
+            $('#hb-qty-bns2').val(convertToRupiah2(data_hb[value].hb_qtybns2));
+            $('#hb-qty-bns3').val(convertToRupiah2(data_hb[value].hb_qtybns3));
+        }
+
+        $('#btn-cetak-soic').on('click', function () {
+            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            data = {
+                cetakso: cetakso
+            };
+
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                var a;
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(xhttp.response);
+                    a.download = "SO.txt";
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    $('#modal-loader').modal('hide');
+                }
+            };
+            xhttp.open("POST", "{{ url('api/mstinformasihistoryproduct/cetak_so') }}");
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+            xhttp.responseType = 'blob';
+            xhttp.send(JSON.stringify(data));
+
+
+        });
+
+        $('#btn-cetak').on('click', function () {
+            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            data = {
+                cetak: cetak
+            };
+
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                var a;
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(xhttp.response);
+                    a.download = "INQUIRY.txt";
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    $('#modal-loader').modal('hide');
+                }
+            };
+            xhttp.open("POST", "{{ url('api/mstinformasihistoryproduct/cetak') }}");
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+            xhttp.responseType = 'blob';
+            xhttp.send(JSON.stringify(data));
+        });
+
 
         function format_currency(value) {
-            var val = (value/1).toFixed(2).replace('.', ',');
+            var val = (value / 1).toFixed(2).replace('.', ',');
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
+
         function toDate(value) {
             date = new Date(value);
             return date.getDate() + '-' + month[date.getMonth()] + '-' + date.getFullYear();
         }
+
         function clearpage() {
-            $("input:text").each(function(){
+            $("input:text").each(function () {
                 var $this = $(this);
-                    $this.val("");
+                $this.val("");
             });
         }
+
         function null_check() {
-            $("input:text").each(function(){
+            $("input:text").each(function () {
                 var $this = $(this);
-                if($this.val()=="null"){
+                if ($this.val() == "null") {
                     $this.val("");
                 }
             });

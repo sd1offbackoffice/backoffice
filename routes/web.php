@@ -83,13 +83,19 @@ Route::post('/mstmember/hapus_member','MASTER\memberController@hapus_member');
 
 /*BACK OFFICE - UPLOAD DAN MONITORING KKEI TOKO IGR*/
 Route::get('/bokirimkkei/index','BACKOFFICE\KirimKKEIController@index');
+Route::post('/bokirimkkei/upload','BACKOFFICE\KirimKKEIController@upload');
 
 /*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
 Route::get('/bokkei/index','BACKOFFICE\KKEIController@index');
 Route::post('/bokkei/get_detail_produk','BACKOFFICE\KKEIController@get_detail_produk');
 Route::post('/bokkei/get_detail_kkei','BACKOFFICE\KKEIController@get_detail_kkei');
 Route::post('/bokkei/save','BACKOFFICE\KKEIController@save');
-Route::get('/bokkei/laporan','BACKOFFICE\KKEIController@laporan1');
+Route::post('/bokkei/laporan','BACKOFFICE\KKEIController@laporan');
+Route::get('/bokkei/laporan','BACKOFFICE\KKEIController@laporan_view');
+
+Route::get('/bokkei/test','BACKOFFICE\KKEIController@test');
+
+
 
 
 /******** Michelle ********/

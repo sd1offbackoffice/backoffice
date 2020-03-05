@@ -26,19 +26,32 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    @php for($i=0;$i<20;$i++){ @endphp
+                                                    @foreach($kkei as $k)
                                                     <tr class="d-flex">
                                                         <td class="col-sm-2">
                                                             <div class="custom-control custom-checkbox text-center">
-                                                                <input type="checkbox" class="custom-control-input" id="cb_h{{ $i }}">
-                                                                <label class="custom-control-label mt-2" for="cb_h{{ $i }}"></label>
+                                                                <input type="checkbox" class="custom-control-input cb_kkei" id="cb_h{{ $k->kke_periode }}">
+                                                                <label class="custom-control-label mt-2" for="cb_h{{ $k->kke_periode }}"></label>
                                                             </div>
                                                         </td>
                                                         <td class="col-sm-10">
-                                                            <input disabled type="text" class="form-control">
+                                                            <input disabled type="text" class="form-control periode" value="{{ $k->kke_periode }}">
                                                         </td>
                                                     </tr>
-                                                    @php } @endphp
+                                                    @endforeach
+                                                    @for($i=count($kkei);$i<10;$i++)
+                                                        <tr class="d-flex">
+                                                            <td class="col-sm-2">
+                                                                <div class="custom-control custom-checkbox text-center">
+                                                                    <input type="checkbox" class="custom-control-input cb_kkei" id="cb_h{{ $i }}">
+                                                                    <label class="custom-control-label mt-2" for="cb_h{{ $i }}"></label>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-sm-10">
+                                                                <input disabled type="text" class="form-control periode" value="">
+                                                            </td>
+                                                        </tr>
+                                                    @endfor
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -46,7 +59,7 @@
                                     </div>
 
                                     <div class="col-sm-12 mb-1 text-center">
-                                        <button id="btn-upload" class="btn btn-primary">UPLOAD DATA</button>
+                                        <button id="btn-upload" class="btn btn-primary" onclick="upload()">UPLOAD DATA</button>
                                     </div>
                                 </fieldset>
                             </div>
@@ -88,7 +101,23 @@
         </div>
     </div>
 
-
+    {{--LOADER--}}
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="loader" id="loader"></div>
+                            <div class="col-sm-12 text-center">
+                                <label for="">LOADING...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <style>
@@ -132,35 +161,52 @@
             display: block;
         }
 
+        .table{
+            margin-bottom: 0px !important;
+        }
+
 
 
     </style>
 
     <script>
-        $(':input').prop('readonly',true);
-        $('.custom-select').prop('disabled',true);
-        $('#i_kodesupplier').prop('readonly',false);
-        $('#search_lov').prop('readonly',false);
-
-        $('#row_divisi_0').addClass('table-success');
-
         $(document).ready(function () {
 
         })
 
-        function divisi_select(value, row) {
-            $('.row_divisi').removeClass('table-success');
-            $('#row_divisi_'+row).addClass('table-success');
+        function upload(){
+            periode = [];
+            $('.cb_kkei').each(function(){
+                if($(this).is(':checked')){
+                    periode.push($(this).parent().parent().parent().find('.periode').val().replace(/\//g,''));
+                }
+            });
+
             $.ajax({
-                url: '/BackOffice/public/mstdepartement/divisi_select',
-                type:'GET',
-                data:{"_token":"{{ csrf_token() }}", value: value},
-                success: function(response){
-                    $('#table_departement .row_departement').remove();
-                    html = "";
-                    for(i=0;i<response.length;i++){
-                        html = '<tr class="row_departement d-flex"><td class="col-1">'+null_check(response[i].dep_kodedepartement)+'</td><td class="col-4">'+null_check(response[i].dep_namadepartement)+'</td><td class="col-1 pl-0 pr-0">'+null_check(response[i].dep_singkatandepartement)+'</td><td class="col-2">'+null_check(response[i].dep_kodemanager)+'</td><td class="col-2">'+null_check(response[i].dep_kodesecurity)+'</td><td class="col-2">'+null_check(response[i].dep_kodedepartement)+'</td></tr>';
-                        $('#table_departement').append(html);
+                url: '/BackOffice/public/bokirimkkei/upload',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {periode: periode},
+                beforeSend: function () {
+                    $('#modal-loader').modal('toggle');
+                    console.log(periode);
+                },
+                success: function (response, xhr) {
+                    console.log(xhr.status);
+                    $('#modal-loader').modal('toggle');
+                    if(response.status == 'success'){
+                        swal({
+                            title: response.message,
+                            icon: "success"
+                        });
+                    }
+                    else{
+                        swal({
+                            title: response.message,
+                            icon: "error"
+                        });
                     }
                 }
             });

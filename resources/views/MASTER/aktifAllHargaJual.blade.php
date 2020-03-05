@@ -24,7 +24,16 @@
                                 <th class="">Harga Baru</th>
                             </tr>
                             </thead>
-                            <tbdoy></tbdoy>
+                            <tbdoy>
+                                @foreach($getData as $data)
+                                    <tr>
+                                        <td>{{$data->prd_prdcd}}</td>
+                                        <td>{{$data->prd_deskripsipanjang}}</td>
+                                        <td>{{$data->prd_hrgjual}}</td>
+                                        <td>{{$data->prd_hrgjual3}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbdoy>
                         </table>
                     </div>
                 </fieldset>
@@ -55,12 +64,12 @@
                 type:'post',
                 success: function (result) {
                     console.log(result);
-                    $('#tableAktifkanAll').DataTable().clear();
-                    for (i=0; i< result.length; i++){
-                        $('#tableAktifkanAll').DataTable().row.add([
-                            result[i].prd_prdcd, result[i].prd_deskripsipanjang, convertToRupiah(result[i].prd_hrgjual), convertToRupiah(result[i].prd_hrgjual3)
-                        ]).draw();
-                    }
+                    // $('#tableAktifkanAll').DataTable().clear();
+                    // for (i=0; i< result.length; i++){
+                    //     $('#tableAktifkanAll').DataTable().row.add([
+                    //         result[i].prd_prdcd, result[i].prd_deskripsipanjang, convertToRupiah(result[i].prd_hrgjual), convertToRupiah(result[i].prd_hrgjual3)
+                    //     ]).draw();
+                    // }
                 }, error: function (err) {
                     console.log(err)
                 }

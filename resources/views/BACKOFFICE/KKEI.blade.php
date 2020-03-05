@@ -207,7 +207,7 @@
                             </div>
                             <div class="col-sm-5 mb-1 text-right">
                                 <button id="btn-save" class="col-sm-3 btn btn-success" onclick="save()">SAVE</button>
-                                <a target="_blank" href="http://192.168.71.234:8080/BackOffice/public/bokkei/laporan"><button id="btn-print" class="col-sm-3 btn btn-primary">PRINT</button></a>
+                                <button id="btn-print" class="col-sm-3 btn btn-primary" onclick="print()">PRINT</button>
                             </div>
                         </div>
                         <div class="row">
@@ -312,7 +312,7 @@
             $(".scroll-y").not(this).scrollTop($(this).scrollTop());
         });
 
-        $('#row_detail_0').find('.kke_prdcd').select();
+        $('#periode').select();
 
         currentPos = 0;
         currentIndex = 0;
@@ -328,15 +328,8 @@
             ready();
 
             $('#periode').prop('disabled',false);
-            // $('#periode').on('keypress',function(event){
-            //     if(event.which == 13 && !onchange){
-            //         console.log('x');
-            //         get_detail_kkei($(this).val());
-            //     }
-            // });
-
-            $('#periode').on('change',function(){
-                if(checkDate($(this).val())){
+            $('#periode').on('keydown',function(event){
+                if(event.which == 13 && checkDate($(this).val())){
                     get_detail_kkei($(this).val());
                 }
             });
@@ -350,13 +343,21 @@
             $('#total_kke_breakpb04').val(0);
             $('#total_kke_breakpb05').val(0);
             $('#txt_deskripsi').val('');
+            $('#btn-save').prop('disabled',true);
+            $('#btn-print').prop('disabled',true);
 
             $('.tanggal').off('blur change');
             $('input').off('click');
             $('input').off('keypress');
             $('.kke_tglkirim05').off('change');
-            $('#periode').off('change');
             $('.cek').off('change blur');
+            $('#periode').off('change');
+
+            $('#periode').on('change',function(){
+                if(checkDate($(this).val())){
+                    get_detail_kkei($(this).val());
+                }
+            });
 
             $('#i-search').on('keypress',function(event){
                 if(event.which == 13){
@@ -375,7 +376,6 @@
                     $(this).removeClass(thisClass).addClass(thisClass);
                 }
             });
-
 
             $('.tanggal').on('blur change',function(){
                 if($(this).val() != '' && !checkDate($(this).val())){
@@ -628,6 +628,7 @@
 
                                     cek();
 
+                                    $('#btn-save').prop('disabled',false);
                                     $('#row_form_'+row).find('.kke_estimasi').select();
                                 }
                                 else {
@@ -839,18 +840,19 @@
                             $('#table-form').find('input').each(function(){
                                 $(this).prop('disabled',true);
                             });
-                            $('button').each(function(){
-                                $(this).prop('disabled',true);
-                            });
+
+                            $('#btn-save').prop('disabled',true);
+                            $('#btn-print').prop('disabled',false);
+
                             edit = false;
                         }
                         else{
                             $('#keterangan').val('DATA BELUM DIUPLOAD');
+                            $('#btn-save').prop('disabled',false);
+                            $('#btn-print').prop('disabled',false);
+                            edit = true;
                             cek();
                         }
-
-
-
                         $('#periode').prop('disabled',false);
                         $('#periode').prop('readonly',false);
                         $('#row_detail_0').find('.kke_prdcd').select();
@@ -863,8 +865,6 @@
                             $('#periode').select();
                         });
                     }
-
-                    // ready();
                 }
             });
         }
@@ -995,7 +995,6 @@
             if(count < 10){
                 addRow();
             }
-            ready();
         }
 
         function search(plu){
@@ -1006,7 +1005,9 @@
                 if($(this).val() == convertPlu(plu)){
                     // $('#modal-loader').modal('toggle');
                     $(this).select();
-                    console.log('x');
+                    idx = $(this).parent().parent().index();
+                    currentPos  = $('#row_detail_0:nth-child(1)').find('td').innerHeight() * (idx - 1);
+                    $('.table-wrapper-scroll-y').animate({ scrollTop: currentPos }, 100);
                     found = true;
                     return false;
                 }
@@ -1063,12 +1064,20 @@
                     $('#modal-loader').modal('toggle');
                     console.log(datas);
                 },
-                success: function (response) {
+                success: function (response, xhr) {
+                    console.log(xhr.status);
                     $('#modal-loader').modal('toggle');
                     if(response.status == 'success'){
                         swal({
                             title: response.message,
                             icon: "success"
+                        });
+                        $('#btn-print').prop('disabled',false);
+                    }
+                    else{
+                        swal({
+                            title: response.message,
+                            icon: "error"
                         });
                     }
                 }
@@ -1094,6 +1103,43 @@
                     }
                 });
             }
+        }
+
+        function print(){
+
+            // Data to post
+            data = {
+                periode : $('#periode').val().replace(/\//g,'')
+            };
+
+            // Use XMLHttpRequest instead of Jquery $ajax
+            $('#modal-loader').modal('toggle');
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                var a;
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    // Trick for making downloadable link
+                    a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(xhttp.response);
+
+                    disposition = xhttp.getResponseHeader('Content-Disposition');
+                    filename = disposition.substr(disposition.indexOf('"') + 1).replace('"','');
+
+                    // Give filename you wish to download
+                    a.download = filename;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    $('#modal-loader').modal('toggle');
+                }
+            };
+            // Post data to URL which handles post request
+            xhttp.open("POST", "{{ url('bokkei/laporan') }}");
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+            // You should set responseType as blob for binary responses
+            xhttp.responseType = 'blob';
+            xhttp.send(JSON.stringify(data));
         }
 
     </script>

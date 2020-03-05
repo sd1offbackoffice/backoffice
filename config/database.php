@@ -91,16 +91,308 @@ return [
             'prefix_indexes' => true,
         ],
 
-        'simsmg' => [
+
+        // KONEKSI KE CABANG
+        'igrCPG' => [
             'driver' => 'oracle',
-            'host' => '192.168.237.193',
+            'host' => '192.168.226.191',
             'port' => '1521',
-            'database' => 'SIMSMG',
-            'username' => 'SIMSMG',
-            'password' => 'SIMSMG',
+            'database' => 'IGRCPG',
+            'username' => 'igrcpg',
+            'password' => 'M1ghtyth0rcpg!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
+
+        'igrSBY' => [ //igrsby
+            'driver' => 'oracle',
+            'host' => '192.9.220.192',
+            'port' => '1521',
+            'database' => 'IGRSBY2',
+            'username' => 'IGRSBY',
+            'password' => 'V1s10nsby!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrBDG' => [ //igrbdg
+            'driver' => 'oracle',
+            'host' => '192.168.222.191',
+            'port' => '1521',
+            'database' => 'IGRBDG',
+            'username' => 'IGRbdg',
+            'password' => 'Ind0gros1r2018',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrTGR' => [
+            'driver' => 'oracle',
+            'host' => '192.168.228.191',
+            'port' => '1521',
+            'database' => 'IGRTGR',
+            'username' => 'IGRTGR',
+            'password' => 'Gr34thulktgr!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrYGY' => [
+            'driver' => 'oracle',
+            'host' => '192.168.224.191',
+            'port' => '1521',
+            'database' => 'IGRYGY',
+            'username' => 'IGRYGY',
+            'password' => 'Sp1d3rmanyog!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrMDN' => [
+            'driver' => 'oracle',
+            'host' => '192.168.229.192',
+            'port' => '1521',
+            'database' => 'igrmdn2',
+            'username' => 'igrmdn',
+            'password' => 'Sc4rl3tw1cmdn!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrBKS' => [
+            'driver' => 'oracle',
+            'host' => '192.168.225.191',
+            'port' => '1521',
+            'database' => 'igrbks',
+            'username' => 'igrbks',
+            'password' => '1r0nm4nbks!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrPLG' => [
+            'driver' => 'oracle',
+            'host' => '192.168.232.192',
+            'port' => '1521',
+            'database' => 'IGRPLG2',
+            'username' => 'igrplg',
+            'password' => 'V4lkyr13PLG!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrKMY' => [
+            'driver' => 'oracle',
+            'host' => '192.168.234.191',
+            'port' => '1521',
+            'database' => 'IGRKMY',
+            'username' => 'igrkmy',
+            'password' => 'C4ptus4kmy!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrSMD' => [
+            'driver' => 'oracle',
+            'host' => '192.168.236.192',
+            'port' => '1521',
+            'database' => 'IGRSMD2',
+            'username' => 'igrsmd',
+            'password' => 'Furrysmd!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrSMG' => [
+            'driver' => 'oracle',
+            'host' => '192.168.237.191',
+            'port' => '1521',
+            'database' => 'IGRSMG',
+            'username' => 'igrsmg',
+            'password' => 'H4wkey3smg!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrPTK' => [
+            'driver' => 'oracle',
+            'host' => '192.168.238.191',
+            'port' => '1521',
+            'database' => 'IGRPTK',
+            'username' => 'igrptk',
+            'password' => 'Bp4nthptk!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrBGR' => [
+            'driver' => 'oracle',
+            'host' => '192.168.240.191',
+            'port' => '1521',
+            'database' => 'IGRBGR',
+            'username' => 'igrbgr',
+            'password' => '4ntm4nbgr!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrPKU' => [
+            'driver' => 'oracle',
+            'host' => '192.168.235.191',
+            'port' => '1521',
+            'database' => 'igrpku',
+            'username' => 'igrpku',
+            'password' => 'Bl4ckw1dowpku!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrBMS' => [
+            'driver' => 'oracle',
+            'host' => '192.168.239.192',
+            'port' => '1521',
+            'database' => 'igrbms2',
+            'username' => 'igrbms',
+            'password' => 'Drstr4ng3bms!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrMDO' => [
+            'driver' => 'oracle',
+            'host' => '192.168.241.191',
+            'port' => '1521',
+            'database' => 'IGRMDO',
+            'username' => 'IGRMDO',
+            'password' => 'W0lfverin3mdo!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrMKS' => [
+            'driver' => 'oracle',
+            'host' => '192.168.243.191',
+            'port' => '1521',
+            'database' => 'IGRMKS',
+            'username' => 'igrmks',
+            'password' => 'C4pm4rv3lmks!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrJBI' => [
+            'driver' => 'oracle',
+            'host' => '192.168.242.191',
+            'port' => '1521',
+            'database' => 'IGRJBI',
+            'username' => 'igrjbi',
+            'password' => 'B4bygr0otjbi!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrKRI' => [
+            'driver' => 'oracle',
+            'host' => '192.168.244.191',
+            'port' => '1521',
+            'database' => 'IGRKRI',
+            'username' => 'igrkri',
+            'password' => 'D4redev1lkri!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrAMB' => [
+            'driver' => 'oracle',
+            'host' => '192.168.230.191',
+            'port' => '1521',
+            'database' => 'IGRamb',
+            'username' => 'igramb',
+            'password' => 'L0k1amb!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrCPT' => [
+            'driver' => 'oracle',
+            'host' => '192.168.245.191',
+            'port' => '1521',
+            'database' => 'IGRCPT',
+            'username' => 'igrcpt',
+            'password' => 'Slvsurf3rcpt!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrKRW' => [
+            'driver' => 'oracle',
+            'host' => '192.168.231.191',
+            'port' => '1521',
+            'database' => 'IGRKRW',
+            'username' => 'IGRKRW',
+            'password' => 'F4lc0nkrw!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrMLG' => [
+            'driver' => 'oracle',
+            'host' => '192.168.246.191',
+            'port' => '1521',
+            'database' => 'IGRMLG',
+            'username' => 'igrmlg',
+            'password' => 'G4m0r4mlg!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrBDL' => [
+            'driver' => 'oracle',
+            'host' => '192.168.247.191',
+            'port' => '1521',
+            'database' => 'IGRBDL',
+            'username' => 'igrbdl',
+            'password' => 'igrbdl',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+
+        //KONEKSI KE PUSAT
+        'igrcrm' => [
+            'driver' => 'oracle',
+            'host' => '192.168.10.42',
+            'port' => '1521',
+            'database' => 'IGRCRM',
+            'username' => 'IGRCRM',
+            'password' => 'IGRCRM',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrmktho' => [
+            'driver' => 'oracle',
+            'host' => '192.168.71.169',
+            'port' => '1521',
+            'database' => 'IGRMKTHO2',
+            'username' => 'IGRCRM',
+            'password' => 'IGRCRM',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrsimkrw' => [
+            'driver' => 'oracle',
+            'host' => '192.168.231.193',
+            'port' => '1521',
+            'database' => 'SIMKRW',
+            'username' => 'SIMKRW',
+            'password' => 'SIMKRW',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        //KONEKSI KE SIMULASI
 
         'simkmy' => [
             'driver' => 'oracle',
@@ -109,6 +401,17 @@ return [
             'database' => 'SIMKMY',
             'username' => 'SIMKMY',
             'password' => 'SIMKMY',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simsmg' => [
+            'driver' => 'oracle',
+            'host' => '192.168.237.193',
+            'port' => '1521',
+            'database' => 'SIMSMG',
+            'username' => 'SIMSMG',
+            'password' => 'SIMSMG',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],

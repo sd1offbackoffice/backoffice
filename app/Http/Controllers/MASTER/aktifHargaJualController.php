@@ -47,47 +47,30 @@ class aktifHargaJualController extends Controller
     public function aktifkanHarga(Request $request){
         $plu    = $request->plu;
         $user   = 'JEP';
-        date_default_timezone_set('Asia/Jakarta');
-        $date   = date('Y-m-d H:i:s');
         $model  = new AllModel();
         $getData= $model->getKodeigr();
         $kodeigr = $getData[0]->prs_kodeigr;
-        $jenistimbangan = $getData[0]->prs_jenistimbangan;
+        $jenistimbangan = 1;
+//        $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $errm  = '';
+        $ppn = 'Y';
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 
-        $getHarga   = DB::table('tbmaster_prodmast')->select('prd_hrgjual', 'prd_tglhrgjual', 'prd_hrgjual3', 'prd_tglhrgjual3')->where('prd_prdcd', $plu)->get()->toArray();
+//        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
+//        oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+//        oci_bind_by_name($exec, ':prdcd',$plu,100);
+//        oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
+//        oci_bind_by_name($exec, ':user',$user,100);
+//        oci_bind_by_name($exec, ':errm', $errm,1000);
+//        oci_execute($exec);
 
-//        DB::raw(DB::statement ("call sp_aktifkan_harga_peritem(?)", array($kodeigr)));
-
-        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
+        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_allitem(:kodeigr,:jtim, :ppn, :user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
-        oci_bind_by_name($exec, ':prdcd',$plu,100);
         oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
+        oci_bind_by_name($exec, ':ppn',$ppn,100);
         oci_bind_by_name($exec, ':user',$user,100);
         oci_bind_by_name($exec, ':errm', $errm,1000);
         oci_execute($exec);
-
-
-//        DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual2' => $getHarga[0]->prd_hrgjual, 'prd_hrgjual' => $getHarga[0]->prd_hrgjual3, 'prd_tglhrgjual2' => $getHarga[0]->prd_tglhrgjual, 'prd_tglhrgjual' => $getHarga[0]->prd_tglhrgjual3 ,
-//            'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
-//
-//        DB::table('TBTR_UPDATE_PLU_MD')->insert(['UPD_KODEIGR' => $kodeigr, 'UPD_PRDCD' => $plu, 'UPD_HARGA' => $getHarga[0]->prd_hrgjual3, 'UPD_CREATE_BY' => $user, 'UPD_CREATE_DT' => $date]);
-//
-//        $hargaJual  = DB::table('TBMASTER_HARGAJUAL')
-//            ->where('HGJ_PRDCD', $plu)
-//            ->where('HGJ_KODEIGR', $kodeigr)
-//            ->orderBy('HGJ_PRDCD')
-//            ->orderBy('HGJ_TGLBERLAKU')
-//            ->get()->toArray();
-//
-//        if ($hargaJual == null){
-//            DB::table('tbmaster_prodmast')->where('prd_prdcd', $plu)->update(['prd_hrgjual3' => '0', 'prd_tglhrgjual3' => '', 'prd_modify_by' => $user, 'prd_modify_dt' => $date]);
-//        } else {
-//            dd('asd');
-//        }
-
-        $msg = "Data Berhasil Di Aktifkan";
 
         return response()->json($errm);
     }

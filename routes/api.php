@@ -44,8 +44,8 @@ Route::post('/mstkubikasiplano/save_kubikasi','MASTER\kubikasiPlanoController@sa
 //IGR_BO_INQUERY (INFORMASI DAN HISTORY PRODUK)
 Route::post('/mstinformasihistoryproduct/lov_search','MASTER\informasiHistoryProductController@lov_search');
 Route::post('/mstinformasihistoryproduct/lov_select','MASTER\informasiHistoryProductController@lov_select');
-//Route::post('/mstinformasihistoryproduct/cetak','MASTER\informasiHistoryProductController@cetak');
-Route::get('/mstinformasihistoryproduct/cetak','MASTER\informasiHistoryProductController@cetak');
+Route::post('/mstinformasihistoryproduct/cetak_so','MASTER\informasiHistoryProductController@cetak_so');
+Route::post('/mstinformasihistoryproduct/cetak','MASTER\informasiHistoryProductController@cetak');
 
 
 

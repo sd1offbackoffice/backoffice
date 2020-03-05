@@ -13,10 +13,6 @@ class KKEIController extends Controller
     //
 
     public function index(){
-//        $kkei = DB::table('temp_kkei')->first();
-//
-//        dd($kkei);
-
         return view('BACKOFFICE.KKEI');
     }
 
@@ -299,20 +295,26 @@ class KKEIController extends Controller
                 if($kkei['kke_tglkirim05'] != '' || $kkei['kke_tglkirim05'] != null)
                     $kkei['kke_tglkirim05'] = DB::RAW("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
                 else $kkei['kke_tglkirim05'] = '';
-//            $kkei['kke_tglkirim02'] = DB::RAW("to_date(".$kkei['kke_tglkirim02'].",'dd/mm/yyyy')");
-//            $kkei['kke_tglkirim03'] = DB::RAW("to_date(".$kkei['kke_tglkirim03'].",'dd/mm/yyyy')");
-//            $kkei['kke_tglkirim04'] = DB::RAW("to_date(".$kkei['kke_tglkirim04'].",'dd/mm/yyyy')");
-//            $kkei['kke_tglkirim05'] = DB::RAW("to_date(".$kkei['kke_tglkirim05'].",'dd/mm/yyyy')");
 
                 array_push($prdcd, $kkei['kke_prdcd']);
-                array_push($kkeis, $kkei);
+
+                $delete = DB::table('temp_kkei')
+                    ->where('kke_prdcd',$kkei['kke_prdcd'])
+                    ->delete();
+                $insert = DB::table('temp_kkei')
+                    ->insert($kkei);
             }
 
-            $delete = DB::table('temp_kkei')
-                ->whereIn('kke_prdcd',$prdcd)
-                ->delete();
-            $insert = DB::table('temp_kkei')
-                ->insert($kkeis);
+//            dd($kkeis);
+//            $delete = DB::table('temp_kkei')
+//                ->whereIn('kke_prdcd',$prdcd)
+//                ->delete();
+//            DB::connection()->enableQueryLog();
+//            $insert = DB::table('temp_kkei')
+//                ->insert($kkeis);
+//            $query = DB::getQueryLog();
+
+//            dd($query);
 
             if($insert){
                 $status = 'success';
@@ -328,36 +330,13 @@ class KKEIController extends Controller
         return compact(['status','message']);
     }
 
-    public function laporan(){
-
-
-
+    public function laporan(Request $request){
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
         $data = DB::table('temp_kkei')
-            ->where('kke_periode','03032020')
-            ->get();
-
-        $kkei[0] = $perusahaan->prs_namaperusahaan;
-//        $kkei[0]['prs_namacabang = $perusahaan->prs_namacabang;
-//        $kkei[0]['prs_namaregional'] = $perusahaan->prs_namaregional;
-//        return view('laporan-kke')->with(compact(['perusahaan','data']));
-
-        $data = [
-            'data' => $data,
-            'perusahaan' => $perusahaan
-        ];
-
-        return view('BACKOFFICE.KKEI-laporan')->with($data);
-    }
-
-    public function laporan1(){
-        $perusahaan = DB::table('tbmaster_perusahaan')
-            ->first();
-
-        $data = DB::table('temp_kkei')
-            ->where('kke_periode','17102015')
+            ->where('kke_periode',$request->periode)
+            ->orderBy('kke_kdsup')
             ->get();
 
         $data = [
@@ -365,7 +344,8 @@ class KKEIController extends Controller
             'perusahaan' => $perusahaan
         ];
 
-//        return view('BACKOFFICE.KKEI-laporan')->with($data);
+        $now = Carbon::now('Asia/Jakarta');
+        $now = date_format($now,'d-m-Y H-i-s');
 
         $dompdf = new PDF();
 
@@ -380,6 +360,45 @@ class KKEIController extends Controller
 
         // Render the HTML as PDF
 
-        return $dompdf->download('laporan-kkei.pdf');
+        return $dompdf->download('laporan-kkei '.$now.'.pdf');
+    }
+
+    public function laporan_view(){
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::table('temp_kkei')
+            ->where('kke_periode','17102015')
+            ->orderBy('kke_kdsup')
+            ->get();
+
+        $data = [
+            'data' => $data,
+            'perusahaan' => $perusahaan
+        ];
+
+        return view('BACKOFFICE.KKEI-laporan')->with($data);
+
+//        $now = Carbon::now('Asia/Jakarta');
+//        $now = date_format($now,'d-m-Y H-i-s');
+//
+//        $dompdf = new PDF();
+//
+//        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+//
+//        error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//        $dompdf = $pdf;
+//
+//        // (Optional) Setup the paper size and orientation
+//        $dompdf->setPaper('b5', 'portrait');
+//
+//        // Render the HTML as PDF
+//
+//        return $dompdf->download('laporan-kkei '.$now.'.pdf');
+    }
+
+    public function test(){
+        return view('BACKOFFICE.test');
     }
 }

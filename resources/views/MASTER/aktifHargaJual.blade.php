@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    {{--Modal--}}
+    {{--Modal HELP--}}
     <div class="modal fade" id="m_prodmast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
@@ -86,6 +86,24 @@
         </div>
     </div>
 
+    {{--Modal Loader--}}
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="loader" id="loader"></div>
+                            <div class="col-sm-12">
+                                <label for="">LOADING...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .row_lov:hover{
             cursor: pointer;
@@ -116,10 +134,17 @@
                     url: '/BackOffice/public/mstaktifhrgjual/aktifkanhrg',
                     type: 'post',
                     data:({plu:plu}),
+                    // beforeSend: function(){
+                    //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    // },
                     success: function (result) {
-                        swal('SUCCESS', result, 'success')
+                        $('#modal-loader').modal('hide');
+                        // swal('SUCCESS', result, 'success')
+                        console.log(result)
                         clearField()
-                    }, error : function () {
+                    }, error : function (error) {
+                        $('#modal-loader').modal('hide');
+                        console.log(error)
                         swal("Error",'','error');
                     }
                 })

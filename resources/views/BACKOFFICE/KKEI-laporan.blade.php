@@ -7,9 +7,17 @@
 <!-- <a href="/getPdf"><button>Download PDF</button></a> -->
 <header>
     <div style="float:left;">
-        <p>{{ $perusahaan->prs_namaperusahaan }}<br>
-            {{ $perusahaan->prs_namacabang }}<br>
-            {{ $perusahaan->prs_namaregional }}</p>
+        <table>
+            <tr>
+                <td>{{ $perusahaan->prs_namaperusahaan }}</td>
+            </tr>
+            <tr>
+                <td>{{ $perusahaan->prs_namacabang }}</td>
+            </tr>
+            <tr>
+                <td>{{ $perusahaan->prs_namaregional }}</td>
+            </tr>
+        </table>
         <?php
         $date=date_create('04/03/2020');
         ?>
@@ -36,7 +44,7 @@
     <br>
     <br>
     <div class="judul">
-        <p><h2>** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br></h2></p>
+        <h2>** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : 03 Maret 2020</h2>
     </div>
 </header>
 <table class="table">
@@ -113,13 +121,26 @@
     </tr>
     </thead>
     <tbody>
-    @php $i = 0; @endphp
+    @php
+        $i = 0;
+        $supplier = 'xxx';
+    @endphp
     @foreach($data as $k)
         @php $i++; @endphp
+        @php
+            if($supplier != $k->kke_kdsup){
+                $supplier = $k->kke_kdsup;
+        @endphp
+        <tr>
+            <td colspan="39"><strong>Supplier : {{ $k->kke_kdsup }}  -  {{ $k->kke_nmsup }}</strong></td>
+        </tr>
+        @php
+            }
+        @endphp
         <tr style="text-align: right">
             <td class="center">{{ $i }}</td>
             <td class="center">{{ $k->kke_prdcd }}</td>
-            <td style="text-align: left">{{ substr($k->kke_deskripsi,0,20) }}</td>
+            <td style="text-align: left">{{ substr($k->kke_deskripsi,0,21) }}</td>
             <td class="center">{{ $k->kke_unit }}</td>
             <td>{{ $k->kke_frac }}</td>
             <td>{{ number_format((float)$k->kke_beratproduk, 2, '.', '') }}</td>
@@ -163,11 +184,11 @@
     <tr style="text-align: right">
         <td colspan="23"></td>
         <td>Total</td>
-        <td>X</td>
-        <td>X</td>
-        <td>X</td>
-        <td>X</td>
-        <td>X</td>
+        <td>{{ $data[0]->kke_kubik1 }}</td>
+        <td>{{ $data[0]->kke_kubik2 }}</td>
+        <td>{{ $data[0]->kke_kubik3 }}</td>
+        <td>{{ $data[0]->kke_kubik4 }}</td>
+        <td>{{ $data[0]->kke_kubik5 }}</td>
         <td colspan="10"></td>
     </tr>
     </tfoot>
@@ -207,19 +228,19 @@
 <style>
     @page {
         margin: 25px 25px;
+        /*size: 1071pt 792pt;*/
     }
 
     header {
         position: fixed;
-        top: -5px;
+        top: -20px;
         left: 0px;
         right: 0px;
         bottom: 0px;
-        height: 50px;
         margin: none;
     }
     body {
-        font-size: 7px;
+        font-size: 10px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-weight: 400;
         line-height: 1.5;
@@ -250,6 +271,8 @@
         width: 100%;
         white-space: nowrap;
         color: #212529;
+        /*padding-top: 20px;*/
+        margin-top: 25px;
     }
     .table-ttd{
         width: 15%;
@@ -259,6 +282,7 @@
         vertical-align: top;
         /*border-top: 1px solid #dee2e6;*/
         padding: 0.20rem 0;
+        width: auto;
     }
 
     .table th{
