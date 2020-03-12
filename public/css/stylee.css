@@ -1,26 +1,26 @@
- /*Created By : JR(10/02/2020) | Modify By :  */
+/*Created By : JR(10/02/2020) | Modify By :  */
 .cardForm {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
- /*Created By : JR(10/02/2020) | Modify By :  */
-.thNormal th{
+/*Created By : JR(10/02/2020) | Modify By :  */
+.thNormal th {
     font-weight: normal !important;
 }
 
- /*Created By : JR(10/02/2020) | Modify By :  */
+/*Created By : JR(10/02/2020) | Modify By :  */
 label {
     color: #232443 !important;
     font-weight: bold !important;
 }
 
 /*UNTUK LOADING*/
- /*Created By : Denni(10/02/2020) | Modify By :  */
+/*Created By : Denni(10/02/2020) | Modify By :  */
 .loader {
     position: relative;
     text-align: center;
     margin: 15px auto 35px auto;
-    z-index: 9999;
+    z-index: 99999;
     display: block;
     width: 80px;
     height: 80px;
@@ -30,11 +30,13 @@ label {
     animation: spin 1s ease-in-out infinite;
     -webkit-animation: spin 1s ease-in-out infinite;
 }
+
 @keyframes spin {
     to {
         -webkit-transform: rotate(360deg);
     }
 }
+
 @-webkit-keyframes spin {
     to {
         -webkit-transform: rotate(360deg);
@@ -42,13 +44,25 @@ label {
 }
 
 /*UNTUK FIX HEADER TABLE*/
- /*Created By : JR(27/02/2020) | Modify By :  */
-.tableFixedHeader          { overflow-y: auto; height: 500px; }
-.tableFixedHeader thead th { position: sticky; top: 0; }
-.tableFixedHeader th     { background: #3b3b3b; color: white }
+/*Created By : JR(27/02/2020) | Modify By :  */
+.tableFixedHeader {
+    overflow-y: auto;
+    height: 500px;
+}
 
- /*UNTUK MERUBAH WARNA PADA FILED DATE*/
- /*Created By : JR(27/02/2020) | Modify By :  */
- .form-control[readonly] {
-      background-color: white;
-  }
+.tableFixedHeader thead th {
+    position: sticky;
+    top: 0;
+}
+
+.tableFixedHeader th {
+    background: #3b3b3b;
+    color: white
+}
+
+/*UNTUK MERUBAH WARNA PADA FILED DATE*/
+/*Created By : JR(27/02/2020) | Modify By :  */
+.form-control[readonly] {
+    background-color: white;
+}
+

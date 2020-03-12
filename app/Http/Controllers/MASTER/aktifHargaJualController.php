@@ -56,18 +56,10 @@ class aktifHargaJualController extends Controller
         $ppn = 'Y';
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 
-//        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
-//        oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
-//        oci_bind_by_name($exec, ':prdcd',$plu,100);
-//        oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
-//        oci_bind_by_name($exec, ':user',$user,100);
-//        oci_bind_by_name($exec, ':errm', $errm,1000);
-//        oci_execute($exec);
-
-        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_allitem(:kodeigr,:jtim, :ppn, :user,:errm); END;");
+        $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+        oci_bind_by_name($exec, ':prdcd',$plu,100);
         oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);
-        oci_bind_by_name($exec, ':ppn',$ppn,100);
         oci_bind_by_name($exec, ':user',$user,100);
         oci_bind_by_name($exec, ':errm', $errm,1000);
         oci_execute($exec);

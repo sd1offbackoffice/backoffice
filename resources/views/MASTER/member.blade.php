@@ -1073,8 +1073,7 @@
         </div>
     </div>
 
-    {{--LOADER--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
+    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document" >
             <div class="modal-content">
                 <div class="modal-body">
@@ -1090,8 +1089,6 @@
             </div>
         </div>
     </div>
-
-
 
 
     <style>
@@ -1217,6 +1214,9 @@
 
         member = '';
         idgroupkat = '';
+
+        lov_member_select(1);
+
 
         $('#i_pendidikanX').hide();
         $('#c_metodekirimX').hide();
@@ -2663,7 +2663,7 @@
                 type: 'GET',
                 data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
                 beforeSend: function(){
-                    $('#modal-loader').modal('show');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
                     if(response == 'not-found'){
@@ -2964,7 +2964,7 @@
                             // data: {kodemember: member.cus_kodemember, member: memberNew, membercrm: membercrmNew},
                             data: data,
                             beforeSend: function () {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                             },
                             success: function (response) {
                                 $('#modal-loader').modal('toggle');
@@ -3003,24 +3003,32 @@
         });
 
         $('#btn-aktif-nonaktif').on('click',function(){
-            if(member.cus_recordid == '1'){
-                message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
-                status = '';
+            if(member.cus_kodeigr != '22'){
+                swal({
+                    title: 'Data yang akan diproses tidak sesuai dengan cabang anda!',
+                    icon: 'error'
+                });
             }
             else{
-                message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
-                status = '1';
-            }
-            swal({
-                title: message,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((createData) => {
-                if (createData) {
-                    $('#m_aktifnonaktif').modal('toggle');
+                if(member.cus_recordid == '1'){
+                    message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
+                    status = '';
                 }
-            });
+                else{
+                    message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
+                    status = '1';
+                }
+                swal({
+                    title: message,
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((createData) => {
+                    if (createData) {
+                        $('#m_aktifnonaktif').modal('toggle');
+                    }
+                });
+            }
         });
 
         $('#m_aktifnonaktif').on('shown.bs.modal',function(){
@@ -3045,7 +3053,7 @@
                         },
                         data: {kodemember: member.cus_kodemember},
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
                             $('#modal-loader').modal('toggle');
@@ -3128,7 +3136,7 @@
                         },
                         data: {arrdata: arrdata},
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
                             $('#modal-loader').modal('toggle');
@@ -3193,7 +3201,7 @@
                                     },
                                     data: {username: 'VBU', password: password},
                                     beforeSend: function(){
-                                        $('#modal-loader').modal('show');
+                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                                     },
                                     success: function (response) {
                                         if(response == 'ok'){
@@ -3268,7 +3276,7 @@
                 },
                 data: {username: user, password: pass},
                 beforeSend: function(){
-                    $('#modal-loader').modal('show');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
                     if(response == 'ok'){
@@ -3327,5 +3335,4 @@
             });
         }
     </script>
-
 @endsection

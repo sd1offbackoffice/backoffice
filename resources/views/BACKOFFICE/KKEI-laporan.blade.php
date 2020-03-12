@@ -44,7 +44,7 @@
     <br>
     <br>
     <div class="judul">
-        <h2>** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : 03 Maret 2020</h2>
+        <h2>** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : {{ $periode }}</h2>
     </div>
 </header>
 <table class="table">
@@ -228,7 +228,7 @@
 <style>
     @page {
         margin: 25px 25px;
-        /*size: 1071pt 792pt;*/
+        size: 1071pt 792pt;
     }
 
     header {

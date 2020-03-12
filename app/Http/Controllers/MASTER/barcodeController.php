@@ -5,11 +5,13 @@ namespace App\Http\Controllers\MASTER;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 
 class barcodeController extends Controller
 {
     public function index(){
+        dd(Session::get('usid'));
         $barcode = DB::table('TBMASTER_BARCODE')
             ->select('*')
             ->limit(20)

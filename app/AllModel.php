@@ -27,5 +27,9 @@ class AllModel extends Model
         return $date;
     }
 
+    public function connectionProcedure(){
+        return oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+    }
+
 
 }

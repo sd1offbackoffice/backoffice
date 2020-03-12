@@ -569,24 +569,6 @@
         </div>
     </div>
 
-    {{--LOADER--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <style>
         body {
@@ -632,10 +614,11 @@
 
         $('#select').selectpicker();
 
-        $(':input').prop('readonly',true);
+        $(':input').prop('disabled',true);
         $('.custom-select').prop('disabled',true);
-        $('#i_plu').prop('readonly',false);
-        $('#search_lov').prop('readonly',false);
+        $('#i_plu').prop('disabled',false);
+        $('#search_lov').prop('disabled',false);
+        $('button').prop('disabled',false);
 
         $('#i_plu').select();
 

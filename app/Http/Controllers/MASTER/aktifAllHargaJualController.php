@@ -10,20 +10,7 @@ use Illuminate\Support\Facades\DB;
 class aktifAllHargaJualController extends Controller
 {
     public function index(){
-        $model  = new AllModel();
-        $date   = $model->getDate();
-
-//        $getData    = DB::table('tbmaster_prodmast')
-//            ->where('PRD_HRGJUAL3', '>', 0)
-//            ->whereRaw('PRD_HRGJUAL <> PRD_HRGJUAL3')
-//            ->whereRaw('PRD_TGLHRGJUAL3 IS NOT NULL')
-//            ->where('PRD_TGLHRGJUAL3', '<=', $date)
-//            ->whereRaw('PRD_TGLHRGJUAL3 >= PRD_TGLHRGJUAL')
-//            ->get()->toArray();
-
-        $getData    = DB::table('tbmaster_prodmast')
-            ->where('PRD_HRGJUAL3', '>', 0)
-            ->limit(100)->get()->toArray();
+        $getData = DB::select("SELECT * FROM TBMASTER_PRODMAST WHERE NVL(PRD_RECORDID,' ') <> '1' AND NVL(PRD_HRGJUAL3,0) > 0 AND PRD_HRGJUAL <> PRD_HRGJUAL3 AND PRD_TGLHRGJUAL3 IS NOT NULL AND PRD_TGLHRGJUAL3 <= SYSDATE AND CASE WHEN PRD_TGLHRGJUAL3 IS NULL THEN PRD_TGLHRGJUAL + 1 ELSE PRD_TGLHRGJUAL3 END >= CASE WHEN PRD_TGLHRGJUAL IS NULL THEN PRD_TGLHRGJUAL3 - 1 ELSE PRD_TGLHRGJUAL END ORDER BY PRD_KODEDIVISI, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG");
 
         return view('MASTER.aktifAllHargaJual', compact('getData'));
     }
@@ -35,7 +22,7 @@ class aktifAllHargaJualController extends Controller
         $kodeigr = $getData[0]->prs_kodeigr;
         $jenistimbangan = 1;
 //      $jenistimbangan = $getData[0]->prs_jenistimbangan;
-      $ppn            = $getData[0]->prs_nilaippn;
+        $ppn            = $getData[0]->prs_nilaippn;
         $errm  = '';
 
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');

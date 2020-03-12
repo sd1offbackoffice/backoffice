@@ -293,17 +293,18 @@
 
         $('#select').selectpicker();
 
-        $(':input').prop('readonly',true);
+        $(':input').prop('disabled',true);
         $('.custom-select').prop('disabled',true);
-        $('#i_kodesupplier').prop('readonly',false);
-        $('#search_lov').prop('readonly',false);
+        $('#i_kodesupplier').prop('disabled',false);
+        $('#search_lov').prop('disabled',false);
+        $('button').prop('disabled',false);
 
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
 
         lov_select('{{ $firstsupplier->sup_kodesupplier }}');
 
 
-        // $(":input").prop('readonly','true');
+        // $(":input").prop('disabled','true');
 
         $(document).ready(function () {
 
@@ -325,6 +326,9 @@
                 url: '/BackOffice/public/mstsupplier/lov_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
+                beforeSend: function(){
+                    $('#modal-loader').modal('toggle');
+                },
                 success: function(response){
                     if(response == 'not-found'){
                         swal({
@@ -387,7 +391,8 @@
                 },
                 complete: function(){
                     if($('#m_kodesupplierHelp').is(':visible')) {
-                        $('.modal').modal('toggle');
+                        $('#m_kodesupplierHelp').modal('toggle');
+                        $('#modal-loader').modal('toggle');
                         $('#search_lov').val('');
                         $('#table_lov .row_lov').remove();
                         $('#table_lov').append(trlov);

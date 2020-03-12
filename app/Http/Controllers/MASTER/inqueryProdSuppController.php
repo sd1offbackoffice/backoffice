@@ -5,20 +5,33 @@ namespace App\Http\Controllers\MASTER;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Psr\Log\NullLogger;
 
 
 class inqueryProdSuppController extends Controller
 {
     public function index()
     {
-        $supplier = DB::table('tbmaster_supplier')
-            ->select('sup_kodesupplier', 'sup_namasupplier')
-            ->where('sup_kodeigr', '=', '22')
-            ->orderBy('sup_kodesupplier')
-            ->limit(100)
-            ->get();
+//        $supplier = DB::table('tbtr_mstran_d')
+//            ->join('tbmaster_supplier', function ($join) {
+//                $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
+//                    ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
+//            })
+//            ->selectRaw("NVL (COUNT (1), 0)")
+//            ->get();
+//
+//        if($supplier==NULL) {
+//            return 'not-found';
+//        }else{
 
-        return view('MASTER.inqueryProdSupp')->with(compact(['supplier']));
+            $supplier = DB::table('tbmaster_supplier')
+                ->select('sup_kodesupplier', 'sup_namasupplier')
+                ->where('sup_kodeigr', '=', '22')
+                ->orderBy('sup_kodesupplier')
+                ->limit(100)
+                ->get();
+
+        return view('MASTER.inqueryProdSupp')->with(compact('supplier'));
     }
 
     public function prodSupp(Request $request)

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use Dompdf\Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -80,7 +82,7 @@ class KKEIController extends Controller
             $barang = DB::table('tbmaster_barang')
                 ->select('brg_brutopcs','brg_brutoctn')
                 ->where('brg_kodeigr',$kodeigr)
-                ->where('brg_prdcd','0613340')
+                ->where('brg_prdcd',$prdcd)
                 ->first();
 
             if($barang){
@@ -255,8 +257,8 @@ class KKEIController extends Controller
             $message = 'Data ditemukan!';
         }
         else{
-            $status = 'not-found';
-            $message = 'Data tidak ditemukan!';
+            $status = 'new-data';
+            $message = 'Buat data baru!';
         }
 
         return compact(['status','message','data']);
@@ -264,68 +266,69 @@ class KKEIController extends Controller
 
     public function save(Request $request){
         $kodeigr = '22';
-        $kkeis = array();
         $prdcd = array();
 
-        if(!empty($request->deleted)){
-            DB::table('temp_kkei')
-                ->whereIn('kke_prdcd',$request->deleted)
-                ->delete();
-            $status = 'success';
-            $message = 'Berhasil menghapus data!';
-        }
+        DB::beginTransaction();
 
-        if(!empty($request->kkei)){
-            for($i=0;$i<count($request->kkei);$i++){
-                $kkei = $request->kkei[$i];
-                $kkei['kke_kodeigr'] = $kodeigr;
-
-                if($kkei['kke_tglkirim01'] != '' || $kkei['kke_tglkirim01'] != null)
-                    $kkei['kke_tglkirim01'] = DB::RAW("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
-                else $kkei['kke_tglkirim01'] = '';
-                if($kkei['kke_tglkirim02'] != '' || $kkei['kke_tglkirim02'] != null)
-                    $kkei['kke_tglkirim02'] = DB::RAW("to_date('".$kkei['kke_tglkirim02']."','dd/mm/yyyy')");
-                else $kkei['kke_tglkirim02'] = '';
-                if($kkei['kke_tglkirim03'] != '' || $kkei['kke_tglkirim03'] != null)
-                    $kkei['kke_tglkirim03'] = DB::RAW("to_date('".$kkei['kke_tglkirim03']."','dd/mm/yyyy')");
-                else $kkei['kke_tglkirim03'] = '';
-                if($kkei['kke_tglkirim04'] != '' || $kkei['kke_tglkirim04'] != null)
-                    $kkei['kke_tglkirim04'] = DB::RAW("to_date('".$kkei['kke_tglkirim04']."','dd/mm/yyyy')");
-                else $kkei['kke_tglkirim04'] = '';
-                if($kkei['kke_tglkirim05'] != '' || $kkei['kke_tglkirim05'] != null)
-                    $kkei['kke_tglkirim05'] = DB::RAW("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
-                else $kkei['kke_tglkirim05'] = '';
-
-                array_push($prdcd, $kkei['kke_prdcd']);
-
-                $delete = DB::table('temp_kkei')
-                    ->where('kke_prdcd',$kkei['kke_prdcd'])
+        try{
+            if(!empty($request->deleted)){
+                DB::table('temp_kkei')
+                    ->whereIn('kke_prdcd',$request->deleted)
                     ->delete();
-                $insert = DB::table('temp_kkei')
-                    ->insert($kkei);
-            }
-
-//            dd($kkeis);
-//            $delete = DB::table('temp_kkei')
-//                ->whereIn('kke_prdcd',$prdcd)
-//                ->delete();
-//            DB::connection()->enableQueryLog();
-//            $insert = DB::table('temp_kkei')
-//                ->insert($kkeis);
-//            $query = DB::getQueryLog();
-
-//            dd($query);
-
-            if($insert){
                 $status = 'success';
-                $message = 'Berhasil menyimpan data!';
+                $message = 'Berhasil menghapus data!';
             }
-            else{
-                $status = 'failed';
-                $message = 'Gagal menyimpan data!';
+
+            if(!empty($request->kkei)){
+                for($i=0;$i<count($request->kkei);$i++){
+                    $kkei = $request->kkei[$i];
+                    $kkei['kke_kodeigr'] = $kodeigr;
+
+                    if($kkei['kke_tglkirim01'] != '' || $kkei['kke_tglkirim01'] != null)
+                        $kkei['kke_tglkirim01'] = DB::RAW("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
+                    else $kkei['kke_tglkirim01'] = '';
+                    if($kkei['kke_tglkirim02'] != '' || $kkei['kke_tglkirim02'] != null)
+                        $kkei['kke_tglkirim02'] = DB::RAW("to_date('".$kkei['kke_tglkirim02']."','dd/mm/yyyy')");
+                    else $kkei['kke_tglkirim02'] = '';
+                    if($kkei['kke_tglkirim03'] != '' || $kkei['kke_tglkirim03'] != null)
+                        $kkei['kke_tglkirim03'] = DB::RAW("to_date('".$kkei['kke_tglkirim03']."','dd/mm/yyyy')");
+                    else $kkei['kke_tglkirim03'] = '';
+                    if($kkei['kke_tglkirim04'] != '' || $kkei['kke_tglkirim04'] != null)
+                        $kkei['kke_tglkirim04'] = DB::RAW("to_date('".$kkei['kke_tglkirim04']."','dd/mm/yyyy')");
+                    else $kkei['kke_tglkirim04'] = '';
+                    if($kkei['kke_tglkirim05'] != '' || $kkei['kke_tglkirim05'] != null)
+                        $kkei['kke_tglkirim05'] = DB::RAW("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
+                    else $kkei['kke_tglkirim05'] = '';
+
+                    array_push($prdcd, $kkei['kke_prdcd']);
+
+                    $delete = DB::table('temp_kkei')
+                        ->where('kke_periode',$kkei['kke_periode'])
+                        ->where('kke_prdcd',$kkei['kke_prdcd'])
+                        ->delete();
+                    $insert = DB::table('temp_kkei')
+                        ->insert($kkei);
+                }
+
+                if($insert){
+                    $status = 'success';
+                    $message = 'Berhasil menyimpan data!';
+                    DB::commit();
+                }
+                else{
+                    $status = 'failed';
+                    $message = 'Gagal menyimpan data!';
+                    DB::rollBack();
+                }
             }
         }
-
+        catch (QueryException $e){
+            $status = 'failed';
+            $message = 'Gagal menyimpan data!';
+            $exception = $e->getMessage();
+            DB::rollBack();
+            return compact(['status','message','exception']);
+        }
 
         return compact(['status','message']);
     }
@@ -339,9 +342,16 @@ class KKEIController extends Controller
             ->orderBy('kke_kdsup')
             ->get();
 
+        $bulan = array(
+            'Januari','Februri','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'
+        );
+
+        $periode = substr($request->periode,0,2).' '.$bulan[(int) substr($request->periode,2,2)].' '.substr($request->periode,4,4);
+
         $data = [
             'data' => $data,
-            'perusahaan' => $perusahaan
+            'perusahaan' => $perusahaan,
+            'periode' => $periode
         ];
 
         $now = Carbon::now('Asia/Jakarta');
@@ -356,7 +366,7 @@ class KKEIController extends Controller
         $dompdf = $pdf;
 
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('a4', 'landscape');
+//        $dompdf->setPaper('a4', 'landscape');
 
         // Render the HTML as PDF
 
@@ -364,41 +374,37 @@ class KKEIController extends Controller
     }
 
     public function laporan_view(){
+        $rperiode = '17102015';
+
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
         $data = DB::table('temp_kkei')
-            ->where('kke_periode','17102015')
+            ->where('kke_periode',$rperiode)
             ->orderBy('kke_kdsup')
             ->get();
 
+        $bulan = array(
+            'Januari','Februri','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'
+        );
+
+        $periode = substr($rperiode,0,2).' '.$bulan[(int) substr($rperiode,2,2)-1].' '.substr($rperiode,4,4);
+
         $data = [
             'data' => $data,
-            'perusahaan' => $perusahaan
+            'perusahaan' => $perusahaan,
+            'periode' => $periode
         ];
 
         return view('BACKOFFICE.KKEI-laporan')->with($data);
-
-//        $now = Carbon::now('Asia/Jakarta');
-//        $now = date_format($now,'d-m-Y H-i-s');
-//
-//        $dompdf = new PDF();
-//
-//        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
-//
-//        error_reporting(E_ALL ^ E_DEPRECATED);
-//
-//        $dompdf = $pdf;
-//
-//        // (Optional) Setup the paper size and orientation
-//        $dompdf->setPaper('b5', 'portrait');
-//
-//        // Render the HTML as PDF
-//
-//        return $dompdf->download('laporan-kkei '.$now.'.pdf');
     }
 
     public function test(){
+//        $test = DB::connection('pgigrbdl')
+//            ->table('tbmaster_customer')
+//            ->limit(50000)
+//            ->get();
+//        dd($test);
         return view('BACKOFFICE.test');
     }
 }

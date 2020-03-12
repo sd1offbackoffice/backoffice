@@ -91,43 +91,47 @@
     </div>
 
     <div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                {{--<div class="modal-header">--}}
-                {{--<div class="form-row col-sm">--}}
-                {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
-                {{--</div>--}}
-                {{--</div>--}}
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <table class="table table-sm" id="table_lov">
-                                <thead>
-                                <tr>
-                                    <td>Kode PLU</td>
-                                    <td>Deskripsi</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($plu as $p)
-                                    <tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">
-                                        <td>{{ $p->prd_prdcd }}</td>
-                                        <td>{{ $p->prd_deskripsipanjang }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                <!-- Modal content-->
+                <div class="modal-content">
+                    {{--<div class="modal-header">--}}
+                    {{--<div class="form-row col-sm">--}}
+                    {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                    {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
+                    {{--</div>--}}
+                    {{--</div>--}}
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="tableFixedHeader">
+                                        <table class="table table-sm" id="table_lov">
+                                            <thead>
+                                            <tr>
+                                                <td>Kode PLU</td>
+                                                <td>Deskripsi</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($plu as $p)
+                                                <tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">
+                                                    <td>{{ $p->prd_prdcd }}</td>
+                                                    <td>{{ $p->prd_deskripsipanjang }}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {{--<div class="modal-footer">--}}
+                    {{--</div>--}}
                 </div>
-                {{--<div class="modal-footer">--}}
-                {{--</div>--}}
-            </div>
 
-        </div>
+            </div>
     </div>
 
 
@@ -153,10 +157,16 @@
             margin: 0;
         }
 
-        .row_detail:hover{
+        .row_detail:hover {
             cursor: pointer;
             background-color: grey;
         }
+
+        .row_lov:hover{
+            cursor: pointer;
+            background-color: #acacac;
+        }
+
         .my-custom-scrollbar {
             position: relative;
             height: 380px;

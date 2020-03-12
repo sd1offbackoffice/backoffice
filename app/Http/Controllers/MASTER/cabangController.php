@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MASTER;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Mockery\Exception;
 
 class cabangController extends Controller
@@ -23,10 +24,7 @@ class cabangController extends Controller
         $kodeigr    = $request->kodeigr;
 
         $getDetail  = DB::table('tbmaster_cabang')->select('*')->where('cab_kodecabang', $kodeigr)->get();
-//        $test   = 1;
-
         return response()->json($getDetail);
-//        return response()->json(['getDetail' => $getDetail, 'test' => $test]);
     }
 
     public function editDataCabang(Request $request){

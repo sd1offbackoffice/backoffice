@@ -14,7 +14,7 @@
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_kodeplu">
                                     </div>
-                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_supp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     <label for="b_tgldaftar" class="col-sm-1 col-form-label">Tgl Daftar</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tgldaftar" disabled>
@@ -86,7 +86,7 @@
                                                         <div class="form-group row mb-0">
                                                             <label for="d_divisi" class="col-sm-2 col-form-label">Divisi</label>
                                                             <div class="col-sm-1">
-                                                                <input type="text" class="form-control" id="d_divisi" disabled>
+                                                                <input type="text" class="form-control" id="d_divisi"  disabled>
                                                             </div>
                                                             <label for="d_namadiv">-</label>
                                                             <div class="col-sm-5">
@@ -125,7 +125,7 @@
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="d_statustag" class="col-sm-2 col-form-label">Status Tag</label>
-                                                            <div class="col-sm-2">
+                                                            <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_statustag" disabled>
                                                             </div>
                                                             <label for="d_statustag2">-</label>
@@ -277,7 +277,7 @@
                                                             </div>
                                                             <label>(%)</label>
                                                             <label for="h_tglaktif" class="col-sm-3 col-form-label">Tgl Aktif</label>
-                                                            <div class="col-sm-3">
+                                                            <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="h_tglaktif" disabled>
                                                             </div>
                                                         </div>
@@ -297,7 +297,7 @@
                                                         <div class="form-group row mb-0">
                                                             <label for="h_tglberlaku" class="col-sm-3 col-form-label">Tgl Berlaku</label>
                                                             <div class="col-sm-3">
-                                                                <input type="text" class="form-control" id="h_tglberlakau" disabled>
+                                                                <input type="text" class="form-control" id="h_tglberlaku" disabled>
                                                             </div>
                                                             <label for="h_flagnondistfee" class="col-sm-3 col-form-label">Flag Non Dist Fee</label>
                                                             <div class="col-sm-1">
@@ -395,7 +395,6 @@
                                                             <div class="col-sm-3">
                                                                 <input type="text" class="form-control" id="b_tglpromo" disabled>
                                                             </div>
-                                                            {{--<label for="i_harusdiisi" class="col-sm-3 text-right"><span class="wajib">*Harus diisi</span></label>--}}
                                                         </div>
                                                     <div class="form-group row">
                                                         <label for="b_jampromo" class="col-sm-9 col-form-label">Jam Promo</label>
@@ -413,13 +412,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </fieldset>
+                    </fieldset>
+                </div>
             </div>
         </div>
-    </div>
 
     <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
         <div class="modal-dialog modal-dialog-centered" role="document" >
@@ -438,107 +436,229 @@
         </div>
     </div>
 
+    {{--<div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">--}}
+
+            {{--<!-- Modal content-->--}}
+            {{--<div class="modal-content">--}}
+                {{--<div class="modal-header">--}}
+                {{--<div class="form-row col-sm">--}}
+                {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
+                {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="modal-body">--}}
+                    {{--<div class="container">--}}
+                        {{--<div class="row">--}}
+                            {{--<div class="col">--}}
+                                {{--<div class="tableFixedHeader">--}}
+                                    {{--<table class="table table-sm" id="table_lov">--}}
+                                        {{--<thead>--}}
+                                        {{--<tr>--}}
+                                            {{--<td>Nama Barang</td>--}}
+                                            {{--<td>PLU</td>--}}
+                                            {{--<td>PLU Supplier</td>--}}
+                                            {{--<td>Singkatan</td>--}}
+                                        {{--</tr>--}}
+                                        {{--</thead>--}}
+                                        {{--<tbody>--}}
+                                        {{--@foreach($plu as $p)--}}
+                                            {{--<tr onclick="show('{{ $p->prd_prdcd }}')" class="row_lov">--}}
+                                                {{--<td>{{ $p->prd_deskripsipanjang }}</td>--}}
+                                                {{--<td>{{ $p->prd_prdcd }}</td>--}}
+                                                {{--<td>{{ $p->prd_plusupplier }}</td>--}}
+                                                {{--<td>{{ $p->prd_deskripsipendek }}</td>--}}
+                                            {{--</tr>--}}
+                                        {{--@endforeach--}}
+                                        {{--</tbody>--}}
+                                    {{--</table>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="modal-footer"></div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+    {{--<div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<div class="modal-header">--}}
+                    {{--<div class="form-row col-sm">--}}
+                        {{--<input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                        {{--<div class="invalid-feedback">--}}
+                            {{--Inputkan minimal 3 karakter--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="modal-body">--}}
+                    {{--<div class="container">--}}
+                        {{--<div class="row">--}}
+                            {{--<div class="col lov">--}}
+                                {{--<table class="table table-sm" id="table_lov">--}}
+                                    {{--<thead>--}}
+                                    {{--<tr>--}}
+                                        {{--<td>Nama Barang</td>--}}
+                                        {{--<td>PLU</td>--}}
+                                        {{--<td>PLU Supplier</td>--}}
+                                        {{--<td>Singkatan</td>--}}
+                                    {{--</tr>--}}
+                                    {{--</thead>--}}
+                                    {{--<tbody>--}}
+                                    {{--@foreach($plu as $p)--}}
+                                        {{--<tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">--}}
+                                            {{--<td>{{ $p->prd_deskripsipanjang }}</td>--}}
+                                            {{--<td>{{ $p->prd_prdcd }}</td>--}}
+                                            {{--<td>{{ $p->prd_plusupplier }}</td>--}}
+                                            {{--<td>{{ $p->prd_deskripsipendek }}</td>--}}
+                                        {{--</tr>--}}
+                                    {{--@endforeach--}}
+                                    {{--</tbody>--}}
+                                {{--</table>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="modal-footer">--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+
+    <style>
+        body {
+            background-color: #edece9;
+            /*background-color: #ECF2F4  !important;*/
+        }
+        label {
+            color: #232443;
+            /*color: #8A8A8A;*/
+            font-weight: bold;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=date]::-webkit-inner-spin-button,
+        input[type=date]::-webkit-outer-spin-button{
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .cardForm {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        </style>
+
     <script>
+
+        $(document).ready(function(){
+            show('0000040');
+        });
 
         $(document).on('keypress', '#b_kodeplu', function (e) {
             if (e.which == 13) {
                 e.preventDefault();
                 let kodeplu = $('#b_kodeplu').val();
-
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/mstbarang/barang',
-                    type: 'post',
-                    data: {kodeplu: kodeplu},
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (result) {
-                        $('#modal-loader').modal('hide');
-
-                            $('#b_kodeplu').val(result.data[i].prd_prdcd);
-                            $('#b_pluho').val(result.data[i].prd_plumcg);
-                            $('#b_plusupp').val(result.data[i].prd_plusupplier);
-                            $('#b_nmbrg').val(result.data[i].prd_deskripsipendek);
-                            $('#b_nmbrg2').val(result.data[i].prd_deskripsipanjang);
-                            $('#b_tgldaftar').val(result.data[i].prd_tgldaftar);
-                            $('#b_tgldisc').val(result.data[i].prd_tgldiscontinue);
-                            $('#b_barcode').val(result.data[i].prd_barcode1);
-                            $('#b_barcode2').val(result.data[i].prd_barcode2);
-                            $('#b_statbarcode').val(result.data[i].prd_flagbarcode1);
-                            $('#b_tglaktif').val(result.data[i].prd_tglaktif);
-
-                            $('#d_divisi').val(result.data[i].prd_kodedivisi);
-                            $('#d_namadivisi').val(result.data[i].prd_namadivisi);
-                            $('#d_departemen').val(result.data[i].prd_kodedepartement);
-                            $('#d_namadepartemen').val(result.data[i].prd_namadepartement);
-                            $('#d_kategori').val(result.data[i].prd_kodekategoribarang);
-                            $('#d_namakategori').val(result.data[i].prd_namakat);
-                            $('#d_kategoritoko').val(result.data[i].prd_kategoritoko);
-                            $('#d_flagcbg').val(result.data[i].prd_kodecabang);
-                            $('#d_statustag').val(result.data[i].prd_kodetag);
-                            $('#d_statustag2').val(result.data[i].prd_kettag);
-                            $('#d_bkp').val(result.data[i].prd_flagbkp1);
-                            $('#d_bkp2').val(result.data[i].prd_flagbkp2);
-                            $('#d_kodedivpo').val(result.data[i].prd_kodedivisipo);
-                            $('#d_kelipatan').val(result.data[i].prd_flagkelipatanorder);
-                            $('#d_satju').val(result.data[i].prd_unit);
-                            $('#d_satju2').val(result.data[i].prd_frac);
-                            $('#d_satbe').val(result.data[i].prd_satuanbeli);
-                            $('#d_satbe2').val(result.data[i].prd_isibeli);
-                            $('#d_satstok').val(result.data[i].prd_frackonversi);
-                            $('#d_satstok2').val(result.data[i].prd_satuankonversi);
-                            $('#d_qtymin').val(result.data[i].prd_minimumorder);
-                            $('#d_kondisi').val(result.data[i].prd_perlakuanbarang);
-                            $('#d_flaggdg').val(result.data[i].prd_flaggudang);
-                            $('#d_grupbrg').val(result.data[i].prd_grouppb);
-                            $('#d_grupjual').val(result.data[i].prd_group);
-                            $('#d_minor').val(result.data[i].prd_minory);
-                            $('#d_hargabdr').val(result.data[i].prd_flagbandrol);
-                            $('#d_labelhrg').val(result.data[i].prd_flagcetaklabelharga);
-                            $('#d_ordertoko').val(result.data[i].prd_flagbarangordertoko);
-                            $('#d_tdkdiskon').val(result.data[i].prd_brgnondiscount);
-                            $('#d_openprice').val(result.data[i].prd_openprice);
-                            $('#d_minimjual').val(result.data[i].prd_minimumjual);
-
-                            $('#h_hppterakhir').val(result.data[i].prd_lastcost);
-                            $('#h_hpprata').val(result.data[i].prd_averagecost);
-                            $('#h_stdmrg').val(result.data[i].prd_markupstandard);
-                            $('#h_hrgjual').val(result.data[i].prd_hrgjual);
-                            $('#h_marginaktual').val(result.data[i].prd_margin_n);
-                            $('#h_tglaktif').val(result.data[i].prd_tglhrgjual);
-                            $('#h_hrgjualbaru').val(result.data[i].prd_hrgjual3);
-                            $('#h_marginaktual2').val(result.data[i].prd_margin_a);
-                            $('#h_tglberlaku').val(result.data[i].prd_tglhrgjual3);
-                            $('#h_flagnondistfee').val(result.data[i].prd_flagnondistfee);
-
-                            $('#di_lebarprod').val(result.data[i].prd_dimensilebar);
-                            $('#di_panjangprod').val(result.data[i].prd_dimensipanjang);
-                            $('#di_tinggiprod').val(result.data[i].prd_dimensitinggi);
-                            $('#di_flagexpr').val(result.data[i].prd_flagexport);
-                            $('#di_lebarkemasan').val(result.data[i].prd_lebar_ex);
-                            $('#di_panjangkemasan').val(result.data[i].prd_panjang_ex);
-                            $('#di_tinggikemasan').val(result.data[i].prd_tinggi_ex);
-                            $('#di_beratpcs').val(result.data[i].prd_berat_pcs);
-                            $('#di_beratctn').val(result.data[i].prd_berat_ctn);
-                            $('#di_beratbox').val(result.data[i].prd_berat_box);
-
-                            $('#b_updateakhir').val(result.data[i].prd_tanggal_upd);
-                            $('#b_updateakhir2').val(result.data[i].prd_user_upd);
-                            $('#b_tglpromo').val(result.data[i].prd_tgl_promo);
-                            $('#b_jampromo').val(result.data[i].prd_jam_promo);
-                            $('#b_hrgpromo').val(result.data[i].prd_harga_promo);
-
-
-
-
-                        }
-                    }
-                })
+                show(convertPlu(kodeplu));
             }
-        })
+        });
 
+        function show(kodeplu){
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/mstbarang/showBarang',
+                type: 'post',
+                data: {kodeplu: kodeplu},
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (result) {
+                    $('#modal-loader').modal('hide');
+                    let data = result.data[0];
+                    console.log(result);
 
+                    $('#b_kodeplu').val(data.prd_prdcd);
+                    $('#b_pluho').val(data.prd_plumcg);
+                    $('#b_plusupp').val(data.prd_plusupplier);
+                    $('#b_nmbrg').val(data.prd_deskripsipendek);
+                    $('#b_nmbrg2').val(data.prd_deskripsipanjang);
+                    $('#b_tgldaftar').val(formatDate(data.prd_tgldaftar));
+                    $('#b_tgldisc').val(formatDate(data.prd_tgldiscontinue));
+                    $('#b_barcode').val(data.brc_barcode);
+                    $('#b_barcode2').val(data.prd_barcode2);
+                    $('#b_statbarcode').val(data.prd_flagbarcode1);
+                    $('#b_tglaktif').val(formatDate(data.prd_tglaktif));
+
+                    $('#d_divisi').val(data.prd_kodedivisi);
+                    $('#d_namadiv').val(data.div_namadivisi);
+                    $('#d_departemen').val(data.prd_kodedepartement);
+                    $('#d_namadepartemen').val(data.dep_namadepartement);
+                    $('#d_kategori').val(data.prd_kodekategoribarang);
+                    $('#d_namakategori').val(data.kat_namakategori);
+                    $('#d_kategoritoko').val(data.prd_kategoritoko);
+                    $('#d_flagcbg').val(data.prd_kodecabang);
+                    $('#d_statustag').val(data.prd_kodetag);
+                    $('#d_statustag2').val(data.tag_keterangan);
+                    $('#d_bkp').val(data.prd_flagbkp1);
+                    $('#d_bkp2').val(data.prd_flagbkp2);
+                    $('#d_kodedivpo').val(data.prd_kodedivisipo);
+                    $('#d_kelipatan').val(data.prd_flagkelipatanorder);
+                    $('#d_satju').val(data.prd_unit);
+                    $('#d_satju2').val(data.prd_frac);
+                    $('#d_satbe').val(data.prd_satuanbeli);
+                    $('#d_satbe2').val(data.prd_isibeli);
+                    $('#d_satstok').val(data.prd_frackonversi);
+                    $('#d_satstok2').val(data.prd_satuankonversi);
+                    $('#d_qtymin').val(data.pkm_minorder);
+                    $('#d_kondisi').val(data.prd_perlakuanbarang);
+                    $('#d_flaggdg').val(data.prd_flaggudang);
+                    $('#d_grupbrg').val(data.prd_grouppb);
+                    $('#d_grupjual').val(data.prd_group);
+                    $('#d_minor').val(data.prd_minory);
+                    $('#d_hargabdr').val(data.prd_flagbandrol);
+                    $('#d_labelhrg').val(data.prd_flagcetaklabelharga);
+                    $('#d_ordertoko').val(data.prd_flagbarangordertoko);
+                    $('#d_tdkdiskon').val(data.prd_brgnondisc);
+                    $('#d_openprice').val(data.prd_openprice);
+                    $('#d_minimjual').val(data.prd_minjual);
+
+                    $('#h_hppterakhir').val(convertToRupiah(data.prd_lastcost));
+                    $('#h_hpprata').val(convertToRupiah(data.prd_avgcost));
+                    $('#h_stdmrg').val(convertToRupiah(data.prd_markupstandard));
+                    $('#h_hrgjual').val(convertToRupiah(data.prd_hrgjual));
+                    $('#h_marginaktual').val(data.prd_margin_n);
+                    $('#h_tglaktif').val(formatDate(data.prd_tglhrgjual));
+                    $('#h_hrgjualbaru').val(convertToRupiah(data.prd_hrgjual3));
+                    $('#h_marginaktual2').val(data.prd_margin_a);
+                    $('#h_tglberlaku').val(formatDate(data.prd_tglhrgjual3));
+                    $('#h_flagnondistfee').val(data.prd_flagnondistfee);
+
+                    $('#di_lebarprod').val(data.prd_dimensilebar);
+                    $('#di_panjangprod').val(data.prd_dimensipanjang);
+                    $('#di_tinggiprod').val(data.prd_dimensitinggi);
+                    $('#di_flagexpr').val(data.prd_flagexport);
+                    $('#di_lebarkemasan').val(data.prd_lebar_ex);
+                    $('#di_panjangkemasan').val(data.prd_panjang_ex);
+                    $('#di_tinggikemasan').val(data.prd_tinggi_ex);
+                    $('#di_beratpcs').val(data.prd_berat_pcs);
+                    $('#di_beratctn').val(data.prd_berat_ctn);
+                    $('#di_beratbox').val(data.prd_berat_box);
+
+                    $('#b_updateakhir').val(data.prd_modify_dt);
+                    $('#b_updateakhir2').val(data.prd_modify_by);
+                    $('#b_tglpromo').val(formatDate(data.prd_tglpromo));
+                    $('#b_jampromo').val(data.jampromo);
+                    $('#b_hrgpromo').val(convertToRupiah(data.hrgpromo));
+
+                }, error: function(err){
+                    $('#modal-loader').modal('hide');
+                    swal("Error",'', "error");
+
+                    console.log(err);
+                }
+            })
+        }
     </script>
 
 @endsection

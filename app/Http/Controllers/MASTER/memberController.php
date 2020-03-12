@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MASTER;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +13,6 @@ class memberController extends Controller
     //
 
     public function index(){
-//        $c = DB::table('tbhistory_deletecustomer')
-//            ->first();
-//
-//        dd($c);
-
         $member = DB::table('tbmaster_customer')
             ->select('*')
             ->where(DB::RAW('ROWNUM'),'<=','100')
@@ -318,13 +314,19 @@ class memberController extends Controller
     }
 
     public function set_status_member(Request $request){
-        $data = DB::table('tbmaster_customer')
-            ->where('cus_kodemember',$request->kode)
-            ->update(['cus_recordid' => $request->status]);
+        try{
+            DB::beginTransaction();
+            $data = DB::table('tbmaster_customer')
+                ->where('cus_kodemember',$request->kode)
+                ->update(['cus_recordid' => $request->status]);
 
-        if($data)
+            DB::commit();
             return 'success';
-        else return 'failed';
+        }
+        catch (QueryException $e){
+            DB::rollBack();
+            return 'failed';
+        }
     }
 
     public function check_password(Request $request){
@@ -387,6 +389,8 @@ class memberController extends Controller
             }
 
             try{
+                DB::beginTransaction();
+
                 $resultcus = DB::table('tbmaster_customer')
                     ->where('cus_kodemember', '=',$kodemember)
                     ->update($update_cus);
@@ -467,18 +471,15 @@ class memberController extends Controller
                 else{
                     $update_bank = true;
                 }
-            }
-            catch (Exception $e){
-                $status = 'failed';
-                $message = 'Gagal menyimpan data member!';
-            }
-            if(!$resultcus || !$resultcrm || !$insertHobby || !$update_credit || !$update_bank){
-                $status = 'failed';
-                $message = 'Gagal menyimpan data member!';
-            }
-            else{
+
                 $status = 'success';
                 $message = 'Berhasil menyimpan data member!';
+                DB::commit();
+            }
+            catch (QueryException $e){
+                $status = 'failed';
+                $message = 'Gagal menyimpan data member!';
+                DB::rollBack();
             }
         }
         else{
@@ -487,15 +488,6 @@ class memberController extends Controller
         }
 
         return compact(['status','message']);
-
-
-
-
-
-//        return compact('resultcus','resultcrm','insertHobby','update_credit');
-
-//
-//
     }
 
     public function export_crm(Request $request){
@@ -510,62 +502,64 @@ class memberController extends Controller
             ->where('cus_kodemember',$kodemember)
             ->first();
 
-        if($checkigr->cus_kodeigr == $kodeigr){
-            $checkcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                ->where('cus_kodemember',$kodemember)
-                ->first();
-            if($checkcus){
-                DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    ->where('cus_kodemember',$kodemember)
-                    ->delete();
-            }
-
-            $checkcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                ->where('crm_kodemember',$kodemember)
-                ->first();
-            if($checkcrm){
-                DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    ->where('crm_kodemember',$kodemember)
-                    ->delete();
-            }
-
-            $exportcus = DB::table('tbmaster_customer')
-                ->where('cus_kodemember',$kodemember)
-                ->first();
-
-
-
-            if($exportcus){
-                $arrexportcus = (array) $exportcus;
-                $resultcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    ->insert($arrexportcus);
-            }
-
-            $exportcrm = DB::table('tbmaster_customercrm')
-                ->where('crm_kodemember',$kodemember)
-                ->first();
-
-            if($exportcrm){
-                $arrexportcrm = (array) $exportcrm;
-                $resultcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    ->insert($arrexportcrm);
-            }
-
-//            $resultcus = true;
-//            $resultcrm = true;
-
-            if($resultcus && $resultcrm){
-                $status = 'success';
-                $message = 'Berhasil export ke CRM!';
-            }
-            else{
-                $status = 'failed';
-                $message = 'Gagal export ke CRM!';
-            }
-        }
-        else{
+        if($checkigr->cus_kodeigr != $kodeigr){
             $status = 'failed';
             $message = 'Member tidak sesuai dengan cabang anda!';
+        }
+        else {
+            try {
+                DB::beginTransaction();
+                $checkcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                    ->where('cus_kodemember', $kodemember)
+                    ->first();
+                if ($checkcus) {
+                    DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                        ->where('cus_kodemember', $kodemember)
+                        ->delete();
+                }
+
+                $checkcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                    ->where('crm_kodemember', $kodemember)
+                    ->first();
+                if ($checkcrm) {
+                    DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                        ->where('crm_kodemember', $kodemember)
+                        ->delete();
+                }
+
+                $exportcus = DB::table('tbmaster_customer')
+                    ->where('cus_kodemember', $kodemember)
+                    ->first();
+
+                if ($exportcus) {
+                    $arrexportcus = (array)$exportcus;
+                    $resultcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+                        ->insert($arrexportcus);
+                }
+
+                $exportcrm = DB::table('tbmaster_customercrm')
+                    ->where('crm_kodemember', $kodemember)
+                    ->first();
+
+                if ($exportcrm) {
+                    $arrexportcrm = (array)$exportcrm;
+                    $resultcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+                        ->insert($arrexportcrm);
+                }
+
+                if ($resultcus && $resultcrm) {
+                    $status = 'success';
+                    $message = 'Berhasil export ke CRM!';
+                    DB::commit();
+                } else {
+                    $status = 'failed';
+                    $message = 'Gagal export ke CRM!';
+
+                }
+            }
+            catch (QueryException $e) {
+                DB::rollBack();
+            }
         }
 
         return compact(['status','message']);
@@ -581,28 +575,12 @@ class memberController extends Controller
             ->orderBy('fpm_kodeprdcd')
             ->get();
 
-        if(sizeof($oldQuisioner)){
-            if(sizeof($oldQuisioner) == sizeof($request->arrdata)){
-                for($i=0;$i<sizeof($request->arrdata);$i++){
-                    $quisioner = array(
-                        'fpm_kodeigr' => '22',
-                        'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
-                        'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
-                        'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
-                        'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
-                        'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                        'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
-                        'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
-                        'fpm_modify_by' => 'LEO',
-                        'fpm_modify_dt' => DB::RAW('sysdate')
-                    );
-                    $arrquisioner[] = $quisioner;
-                }
-            }
-            else{
-                $j = 0;
-                for($i=0;$i<sizeof($request->arrdata);$i++){
-                    if($request->arrdata[$i]['fpm_kodeprdcd'] == $oldQuisioner[$j]->fpm_kodeprdcd){
+        try{
+            DB::beginTransaction();
+
+            if(sizeof($oldQuisioner)){
+                if(sizeof($oldQuisioner) == sizeof($request->arrdata)){
+                    for($i=0;$i<sizeof($request->arrdata);$i++){
                         $quisioner = array(
                             'fpm_kodeigr' => '22',
                             'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
@@ -615,57 +593,77 @@ class memberController extends Controller
                             'fpm_modify_by' => 'LEO',
                             'fpm_modify_dt' => DB::RAW('sysdate')
                         );
-                        if($j < sizeof($oldQuisioner) - 1)
-                            $j++;
+                        $arrquisioner[] = $quisioner;
                     }
-                    else{
-                        $quisioner = array(
-                            'fpm_kodeigr' => '22',
-                            'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
-                            'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
-                            'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
-                            'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
-                            'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                            'fpm_create_by' => 'LEO',
-                            'fpm_create_dt' => DB::RAW('sysdate'),
-                            'fpm_modify_by' => '',
-                            'fpm_modify_dt' => ''
-                        );
+                }
+                else{
+                    $j = 0;
+                    for($i=0;$i<sizeof($request->arrdata);$i++){
+                        if($request->arrdata[$i]['fpm_kodeprdcd'] == $oldQuisioner[$j]->fpm_kodeprdcd){
+                            $quisioner = array(
+                                'fpm_kodeigr' => '22',
+                                'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                                'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                                'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                                'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                                'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                                'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
+                                'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
+                                'fpm_modify_by' => 'LEO',
+                                'fpm_modify_dt' => DB::RAW('sysdate')
+                            );
+                            if($j < sizeof($oldQuisioner) - 1)
+                                $j++;
+                        }
+                        else{
+                            $quisioner = array(
+                                'fpm_kodeigr' => '22',
+                                'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                                'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                                'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                                'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                                'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                                'fpm_create_by' => 'LEO',
+                                'fpm_create_dt' => DB::RAW('sysdate'),
+                                'fpm_modify_by' => '',
+                                'fpm_modify_dt' => ''
+                            );
+                        }
+                        $arrquisioner[] = $quisioner;
                     }
+                }
+
+                DB::table('tbtabel_flagprodukmember')
+                    ->where('fpm_kodemember', $kodemember)
+                    ->delete();
+            }
+            else{
+                for($i=0;$i<sizeof($request->arrdata);$i++){
+                    $quisioner = array(
+                        'fpm_kodeigr' => '22',
+                        'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
+                        'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
+                        'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
+                        'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
+                        'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
+                        'fpm_create_by' => 'LEO',
+                        'fpm_create_dt' => DB::RAW('sysdate'),
+                        'fpm_modify_by' => '',
+                        'fpm_modify_dt' => ''
+                    );
                     $arrquisioner[] = $quisioner;
                 }
             }
 
-            DB::table('tbtabel_flagprodukmember')
-                ->where('fpm_kodemember', $kodemember)
-                ->delete();
-        }
-        else{
-            for($i=0;$i<sizeof($request->arrdata);$i++){
-                $quisioner = array(
-                    'fpm_kodeigr' => '22',
-                    'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
-                    'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
-                    'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
-                    'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
-                    'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                    'fpm_create_by' => 'LEO',
-                    'fpm_create_dt' => DB::RAW('sysdate'),
-                    'fpm_modify_by' => '',
-                    'fpm_modify_dt' => ''
-                );
-                $arrquisioner[] = $quisioner;
-            }
-        }
+            $insert = DB::table('tbtabel_flagprodukmember')
+                ->insert($arrquisioner);
 
-        $insert = DB::table('tbtabel_flagprodukmember')
-            ->insert($arrquisioner);
-
-        if($insert){
+            DB::commit();
             $status = 'success';
             $message = 'Berhasil menyimpan data quisioner!';
         }
-        else{
+        catch (QueryException $e){
+            DB::rollBack();
             $status = 'failed';
             $message = 'Gagal menyimpan data quisioner!';
         }
@@ -729,84 +727,36 @@ class memberController extends Controller
         $cus['cus_create_by'] = 'LEO';
         $cus['cus_create_dt'] = DB::RAW('sysdate');
 
-        $insert = DB::table('tbhistory_deletecustomer')
-            ->insert($cus);
+        try{
+            DB::beginTransaction();
 
-        if($insert){
-            $deletecus = DB::table('tbmaster_customer')
-                ->where('cus_kodemember',$kodemember)
-                ->delete();
+            $insert = DB::table('tbhistory_deletecustomer')
+                ->insert($cus);
 
-            $deletecrm = DB::table('tbmaster_customercrm')
-                ->where('crm_kodemember',$kodemember)
-                ->delete();
+            if($insert){
+                $deletecus = DB::table('tbmaster_customer')
+                    ->where('cus_kodemember',$kodemember)
+                    ->delete();
 
-            $deletecub = DB::table('tbmaster_customerfasilitasbank')
-                ->where('cub_kodemember',$kodemember)
-                ->delete();
+                $deletecrm = DB::table('tbmaster_customercrm')
+                    ->where('crm_kodemember',$kodemember)
+                    ->delete();
+
+                $deletecub = DB::table('tbmaster_customerfasilitasbank')
+                    ->where('cub_kodemember',$kodemember)
+                    ->delete();
+            }
+
+            DB::commit();
+            $status = 'success';
+            $message = 'Berhasil menghapus data member!';
+        }
+        catch (QueryException $e){
+            DB::rollBack();
+            $status = 'success';
+            $message = 'Berhasil menghapus data member!';
         }
 
-        $status = 'success';
-        $message = 'Berhasil menghapus data member!';
-
         return compact(['status','message']);
-    }
-
-    public function mmm(){
-        //        select distinct mstd_prdcd, prd_deskripsipendek, st_sales, st_saldoakhir, pkm_pkmt, prd_lastcost, prd_kodetag,
-//          mstd_kodesupplier, sup_namasupplier
-//		from tbtr_mstran_d, tbmaster_supplier, tbmaster_prodmast, tbmaster_stock, tbmaster_kkpkm,
-//    	   tbtr_gondola, tbtr_pkmgondola
-//		where mstd_kodeigr = :parameter.kodeigr
-//        and mstd_kodesupplier = :kodesup
-//        and sup_kodeigr = mstd_kodeigr
-//        and sup_kodesupplier = mstd_kodesupplier
-//        and prd_kodeigr = mstd_kodeigr
-//        and prd_prdcd = mstd_prdcd
-//        and st_kodeigr = mstd_kodeigr
-//        and st_prdcd = mstd_prdcd
-//        and st_lokasi = '01'
-//        and pkm_kodeigr = mstd_kodeigr
-//        and pkm_prdcd = mstd_prdcd
-//        and gdl_kodeigr(+) = mstd_kodeigr
-//        and gdl_prdcd(+) = mstd_prdcd
-//        and pkmg_kodeigr(+) = mstd_kodeigr
-//        and pkmg_prdcd(+) = mstd_prdcd
-//   	order by mstd_prdcd
-
-
-//        $data = DB::table('tbtr_mstran_d')
-//            ->join('tbmaster_supplier',function($join){
-//                $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
-//            })
-//            ->join('tbmaster_prodmast',function($join){
-//                $join->on('prd_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('prd_prdcd', '=', 'mstd_prdcd');
-//            })
-//            ->join('tbmaster_stock',function($join){
-//                $join->on('st_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('st_prdcd', '=', 'mstd_prdcd');
-//            })
-//            ->join('tbmaster_kkpkm',function($join){
-//                $join->on('pkm_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('pkm_prdcd', '=', 'mstd_prdcd');
-//            })
-//            ->leftJoin('tbtr_gondola',function($join){
-//                $join->on('gdl_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('gdl_prdcd', '=', 'mstd_prdcd');
-//            })
-//            ->leftJoin('tbtr_pkmgondola',function($join){
-//                $join->on('pkmg_prdcd', '=', 'mstd_prdcd')
-//                    ->on('pkmg_kodeigr', '=', 'mstd_kodeigr');
-//            })
-//            ->SELECT("mstd_prdcd", "prd_deskripsipendek", "st_sales", "st_saldoakhir", "pkm_pkmt", "prd_lastcost", "prd_kodetag")
-//            ->where('mstd_kodeigr','=','22')
-//            ->where('mstd_kodesupplier','=','B0470')
-//            ->where('st_lokasi','=','01')
-//            ->distinct()
-//            ->get();
-//
-//        dd($d);
     }
 }

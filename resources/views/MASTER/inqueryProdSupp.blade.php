@@ -102,10 +102,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal_supp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_supp" tabindex="-1" role="dialog" aria-labelledby="modal_supp" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
 
-            <!-- Modal content-->
+            {{--<!-- Modal content-->--}}
             <div class="modal-content">
                 {{--<div class="modal-header">--}}
                     {{--<div class="form-row col-sm">--}}
@@ -117,29 +117,31 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
-                            <table class="table table-sm" id="table_lov">
-                                <thead>
-                                <tr>
-                                    <td>Kode Supplier</td>
-                                    <td>Nama Supplier</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($supplier as $s)
-                                    <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
-                                        <td>{{ $s->sup_kodesupplier }}</td>
-                                        <td>{{ $s->sup_namasupplier }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                            <div class="col">
+                                <div class="tableFixedHeader">
+                                    <table class="table table-sm" id="table_lov">
+                                        <thead>
+                                        <tr>
+                                            <td>Kode Supplier</td>
+                                            <td>Nama Supplier</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($supplier as $s)
+                                            <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
+                                                <td>{{ $s->sup_kodesupplier }}</td>
+                                                <td>{{ $s->sup_namasupplier }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {{--<div class="modal-footer">--}}
-                {{--</div>--}}
+                <div class="modal-footer"></div>
             </div>
-
         </div>
     </div>
 
@@ -164,6 +166,11 @@
             margin: 0;
         }
 
+        .row_lov:hover{
+            cursor: pointer;
+            background-color: #acacac;
+        }
+
         .rowdetail:hover{
             cursor: pointer;
             background-color: grey;
@@ -176,9 +183,6 @@
         .table-wrapper-scroll-y {
             display: block;
         }
-
-
-
     </style>
 
     <script>
@@ -186,24 +190,24 @@
         $(document).on('keypress', '#i_kodesupplier', function (e) {
             if(e.which == 13) {
                 e.preventDefault();
-                let kodesupp = $('#i_kodesupplier').val()
+                let kodesupp = $('#i_kodesupplier').val();
                 helpSelect(kodesupp);
                 }
-            })
+            });
 
         function helpSelect(kodesupp) {
-            $('#modal_supp').modal('hide')
+            $('#modal_supp').modal('hide');
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/inqprodsupp/prodSupp',
-                type: 'get',
+                type: 'post',
                 data: {kodesupp: kodesupp},
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    console.log(result)
+                    //console.log(result);
                     $('#tabledetail .rowdetail').remove();
                     if (result) {
                         console.log(result.data[0]);

@@ -427,6 +427,21 @@ return [
             'prefix' => '',
         ],
 
+        'pgigrbdl' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '192.168.3.175'),
+            'port' => env('DB_PORT', '5444'),
+            'database' => env('DB_DATABASE', 'igrbdl'),
+            'username' => env('DB_USERNAME', 'igrbdl'),
+            'password' => env('DB_PASSWORD', 'igrbdl'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'igrbdl',
+            'sslmode' => 'prefer',
+        ],
+
         'simsimi' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
@@ -449,6 +464,17 @@ return [
             'database' => 'SIMTGR',
             'username' => 'SIMTGR',
             'password' => 'SIMTGR',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simcpt' => [
+            'driver' => 'oracle',
+            'host' => '192.168.245.193',
+            'port' => '1521',
+            'database' => 'SIMCPT',
+            'username' => 'SIMCPT',
+            'password' => 'SIMCPT',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],

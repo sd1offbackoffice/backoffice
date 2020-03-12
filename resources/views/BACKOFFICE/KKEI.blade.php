@@ -106,7 +106,7 @@
                             <div class="col-sm-8 pl-0">
                                 <fieldset class="card border-secondary">
                                     <legend  class="w-auto ml-4">Form</legend>
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
                                         <table id="table-form" class="table table-sm table-bordered mb-3">
                                             <thead>
                                             <tr class="d-flex text-center">
@@ -158,14 +158,14 @@
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control kke_avgbln"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control kke_avghari"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoawal"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_estimasi"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb01"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb02"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb03"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb04"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control cek kke_breakpb05"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control kke_bufferlt"></td>
-                                                <td class="col-sm-2"><input disabled type="number" min="0" class="form-control kke_bufferss"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_estimasi"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb01"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb02"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb03"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb04"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb05"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferlt"></td>
+                                                <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferss"></td>
                                                 <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoakhir"></td>
                                                 <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpototal"></td>
                                                 <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpoqty"></td>
@@ -409,11 +409,13 @@
 
 
             $('input').on('keypress',function(event){
-                if(event.which == 13 && $(this).attr('class').split(' ').pop() != 'kke_prdcd' && $(this).attr('id') != 'i-search' && $(this).attr('class').split(' ').pop() != 'kke_tglkirim05'){
-                    if($(this).attr('class').split(' ').pop() == 'kke_bufferss'){
+                if(event.which == 13 && !$(this).hasClass('kke_prdcd') && $(this).attr('id') != 'i-search' && !$(this).hasClass('kke_tglkirim05')){
+                    if($(this).hasClass('kke_bufferss')){
+                        $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
                         $(this).parent().parent().find('.kke_tglkirim01').select();
                     }
                     else{
+                        $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
                         $(this).parent().next().find('input').select();
                     }
                 }
@@ -429,7 +431,7 @@
                     currentRow = $(this).parent().parent().attr('id').split('_').pop();
 
                     $('#txt_deskripsi').val($('#row_detail_'+currentRow).find('.kke_deskripsi').val());
-                    saldoawal = parseInt($('#row_form_'+currentRow).find('.kke_saldoawal').val());
+                    saldoawal = parseInt(unconvertToRupiah($('#row_form_'+currentRow).find('.kke_saldoawal').val()));
 
                     idx = $(this).parent().index();
                     currentPos  = $('#row_form_0:nth-child(1)').find('td').innerWidth() * (idx - 1);
@@ -452,7 +454,7 @@
                 thisClass = $(this).attr('class').split(' ').pop();
                 id = $(this).parent().parent().attr('id');
 
-                if(thisClass != 'kke_estimasi' && $(this).val() < 0){
+                if(thisClass != 'kke_estimasi' && parseInt(unconvertToRupiah($(this).val())) < 0){
                     swal({
                         title: 'Nilai yang diinputkan tidak boleh kurang dari 0!',
                         icon: 'error',
@@ -466,14 +468,14 @@
 
                     $('#'+id).find('.cek').each(function(){
                         if($(this).attr('class').split(' ').pop() == 'kke_estimasi') {
-                            estimasi = parseInt($(this).val());
+                            estimasi = parseInt(unconvertToRupiah($(this).val()));
                         }
                         else{
-                            pb += parseInt($(this).val());
+                            pb += parseInt(unconvertToRupiah($(this).val()));
                         }
                     });
 
-                    if(estimasi <= 0 || $('#'+id).find('.kke_estimasi').val().length == 0){
+                    if(estimasi <= 0 || parseInt(unconvertToRupiah($('#'+id).find('.kke_estimasi').val())).length == 0){
                         swal({
                             title: 'Nilai estimasi harus lebih dari 0!',
                             icon: 'error',
@@ -500,27 +502,30 @@
                         }
                     }
                     else{
-                        saldoakhir = saldoawal + parseInt($('#'+id).find('.kke_estimasi').val());
-                        $('#'+id).find('.kke_saldoakhir').val(saldoakhir);
+                        saldoakhir = saldoawal + parseInt(unconvertToRupiah($('#'+id).find('.kke_estimasi').val()));
+                        $('#'+id).find('.kke_saldoakhir').val(convertToRupiah2(saldoakhir));
 
                         totalKubikasi = 0;
                         totalBerat = 0;
                         $('.'+thisClass).each(function(){
-                            if($(this).val() > 0) {
+                            if(parseInt(unconvertToRupiah($(this).val())) > 0) {
                                 currId = $(this).parent().parent().attr('id').split('_').pop();
-                                totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * $(this).val();
-                                totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * $(this).val();
+                                totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * parseInt(unconvertToRupiah($(this).val()));
+                                totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * parseInt(unconvertToRupiah($(this).val()));
                             }
                         });
 
                         totalKubikasi = totalKubikasi / 28.5;
                         totalBerat = totalBerat / 20900;
-
                         if(totalKubikasi > totalBerat){
                             total = Math.ceil(totalKubikasi);
+                            if(total < 1)
+                                total = 1;
                         }
                         else{
                             total = Math.ceil(totalBerat);
+                            if(total < 1)
+                                total = 1;
                         }
                         $('#total_'+thisClass).val(total);
                     }
@@ -568,16 +573,16 @@
 
                                     $('#row_detail_'+row).find('.kke_prdcd').val(response.data.prd_prdcd);
                                     $('#row_detail_'+row).find('.kke_unit').val(response.data.unit);
-                                    $('#row_detail_'+row).find('.kke_frac').val(response.data.frac);
-                                    $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah2(response.data.hargabeli));
+                                    $('#row_detail_'+row).find('.kke_frac').val(convertToRupiah2(response.data.frac));
+                                    $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah(response.data.hargabeli));
                                     $('#row_form_'+row).find('.kke_discount').val(convertToRupiah(response.data.diskon));
                                     $('#row_form_'+row).find('.kke_sales01').val(convertToRupiah2(response.data.sales1));
                                     $('#row_form_'+row).find('.kke_sales02').val(convertToRupiah2(response.data.sales2));
                                     $('#row_form_'+row).find('.kke_sales03').val(convertToRupiah2(response.data.sales3));
                                     $('#row_form_'+row).find('.kke_avgbln').val(convertToRupiah(response.data.avgslsbln));
                                     $('#row_form_'+row).find('.kke_avghari').val(convertToRupiah(response.data.avgslshari));
-                                    $('#row_form_'+row).find('.kke_saldoawal').val(nvl(response.data.saldoawal,0));
-                                    $('#row_form_'+row).find('.kke_saldoakhir').val(nvl(response.data.saldoakhir,0));
+                                    $('#row_form_'+row).find('.kke_saldoawal').val(convertToRupiah2(nvl(response.data.saldoawal,0)));
+                                    $('#row_form_'+row).find('.kke_saldoakhir').val(convertToRupiah2(nvl(response.data.saldoakhir,0)));
 
                                     $('#row_detail_'+row).find('.kke_deskripsi').val(response.data.deskripsi);
 
@@ -607,14 +612,14 @@
                                     $('#row_form_'+row).find('.tanggal').prop('disabled',false);
 
                                     if(response.kkei != null){
-                                        $('#row_form_'+row).find('.kke_estimasi').val(response.kkei.kke_estimasi);
-                                        $('#row_form_'+row).find('.kke_breakpb01').val(response.kkei.kke_breakpb01);
-                                        $('#row_form_'+row).find('.kke_breakpb02').val(response.kkei.kke_breakpb02);
-                                        $('#row_form_'+row).find('.kke_breakpb03').val(response.kkei.kke_breakpb03);
-                                        $('#row_form_'+row).find('.kke_breakpb04').val(response.kkei.kke_breakpb04);
-                                        $('#row_form_'+row).find('.kke_breakpb05').val(response.kkei.kke_breakpb05);
-                                        $('#row_form_'+row).find('.kke_bufferlt').val(response.kkei.kke_bufferlt);
-                                        $('#row_form_'+row).find('.kke_bufferss').val(response.kkei.kke_bufferss);
+                                         $('#row_form_'+row).find('.kke_estimasi').val(convertToRupiah2(response.kkei.kke_estimasi));
+                                        $('#row_form_'+row).find('.kke_breakpb01').val(convertToRupiah2(response.kkei.kke_breakpb01));
+                                        $('#row_form_'+row).find('.kke_breakpb02').val(convertToRupiah2(response.kkei.kke_breakpb02));
+                                        $('#row_form_'+row).find('.kke_breakpb03').val(convertToRupiah2(response.kkei.kke_breakpb03));
+                                        $('#row_form_'+row).find('.kke_breakpb04').val(convertToRupiah2(response.kkei.kke_breakpb04));
+                                        $('#row_form_'+row).find('.kke_breakpb05').val(convertToRupiah2(response.kkei.kke_breakpb05));
+                                         $('#row_form_'+row).find('.kke_bufferlt').val(convertToRupiah2(response.kkei.kke_bufferlt));
+                                         $('#row_form_'+row).find('.kke_bufferss').val(convertToRupiah2(response.kkei.kke_bufferss));
                                         $('#row_form_'+row).find('.kke_tglkirim01').val(formatDate(response.kkei.kke_tglkirim01));
                                         $('#row_form_'+row).find('.kke_tglkirim02').val(formatDate(response.kkei.kke_tglkirim02));
                                         $('#row_form_'+row).find('.kke_tglkirim03').val(formatDate(response.kkei.kke_tglkirim03));
@@ -628,12 +633,25 @@
 
                                     cek();
 
-                                    $('#btn-save').prop('disabled',false);
-                                    $('#row_form_'+row).find('.kke_estimasi').select();
+                                    if(nvl(response.data.panjangproduk,0) == 0 || nvl(response.data.lebarproduk,0) == 0 || nvl(response.data.tinggiproduk,0) == 0){
+                                        swal({
+                                            title: 'PLU '+response.data.prd_prdcd+' tidak mempunyai dimensi!',
+                                            icon: 'error'
+                                        }).then(function(){
+                                            $('#row_form_'+row).find('.kke_estimasi').select();
+                                            $('#btn-save').prop('disabled',false);
+                                        });
+                                    }
+                                    else{
+                                        $('#row_form_'+row).find('.kke_estimasi').select();
+                                        $('#btn-save').prop('disabled',false);
+                                    }
+
                                 }
                                 else {
                                     swal({
                                         title: response.message,
+                                        text: response.exception,
                                         icon: "error"
                                     }).then(function () {
                                         $(event.target).select();
@@ -674,7 +692,9 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                    $('#modal-loader').modal('toggle');
+                    if($('#modal-loader').is(':visible')){
+                        $('#modal-loader').modal('toggle');
+                    }
 
                     if (response.status == 'success') {
                         $('#table-detail').find('tbody tr').remove();
@@ -740,9 +760,9 @@
 
                             trForm = '<tr id="row_form_' + i + '" class="d-flex baris number">' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah2(response.data[i].kke_hargabeli) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah(response.data[i].kke_hargabeli) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah2(Math.round(response.data[i].kke_discount)) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah(Math.round(response.data[i].kke_discount)) + '></td>' +
                                 '<td class="col-sm-2">' +
                                 '<input disabled type="text" class="form-control kke_sales01" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
                                 '<td class="col-sm-2">' +
@@ -754,7 +774,7 @@
                                 '<td class="col-sm-2">' +
                                 '<input disabled type="text" class="form-control kke_avghari" value=' + convertToRupiah(response.data[i].kke_avghari) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_saldoawal" value=' + response.data[i].kke_saldoawal + '></td>' +
+                                '<input disabled type="text" class="form-control kke_saldoawal" value=' + convertToRupiah2(response.data[i].kke_saldoawal) + '></td>' +
                                 '<td class="col-sm-2">' +
                                 '<input type="text" class="form-control cek kke_estimasi" value=' + convertToRupiah2(response.data[i].kke_estimasi) + '></td>' +
                                 '<td class="col-sm-2">' +
@@ -768,15 +788,15 @@
                                 '<td class="col-sm-2">' +
                                 '<input type="text" class="form-control cek kke_breakpb05" value=' + convertToRupiah2(response.data[i].kke_breakpb05) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control kke_bufferlt" value=' + response.data[i].kke_bufferlt + '></td>' +
+                                '<input type="text" class="form-control kke_bufferlt" value=' + convertToRupiah2(response.data[i].kke_bufferlt) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control kke_bufferss" value=' + response.data[i].kke_bufferss + '></td>' +
+                                '<input type="text" class="form-control kke_bufferss" value=' + convertToRupiah2(response.data[i].kke_bufferss) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_saldoakhir" value=' + response.data[i].kke_saldoakhir + '></td>' +
+                                '<input disabled type="text" class="form-control kke_saldoakhir" value=' + convertToRupiah2(response.data[i].kke_saldoakhir) + '></td>' +
                                 '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control kke_outpototal" value=' + response.data[i].kke_outpototal + '></td>' +
+                                '<input disabled type="text" class="form-control kke_outpototal" value=' + convertToRupiah2(response.data[i].kke_outpototal) + '></td>' +
                                 '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control kke_outpoqty" value=' + response.data[i].kke_outpoqty + '></td>' +
+                                '<input disabled type="text" class="form-control kke_outpoqty" value=' + convertToRupiah2(response.data[i].kke_outpoqty) + '></td>' +
                                 '<td class="col-sm-2">' +
                                 '<input type="text" class="form-control tanggal kke_tglkirim01" value=' + formatDate(response.data[i].kke_tglkirim01) + '></td>' +
                                 '<td class="col-sm-2">' +
@@ -855,16 +875,8 @@
                         }
                         $('#periode').prop('disabled',false);
                         $('#periode').prop('readonly',false);
-                        $('#row_detail_0').find('.kke_prdcd').select();
                     }
-                    else {
-                        swal({
-                            title: response.message,
-                            icon: "error"
-                        }).then(function () {
-                            $('#periode').select();
-                        });
-                    }
+                    $('#row_detail_0').find('.kke_prdcd').select();
                 }
             });
         }
@@ -942,21 +954,21 @@
                         '<td class="col-sm-2">' +
                         '<input disabled type="text" class="form-control kke_saldoawal">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_estimasi">' +
+                        '<input disabled type="text" class="form-control cek kke_estimasi">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb01">' +
+                        '<input disabled type="text" class="form-control cek kke_breakpb01">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb02">' +
+                        '<input disabled type="text" class="form-control cek kke_breakpb02">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb03">' +
+                        '<input disabled type="text" class="form-control cek kke_breakpb03">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb04">' +
+                        '<input disabled type="text" class="form-control cek kke_breakpb04">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control cek kke_breakpb05">' +
+                        '<input disabled type="text" class="form-control cek kke_breakpb05">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control kke_bufferlt">' +
+                        '<input disabled type="text" class="form-control kke_bufferlt">' +
                         '<td class="col-sm-2">' +
-                        '<input disabled type="number" min="0" class="form-control kke_bufferss">' +
+                        '<input disabled type="text" class="form-control kke_bufferss">' +
                         '<td class="col-sm-2">' +
                         '<input disabled type="text" class="form-control kke_saldoakhir">' +
                         '<td class="col-sm-1">' +
@@ -1000,7 +1012,7 @@
         function search(plu){
             found = false;
 
-            // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            $('#i-search').val(convertPlu(plu));
             $('.kke_prdcd').each(function(){
                 if($(this).val() == convertPlu(plu)){
                     // $('#modal-loader').modal('toggle');
@@ -1036,10 +1048,16 @@
                     });
 
                     $('#row_form_'+row).find('input').each(function(){
-                        if($(this).hasClass('kke_hargabeli') || $(this).hasClass('kke_discount') || $(this).hasClass('kke_sales01') || $(this).hasClass('kke_sales02') || $(this).hasClass('kke_sales03') || $(this).hasClass('kke_avgbln') || $(this).hasClass('kke_avghari')){
+                        // if($(this).hasClass('kke_hargabeli') || $(this).hasClass('kke_discount') || $(this).hasClass('kke_sales01') || $(this).hasClass('kke_sales02') || $(this).hasClass('kke_sales03') || $(this).hasClass('kke_avgbln') || $(this).hasClass('kke_avghari')){
+                        //     data[$(this).attr('class').split(' ').pop()] = unconvertToRupiah($(this).val());
+                        // }
+                        // else data[$(this).attr('class').split(' ').pop()] = $(this).val();
+                        if($(this).hasClass('tanggal')){
+                            data[$(this).attr('class').split(' ').pop()] = $(this).val();
+                        }
+                        else{
                             data[$(this).attr('class').split(' ').pop()] = unconvertToRupiah($(this).val());
                         }
-                        else data[$(this).attr('class').split(' ').pop()] = $(this).val();
                     });
 
                     data['kke_kubik1'] = $('#total_kke_breakpb01').val();

@@ -439,9 +439,12 @@ class informasiHistoryProductController extends Controller
                 $sj[$i]->frac = 1;
             }
             if ($sj[$i]->prmd_prdcd != 'xxx') {
-                $tglrtg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmfrtg, 0, 10) . self::ceknull($sj[$i]->fmfrhr . "", '00:00:00')));
-                $tglotg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmtotg, 0, 10) . self::ceknull($sj[$i]->fmtohr . "", '23:59:59')));
-                $tglnow = date('d/m/Y H:i:S');
+//                $tglrtg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmfrtg, 0, 10) . self::ceknull($sj[$i]->fmfrhr . "", '00:00:00')));
+//                $tglotg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmtotg, 0, 10) . self::ceknull($sj[$i]->fmtohr . "", '23:59:59')));
+//                $tglnow = date('d/m/Y H:i:S');
+                $tglrtg =$sj[$i]->fmfrtg;
+                $tglotg =$sj[$i]->fmtotg;
+                $tglnow =Carbon::now();
                 if ($tglnow >= $tglrtg AND $tglnow <= $tglotg) {
                     $cpromo = true;
                     if ($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp, ['P', 'W', 'G'])) {
@@ -555,7 +558,7 @@ class informasiHistoryProductController extends Controller
         $X = 0;
         $X1 = 0;
 
-        $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
+        $FMPBLNA= (int)$blnberjalan->prs_bulanberjalan;
 
         if ($FMPBLNA - 1 < 1) {
             $N = 12;
@@ -1074,7 +1077,7 @@ class informasiHistoryProductController extends Controller
             $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($pb[$i]->tpod_qtypb, 0);
 
             if (Self::ceknull($pb[$i]->tpod_nopo, '') == '') {
-                if ($pb[$i]->pbh_tglpb < Carbon::now() + 2) {
+                if ($pb[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
                     $step = 11;
                     $pb_ketbpb = 'PB tdk.tRealiss';
                 } else {
@@ -1127,7 +1130,7 @@ class informasiHistoryProductController extends Controller
                 $pb_qty = $pb2[$i]->pbd_qtypb;
 
                 if (Self::ceknull($pb2[$i]->pbd_nopo, '') == '') {
-                    if ($pb2[$i]->pbh_tglpb < Carbon::now() + 2) {
+                    if ($pb2[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
                         $step = 15;
                         $pb_ketbpb = 'PB tdk.tRealiss';
                     } else {
@@ -1293,7 +1296,7 @@ class informasiHistoryProductController extends Controller
         $hargabeli = DB::table('tbmaster_hargabeli')
             ->join('tbmaster_prodmast', 'prd_prdcd', '=', 'hgb_prdcd')
             ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'hgb_kodesupplier')
-            ->leftJoin('tbmaster_tag', 'tag_kodetag', '=', 'prd_kodeigr')
+            ->leftJoin('tbmaster_tag', 'tag_kodetag', '=', 'prd_kodetag')
             ->selectRaw('hgb_prdcd,
                                          hgb_hrgbeli fmbeli,
                                          NVL(hgb_ppnbm, 0) fmppnb,
@@ -1450,7 +1453,7 @@ class informasiHistoryProductController extends Controller
             $hb_rpdisc2 = Self::ceknull($hargabeli[$i]->fmditr, 0);
             $hb_periode = "";
             if (Self::ceknull($hargabeli[$i]->fmditm, "") != "") {
-                $hb_periode = $hargabeli[$i]->fmditm . ' s/d ' . $hargabeli[$i]->fmdita;
+                $hb_periode = Date('d-M-y', strtotime($hargabeli[$i]->fmditm)) . ' s/d ' . Date('d-M-y', strtotime($hargabeli[$i]->fmdita));
             }
             $hb_persendisc2ii = Self::ceknull($hargabeli[$i]->hgb_persendisc02ii, 0);
             $hb_rpdisc2ii = Self::ceknull($hargabeli[$i]->hgb_rphdisc02ii, 0);
@@ -1646,7 +1649,7 @@ class informasiHistoryProductController extends Controller
         $stockcarton['STC_CT3'] = $qb_rus;
         $stockcarton['STC_PCS3'] = $qc_rus;
 
-        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'stock', 'pkmt', 'ITEM', 'flag', 'detailsales', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'message']);
+        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES','FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'detailsales', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'message']);
     }
 
     public function ceknull($value, $ret)
@@ -1696,9 +1699,9 @@ class informasiHistoryProductController extends Controller
 
         for ($i = 0; $i < sizeof($adjustso); $i++) {
             $content .= str_pad($adjustso[$i]['adj_seq'], 15, " ", STR_PAD_LEFT)
-                . str_pad(number_format($so[$i]['adj_qty']), 15, " ", STR_PAD_LEFT)
+                . str_pad(number_format($adjustso[$i]['adj_qty']), 15, " ", STR_PAD_LEFT)
                 . str_pad($adjustso[$i]['adj_keterangan'], 15, " ", STR_PAD_LEFT)
-                . str_pad(date('d-M-y', strtotime($so[$i]['adj_create_dt'])), 15, " ", STR_PAD_LEFT)
+                . str_pad(date('d-M-y', strtotime($adjustso[$i]['adj_create_dt'])), 15, " ", STR_PAD_LEFT)
                 . chr(13) . chr(10);
         }
 

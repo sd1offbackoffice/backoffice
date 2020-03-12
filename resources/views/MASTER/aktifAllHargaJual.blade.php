@@ -62,16 +62,17 @@
             $.ajax({
                 url: '/BackOffice/public/mstaktifallhrgjual/aktifallitem',
                 type:'post',
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function (result) {
-                    console.log(result);
-                    // $('#tableAktifkanAll').DataTable().clear();
-                    // for (i=0; i< result.length; i++){
-                    //     $('#tableAktifkanAll').DataTable().row.add([
-                    //         result[i].prd_prdcd, result[i].prd_deskripsipanjang, convertToRupiah(result[i].prd_hrgjual), convertToRupiah(result[i].prd_hrgjual3)
-                    //     ]).draw();
-                    // }
-                }, error: function (err) {
-                    console.log(err)
+                    $('#modal-loader').modal('hide');
+                    swal('SUCCESS', result, 'success')
+                    location.reload();
+                }, error : function (error) {
+                    $('#modal-loader').modal('hide');
+                    console.log(error)
+                    swal("Error",'','error');
                 }
             })
         }

@@ -17,6 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/login','Auth\loginController@login');
+
 /******** Denni ********/
 //MST_BARCODE
 Route::post('/mstbarcode/search_barcode','MASTER\barcodeController@search_barcode');
@@ -47,7 +49,9 @@ Route::post('/mstinformasihistoryproduct/lov_select','MASTER\informasiHistoryPro
 Route::post('/mstinformasihistoryproduct/cetak_so','MASTER\informasiHistoryProductController@cetak_so');
 Route::post('/mstinformasihistoryproduct/cetak','MASTER\informasiHistoryProductController@cetak');
 
-
+//ADMINISTRATION (USER)
+Route::post('/admuser/searchUser','ADMINISTRATION\userController@searchUser');
+Route::post('/admuser/saveUser','ADMINISTRATION\userController@saveUser')->middleware('CheckLogin');
 
 
 Route::get('/mst/e','MASTER\InqueryProdSuppController@prodSupp');
