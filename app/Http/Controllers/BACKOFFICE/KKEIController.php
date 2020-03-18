@@ -359,9 +359,18 @@ class KKEIController extends Controller
 
         $dompdf = new PDF();
 
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
         $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+
+//        return $pdf->stream('BACKOFFICE.KKEI-laporan');
 
         $dompdf = $pdf;
 
@@ -396,7 +405,34 @@ class KKEIController extends Controller
             'periode' => $periode
         ];
 
-        return view('BACKOFFICE.KKEI-laporan')->with($data);
+//        return view('BACKOFFICE.KKEI-laporan')->with($data);
+
+        $now = Carbon::now('Asia/Jakarta');
+        $now = date_format($now,'d-m-Y H-i-s');
+
+        $dompdf = new PDF();
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+
+        return $pdf->stream('BACKOFFICE.KKEI-laporan');
+
+        $dompdf = $pdf;
+
+        // (Optional) Setup the paper size and orientation
+//        $dompdf->setPaper('a4', 'landscape');
+
+        // Render the HTML as PDF
+
+        return $dompdf->download('laporan-kkei '.$now.'.pdf');
     }
 
     public function test(){

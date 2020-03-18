@@ -12,7 +12,7 @@ class loginController extends Controller
     public function index()
     {
         session_start();
-        if(isset($_SESSION['usid']) && $_SESSION['usid']!=''){
+        if (isset($_SESSION['usid']) && $_SESSION['usid'] != '') {
             return redirect('/');
         }
         $prs = DB::table('TBMASTER_PERUSAHAAN')
@@ -122,16 +122,17 @@ class loginController extends Controller
             if ($flagedp == 1) {
                 $_SESSION['kdigr'] = $prs->prs_kodeigr;
                 $_SESSION['usid'] = 'EDP';
-                $_SESSION['un']= 'EDP';
-                $_SESSION['rptname']= $prs->prs_rptname;
-                $_SESSION['ip']= $vip;
-                $_SESSION['ppn']= $prs->prs_nilaippn;
-                $_SESSION['stat']= 99;
+                $_SESSION['un'] = 'EDP';
+                $_SESSION['rptname'] = $prs->prs_rptname;
+                $_SESSION['ip'] = $vip;
+                $_SESSION['id'] = str_replace('.','',$vip);
+                $_SESSION['ppn'] = $prs->prs_nilaippn;
+                $_SESSION['stat'] = 99;
 
                 DB::table('TBMASTER_PERUSAHAAN')
                     ->update([
                         'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
-                        'PRS_MODIFY_BY' =>$_SESSION['usid'],
+                        'PRS_MODIFY_BY' => $_SESSION['usid'],
                         'PRS_MODIFY_DT' => DB::Raw('sysdate')
                     ]);
 
@@ -140,21 +141,26 @@ class loginController extends Controller
                     ->selectRaw('userid, username, userpassword, email, encryptpwd')
                     ->whereRaw('nvl(recordid, \'0\') <> \'1\'')
                     ->where('userid', $request->username)
-                    ->where('encryptpwd', md5($request->password))
                     ->first();
 
                 if (!$user) {
-                    $message = 'User / Password Salah!';
+                    $message = 'User Tidak Ditemukan!';
                     return compact('message');
+                }else{
+                    if($user->encryptpwd != md5($request->password)){
+                        $message = 'User / Password Salah!';
+                        return compact('message');
+                    }
                 }
                 $_SESSION['kdigr'] = $prs->prs_kodeigr;
-                $_SESSION['usid']= $user->userid;
-                $_SESSION['un']= $user->username;
-                $_SESSION['pwd']= $user->userpassword;
-                $_SESSION['eml']= $user->email;
-                $_SESSION['rptname']= $prs->prs_rptname;
-                $_SESSION['ip']= $vip;
-                $_SESSION['ppn']= $prs->prs_nilaippn;
+                $_SESSION['usid'] = $user->userid;
+                $_SESSION['un'] = $user->username;
+                $_SESSION['pwd'] = $user->userpassword;
+                $_SESSION['eml'] = $user->email;
+                $_SESSION['rptname'] = $prs->prs_rptname;
+                $_SESSION['ip'] = $vip;
+                $_SESSION['id'] = str_replace('.','',$vip);
+                $_SESSION['ppn'] = $prs->prs_nilaippn;
 
                 if (!is_null($_SESSION['usid']) AND $_SESSION['usid'] != 'NUL') {
                     if ($_SESSION['usid'] == 'ADM') {
@@ -198,5 +204,25 @@ class loginController extends Controller
             ->update(['useraktif' => '']);
         session_destroy();
         return redirect('/');
+    }
+
+    public function insertip(Request $request)
+    {
+        $ipx = $request->getClientIp();
+        $temp = DB::table('TBMASTER_COMPUTER')
+            ->where('ip', $ipx)
+            ->first();
+
+        if (!is_null($temp)) {
+            $message = 'IP sudah ada! jangan pencet-pencet terus!';
+            $status = 'error';
+        } else {
+            DB::table('tbmaster_computer')->insert(
+                ['ip' => $ipx, 'station' => rand(1,9), 'computername' => 'SERVER', 'useraktif' => '', 'create_by' => 'WEB', 'create_dt' => '', 'modify_dt' => '', 'kodeigr' => '22', 'recordid' => '']);
+            $message = 'IP berhasil didaftarkan!';
+            $status = 'success';
+        }
+        return compact(['message','status']);
+
     }
 }

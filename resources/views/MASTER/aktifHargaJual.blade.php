@@ -31,11 +31,11 @@
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Harga Jual Lama</label>
-                                <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-1" disabled>
+                                <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-1 text-right" disabled>
                             </div>
                             <div class="form-group row mb-0">
                                 <label class="col-sm-4 col-form-label text-md-right">Harga Jual Baru</label>
-                                <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-1" disabled>
+                                <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-1 text-right" disabled>
                             </div>
 
                             <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right btnAktifkanHrg" onclick="aktifkanHarga()">Aktifkan</button>
@@ -187,7 +187,7 @@
                             $('#namaDepartement').val(data.dep_namadepartement)
                             $('#kodeKategori').val(data.prd_kodekategoribarang)
                             $('#namaKategori').val(data.kat_namakategori)
-                            $('#hargaLama').val(data.prd_hrgjual)
+                            $('#hargaLama').val(convertToRupiah2(data.prd_hrgjual)
                             $('#hargaBaru').val(data.prd_hrgjual3)
                             $('.btnAktifkanHrg').focus()
                         }

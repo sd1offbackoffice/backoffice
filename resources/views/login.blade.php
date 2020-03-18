@@ -81,12 +81,19 @@
                 </button>
             </div>
 
+
+
             <div class="container justify-content-center pt-5">
                 <label class="col-form-label" id="lbl-timer">
                     <b>Tanggal : </b><span id="lbl-tanggal"></span>
                     <br>
                     <b>Jam : </b><span id="lbl-jam"></span>
                 </label>
+            </div>
+            <div class="container-login100-form-btn justify-content-center pt-5">
+                <button class="login100-form-btn" id="btn-insert">
+                    Insert IP ( jika IP belum terdaftar )
+                </button>
             </div>
             {{--</form>--}}
         </div>
@@ -104,7 +111,16 @@
             $('#lbl-tanggal').html(momentNow.format('DD-MM-YYYY'));
             $('#lbl-jam').html(momentNow.format('HH:mm:ss'));
         }, 100);
+
+        $('#username').focus();
     });
+
+    $('#username').keypress(function (e) {
+        if (e.which == 13) {
+            $('#password').select();
+        }
+    });
+
     $('#password').keypress(function (e) {
         if (e.which == 13) {
             $('#btn-login').click();
@@ -114,6 +130,7 @@
     function clear() {
         $('#username').val('');
         $('#password').val('');
+        $('#username').focus();
     }
 
     $('#btn-login').on('click', function () {
@@ -121,16 +138,14 @@
         password = $('#password').val();
 
         if (username == '') {
-            console.log('user true');
             $('#lbl-validate-password').text('');
             $('#lbl-validate-username').text('Username Belum Diisi!');
-            $('#username').focus();
+            $('#username').select();
         }
         else if (password == '') {
-            console.log('pass true');
             $('#lbl-validate-username').text('');
             $('#lbl-validate-password').text('Password Belum Diisi!');
-            $('#password').focus();
+            $('#password').select();
         }
         else {
             $('#lbl-validate-password').text('');
@@ -144,18 +159,15 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                    console.log(response);
-
                     if (response['message']) {
                         swal({
-                            text: response['message'],
-                            icon: 'warning'
-                        }).then((createData) => {
+                            title: response['message'],
+                            icon: 'warning',
+                        }).then(function () {
                             clear();
                         });
                     }
                     else if (response['status'] == 'ADM') {
-                        console.log(response);
                         swal({
                             text: 'Login sebagai Admin',
                             icon: 'info'
@@ -180,6 +192,29 @@
                 }
             });
         }
+    });
+
+    $('#btn-insert').on('click', function () {
+
+            $.ajax({
+                url: '/BackOffice/public/api/insertip',
+                type: 'POST',
+                data: {"_token": "{{ csrf_token() }}"},
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                        swal({
+                            text: response['message'],
+                            icon: response['status']
+                        }).then((createData) => {
+                        });
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                }
+            });
+
     });
 
 

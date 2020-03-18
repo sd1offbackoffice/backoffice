@@ -118,7 +118,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
+                                {{--<div class="tableFixedHeader">--}}
                                     <table class="table table-sm" id="table_lov">
                                         <thead>
                                         <tr>
@@ -140,8 +140,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer"></div>
-            </div>
+                {{--<div class="modal-footer"></div>--}}
+            {{--</div>--}}
         </div>
     </div>
 
@@ -165,7 +165,6 @@
             -webkit-appearance: none;
             margin: 0;
         }
-
         .row_lov:hover{
             cursor: pointer;
             background-color: #acacac;

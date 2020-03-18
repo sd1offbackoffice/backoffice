@@ -5,48 +5,32 @@
 </head>
 <body>
 <!-- <a href="/getPdf"><button>Download PDF</button></a> -->
+
+<?php
+$datetime = new DateTime();
+$timezone = new DateTimeZone('Asia/Jakarta');
+$datetime->setTimezone($timezone);
+?>
 <header>
-    <div style="float:left;">
-        <table>
-            <tr>
-                <td>{{ $perusahaan->prs_namaperusahaan }}</td>
-            </tr>
-            <tr>
-                <td>{{ $perusahaan->prs_namacabang }}</td>
-            </tr>
-            <tr>
-                <td>{{ $perusahaan->prs_namaregional }}</td>
-            </tr>
-        </table>
-        <?php
-        $date=date_create('04/03/2020');
-        ?>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>{{ $perusahaan->prs_namaperusahaan }}<br><br>
+        {{ $perusahaan->prs_namacabang }}<br><br>
+        {{ $perusahaan->prs_namaregional }}</p>
     </div>
-    <?php
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-    <div style="float:right;clear:right;">
-        <table>
-            <tr>
-                <td>TGL : {{ date("d-m-Y") }}</td>
-                <td></td>
-                <td>JAM : {{ $datetime->format('H:i:s') }}</td>
-            </tr>
-            <tr>
-                <td>PRG : IGR_BO_KKEKEBTOKO</td>
-                <td></td>
-            </tr>
-        </table>
+    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
+        <p>TGL : {{ date("d-m-Y") }}<br><br>
+            JAM : {{ $datetime->format('H:i:s') }}<br><br>
+            PRG : IGR_BO_KKEKEBTOKO</p>
     </div>
-    <br>
-    <br>
-    <br>
-    <div class="judul">
-        <h2>** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : {{ $periode }}</h2>
-    </div>
+    <h2 style="text-align: center">** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : {{ $periode }}</h2>
+    {{--<h2>KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : {{ $periode }}</h2>--}}
 </header>
+
+<footer>
+
+</footer>
+
+<main>
 <table class="table">
     <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
     <tr>
@@ -125,6 +109,7 @@
         $i = 0;
         $supplier = 'xxx';
     @endphp
+
     @foreach($data as $k)
         @php $i++; @endphp
         @php
@@ -193,35 +178,37 @@
     </tr>
     </tfoot>
 </table>
-<hr>
-<strong>Kebutuhan Kontainer :</strong><br>
-20 Feet<br>
-<hr>
-<div style="float:left">
-    NB :<br>
-    1 Kubikase = 30 m3, 1 Tonase = 22<br>
-    Toleransi Kubikase & Tonase adalah 5%
-</div>
 
-<table style="float:right" class="table-ttd table-borderless">
-    <tr>
-        <td>Disetujui</td>
-        <td>Dibuat</td>
-    </tr>
-    <tr>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="ttd">Store Mgr</td>
-        <td class="ttd">Store Jr. Mgr</td>
-    </tr>
-</table>
+    <hr>
+    <strong>Kebutuhan Kontainer :</strong><br>
+    20 Feet<br>
+    <hr>
+    <div style="float:left">
+        NB :<br>
+        1 Kubikase = 30 m3, 1 Tonase = 22<br>
+        Toleransi Kubikase & Tonase adalah 5%
+    </div>
+
+    <table style="float:right" class="table-ttd table-borderless">
+        <tr>
+            <td>Disetujui</td>
+            <td>Dibuat</td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="ttd">Store Mgr</td>
+            <td class="ttd">Store Jr. Mgr</td>
+        </tr>
+    </table>
+</main>
 
 <br>
 </body>
@@ -233,19 +220,39 @@
 
     header {
         position: fixed;
-        top: -20px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        margin: none;
+        top: 0cm;
+        left: 0cm;
+        right: 0cm;
+        height: 2cm;
+
+        /*position: fixed;*/
+        /*top: -20px;*/
+        /*left: 0px;*/
+        /*right: 0px;*/
+        /*height: 50px;*/
+        /*margin-bottom: 50px;*/
     }
+
+    /*footer {*/
+        /*position: fixed;*/
+        /*bottom: 160px;*/
+        /*left: 0px;*/
+        /*right: 0px;*/
+    /*}*/
     body {
-        font-size: 10px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        font-weight: 400;
-        line-height: 1.5;
+        /*font-size: 10px;*/
+        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
+        /*font-weight: 400;*/
+        /*line-height: 1.5;*/
+        /*margin-top: 70px;*/
+        /*margin-bottom: 0px;*/
+
         margin-top: 70px;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
+        font-size: 9px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-weight: 400;
+        line-height: 1.8;
     }
 
     table{

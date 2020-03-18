@@ -1215,7 +1215,7 @@
         member = '';
         idgroupkat = '';
 
-        lov_member_select(1);
+        lov_member_select(1,false);
 
 
         $('#i_pendidikanX').hide();

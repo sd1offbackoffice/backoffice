@@ -415,7 +415,9 @@
                         $(this).parent().parent().find('.kke_tglkirim01').select();
                     }
                     else{
-                        $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
+                        if(!$(this).hasClass('tanggal')){
+                            $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
+                        }
                         $(this).parent().next().find('input').select();
                     }
                 }

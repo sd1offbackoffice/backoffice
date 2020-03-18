@@ -25,6 +25,8 @@ Route::get('/logout','Auth\loginController@logout')->middleware('CheckLogin');
 /******** Arie ********/
 //Route::get('/mstharilibur/index','MASTER\harilibur');
 Route::get('/mstharilibur/index','MASTER\hariliburController@index')->middleware('CheckLogin');
+Route::post('/mstharilibur/insert','MASTER\hariliburController@insert');
+Route::get('/mstharilibur/delete','MASTER\hariliburController@delete');
 
 /******** Denni ********/
 //MST_PERUSAHAAN
@@ -50,6 +52,9 @@ Route::get('/mstinformasihistoryproduct/index','MASTER\informasiHistoryProductCo
 
 //ADMINISTRATION (USER)
 Route::get('/admuser/index','ADMINISTRATION\userController@index')->middleware('CheckLogin');
+
+//PB MANUAL
+Route::get('/bopbmanual/index','BACKOFFICE\PBManualController@index')->middleware('CheckLogin');
 
 /******** Leo ********/
 /*MASTER SUPPLIER*/
@@ -109,6 +114,14 @@ Route::post('/mstlokasi/lov_rak_search','MASTER\lokasiController@lov_rak_search'
 Route::post('/mstlokasi/lov_rak_select','MASTER\lokasiController@lov_rak_select')->middleware('CheckLogin');
 Route::post('/mstlokasi/lov_plu_search','MASTER\lokasiController@lov_plu_search')->middleware('CheckLogin');
 Route::post('/mstlokasi/lov_plu_select','MASTER\lokasiController@lov_plu_select')->middleware('CheckLogin');
+Route::post('/mstlokasi/noid_enter','MASTER\lokasiController@noid_enter')->middleware('CheckLogin');
+Route::post('/mstlokasi/delete_plu','MASTER\lokasiController@delete_plu')->middleware('CheckLogin');
+Route::post('/mstlokasi/delete_lokasi','MASTER\lokasiController@delete_lokasi')->middleware('CheckLogin');
+Route::post('/mstlokasi/cek_plu','MASTER\lokasiController@cek_plu')->middleware('CheckLogin');
+Route::post('/mstlokasi/tambah','MASTER\lokasiController@tambah')->middleware('CheckLogin');
+
+/*BACK OFFICE - REORDER PB GO*/
+Route::get('/boreorderpbgo/index','BACKOFFICE\ReorderPBGOController@index')->middleware('CheckLogin');
 
 
 
@@ -136,46 +149,61 @@ Route::get('/mstbarang/helpSelect','MASTER\barangController@helpSelect');
 /******** Jefri ********/
 // MASTER_CABANG
 Route::get('/mstcabang/index',              'MASTER\cabangController@index')->middleware('CheckLogin');
-Route::post('/mstcabang/getdetailcabang',   'MASTER\cabangController@getDetailCabang');
-Route::post('/mstcabang/editdatacabang',    'MASTER\cabangController@editDataCabang');
-Route::post('/mstcabang/trfdataanakcab',    'MASTER\cabangController@transDataAnakCab');
+Route::post('/mstcabang/getdetailcabang',   'MASTER\cabangController@getDetailCabang')->middleware('CheckLogin');
+Route::post('/mstcabang/editdatacabang',    'MASTER\cabangController@editDataCabang')->middleware('CheckLogin');
+Route::post('/mstcabang/trfdataanakcab',    'MASTER\cabangController@transDataAnakCab')->middleware('CheckLogin');
 
 // MASTER_OUTLET
 Route::get('/mstoutlet/index',              'MASTER\outletController@index')->middleware('CheckLogin');
 
 // MASTER_SUB_OUTLET
 Route::get('/mstsuboutlet/index',           'MASTER\subOutletController@index')->middleware('CheckLogin');
-Route::post('/mstsuboutlet/getsuboutlet',   'MASTER\subOutletController@getSubOutlet');
+Route::post('/mstsuboutlet/getsuboutlet',   'MASTER\subOutletController@getSubOutlet')->middleware('CheckLogin');
 
 // MASTER_OMI
 Route::get('/mstomi/index',                 'MASTER\omiController@index')->middleware('CheckLogin');
-Route::POST('/mstomi/gettokoomi',           'MASTER\omiController@getTokoOmi');
-Route::POST('/mstomi/edittokoomi',          'MASTER\omiController@editTokoOmi');
-Route::POST('/mstomi/getbranchname',        'MASTER\omiController@getBranchName');
-Route::POST('/mstomi/getcustomername',      'MASTER\omiController@getCustomerName');
-Route::POST('/mstomi/updatetokoomi',        'MASTER\omiController@updateTokoOmi');
+Route::POST('/mstomi/gettokoomi',           'MASTER\omiController@getTokoOmi')->middleware('CheckLogin');
+Route::POST('/mstomi/edittokoomi',          'MASTER\omiController@editTokoOmi')->middleware('CheckLogin');
+Route::POST('/mstomi/getbranchname',        'MASTER\omiController@getBranchName')->middleware('CheckLogin');
+Route::POST('/mstomi/getcustomername',      'MASTER\omiController@getCustomerName')->middleware('CheckLogin');
+Route::POST('/mstomi/updatetokoomi',        'MASTER\omiController@updateTokoOmi')->middleware('CheckLogin');
 
 // MASTER_AKTIF_HARGA_JUAL
 Route::get('/mstaktifhrgjual/index',        'MASTER\aktifHargaJualController@index')->middleware('CheckLogin');
-Route::post('/mstaktifhrgjual/getdetailplu','MASTER\aktifHargaJualController@getDetailPlu');
-Route::post('/mstaktifhrgjual/getprodmast', 'MASTER\aktifHargaJualController@getProdmast');
-Route::post('/mstaktifhrgjual/aktifkanhrg', 'MASTER\aktifHargaJualController@aktifkanHarga');
+Route::post('/mstaktifhrgjual/getdetailplu','MASTER\aktifHargaJualController@getDetailPlu')->middleware('CheckLogin');
+Route::post('/mstaktifhrgjual/getprodmast', 'MASTER\aktifHargaJualController@getProdmast')->middleware('CheckLogin');
+Route::post('/mstaktifhrgjual/aktifkanhrg', 'MASTER\aktifHargaJualController@aktifkanHarga')->middleware('CheckLogin');
 
 // MASTER_AKTIF_ALL_HARGA_JUAL
 Route::get('/mstaktifallhrgjual/index',     'MASTER\aktifAllHargaJualController@index')->middleware('CheckLogin');
-Route::post('mstaktifallhrgjual/aktifallitem', 'MASTER\aktifAllHargaJualController@aktifkanAllItem');
+Route::post('mstaktifallhrgjual/aktifallitem', 'MASTER\aktifAllHargaJualController@aktifkanAllItem')->middleware('CheckLogin');
 
 //BACKOFFICE_PB_ITEM_MAXPALET_UNTUK_PB
 Route::get('/bomaxpalet/index',             'BACKOFFICE\maxpaletUntukPBController@index')->middleware('CheckLogin');
-Route::post('/bomaxpalet/loaddata',         'BACKOFFICE\maxpaletUntukPBController@loadData');
-Route::post('/bomaxpalet/getmaxpalet',      'BACKOFFICE\maxpaletUntukPBController@getMaxPalet');
-Route::post('/bomaxpalet/savedata',         'BACKOFFICE\maxpaletUntukPBController@saveData');
-Route::post('/bomaxpalet/deletedata',       'BACKOFFICE\maxpaletUntukPBController@deleteData');
+Route::post('/bomaxpalet/loaddata',         'BACKOFFICE\maxpaletUntukPBController@loadData')->middleware('CheckLogin');
+Route::post('/bomaxpalet/getmaxpalet',      'BACKOFFICE\maxpaletUntukPBController@getMaxPalet')->middleware('CheckLogin');
+Route::post('/bomaxpalet/savedata',         'BACKOFFICE\maxpaletUntukPBController@saveData')->middleware('CheckLogin');
+Route::post('/bomaxpalet/deletedata',       'BACKOFFICE\maxpaletUntukPBController@deleteData')->middleware('CheckLogin');
+
+
+//BACKOFFICEUTILITY_PB_IGR
+Route::get('/boutilitypbigr/index',           'BACKOFFICE\utilityPBIGRController@index')->middleware('CheckLogin');
+Route::post('/boutilitypbigr/callproc1',      'BACKOFFICE\utilityPBIGRController@callProc1')->middleware('CheckLogin');
+Route::post('/boutilitypbigr/callproc2',      'BACKOFFICE\utilityPBIGRController@callProc2')->middleware('CheckLogin');
+Route::post('/boutilitypbigr/callproc3',      'BACKOFFICE\utilityPBIGRController@callProc3')->middleware('CheckLogin');
+Route::get('/boutilitypbigr/callproc4/{date}',      'BACKOFFICE\utilityPBIGRController@callProc4')->middleware('CheckLogin');
+Route::get('/boutilitypbigr/test',      function (){
+    return view('BACKOFFICE.utilityPBIGR-laporan');
+});
 
 
 //UTILITY_PB_IGR
-Route::get('/utilitypbigr/index',           'BACKOFFICE\utilityPBIGRController@index')->middleware('CheckLogin');
-Route::post('/utilitypbigr/callproc1',      'BACKOFFICE\utilityPBIGRController@callProc1');
-Route::post('/utilitypbigr/callproc2',      'BACKOFFICE\utilityPBIGRController@callProc2');
-Route::post('/utilitypbigr/callproc3',      'BACKOFFICE\utilityPBIGRController@callProc3');
-Route::post('/utilitypbigr/callproc4',      'BACKOFFICE\utilityPBIGRController@callProc4');
+Route::get('/bopbotomatis/index',               'BACKOFFICE\PBOtomatisController@index')->middleware('CheckLogin');
+Route::post('/bopbotomatis/getsupplier',        'BACKOFFICE\PBOtomatisController@getSupplier')->middleware('CheckLogin');
+Route::post('/bopbotomatis/getmtrsup',          'BACKOFFICE\PBOtomatisController@getMtrSupplier')->middleware('CheckLogin');
+Route::post('/bopbotomatis/getdepartemen',      'BACKOFFICE\PBOtomatisController@getDepartemen')->middleware('CheckLogin');
+Route::post('/bopbotomatis/getkategori',        'BACKOFFICE\PBOtomatisController@getKategori')->middleware('CheckLogin');
+Route::post('/bopbotomatis/searchkategori',     'BACKOFFICE\PBOtomatisController@searchKategori')->middleware('CheckLogin');
+Route::post('/bopbotomatis/prosesdata',         'BACKOFFICE\PBOtomatisController@prosesData')->middleware('CheckLogin');
+
+Route::post('/bopbotomatis/getdatamodal',         'BACKOFFICE\PBOtomatisController@getDataModal')->middleware('CheckLogin');

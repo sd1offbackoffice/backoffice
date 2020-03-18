@@ -26,7 +26,7 @@
                                        <label for="">4. Laporan Pembentukan  M PLUS.I dan M PLUS.O</label> <br>
                                        <div class="form-row ml-2">
                                            <label class="col-sm-3 text-right">Periode Proses Data</label>
-                                           <input type="date" class="form-control col-sm-2 mb-2 ml-2" id="dateLaporan">
+                                           <input type="month" class="form-control col-sm-2 mb-2 ml-2" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('M-y')}}">
                                        </div>
                                        <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc4()">PROSES LAPORAN</button>
                                    </div>
@@ -44,7 +44,7 @@
         function callProc1(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/utilitypbigr/callproc1',
+                url:'/BackOffice/public/boutilitypbigr/callproc1',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -54,15 +54,12 @@
                     $('#modal-loader').modal('hide');
                     if (result.kode === '0'){
                         swal('', result.return, 'warning');
-                        clearField();
                     } else {
                         swal('Success', result.return, 'success');
-                        clearField();
                     }
                     console.log(result);
                 }, error: function (err) {
                     console.log(err);
-                    clearField();
                 }
             })
         }
@@ -70,7 +67,7 @@
         function callProc2(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/utilitypbigr/callproc2',
+                url:'/BackOffice/public/boutilitypbigr/callproc2',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -80,15 +77,12 @@
                     $('#modal-loader').modal('hide');
                     if (result.kode === '0'){
                         swal('', result.return, 'warning');
-                        clearField();
                     } else {
                         swal('Success', result.return, 'success');
-                        clearField();
                     }
                     console.log(result);
                 }, error: function (err) {
                     console.log(err);
-                    clearField();
                 }
             })
         }
@@ -96,7 +90,7 @@
         function callProc3(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/utilitypbigr/callproc3',
+                url:'/BackOffice/public/boutilitypbigr/callproc3',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -106,15 +100,12 @@
                     $('#modal-loader').modal('hide');
                     if (result.kode === '0'){
                         swal('', result.return, 'warning');
-                        clearField();
                     } else {
                         swal('Success', result.return, 'success');
-                        clearField();
                     }
                     console.log(result);
                 }, error: function (err) {
                     console.log(err);
-                    clearField();
                 }
             })
         }
@@ -127,27 +118,9 @@
                 return false;
             }
 
-            ajaxSetup();
-            $.ajax({
-                url:'/BackOffice/public/utilitypbigr/callproc4',
-                type:'Post',
-                data: {
-                    date:date
-                },
-                success: function (result) {
-                    if (result.kode === '0'){
-                        swal('', result.return, 'warning');
-                        clearField();
-                    } else {
-                        swal('Success', result.return, 'success');
-                        clearField();
-                    }
-                    console.log(result);
-                }, error: function (err) {
-                    console.log(err);
-                    clearField();
-                }
-            })
+            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
+            window.location.replace('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
         }
     </script>
 

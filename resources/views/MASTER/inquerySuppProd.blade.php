@@ -105,7 +105,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                    <div class="tableFixedHeader">
+                                    {{--<div class="tableFixedHeader">--}}
                                         <table class="table table-sm" id="table_lov">
                                             <thead>
                                             <tr>

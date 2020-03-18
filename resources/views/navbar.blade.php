@@ -38,7 +38,8 @@
     <div class="container-fluid">
         {{--<div class="row justify-content-center">--}}
         {{--<div class="col-sm-11">--}}
-        <a class="navbar-brand" href="{{url("/")}}">IAS</a>
+        <a class="navbar-brand" href="{{url("/")}}">            <img src="{{asset('image/Indogrosir_logo.jpg')}}" width=100px">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -84,13 +85,32 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <!-- TARO URUT BERDASARKAN ABJAD-->
-                        <a class="dropdown-item" href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a>
-                        <a class="dropdown-item" href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
-                            IGR</a>
-                        <a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
-                            IGR</a>
-                        <a class="dropdown-item" href="{{url("/utilitypbigr/index")}}">Utility PB IGR</a>
+                        {{--<a class="dropdown-item" href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a>--}}
+                        {{--<a class="dropdown-item" href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko--}}
+                            {{--IGR</a>--}}
+                        {{--<a class="dropdown-item" href="{{url("/bopbotomatis/index")}}">PB Otomatis</a>--}}
+                        {{--<a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko--}}
+                            {{--IGR</a>--}}
+                        {{--<a class="dropdown-item" href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a>--}}
+
+                        <a class="nav-link dropdown-toggle text-center" href="#" id="navbarDropdownMenuLink1" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black">
+                            PB
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink1">
+                            <a class="dropdown-item" href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a>
+                            <a class="dropdown-item" href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
+                                IGR</a>
+                            <a class="dropdown-item" href="{{url("/bopbotomatis/index")}}">PB Otomatis</a>
+                            <a class="dropdown-item" href="{{url("/bopbmanual/index")}}">PB Manual</a>
+                            <a class="dropdown-item" href="{{url("/boreorderpbgo/index")}}">Reorder PB GO</a>
+                            <a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
+                                IGR</a>
+                            <a class="dropdown-item" href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a>
+                        </div>
+
                     </div>
+
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"

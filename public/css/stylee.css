@@ -14,6 +14,12 @@ label {
     font-weight: bold !important;
 }
 
+/*Created By : JR(16/03/2020) | Modify By :  */
+.modalRow:hover{
+    cursor: pointer;
+    background-color: #acacac;
+}
+
 /*UNTUK LOADING*/
 /*Created By : Denni(10/02/2020) | Modify By :  */
 .loader {
@@ -65,4 +71,6 @@ label {
 .form-control[readonly] {
     background-color: white;
 }
+
+
 

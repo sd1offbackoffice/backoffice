@@ -46,14 +46,13 @@ class aktifHargaJualController extends Controller
 
     public function aktifkanHarga(Request $request){
         $plu    = $request->plu;
-        $user   = 'JEP';
+        $user   = $_SESSION['usid'];
         $model  = new AllModel();
         $getData= $model->getKodeigr();
-        $kodeigr = $getData[0]->prs_kodeigr;
-        $jenistimbangan = 1;
-//        $jenistimbangan = $getData[0]->prs_jenistimbangan;
+        $kodeigr = $_SESSION['kdigr'];
+//        $jenistimbangan = 1;
+        $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $errm  = '';
-        $ppn = 'Y';
         $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
 
         $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");

@@ -16,12 +16,12 @@ class aktifAllHargaJualController extends Controller
     }
 
     public function aktifkanAllItem(){
-        $user   = 'JEP';
+        $user   = $_SESSION['usid'];
         $model  = new AllModel();
         $getData= $model->getKodeigr();
         $kodeigr = $getData[0]->prs_kodeigr;
-        $jenistimbangan = 1;
-//      $jenistimbangan = $getData[0]->prs_jenistimbangan;
+//        $jenistimbangan = 1;
+      $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $ppn            = $getData[0]->prs_nilaippn;
         $errm  = '';
 

@@ -55,8 +55,8 @@ class maxpaletUntukPBController extends Controller
     public function saveData(Request $request){
         $model      = new AllModel();
         $kodePlu    = $request->kodePlu;
-        $kodeigr    = '22';
-        $user       = 'JEP';
+        $kodeigr    = $_SESSION['kdigr'];
+        $user       = $_SESSION['usid'];
         $date       = $model->getDate();
 
         $search     = DB::table('tbmaster_prodmast')->where('prd_prdcd', $kodePlu)->get()->toArray();

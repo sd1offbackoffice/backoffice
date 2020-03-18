@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Session;
 class barcodeController extends Controller
 {
     public function index(){
-        dd(Session::get('usid'));
         $barcode = DB::table('TBMASTER_BARCODE')
             ->select('*')
             ->limit(20)

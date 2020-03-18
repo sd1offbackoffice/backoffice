@@ -608,13 +608,6 @@
                 });
                 return;
             }
-            // kubikasi[val].kbp_volumeshell = volume;
-            // kubikasi[val].kbp_allowance = allow;
-            // kubikasi[val].vreal = volume * allow / 100;
-            // kubikasi[val].vsisa = kubikasi[val].vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
-
-            // kubikasi[val].kbp_volumeshell = volume;
-            // kubikasi[val].kbp_allowance = allow;
             vreal = volume * allow / 100;
             vsisa = vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
             $('.real-'+val).text(addDotInNumber(vreal));
@@ -654,13 +647,6 @@
                     return;
                 }
             }
-            // kubikasi[val].kbp_volumeshell = volume;
-            // kubikasi[val].kbp_allowance = allow;
-            // kubikasi[val].vreal = volume * allow / 100;
-            // kubikasi[val].vsisa = kubikasi[val].vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
-
-            // kubikasi[val].kbp_volumeshell = volume;
-            // kubikasi[val].kbp_allowance = allow;
             vreal = volume * allow / 100;
             vsisa = vreal - (nvl(kubikasi[val].vexists,0) + nvl(kubikasi[val].vbook,0) + nvl(kubikasi[val].vbtb,0));
             $('.real-'+val).text(addDotInNumber(vreal));

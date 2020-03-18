@@ -75,7 +75,7 @@ class omiController extends Controller
         $flagPB=$request->flagPB;
         $hari=$request->hari;
         $jadwalKirim = str_replace('_', ' ', $hari);
-        $user   = 'JEP';
+        $user   = $_SESSION['usid'];
         date_default_timezone_set('Asia/Jakarta');
         $date   = date('Y-m-d H:i:s');
 

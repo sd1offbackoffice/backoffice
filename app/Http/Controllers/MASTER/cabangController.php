@@ -42,7 +42,7 @@ class cabangController extends Controller
         $namaanakcab= $request->namaanakcab;
         date_default_timezone_set('Asia/Jakarta');
         $date       = date('Y-m-d H:i:s');
-        $user       = 'JEP';
+        $user       = $_SESSION['usid'];
 
         $cekKodeigr = DB::table('tbmaster_cabang')->select('cab_kodecabang')->where('cab_kodecabang', $kodeigr)->get()->toArray();
         $getKodeigr = DB::table('tbmaster_perusahaan')->first();
@@ -63,8 +63,7 @@ class cabangController extends Controller
     }
 
     public function transDataAnakCab(Request $request){
-        $getKodeigr = DB::table('tbmaster_perusahaan')->select('prs_kodeigr')->first();
-        $kodeigr    = $getKodeigr->prs_kodeigr;
+        $kodeigr    = $_SESSION['kdigr'];
         date_default_timezone_set('Asia/Jakarta');
         $date       = date('ymd');
         $errm       = '';
@@ -112,6 +111,16 @@ class cabangController extends Controller
 
 /*
  $c = oci_connect('SIMKMY', 'SIMKMY', '192.168.234.193:1521/SIMKMY');
+
+		$s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('18','S','Nomor Sortir Barang','S'
+							|| TO_CHAR (SYSDATE, 'yy')
+							|| SUBSTR ('123456789ABC', TO_CHAR (SYSDATE, 'MM'), 1),
+							5,FALSE); END;");
+		oci_bind_by_name($s, ':ret', $r, 32);
+		oci_execute($s);
+		return $r;
+
+$c = oci_connect('SIMKMY', 'SIMKMY', '192.168.234.193:1521/SIMKMY');
 
 		$s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('18','S','Nomor Sortir Barang','S'
 							|| TO_CHAR (SYSDATE, 'yy')

@@ -9,13 +9,20 @@
                     <div class="card-body shadow-lg cardForm">
                         <div class="row text-right">
                             <div class="col-sm-12">
+                                <div class="form-group item text-center">
+                                    <label class="mstbarang">HELP MASTER BARANG</label>
+                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                    <label>HELP MASTER BARANG IDM</label>
+                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_pluIdm"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                    <label>HELP MASTER BARANG OMI</label>
+                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_pluOmi"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                </div>
                                 <div class="form-group row mb-0">
                                     <label for="b_kodeplu" class="col-sm-2 col-form-label">PLU</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_kodeplu">
                                     </div>
-                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                    <label for="b_tgldaftar" class="col-sm-1 col-form-label">Tgl Daftar</label>
+                                    <label for="b_tgldaftar" class="col-sm-2 col-form-label">Tgl Daftar</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tgldaftar" disabled>
                                     </div>
@@ -33,7 +40,7 @@
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tgldisc" disabled>
                                     </div>
-                                    <label for="b_barcode2" class="col-sm-1 col-form-label"></label>
+                                    <label for="b_barcode2" class="col-sm-2 col-form-label"></label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_barcode2" disabled>
                                     </div>
@@ -436,96 +443,173 @@
         </div>
     </div>
 
-    {{--<div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
-        {{--<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">--}}
-
+    <div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="modal_plu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             {{--<!-- Modal content-->--}}
-            {{--<div class="modal-content">--}}
-                {{--<div class="modal-header">--}}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label>MASTER BARANG</label>
                 {{--<div class="form-row col-sm">--}}
                 {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
+                {{--<div class="invalid-feedback">--}}
+                {{--Inputkan minimal 3 karakter</div>--}}
                 {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="modal-body">--}}
-                    {{--<div class="container">--}}
-                        {{--<div class="row">--}}
-                            {{--<div class="col">--}}
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
                                 {{--<div class="tableFixedHeader">--}}
-                                    {{--<table class="table table-sm" id="table_lov">--}}
-                                        {{--<thead>--}}
-                                        {{--<tr>--}}
-                                            {{--<td>Nama Barang</td>--}}
-                                            {{--<td>PLU</td>--}}
-                                            {{--<td>PLU Supplier</td>--}}
-                                            {{--<td>Singkatan</td>--}}
-                                        {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody>--}}
-                                        {{--@foreach($plu as $p)--}}
-                                            {{--<tr onclick="show('{{ $p->prd_prdcd }}')" class="row_lov">--}}
-                                                {{--<td>{{ $p->prd_deskripsipanjang }}</td>--}}
-                                                {{--<td>{{ $p->prd_prdcd }}</td>--}}
-                                                {{--<td>{{ $p->prd_plusupplier }}</td>--}}
-                                                {{--<td>{{ $p->prd_deskripsipendek }}</td>--}}
-                                            {{--</tr>--}}
-                                        {{--@endforeach--}}
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="modal-footer"></div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
+                                    <table class="table table-sm" id="table_lov">
+                                        <thead class="header_lov">
+                                        <tr class="font">
+                                            <td>Nama Produk</td>
+                                            <td>PLU</td>
+                                            <td>PLU Supplier</td>
+                                            <td>Singkatan</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($plu as $s)
+                                            <tr onclick="show('{{ $s->prd_prdcd }}')" class="row_lov">
+                                                <td>{{ $s->prd_deskripsipanjang }}</td>
+                                                <td>{{ $s->prd_prdcd }}</td>
+                                                <td>{{ $s->prd_plusupplier }}</td>
+                                                <td>{{ $s->prd_deskripsipendek }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
 
-    {{--<div class="modal fade" id="modal_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
-        {{--<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">--}}
-            {{--<div class="modal-content">--}}
-                {{--<div class="modal-header">--}}
-                    {{--<div class="form-row col-sm">--}}
-                        {{--<input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                        {{--<div class="invalid-feedback">--}}
-                            {{--Inputkan minimal 3 karakter--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
+    <div class="modal fade" id="modal_pluIdm" tabindex="-1" role="dialog" aria-labelledby="modal_pluIdm" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label>MASTER BARANG IDM</label>
+                {{--<div class="form-row col-sm">--}}
+                {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                {{--<div class="invalid-feedback">--}}
+                {{--Inputkan minimal 3 karakter</div>--}}
                 {{--</div>--}}
-                {{--<div class="modal-body">--}}
-                    {{--<div class="container">--}}
-                        {{--<div class="row">--}}
-                            {{--<div class="col lov">--}}
-                                {{--<table class="table table-sm" id="table_lov">--}}
-                                    {{--<thead>--}}
-                                    {{--<tr>--}}
-                                        {{--<td>Nama Barang</td>--}}
-                                        {{--<td>PLU</td>--}}
-                                        {{--<td>PLU Supplier</td>--}}
-                                        {{--<td>Singkatan</td>--}}
-                                    {{--</tr>--}}
-                                    {{--</thead>--}}
-                                    {{--<tbody>--}}
-                                    {{--@foreach($plu as $p)--}}
-                                        {{--<tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">--}}
-                                            {{--<td>{{ $p->prd_deskripsipanjang }}</td>--}}
-                                            {{--<td>{{ $p->prd_prdcd }}</td>--}}
-                                            {{--<td>{{ $p->prd_plusupplier }}</td>--}}
-                                            {{--<td>{{ $p->prd_deskripsipendek }}</td>--}}
-                                        {{--</tr>--}}
-                                    {{--@endforeach--}}
-                                    {{--</tbody>--}}
-                                {{--</table>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                {{--<div class="tableFixedHeader">--}}
+                                <table class="table table-lg" id="table_lov">
+                                    <thead class="header_lov">
+                                    <tr class="font" >
+                                        <td>Deskripsi</td>
+                                        <td>PLU IGR</td>
+                                        <td>PLU IDM</td>
+                                        <td>Tag</td>
+                                        <td>Harga</td>
+                                        <td>Renceng</td>
+                                        <td>Minor</td>
+                                        <td>Min</td>
+                                        <td>Max</td>
+                                        <td>Tgl Promo</td>
+                                        <td>Hrg Promo</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($pluIdm as $p)
+                                        <tr onclick="show('{{ $p->prd_prdcd}}')" class="row_lov">
+                                            <td>{{ $p->prd_deskripsipanjang }}</td>
+                                            <td>{{ $p->prc_pluigr }}</td>
+                                            <td>{{ $p->prc_pluidm }}</td>
+                                            <td>{{ $p->prc_kodetag }}</td>
+                                            <td>{{ $p->prc_hrgjual }}</td>
+                                            <td>{{ $p->prc_satuanrenceng}}</td>
+                                            <td>{{ $p->prc_minorder}}</td>
+                                            <td>{{ $p->prc_minorderomi}}</td>
+                                            <td>{{ $p->prc_maxorderomi}}</td>
+                                            <td>{{ $p->prc_datek}}</td>
+                                            <td>{{ $p->prc_pricek}}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_pluOmi" tabindex="-1" role="dialog" aria-labelledby="modal_pluOmi" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label>MASTER BARANG OMI</label>
+                {{--<div class="form-row col-sm">--}}
+                {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+                {{--<div class="invalid-feedback">--}}
+                {{--Inputkan minimal 3 karakter</div>--}}
                 {{--</div>--}}
-                {{--<div class="modal-footer">--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                {{--<div class="tableFixHead">--}}
+                                <table class="table table-sm" id="table_lov">
+                                    <thead class="header_lov">
+                                    <tr class="font">
+                                        <td>Deskripsi</td>
+                                        <td>PLU IGR</td>
+                                        <td>PLU IDM</td>
+                                        <td>Tag</td>
+                                        <td>Harga</td>
+                                        <td>Renceng</td>
+                                        <td>Minor</td>
+                                        <td>Min</td>
+                                        <td>Max</td>
+                                        <td>Tgl Promo</td>
+                                        <td>Hrg Promo</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($pluOmi as $o)
+                                        <tr onclick="show('{{ $o->prd_prdcd }}')" class="row_lov">
+                                            <td>{{ $o->prd_deskripsipanjang }}</td>
+                                            <td>{{ $o->prc_pluigr }}</td>
+                                            <td>{{ $o->prc_pluidm }}</td>
+                                            <td>{{ $o->prc_kodetag }}</td>
+                                            <td>{{ $o->prc_hrgjual }}</td>
+                                            <td>{{ $o->prc_satuanrenceng}}</td>
+                                            <td>{{ $o->prc_minorder}}</td>
+                                            <td>{{ $o->prc_minorderomi}}</td>
+                                            <td>{{ $o->prc_maxorderomi}}</td>
+                                            <td>{{ $o->prc_datek}}</td>
+                                            <td>{{ $o->prc_pricek }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+            </div>
+        </div>
 
 
     <style>
@@ -548,12 +632,31 @@
         .cardForm {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
+        .header_lov{
+            background-color: #000000;
+            position: sticky; top: 0;
+        }
+        .font{
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .row_lov:hover{
+            cursor: pointer;
+            background-color: #acacac;
+        }
+        .item{
+            /*padding: 15px;*/
+            /*border: 1px solid black;*/
+            /*margin-left: -20px;*/
+            /**zoom: 1;*/
+            margin-bottom: 20px;
+        }
         </style>
 
     <script>
 
         $(document).ready(function(){
-            show('0000040');
+            show('1556610');
         });
 
         $(document).on('keypress', '#b_kodeplu', function (e) {
@@ -565,6 +668,9 @@
         });
 
         function show(kodeplu){
+            $('#modal_plu').modal('hide');
+            $('#modal_pluIdm').modal('hide');
+            $('#modal_pluOmi').modal('hide');
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/mstbarang/showBarang',
@@ -575,7 +681,7 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    let data = result.data[0];
+                    let data = result.datas[0];
                     console.log(result);
 
                     $('#b_kodeplu').val(data.prd_prdcd);
@@ -585,8 +691,8 @@
                     $('#b_nmbrg2').val(data.prd_deskripsipanjang);
                     $('#b_tgldaftar').val(formatDate(data.prd_tgldaftar));
                     $('#b_tgldisc').val(formatDate(data.prd_tgldiscontinue));
-                    $('#b_barcode').val(data.brc_barcode);
-                    $('#b_barcode2').val(data.prd_barcode2);
+                    $('#b_barcode').val(result.brc1);
+                    $('#b_barcode2').val(result.brc2);
                     $('#b_statbarcode').val(data.prd_flagbarcode1);
                     $('#b_tglaktif').val(formatDate(data.prd_tglaktif));
 
@@ -627,10 +733,10 @@
                     $('#h_hpprata').val(convertToRupiah(data.prd_avgcost));
                     $('#h_stdmrg').val(convertToRupiah(data.prd_markupstandard));
                     $('#h_hrgjual').val(convertToRupiah(data.prd_hrgjual));
-                    $('#h_marginaktual').val(data.prd_margin_n);
+                    $('#h_marginaktual').val(convertToRupiah(result.margin_n));
                     $('#h_tglaktif').val(formatDate(data.prd_tglhrgjual));
                     $('#h_hrgjualbaru').val(convertToRupiah(data.prd_hrgjual3));
-                    $('#h_marginaktual2').val(data.prd_margin_a);
+                    $('#h_marginaktual2').val(convertToRupiah(result.margin_a));
                     $('#h_tglberlaku').val(formatDate(data.prd_tglhrgjual3));
                     $('#h_flagnondistfee').val(data.prd_flagnondistfee);
 
@@ -645,11 +751,11 @@
                     $('#di_beratctn').val(data.prd_berat_ctn);
                     $('#di_beratbox').val(data.prd_berat_box);
 
-                    $('#b_updateakhir').val(data.prd_modify_dt);
-                    $('#b_updateakhir2').val(data.prd_modify_by);
-                    $('#b_tglpromo').val(formatDate(data.prd_tglpromo));
-                    $('#b_jampromo').val(data.jampromo);
-                    $('#b_hrgpromo').val(convertToRupiah(data.hrgpromo));
+                    $('#b_updateakhir').val(result.tglupd);
+                    $('#b_updateakhir2').val(result.userupd);
+                    $('#b_tglpromo').val(result.tglpromo);
+                    $('#b_jampromo').val(result.jampromo);
+                    $('#b_hrgpromo').val(convertToRupiah(result.hrgpromo));
 
                 }, error: function(err){
                     $('#modal-loader').modal('hide');
