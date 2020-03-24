@@ -880,7 +880,79 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
-                            console.log(response);
+                            div.remove();
+                            console.log(response['plu']);
+                            $('#table-detail').append(
+                                "<tr id='row-" + rowIterator + "' class='baris' onclick='setDataPLU(\"" + rowIterator + "\",\"" + response["plu"].pbd_prdcd + "\",\"" + response["plu"].prd_deskripsipanjang.replace('\'', '^') + "\",\"" + response["plu"].pbd_kodesupplier + "\",\"" + response["plu"].sup_namasupplier + "\",\"" + response["plu"].prd_hrgjual + "\",\"" + nvl(response["plu"].pbd_pkmt,0) + "\",\"" + nvl(response["plu"].st_saldoakhir,0) + "\",\"" + response["plu"].minor + "\")'>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <button class='btn btn-sm btn-danger btn-delete' onclick='hapusBaris(\"" + rowIterator + "\")'>X</button>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                '<div class="inside">' +
+                                '<input type="text" class="form-control form-control-sm text-small input-plu" maxlength="7" value="' + nvl(response["plu"].pbd_prdcd,'') + '" onkeypress="cek_plu(\'' + rowIterator + '\', this.value, event)">' +
+                                '<button type="button" style="display: none" class="btn btn-sm btn-lov-plu p-0" data-toggle="modal" data-target="#m_pluHelp" onclick="pluhelp(\'' + rowIterator + '\')"><img src="{{asset('image/icon/help.png')}}" width="25px"></button>' +
+                                '</div>' +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm input-satuan' value='" + response["plu"].satuan + "' >\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input class='form-control form-control-sm text-right input-ctn' value='" + response["plu"].qtyctn + "' onkeypress='cek_ctn(\"" + rowIterator + "\", this.value, event)'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input class='form-control form-control-sm text-right input-pcs' value='" + response["plu"].qtypcs + "' onkeypress='cek_pcs(\"" + rowIterator + "\", this.value, event)'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm' value='" + response["plu"].f_omi + "'\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm' value='" + response["plu"].f_idm + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm' value='" + nvl(response["plu"].pbd_fdxrev, '') + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right input-harga-satuan'\n" +
+                                "               value='" + convertToRupiah2(response["plu"].pbd_hrgsatuan) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + response["plu"].pbd_rphdisc1 + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + convertToRupiah(response["plu"].pbd_persendisc1) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["plu"].pbd_rphdisc2) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + convertToRupiah(response["plu"].pbd_persendisc2) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + response["plu"].pbd_bonuspo1 + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm' value='" + nvl(response["plu"].pbd_bonuspo2, '') + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right gross'\n" +
+                                "               value='" + convertToRupiah2(response["plu"].pbd_gross) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right ppn'\n" +
+                                "               value='" + convertToRupiah2(response["plu"].pbd_ppn) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right ppnbm' value='" + convertToRupiah2(response["plu"].pbd_ppnbm) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right ppnbotol' value='" + convertToRupiah2(response["plu"].pbd_ppnbotol) + "'>\n" +
+                                "    </td>\n" +
+                                "    <td class='p-0'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right total'\n" +
+                                "               value='" + convertToRupiah2(response["plu"].total) + "'>\n" +
+                                "    </td>\n" +
+                                "</tr>"
+                            );
                         },
                         complete: function () {
                             $('#modal-loader').modal('hide');

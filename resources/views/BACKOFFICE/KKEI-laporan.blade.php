@@ -110,7 +110,6 @@ $datetime->setTimezone($timezone);
         $supplier = 'xxx';
     @endphp
 
-    @for($z=0;$z<2;$z++)
     @foreach($data as $k)
         @php $i++; @endphp
         @php
@@ -165,7 +164,7 @@ $datetime->setTimezone($timezone);
             <td>{{ substr($k->kke_tglkirim05,0,10) }}</td>
         </tr>
     @endforeach
-        @endfor
+
     </tbody>
     <tfoot>
     <tr style="text-align: right">

@@ -33,22 +33,34 @@
                                     </div>
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Divisi :</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control divisi" id="div_divisi1">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_divisi">
+                                                <img src="<?php echo (asset('image/icon/help.png')); ?>" width="30px">
+                                            </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control divisi" id="div_divisi2">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_divisi">
+                                                <img src="<?php echo (asset('image/icon/help.png')); ?>" width="30px">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Departement :</label>
-                                        <div class="col-sm-3">
-                                            <input maxlength="10" type="text" class="form-control" id="div_departement1">
+                                        <div class="col-sm-3 buttonInside">
+                                            <input maxlength="10" type="text" class="form-control divisi" id="div_departement1">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_departement">
+                                                <img src="<?php echo (asset('image/icon/help.png')); ?>" width="30px">
+                                            </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
-                                        <div class="col-sm-3">
-                                            <input maxlength="10" type="text" class="form-control" id="div_departement2">
+                                        <div class="col-sm-3 buttonInside">
+                                            <input maxlength="10" type="text" class="form-control divisi" id="div_departement2">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_departement">
+                                                <img src="<?php echo (asset('image/icon/help.png')); ?>" width="30px">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -192,6 +204,85 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_lov_divisi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="i_lov_plu" class="form-control search_lov" type="text" placeholder="Cari Divisi" aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm" id="table_lov_plu">
+                                    <thead>
+                                    <tr>
+                                        <td>KODE DIVISI</td>
+                                        <td>NAMA DIVISI</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $i = 0 @endphp
+                                    @foreach($divisi as $d)
+                                        @php $i++ @endphp
+                                        <tr id="row_lov_rak_{{ $i }}" onclick="lov_rak_select({{ $i }})" class="row_lov">
+                                            <td class="div_kodedivisi">{{ $d->div_kodedivisi }}</td>
+                                            <td class="div_namadivisi">{{ $d->div_namadivisi }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_lov_departement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="i_lov_plu" class="form-control search_lov" type="text" placeholder="Cari Departement" aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm" id="table_lov_plu">
+                                    <thead>
+                                    <tr>
+                                        <td>KODE DEPARTEMENT</td>
+                                        <td>NAMA DEPARTEMENT</td>
+                                        <td>KODE DIVISI</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $i = 0 @endphp
+                                    @foreach($departement as $d)
+                                        @php $i++ @endphp
+                                        <tr id="row_lov_rak_{{ $i }}" onclick="lov_rak_select({{ $i }})" class="row_lov">
+                                            <td class="dep_kodedepartement">{{ $d->dep_kodedepartement }}</td>
+                                            <td class="dep_namadepartement">{{ $d->dep_namadepartement }}</td>
+                                            <td class="dep_kodedivisi">{{ $d->dep_kodedivisi }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -220,15 +311,44 @@
             height: 460px;
         }
 
+        .buttonInside {
+            position: relative;
+        }
+
+        .btn-lov{
+            position:absolute;
+            right: 20px;
+            top: 4px;
+            border:none;
+            height:30px;
+            width:30px;
+            border-radius:100%;
+            outline:none;
+            text-align:center;
+            font-weight:bold;
+        }
+
+        .row_lov:hover{
+            cursor: pointer;
+            background-color: #acacac;
+            color: white;
+        }
+
 
     </style>
 
     <script>
-        var divisi = @php echo $divisi; @endphp;
-        var departement = @php echo $departement; @endphp;
-
         $('.tanggal').datepicker({
             "dateFormat" : "dd/mm/yy"
+        });
+
+        $('input').on('focus',function(){
+            $('.btn-lov').hide();
+            $(this).parent().find('.btn-lov').show();
+        });
+
+        $('.modal').on('shown.bs.modal',function(){
+            $(this).find('input').select();
         });
 
         $('.tanggal').on('keypress',function(e){

@@ -714,7 +714,8 @@
                         $('#modal-loader').modal('toggle');
                     },
                     success: function (response) {
-                        $('#modal-loader').modal('toggle');
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
 
                         if(response.length == 0){
                             swal({

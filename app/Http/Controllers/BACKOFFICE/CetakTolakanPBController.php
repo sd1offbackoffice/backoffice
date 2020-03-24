@@ -16,13 +16,14 @@ class CetakTolakanPBController extends Controller
 
     public function index(){
         $divisi = DB::table('tbmaster_divisi')
-            ->select('div_kodedivisi')
+            ->select('div_kodedivisi','div_namadivisi')
             ->where('div_kodeigr',$_SESSION['kdigr'])
             ->get();
 
         $departement = DB::table('tbmaster_departement')
-            ->select('dep_kodedepartement','dep_kodedivisi')
+            ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
             ->where('dep_kodeigr',$_SESSION['kdigr'])
+            ->orderBy('dep_kodedepartement')
             ->get();
 
         return view('BACKOFFICE.CetakTolakanPB')->with(compact(['divisi','departement']));

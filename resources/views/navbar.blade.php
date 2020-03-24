@@ -142,7 +142,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url("/testnewnav")}}" tabindex="-1"> TEST NEW NAVBAR</a>
+                    <a class="nav-link" href="{{url("/testnewnav")}}" tabindex="-1">NAVBAR SEMANGAT JEFRI <3</a>
                 </li>
             </div>
         </div>

@@ -415,8 +415,9 @@
                         $(this).parent().parent().find('.kke_tglkirim01').select();
                     }
                     else{
-                        console.log(conv);
-                        $(this).val(parseInt(convertToRupiah2($(this).val())));
+                        if(!$(this).hasClass('tanggal')){
+                            $(this).val(parseInt(convertToRupiah2($(this).val())));
+                        }
                         $(this).parent().next().find('input').select();
                     }
                 }
@@ -511,7 +512,7 @@
                         $('.'+thisClass).each(function(){
                             if(parseInt(unconvertToRupiah($(this).val())) > 0) {
                                 currId = $(this).parent().parent().attr('id').split('_').pop();
-                                console.log(parseInt(unconvertToRupiah($(this).val())));
+                                // console.log(parseInt(unconvertToRupiah($(this).val())));
                                 totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * parseInt(unconvertToRupiah($(this).val()));
                                 totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * parseInt(unconvertToRupiah($(this).val()));
                             }
@@ -645,9 +646,12 @@
                                             icon: 'error'
                                         }).then(function(){
                                             $('#row_form_'+row).find('.kke_estimasi').select();
-                                            $('#btn-save').prop('disabled',false);
                                         });
                                     }
+                                    else{
+                                        $('#row_form_'+row).find('.kke_estimasi').select();
+                                    }
+                                    $('#btn-save').prop('disabled',false);
 
                                 }
                                 else {
@@ -1081,10 +1085,9 @@
                 data: {kkei: datas, deleted: deleted},
                 beforeSend: function () {
                     $('#modal-loader').modal('toggle');
-                    console.log(datas);
+                    // console.log(datas);
                 },
-                success: function (response, xhr) {
-                    console.log(xhr.status);
+                success: function (response){
                     $('#modal-loader').modal('toggle');
                     if(response.status == 'success'){
                         swal({
