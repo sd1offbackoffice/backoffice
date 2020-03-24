@@ -72,5 +72,7 @@ label {
     background-color: white;
 }
 
-
-
+.theadDataTables{
+    background-color: #5AA4DD;
+    color: white;
+}

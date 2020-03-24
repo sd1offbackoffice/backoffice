@@ -411,13 +411,12 @@
             $('input').on('keypress',function(event){
                 if(event.which == 13 && !$(this).hasClass('kke_prdcd') && $(this).attr('id') != 'i-search' && !$(this).hasClass('kke_tglkirim05')){
                     if($(this).hasClass('kke_bufferss')){
-                        $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
+                        $(this).val(parseInt(convertToRupiah2($(this).val())));
                         $(this).parent().parent().find('.kke_tglkirim01').select();
                     }
                     else{
-                        if(!$(this).hasClass('tanggal')){
-                            $(this).val(convertToRupiah2(unconvertToRupiah($(this).val())));
-                        }
+                        console.log(conv);
+                        $(this).val(parseInt(convertToRupiah2($(this).val())));
                         $(this).parent().next().find('input').select();
                     }
                 }
@@ -512,6 +511,7 @@
                         $('.'+thisClass).each(function(){
                             if(parseInt(unconvertToRupiah($(this).val())) > 0) {
                                 currId = $(this).parent().parent().attr('id').split('_').pop();
+                                console.log(parseInt(unconvertToRupiah($(this).val())));
                                 totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * parseInt(unconvertToRupiah($(this).val()));
                                 totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * parseInt(unconvertToRupiah($(this).val()));
                             }
@@ -519,6 +519,10 @@
 
                         totalKubikasi = totalKubikasi / 28.5;
                         totalBerat = totalBerat / 20900;
+
+                        // console.log(totalKubikasi);
+                        // console.log(totalBerat);
+
                         if(totalKubikasi > totalBerat){
                             total = Math.ceil(totalKubikasi);
                             if(total < 1)
@@ -644,16 +648,11 @@
                                             $('#btn-save').prop('disabled',false);
                                         });
                                     }
-                                    else{
-                                        $('#row_form_'+row).find('.kke_estimasi').select();
-                                        $('#btn-save').prop('disabled',false);
-                                    }
 
                                 }
                                 else {
                                     swal({
                                         title: response.message,
-                                        text: response.exception,
                                         icon: "error"
                                     }).then(function () {
                                         $(event.target).select();
@@ -1132,34 +1131,39 @@
                 periode : $('#periode').val().replace(/\//g,'')
             };
 
-            // Use XMLHttpRequest instead of Jquery $ajax
-            $('#modal-loader').modal('toggle');
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                var a;
-                if (xhttp.readyState === 4 && xhttp.status === 200) {
-                    // Trick for making downloadable link
-                    a = document.createElement('a');
-                    a.href = window.URL.createObjectURL(xhttp.response);
+            periode = $('#periode').val().replace(/\//g,'');
+            url = '{{ url('/bokkei/laporan?periode=') }}'+periode;
 
-                    disposition = xhttp.getResponseHeader('Content-Disposition');
-                    filename = disposition.substr(disposition.indexOf('"') + 1).replace('"','');
+            window.open(url);
 
-                    // Give filename you wish to download
-                    a.download = filename;
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    $('#modal-loader').modal('toggle');
-                }
-            };
-            // Post data to URL which handles post request
-            xhttp.open("POST", "{{ url('bokkei/laporan') }}");
-            xhttp.setRequestHeader("Content-Type", "application/json");
-            xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
-            // You should set responseType as blob for binary responses
-            xhttp.responseType = 'blob';
-            xhttp.send(JSON.stringify(data));
+            {{--// Use XMLHttpRequest instead of Jquery $ajax--}}
+            {{--$('#modal-loader').modal('toggle');--}}
+            {{--xhttp = new XMLHttpRequest();--}}
+            {{--xhttp.onreadystatechange = function() {--}}
+                {{--var a;--}}
+                {{--if (xhttp.readyState === 4 && xhttp.status === 200) {--}}
+                    {{--// Trick for making downloadable link--}}
+                    {{--a = document.createElement('a');--}}
+                    {{--a.href = window.URL.createObjectURL(xhttp.response);--}}
+
+                    {{--disposition = xhttp.getResponseHeader('Content-Disposition');--}}
+                    {{--filename = disposition.substr(disposition.indexOf('"') + 1).replace('"','');--}}
+
+                    {{--// Give filename you wish to download--}}
+                    {{--a.download = filename;--}}
+                    {{--a.style.display = 'none';--}}
+                    {{--document.body.appendChild(a);--}}
+                    {{--a.click();--}}
+                    {{--$('#modal-loader').modal('toggle');--}}
+                {{--}--}}
+            {{--};--}}
+            {{--// Post data to URL which handles post request--}}
+            {{--xhttp.open("POST", "{{ url('bokkei/laporan') }}");--}}
+            {{--xhttp.setRequestHeader("Content-Type", "application/json");--}}
+            {{--xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));--}}
+            {{--// You should set responseType as blob for binary responses--}}
+            {{--xhttp.responseType = 'blob';--}}
+            {{--xhttp.send(JSON.stringify(data));--}}
         }
 
     </script>

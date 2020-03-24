@@ -8,26 +8,25 @@
                     <legend  class="w-auto ml-5">Master Hari Libur</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="tableFixedHeader">
-                            <table class="table table-sm table-hover table-bordered" id="table-harilibur">
-                                <thead class="thead-dark">
+                            <table class="table table-sm table-hover table-bordered">
+                                <thead>
                                 <tr>
-                                    <th class="col-sm-">TANGGAL</th>
-                                    <th class="col-sm-5">KETERANGAN</th>
+                                    <th> TANGGAL</th>
+                                    <th >KETERANGAN</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody  id="tbodyHariLibur">
                                 @foreach($harilibur as $dataHariLibur)
-                                    <tr class="row_harilibur justify-content-md-center p-0">
-                                        <td class="col-4">{{ date('d F Y', strtotime($dataHariLibur->lib_tgllibur)) }}</td>
-                                        <td class="col-8">{{$dataHariLibur->lib_keteranganlibur}}</td>
-                                        </td>
+                                    <tr class="modalRow justify-content-md-center p-0 hariLiburRow" id="{{$dataHariLibur->lib_tgllibur}}" val="{{$dataHariLibur->lib_keteranganlibur}}" onclick='inputToField(this)'>
+                                        <td>{{ date('d-M-Y', strtotime($dataHariLibur->lib_tgllibur)) }}</td>
+                                        <td>{{$dataHariLibur->lib_keteranganlibur}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="form-group row mb-0">
+                        <div class="form-group row mb-0 mt-3">
                             <label for="i_tgl" class="col-sm-2 col-form-label text-right">TANGGAL</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control" data-date-format="DD MMMM YYYY" id="i_tgl" placeholder="...">
@@ -36,8 +35,8 @@
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="i_keterangan" placeholder="...">
                             </div>
-                            <button class="btn btn-success" id="btn-save" onclick="save_harilibur()">SAVE</button>
-                            <button class="btn btn-success" id="btn-delete" onclick="delete_harilibur()">DELETE</button>
+                            <button class="btn btn-primary pl-4 pr-4 mr-3" id="btn-save" onclick="saveHariLibur()">SAVE</button>
+                            <button class="btn btn-danger pl-4 pr-4" id="btn-delete" onclick="deleteHariLibur()">DELETE</button>
                         </div>
                     </div>
                 </fieldset>
@@ -46,89 +45,86 @@
     </div>
 
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
+        input{
+            text-transform: uppercase;
         }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-        .my-custom-scrollbar {
-            position: relative;
-            height: 350px;
-            overflow-x: hidden;
-            overflow-y: scroll;
-        }
-        .table-wrapper-scroll-y {
-            display: block;
-        }
-
-        .row_harilibur:hover{
-            cursor: pointer;
-            background-color: grey;
-        }
-
-
-        /*.tableFixedHeader          { overflow-y: auto; height: 300px; }*/
-        /*.tableFixedHeader thead th { position: sticky; top: 0; }*/
-        /*.tableFixedHeader th     { background:#eee; }*/
-        /*.tableFixedHeader table  { border-collapse: collapse; width: 100%; }*/
-        /*.tableFixedHeader th, td { padding: 8px 16px; }*/
-
-
     </style>
 
     <script>
+        function actionHariLibur(string) {
+            let tgl = $('#i_tgl').val();
+            let ket = $('#i_keterangan').val();
 
-        $(document).ready(function(){
-            $('#btn-save').click(function() {
-                var tgllibur = $('#i_tgl').val();
-                var ketlibur = $('#i_keterangan').val();
+            if(!ket && !tgl){
+                swal('MOHON MENGISI TANGGAL DAN KETERANGAN', '', 'warning');
+            } else if (!tgl) {
+                swal('MOHON MENGISI TANGGAL', '', 'warning')
+            } else  if(!ket){
+                swal('MOHON MENGISI KETERANGAN', '', 'warning')
+            } else {
+                ajaxSetup();
+                $.ajax({
+                    url: string,
+                    type: 'post',
+                    data: {tgllibur: tgl, ketlibur: ket},
+                    beforeSend: function(){
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (result) {
+                        if (result.kode === 1) {
+                            swal(result.msg,'','success');
 
-                if (tgllibur != null && ketlibur != null) {
-                    $.ajax({
-                        url: '/BackOffice/public/mstharilibur/insert',
-                        type: 'post',
-                        data: {_token: CSRF_TOKEN, tgllibur: tgllibur, ketlibur: ketlibur},
-                        success: function (response) {
-                            if (response > 0) {
-                                var id = response;
-                                var findnorecord = $('#userTable tr.norecord').length;
+                            $('.hariLiburRow').remove();
+                            for (let i =0 ; i < result.data.length; i++){
+                                const d = new Date(result.data[i].lib_tgllibur.substr(0,10))
+                                const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+                                const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
+                                const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
 
-                                if (findnorecord > 0) {
-                                    $('#userTable tr.norecord').remove();
-                                }
-                                // var tr_str = "<tr>"+
-                                //     "<td align='center'><input type='text' value='" + username + "' id='username_"+id+"' disabled ></td>" +
-                                //     "<td align='center'><input type='text' value='" + name + "' id='name_"+id+"'></td>" +
-                                //     "<td align='center'><input type='email' value='" + email + "' id='email_"+id+"'></td>" +
-                                //     "<td align='center'><input type='button' value='Update' class='update' data-id='"+id+"' ><input type='button' value='Delete' class='delete' data-id='"+id+"' ></td>"+
-                                //     "</tr>";
-
-                                $('#i_tgl').val(tgllibur);
-                                $('#i_keterangan').val(keterangan);
-
-                               // $("#userTable tbody").append(tr_str);
-                            } else if (response == 0) {
-                                alert('Username already in use.');
-                            } else {
-                                alert(response);
+                                let date = da+'-'+mo+'-'+ye;
+                                $('#tbodyHariLibur').append(" <tr class='modalRow justify-content-md-center p-0 hariLiburRow' id='"+ result.data[i].lib_tgllibur +"' val='"+ result.data[i].lib_keteranganlibur +"' onclick='inputToField(this)'>\n" +
+                                    "<td>"+ date +"</td>\n" +
+                                    "<td>"+ result.data[i].lib_keteranganlibur +"</td>\n" +
+                                    "</tr>")
                             }
-
-                            // Empty the input fields
-                            $('#i_tgl').val('');
-                            $('#i_keterangan').val('');
+                        } else {
+                            swal('ERROR', "Something's Error", 'error')
                         }
-                    });
-                } else {
-                    alert('Fill all fields');
+
+                        $('#i_tgl').val('');
+                        $('#i_keterangan').val('');
+                        $('#modal-loader').modal('hide');
+                    }, error: function (error) {
+                        console.log(error)
+                    }
+                });
+            }
+        }
+
+        function saveHariLibur() {
+            actionHariLibur( '/BackOffice/public/mstharilibur/insert')
+        }
+
+        function deleteHariLibur() {
+            swal({
+                icon: 'warning',
+                title: 'Hari Libur Akan di Hapus?',
+                buttons: true,
+                dangerMode: true
+            }).then((response) =>{
+                if (response){
+                    actionHariLibur( '/BackOffice/public/mstharilibur/delete')
                 }
-            });
-            });
+                });
+        }
 
+        function inputToField(temp) {
+            let tgl =  temp['attributes'][1]['nodeValue']
+            let ket =  temp['attributes'][2]['nodeValue']
 
-
-
+            $('#i_tgl').val(tgl.substr(0,10));
+            $('#i_keterangan').val(ket);
+        }
     </script>
 
 @endsection

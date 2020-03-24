@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan</title>
+    <title>Laporan KKEI {{ $periode }}</title>
 </head>
 <body>
 <!-- <a href="/getPdf"><button>Download PDF</button></a> -->
@@ -110,6 +110,7 @@ $datetime->setTimezone($timezone);
         $supplier = 'xxx';
     @endphp
 
+    @for($z=0;$z<2;$z++)
     @foreach($data as $k)
         @php $i++; @endphp
         @php
@@ -164,6 +165,7 @@ $datetime->setTimezone($timezone);
             <td>{{ substr($k->kke_tglkirim05,0,10) }}</td>
         </tr>
     @endforeach
+        @endfor
     </tbody>
     <tfoot>
     <tr style="text-align: right">
@@ -224,29 +226,8 @@ $datetime->setTimezone($timezone);
         left: 0cm;
         right: 0cm;
         height: 2cm;
-
-        /*position: fixed;*/
-        /*top: -20px;*/
-        /*left: 0px;*/
-        /*right: 0px;*/
-        /*height: 50px;*/
-        /*margin-bottom: 50px;*/
     }
-
-    /*footer {*/
-        /*position: fixed;*/
-        /*bottom: 160px;*/
-        /*left: 0px;*/
-        /*right: 0px;*/
-    /*}*/
     body {
-        /*font-size: 10px;*/
-        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
-        /*font-weight: 400;*/
-        /*line-height: 1.5;*/
-        /*margin-top: 70px;*/
-        /*margin-bottom: 0px;*/
-
         margin-top: 70px;
         margin-bottom: 10px;
         font-size: 9px;

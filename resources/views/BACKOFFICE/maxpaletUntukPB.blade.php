@@ -33,7 +33,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <table class="table table-bordered table-hover" id="tableBOMaxpalet">
-                                            <thead>
+                                            <thead class="theadDataTables">
                                             <tr class="text-center">
                                                 <th>PLU</th>
                                                 <th>Deskripsi</th>

@@ -93,19 +93,27 @@
                             {{--IGR</a>--}}
                         {{--<a class="dropdown-item" href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a>--}}
 
+                        {{--<li class="dropdown-submenu">--}}
+                            {{--<a href="">Mutli</a>--}}
+                            {{--<ul class="dropdown-menu">--}}
+                                {{--<li><a class="dropdown-1" href="#">cubmenu</a></li>--}}
+                            {{--</ul>--}}
+                        {{--</li>--}}
+
                         <a class="nav-link dropdown-toggle text-center" href="#" id="navbarDropdownMenuLink1" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black">
                             PB
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink1">
+                            <a class="dropdown-item" href="{{url("/bocetakpb/index")}}">Cetak PB</a>
+                            <a class="dropdown-item" href="{{url("/bocetaktolakanpb/index")}}">Cetak Tolakan PB</a>
                             <a class="dropdown-item" href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a>
                             <a class="dropdown-item" href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
                                 IGR</a>
                             <a class="dropdown-item" href="{{url("/bopbotomatis/index")}}">PB Otomatis</a>
                             <a class="dropdown-item" href="{{url("/bopbmanual/index")}}">PB Manual</a>
                             <a class="dropdown-item" href="{{url("/boreorderpbgo/index")}}">Reorder PB GO</a>
-                            <a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
-                                IGR</a>
+                            <a class="dropdown-item" href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko IGR</a>
                             <a class="dropdown-item" href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a>
                         </div>
 
@@ -132,6 +140,9 @@
                         <!-- TARO URUT BERDASARKAN ABJAD-->
                         <a class="dropdown-item" href="{{url("/admuser/index")}}">User</a>
                     </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url("/testnewnav")}}" tabindex="-1"> TEST NEW NAVBAR</a>
                 </li>
             </div>
         </div>

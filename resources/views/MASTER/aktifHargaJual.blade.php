@@ -187,7 +187,7 @@
                             $('#namaDepartement').val(data.dep_namadepartement)
                             $('#kodeKategori').val(data.prd_kodekategoribarang)
                             $('#namaKategori').val(data.kat_namakategori)
-                            $('#hargaLama').val(convertToRupiah2(data.prd_hrgjual)
+                            $('#hargaLama').val(convertToRupiah2(data.prd_hrgjual))
                             $('#hargaBaru').val(data.prd_hrgjual3)
                             $('.btnAktifkanHrg').focus()
                         }

@@ -110,7 +110,6 @@
                 type: 'post',
                 data: {},
                 success: function (result) {
-                    console.log(result);
                     allData = result;
                 }, error: function () {
                     alert('error');
@@ -366,8 +365,6 @@
                 }
             }
 
-            console.log(tipePB)
-
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bopbotomatis/prosesdata',
@@ -387,13 +384,21 @@
                 },
                 success: function (result) {
                     console.log(result);
+                    $('#modal-loader').modal('hide');
                     if(result.kode === 1){
                         swal('Success', result.msg, 'success');
+                    } else if (result.kode === 2){
+                        swal('Success', result.msg, 'success');
+                        let param1 = result.param[0];
+                        let param2 = result.param[1];
+                        let param3 = result.param[2];
+                        let param4 = result.param[3];
+                        let param5 = result.param[4];
+
+                        window.open('/BackOffice/public/bopbotomatis/cetakreport/'+param1 +'/'+param2 +'/'+param3 +'/'+param4 +'/'+param5 +'/')
                     } else {
                         swal('Failed', result.msg, 'error');
                     }
-
-                    $('#modal-loader').modal('hide');
                     clearField()
                 }, error: function () {
                     swal('Error', '','error');

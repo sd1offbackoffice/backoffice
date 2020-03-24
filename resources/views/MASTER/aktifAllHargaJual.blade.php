@@ -16,7 +16,8 @@
                         </form>
 
                         <table class="table table bordered table-sm mt-3" id="tableAktifkanAll">
-                            <thead style="background-color: #5AA4DD; color: white">
+                            {{--<thead style="background-color: #5AA4DD; color: white">--}}
+                            <thead class="theadDataTables">
                             <tr class="text-center">
                                 <th class="">PLU</th>
                                 <th class="">Deskripsi</th>
@@ -29,8 +30,8 @@
                                     <tr>
                                         <td>{{$data->prd_prdcd}}</td>
                                         <td>{{$data->prd_deskripsipanjang}}</td>
-                                        <td>{{$data->prd_hrgjual}}</td>
-                                        <td>{{$data->prd_hrgjual3}}</td>
+                                        <td class="text-right">{{$data->prd_hrgjual}}</td>
+                                        <td class="text-right">{{$data->prd_hrgjual3}}</td>
                                     </tr>
                                 @endforeach
                             </tbdoy>

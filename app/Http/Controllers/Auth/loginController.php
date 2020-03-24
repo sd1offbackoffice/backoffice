@@ -123,6 +123,7 @@ class loginController extends Controller
                 $_SESSION['kdigr'] = $prs->prs_kodeigr;
                 $_SESSION['usid'] = 'EDP';
                 $_SESSION['un'] = 'EDP';
+                $_SESSION['eml'] = '';
                 $_SESSION['rptname'] = $prs->prs_rptname;
                 $_SESSION['ip'] = $vip;
                 $_SESSION['id'] = str_replace('.','',$vip);
@@ -155,7 +156,6 @@ class loginController extends Controller
                 $_SESSION['kdigr'] = $prs->prs_kodeigr;
                 $_SESSION['usid'] = $user->userid;
                 $_SESSION['un'] = $user->username;
-                $_SESSION['pwd'] = $user->userpassword;
                 $_SESSION['eml'] = $user->email;
                 $_SESSION['rptname'] = $prs->prs_rptname;
                 $_SESSION['ip'] = $vip;

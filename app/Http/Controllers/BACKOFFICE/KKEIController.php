@@ -266,6 +266,7 @@ class KKEIController extends Controller
 
     public function save(Request $request){
         $kodeigr = '22';
+        $kkeis = array();
         $prdcd = array();
 
         DB::beginTransaction();
@@ -325,9 +326,7 @@ class KKEIController extends Controller
         catch (QueryException $e){
             $status = 'failed';
             $message = 'Gagal menyimpan data!';
-            $exception = $e->getMessage();
             DB::rollBack();
-            return compact(['status','message','exception']);
         }
 
         return compact(['status','message']);
@@ -359,18 +358,15 @@ class KKEIController extends Controller
 
         $dompdf = new PDF();
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
         $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
 
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-
-//        return $pdf->stream('BACKOFFICE.KKEI-laporan');
 
         $dompdf = $pdf;
 
@@ -383,7 +379,7 @@ class KKEIController extends Controller
     }
 
     public function laporan_view(){
-        $rperiode = '17102015';
+        $rperiode = $_GET['periode'];
 
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
@@ -393,46 +389,45 @@ class KKEIController extends Controller
             ->orderBy('kke_kdsup')
             ->get();
 
-        $bulan = array(
-            'Januari','Februri','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'
-        );
+        if(count($data) == 0)
+            return '<h1 style="text-align: center">Data laporan KKEI tidak ditemukan!</h1>';
+        else{
+            $bulan = array(
+                'Januari', 'Februri', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            );
 
-        $periode = substr($rperiode,0,2).' '.$bulan[(int) substr($rperiode,2,2)-1].' '.substr($rperiode,4,4);
+            $periode = substr($rperiode, 0, 2) . ' ' . $bulan[(int)substr($rperiode, 2, 2) - 1] . ' ' . substr($rperiode, 4, 4);
 
-        $data = [
-            'data' => $data,
-            'perusahaan' => $perusahaan,
-            'periode' => $periode
-        ];
+            $data = [
+                'data' => $data,
+                'perusahaan' => $perusahaan,
+                'periode' => $periode
+            ];
 
-//        return view('BACKOFFICE.KKEI-laporan')->with($data);
+            $now = Carbon::now('Asia/Jakarta');
+            $now = date_format($now, 'd-m-Y H-i-s');
 
-        $now = Carbon::now('Asia/Jakarta');
-        $now = date_format($now,'d-m-Y H-i-s');
+            $dompdf = new PDF();
 
-        $dompdf = new PDF();
+            $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan', $data);
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+            $dompdf = $pdf;
 
+            // (Optional) Setup the paper size and orientation
+            //        $dompdf->setPaper('a4', 'landscape');
 
-        return $pdf->stream('BACKOFFICE.KKEI-laporan');
+            // Render the HTML as PDF
 
-        $dompdf = $pdf;
-
-        // (Optional) Setup the paper size and orientation
-//        $dompdf->setPaper('a4', 'landscape');
-
-        // Render the HTML as PDF
-
-        return $dompdf->download('laporan-kkei '.$now.'.pdf');
+            return $dompdf->stream('laporan-kkei ' . $now . '.pdf');
+        }
     }
 
     public function test(){

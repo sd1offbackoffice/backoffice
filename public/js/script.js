@@ -76,7 +76,7 @@ function formatDate(value) {
 }
 
 function nvl(value,param) {
-    if(value==null || value=="" || value=="null" || value=="NaN" ){
+    if(value==null || value=="" || value=="null" || value==" " || value=="NaN" ){
         return param;
     }
     else

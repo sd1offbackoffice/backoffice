@@ -63,6 +63,9 @@ Route::post('/admuser/updateIp','ADMINISTRATION\userController@updateIp')->middl
 //PB MANUAL
 Route::post('/bopbmanual/lov_search','BACKOFFICE\PBManualController@lov_search')->middleware('CheckLogin');
 Route::post('/bopbmanual/getDataPB','BACKOFFICE\PBManualController@getDataPB')->middleware('CheckLogin');
+Route::post('/bopbmanual/hapusDokumen','BACKOFFICE\PBManualController@hapusDokumen')->middleware('CheckLogin');
+Route::post('/bopbmanual/lov_search_plu','BACKOFFICE\PBManualController@lov_search_plu')->middleware('CheckLogin');
+Route::post('/bopbmanual/cek_plu','BACKOFFICE\PBManualController@cek_plu')->middleware('CheckLogin');
 
 
 Route::get('/mst/e','MASTER\InqueryProdSuppController@prodSupp');
