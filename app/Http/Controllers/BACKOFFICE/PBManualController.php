@@ -187,45 +187,52 @@ class PBManualController extends Controller
     public
     function cek_plu(Request $request)
     {
-//        v_oke := false;
-//        :PBD_PRDCD := LPAD(RPAD(SUBSTR(:PBD_PRDCD,0,LENGTH(:PBD_PRDCD)-1),LENGTH(:PBD_PRDCD),'0'),7,'0');
+        v_oke := false;
+        :PBD_PRDCD := LPAD(RPAD(SUBSTR(:PBD_PRDCD,0,LENGTH(:PBD_PRDCD)-1),LENGTH(:PBD_PRDCD),'0'),7,'0');
 //	validate_rec(temp);
-//	if temp = true then
-//    :PBD_NOPB    := :NOPB;
-//		:PBD_KODEIGR := :parameter.KODEIGR;
+        :PBD_NOPB    := :NOPB;
+        :PBD_KODEIGR := :parameter.KODEIGR;
 
-//        sp_igr_bo_pb_cek_plu(
-//			:parameter.KODEIGR,
-//			:PBD_PRDCD,
-//			:TGLPB,
-//			:FLAG,
-//			:DESKPDK,
-//			:DESKPJG,
-//			:UNIT,
-//   		:FRAC,
-//			:BKP,
-//			:PBD_KODESUPPLIER,
-//			:SUPPLIER,
-//			:SUPPKP,
-//			:HG_JUAL,
-//			:ISI_BELI,
-//			:PBD_SALDOAKHIR, --STOCK,
-//			:MINOR,
-//			:PBD_PKMT,
-//			:PBD_PERSENDISC1,
-//			:PBD_RPHDISC1,
-//			:PBD_FLAGDISC1,
-//			:PBD_PERSENDISC2,
-//			:PBD_RPHDISC2,
-//			:PBD_FLAGDISC2,
-//			:PBD_TOP,
-//			:F_OMI,
-//			:F_IDM,
-//			:PBD_HRGSATUAN,
-//			:PBD_PPNBM,
-//			:PBD_PPNBOTOL,
-//			v_oke,
-//			v_message);
+		sp_igr_bo_pb_cek_plu(
+			:parameter.KODEIGR,
+			:PBD_PRDCD,
+			:TGLPB,
+			:FLAG,
+			:DESKPDK,
+			:DESKPJG,
+			:UNIT,
+   		:FRAC,
+			:BKP,
+			:PBD_KODESUPPLIER,
+			:SUPPLIER,
+			:SUPPKP,
+			:HG_JUAL,
+			:ISI_BELI,
+			:PBD_SALDOAKHIR, --STOCK,
+			:MINOR,
+			:PBD_PKMT,
+			:PBD_PERSENDISC1,
+			:PBD_RPHDISC1,
+			:PBD_FLAGDISC1,
+			:PBD_PERSENDISC2,
+			:PBD_RPHDISC2,
+			:PBD_FLAGDISC2,
+			:PBD_TOP,
+			:F_OMI,
+			:F_IDM,
+			:PBD_HRGSATUAN,
+			:PBD_PPNBM,
+			:PBD_PPNBOTOL,
+			v_oke,
+			v_message);
+
+
+    If v_oke Then
+    :SATUAN   := :UNIT||'/'||TO_CHAR(Nvl(:FRAC,1));
+			select prd_kodedivisi, prd_kodedivisipo, prd_kodedepartement, prd_kodekategoribarang
+			into :pbd_kodedivisi, :pbd_kodedivisipo, :pbd_kodedepartement, :pbd_kodekategoribrg
+			from tbmaster_prodmast
+			where prd_kodeigr = :parameter.kodeigr and prd_prdcd = :pbd_prdcd;
 
         $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 

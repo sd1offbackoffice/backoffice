@@ -131,6 +131,11 @@ Route::get('/boreorderpbgo/cetak_tolakan','BACKOFFICE\ReorderPBGOController@ceta
 /*BACK OFFICE - CETAK TOLAKAN PB*/
 Route::get('/bocetaktolakanpb/index','BACKOFFICE\CetakTolakanPBController@index')->middleware('CheckLogin');
 Route::post('/bocetaktolakanpb/cek_divisi','BACKOFFICE\CetakTolakanPBController@cek_divisi')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/cek_plu','BACKOFFICE\CetakTolakanPBController@cek_plu')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/get_departement','BACKOFFICE\CetakTolakanPBController@get_departement')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/get_kategori','BACKOFFICE\CetakTolakanPBController@get_kategori')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/get_plu','BACKOFFICE\CetakTolakanPBController@get_plu')->middleware('CheckLogin');
+Route::get('/bocetaktolakanpb/div_print','BACKOFFICE\CetakTolakanPBController@div_print')->middleware('CheckLogin');
 
 
 
