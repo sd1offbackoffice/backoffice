@@ -5,10 +5,20 @@ namespace App\Http\Controllers\BACKOFFICE;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class cetakPBController extends Controller
 {
     public function index(){
+//        $datas = 's';
+//        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+//
+//        return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
         return view('BACKOFFICE.cetakPB');
     }
 
@@ -108,5 +118,174 @@ class cetakPBController extends Controller
             ->get()->toArray();
 
         return response()->json($kategori);
+    }
+
+    public function cetakReport(Request $request){
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $doc1 = $request->doc1;
+        $doc2 = $request->doc2;
+        $div1 = $request->div1;
+        $div2 = $request->div2;
+        $dept1 = $request->dept1;
+        $dept2 = $request->dept2;
+        $kat1 = $request->kat1;
+        $kat2 = $request->kat2;
+        $tipePB = $request->tipePB;
+
+        $kodeigr= $_SESSION['kdigr'];
+
+        if ($doc1   == null) { $sup1    = ' '; }
+        if ($doc2   == null) { $sup2    = 'ZZZZZZZZZZ'; }
+
+
+        $datas = DB::select("SELECT pbh_nopb,
+         tglpb pbh_tglpb,
+         pbh_flagdoc,
+         pbh_gross,
+         hrg,
+         prdcd pbd_prdcd,
+         prd_deskripsipanjang,
+         prd_frac,
+         qty,
+         qtyk,
+         satuan,
+         Gross,
+         prd_minorder,
+         pbd_ostpo,
+         pbd_ostpb,
+         tag,
+         departement,
+         pbd_kodedepartement,
+         kategori,
+         pbd_kodekategoribrg,
+         pkmg_prdcd,
+         pkmg_nilaipkmg,
+         CASE
+            WHEN pkmg_prdcd IS NOT NULL THEN FLOOR (pkmg_nilaipkmg / prd_frac)
+            ELSE pkm_qty
+         END
+            pkm_qty,
+         CASE
+            WHEN pkmg_prdcd IS NOT NULL THEN MOD (pkmg_nilaipkmg, prd_frac)
+            ELSE pkm_qtyk
+         END
+            pkm_qtyk,
+         pkm_minorder,
+         stock_qty,
+         stock_qtyk,
+         prs_namaperusahaan,
+         prs_namacabang,
+         prs_namawilayah,
+         supplier,
+         omi,
+         idm,
+         min_minorder
+    FROM (SELECT pbh_nopb,
+                 pbh_tglpb tglpb,
+                 CASE NVL (pbh_flagdoc, ' ')
+                    WHEN '1' THEN 'Re-Print'
+                    ELSE ' '
+                 END
+                    pbh_flagdoc,
+                 pbh_gross,
+                 pbd_gross hrg,
+                 pbd_prdcd prdcd,
+                 prd_deskripsipanjang,
+                 prd_frac,
+                 TRUNC (pbd_qtypb / prd_frac) qty,
+                 MOD (pbd_qtypb, prd_frac) qtyk,
+                 prd_unit || '/' || prd_frac satuan,
+                 NVL (pbd_gross, 0) + NVL (pbd_ppn, 0) Gross,
+                 prd_minorder,
+                 NVL (pbd_ostpo, 0) pbd_ostpo,
+                 NVL (pbd_ostpb, 0) pbd_ostpb,
+                 pbd_kodetag tag,
+                 pbd_kodedepartement || ' ' || dep_namadepartement departement,
+                 pbd_kodedepartement,
+                 pbd_kodekategoribrg || ' ' || kat_namakategori kategori,
+                 pbd_kodekategoribrg,
+                 FLOOR (pkm_pkmt / prd_frac) pkm_qty,
+                 MOD (pkm_pkmt, prd_frac) pkm_qtyk,
+                 pkm_minorder,
+                 TRUNC (st_saldoakhir / prd_frac) stock_qty,
+                 MOD (st_saldoakhir, prd_frac) stock_qtyk,
+                 prs_namaperusahaan,
+                 prs_namacabang,
+                 prs_namawilayah,
+                 pbd_kodesupplier || ' ' || sup_namasupplier supplier,
+                 NVL (crma.PRC_PLUOMI, 0) omi,
+                 NVL (crmb.PRC_PLUIDM, 0) idm,
+                 min_minorder
+            FROM tbtr_pb_h,
+                 tbtr_pb_d,
+                 tbmaster_prodmast,
+                 tbmaster_departement,
+                 tbmaster_kategori,
+                 tbmaster_kkpkm,
+                 tbmaster_stock,
+                 tbmaster_perusahaan,
+                 tbmaster_supplier,
+                 tbmaster_prodcrm crma,
+                 tbmaster_prodcrm crmb,
+                 tbmaster_minimumorder
+           WHERE     (TRUNC (pbh_tglpb) BETWEEN '$tgl1'
+                                            AND '$tgl2')
+                 and pbh_tipepb = '$tipePB'
+                 AND pbd_nopb = pbh_nopb
+                 AND pbd_kodeigr = pbh_kodeigr
+                 AND prd_prdcd = pbd_prdcd
+                 AND prd_kodeigr = pbd_kodeigr
+                 AND dep_kodedivisi = prd_kodedivisi
+                 AND dep_kodedepartement = prd_kodedepartement
+                 AND dep_kodeigr = prd_kodeigr
+                 AND kat_kodekategori = prd_kodekategoribarang
+                 AND kat_kodedepartement = dep_kodedepartement
+                 AND kat_kodeigr = dep_kodeigr
+                 AND KAT_KODEIGR = DEP_KODEIGR
+                 AND PBH_NOPB BETWEEN '$doc1' AND '$doc2'
+                 AND PBD_KODEDIVISI BETWEEN '$div1' AND '$div2'
+                 AND PBD_KODEDEPARTEMENT BETWEEN '$dept1' AND '$dept2'
+                 AND PBD_KODEKATEGORIBRG BETWEEN '$kat1' AND '$kat2'
+                 AND pkm_prdcd(+) = prd_prdcd
+                 AND pkm_kodeigr(+) = prd_kodeigr
+                 AND st_prdcd(+) = prd_prdcd
+                 AND st_kodeigr(+) = prd_kodeigr
+                 AND st_lokasi(+) = '01'
+                 AND prs_kodeigr(+) = prd_kodeigr
+                 AND sup_kodesupplier(+) = pbd_kodesupplier
+                 AND sup_kodeigr(+) = pbd_kodeigr
+                 AND crma.prc_pluigr(+) = prd_prdcd
+                 AND crma.prc_kodeigr(+) = prd_kodeigr
+                 AND crma.prc_group(+) <> 'I'
+                 AND crmb.prc_pluigr(+) = prd_prdcd
+                 AND crmb.prc_kodeigr(+) = prd_kodeigr
+                 AND crmb.prc_group(+) = 'I'
+                 AND min_kodeigr(+) = prd_kodeigr
+                 AND min_prdcd(+) = prd_prdcd) a,
+         TBTR_PKMGONDOLA
+   WHERE     PKMG_PRDCD(+) = a.prdcd
+         AND PKMG_TGLAWALPKM(+) - 3 <= a.tglpb
+         AND a.tglpb <= PKMG_TGLAKHIRPKM(+) - 7
+ORDER BY prdcd
+");
+
+//        dd($datas);
+
+        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas, 'date1' => $tgl1, 'date2' => $tgl2, 'tipepb' => $tipePB]);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
+
+//        DB::table('tbtr_ph_h')
+//            ->whereRaw("trunc (pbh_tglpb) between '$tgl1' and '$tgl2'")
+//            ->whereBetween('pbh_nopb', [$doc1,$doc2])
+//            ->whereRaw("nvl(pbh_flagdoc,' ')=' '")
+//            ->update(["pbh_flagdoc" => 1]);
+
     }
 }

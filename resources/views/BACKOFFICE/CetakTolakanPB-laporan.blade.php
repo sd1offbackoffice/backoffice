@@ -1,3 +1,9 @@
+@if(count($tolakan) == 0)
+    <head>
+        <title>Laporan Tolakan PB {{ $tgl1 }} - {{ $tgl2 }}</title>
+    </head>
+    <p style="text-align: center"><strong>** DATA TIDAK ADA **</strong></p>
+@else
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +28,7 @@ $datetime->setTimezone($timezone);
             JAM : {{ $datetime->format('H:i:s') }}<br><br>
             PGM : IGR_BO_CTKTLKNPB</p>
     </div>
-    <p style="text-align: center"><strong style="font-size: 10">{{ $title }}</strong><br>TANGGAL : 01/08/2015 s/d 01/08/2015</p>
+    <p style="text-align: center"><strong style="font-size: 10">{{ $title }}</strong><br>TANGGAL : {{ $tgl1 }} s/d {{ $tgl2 }}</p>
 </header>
 
 <footer>
@@ -32,41 +38,65 @@ $datetime->setTimezone($timezone);
 <main>
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-        <tr>
-            <td>TANGGAL<span style="display:inline-block; width:15;"></span>DOKUMEN</td>
-            <td colspan="6"></td>
+        <tr style="font-size: 9px">
+            <td colspan="2" style="text-align: left"><strong>TANGGAL<span style="display:inline-block; width:15;"></span>DOKUMEN</strong></td>
+            <td colspan="5"></td>
         </tr>
         <tr>
-            <td width="3%">PLU</td>
-            <td width="8%">DESKRIPSI</td>
-            <td width="2%" class="kanan">SATUAN</td>
-            <td width="2%">TAG</td>
-            <td width="2%">SUPPLIER</td>
-            <td width="2%">PKMT</td>
-            <td width="2%">KETERANGAN</td>
+            <td width="5%">PLU</td>
+            <td width="25%">DESKRIPSI</td>
+            <td width="5%" class="kanan">SATUAN</td>
+            <td width="2%" class="tengah">TAG</td>
+            <td width="22%">SUPPLIER</td>
+            <td width="3%">PKMT</td>
+            <td width="38%">KETERANGAN</td>
         </tr>
         </thead>
         <tbody>
-        {{--@foreach($tolakan as $t)--}}
-            {{--<tr>--}}
-                {{--<td width="3%">{{ $t->prdcd }}</td>--}}
-                {{--<td width="8%">{{ substr($t->prd_desk,0,25) }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->prd_satuan }}</td>--}}
-                {{--<td width="2%" class="tengah">{{ $t->prd_kodetag }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->stok_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->stok_qtyk}}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->minorder_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->minorder_qtyk }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->max_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->max_qtyk }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->min_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->min_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->po_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->po_qtyk }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->pb_qtyb }}</td>--}}
-                {{--<td width="2%" class="kanan">{{ $t->pb_qtyk }}</td>--}}
-            {{--</tr>--}}
-        {{--@endforeach--}}
+        @php
+            $tgl = '';
+            $nopb = '';
+            $div = '';
+            $dep = '';
+            $kat = '';
+        @endphp
+        @foreach($tolakan as $t)
+            @if($tgl != $t->tglpb && $nopb != $t->nopb)
+                @php
+                    $tgl = $t->tglpb;
+                    $nopb = $t->nopb;
+                @endphp
+                <tr style="font-size: 9px">
+                    <td colspan="2" style="text-align: left"><strong>{{ $t->tglpb }}<span style="display:inline-block; width:15;"></span>{{ $t->nopb }}</strong></td>
+                    <td colspan="5"></td>
+                </tr>
+            @endif
+            @if($div != $t->div || $dep != $t->dep || $kat != $t->kat)
+                @php
+                    $div = $t->div;
+                    $dep = $t->dep;
+                    $kat = $t->kat;
+                @endphp
+                <tr>
+                    <td colspan="7" style="font-size: 9px">
+                        <strong>
+                        DIV : {{ $t->div }} - {{ $t->divname }}<span style="display:inline-block; width:15;"></span>
+                        DEPT : {{ $t->dep }} - {{ $t->depname }}<span style="display:inline-block; width:15;"></span>
+                        KAT : {{ $t->kat }} - {{ $t->katname }}
+                        </strong>
+                    </td>
+                </tr>
+            @endif
+            <tr>
+                <td width="5%">{{ $t->prdcd }}</td>
+                <td width="25%">{{ $t->deskripsi }}</td>
+                <td width="5%" class="kanan">{{ $t->satuan }}</td>
+                <td width="2%" class="tengah">{{ $t->tag }}</td>
+                <td width="22%">{{ $t->supco }} - {{ $t->supname }}</td>
+                <td width="3%" class="tengah">{{ $t->pkmt }}</td>
+                <td width="38%">{{ $t->keterangan }}</td>
+            </tr>
+        @endforeach
         </tbody>
         <tfoot>
         </tfoot>
@@ -103,6 +133,7 @@ $datetime->setTimezone($timezone);
 
     table{
         border-collapse: collapse;
+        font-size: 7px;
     }
     tbody {
         display: table-row-group;
@@ -156,9 +187,10 @@ $datetime->setTimezone($timezone);
         padding: 0.50rem;
     }
 
-    .center{
+    .tengah{
         text-align: center;
     }
 
 </style>
 </html>
+@endif

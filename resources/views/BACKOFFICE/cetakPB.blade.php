@@ -420,19 +420,19 @@
         }
 
         function prosesCetak() {
-            let tgl1   = $('#i_tgl1').val();
-            let tgl2   = $('#i_tgl2').val();
-            let doc1   = $('#i_doc1').val();
-            let doc2   = $('#i_doc2').val();
-            let div1   = $('#i_div1').val();
-            let div2   = $('#i_div2').val();
-            let dept1   = $('#i_dept1').val();
-            let dept2   = $('#i_dept2').val();
-            let kat1   = $('#i_kat1').val();
-            let kat2   = $('#i_kat2').val();
+            let tgl1 = $('#i_tgl1').val();
+            let tgl2 = $('#i_tgl2').val();
+            let doc1 = $('#i_doc1').val();
+            let doc2 = $('#i_doc2').val();
+            let div1 = $('#i_div1').val();
+            let div2 = $('#i_div2').val();
+            let dept1 = $('#i_dept1').val();
+            let dept2 = $('#i_dept2').val();
+            let kat1 = $('#i_kat1').val();
+            let kat2 = $('#i_kat2').val();
 
-            let tipe    = $('.jenisPB');
-            let tipePB  = '';
+            let tipe = $('.jenisPB');
+            let tipePB = '';
 
             for (let i = 0; i < tipe.length; i++) {
                 if (tipe[i].checked) {
@@ -441,10 +441,33 @@
                 }
             }
 
-            if (!tgl1 || !tgl2 || !doc1 || !doc2 || !div1 || !div2 || !dept1 || !dept2 || !kat1 || !kat2){
-                swal("Semua Field harus diisi !!", '','warning')
+            if (!tgl1 || !tgl2 || !doc1 || !doc2 || !div1 || !div2 || !dept1 || !dept2 || !kat1 || !kat2) {
+                swal("Semua Field harus diisi !!", '', 'warning')
             } else {
-                alert('asd');
+                window.open('/BackOffice/public/bocetakpb/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')
+                // ajaxSetup()
+                // $.ajax({
+                //     url: '/BackOffice/public/bocetakpb/cetakreport',
+                //     type: 'post',
+                //     data: {
+                //         tgl1 : tgl1,
+                //         tgl2 : tgl2,
+                //         doc1 : doc1,
+                //         doc2 : doc2,
+                //         div1 : div1,
+                //         div2 : div2,
+                //         dept1: dept1,
+                //         dept2: dept2,
+                //         kat1 : kat1,
+                //         kat2 : kat2,
+                //         tipePB: tipePB
+                //     },
+                //     success: function (result) {
+                //         // alert(result)
+                //     }, error: function () {
+                //         alert('error');
+                //     }
+                // })
             }
         }
 

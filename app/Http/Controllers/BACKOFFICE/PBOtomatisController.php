@@ -156,8 +156,6 @@ class PBOtomatisController extends Controller
 
             $temp2  = DB::table('tbtr_tolakanpb')->whereRaw('TRUNC(tlk_create_dt) = TRUNC(SYSDATE)')->get()->toArray();
 
-//            dd($temp2);
-
             if (sizeof($temp2) > 0){
                 if ($sup1   == ' ') { $sup1    = 'null'; }
 //                $this->cetakReport($kodeigr,$date,$date,$sup1,$sup2);

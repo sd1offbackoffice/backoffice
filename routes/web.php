@@ -131,11 +131,15 @@ Route::get('/boreorderpbgo/cetak_tolakan','BACKOFFICE\ReorderPBGOController@ceta
 /*BACK OFFICE - CETAK TOLAKAN PB*/
 Route::get('/bocetaktolakanpb/index','BACKOFFICE\CetakTolakanPBController@index')->middleware('CheckLogin');
 Route::post('/bocetaktolakanpb/cek_divisi','BACKOFFICE\CetakTolakanPBController@cek_divisi')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/cek_departement','BACKOFFICE\CetakTolakanPBController@cek_departement')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/cek_kategori','BACKOFFICE\CetakTolakanPBController@cek_kategori')->middleware('CheckLogin');
 Route::post('/bocetaktolakanpb/cek_plu','BACKOFFICE\CetakTolakanPBController@cek_plu')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/get_departement','BACKOFFICE\CetakTolakanPBController@get_departement')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/get_kategori','BACKOFFICE\CetakTolakanPBController@get_kategori')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/get_plu','BACKOFFICE\CetakTolakanPBController@get_plu')->middleware('CheckLogin');
 Route::get('/bocetaktolakanpb/div_print','BACKOFFICE\CetakTolakanPBController@div_print')->middleware('CheckLogin');
+
+Route::post('/bocetaktolakanpb/search_supplier','BACKOFFICE\CetakTolakanPBController@search_supplier')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/sup_search_plu','BACKOFFICE\CetakTolakanPBController@sup_search_plu')->middleware('CheckLogin');
+Route::post('/bocetaktolakanpb/cek_supplier','BACKOFFICE\CetakTolakanPBController@cek_supplier')->middleware('CheckLogin');
+
 
 
 
@@ -192,6 +196,11 @@ Route::post('/mstaktifhrgjual/aktifkanhrg', 'MASTER\aktifHargaJualController@akt
 Route::get('/mstaktifallhrgjual/index',     'MASTER\aktifAllHargaJualController@index')->middleware('CheckLogin');
 Route::post('mstaktifallhrgjual/aktifallitem', 'MASTER\aktifAllHargaJualController@aktifkanAllItem')->middleware('CheckLogin');
 
+//MASTER_HARILIBUR
+Route::get('/mstharilibur/index',       'MASTER\hariLiburController@index')->middleware('CheckLogin');
+Route::post('/mstharilibur/insert',     'MASTER\hariLiburController@insert')->middleware('CheckLogin');
+Route::post('/mstharilibur/delete',     'MASTER\hariLiburController@delete')->middleware('CheckLogin');
+
 //BACKOFFICE_PB_ITEM_MAXPALET_UNTUK_PB
 Route::get('/bomaxpalet/index',             'BACKOFFICE\maxpaletUntukPBController@index')->middleware('CheckLogin');
 Route::post('/bomaxpalet/loaddata',         'BACKOFFICE\maxpaletUntukPBController@loadData')->middleware('CheckLogin');
@@ -224,11 +233,6 @@ Route::post('/bopbotomatis/prosesdata',         'BACKOFFICE\PBOtomatisController
 Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}/{sup2}',         'BACKOFFICE\PBOtomatisController@cetakReport');
 //Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}',         'BACKOFFICE\PBOtomatisController@cetakReport');
 
-//MASTER_HARILIBUR
-Route::get('/mstharilibur/index',       'MASTER\hariLiburController@index')->middleware('CheckLogin');
-Route::post('/mstharilibur/insert',     'MASTER\hariLiburController@insert')->middleware('CheckLogin');
-Route::post('/mstharilibur/delete',     'MASTER\hariLiburController@delete')->middleware('CheckLogin');
-
 //BACKOFFICE_CETAK_PB
 Route::get('/bocetakpb/index',              'BACKOFFICE\cetakPBController@index')->middleware('CheckLogin');
 Route::post('/bocetakpb/getdocument',       'BACKOFFICE\cetakPBController@getDocument')->middleware('CheckLogin');
@@ -238,4 +242,5 @@ Route::post('/bocetakpb/searchdivisi',      'BACKOFFICE\cetakPBController@search
 Route::post('/bocetakpb/getdepartement',    'BACKOFFICE\cetakPBController@getDepartement')->middleware('CheckLogin');
 Route::post('/bocetakpb/searchdepartement', 'BACKOFFICE\cetakPBController@searchDepartement')->middleware('CheckLogin');
 Route::post('/bocetakpb/getkategori',       'BACKOFFICE\cetakPBController@getKategori')->middleware('CheckLogin');
-Route::post('/bocetakpb/searchkategori',       'BACKOFFICE\cetakPBController@searchKategori')->middleware('CheckLogin');
+Route::post('/bocetakpb/searchkategori',    'BACKOFFICE\cetakPBController@searchKategori')->middleware('CheckLogin');
+Route::get('/bocetakpb/cetakreport/{tgl1}/{tgl2}/{doc1}/{doc2}/{div1}/{div2}/{dept1}/{dept2}/{kat1}/{kat2}/{tipePB}',       'BACKOFFICE\cetakPBController@cetakReport')->middleware('CheckLogin');

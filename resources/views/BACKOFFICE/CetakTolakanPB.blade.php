@@ -24,24 +24,24 @@
                                     <div class="row">
                                         <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
                                         <div class="col-sm-3">
-                                            <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal1" readonly>
+                                            <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal1">
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3">
-                                            <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal2" readonly>
+                                            <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal2">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Divisi :</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control divisi" id="div_divisi1" readonly>
+                                            <input maxlength="10" type="text" class="form-control divisi" id="div_divisi1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_divisi">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control divisi" id="div_divisi2" readonly>
+                                            <input maxlength="10" type="text" class="form-control divisi" id="div_divisi2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 divisi2" data-toggle="modal" data-target="#m_lov_divisi">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
@@ -50,14 +50,14 @@
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Departement :</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control departement" id="div_departement1" readonly>
+                                            <input maxlength="10" type="text" class="form-control departement" id="div_departement1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 departement1" data-toggle="modal" data-target="#m_lov_departement">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control departement" id="div_departement2" readonly>
+                                            <input maxlength="10" type="text" class="form-control departement" id="div_departement2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 departement2" data-toggle="modal" data-target="#m_lov_departement">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
@@ -66,14 +66,14 @@
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Kategori :</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control kategori" id="div_kategori1" readonly>
+                                            <input maxlength="10" type="text" class="form-control kategori" id="div_kategori1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 kategori1" data-toggle="modal" data-target="#m_lov_kategori">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3 buttonInside">
-                                            <input maxlength="10" type="text" class="form-control kategori" id="div_kategori2" readonly>
+                                            <input maxlength="10" type="text" class="form-control kategori" id="div_kategori2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 kategori2" data-toggle="modal" data-target="#m_lov_kategori">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
@@ -151,22 +151,34 @@
                                     </div>
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">Supplier :</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_supplier1">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_supplier">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_supplier2">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_supplier">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <label for="periode" class="col-sm-2 text-right col-form-label">PLU :</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu1">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu1" data-toggle="modal" data-target="#m_lov_plu">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu2">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu2" data-toggle="modal" data-target="#m_lov_plu">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -375,6 +387,45 @@
     </div>
 
 
+    <div class="modal fade" id="m_lov_supplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="i_lov_supplier" class="form-control search_lov" type="text" placeholder="Cari Supplier" aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm" id="table_lov_supplier">
+                                    <thead>
+                                    <tr>
+                                        <td>KODE SUPPLIER</td>
+                                        <td>NAMA SUPPLIER</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $i = 0 @endphp
+                                    @foreach($supplier as $s)
+                                        @php $i++ @endphp
+                                        <tr id="row_lov_supplier_{{ $i }}" onclick="lov_supplier_select({{ $i }})" class="row_lov">
+                                            <td class="sup_kodesupplier">{{ $s->sup_kodesupplier }}</td>
+                                            <td class="sup_namasupplier">{{ $s->sup_namasupplier }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -462,7 +513,12 @@
         $('.tanggal').on('keypress',function(e){
             if(e.which == 13){
                 id = $(this).attr('id');
-                if(!checkDate($(this).val())){
+
+                if((id == 'div_tanggal2' || id == 'sup_tanggal2') && $(this).val() == ''){
+                    $(this).val($('#div_tanggal1').val());
+                    $('#div_divisi1').select();
+                }
+                else if(!checkDate($(this).val())){
                     swal({
                         title: 'Format Tanggal Salah!',
                         icon: 'error'
@@ -476,19 +532,32 @@
                         tgl2 = $('#'+id).parent().next().next().find('input').val();
                     }
                     else{
+                        if(tgl2 == ''){
+                            tgl2 = tgl1;
+                            $('#'+id).val(tgl2);
+                        }
+
                         tgl1 = $('#'+id).parent().prev().prev().find('input').val();
                         tgl2 = $('#'+id).val();
                     }
 
-
-                    if(tgl1 > tgl2){
+                    if(tgl2 != '' && tgl1 > tgl2){
                         swal({
                             title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
                             icon: 'error'
                         }).then(function(){
-                            if(id == 'div_tanggal1' || id == 'sup_tanggal1')
-                                $('#'+id)
+                            $('#'+id).select();
                         })
+                    }
+                    else{
+                        if(id == 'div_tanggal1')
+                            $('#div_tanggal2').select();
+                        else if(id == 'div_tanggal2')
+                            $('#div_divisi1').select();
+                        else if(id == 'sup_tanggal1')
+                            $('#sup_tanggal2').select();
+                        else if(id == 'sup_tanggal2')
+                            $('#sup_supplier1').select();
                     }
                 }
             }
@@ -496,7 +565,7 @@
 
         $('.tanggal').on('change',function(){
             id = $(this).attr('id');
-            if(!checkDate($(this).val())){
+            if($(this).val() != '' && !checkDate($(this).val())){
                 swal({
                     title: 'Format Tanggal Salah!',
                     icon: 'error'
@@ -510,6 +579,11 @@
                     tgl2 = $('#'+id).parent().next().next().find('input').val();
                 }
                 else{
+                    if(tgl2 == ''){
+                        tgl2 = tgl1;
+                        $('#'+id).val(tgl2);
+                    }
+
                     tgl1 = $('#'+id).parent().prev().prev().find('input').val();
                     tgl2 = $('#'+id).val();
                 }
@@ -520,49 +594,257 @@
                         title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
                         icon: 'error'
                     }).then(function(){
-                        if(id == 'div_tanggal1' || id == 'sup_tanggal1')
-                            $('#'+id)
+                        $('#'+id).select();
                     })
                 }
             }
         });
 
-        function cek_divisi(value, id, loading){
-            $.ajax({
-                url: '{{ url('bocetaktolakanpb/cek_divisi') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {kodedivisi: value},
-                beforeSend: function () {
-                    if(loading == 'true')
-                        $('#modal-loader').modal('toggle');
-                },
-                success: function (response) {
-                    if($('#modal-loader').is(':visible'))
-                        $('#modal-loader').modal('toggle');
-                    if(response != 'true'){
-                        swal({
-                            title: 'Kode divisi tidak terdaftar!',
-                            icon: 'error'
-                        }).then(function(){
-                            $('#'+id).select();
-                        });
-                    }
-                    else{
-                        if(id == 'div_divisi1')
-                            $('#'+id).parent().parent().find('#div_divisi2').select();
-                        else $('#'+id).parent().parent().next().find('#div_departement1').select();
-                    }
+        $('#div_divisi1').on('keypress',function(e){
+            if(e.which == 13){
+                // cek_divisi($(this).val(),$(this).attr('id'),'true');
+                divisi_select($(this).attr('id'));
+            }
+        });
+
+        $('#div_divisi2').on('keypress',function(e){
+            if(e.which == 13){
+                if($(this).val() == ''){
+                    $('#div_departement1').select();
                 }
-            });
+                else if($(this).val() < $('#div_divisi1').val()){
+                    swal({
+                        title: 'Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!',
+                        icon: 'error'
+                    }).then(function(){
+                        $(this).select();
+                    })
+                }
+                // else cek_divisi($(this).val(),$(this).attr('id'),'true');
+                else divisi_select($(this).attr('id'));
+            }
+        });
+
+        $('#div_departement1').on('keypress',function(e){
+            if(e.which == 13){
+                // cek_departement($(this).val(),$(this).attr('id'),'true');
+                departement_select($(this).attr('id'));
+            }
+        });
+
+        $('#div_departement2').on('keypress',function(e){
+            if(e.which == 13){
+                if($(this).val() == ''){
+                    $('#div_kategori1').select();
+                }
+                else if($(this).val() < $('#div_departement1').val()){
+                    swal({
+                        title: 'Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!',
+                        icon: 'error'
+                    }).then(function(){
+                        $(this).select();
+                    })
+                }
+                else departement_select($(this).attr('id'));
+            }
+        });
+
+        $('#div_kategori1').on('keypress',function(e){
+            if(e.which == 13){
+                kategori_select($(this).attr('id'));
+            }
+        });
+
+        $('#div_kategori2').on('keypress',function(e){
+            if(e.which == 13){
+                if($(this).val() == ''){
+                    $('#div_plu1').select();
+                }
+                else if($(this).val() < $('#div_kategori1').val()){
+                    swal({
+                        title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
+                        icon: 'error'
+                    }).then(function(){
+                        $(this).select();
+                    })
+                }
+                else kategori_select($(this).attr('id'));
+            }
+        });
+
+        function divisi_select(id){
+            if($('#div_divisi1').val() > $('#div_divisi2').val() && $('#div_divisi2').val() != ''){
+                swal({
+                    title: 'Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!',
+                    icon: 'error'
+                }).then(function () {
+                    $('#'+id).val('');
+                    $('#' + id).select();
+                });
+            }
+            else{
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/cek_divisi') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {div: $('#'+id).val(), div1: $('#div_divisi1').val(), div2: $('#div_divisi2').val()},
+                    beforeSend: function () {
+                        $('#table_lov_departement tbody tr').remove();
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#m_lov_divisi').is(':visible'))
+                            $('#m_lov_divisi').modal('toggle');
+
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        if(response == 'false'){
+                            swal({
+                                title: 'Kode divisi tidak ditemukan!',
+                                icon: 'error'
+                            }).then(function(){
+                                $('#'+id).select();
+                            })
+                        }
+                        else{
+                            $('#table_lov_departement tbody tr').remove();
+
+                            for(i=0;i<response.length;i++){
+                                html =  '<tr id="row_lov_departement_'+i+'" onclick="lov_departement_select('+i+')" class="row_lov">' +
+                                    '<td class="dep_kodedepartement">'+ response[i].dep_kodedepartement +'</td>' +
+                                    '<td class="dep_namadepartement">'+ response[i].dep_namadepartement +'</td>' +
+                                    '<td class="dep_kodedivisi">'+ response[i].dep_kodedivisi +'</td>' +
+                                    '</tr>';
+
+                                $('#table_lov_departement').append(html);
+                            }
+
+                            if(id == 'div_divisi1'){
+                                $('#div_divisi2').select();
+                            }
+                            else $('#div_departement1').select();
+                        }
+                    }
+                });
+            }
+        }
+
+        function departement_select(id){
+            if($('#div_departement1').val() > $('#div_departement2').val() && $('#div_departement2').val() != '') {
+                swal({
+                    title: 'Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!',
+                    icon: 'error'
+                }).then(function () {
+                    $('#'+id).val('');
+                    $('#' + id).select();
+                });
+            }
+            else{
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/cek_departement') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {div1: $('#div_divisi1').val(), div2: $('#div_divisi2').val(), dep: $('#'+id).val(), dep1: $('#div_departement1').val(), dep2: $('#div_departement2').val()},
+                    beforeSend: function () {
+                        $('#table_lov_kategori tbody tr').remove();
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+                        if(response == 'false'){
+                            swal({
+                                title: 'Kode departement tidak ditemukan!',
+                                icon: 'error'
+                            }).then(function(){
+                                $('#'+id).select();
+                            });
+                        }
+                        else{
+                            $('#table_lov_kategori tbody tr').remove();
+
+                            for(i=0;i<response.length;i++){
+                                html =  '<tr id="row_lov_kategori_'+i+'" onclick="lov_kategori_select('+i+')" class="row_lov">' +
+                                    '<td class="kat_kodedepartement">'+ response[i].kat_kodedepartement +'</td>' +
+                                    '<td class="kat_kodekategori">'+ response[i].kat_kodekategori +'</td>' +
+                                    '<td class="kat_namakategori">'+ response[i].kat_namakategori +'</td>' +
+                                    '</tr>';
+
+                                $('#table_lov_kategori').append(html);
+                            }
+
+                            if($('#modal-loader').is(':visible'))
+                                $('#modal-loader').modal('toggle');
+
+                            if(id == 'div_departement1')
+                                $('#div_departement2').select();
+                            else $('#div_kategori1').select();
+                        }
+                    }
+                });
+            }
+        }
+
+        function kategori_select(id){
+            if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '') {
+                swal({
+                    title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#'+id).val('');
+                    $('#' + id).select();
+                });
+            }
+            else{
+                div1 = $('#div_divisi1').val();
+                div2 = $('#div_divisi2').val();
+                dep1 = $('#div_departement1').val();
+                dep2 = $('#div_departement2').val();
+                kat1 = $('#div_kategori1').val();
+                kat2 = $('#div_kategori2').val();
+
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/cek_kategori') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {kat: $('#'+id).val(), div1: div1, div2: div2, dep1: dep1, dep2: dep2, kat1: kat1, kat2: kat2},
+                    beforeSend: function () {
+                        $('#table_lov_plu tbody tr').remove();
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        $('#table_lov_plu tbody tr').remove();
+
+                        for(i=0;i<response.length;i++){
+                            html =  '<tr id="row_lov_plu_'+i+'" onclick="lov_plu_select('+i+')" class="row_lov">' +
+                                '<td class="prd_prdcd">'+ response[i].prd_prdcd +'</td>' +
+                                '<td class="prd_deskripsipanjang">'+ response[i].prd_deskripsipanjang +'</td>' +
+                                '<td class="prd_satuan">'+ response[i].prd_unit +'/'+ response[i].prd_frac +'</td>' +
+                                '</tr>';
+
+                            $('#table_lov_plu').append(html);
+                        }
+
+                        if(id == 'div_kategori1')
+                            $('#div_kategori2').select();
+                        else $('#div_plu1').select();
+                    }
+                });
+            }
         }
 
         function lov_divisi_select(i){
             kodedivisi = $('#row_lov_divisi_'+i).find('.div_kodedivisi').html();
-
-            $('#m_lov_divisi').modal('toggle');
 
             if(currVar == 'divisi1'){
                 $('#div_divisi1').val(kodedivisi);
@@ -577,33 +859,7 @@
             $('.kategori').val('');
             $('.plu').val('');
 
-            div1 = $('#div_divisi1').val();
-            div2 = $('#div_divisi2').val();
-
-            $.ajax({
-                url: '{{ url('bocetaktolakanpb/get_departement') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {div1: div1, div2: div2},
-                beforeSend: function () {
-                    $('#table_lov_departement tbody tr').remove();
-                },
-                success: function (response) {
-                    $('#table_lov_departement tbody tr').remove();
-
-                    for(i=0;i<response.length;i++){
-                        html =  '<tr id="row_lov_departement_'+i+'" onclick="lov_departement_select('+i+')" class="row_lov">' +
-                                '<td class="dep_kodedepartement">'+ response[i].dep_kodedepartement +'</td>' +
-                                '<td class="dep_namadepartement">'+ response[i].dep_namadepartement +'</td>' +
-                                '<td class="dep_kodedivisi">'+ response[i].dep_kodedivisi +'</td>' +
-                                '</tr>';
-
-                        $('#table_lov_departement').append(html);
-                    }
-                }
-            });
+            divisi_select('div_'+currVar);
         }
 
         function lov_departement_select(i){
@@ -623,33 +879,7 @@
             $('.kategori').val('');
             $('.plu').val('');
 
-            dep1 = $('#div_departement1').val();
-            dep2 = $('#div_departement2').val();
-
-            $.ajax({
-                url: '{{ url('bocetaktolakanpb/get_kategori') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {dep1: dep1, dep2: dep2},
-                beforeSend: function () {
-                    $('#table_lov_kategori tbody tr').remove();
-                },
-                success: function (response) {
-                    $('#table_lov_kategori tbody tr').remove();
-
-                    for(i=0;i<response.length;i++){
-                        html =  '<tr id="row_lov_kategori_'+i+'" onclick="lov_kategori_select('+i+')" class="row_lov">' +
-                                '<td class="kat_kodedepartement">'+ response[i].kat_kodedepartement +'</td>' +
-                                '<td class="kat_kodekategori">'+ response[i].kat_kodekategori +'</td>' +
-                                '<td class="kat_namakategori">'+ response[i].kat_namakategori +'</td>' +
-                                '</tr>';
-
-                        $('#table_lov_kategori').append(html);
-                    }
-                }
-            });
+            departement_select('div_'+currVar);
         }
 
         function lov_kategori_select(i){
@@ -668,37 +898,7 @@
 
             $('.plu').val('');
 
-            div1 = $('#div_divisi1').val();
-            div2 = $('#div_divisi2').val();
-            dep1 = $('#div_departement1').val();
-            dep2 = $('#div_departement2').val();
-            kat1 = $('#div_kategori1').val();
-            kat2 = $('#div_kategori2').val();
-
-            $.ajax({
-                url: '{{ url('bocetaktolakanpb/get_plu') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {div1: div1, div2: div2, dep1: dep1, dep2: dep2, kat1: kat1, kat2: kat2},
-                beforeSend: function () {
-                    $('#table_lov_plu tbody tr').remove();
-                },
-                success: function (response) {
-                    $('#table_lov_plu tbody tr').remove();
-
-                    for(i=0;i<response.length;i++){
-                        html =  '<tr id="row_lov_plu_'+i+'" onclick="lov_plu_select('+i+')" class="row_lov">' +
-                                '<td class="prd_prdcd">'+ response[i].prd_prdcd +'</td>' +
-                                '<td class="prd_deskripsipanjang">'+ response[i].prd_deskripsipanjang +'</td>' +
-                                '<td class="prd_satuan">'+ response[i].prd_unit +'/'+ response[i].prd_frac +'</td>' +
-                                '</tr>';
-
-                        $('#table_lov_plu').append(html);
-                    }
-                }
-            });
+            kategori_select('div_'+currVar);
         }
 
         function lov_plu_select(i){
@@ -714,7 +914,15 @@
                 $('#div_plu2').val(kodeplu);
                 $('#div_pilihan').select();
             }
+
+            cek_plu('div_'+currVar);
         }
+
+        $('#div_plu1').on('keypress',function(e){
+            if(e.which == 13){
+                cek_plu($(this).attr('id'));
+            }
+        });
 
         $('.plu').on('change',function(){
             plu1 = $('#div_plu1').val();
@@ -730,13 +938,30 @@
             }
             else{
                 $(this).val(convertPlu($(this).val()));
-                cek_plu(convertPlu($(this).val()));
+                cek_plu($(this).attr('id'));
             }
 
         });
 
-        function cek_plu(plu){
+        $('#div_pilihan').on('keypress',function(e){
+            if(e.which == 13){
+                pil = $(this).val();
+                if(pil != 1 || pil != 2 || pil != 3 || pil != 4 || pil != 6){
+                    swal({
+                        title: 'Pilihan tidak sesuai!',
+                        icon: 'error'
+                    }).then(function(){
+                        $('#div_pilihan').select();
+                    })
+                }
+                else{
+                    $('#div_print').focus();
+                }
+            }
+        });
 
+        function cek_plu(id){
+            plu = convertPlu($('#'+id).val());
             div1 = $('#div_divisi1').val();
             div2 = $('#div_divisi2').val();
             dep1 = $('#div_departement1').val();
@@ -752,36 +977,219 @@
                 },
                 data: {div1: div1, div2: div2, dep1: dep1, dep2: dep2, kat1: kat1, kat2: kat2, plu: plu},
                 beforeSend: function () {
+                    $('#modal-loader').modal('toggle');
                 },
                 success: function (response) {
+                    if($('#modal-loader').is(':visible'))
+                        $('#modal-loader').modal('toggle');
                     if(response != 'true'){
                         swal({
                             title: 'PLU tidak ditemukan!',
                             icon: 'error'
+                        }).then(function(){
+                            $('#'+id).select();
                         })
+                    }
+                    else{
+                        if(id == 'div_plu1')
+                            $('#div_plu2').select();
+                        else $('#div_pilihan').select();
                     }
                 }
             });
         }
 
         function div_print(){
-            tgl1 = nvl($('#div_tanggal1').val().replace(/\//g,''),'ALL');
-            tgl2 = nvl($('#div_tanggal2').val().replace(/\//g,''),'ALL');
-            div1 = nvl($('#div_divisi1').val(),'ALL');
-            div2 = nvl($('#div_divisi2').val(),'ALL');
-            dep1 = nvl($('#div_departement1').val(),'ALL');
-            dep2 = nvl($('#div_departement2').val(),'ALL');
-            kat1 = nvl($('#div_kategori1').val(),'ALL');
-            kat2 = nvl($('#div_kategori2').val(),'ALL');
-            plu1 = nvl($('#div_plu1').val(),'ALL');
-            plu2 = nvl($('#div_plu2').val(),'ALL');
+            if($('#div_tanggal1').val() > $('#div_tanggal2').val()){
+                swal({
+                    title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#div_tanggal1').select();
+                })
+            }
+            else{
+                tgl1 = nvl(formatDateCustom(formatDate($('#div_tanggal1').val()),'dd-mm-yy'),'ALL');
+                tgl2 = nvl(formatDateCustom(formatDate($('#div_tanggal2').val()),'dd-mm-yy'),'ALL');
+
+                console.log(tgl1);
+                console.log(tgl2);
+
+                div1 = nvl($('#div_divisi1').val(),'ALL');
+                div2 = nvl($('#div_divisi2').val(),'ALL');
+                dep1 = nvl($('#div_departement1').val(),'ALL');
+                dep2 = nvl($('#div_departement2').val(),'ALL');
+                kat1 = nvl($('#div_kategori1').val(),'ALL');
+                kat2 = nvl($('#div_kategori2').val(),'ALL');
+                plu1 = nvl($('#div_plu1').val(),'ALL');
+                plu2 = nvl($('#div_plu2').val(),'ALL');
+                pil = nvl($('#div_pilihan').val(),'3');
 
 
-            url = '{{ url('/bocetaktolakanpb') }}'+'/div_print?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2;
+                url = '{{ url('/bocetaktolakanpb') }}'+'/div_print?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
 
-            window.open(url);
+                window.open(url);
+            }
         }
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////BY SUPPLIER///////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        $('#i_lov_supplier').on('keypress',function(e){
+            if(e.which == 13){
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/search_supplier') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {sup: $(this).val().toUpperCase()},
+                    beforeSend: function () {
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        $('#table_lov_supplier tbody tr').remove();
+
+                        if(response == 'false'){
+                            html = '<tr><td colspan="2" class="text-center">Data tidak ditemukan</td></tr>';
+                            $('#table_lov_supplier').append(html);
+                        }
+                        else{
+                            for(i=0;i<response.length;i++){
+                                html =  '<tr id="row_lov_supplier_'+i+'" onclick="lov_supplier_select('+i+')" class="row_lov">' +
+                                    '<td class="sup_kodesupplier">'+ response[i].sup_kodesupplier +'</td>' +
+                                    '<td class="sup_namasupplier">'+ response[i].sup_namasupplier +'</td>' +
+                                    '</tr>';
+
+                                $('#table_lov_supplier').append(html);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#i_lov_plu').on('keypress',function(e){
+            if(e.which == 13){
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/sup_search_plu') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {plu: $(this).val().toUpperCase(), sup1: $('#sup_supplier1').val(), sup2: $('#sup_supplier2').val()},
+                    beforeSend: function () {
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        $('#table_lov_plu tbody tr').remove();
+
+                        if(response == 'false'){
+                            html = '<tr><td colspan="3" class="text-center">Data tidak ditemukan</td></tr>';
+                            $('#table_lov_plu').append(html);
+                        }
+                        else{
+                            for(i=0;i<response.length;i++){
+                                html =  '<tr id="row_lov_plu_'+i+'" onclick="lov_plu_select('+i+')" class="row_lov">' +
+                                    '<td class="prd_prdcd">'+ response[i].prd_prdcd +'</td>' +
+                                    '<td class="prd_deskripsipanjang">'+ response[i].prd_deskripsipanjang +'</td>' +
+                                    '<td class="prd_satuan">'+ response[i].prd_unit +'/'+ response[i].prd_frac +'</td>' +
+                                    '</tr>';
+
+                                $('#table_lov_plu').append(html);
+                            }
+                        }
+                    }
+                });
+            }
+        })
+
+        $('#sup_supplier1').on('keypress',function(e){
+            if(e.which == 13){
+                supplier_select($(this).attr('id'));
+            }
+        });
+
+        $('#sup_supplier2').on('keypress',function(e){
+            if(e.which == 13){
+                if($(this).val() == '')
+                    $('#sup_plu1').select();
+                else supplier_select($(this).attr('id'));
+            }
+        })
+
+        function supplier_select(id){
+            if($('#sup_supplier1').val() > $('#sup_supplier2').val() && $('#sup_supplier2').val() != ''){
+                swal({
+                    title: 'Kode supplier kedua tidak boleh lebih kecil dari kode supplier pertama!',
+                    icon: 'error'
+                }).then(function () {
+                    $('#'+id).val('');
+                    $('#' + id).select();
+                });
+            }
+            else{
+                sup = $('#'+id).val();
+                sup1 = $('#sup_supplier1').val();
+                sup2 = $('#sup_supplier2').val();
+
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/cek_supplier') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {sup: sup},
+                    beforeSend: function () {
+                        $('#table_lov_plu tbody tr').remove();
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#m_lov_supplier').is(':visible'))
+                            $('#m_lov_supplier').modal('toggle');
+
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        if(response == 'false'){
+                            swal({
+                                title: 'Kode supplier tidak ditemukan!',
+                                icon: 'error'
+                            }).then(function(){
+                                $('#'+id).select();
+                            })
+                        }
+                        else{
+                            $('#table_lov_plu tbody tr').remove();
+
+                            for(i=0;i<response.length;i++){
+                                html =  '<tr id="row_lov_plu_'+i+'" onclick="lov_plu_select('+i+')" class="row_lov">' +
+                                    '<td class="prd_prdcd">'+ response[i].prd_prdcd +'</td>' +
+                                    '<td class="prd_deskripsipanjang">'+ response[i].prd_deskripsipanjang +'</td>' +
+                                    '<td class="prd_satuan">'+ response[i].prd_unit +'/'+ response[i].prd_frac +'</td>' +
+                                    '</tr>';
+
+                                $('#table_lov_plu').append(html);
+                            }
+
+                            if(id == 'sup_supplier1'){
+                                $('#sup_supplier2').select();
+                            }
+                            else $('#sup_plu1').select();
+                        }
+                    }
+                });
+            }
+        }
 
     </script>
 

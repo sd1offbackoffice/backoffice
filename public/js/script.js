@@ -69,10 +69,14 @@ function formatDate(value) {
             bulan = '0' + parseInt(date.getMonth()+1).toString();
         else bulan = parseInt(date.getMonth()+1).toString();
 
-
-
         return tgl + '/' + bulan + '/' + date.getFullYear();
     }
+}
+
+// Untuk merubah format tanggal menjadi sesuai keinginan
+// Created By : Leo (01/04/2020) | Modify By :
+function formatDateCustom(value,format) {
+    return $.datepicker.formatDate(format, new Date(value));
 }
 
 function nvl(value,param) {
