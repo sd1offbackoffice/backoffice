@@ -390,9 +390,11 @@
                     }
                 },
                 complete: function(){
+                    if($('#modal-loader').is(':visible')){
+                        $('#modal-loader').modal('toggle');
+                    }
                     if($('#m_kodesupplierHelp').is(':visible')) {
                         $('#m_kodesupplierHelp').modal('toggle');
-                        $('#modal-loader').modal('toggle');
                         $('#search_lov').val('');
                         $('#table_lov .row_lov').remove();
                         $('#table_lov').append(trlov);

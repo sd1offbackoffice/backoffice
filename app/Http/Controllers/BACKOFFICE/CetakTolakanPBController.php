@@ -34,6 +34,7 @@ class CetakTolakanPBController extends Controller
             ->get();
 
         $plu = DB::table('tbmaster_prodmast')
+            ->join('tbmaster_hargabeli','hgb_prdcd','=','prd_prdcd')
             ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
             ->where('prd_kodeigr',$_SESSION['kdigr'])
             ->orderBy('prd_deskripsipanjang')
@@ -247,7 +248,7 @@ class CetakTolakanPBController extends Controller
         }
     }
 
-    public function cek_plu(Request $request){
+    public function div_cek_plu(Request $request){
         $divA = DB::table('tbmaster_divisi')
             ->select('div_kodedivisi')
             ->orderBy('div_kodedivisi','asc')
@@ -313,7 +314,7 @@ class CetakTolakanPBController extends Controller
         else return 'false';
     }
 
-    public function div_print(){
+    public function print_by_div(){
         $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
         $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
         $div1 = $_GET['div1'];
@@ -324,6 +325,7 @@ class CetakTolakanPBController extends Controller
         $kat2 = $_GET['kat2'];
         $plu1 = $_GET['plu1'];
         $plu2 = $_GET['plu2'];
+        $pil = $_GET['pil'];
 
         $divA = DB::table('tbmaster_divisi')
             ->select('div_kodedivisi')
@@ -402,6 +404,18 @@ class CetakTolakanPBController extends Controller
             ->where('prs_kodeigr',$_SESSION['kdigr'])
             ->first();
 
+        if($pil == 1)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND TLK_KETERANGANTOLAKAN LIKE 'STATUS%' AND TLK_KETERANGANTOLAKAN NOT LIKE '%ORDER LANGSUNG DI TOKO'";
+        else if($pil == 2)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%'";
+        else if($pil == 4)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
+        else if($pil == 5)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%KUNJUNGAN')";
+        else if($pil == 6)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
+        else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
+
         $tolakan = DB::table('tbtr_tolakanpb')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('tlk_kodeigr','prd_kodeigr');
@@ -419,8 +433,8 @@ class CetakTolakanPBController extends Controller
                 $join->on('kat_kodekategori','prd_kodekategoribarang');
             })
             ->leftJoin('tbmaster_supplier',function($join){
-                $join->on('sup_kodeigr','tlk_kodeigr');
-                $join->on('sup_kodesupplier','tlk_kodesupplier');
+                    $join->on('sup_kodeigr','tlk_kodeigr');
+                    $join->on('sup_kodesupplier','tlk_kodesupplier');
             })
             ->leftJoin('tbmaster_kkpkm',function($join){
                 $join->on('pkm_kodeigr','prd_kodeigr');
@@ -440,8 +454,10 @@ class CetakTolakanPBController extends Controller
             ->whereBetween('prd_kodedepartement',[$dep1,$dep2])
             ->whereBetween('prd_kodekategoribarang',[$kat1,$kat2])
             ->whereBetween('prd_prdcd',[$plu1,$plu2])
+            ->whereRaw($where)
             ->orderBy('tlk_nopb')
             ->orderBy('prd_kodedivisi')
+            ->orderBy('prd_kodedepartement')
             ->orderBy('tlk_prdcd')
             ->get();
 
@@ -460,7 +476,7 @@ class CetakTolakanPBController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan', $data);
+        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-divisi', $data);
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -629,5 +645,204 @@ class CetakTolakanPBController extends Controller
 
             return $produk;
         }
+    }
+
+    public function sup_cek_plu(Request $request){
+        $sup1 = $request->sup1;
+        $sup2 = $request->sup2;
+        $plu = $request->plu;
+
+        if($sup1 == ''){
+            $supA = DB::table('tbmaster_supplier')
+                ->select('sup_kodesupplier')
+                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->orderBy('sup_kodesupplier','asc')
+                ->first();
+
+            $sup1 = $supA->sup_kodesupplier;
+        }
+
+        if($sup2 == ''){
+            $supB = DB::table('tbmaster_supplier')
+                ->select('sup_kodesupplier')
+                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->orderBy('sup_kodesupplier','desc')
+                ->first();
+
+            $sup2 = $supB->sup_kodesupplier;
+        }
+
+        $cek = DB::table('tbmaster_prodmast')
+            ->join('tbmaster_hargabeli',function($join){
+                $join->on('hgb_kodeigr','prd_kodeigr');
+                $join->on('hgb_prdcd','prd_prdcd');
+            })
+            ->select('prd_prdcd')
+            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
+            ->where('prd_prdcd',$plu)
+            ->get();
+
+        if(count($cek) == 0)
+            return 'false';
+        else return 'true';
+    }
+
+    public function print_by_sup(){
+        $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
+        $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
+        $sup1 = $_GET['sup1'];
+        $sup2 = $_GET['sup2'];
+        $plu1 = $_GET['plu1'];
+        $plu2 = $_GET['plu2'];
+        $pil = $_GET['pil'];
+
+        $now = Carbon::now('Asia/Jakarta');
+        $now = date_format($now,'d-m-Y');
+
+        if($tgl1 == '' || strlen($tgl1) != 10)
+            $tgl1 = $now;
+        if($tgl2 == '' || strlen($tgl2) != 10)
+            $tgl2 = $now;
+        if($sup1 == 'ALL'){
+            $supA = DB::table('tbmaster_supplier')
+                ->select('sup_kodesupplier')
+                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->orderBy('sup_kodesupplier','asc')
+                ->first();
+
+            $sup1 = $supA->sup_kodesupplier;
+        }
+
+        if($sup2 == 'ALL'){
+            $supB = DB::table('tbmaster_supplier')
+                ->select('sup_kodesupplier')
+                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->orderBy('sup_kodesupplier','desc')
+                ->first();
+
+            $sup2 = $supB->sup_kodesupplier;
+        }
+
+        if($plu1 == 'ALL'){
+            $pluA = DB::table('tbmaster_prodmast')
+                ->join('tbmaster_hargabeli',function($join){
+                    $join->on('hgb_kodeigr','prd_kodeigr');
+                    $join->on('hgb_prdcd','prd_prdcd');
+                })
+                ->select('prd_prdcd')
+                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
+                ->orderBy('prd_prdcd','asc')
+                ->first();
+            $plu1 = $pluA->prd_prdcd;
+        }
+
+        if($plu2 == 'ALL'){
+            $pluB = DB::table('tbmaster_prodmast')
+                ->join('tbmaster_hargabeli',function($join){
+                    $join->on('hgb_kodeigr','prd_kodeigr');
+                    $join->on('hgb_prdcd','prd_prdcd');
+                })
+                ->select('prd_prdcd')
+                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
+                ->orderBy('prd_prdcd','desc')
+                ->first();
+            $plu2 = $pluB->prd_prdcd;
+        }
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->where('prs_kodeigr',$_SESSION['kdigr'])
+            ->first();
+
+        if($pil == 1)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND TLK_KETERANGANTOLAKAN LIKE 'STATUS%' AND TLK_KETERANGANTOLAKAN NOT LIKE '%ORDER LANGSUNG DI TOKO'";
+        else if($pil == 2)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%'";
+        else if($pil == 4)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
+        else if($pil == 5)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%KUNJUNGAN')";
+        else if($pil == 6)
+            $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
+        else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
+
+        $tolakan = DB::table('tbtr_tolakanpb')
+            ->join('tbmaster_prodmast',function($join){
+                $join->on('tlk_kodeigr','prd_kodeigr');
+                $join->on('tlk_prdcd','prd_prdcd');
+            })
+            ->join('tbmaster_divisi',function($join){
+                $join->on('div_kodedivisi','prd_kodedivisi');
+            })
+            ->join('tbmaster_departement',function($join){
+                $join->on('dep_kodedepartement','prd_kodedepartement');
+                $join->on('dep_kodedivisi','prd_kodedivisi');
+            })
+            ->join('tbmaster_kategori',function($join){
+                $join->on('kat_kodedepartement','prd_kodedepartement');
+                $join->on('kat_kodekategori','prd_kodekategoribarang');
+            })
+            ->leftJoin('tbmaster_supplier',function($join){
+                $join->on('sup_kodeigr','tlk_kodeigr');
+                $join->on('sup_kodesupplier','tlk_kodesupplier');
+            })
+            ->leftJoin('tbmaster_kkpkm',function($join){
+                $join->on('pkm_kodeigr','prd_kodeigr');
+                $join->on('pkm_kodedivisi','prd_kodedivisi');
+                $join->on('pkm_kodedepartement','prd_kodedepartement');
+                $join->on('pkm_kodekategoribarang','prd_kodekategoribarang');
+                $join->on('pkm_prdcd','prd_prdcd');
+            })
+            ->selectRaw("TO_CHAR(TLK_TGLPB,'DD/MM/YYYY') TGLPB, TLK_NOPB NOPB, 
+                TLK_PRDCD PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT || '/' || PRD_FRAC SATUAN,
+                PRD_KODETAG TAG, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
+                PRD_KODEKATEGORIBARANG KAT, TLK_KODESUPPLIER SUPCO, SUP_NAMASUPPLIER SUPNAME, PKM_PKMT PKMT,
+                TLK_KETERANGANTOLAKAN KETERANGAN")
+            ->whereRaw("trunc(tlk_tglpb) between to_date('".$tgl1."','dd-mm-yyyy')and to_date('".$tgl2."','dd-mm-yyyy')")
+            ->whereBetween('tlk_kodesupplier',[$sup1,$sup2])
+            ->whereBetween('prd_prdcd',[$plu1,$plu2])
+            ->whereRaw($where)
+            ->orderBy('tlk_nopb')
+            ->orderBy('tlk_kodesupplier')
+            ->orderBy('tlk_prdcd')
+            ->get();
+
+//        dd($tolakan);
+
+        $data = [
+            'title' => 'LAPORAN DAFTAR TOLAKAN PB / SUPPLIER',
+            'perusahaan' => $perusahaan,
+            'tolakan' => $tolakan,
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2
+        ];
+
+        $now = Carbon::now('Asia/Jakarta');
+        $now = date_format($now, 'd-m-Y H-i-s');
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-supplier', $data);
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+
+        if(count($tolakan) > 0) {
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $canvas = $dompdf->get_canvas();
+            $canvas->page_text(525, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        }
+
+        $dompdf = $pdf;
+
+        // (Optional) Setup the paper size and orientation
+        //        $dompdf->setPaper('a4', 'landscape');
+
+        // Render the HTML as PDF
+
+        return $dompdf->stream('Laporan Tolakan PB.pdf');
     }
 }

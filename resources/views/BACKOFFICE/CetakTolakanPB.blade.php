@@ -83,14 +83,14 @@
                                         <label for="periode" class="col-sm-2 text-right col-form-label">PLU :</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control plu" id="div_plu1">
-                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu1" data-toggle="modal" data-target="#m_lov_plu">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 div_plu" data-toggle="modal" data-target="#m_lov_plu">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control plu" id="div_plu2">
-                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu2" data-toggle="modal" data-target="#m_lov_plu">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 div_plu" data-toggle="modal" data-target="#m_lov_plu">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
@@ -129,7 +129,7 @@
                                         </div>
                                         <div class="col-sm-7"></div>
                                         <div class="col-sm-2">
-                                            <button id="div_print" class="col-sm btn btn-success" onclick="div_print()">PRINT</button>
+                                            <button id="div_print" class="col-sm btn btn-success" onclick="print_by_div()">PRINT</button>
                                         </div>
                                     </div>
                                 </div>
@@ -169,14 +169,14 @@
                                         <label for="periode" class="col-sm-2 text-right col-form-label">PLU :</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu1">
-                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu1" data-toggle="modal" data-target="#m_lov_plu">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 sup_plu" data-toggle="modal" data-target="#m_lov_plu_sup">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="pt-1">s/d</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu2">
-                                            <button style="display: none" type="button" class="btn btn-lov p-0 plu2" data-toggle="modal" data-target="#m_lov_plu">
+                                            <button style="display: none" type="button" class="btn btn-lov p-0 sup_plu" data-toggle="modal" data-target="#m_lov_plu_sup">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
@@ -215,7 +215,7 @@
                                         </div>
                                         <div class="col-sm-7"></div>
                                         <div class="col-sm-2">
-                                            <button id="sup_btn_print" class="col-sm btn btn-success">PRINT</button>
+                                            <button id="sup_btn_print" class="col-sm btn btn-success" onclick="print_by_sup()">PRINT</button>
                                         </div>
                                     </div>
                                 </div>
@@ -370,7 +370,7 @@
                                     @php $i = 0 @endphp
                                     @foreach($plu as $p)
                                         @php $i++ @endphp
-                                        <tr id="row_lov_plu_{{ $i }}" onclick="lov_plu_select({{ $i }})" class="row_lov">
+                                        <tr id="row_lov_plu_div_{{ $i }}" onclick="div_lov_plu_select({{ $i }})" class="row_lov">
                                             <td class="prd_prdcd">{{ $p->prd_prdcd }}</td>
                                             <td class="prd_deskripsipanjang">{{ $p->prd_deskripsipanjang }}</td>
                                             <td class="prd_satuan">{{ $p->prd_unit }}/{{ $p->prd_frac }}</td>
@@ -413,6 +413,46 @@
                                         <tr id="row_lov_supplier_{{ $i }}" onclick="lov_supplier_select({{ $i }})" class="row_lov">
                                             <td class="sup_kodesupplier">{{ $s->sup_kodesupplier }}</td>
                                             <td class="sup_namasupplier">{{ $s->sup_namasupplier }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_lov_plu_sup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="sup_i_lov_plu" class="form-control search_lov" type="text" placeholder="Cari PLU" aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm" id="table_lov_plu_sup">
+                                    <thead>
+                                    <tr>
+                                        <td>PLU</td>
+                                        <td>DESKRIPSI</td>
+                                        <td>SATUAN</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php $i = 0 @endphp
+                                    @foreach($plu as $p)
+                                        @php $i++ @endphp
+                                        <tr id="row_lov_plu_sup_{{ $i }}" onclick="lov_plu_sup_select({{ $i }})" class="row_lov">
+                                            <td class="prd_prdcd">{{ $p->prd_prdcd }}</td>
+                                            <td class="prd_deskripsipanjang">{{ $p->prd_deskripsipanjang }}</td>
+                                            <td class="prd_satuan">{{ $p->prd_unit }}/{{ $p->prd_frac }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -503,7 +543,7 @@
         });
 
         $('.btn-lov').on('click',function(){
-            currVar = $(this).attr('class').split(' ').pop();
+            currVar = $(this).parent().find('input').attr('id');
         });
 
         $('.modal').on('shown.bs.modal',function(){
@@ -901,34 +941,36 @@
             kategori_select('div_'+currVar);
         }
 
-        function lov_plu_select(i){
-            kodeplu = $('#row_lov_plu_'+i).find('.prd_prdcd').html();
+        function div_lov_plu_select(i){
+            kodeplu = $('#row_lov_plu_div_'+i).find('.prd_prdcd').html();
 
-            $('#m_lov_plu').modal('toggle');
-
-            if(currVar == 'plu1'){
+            if(currVar == 'div_plu1'){
                 $('#div_plu1').val(kodeplu);
                 $('#div_plu2').select();
             }
-            else if(currVar == 'plu2'){
+            else if(currVar == 'div_plu2'){
                 $('#div_plu2').val(kodeplu);
                 $('#div_pilihan').select();
             }
 
-            cek_plu('div_'+currVar);
+            div_cek_plu(currVar);
         }
 
-        $('#div_plu1').on('keypress',function(e){
-            if(e.which == 13){
-                cek_plu($(this).attr('id'));
-            }
-        });
+        $('.div_plu').on('keypress',function(){
+            if($(this).attr('id') == 'div_plu1')
+                $('#div_plu2').select();
+            else $('#div_pilihan').select();
+        })
 
-        $('.plu').on('change',function(){
+        $('.div_plu').on('change',function(){
             plu1 = $('#div_plu1').val();
             plu2 = $('#div_plu2').val();
 
             if(parseInt(plu1) > parseInt(plu2)){
+                if($('#m_lov_plu').is(':visible'))
+                    $('#m_lov_plu').modal('toggle');
+                if($('#modal-loader').is(':visible'))
+                    $('#modal-loader').modal('toggle');
                 swal({
                     title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
                     icon: 'error'
@@ -938,7 +980,7 @@
             }
             else{
                 $(this).val(convertPlu($(this).val()));
-                cek_plu($(this).attr('id'));
+                div_cek_plu($(this).attr('id'));
             }
 
         });
@@ -960,46 +1002,65 @@
             }
         });
 
-        function cek_plu(id){
-            plu = convertPlu($('#'+id).val());
-            div1 = $('#div_divisi1').val();
-            div2 = $('#div_divisi2').val();
-            dep1 = $('#div_departement1').val();
-            dep2 = $('#div_departement2').val();
-            kat1 = $('#div_kategori1').val();
-            kat2 = $('#div_kategori2').val();
+        function div_cek_plu(id){
+            $('#'+id).val(convertPlu($('#'+id).val()));
 
-            $.ajax({
-                url: '{{ url('bocetaktolakanpb/cek_plu') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {div1: div1, div2: div2, dep1: dep1, dep2: dep2, kat1: kat1, kat2: kat2, plu: plu},
-                beforeSend: function () {
+            if($('#div_plu1').val() > $('#div_plu2').val() && $('#div_plu2').val() != ''){
+                if($('#m_lov_plu').is(':visible'))
+                    $('#m_lov_plu').modal('toggle');
+                if($('#modal-loader').is(':visible'))
                     $('#modal-loader').modal('toggle');
-                },
-                success: function (response) {
-                    if($('#modal-loader').is(':visible'))
+
+                swal({
+                    title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#'+id).select();
+                });
+            }
+            else{
+                plu = convertPlu($('#'+id).val());
+                div1 = $('#div_divisi1').val();
+                div2 = $('#div_divisi2').val();
+                dep1 = $('#div_departement1').val();
+                dep2 = $('#div_departement2').val();
+                kat1 = $('#div_kategori1').val();
+                kat2 = $('#div_kategori2').val();
+
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/div_cek_plu') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {div1: div1, div2: div2, dep1: dep1, dep2: dep2, kat1: kat1, kat2: kat2, plu: plu},
+                    beforeSend: function () {
                         $('#modal-loader').modal('toggle');
-                    if(response != 'true'){
-                        swal({
-                            title: 'PLU tidak ditemukan!',
-                            icon: 'error'
-                        }).then(function(){
-                            $('#'+id).select();
-                        })
+                    },
+                    success: function (response) {
+                        if($('#m_lov_plu').is(':visible'))
+                            $('#m_lov_plu').modal('toggle');
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+                        if(response != 'true'){
+                            swal({
+                                title: 'PLU tidak ditemukan!',
+                                icon: 'error'
+                            }).then(function(){
+                                $('#'+id).select();
+                            })
+                        }
+                        else{
+                            if(id == 'div_plu1')
+                                $('#div_plu2').select();
+                            else $('#div_pilihan').select();
+                        }
                     }
-                    else{
-                        if(id == 'div_plu1')
-                            $('#div_plu2').select();
-                        else $('#div_pilihan').select();
-                    }
-                }
-            });
+                });
+            }
         }
 
-        function div_print(){
+        function print_by_div(){
             if($('#div_tanggal1').val() > $('#div_tanggal2').val()){
                 swal({
                     title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
@@ -1026,7 +1087,7 @@
                 pil = nvl($('#div_pilihan').val(),'3');
 
 
-                url = '{{ url('/bocetaktolakanpb') }}'+'/div_print?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
+                url = '{{ url('/bocetaktolakanpb') }}'+'/print_by_div?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
 
                 window.open(url);
             }
@@ -1075,7 +1136,7 @@
             }
         });
 
-        $('#i_lov_plu').on('keypress',function(e){
+        $('#sup_i_lov_plu').on('keypress',function(e){
             if(e.which == 13){
                 $.ajax({
                     url: '{{ url('bocetaktolakanpb/sup_search_plu') }}',
@@ -1091,11 +1152,11 @@
                         if($('#modal-loader').is(':visible'))
                             $('#modal-loader').modal('toggle');
 
-                        $('#table_lov_plu tbody tr').remove();
+                        $('#table_lov_plu_sup tbody tr').remove();
 
                         if(response == 'false'){
                             html = '<tr><td colspan="3" class="text-center">Data tidak ditemukan</td></tr>';
-                            $('#table_lov_plu').append(html);
+                            $('#table_lov_plu_sup').append(html);
                         }
                         else{
                             for(i=0;i<response.length;i++){
@@ -1125,7 +1186,34 @@
                     $('#sup_plu1').select();
                 else supplier_select($(this).attr('id'));
             }
-        })
+        });
+
+        $('#sup_plu1').on('keypress',function(e){
+            if(e.which == 13){
+                sup_cek_plu($(this).attr('id'));
+            }
+        });
+
+        $('#sup_plu2').on('keypress',function(e){
+            if(e.which == 13){
+                sup_cek_plu($(this).attr('id'));
+            }
+        });
+
+        $('.sup_plu').on('change',function(){
+            sup_cek_plu($(this).attr('id'));
+        });
+
+        function lov_supplier_select(i){
+            kodesupplier = $('#row_lov_supplier_'+i).find('.sup_kodesupplier').html();
+
+            $('#'+currVar).val(kodesupplier);
+            if(currVar == 'sup_supplier1')
+                $('#sup_supplier2').select();
+            else $('#sup_pilihan').select();
+
+            supplier_select(currVar);
+        }
 
         function supplier_select(id){
             if($('#sup_supplier1').val() > $('#sup_supplier2').val() && $('#sup_supplier2').val() != ''){
@@ -1148,9 +1236,8 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    data: {sup: sup},
+                    data: {sup: sup, sup1: sup1, sup2: sup2},
                     beforeSend: function () {
-                        $('#table_lov_plu tbody tr').remove();
                         $('#modal-loader').modal('toggle');
                     },
                     success: function (response) {
@@ -1169,16 +1256,16 @@
                             })
                         }
                         else{
-                            $('#table_lov_plu tbody tr').remove();
+                            $('#table_lov_plu_sup tbody tr').remove();
 
                             for(i=0;i<response.length;i++){
-                                html =  '<tr id="row_lov_plu_'+i+'" onclick="lov_plu_select('+i+')" class="row_lov">' +
+                                html =  '<tr id="row_lov_plu_sup_'+i+'" onclick="lov_plu_sup_select('+i+')" class="row_lov">' +
                                     '<td class="prd_prdcd">'+ response[i].prd_prdcd +'</td>' +
                                     '<td class="prd_deskripsipanjang">'+ response[i].prd_deskripsipanjang +'</td>' +
                                     '<td class="prd_satuan">'+ response[i].prd_unit +'/'+ response[i].prd_frac +'</td>' +
                                     '</tr>';
 
-                                $('#table_lov_plu').append(html);
+                                $('#table_lov_plu_sup').append(html);
                             }
 
                             if(id == 'sup_supplier1'){
@@ -1188,6 +1275,107 @@
                         }
                     }
                 });
+            }
+        }
+
+        function lov_plu_sup_select(i){
+            kodeplu = $('#row_lov_plu_sup_'+i).find('.prd_prdcd').html();
+
+            console.log($('#row_lov_plu_sup_'+i).find('.prd_prdcd').html());
+
+            $('#m_lov_plu_sup').modal('toggle');
+
+            $('#'+currVar).val(kodeplu);
+            if(currVar == 'sup_plu1'){
+                $('#div_plu2').select();
+            }
+            else if(currVar == 'sup_plu2'){
+                $('#div_pilihan').select();
+            }
+
+            sup_cek_plu(currVar);
+        }
+
+        function sup_cek_plu(id){
+            $('#'+id).val(convertPlu($('#'+id).val()));
+
+            if($('#sup_plu1').val() > $('#sup_plu2').val() && $('#sup_plu2').val() != ''){
+                if($('#m_lov_plu_sup').is(':visible'))
+                    $('#m_lov_plu_sup').modal('toggle');
+                if($('#modal-loader').is(':visible'))
+                    $('#modal-loader').modal('toggle');
+
+                swal({
+                    title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#'+id).select();
+                });
+            }
+            else{
+                plu = convertPlu($('#'+id).val());
+                sup1 = $('#sup_supplier1').val();
+                sup2 = $('#sup_supplier2').val();
+
+                $.ajax({
+                    url: '{{ url('bocetaktolakanpb/sup_cek_plu') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {sup1: sup1, sup2: sup2, plu: plu},
+                    beforeSend: function () {
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#m_lov_plu_sup').is(':visible'))
+                            $('#m_lov_plu_sup').modal('toggle');
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+                        if(response != 'true'){
+                            swal({
+                                title: 'PLU tidak ditemukan!',
+                                icon: 'error'
+                            }).then(function(){
+                                $('#'+id).select();
+                            })
+                        }
+                        else{
+                            if(id == 'sup_plu1')
+                                $('#sup_plu2').select();
+                            else $('#sup_pilihan').select();
+                        }
+                    }
+                });
+            }
+        }
+
+        function print_by_sup(){
+            if($('#sup_tanggal1').val() > $('#sup_tanggal2').val()){
+                swal({
+                    title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                    icon: 'error'
+                }).then(function(){
+                    $('#sup_tanggal1').select();
+                })
+            }
+            else{
+                tgl1 = nvl(formatDateCustom(formatDate($('#sup_tanggal1').val()),'dd-mm-yy'),'ALL');
+                tgl2 = nvl(formatDateCustom(formatDate($('#sup_tanggal2').val()),'dd-mm-yy'),'ALL');
+
+                console.log(tgl1);
+                console.log(tgl2);
+
+                sup1 = nvl($('#sup_supplier1').val(),'ALL');
+                sup2 = nvl($('#sup_supplier2').val(),'ALL');
+                plu1 = nvl($('#sup_plu1').val(),'ALL');
+                plu2 = nvl($('#sup_plu2').val(),'ALL');
+                pil = nvl($('#sup_pilihan').val(),'3');
+
+
+                url = '{{ url('/bocetaktolakanpb') }}'+'/print_by_sup?tgl1='+tgl1+'&tgl2='+tgl2+'&sup1='+sup1+'&sup2='+sup2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
+
+                window.open(url);
             }
         }
 

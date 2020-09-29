@@ -29,7 +29,7 @@
                         <div class="form-group row mb-0 mt-3">
                             <label for="i_tgl" class="col-sm-2 col-form-label text-right">TANGGAL</label>
                             <div class="col-sm-2">
-                                <input type="date" class="form-control" data-date-format="DD MMMM YYYY" id="i_tgl" placeholder="...">
+                                <input type="text" class="form-control" id="i_tgl" placeholder="DD/MM/YYYY">
                             </div>
                             <label for="i_keterangan" class="col-sm-2 col-form-label text-right">KETERANGAN</label>
                             <div class="col-sm-3">
@@ -51,6 +51,11 @@
     </style>
 
     <script>
+        $('#i_tgl').datepicker({
+            "dateFormat" : "dd/mm/yy"
+        });
+
+
         function actionHariLibur(string) {
             let tgl = $('#i_tgl').val();
             let ket = $('#i_keterangan').val();

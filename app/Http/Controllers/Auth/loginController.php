@@ -25,6 +25,9 @@ class loginController extends Controller
     {
 
         session_start();
+        $conUser = 'SIMSMG';
+        $conPassword = 'SIMSMG';
+        $conString = '192.168.237.193:1521/SIMSMG';
 
         $ipx = $request->getClientIp();
         $ipself = $request->getClientIp();
@@ -129,6 +132,9 @@ class loginController extends Controller
                 $_SESSION['id'] = str_replace('.','',$vip);
                 $_SESSION['ppn'] = $prs->prs_nilaippn;
                 $_SESSION['stat'] = 99;
+                $_SESSION['conUser'] = $conUser;
+                $_SESSION['conPassword'] = $conPassword;
+                $_SESSION['conString'] = $conString;
 
                 DB::table('TBMASTER_PERUSAHAAN')
                     ->update([
@@ -161,6 +167,9 @@ class loginController extends Controller
                 $_SESSION['ip'] = $vip;
                 $_SESSION['id'] = str_replace('.','',$vip);
                 $_SESSION['ppn'] = $prs->prs_nilaippn;
+                $_SESSION['conUser'] = $conUser;
+                $_SESSION['conPassword'] = $conPassword;
+                $_SESSION['conString'] = $conString;
 
                 if (!is_null($_SESSION['usid']) AND $_SESSION['usid'] != 'NUL') {
                     if ($_SESSION['usid'] == 'ADM') {

@@ -309,8 +309,6 @@
                             $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].kat_kodekategori+"') class='modalRow'><td>"+ result[i].kat_kodedepartement +"</td><td>"+ result[i].kat_kodekategori +"</td><td>"+ result[i].kat_namakategori +"</td></tr>")
                         }
 
-                        console.log(result)
-
                         $('#modalHelp').modal('show');
                     }, error: function () {
                         alert('error');
@@ -400,8 +398,10 @@
                         swal('Failed', result.msg, 'error');
                     }
                     clearField()
-                }, error: function () {
+                }, error: function (error) {
+                    console.log(error['responseJSON']);
                     swal('Error', '','error');
+                    $('#modal-loader').modal('hide');
                 }
             })
         }

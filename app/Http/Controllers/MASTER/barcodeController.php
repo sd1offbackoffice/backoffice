@@ -35,4 +35,7 @@ class barcodeController extends Controller
 
         return $barcode;
     }
+    public function testdenni(){
+        return view('BACKOFFICE.dennitest');
+    }
 }

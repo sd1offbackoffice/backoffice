@@ -53,6 +53,8 @@ label {
 /*Created By : JR(27/02/2020) | Modify By :  */
 .tableFixedHeader {
     overflow-y: auto;
+    /*overflow: scroll;*/
+    /*overflow: auto;*/
     height: 500px;
 }
 
@@ -75,4 +77,35 @@ label {
 .theadDataTables{
     background-color: #5AA4DD;
     color: white;
+}
+
+/*UNTUK MEMBUAT BUTTON LOV DI DALAM FIELD INPUT*/
+/*Created By : LEO(07/04/2020) | Modify By :  */
+.buttonInside {
+    position: relative;
+}
+.btn-lov{
+    position:absolute;
+    right: 20px;
+    top: 4px;
+    border:none;
+    height:30px;
+    width:30px;
+    border-radius:100%;
+    outline:none;
+    text-align:center;
+    font-weight:bold;
+}
+
+.btn-lov2{
+    position:absolute;
+    right: 0px;
+    top: 4px;
+    border:none;
+    height:30px;
+    width:30px;
+    border-radius:100%;
+    outline:none;
+    text-align:center;
+    font-weight:bold;
 }

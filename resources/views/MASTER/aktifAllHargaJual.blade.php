@@ -10,7 +10,7 @@
                         <form class="form mb-5">
                             <div class="row justify-content-center">
                                 <div class="col-sm-12 col-md-5">
-                                    <button type="button" id="btnAktifkanHrg" class="btn btn-primary btn-block btnAktifkanHrg" onclick="aktifkanAllItem()">Aktifkan Harga Jual All Item</button>
+                                    <button type="button" id="btnAktifkanHrg" class="btn btn-primary btn-lg btn-block btnAktifkanHrg" onclick="aktifkanAllItem()">Aktifkan Harga Jual All Item</button>
                                 </div>
                             </div>
                         </form>

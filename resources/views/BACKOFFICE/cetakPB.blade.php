@@ -59,7 +59,7 @@
                                         <input type="text" id="i_kat2" class="form-control col-sm-1 mx-sm-1 field field10" field="10">
                                         <button class="btn ml-2" type="button" data-toggle="modal" onclick="getKategori('i_kat2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                     </div>
-                                    <button type="button" id="btnAktifkanHrg" class="btn btn-danger pl-4 pr-4 mr-3 float-right field field12" onclick="proses()" field="12">Batal</button>
+                                    <button type="button" id="btnAktifkanHrg" class="btn btn-danger pl-4 pr-4 mr-3 float-right field field12" onclick="clearField()" field="12">Batal</button>
                                     <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 mr-3 float-right field field11" onclick="prosesCetak()" field="11">Cetak PB</button>
                                 </form>
                             </div>
@@ -151,14 +151,14 @@
                         $('#modalThName2').show();
                         $('#modalThName3').hide();
                         $('#modalThName1').text('KODE');
-                        $('#modalThName2').text('KETERANGAN');
+                        $('#modalThName2').text('TANGGAL');
                         $('#idModal').text('DC');
                         $('#idField').text(field);
                         $('#searchModal').val('');
 
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].pbh_nopb+"') class='modalRow'><td>"+ result[i].pbh_nopb +"</td><td>"+ result[i].pbh_keteranganpb +"</td></tr>")
+                            $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].pbh_nopb+"') class='modalRow'><td>"+ result[i].pbh_nopb +"</td><td>"+ formatDate(result[i].pbh_tglpb) +"</td></tr>")
                         }
 
                         $('#modalHelp').modal('show');
@@ -441,34 +441,33 @@
                 }
             }
 
-            if (!tgl1 || !tgl2 || !doc1 || !doc2 || !div1 || !div2 || !dept1 || !dept2 || !kat1 || !kat2) {
-                swal("Semua Field harus diisi !!", '', 'warning')
+            if (!tgl1 || !tgl2) {
+                swal("Tanggal Harus Terisi !!", '', 'warning')
+            } else if ( (doc1 && !doc2) || (!doc1 && doc2) ) {
+                swal("No Dokumen Harus Terisi Semua !!", '', 'warning')
+            } else if ((!div1 && div2) || (div1 && !div2)) {
+                swal("Kode Divisi Harus Terisi Semua!!", '', 'warning')
+            } else if ((!dept1 && dept2) || (dept1 && !dept2)) {
+                swal("Kode Departement Harus Terisi Semua!!", '', 'warning')
+            } else if ((!kat1 && kat2) || (kat1 && !kat2)) {
+                swal("Kode Kategori Harus Terisi Semua!!", '', 'warning')
             } else {
                 window.open('/BackOffice/public/bocetakpb/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')
-                // ajaxSetup()
-                // $.ajax({
-                //     url: '/BackOffice/public/bocetakpb/cetakreport',
-                //     type: 'post',
-                //     data: {
-                //         tgl1 : tgl1,
-                //         tgl2 : tgl2,
-                //         doc1 : doc1,
-                //         doc2 : doc2,
-                //         div1 : div1,
-                //         div2 : div2,
-                //         dept1: dept1,
-                //         dept2: dept2,
-                //         kat1 : kat1,
-                //         kat2 : kat2,
-                //         tipePB: tipePB
-                //     },
-                //     success: function (result) {
-                //         // alert(result)
-                //     }, error: function () {
-                //         alert('error');
-                //     }
-                // })
+                clearField()
             }
+        }
+
+        function clearField() {
+            $('#i_tgl1').val('');
+            $('#i_tgl2').val('');
+            $('#i_doc1').val('');
+            $('#i_doc2').val('');
+            $('#i_div1').val('');
+            $('#i_div2').val('');
+            $('#i_dept1').val('');
+            $('#i_dept2').val('');
+            $('#i_kat1').val('');
+            $('#i_kat2').val('');
         }
 
 

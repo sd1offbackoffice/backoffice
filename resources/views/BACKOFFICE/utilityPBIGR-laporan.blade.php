@@ -57,7 +57,7 @@ $datetime->setTimezone($timezone);
     <table class="table table-bordered table-responsive" style="">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="text-align: center;">
-            <th rowspan="3" style="width: 20px">NO</th>
+            <th rowspan="3" style="width: 10px">NO</th>
             <th colspan="2" rowspan="1">-----------PLU-----------</th>
             <th rowspan="3" style="width: 90px">DESKRIPSI</th>
             <th colspan="2" rowspan="1">BULAN SEBELUMNYA</th>
@@ -75,8 +75,8 @@ $datetime->setTimezone($timezone);
             <th colspan="2" rowspan="1">-----QTY M PLUS.0-----</th>
         </tr>
         <tr>
-            <th rowspan="2" style="width: 50px">IDM</th>
-            <th rowspan="2" style="width: 40px">IGR</th>
+            <th rowspan="2" style="width: 20px">IDM</th>
+            <th rowspan="2" style="width: 20px">IGR</th>
             <th rowspan="2" style="width: 30px;text-align: right">QTY KPH <br> MEAN</th>
             <th rowspan="2" style="width: 30px;text-align: right">QTY <br> MINOR</th>
             <th colspan="3" rowspan="1" style="text-align: center">------------QTY KPH MEAN------------</th>

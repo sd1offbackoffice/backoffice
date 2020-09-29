@@ -66,6 +66,8 @@ Route::post('/bopbmanual/getDataPB','BACKOFFICE\PBManualController@getDataPB')->
 Route::post('/bopbmanual/hapusDokumen','BACKOFFICE\PBManualController@hapusDokumen')->middleware('CheckLogin');
 Route::post('/bopbmanual/lov_search_plu','BACKOFFICE\PBManualController@lov_search_plu')->middleware('CheckLogin');
 Route::post('/bopbmanual/cek_plu','BACKOFFICE\PBManualController@cek_plu')->middleware('CheckLogin');
+Route::post('/bopbmanual/cek_bonus','BACKOFFICE\PBManualController@cek_bonus')->middleware('CheckLogin');
+Route::post('/bopbmanual/save_data','BACKOFFICE\PBManualController@save_data')->middleware('CheckLogin');
 
 
 Route::get('/mst/e','MASTER\InqueryProdSuppController@prodSupp');

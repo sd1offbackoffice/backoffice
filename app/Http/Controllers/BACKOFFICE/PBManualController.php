@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Connection;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -76,7 +77,6 @@ class PBManualController extends Controller
 
     public function getDataPB(Request $request)
     {
-
         $MODEL = '';
         $pb = [];
         $pbd = [];
@@ -84,7 +84,8 @@ class PBManualController extends Controller
         $status = '';
         if (is_null($request->value)) {
             $MODEL = 'TAMBAH';
-            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+//            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
 
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "','PB','Nomor Permintaan Barang'," . $_SESSION['kdigr'] . " || TO_CHAR (SYSDATE, 'yyMM'),3,TRUE); END;");
             oci_bind_by_name($s, ':ret', $r, 32);
@@ -168,13 +169,6 @@ class PBManualController extends Controller
                 $pbd[$i]->qtyctn = round($pbd[$i]->pbd_qtypb / $pbd[$i]->prd_frac);
                 $pbd[$i]->qtypcs = fmod($pbd[$i]->pbd_qtypb, $pbd[$i]->prd_frac);
 
-//                $hrgbeli = ($pbd[$i]->qtyctn*$pbd[$i]->pbd_hrgsatuan)+($pbd[$i]->qtypcs*($pbd[$i]->pbd_hrgsatuan/$pbd[$i]->prd_frac));
-//                $pbd[$i]->pbd_gross = $hrgbeli-($hrgbeli*$pbd[$i]->pbd_persendisc1/100);
-//                $hrgbeli = $pbd[$i]->pbd_gross;
-//                $pbd[$i]->pbd_gross = $hrgbeli-($hrgbeli*$pbd[$i]->pbd_persendisc2/100);
-//                $pbd[$i]->pbd_ppn = ($pbd[$i]->pbd_gross*$pbd[$i]->pbd_ppn)/100;
-//                $pbd[$i]->pbd_ppnbm = $pbd[$i]->pbd_ppnbm * $pbd[$i]->pbd_qtypb;
-//                $pbd[$i]->pbd_ppnbotol = $pbd[$i]->pbd_ppnbotol * $pbd[$i]->pbd_qtypb;
                 $pbd[$i]->total = $pbd[$i]->pbd_gross + $pbd[$i]->pbd_ppn + $pbd[$i]->pbd_ppnbm + $pbd[$i]->pbd_ppnbotol;
 
             }
@@ -187,373 +181,312 @@ class PBManualController extends Controller
     public
     function cek_plu(Request $request)
     {
-        v_oke := false;
-        :PBD_PRDCD := LPAD(RPAD(SUBSTR(:PBD_PRDCD,0,LENGTH(:PBD_PRDCD)-1),LENGTH(:PBD_PRDCD),'0'),7,'0');
-//	validate_rec(temp);
-        :PBD_NOPB    := :NOPB;
-        :PBD_KODEIGR := :parameter.KODEIGR;
+        $message = '';
+        $status = '';
+        $plu = [];
 
-		sp_igr_bo_pb_cek_plu(
-			:parameter.KODEIGR,
-			:PBD_PRDCD,
-			:TGLPB,
-			:FLAG,
-			:DESKPDK,
-			:DESKPJG,
-			:UNIT,
-   		:FRAC,
-			:BKP,
-			:PBD_KODESUPPLIER,
-			:SUPPLIER,
-			:SUPPKP,
-			:HG_JUAL,
-			:ISI_BELI,
-			:PBD_SALDOAKHIR, --STOCK,
-			:MINOR,
-			:PBD_PKMT,
-			:PBD_PERSENDISC1,
-			:PBD_RPHDISC1,
-			:PBD_FLAGDISC1,
-			:PBD_PERSENDISC2,
-			:PBD_RPHDISC2,
-			:PBD_FLAGDISC2,
-			:PBD_TOP,
-			:F_OMI,
-			:F_IDM,
-			:PBD_HRGSATUAN,
-			:PBD_PPNBM,
-			:PBD_PPNBOTOL,
-			v_oke,
-			v_message);
+        $v_oke = false;
+        $PBD_PRDCD = $request->plu;
+        $PBD_NOPB = $request->nopb;
+        $PBD_KODEIGR = $_SESSION['kdigr'];
+        $FLAG = $request->flag;
+        $TGLPB = $request->tglpb;
+
+//        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
 
 
-    If v_oke Then
-    :SATUAN   := :UNIT||'/'||TO_CHAR(Nvl(:FRAC,1));
-			select prd_kodedivisi, prd_kodedivisipo, prd_kodedepartement, prd_kodekategoribarang
-			into :pbd_kodedivisi, :pbd_kodedivisipo, :pbd_kodedepartement, :pbd_kodekategoribrg
-			from tbmaster_prodmast
-			where prd_kodeigr = :parameter.kodeigr and prd_prdcd = :pbd_prdcd;
+        $sql = "BEGIN sp_igr_bo_pb_cek_plu2('" . $PBD_KODEIGR . "','" . $PBD_PRDCD . "',to_date('" . $TGLPB . "','dd/mm/yyyy'),'" . $FLAG . "'," . ":DESKPDK, :DESKPJG, :UNIT, :FRAC, :BKP,:PBD_KODESUPPLIER, :SUPPLIER, :SUPPKP, :HG_JUAL, :ISI_BELI, :PBD_SALDOAKHIR, :MINOR, :PBD_PKMT, :PBD_PERSENDISC1, :PBD_RPHDISC1, :PBD_FLAGDISC1, :PBD_PERSENDISC2, :PBD_RPHDISC2, :PBD_FLAGDISC2, :PBD_TOP, :F_OMI, :F_IDM, :PBD_HRGSATUAN, :PBD_PPNBM,:PBD_PPNBOTOL, :v_oke, :v_message);END;";
+//        dd($sql);
+        $s = oci_parse($c, $sql);
 
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-
-        $s = oci_parse($c, "BEGIN sp_igr_bo_pb_cek_bonus('" .
-            $request->PBD_PRDCD . "," .
-            $request->PBD_KODESUPPLIER . "," .
-            $request->TGLPB . "," .
-            $request->FRAC . "," .
-            $request->PBD_QTYPB . "," .
-            $request->PBD_BONUSPO1 . "," .
-            $request->PBD_BONUSPO2 . "," .
-            $request->PBD_PPN . "," .
-            $request->PBD_PPNBM . "," .
-            $request->PBD_PPNBOTOL . "," .
-            ":v_oke," .
-            ":v_message);END;");
-        oci_bind_by_name($s, ':v_oke', $v_oke, 32);
-        oci_bind_by_name($s, ':v_message', $v_message, 32);
+        oci_bind_by_name($s, ':DESKPDK', $plu['deskpdk'], 100);
+        oci_bind_by_name($s, ':DESKPJG', $plu['prd_deskripsipanjang'], 100);
+        oci_bind_by_name($s, ':UNIT', $plu['prd_unit'], 100);
+        oci_bind_by_name($s, ':FRAC', $plu['prd_frac'], 100);
+        oci_bind_by_name($s, ':BKP', $plu['bkp'], 100);
+        oci_bind_by_name($s, ':PBD_KODESUPPLIER', $plu['pbd_kodesupplier'], 100);
+        oci_bind_by_name($s, ':SUPPLIER', $plu['sup_namasupplier'], 100);
+        oci_bind_by_name($s, ':SUPPKP', $plu['suppkp'], 100);
+        oci_bind_by_name($s, ':HG_JUAL', $plu['prd_hrgjual'], 100);
+        oci_bind_by_name($s, ':ISI_BELI', $plu['isi_beli'], 100);
+        oci_bind_by_name($s, ':PBD_SALDOAKHIR', $plu['st_saldoakhir'], 100);
+        oci_bind_by_name($s, ':MINOR', $plu['minor'], 100);
+        oci_bind_by_name($s, ':PBD_PKMT', $plu['pbd_pkmt'], 100);
+        oci_bind_by_name($s, ':PBD_PERSENDISC1', $plu['pbd_persendisc1'], 100);
+        oci_bind_by_name($s, ':PBD_RPHDISC1', $plu['pbd_rphdisc1'], 100);
+        oci_bind_by_name($s, ':PBD_FLAGDISC1', $plu['pbd_flagdisc1'], 100);
+        oci_bind_by_name($s, ':PBD_PERSENDISC2', $plu['pbd_persendisc2'], 100);
+        oci_bind_by_name($s, ':PBD_RPHDISC2', $plu['pbd_rphdisc2'], 100);
+        oci_bind_by_name($s, ':PBD_FLAGDISC2', $plu['pbd_flagdisc2'], 100);
+        oci_bind_by_name($s, ':PBD_TOP', $plu['pbd_top'], 100);
+        oci_bind_by_name($s, ':F_OMI', $plu['f_omi'], 100);
+        oci_bind_by_name($s, ':F_IDM', $plu['f_idm'], 100);
+        oci_bind_by_name($s, ':PBD_HRGSATUAN', $plu['pbd_hrgsatuan'], 100);
+        oci_bind_by_name($s, ':PBD_PPNBM', $plu['pbd_ppnbm'], 100);
+        oci_bind_by_name($s, ':PBD_PPNBOTOL', $plu['pbd_ppnbotol'], 100);
+        oci_bind_by_name($s, ':v_oke', $v_oke, 100);
+        oci_bind_by_name($s, ':v_message', $v_message, 100);
         oci_execute($s);
-//        $VLPLU = FALSE;
-//        $PPLU = $request->plu;
-//        $TGLPB = $request->tglpb;
-//        $FLAG = $request->flag;
-//
-//        if (is_null($PPLU) || $PPLU == "") {
-//            $message = 'PLU tidak boleh kosong!!';
-//            $status = 'error';
-//            return compact(['message', 'status']);
-//        }
-//
-//
-//        $pluomi = DB::table('tbmaster_prodcrm')
-//            ->selectRaw('prc_pluigr pluomi')
-//            ->whereRaw('prc_pluigr =  ' . $PPLU)
-//            ->whereRaw('prc_group = \'O\'')
-//            ->toSql();
-//        $pluidm = DB::table('tbmaster_prodcrm')
-//            ->selectRaw('NVL(prc_pluigr,\'0\') pluidm')
-//            ->whereRaw('prc_pluigr =  ' . $PPLU)
-//            ->whereRaw('prc_group = \'I\'')
-//            ->toSql();
-//
-//        $promo = DB::table('TBMASTER_PROMOSI_HDR')->join('TBMASTER_PROMOSI_DTL', 'HPRO_DOCNO', 'DPRO_DOCNO')
-//            ->selectRaw('SUBSTR (DPRO_PLU, 1, 6) || \'0\' PRDCD')
-//            ->selectRaw('MAX (HPRO_TGLMULAI) TGLAWAL')
-//            ->selectRaw('MAX (HPRO_TGLAKHIR) TGLAKHIR')
-//            ->GroupBy(DB::raw('SUBSTR (DPRO_PLU, 1, 6) || \'0\''))
-//            ->toSql();
-//
-//        $gnd = DB::table('TBTR_GONDOLA')
-//            ->selectRaw('DISTINCT(GDL_PRDCD) GDL_PRDCD')
-//            ->whereRaw('GDL_TGLAWAL-3 <= to_date(\'' . $TGLPB . '\',\'dd/mm/yyyy\')')
-//            ->whereRaw('GDL_TGLAWAL-7 >= to_date(\'' . $TGLPB . '\',\'dd/mm/yyyy\')')
-//            ->toSql();
-//
-//        $plu = DB::table('tbmaster_prodmast')
-//            ->leftJoin(DB::RAW('(' . $pluomi . ')'), 'prd_prdcd', 'pluomi')
-//            ->leftJoin(DB::RAW('(' . $pluidm . ')'), 'prd_prdcd', 'pluidm')
-//            ->leftJoin('TBMASTER_TAG', 'PRD_KODETAG', 'TAG_KODETAG')
-//            ->leftJoin(DB::RAW('(' . $promo . ')'), 'PRD_PRDCD', 'PRDCD')
-//            ->leftJoin('TBMASTER_KATEGORITOKO', 'PRD_KATEGORITOKO', 'KTK_KODEKATEGORITOKO')
-//            ->leftJoin('TBMASTER_KKPKM', 'PRD_PRDCD', 'PKM_PRDCD')
-//            ->leftJoin(DB::RAW('(' . $gnd . ')'), 'PRD_PRDCD', 'GDL_PRDCD')
-//            ->leftJoin('TBTR_PKMGONDOLA', 'PRD_PRDCD', 'PKMG_PRDCD')
-//            ->leftJoin('TBMASTER_SUPPLIER', 'PRD_KODESUPPLIER', 'SUP_KODESUPPLIER')
-//            ->leftJoin('TBMASTER_MINIMUMORDER', 'PRD_PRDCD', 'MIN_PRDCD')
-//            ->leftJoin('tbmaster_stock', function ($join) {
-//                $join->on('prd_prdcd', 'st_prdcd')->On('st_lokasi', DB::RAW('01'));
-//            })
-//            ->leftJoin('TBMASTER_HARGABELI', function ($join) {
-//                $join->on('prd_prdcd', 'HGB_PRDCD')->On('HGB_TIPE', DB::RAW('2'));
-//            })
-//            ->selectRaw('*')
-//            ->where('PRD_PRDCD', $PPLU)
-//            ->first();
-//
-//        if (!is_null($plu)) {
-//            $VLPLU = TRUE;
-//
-//            if ($plu->prd_recordid == '1') {
-//                $message = 'PLU [' . $PPLU . '] tidak boleh ORDER ' . ' PRD_RECORDID = 1';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//            if (!is_null($plu->prd_kodetag) && Trim($plu->tag_tidakbolehorder) == 'Y') {
-//                $message = 'PLU [' . $PPLU . '] TAG tidak boleh ORDER ' . 'PRD_KODETAG= Tidak Boleh Order';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-//            if ($plu->prd_kodekategoribarang == 'C') {
-//                $message = 'PLU [' . $PPLU . '] TAG tidak boleh ORDER ' . 'PRD_KODETAG= Tidak Boleh Order';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-//            if (in_array($plu->prd_flaggudang, ['Y', 'P']) && $FLAG <> '2') {
-//                $message = 'PLU [' . $PPLU . '] Pusat tidak boleh ORDER';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-//            if (!in_array($plu->prd_flaggudang, ['Y', 'P']) && $FLAG == '2') {
-//                $message = 'PLU [' . $PPLU . '] tidak boleh ORDER';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-////            --->>>> Cek Kategori Toko <<<<---
-//            if (is_null($plu->prd_kategoritoko) && is_null($plu->prd_kodecabang)) {
-//                $message = 'PLU [' . $PPLU . '] tidak boleh ORDER';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//            if (!is_null($plu->prd_kategoritoko)) {
-//                if (is_null($plu->ktk_kodekategoritoko)) {
-//                    $message = 'PLU [' . $PPLU . '] Kategori Barang tidak terdaftar';
-//                    $status = 'error';
-//                    return compact(['message', 'status']);
-//                }
-//
-//                if (strpos($plu->ktk_classkodeigr, $_SESSION['kdigr']) == 0) {
-//                    $message = 'PLU [' . $PPLU . '] Kategori Barang tidak sesuai';
-//                    $status = 'error';
-//                    return compact(['message', 'status']);
-//                }
-//            }
-////
-//////            --->>> ------------------ <<<----
-//            if ($plu->prd_flagbarangordertoko == 'Y') {
-//                $message = 'PLU [' . $PPLU . '] tidak boleh Order';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-//            if (is_null($plu->pkm_prdcd)) {
-//                $message = 'PLU [' . $PPLU . '] tidak terdaftar di Table PKM';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-//
-//            $deskpdk = $plu->prd_deskripsipendek;
-//            $plu->satuan = $plu->prd_unit . '/' . Self::ceknull($plu->prd_frac, 1);
-//            $plu->pbd_frac = $plu->prd_frac;
-//            $plu->pbd_unit = $plu->prd_unit;
-//            $plu->pbd_kodesupplier = $plu->hgb_kodesupplier;
-//            $isi_beli = $plu->prd_isibeli;
-//            $pkp = $plu->prd_flagbkp1;
-//            $suppkp = $plu->sup_pkp;
-//
-//            //            ---->>> Kotak Kanan Atas <<<----
-//            $HG_JUAL = Self::ceknull($plu->prd_hrgjual, 0);
-//            $PBD_SALDOAKHIR = Self::ceknull($plu->st_saldoakhir, 0);
-//
-//            if (is_null($plu->min_minorder)) {
-//                if (Self::ceknull($plu->prd_minorder, 0) == 0) {
-//                    $plu->minor = $plu->prd_isibeli;
-//                } else {
-//                    $plu->minor = $plu->prd_minorder;
-//
-//                }
-//            } else {
-//                $plu->minor = $plu->min_minorder;
-//            }
-////            --->>> Cek Data PKM Gondola
-//            if (!is_null($plu->pkm_prdcd)) {
-//                if (!is_null($plu->gdl_prdcd)) {
-//                    if (!is_null($plu->pkmg_prdcd)) {
-//                        $plu->pbd_pkmt = $plu->pkmg_nilaipkmg;
-//                    } else {
-//                        $plu->pbd_pkmt = $plu->pkm_pkmt;
-//                    }
-//                } else {
-//                    $plu->pbd_pkmt = $plu->pkm_pkmt;
-//                }
-//            }
-//
-//
-//            if (Self::ceknull($plu->pluomi, '') == '') {
-//                $plu->f_omi = 'N';
-//            } else {
-//                $plu->f_omi = 'Y';
-//            }
-//
-//            if (Self::ceknull($plu->pluidm, '') == '') {
-//                $plu->f_idm = 'N';
-//            } else {
-//                $plu->f_idm = 'Y';
-//            }
-//            $plu->pbd_hrgsatuan = $plu->hgb_hrgbeli * $plu->prd_frac;
-//
-////        --->>> Hitung Data Discount <<<---
-//            if (Self::ceknull($plu->hgb_persendisc01, 0) <> 0) {
-//                $plu->pbd_persendisc1 = $plu->hgb_persendisc01;
-//                $plu->pbd_rphdisc1 = 0;
-//                $plu->pbd_flagdisc1 = ' ';
-//            } else {
-//                $plu->pbd_persendisc1 = 0;
-//                $plu->pbd_rphdisc1 = $plu->hgb_rphdisc01;
-//                $plu->pbd_flagdisc1 = $plu->hgb_flagdisc01;
-//            }
-//
-//            $plu->pbd_ppnbm = $plu->hgb_ppnbm * $plu->prd_frac;
-//            $plu->pbd_ppnbotol = $plu->hgb_ppnbotol * $plu->prd_frac;
-//            $plu->pbd_bonuspo1 = 0;
-//
-//            $plu->pbd_bonuspo2 = 0;
-//            $plu->pbd_qtybpb = 0;
-//            $plu->pbd_bonusbpb1 = 0;
-//            $plu->pbd_bonusbpb2 = 0;
-//            $plu->pbd_rphttldisc = 0;
-//            $plu->pbd_ostpb = 0;
-//            $plu->pbd_ostpo = 0;
-//
-//            if ($plu->sup_flagopentop == 'Y') {
-//                $plu->pbd_top = $plu->hgb_top;
-//            } else {
-//                if (!is_null($plu->sup_kondisipbykonsinyasi)) {
-//                    $plu->pbd_top = $plu->sup_kondisipbykonsinyasi;
-//                } else {
-//                    $plu->pbd_top = $plu->sup_kondisipbykredit;
-//                }
-//            }
-//
-//            if (Carbon::now() >= $plu->hgb_tglmulaidisc02 && Carbon::now() <= $plu->hgb_tglakhirdisc02) {
-//                $plu->pbd_persendisc2 = Self::ceknull($plu->hgb_persendisc02, 0);
-//                $plu->pbd_rphdisc2 = Self::ceknull($plu->hgb_rphdisc02, 0);
-//            }
-//        }
-//
-//        if ($VLPLU == FALSE) {
-//            $message = 'PLU [' . $PPLU . '] tidak terdaftar di Master Barang';
-//            $status = 'error';
-//            return compact(['message', 'status']);
-//        }
+
+        $plu['pbd_prdcd'] = $PBD_PRDCD;
+        if ($v_oke == "TRUE") {
+            $plu['satuan'] = $plu['prd_unit'] . '/' . Self::ceknull($plu['prd_frac'], 1);
+            $divdepkat = DB::table('tbmaster_prodmast')
+                ->select('prd_kodedivisi', 'prd_kodedivisipo', 'prd_kodedepartement', 'prd_kodekategoribarang')
+                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                ->where('prd_prdcd', $PBD_PRDCD)
+                ->first();
+
+            $plu['pbd_kodedivisi'] = $divdepkat->prd_kodedivisi;
+            $plu['prd_kodedivisipo'] = $divdepkat->prd_kodedivisipo;
+            $plu['prd_kodedepartement'] = $divdepkat->prd_kodedepartement;
+            $plu['prd_kodekategoribarang'] = $divdepkat->prd_kodekategoribarang;
+
+            $disc = DB::table('temp_go')
+                ->select('isi_toko', 'per_awal_pdisc_go', 'per_akhir_pdisc_go')
+                ->where('kodeigr', $_SESSION['kdigr'])
+                ->first();
+
+            if ($disc->isi_toko = 'Y' && (Carbon::now() >= $disc->per_awal_pdisc_go && Carbon::now() <= $disc->per_akhir_pdisc_go)) {
+                $plu['pbd_fdxrev'] = 'T';
+            } else {
+                $plu['pbd_fdxrev'] = '';
+            }
+        } else {
+            $message = $v_message;
+            $status = 'error';
+        }
 
         return compact(['plu', 'message', 'status']);
     }
 
-    public function nextvalidate(Request $request)
+
+    public function cek_bonus(Request $request)
     {
         $message = '';
         $status = '';
+        $prd = [];
+        $prd['qtypb'] = $request->qtypb;
+//        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+
+
+        $sql = "BEGIN sp_igr_bo_pb_cek_bonus2('" . $request->plu . "','" . $request->kdsup . "',to_date('" . $request->tgl . "','dd/mm/yyyy'),'" . $request->frac . "', :qtypb, :bonus1, :bonus2, :ppn, :ppnbm, :ppnbtl,:lok, :message);END;";
+
+        $s = oci_parse($c, $sql);
+
+        oci_bind_by_name($s, ':qtypb', $prd['qtypb'], 100);
+        oci_bind_by_name($s, ':bonus1', $prd['bonus1'], 100);
+        oci_bind_by_name($s, ':bonus2', $prd['bonus2'], 100);
+        oci_bind_by_name($s, ':ppn', $prd['ppn'], 100);
+        oci_bind_by_name($s, ':ppnbm', $prd['ppnbm'], 100);
+        oci_bind_by_name($s, ':ppnbtl', $prd['ppnbtl'], 100);
+        oci_bind_by_name($s, ':lok', $prd['v_oke'], 100);
+        oci_bind_by_name($s, ':message', $v_message, 100);
+        oci_execute($s);
+
+        $message = $v_message;
+        $status = 'error';
+        return compact(['prd', 'message', 'status']);
+
+    }
+
+    public function save_data(Request $request)
+    {
+        $message = 'Data berhasil disimpan!';
+        $status = 'success';
         $v_oke = '';
         $v_message = '';
-        if (Self::ceknull($request->PBD_recordid, 9) <> 2) {
-            $request->QTYPCS = Self::ceknull($request->QTYPCS, 0);
-            $request->PBD_QTYPB = ($request->QTYCTN * $request->FRAC) + $request->QTYPCS;
-            $request->QTYCTN = TRUNC(($request->PBD_QTYPB) / $request->FRAC);
-            $request->QTYPCS = $request->PBD_QTYPB % $request->FRAC;
-            $request->PBD_GROSS = ($request->QTYCTN * $request->PBD_HRGSATUAN) + (($request->PBD_HRGSATUAN / $request->FRAC) * $request->QTYPCS);
-            if (Self::ceknull($request->PBD_PERSENDISC1, 0) > 0) {
-                $request->PBD_GROSS = $request->PBD_GROSS - (($request->PBD_GROSS * $request->PBD_PERSENDISC1) / 100);
-            }
-            if ($request->BKP == 'Y') {
-                $request->PBD_PPN = ($request->PBD_GROSS * 10) / 100;
-            } else {
-                $request->PBD_PPN = 0;
-            }
+        $gantiaku = 0;
+        for ($i = 0; $i < sizeof($request->data['prdcd']); $i++) {
+//            $request->data['gantiaku'][$i]="kosong";
+            DB::table('tbtr_pb_d')
+                ->insert(['PBD_KODEIGR' => $_SESSION['kdigr'],
+                    'PBD_RECORDID' => '',
+                    'PBD_NOPB' => $request->nopb,
+                    'PBD_PRDCD' => $request->data['prdcd'][$i],
+                    'PBD_KODEDIVISI' => $request->data['kodedivisi'][$i],
+                    'PBD_KODEDIVISIPO' => $request->data['kodedivisipo'][$i],
+                    'PBD_KODEDEPARTEMENT' => $request->data['kodedepartement'][$i],
+                    'PBD_KODEKATEGORIBRG' => $request->data['kodekategoribrg'][$i],
+                    'PBD_KODESUPPLIER' => $request->data['kodesupplier'][$i],
+                    'PBD_NOURUT' => $request->data['nourut'][$i],
+                    'PBD_QTYPB' => $request->data['qtypb'][$i],
+                    'PBD_KODETAG' => '',
+                    'PBD_QTYBPB' => $gantiaku,
+                    'PBD_HRGSATUAN' => $request->data['hargasatuan'][$i],
+                    'PBD_PERSENDISC1' => $request->data['persendisc1'][$i],
+                    'PBD_RPHDISC1' => $request->data['rphdisc1'][$i],
+                    'PBD_FLAGDISC1' => $request->data['flagdisc1'][$i],
+                    'PBD_PERSENDISC2' => $request->data['persendisc2'][$i],
+                    'PBD_RPHDISC2' => $request->data['rphdisc2'][$i],
+                    'PBD_FLAGDISC2' => $request->data['flagdisc2'][$i],
+                    'PBD_PERSENDISC2II' => '',
+                    'PBD_RPHDISC2II' => '',
+                    'PBD_PERSENDISC2III' => '',
+                    'PBD_RPHDISC2III' => '',
+                    'PBD_BONUSPO1' => Self::ceknull($request->data['bonuspo1'][$i], 0),
+                    'PBD_BONUSPO2' => Self::ceknull($request->data['bonuspo2'][$i], 0),
+                    'PBD_BONUSBPB1' => 0,
+                    'PBD_BONUSBPB2' => 0,
+                    'PBD_GROSS' => Self::ceknull($request->data['gross'][$i], 0),
+                    'PBD_RPHTTLDISC' => 0,
+                    'PBD_PPN' => $request->data['ppn'][$i],
+                    'PBD_PPNBM' => $request->data['ppnbm'][$i],
+                    'PBD_PPNBOTOL' => $request->data['ppnbotol'][$i],
+                    'PBD_TOP' => $request->data['top'][$i],
+                    'PBD_NOPO' => 0,
+                    'PBD_OSTPB' => 0,
+                    'PBD_OSTPO' => 0,
+                    'PBD_PKMT' => $request->data['pkmt'][$i],
+                    'PBD_SALDOAKHIR' => $request->data['saldoakhir'][$i],
+                    'PBD_FDXREV' => $request->data['fdxrev'][$i],
+                    'PBD_FLAGGUDANGPUSAT' => '',
+                    'PBD_CREATE_BY' => $_SESSION['usid'],
+                    'PBD_CREATE_DT' => DB::Raw('trunc(sysdate)'),
+                    'PBD_MODIFY_BY' => $_SESSION['usid'],
+                    'PBD_MODIFY_DT' => DB::Raw('trunc(sysdate)')]);
+        }
+        $pbh = DB::table('tbtr_pb_h')
+            ->select('pbh_tglpb', 'pbh_tipepb', 'pbh_jenispb', 'pbh_flagdoc', 'pbh_keteranganpb', 'pbh_tgltransfer')
+            ->where('pbh_kodeigr', $_SESSION['kdigr'])
+            ->where('pbh_nopb', $request->nopb)
+            ->first();
 
-            if (($request->QTYCTN * $request->FRAC) + $request->QTYPCS < $request->MINOR) {
-                $message = 'QTYB + QTYK < MINOR';
-                $status = 'info';
-                $request->QTYCTN = ($request->MINOR / $request->FRAC);
-                $request->QTYPCS = $request->MINOR % $request->FRAC;
-            }
+        $pbh_tgltransfer = '';
+        $pbh_tipepb = '';
+        if (!is_null($pbh)) {
+            $pbh_tgltransfer = $pbh->pbh_tgltransfer;
+            $pbh_tipepb = $pbh->pbh_tipepb;
+        }
+        if ($pbh_tgltransfer == '') {
+            if ($pbh_tipepb == 'R') {
+                $pbdsuppSub = DB::table('tbtr_pb_d')->join('tbmaster_supplier', 'pbd_kodesupplier', 'sup_kodesupplier')
+                    ->selectRaw('pbd_nopb,
+                                 pbd_kodesupplier,
+                                 sup_minkarton,
+                                 sup_minrph,
+                                 SUM (pbd_qtypb) quantity, 
+                                 SUM (  pbd_gross + pbd_ppn + pbd_ppnbm + pbd_ppnbotol ) rupiah')
+                    ->whereRaw('pbd_nopb =' .$request->nopb)
+                    ->groupBy('pbd_nopb', 'pbd_kodesupplier', 'sup_minkarton', 'sup_minrph')
+                    ->toSql();
 
-            if (($request->QTYCTN * $request->FRAC) + $request->QTYPCS <= 0) {
-                $message = 'QTYB + QTYK <= 0';
-                $status = 'info';
-            } else {
-                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $pbdsupp = DB::table(DB::raw('(' . $pbdsuppSub . ') a'))
+                    ->select('pbd_kodesupplier')
+                    ->whereRaw('( a.quantity < a.sup_minkarton AND a.sup_minkarton <> 0 AND pbd_nopb = ' . $request->nopb . ' ) OR (a.rupiah < a.sup_minrph AND a.sup_minrph <> 0)')
+                    ->toSql();
+//                    ->first();
 
-                $s = oci_parse($c, "BEGIN sp_igr_bo_pb_cek_bonus('" .
-                    $request->PBD_PRDCD . "," .
-                    $request->PBD_KODESUPPLIER . "," .
-                    $request->TGLPB . "," .
-                    $request->FRAC . "," .
-                    $request->PBD_QTYPB . "," .
-                    $request->PBD_BONUSPO1 . "," .
-                    $request->PBD_BONUSPO2 . "," .
-                    $request->PBD_PPN . "," .
-                    $request->PBD_PPNBM . "," .
-                    $request->PBD_PPNBOTOL . "," .
-                    ":v_oke," .
-                    ":v_message);END;");
-                oci_bind_by_name($s, ':v_oke', $v_oke, 32);
-                oci_bind_by_name($s, ':v_message', $v_message, 32);
-                oci_execute($s);
+                $tolakanpb = DB::table('tbtr_tolakanpb')
+                    ->select('tlk_prdcd')
+                    ->whereRaw('TRUNC(tlk_tglpb) = TRUNC(to_date(\'' . $request->tglpb . '\',\'dd/mm/yyyy\'))')
+                    ->toSql();
 
-//                sp_igr_bo_pb_cek_bonus(
-//                    $request->PBD_PRDCD,
-//                    $request->PBD_KODESUPPLIER,
-//                    $request->TGLPB,
-//                    $request->FRAC,
-//                    $request->PBD_QTYPB,
-//                    $request->PBD_BONUSPO1,
-//                    $request->PBD_BONUSPO2,
-//                    $request->PBD_PPN,
-//                    $request->PBD_PPNBM,
-//                    $request->PBD_PPNBOTOL,
-//                    $v_oke,
-//                    $v_message);
+                $pbd = DB::table('tbtr_pb_d')
+                    ->select('pbd_nopb',
+                        'pbd_prdcd',
+                        'pbd_kodedivisipo',
+                        'pbd_kodedivisi',
+                        'pbd_kodedepartement',
+                        'pbd_kodekategoribrg',
+                        'pbd_kodetag',
+                        'pbd_qtypb',
+                        'pbd_kodesupplier')
+                    ->whereRaw('pbd_kodesupplier in('.$pbdsupp.')')
+                    ->whereRaw('pbd_prdcd not in('.$tolakanpb.')')
+                    ->whereRaw('pbd_nopb ='.$request->nopb)
+                ->first();
 
-                if ($v_oke) {
-                    $hrgbeli = ($request->qtyctn * $request->pbd_hrgsatuan) + ($request->qtypcs * ($request->pbd_hrgsatuan / $request->prd_frac));
-                    $request->pbd_gross = $hrgbeli - ($hrgbeli * $request->pbd_persendisc1 / 100);
-                    $hrgbeli = $request->pbd_gross;
-                    $request->pbd_gross = $hrgbeli - ($hrgbeli * $request->pbd_persendisc2 / 100);
-                    $request->pbd_ppn = ($request->pbd_gross * $request->pbd_ppn) / 100;
-                    $request->pbd_ppnbm = $request->pbd_ppnbm * $request->pbd_qtypb;
-                    $request->pbd_ppnbotol = $request->pbd_ppnbotol * $request->pbd_qtypb;
-                    $request->total = $request->pbd_gross + $request->pbd_ppn + $request->pbd_ppnbm + $request->pbd_ppnbotol;
-                } else {
-                    $message = $v_message;
-                    $status = 'info';
+                if(!is_null($pbd)) {
+                    DB::table('tbtr_tolakanpb')
+                        ->insert(['tlk_kodeigr' => $_SESSION['kdigr'],
+                            'tlk_recordid' => '',
+                            'tlk_nopb' => $pbd->pbd_nopb,
+                            'tlk_tglpb' => $request->tglpb,
+                            'tlk_prdcd' => $pbd->pbd_prdcd,
+                            'tlk_kodedivisipo' => $pbd->pbd_kodedivisipo,
+                            'tlk_kodedivisi' => $pbd->pbd_kodedivisi,
+                            'tlk_kodedepartemen' => $pbd->pbd_kodedepartement,
+                            'tlk_kodekategori' => $pbd->pbd_kodekategoribrg,
+                            'tlk_kodetag' => $pbd->pbd_kodetag,
+                            'tlk_qty' => $pbd->pbd_qtypb,
+                            'tlk_kodesupplier' => $pbd->pbd_kodesupplier,
+                            'tlk_keterangantolakan' => '< DARI MINOR CARTON/RP PER SUPPLIER',
+                            'tlk_create_by' => $_SESSION['usid'],
+                            'tlk_create_dt' => DB::raw('sysdate')]);
                 }
+
+//	  ----->>>> Detele PB Tolakan Item
+                $deletein = DB::table('tbtr_tolakanpb')
+                    ->select('tlk_prdcd')
+                    ->whereRaw('tlk_nopb='. $request->nopb)
+                    ->toSql();
+                DB::table('TBTR_PB_D')
+                    ->where('PBD_NOPB', '=', $request->nopb)
+                    ->whereRaw('pbd_prdcd in('. $deletein . ')')
+                    ->delete();
             }
+
+            $pbcur = DB::table('TBTR_PB_H')
+                ->select('PBH_NOPB')
+                ->where('PBH_NOPB', '=', $request->nopb)
+                ->first();
+
+            if (!is_null($pbcur)) {
+                DB::table('TBTR_PB_H')
+                    ->where('PBH_NOPB', '=', $pbcur->pbh_nopb)
+                    ->delete();
+            }
+
+//// ----->>>>> Save tbTr_PB_H <<<<<-------
+            $pbd = DB::table('TBTR_PB_D')
+                ->selectRaw('pbd_kodeigr,
+                            pbd_recordid,
+                            pbd_nopb,
+                            SUM(NVL(pbd_qtypb,0)) pbd_qtypb,
+                            SUM(NVL(pbd_qtybpb,0)) pbd_qtybpb,
+                            SUM(NVL(pbd_bonuspo1,0)) pbd_bonuspo1,
+                            SUM(NVL(pbd_bonuspo2,0)) pbd_bonuspo2,
+                            SUM(NVL(pbd_bonusbpb1,0)) pbd_bonusbpb1,
+                            SUM(NVL(pbd_bonusbpb2,0)) pbd_bonusbpb2,
+                            SUM(NVL(pbd_gross,0)) pbd_gross,
+                            SUM(NVL(pbd_rphttldisc,0)) pbd_rphttldisc,
+                            SUM(NVL(pbd_ppn,0)) pbd_ppn,
+                            SUM(NVL(pbd_ppnbm,0)) pbd_ppnbm,
+                            SUM(NVL(pbd_ppnbotol,0)) pbd_ppnbotol')
+                ->where('PBD_NOPB', '=', $request->nopb)
+                ->groupBy('PBD_KODEIGR', 'PBD_RECORDID', 'PBD_NOPB')
+                ->first();
+
+            DB::table('tbtr_pb_h')
+                ->insert(['PBH_KODEIGR' => $_SESSION['kdigr'],
+                    'PBH_RECORDID' => '',
+                    'PBH_NOPB' => $request->nopb,
+                    'PBH_TGLPB' => DB::raw('to_date(\'' . $request->tglpb . '\',\'dd/mm/yyyy\')'),
+                    'PBH_TIPEPB' => $request->typepb,
+                    'PBH_JENISPB' => $request->flag,
+                    'PBH_FLAGDOC' => '0',
+                    'PBH_QTYPB' => $pbd->pbd_qtypb,
+                    'PBH_QTYBPB' => $pbd->pbd_qtybpb,
+                    'PBH_BONUSPO1' => $pbd->pbd_bonuspo1,
+                    'PBH_BONUSPO2' => $pbd->pbd_bonuspo2,
+                    'PBH_BONUSBPB1' => $pbd->pbd_bonusbpb1,
+                    'PBH_BONUSBPB2' => $pbd->pbd_bonusbpb2,
+                    'PBH_GROSS' => $pbd->pbd_gross,
+                    'PBH_RPHTTLDISC' => $pbd->pbd_rphttldisc,
+                    'PBH_PPN' => $pbd->pbd_ppn,
+                    'PBH_PPNBM' => $pbd->pbd_ppnbm,
+                    'PBH_PPNBOTOL' => $pbd->pbd_ppnbotol,
+                    'PBH_KETERANGANPB' => $request->keterangan,
+                    'PBH_TGLTRANSFER' => '',
+                    'PBH_CREATE_BY' => $_SESSION['usid'],
+                    'PBH_CREATE_DT' => DB::raw('trunc(sysdate)'),
+                    'PBH_MODIFY_BY' => $_SESSION['usid'],
+                    'PBH_MODIFY_DT' => DB::raw('trunc(sysdate)')]);
         }
         return compact(['message', 'status']);
-
     }
 
     public function ceknull($value, $ret)

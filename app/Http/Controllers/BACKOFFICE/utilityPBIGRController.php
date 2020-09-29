@@ -120,6 +120,20 @@ class utilityPBIGRController extends Controller
 
     }
 
+    public function checkProc4(Request $request){
+        $date   = $request->date;
+        $date   = date('Ym', strtotime($date));
+        $kodeigr= $_SESSION['kdigr'];
+
+        $search = DB::table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
+
+        if (!$search){
+            return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
+        } else {
+            return response()->json(['kode' => '1', 'return' => 'Cetak !!']);
+        }
+    }
+
     public function callProc4(Request $request){
         $date   = $request->date;
         $date   = date('Ym', strtotime($date));
@@ -131,7 +145,9 @@ class utilityPBIGRController extends Controller
             return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
         }
 
+
         $report = $this->isiLaporan($date,$kodeigr);
+//        dd($report);
 
         $pdf = PDF::loadview('BACKOFFICE.utilityPBIGR-laporan',['datas' =>$report, 'periode' => $date]);
         $pdf->output();
@@ -278,14 +294,19 @@ class utilityPBIGRController extends Controller
                                            AND prs_kodeigr(+) = '$kodeigr'
                                            AND lokb.prdcdB(+) = thp_prdcd
                                            AND lokc.prdcdC(+) = thp_Prdcd
---                                           and prd_kodetag = 'D'
+                                           and rownum <=100
                                             ");
+
+//        dd($data);
         return $data;
 
     }
 
 }
 
+
+//and ( prd_kodetag = 'D' or
+//    prd_kodetag = 'L' )
 
 
 

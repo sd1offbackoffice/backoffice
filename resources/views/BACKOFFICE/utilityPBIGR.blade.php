@@ -10,6 +10,7 @@
                         <div class="row">
                            <div class="col-sm-12">
                                <form>
+                                   <p class="float-right">*Proses M PLUS.I dan M PLUS.O dilakukan tiap tanggal 5</p>
                                    <div class="form-group">
                                        <label for="">1. M PLUS.I</label>
                                        <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc1()">PROSES HITUNG NILAI M PLUS.I</button>
@@ -26,12 +27,11 @@
                                        <label for="">4. Laporan Pembentukan  M PLUS.I dan M PLUS.O</label> <br>
                                        <div class="form-row ml-2">
                                            <label class="col-sm-3 text-right">Periode Proses Data</label>
-                                           <input type="month" class="form-control col-sm-2 mb-2 ml-2" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('M-y')}}">
+                                           <input type="month" class="form-control mb-2 ml-2 text-right" style="width: 100px !important;" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('m/Y')}}">
                                        </div>
                                        <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc4()">PROSES LAPORAN</button>
                                    </div>
                                </form>
-                               <small class="float-right">*Proses M PLUS.I dan M PLUS.O dilakukan tiap tanggal 5</small>
                            </div>
                         </div>
                     </div>
@@ -41,6 +41,10 @@
     </div>
 
     <script>
+        $("#dateLaporan").datepicker({
+            "dateFormat" : "M/yy"
+        });
+
         function callProc1(){
             ajaxSetup();
             $.ajax({
@@ -118,9 +122,32 @@
                 return false;
             }
 
-            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-            // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
-            window.location.replace('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
+            // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+            // // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
+            // window.location.replace('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
+
+            ajaxSetup();
+            $.ajax({
+                url:'/BackOffice/public/boutilitypbigr/chekproc4',
+                type:'Post',
+                data: {date:date},
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    $('#modal-loader').modal('hide');
+                    if (result.kode === '0'){
+                        swal('', result.return, 'warning');
+                    } else {
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
+                        window.open('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
+                    }
+                    console.log(result);
+                }, error: function (err) {
+                    console.log(err);
+                }
+            })
         }
     </script>
 

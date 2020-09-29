@@ -10,15 +10,6 @@ use PDF;
 class cetakPBController extends Controller
 {
     public function index(){
-//        $datas = 's';
-//        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas]);
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf ->get_canvas();
-//        $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-//
-//        return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
         return view('BACKOFFICE.cetakPB');
     }
 
@@ -26,8 +17,10 @@ class cetakPBController extends Controller
         $tgl1   = $request->tgl1;
         $tgl2   = $request->tgl2;
 
-        $document = DB::table('tbtr_pb_h')->select('pbh_nopb', 'pbh_keteranganpb')
-            ->whereBetween('pbh_create_dt', [$tgl1,$tgl2])
+        $document = DB::table('tbtr_pb_h')
+            ->select('pbh_nopb', 'pbh_tglpb')
+            ->whereNull('pbh_recordid')
+            ->whereBetween('pbh_tglpb', [$tgl1,$tgl2])
             ->orderBy('pbh_nopb')->get();
 
         return response()->json($document);
@@ -132,11 +125,16 @@ class cetakPBController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
         $tipePB = $request->tipePB;
-
         $kodeigr= $_SESSION['kdigr'];
 
-        if ($doc1   == null) { $sup1    = ' '; }
-        if ($doc2   == null) { $sup2    = 'ZZZZZZZZZZ'; }
+        if ($doc1   == null) { $doc1    = ' '; }
+        if ($doc2   == null) { $doc2    = 'ZZZZZZZZZZ'; }
+        if ($div1   == null) { $div1    = ' '; }
+        if ($div2   == null) { $div2    = 'ZZ'; }
+        if ($dept1  == null) { $dept1   = ' '; }
+        if ($dept2  == null) { $dept2   = 'ZZ'; }
+        if ($kat1   == null) { $kat1    = ' '; }
+        if ($kat2   == null) { $kat2    = 'ZZ'; }
 
 
         $datas = DB::select("SELECT pbh_nopb,
@@ -267,25 +265,23 @@ class cetakPBController extends Controller
    WHERE     PKMG_PRDCD(+) = a.prdcd
          AND PKMG_TGLAWALPKM(+) - 3 <= a.tglpb
          AND a.tglpb <= PKMG_TGLAKHIRPKM(+) - 7
-ORDER BY prdcd
+ORDER BY pbh_nopb,supplier, departement, kategori asc
 ");
 
-//        dd($datas);
-
-        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas, 'date1' => $tgl1, 'date2' => $tgl2, 'tipepb' => $tipePB]);
+        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas, 'date1' => $tgl1, 'date2' => $tgl2, 'tipepb' => $tipePB, 'kategori' => 0, 'totalkategori' => 0, 'totalsupplier' => 0]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(535, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        DB::table('tbtr_pb_h')
+            ->whereRaw("trunc (pbh_tglpb) between '$tgl1' and '$tgl2'")
+            ->whereBetween('pbh_nopb', [$doc1,$doc2])
+            ->whereRaw("nvl(pbh_flagdoc,' ')=' '")
+            ->update(["pbh_flagdoc" => 1]);
 
         return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
-
-//        DB::table('tbtr_ph_h')
-//            ->whereRaw("trunc (pbh_tglpb) between '$tgl1' and '$tgl2'")
-//            ->whereBetween('pbh_nopb', [$doc1,$doc2])
-//            ->whereRaw("nvl(pbh_flagdoc,' ')=' '")
-//            ->update(["pbh_flagdoc" => 1]);
-
     }
+
 }

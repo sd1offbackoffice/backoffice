@@ -282,43 +282,51 @@
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">NOMOR ID DPD</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="5" type="text" class="form-control" id="dpd_noid">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">KODE RAK</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="10" type="text" class="form-control" id="dpd_koderak">
+                                    </div>
+                                    <div class="col-sm-1 p-0">
+                                        <button type="button" id="btn-lov" class="btn p-0 float-left" data-toggle="modal" data-target="#m_lov_rak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">KODE SUB RAK</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="10" type="text" class="form-control" id="dpd_kodesubrak">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">TIPE RAK</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="10" type="text" class="form-control" id="dpd_tiperak">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">SHELVING</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="10" type="text" class="form-control" id="dpd_shelvingrak">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label for="periode" class="col-sm-3 col-form-label">NOMOR URUT</label>
                                     <div class="col-sm-3">
-                                        <input maxlength="10" type="text" class="form-control" id="periode">
+                                        <input maxlength="10" type="text" class="form-control" id="dpd_nourut">
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
-                                    <div class="col-sm-9"></div>
-                                    <button class="col-sm-3 btn btn-success">SIMPAN</button>
+                                    <div class="col-sm-6"></div>
+                                    <div class="col-sm-3">
+                                        <button id="btn_delete_dpd" class="col-sm btn btn-danger btn-delete" onclick="delete_dpd()">DELETE</button>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button id="btn_save_dpd" class="col-sm btn btn-success" onclick="save_dpd()">SAVE</button>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -502,6 +510,8 @@
         idrow = '';
         tempprdcd = '';
         tempnoid = '';
+        tempdpd = '';
+        isDPD = 'false';
 
         nourutOk = false;
         dbOk = false;
@@ -519,6 +529,23 @@
 
         $('table input').prop('disabled',true);
         $('.btn-delete').prop('disabled',true);
+
+        $('#m_input_noid').on('shown.bs.modal',function(){
+            isDPD = 'true';
+
+            $('#dpd_koderak').val('');
+            $('#dpd_kodesubrak').val('');
+            $('#dpd_tiperak').val('');
+            $('#dpd_shelvingrak').val('');
+            $('#dpd_noid').val('');
+            $('#dpd_nourut').val('');
+
+            $('#dpd_noid').select();
+        });
+
+        $('#m_input_noid').on('hide.bs.modal',function() {
+            isDPD = 'false';
+        });
 
         $('input').parent().find('button').each(function(){
             $(this).hide();
@@ -703,214 +730,211 @@
 
                 // console.log(data);
 
-                $.ajax({
-                    url: '{{ url('/mstlokasi/lov_rak_select') }}',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {data},
-                    beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
-                    },
-                    success: function (response) {
-                        if($('#modal-loader').is(':visible'))
+                if(isDPD == 'true') {
+                    $('#dpd_koderak').val(data['lks_koderak']);
+                    $('#dpd_kodesubrak').val(data['lks_kodesubrak']);
+                    $('#dpd_tiperak').val(data['lks_tiperak']);
+                    $('#dpd_shelvingrak').val(data['lks_shelvingrak']);
+
+                    $('#m_lov_rak').modal('toggle');
+
+                    $('#dpd_nourut').select();
+                }
+                else{
+                    $.ajax({
+                        url: '{{ url('/mstlokasi/lov_rak_select') }}',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {data},
+                        beforeSend: function () {
                             $('#modal-loader').modal('toggle');
+                        },
+                        success: function (response) {
+                            if($('#modal-loader').is(':visible'))
+                                $('#modal-loader').modal('toggle');
 
-                        if(response.length == 0){
-                            swal({
-                                title: 'Data tidak ditemukan!',
-                                icon: 'error'
-                            }).then(function(){
-                                $('#lks_koderak').select();
-                            })
-                        }
-                        else{
+                            if($('#m_lov_rak').is(':visible'))
+                                $('#m_lov_rak').modal('toggle');
 
-
-
-                            if(row != 'input'){
-                                $('#lks_koderak').val(data['lks_koderak']);
-                                $('#lks_kodesubrak').val(data['lks_kodesubrak']);
-                                $('#lks_tiperak').val(data['lks_tiperak']);
-                                $('#lks_shelvingrak').val(data['lks_shelvingrak']);
-                            }
-
-                            jumlahitem = 0;
-
-                            if($('#lks_tiperak').val() == 'S'){
-                                $('#table-all').hide();
-                                $('#table-s').show();
-                                $('#table-all tbody tr').remove();
-                                $('#table-s tbody tr').remove();
-
-
-
-                                for(i=0;i<response.length;i++){
-                                    if(response[i].desk != null){
-                                        jumlahitem++;
-                                    }
-                                    html =
-                                        '<tr class="d-flex text-center" id="row_'+ i +'">' +
-                                        '<td width="3%"><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                        '<td width="5%">' +
-                                        '<div class="buttonInside">' +
-                                        '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                        '<td width="30%"><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                        '<td width="8%"><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
-                                        '<td width="8%"><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
-                                        '<td width="2%">' +
-                                        '<div class="custom-control custom-checkbox mt-2 text-center cb_delete">' +
-                                        '<input type="checkbox" class="custom-control-input" id="cb_delete_'+i+'">' +
-                                        '<label class="custom-control-label" for="cb_delete_'+i+'"></label>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '</tr>';
-
-                                    $('#table-s').append(html);
-
-                                    if(response[i].lks_delete == 'Y'){
-                                        $('#cb_delete_'+i).prop('checked',true);
-                                    }
-                                }
-
-                                for(i=response.length;i<9;i++){
-                                    html =
-                                        '<tr class="d-flex text-center" id="row_'+ i +'">' +
-                                        '<td width="3%"><input type="text" class="form-control lks_nourut"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_depanbelakang"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_atasbawah"></td>' +
-                                        '<td width="5%">' +
-                                        '<div class="buttonInside">' +
-                                        '<input type="text" class="form-control lks_prdcd" maxlength="7">' +
-                                        '<button type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_jenisrak"></td>' +
-                                        '<td width="30%"><input type="text" class="form-control desk"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control satuan"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control lks_minqty"></td>' +
-                                        '<td width="8%"><input type="text" class="form-control lks_expdate"></td>' +
-                                        '<td width="8%"><input type="text" class="form-control mpt_maxqty"></td>' +
-                                        '<td width="2%">' +
-                                        '<div class="custom-control custom-checkbox mt-2 text-center cb_delete">' +
-                                        '<input type="checkbox" class="custom-control-input" id="cb_delete_'+i+'">' +
-                                        '<label class="custom-control-label" for="cb_delete_'+i+'"></label>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '</tr>';
-
-                                    $('#table-s').append(html);
-                                }
-
-                                $('#table-s input').prop('disabled',true);
+                            if(response.length == 0){
+                                swal({
+                                    title: 'Data tidak ditemukan!',
+                                    icon: 'error'
+                                }).then(function(){
+                                    $('#lks_koderak').select();
+                                })
                             }
                             else{
-                                $('#table-all').show();
-                                $('#table-s').hide();
-                                $('#table-s tbody tr').remove();
-                                $('#table-all tbody tr').remove();
-                                for(i=0;i<response.length;i++){
-                                    if(response[i].desk != null){
-                                        jumlahitem++;
-                                    }
-
-                                    mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
-                                    minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
-
-                                    html =
-                                        '<tr class="d-flex text-center" id="row_'+ i +'">' +
-                                        '<td width="3%">' +
-                                        '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
-                                        '</td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                        '<td width="6%">' +
-                                        '<div class="buttonInside">' +
-                                        '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                        '<td width="25%"><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
-                                        '<td width="3%"><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control pkm" value="'+ convertToRupiah(nvl(response[i].pkm,'')) +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
-                                        '<td width="4%"><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
-                                        '<td width="5%"><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
-                                        '</tr>';
-
-                                    $('#table-all').append(html);
+                                if(row != 'input'){
+                                    $('#lks_koderak').val(data['lks_koderak']);
+                                    $('#lks_kodesubrak').val(data['lks_kodesubrak']);
+                                    $('#lks_tiperak').val(data['lks_tiperak']);
+                                    $('#lks_shelvingrak').val(data['lks_shelvingrak']);
                                 }
 
-                                {{--for(i=response.length;i<8;i++){--}}
-                                    {{--html = '<tr class="d-flex text-center" id="row_'+ i +'">' +--}}
-                                        {{--'<td width="3%">' +--}}
-                                        {{--'<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +--}}
-                                        {{--'</td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_nourut"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_depanbelakang"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_atasbawah"></td>' +--}}
-                                        {{--'<td width="6%">' +--}}
-                                        {{--'<div class="buttonInside">' +--}}
-                                        {{--'<input type="text" class="form-control lks_prdcd" maxlength="7">' +--}}
-                                        {{--'<button type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +--}}
-                                        {{--'</div>' +--}}
-                                        {{--'</td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_jenisrak"></td>' +--}}
-                                        {{--'<td width="25%"><input type="text" class="form-control desk"></td>' +--}}
-                                        {{--'<td width="5%"><input type="text" class="form-control satuan"></td>' +--}}
-                                        {{--'<td width="5%"><input type="text" class="form-control lks_noid"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control lks_dimensipanjangproduk"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control lks_dimensilebarproduk"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control lks_dimensitinggiproduk"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_tirkirikanan"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_tirdepanbelakang"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_tiratasbawah"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_mindisplay"></td>' +--}}
-                                        {{--'<td width="3%"><input type="text" class="form-control lks_maxdisplay"></td>' +--}}
-                                        {{--'<td width="5%"><input type="text" class="form-control pkm"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control lks_qty"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control lks_minpct"></td>' +--}}
-                                        {{--'<td width="4%"><input type="text" class="form-control minpctqty"></td>' +--}}
-                                        {{--'<td width="5%"><input type="text" class="form-control lks_maxplano"></td>' +--}}
-                                        {{--'</tr>';--}}
+                                jumlahitem = 0;
 
-                                    {{--$('#table-all').append(html);--}}
-                                {{--}--}}
+                                if($('#lks_tiperak').val() == 'S'){
+                                    $('#table-all').hide();
+                                    $('#table-s').show();
+                                    $('#table-all tbody tr').remove();
+                                    $('#table-s tbody tr').remove();
 
-                                $('.lks_prdcd').on('keypress',function(e){
-                                    if(e.which == 13){
-                                        lov_plu_select(convertPlu($(this).val()));
+
+
+                                    for(i=0;i<response.length;i++){
+                                        if(response[i].desk != null){
+                                            jumlahitem++;
+                                        }
+                                        html =
+                                            '<tr class="d-flex text-center" id="row_'+ i +'">' +
+                                            '<td width="3%"><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                            '<td width="5%">' +
+                                            '<div class="buttonInside">' +
+                                            '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                            '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                            '<td width="30%"><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                            '<td width="8%"><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
+                                            '<td width="8%"><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
+                                            '<td width="2%">' +
+                                            '<div class="custom-control custom-checkbox mt-2 text-center cb_delete">' +
+                                            '<input type="checkbox" class="custom-control-input" id="cb_delete_'+i+'">' +
+                                            '<label class="custom-control-label" for="cb_delete_'+i+'"></label>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '</tr>';
+
+                                        $('#table-s').append(html);
+
+                                        if(response[i].lks_delete == 'Y'){
+                                            $('#cb_delete_'+i).prop('checked',true);
+                                        }
                                     }
-                                });
 
-                                $('.lks_noid').on('keypress',function(e){
-                                    if(e.which == 13){
-                                        noid_enter($(this).val());
+                                    for(i=response.length;i<9;i++){
+                                        html =
+                                            '<tr class="d-flex text-center" id="row_'+ i +'">' +
+                                            '<td width="3%"><input type="text" class="form-control lks_nourut"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_depanbelakang"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_atasbawah"></td>' +
+                                            '<td width="5%">' +
+                                            '<div class="buttonInside">' +
+                                            '<input type="text" class="form-control lks_prdcd" maxlength="7">' +
+                                            '<button type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_jenisrak"></td>' +
+                                            '<td width="30%"><input type="text" class="form-control desk"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control satuan"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control lks_minqty"></td>' +
+                                            '<td width="8%"><input type="text" class="form-control lks_expdate"></td>' +
+                                            '<td width="8%"><input type="text" class="form-control mpt_maxqty"></td>' +
+                                            '<td width="2%">' +
+                                            '<div class="custom-control custom-checkbox mt-2 text-center cb_delete">' +
+                                            '<input type="checkbox" class="custom-control-input" id="cb_delete_'+i+'">' +
+                                            '<label class="custom-control-label" for="cb_delete_'+i+'"></label>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '</tr>';
+
+                                        $('#table-s').append(html);
                                     }
-                                });
 
-                                $('#table-all  input').on('focus',function(){
+                                    $('#table-s input').prop('disabled',true);
+                                }
+                                else{
+                                    $('#table-all').show();
+                                    $('#table-s').hide();
+                                    $('#table-s tbody tr').remove();
+                                    $('#table-all tbody tr').remove();
+                                    for(i=0;i<response.length;i++){
+                                        if(response[i].desk != null){
+                                            jumlahitem++;
+                                        }
+
+                                        mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
+                                        minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
+
+                                        html =
+                                            '<tr class="d-flex text-center" id="row_'+ i +'">' +
+                                            '<td width="3%">' +
+                                            '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
+                                            '</td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                            '<td width="6%">' +
+                                            '<div class="buttonInside">' +
+                                            '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                            '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                            '<td width="25%"><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
+                                            '<td width="3%"><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control pkm" value="'+ convertToRupiah(nvl(response[i].pkm,'')) +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
+                                            '<td width="4%"><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
+                                            '<td width="5%"><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
+                                            '</tr>';
+
+                                        $('#table-all').append(html);
+                                    }
+
+                                    $('.lks_prdcd').on('keypress',function(e){
+                                        if(e.which == 13){
+                                            lov_plu_select(convertPlu($(this).val()));
+                                        }
+                                    });
+
+                                    $('.lks_noid').on('keypress',function(e){
+                                        if(e.which == 13){
+                                            noid_enter($(this).val());
+                                        }
+                                    });
+
+                                    $('#table-all input').prop('disabled',true);
+                                }
+
+                                $('#jumlahitem').val(jumlahitem);
+
+                                $('input').off('focus');
+                                $('input').on('focus',function(){
+                                    $(this).select();
+
+                                    if(typeof $(this).parent().parent().attr('id') != 'undefined'){
+                                        if($(this).parent().parent().attr('id').substr(0,3) == 'row')
+                                            idrow = $(this).parent().parent().attr('id');
+                                    }
+
+                                    if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
+                                        $('.btn-lov-plu').hide();
+                                        $(this).parent().find('.btn-lov-plu').show();
+                                        idrow = $(this).parent().parent().parent().attr('id');
+                                    }
+                                    else{
+                                        $('.btn-lov-plu').hide();
+                                    }
+
                                     if($(this).hasClass('lks_prdcd')){
                                         tempprdcd = $(this).val();
                                     }
@@ -919,92 +943,69 @@
                                     }
                                 });
 
-                                $('#table-all input').prop('disabled',true);
-                            }
+                                $('.btn-lov-plu').hide();
 
-                            $('#jumlahitem').val(jumlahitem);
+                                if($('#m_lov_rak').is(':visible'))
+                                    $('#m_lov_rak').modal('toggle');
 
-                            $('input').off('focus');
-                            $('input').on('focus',function(){
-                                $(this).select();
+                                if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
+                                    $('.lks_prdcd').prop('disabled',false);
 
-                                if(typeof $(this).parent().parent().attr('id') != 'undefined'){
-                                    if($(this).parent().parent().attr('id').substr(0,3) == 'row')
-                                        idrow = $(this).parent().parent().attr('id');
-                                }
-
-                                if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
-                                    $('.btn-lov-plu').hide();
-                                    $(this).parent().find('.btn-lov-plu').show();
-                                    idrow = $(this).parent().parent().parent().attr('id');
-                                }
-                                else{
-                                    $('.btn-lov-plu').hide();
-                                }
-                            });
-
-                            $('.btn-lov-plu').hide();
-
-                            if($('#m_lov_rak').is(':visible'))
-                                $('#m_lov_rak').modal('toggle');
-
-                            if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
-                                $('.lks_prdcd').prop('disabled',false);
-
-                                if($('#lks_tiperak').val() != 'S'){
-                                    $('#table-all .lks_nourut').prop('disabled',false);
-                                    $('#table-all .lks_depanbelakang').prop('disabled',false);
-                                    $('#table-all .lks_atasbawah').prop('disabled',false);
-                                    $('#table-all .lks_tirkirikanan').prop('disabled',false);
-                                    $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
-                                    $('#table-all .lkstiratasbawah').prop('disabled',false);
-                                    $('#table-all .lks_maxdisplay').prop('disabled',false);
-                                    $('#table-all .lks_minpct').prop('disabled',false);
-                                    $('#table-all .lks_maxplano').prop('disabled',false);
-                                    $('#p_tambah').show();
-                                }
-                                else{
-                                    $('#table-all input').prop('disabled',true);
-                                    $('#p_tambah').hide();
-                                }
-                            }
-
-                            if($('#lks_koderak').val().substr(0,1) == 'P'){
-                                $('#p_tambah').find('.card-body').removeClass('d-none');
-                                $('#p_tambah input').prop('disabled',false);
-                                $('#table-tambah .lks_jenisrak').prop('disabled',true);
-                                $('#table-tambah .desk').prop('disabled',true);
-                                $('#table-tambah .satuan').prop('disabled',true);
-                                $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
-                                $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
-                                $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
-                                $('#table-tambah .lks_mindisplay').prop('disabled',true);
-                                $('#table-tambah .pkm').prop('disabled',true);
-
-                                $('.lks_prdcd').each(function(){
-                                    $(this).prop('disabled',false);
-                                });
-                                $('.btn-delete').prop('disabled',false);
-
-                            }
-                            else{
-                                $('#p_tambah').find('.card-body').addClass('d-none');
-                                $('#p_tambah input').prop('disabled',true);
-                                $('.lks_prdcd').each(function(){
-                                    if($(this).val() != ''){
-                                        $(this).prop('disabled',true);
+                                    if($('#lks_tiperak').val() != 'S'){
+                                        $('#table-all .lks_nourut').prop('disabled',false);
+                                        $('#table-all .lks_depanbelakang').prop('disabled',false);
+                                        $('#table-all .lks_atasbawah').prop('disabled',false);
+                                        $('#table-all .lks_tirkirikanan').prop('disabled',false);
+                                        $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
+                                        $('#table-all .lkstiratasbawah').prop('disabled',false);
+                                        $('#table-all .lks_maxdisplay').prop('disabled',false);
+                                        $('#table-all .lks_minpct').prop('disabled',false);
+                                        $('#table-all .lks_maxplano').prop('disabled',false);
+                                        $('#p_tambah').show();
                                     }
+                                    else{
+                                        $('#table-all input').prop('disabled',true);
+                                        $('#p_tambah').hide();
+                                    }
+                                }
+
+                                if($('#lks_koderak').val().substr(0,1) == 'P'){
+                                    $('#p_tambah').find('.card-body').removeClass('d-none');
+                                    $('#p_tambah input').prop('disabled',false);
+                                    $('#table-tambah .lks_jenisrak').prop('disabled',true);
+                                    $('#table-tambah .desk').prop('disabled',true);
+                                    $('#table-tambah .satuan').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_mindisplay').prop('disabled',true);
+                                    $('#table-tambah .pkm').prop('disabled',true);
+
+                                    $('.lks_prdcd').each(function(){
+                                        $(this).prop('disabled',false);
+                                    });
+                                    $('.btn-delete').prop('disabled',false);
+
+                                }
+                                else{
+                                    $('#p_tambah').find('.card-body').addClass('d-none');
+                                    $('#p_tambah input').prop('disabled',true);
+                                    $('.lks_prdcd').each(function(){
+                                        if($(this).val() != ''){
+                                            $(this).prop('disabled',true);
+                                        }
+                                    });
+                                    $('.btn-delete').prop('disabled',true);
+                                }
+
+
+                                $('.lks_prdcd').each(function(){
+                                    $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
                                 });
-                                $('.btn-delete').prop('disabled',true);
                             }
-
-
-                            $('.lks_prdcd').each(function(){
-                                $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
-                            });
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -1129,8 +1130,180 @@
                         // noidOk = true;
                         // $('#row_tambah').find('.lks_tirkirikanan').select();
                     }
+                    else{
+                        $('#'+idrow).find('.lks_noid').focus();
+                    }
                 }
             });
+        }
+
+        $('#dpd_noid').on('keypress',function(e){
+            if(e.which == 13){
+                $.ajax({
+                    url: '{{ url('/mstlokasi/cek_dpd') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {noid: $(this).val().toUpperCase()},
+                    beforeSend: function () {
+                        $('#modal-loader').modal('toggle');
+                    },
+                    success: function (response) {
+                        if($('#modal-loader').is(':visible'))
+                            $('#modal-loader').modal('toggle');
+
+                        if(typeof response.dpd_noid === "undefined"){
+                            tempdpd = '';
+
+                            $('#dpd_koderak').val('');
+                            $('#dpd_kodesubrak').val('');
+                            $('#dpd_tiperak').val('');
+                            $('#dpd_shelvingrak').val('');
+                            $('#dpd_nourut').val('');
+
+                            $('#dpd_koderak').select();
+                            $('#btn_delete_dpd').prop('disabled',true);
+                        }
+                        else{
+                            tempdpd = response;
+
+                            $('#btn_delete_dpd').prop('disabled',false);
+                            $('#dpd_koderak').val(response.dpd_koderak);
+                            $('#dpd_kodesubrak').val(response.dpd_kodesubrak);
+                            $('#dpd_tiperak').val(response.dpd_tiperak);
+                            $('#dpd_shelvingrak').val(response.dpd_shelvingrak);
+                            $('#dpd_noid').val(response.dpd_noid);
+                            $('#dpd_nourut').val(response.dpd_nourut);
+
+                            $('#dpd_koderak').select();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#dpd_koderak').on('keypress',function(e){
+            if(e.which == 13){
+                $('#dpd_kodesubrak').select();
+            }
+        });
+
+        $('#dpd_kodesubrak').on('keypress',function(e){
+            if(e.which == 13){
+                $('#dpd_tiperak').select();
+            }
+        });
+
+        $('#dpd_tiperak').on('keypress',function(e){
+            if(e.which == 13){
+                $('#dpd_shelvingrak').select();
+            }
+        });
+
+        $('#dpd_shelvingrak').on('keypress',function(e){
+            if(e.which == 13){
+                $('#dpd_nourut').select();
+            }
+        });
+
+        $('#dpd_nourut').on('keypress',function(e){
+            if(e.which == 13){
+                $("#btn_save_dpd").focus();
+            }
+        });
+
+        function save_dpd(){
+            data = {};
+            data['dpd_koderak']     = $('#dpd_koderak').val();
+            data['dpd_kodesubrak']  = $('#dpd_kodesubrak').val();
+            data['dpd_tiperak']     = $('#dpd_tiperak').val();
+            data['dpd_shelvingrak'] = $('#dpd_shelvingrak').val();
+            data['dpd_noid']        = $('#dpd_noid').val();
+            data['dpd_nourut']      = $('#dpd_nourut').val();
+            data['tempdpd'] = tempdpd;
+
+            $.ajax({
+                url: '{{ url('/mstlokasi/save_dpd') }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {data},
+                beforeSend: function () {
+                    $('#modal-loader').modal('toggle');
+                },
+                success: function (response) {
+                    if($('#modal-loader').is(':visible'))
+                        $('#modal-loader').modal('toggle');
+
+                    swal({
+                        title: response.message,
+                        icon: response.status,
+                    }).then(function(){
+                        $('#dpd_koderak').val('');
+                        $('#dpd_kodesubrak').val('');
+                        $('#dpd_tiperak').val('');
+                        $('#dpd_shelvingrak').val('');
+                        $('#dpd_noid').val('');
+                        $('#dpd_nourut').val('');
+
+                        $('#dpd_noid').select();
+                    });
+                }
+            });
+        }
+
+        function delete_dpd(){
+            swal({
+                title: 'Hapus NOID?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then(function(confirm){
+                if(confirm){
+                    data = {};
+                    data['dpd_koderak']     = $('#dpd_koderak').val();
+                    data['dpd_kodesubrak']  = $('#dpd_kodesubrak').val();
+                    data['dpd_tiperak']     = $('#dpd_tiperak').val();
+                    data['dpd_shelvingrak'] = $('#dpd_shelvingrak').val();
+                    data['dpd_noid']        = $('#dpd_noid').val();
+                    data['dpd_nourut']      = $('#dpd_nourut').val();
+
+                    $.ajax({
+                        url: '{{ url('/mstlokasi/delete_dpd') }}',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {data},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('toggle');
+                        },
+                        success: function (response) {
+                            if($('#modal-loader').is(':visible'))
+                                $('#modal-loader').modal('toggle');
+
+                            swal({
+                                title: response.message,
+                                icon: response.status,
+                            }).then(function(){
+                                $('#dpd_koderak').val('');
+                                $('#dpd_kodesubrak').val('');
+                                $('#dpd_tiperak').val('');
+                                $('#dpd_shelvingrak').val('');
+                                $('#dpd_noid').val('');
+                                $('#dpd_nourut').val('');
+
+                                $('#dpd_noid').select();
+                            });
+                        }
+                    });
+                }
+                else{
+                    $('#dpd_noid').select();
+                }
+            })
         }
 
         function deleteRow(row){

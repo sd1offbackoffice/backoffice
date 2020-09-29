@@ -203,7 +203,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrSMG' => [
+        'igrsmg' => [
             'driver' => 'oracle',
             'host' => '192.168.237.191',
             'port' => '1521',
@@ -214,7 +214,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrPTK' => [
+        'igrptk' => [
             'driver' => 'oracle',
             'host' => '192.168.238.191',
             'port' => '1521',
@@ -225,7 +225,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrBGR' => [
+        'igrbgr' => [
             'driver' => 'oracle',
             'host' => '192.168.240.191',
             'port' => '1521',
@@ -236,7 +236,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrPKU' => [
+        'igrpku' => [
             'driver' => 'oracle',
             'host' => '192.168.235.191',
             'port' => '1521',
@@ -247,7 +247,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrBMS' => [
+        'igrbms' => [
             'driver' => 'oracle',
             'host' => '192.168.239.192',
             'port' => '1521',
@@ -258,7 +258,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrMDO' => [
+        'igrmdo' => [
             'driver' => 'oracle',
             'host' => '192.168.241.191',
             'port' => '1521',
@@ -269,7 +269,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrMKS' => [
+        'igrmks' => [
             'driver' => 'oracle',
             'host' => '192.168.243.191',
             'port' => '1521',
@@ -280,7 +280,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrJBI' => [
+        'igrjbi' => [
             'driver' => 'oracle',
             'host' => '192.168.242.191',
             'port' => '1521',
@@ -291,7 +291,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrKRI' => [
+        'igrkri' => [
             'driver' => 'oracle',
             'host' => '192.168.244.191',
             'port' => '1521',
@@ -302,7 +302,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrAMB' => [
+        'igramb' => [
             'driver' => 'oracle',
             'host' => '192.168.230.191',
             'port' => '1521',
@@ -313,7 +313,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrCPT' => [
+        'igrcpt' => [
             'driver' => 'oracle',
             'host' => '192.168.245.191',
             'port' => '1521',
@@ -324,7 +324,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrKRW' => [
+        'igrkrw' => [
             'driver' => 'oracle',
             'host' => '192.168.231.191',
             'port' => '1521',
@@ -335,7 +335,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrMLG' => [
+        'igrmlg' => [
             'driver' => 'oracle',
             'host' => '192.168.246.191',
             'port' => '1521',
@@ -346,7 +346,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrBDL' => [
+        'igrbdl' => [
             'driver' => 'oracle',
             'host' => '192.168.247.191',
             'port' => '1521',

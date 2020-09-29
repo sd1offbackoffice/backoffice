@@ -1,13 +1,13 @@
 @if(count($tolakan) == 0)
     <head>
-        <title>Laporan Tolakan PB {{ $tgl1 }} - {{ $tgl2 }}</title>
+        <title>Laporan Tolakan PB by Divisi {{ $tgl1 }} - {{ $tgl2 }}</title>
     </head>
     <p style="text-align: center"><strong>** DATA TIDAK ADA **</strong></p>
 @else
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Tolakan PB</title>
+    <title>Laporan Tolakan PB by Divisi {{ $tgl1 }} - {{ $tgl2 }}</title>
 </head>
 <body>
 <!-- <a href="/getPdf"><button>Download PDF</button></a> -->

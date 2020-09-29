@@ -12,7 +12,7 @@ class hariLiburController extends Controller
     public function index(){
         $harilibur = DB::table('TBMASTER_HARILIBUR')
             ->select('lib_tgllibur', 'lib_keteranganlibur')
-            ->whereYear('lib_tgllibur', date("Y", strtotime("now")))
+//            ->whereYear('lib_tgllibur', date("Y", strtotime("now")))
             ->orderBy('lib_tgllibur')
             ->get();
 
