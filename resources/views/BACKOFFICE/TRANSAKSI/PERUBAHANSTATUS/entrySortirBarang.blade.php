@@ -19,11 +19,12 @@
                                             <input type="text" class="form-control" id="i_nomordokumen" placeholder="V_NOSORTIR">
                                         </div>
                                         <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px;margin-right: auto"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
-                                        <button id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</button>
+                                        <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
                                         <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tgl Dokumen</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_tgldokumen" placeholder="V_TGLSORTIR">
                                         </div>
+                                        <input type="text" id="keterangan" class="form-control col-sm-3 text-right"  disabled>
                                         <label for="i_keterangan" class="col-sm-4 col-form-label">Keterangan</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_keterangan" placeholder="V_KET">
@@ -47,7 +48,7 @@
                                 <table class="table table-striped table-bordered" id="table2">
                                     <thead class="thead-dark">
                                     <tr class="d-flex text-center">
-                                        <th style="width: 80px">X</th>
+                                        <th style="width: 80px;">X</th>
                                         <th style="width: 150px">PLU</th>
                                         <th style="width: 400px">Deskripsi</th>
                                         <th style="width: 130px">Satuan</th>
@@ -61,8 +62,8 @@
                                     </tr>
                                     </thead>
                                     <tbody id="tbody">
-                                    @for($i = 0; $i< 15; $i++)
-                                        <tr class="d-flex baris" onclick="putDesPanjang(this)">
+                                    @for($i = 0; $i< 8; $i++)
+                                        <tr class="d-flex baris">
                                             <td style="width: 80px" class="text-center">
                                                 <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                             </td>
@@ -81,9 +82,15 @@
                                             <td style="width: 80px"><input disabled type="text" class="form-control pt text-right"></td>
                                             <td style="width: 80px"><input disabled type="text" class="form-control rttg text-right"></td>
                                             <td style="width: 150px"><input disabled type="text" class="form-control total text-right"></td>
+                                            <td><input disabled type="hidden" class="form-control hargasatuan text-right"></td>
                                         </tr>
                                     @endfor
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td><button id="addNewRow" class="btn btn-warning btn-block" onclick="addNewRow()">Tambah Baris Baru</button></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             <div class="row mt-2">
@@ -98,13 +105,11 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-9">
-                                    <div class="row">
-                                        <button id="addNewRow" class="col-sm-2 offset-sm-10 btn btn-warning btn-block"  onclick="addNewRow()" >Tambah Baris Baru</button>
-                                    </div>
                                     <span class="text-capitalize font-weight-bold" style="float: right">nomor sortir barang yang sudah dibuat harus segera dibuatkan perubahan</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </fieldset>
             </div>
         </div>
@@ -152,13 +157,96 @@
         tbody td {
             padding: 3px !important;
         }
+        #printdoc:hover{
+            cursor: pointer;
+        }
     </style>
     <script>
         let tempSrt;
+        let tempPlu;
 
         $("#i_tgldokumen").datepicker({
             "dateFormat" : "dd/mm/yy",
         });
+
+        $('#i_nomordokumen').keypress(function (e) {
+            if (e.which === 13) {
+                let val = this.value;
+
+                // Get New SRT Nmr
+                if(val === ''){
+                    swal({
+                        title: 'Buat Nomor Sortir Baru?',
+                        icon: 'info',
+                        // dangerMode: true,
+                        buttons: true,
+                    }).then(function (confirm) {
+                        if (confirm){
+                            ajaxSetup();
+                            $.ajax({
+                                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',
+                                type: 'post',
+                                data: {},
+                                beforeSend: function () {
+                                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                },
+                                success: function (result) {
+                                    $('#i_nomordokumen').val(result);
+                                    $('#i_tgldokumen').val(formatDate('now'));
+                                    $('#keterangan').val('* TAMBAH');
+                                    $('#totalItem').val("");
+                                    $('#modal-loader').modal('hide')
+                                    //$('#deleteDoc').attr( 'disabled', true );
+                                    //$('#saveData').attr( 'disabled', false );
+                                }, error: function () {
+                                    alert('error');
+                                    $('#modal-loader').modal('hide')
+                                }
+                            })
+                            $('.baris').remove();
+                            for (i = 0; i< 8; i++) {
+                                $('#tbody').append(tempTable(i));
+                            }
+                        } else {
+                            $('#i_nomordokumen').val('')
+                            $('#keterangan').val('')
+                        }
+                    })
+                } else {
+                    chooseSrt(val);
+                }
+            }
+        })
+
+        function calculateQty(value, index, kode){
+            let satuan    = $('.satuan')[index].value;
+            let ctn     = $('.ctn')[index];
+            let pcs     = $('.pcs')[index];
+            let harga   = $('.hargasatuan')[index].value;
+            let frac    = satuan.substr(satuan.indexOf('/')+1);
+            let qtybarang = pcs + (ctn*frac);
+        }
+
+        function printDocument(){
+            let doc         = $('#i_nomordokumen').val();
+            let keterangan  = $('#i_keterangan').val();
+            let plu         = $('#i_PLU').val();
+
+            if (!doc || !keterangan || !plu){
+                swal('Data Tidak Boleh Kosong','','warning');
+                return false;
+            }
+            if(plu !== 'G' && plu !== "T"){
+                swal('Inputan Plu di Gudang / Toko Salah!','','warning');
+                return false;
+            }
+            if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
+                saveData('cetak');
+            } else {
+                window.open('/BackOffice/public/bo/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+doc+'/');
+                clearField();
+            }
+        }
 
         $('#searchModal').keypress(function (e) {
             if (e.which === 13) {
@@ -174,7 +262,7 @@
         })
 
         function chooseSrt(kode) {
-            let tempNilai = 0;
+
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/choosesrt',
@@ -186,56 +274,77 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
+                    $('#totalItem').val(result.length);
                     if(result.length === 0){
                         $('.baris').remove();
                         for (i = 0; i< 11; i++) {
                             $('#tbody').append(tempTable());
                         }
                     } else {
-                        $('#nmrtrn').val(result[0].rsk_nodoc);
-                        $('#tgltrn').val(formatDate(result[0].rsk_tgldoc));
-                        $('#totalItem').val(result.length);
-                        for (i = 0; i< result.length; i++) {
-                            tempNilai = parseFloat(tempNilai) + parseFloat(result[i].rsk_nilai)
-                        }
-                        $('#totalHarga').val(convertToRupiah(tempNilai));
-
-                        if (result[0].nota === 'Sudah Cetak Nota') {
+                        $('#i_nomordokumen').val(result[0].srt_nosortir);
+                        $('#i_tgldokumen').val(formatDate(result[0].srt_tglsortir));
+                        $('#i_keterangan').val(result[0].srt_keterangan);
+                        $('#i_PLU').val(result[0].srt_gudangtoko);
+                        if (result[0].nota === 'Data Sudah Dicetak') {
                             $('#keterangan').val(result[0].nota);
-                            $('#saveData').attr( 'disabled', true );
+                            //$('#saveData').attr( 'disabled', true );
                             $('#addNewRow').attr( 'disabled', true );
                             $('#deleteDoc').attr( 'disabled', true );
 
                             $('.baris').remove();
                             for (i = 0; i< result.length; i++) {
+                                let tempPT = "";
+                                let tempRT = "";
+                                if(result[i].prd_perlakuanbarang === "PT"){
+                                    tempPT = "PT"
+                                }
+                                else{
+                                    tempRT = result[i].prd_perlakuanbarang;
+                                }
+                                if(result[i].srt_tag === null){
+                                    result[i].srt_tag = "";
+                                }
                                 let temp =  ` <tr class="d-flex baris">
                                                 <td style="width: 80px" class="text-center">
                                                     <button disabled class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 150px">
-                                                    <input disabled type="text" class="form-control plu" value="`+ result[i].rsk_prdcd +`">
+                                                    <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                                 </td>
                                                 <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
                                                 <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].qty_ctn +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td style="width: 350px"><input disabled type="text" class="form-control keterangan" value="`+ result[i].rsk_keterangan +`">
-                                                </td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
+                                                <td style="width: 140px"><input disabled type="text"  class="form-control avgcost" value="`+ result[i].srt_avgcost +`"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
+                                                <td><input disabled type="hidden" class="form-control hargasatuan text-right"></td>
                                             </tr>`
 
                                 $('#tbody').append(temp);
                             }
                         } else {
                             $('#keterangan').val('*KOREKSI*');
-                            $('#saveData').attr( 'disabled', false );
+                            //$('#saveData').attr( 'disabled', false );
                             $('#addNewRow').attr( 'disabled', false);
                             $('#deleteDoc').attr( 'disabled', false );
 
                             $('.baris').remove();
                             for (i = 0; i< result.length; i++) {
-                                let temp =  ` <tr class="d-flex baris" onclick="putDesPanjang(this)">
+                                let tempPT = "";
+                                let tempRT = "";
+                                if(result[i].prd_perlakuanbarang === "PT"){
+                                    tempPT = "PT"
+                                }
+                                else{
+                                    tempRT = result[i].prd_perlakuanbarang;
+                                }
+                                if(result[i].srt_tag === null){
+                                    result[i].srt_tag = "";
+                                }
+                                let temp =  ` <tr class="d-flex baris"">
                                                 <td style="width: 80px" class="text-center">
                                                     <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -247,12 +356,14 @@
                                                 </td>
                                                 <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
                                                 <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" value="` + result[i].qty_ctn +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,1)"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td style="width: 350px"><input type="text" class="form-control keterangan" value="`+ result[i].rsk_keterangan +`">
-                                                </td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
+                                                <td style="width: 140px"><input disabled type="text"  class="form-control avgcost" value="`+ result[i].srt_avgcost +`"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                                <td style="width: 80px"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
+                                               <td><input disabled type="hidden" class="form-control hargasatuan text-right"></td>
                                             </tr>`
 
                                 $('#tbody').append(temp);
@@ -262,7 +373,7 @@
                     $('#modal-loader').modal('hide')
                 }, error: function () {
                     alert('error');
-                    $('#modal-loader').modal('hide')
+                    $('#modal-loader').modal('hide');
                 }
             })
             $('#modalHelp').modal('hide')
@@ -318,8 +429,193 @@
             }
         }
 
+        function searchNmrSRT(val) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
+                type: 'post',
+                data: {
+                    val:val
+                },
+                success: function (result) {
+                    $('#modalThName1').text('NO.DOC');
+                    $('#modalThName2').text('TGL.DOC');
+                    $('#modalThName3').text('KETERANGAN');
+                    $('#modalThName4').text('PLU DI');
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
+                    }
+
+                    $('#idModal').val('SRT')
+                    $('#modalHelp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function choosePlu(kode,index) {
+            for (let i =0 ; i <$('.plu').length; i++){
+                if ($('.plu')[i]['attributes'][2]['value'] == index){
+                    index = i
+                }
+            }
+
+            $('.plu')[index].value = kode;
+            $('#modalHelp').modal('hide');
+
+            let temp        = 0;
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/chooseplu',
+                type: 'post',
+                data: {
+                    kode: kode
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    $('#modal-loader').modal('hide');
+
+                    if (result.kode === 1){
+                        data = result.data[0];
+
+                        $('.plu')[index].value = data.prd_prdcd;
+                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
+                        $('.tag')[index].value = data.prd_kodetag;
+                        $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
+                        $('.ctn')[index].value = '0';
+                        $('.pcs')[index].value = '0';
+                        if(data.prd_perlakuanbarang === "PT"){
+                            $('.pt')[index].value = 'PT';
+                            $('.rttg')[index].value = '';
+                        }
+                        else{
+                            $('.pt')[index].value = '';
+                            $('.rttg')[index].value = data.prd_perlakuanbarang;
+                        }
+
+                        for(i = 0; i < $('.plu').length; i++){
+                            if ($('.plu')[i].value != ''){
+                                temp = temp + 1;
+                            }
+                        }
+                        $('.hargasatuan')[index].value = data.prd_hrgjual;
+                        $('#totalItem').val(temp);
+                    } else if(result.kode === 0)  {
+                        swal('', result.msg, 'warning')
+                        $('#deskripsiPanjang').val('')
+
+                        data = result.data[0];
+                        $('.plu')[index].value = data.prd_prdcd;
+                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
+                        $('.tag')[index].value = data.prd_kodetag;
+                        $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
+                        $('.ctn')[index].value = '0';
+                        $('.pcs')[index].value = '0';
+                        if(data.prd_perlakuanbarang === "PT"){
+                            $('.pt')[index].value = 'PT';
+                            $('.rttg')[index].value = '';
+                        }
+                        else{
+                            $('.pt')[index].value = '';
+                            $('.rttg')[index].value = data.prd_perlakuanbarang;
+                        }
+
+                        for(i = 0; i < $('.plu').length; i++){
+                            if ($('.plu')[i].value != ''){
+                                temp = temp + 1;
+                            }
+                        }
+                        $('.hargasatuan')[index].value = data.prd_hrgjual;
+                        $('#totalItem').val(temp);
+                    } else {
+                        swal('Error', 'Somethings error', 'error')
+                    }
+                }, error: function (error) {
+                    $('#modal-loader').modal('hide')
+                    console.log(error)
+                }
+            })
+        }
+
+        function getPlu(no, val) {
+            $('#searchModal').val('')
+            let index = no['attributes'][4]['nodeValue']
+            $('#idRow').val(index);
+
+            if (tempPlu == null){
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',
+                    type: 'post',
+                    data: {
+                        val:val
+                    },
+                    success: function (result) {
+                        $('#modalThName1').text('Deskripsi');
+                        $('#modalThName2').text('PLU');
+                        $('#modalThName3').hide();
+
+                        tempPlu = result;
+
+                        $('.modalRow').remove();
+                        for (i = 0; i< result.length; i++){
+                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
+                        }
+
+                        $('#idModal').val('PLU')
+                        $('#modalHelp').modal('show');
+                    }, error: function () {
+                        alert('error');
+                    }
+                })
+            }
+            else {
+                $('#modalThName1').text('Deskripsi');
+                $('#modalThName2').text('PLU');
+                $('#modalThName3').hide();
+
+                $('.modalRow').remove();
+                for (i = 0; i< tempPlu.length; i++){
+                    $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ tempPlu[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ tempPlu[i].prd_deskripsipanjang +"</td> <td>"+ tempPlu[i].prd_prdcd +"</td></tr>")
+                }
+
+                $('#idModal').val('PLU')
+                $('#modalHelp').modal('show');
+            }
+        }
+
+        function searchPlu(index, val) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',
+                type: 'post',
+                data: { val:val },
+                success: function (result) {
+                    $('#modalThName1').text('Deskripsi');
+                    $('#modalThName2').text('PLU');
+                    $('#modalThName3').hide();
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
+                    }
+
+                    $('#idModal').val('PLU')
+                    $('#modalHelp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
         function tempTable(index) {
-            var temptbl =  ` <tr class="d-flex baris" onclick="putDesPanjang(this)">
+            var temptbl =  ` <tr class="d-flex baris">
                                                 <td style="width: 80px" class="text-center">
                                                     <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -338,7 +634,7 @@
                                                 <td style="width: 80px"><input disabled type="text" class="form-control pt text-right" value=""></td>
                                                 <td style="width: 80px"><input disabled type="text" class="form-control rttg text-right" value=""></td>
                                                 <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value=""></td>
-                                                </td>
+                                                <td><input disabled type="hidden" class="form-control hargasatuan text-right"></td>
                                             </tr>`
 
             return temptbl;
@@ -351,6 +647,25 @@
 
             $('#tbody').append(tempTable(index))
             // $('#tbody').append(tempTable(index+1))
+        }
+
+        function deleteRow(e) {
+            let temp        = 0;
+            let tempTtlHrg  = 0;
+
+            $(e).parents("tr").remove();
+            $('#deskripsiPanjang').val('')
+
+            for(i = 0; i < $('.plu').length; i++){
+                if ($('.plu')[i].value != ''){
+                    temp = temp + 1;
+                }
+                if($('.total')[i].value != ''){
+                    tempTtlHrg = parseFloat(tempTtlHrg) + parseFloat(unconvertToRupiah($('.total')[i].value));
+                }
+            }
+            $('#totalItem').val(temp);
+            $('#totalHarga').val(convertToRupiah(tempTtlHrg));
         }
     </script>
 @endsection

@@ -79,6 +79,7 @@ function formatDateCustom(value,format) {
     return $.datepicker.formatDate(format, new Date(value));
 }
 
+
 function nvl(value,param) {
     if(value==null || value=="" || value=="null" || value==" " || value=="NaN" ){
         return param;

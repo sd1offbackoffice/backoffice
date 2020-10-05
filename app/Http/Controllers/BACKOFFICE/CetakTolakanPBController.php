@@ -315,8 +315,26 @@ class CetakTolakanPBController extends Controller
     }
 
     public function print_by_div(){
-        $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
-        $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
+        if($_GET['tgl1'] != 'ALL'){
+            $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
+        }
+        else{
+            $tgl1 = DB::table('tbtr_tolakanpb')
+                ->selectRaw("to_char(trunc(tlk_tglpb),'dd-mm-yyyy') tgl")
+                ->orderBy('tlk_tglpb','asc')
+                ->first()->tgl;
+        }
+
+        if($_GET['tgl2'] != 'ALL'){
+            $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
+        }
+        else{
+            $tgl2 = DB::table('tbtr_tolakanpb')
+                ->selectRaw("to_char(trunc(tlk_tglpb),'dd-mm-yyyy') tgl")
+                ->orderBy('tlk_tglpb','desc')
+                ->first()->tgl;
+        }
+
         $div1 = $_GET['div1'];
         $div2 = $_GET['div2'];
         $dep1 = $_GET['dep1'];
@@ -357,13 +375,6 @@ class CetakTolakanPBController extends Controller
             ->orderBy('kat_kodekategori','desc')
             ->first();
 
-        $now = Carbon::now('Asia/Jakarta');
-        $now = date_format($now,'d-m-Y');
-
-        if($tgl1 == '' || strlen($tgl1) != 10)
-            $tgl1 = $now;
-        if($tgl2 == '' || strlen($tgl2) != 10)
-            $tgl2 = $now;
         if($div1 == 'ALL')
             $div1 = $divA->div_kodedivisi;
         if($div2 == 'ALL')

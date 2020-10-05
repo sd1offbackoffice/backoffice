@@ -236,25 +236,6 @@
             })
         }
 
-        // $(document).on('keypress', '#i_kodesupplier', function (e) {
-        //     if (e.which == 13) {
-        //         e.preventDefault()
-        //         kode = $('').val();
-        //         test(kode)
-        //     }
-        // }
-        //
-        // function test(kode){
-        //     ajax()
-        //     let a = kode;
-        // }
-
-
-        // function null_check(value){
-        //     if(value == null)
-        //         return '';
-        //     else return value;
-        // }
     </script>
 
 @endsection

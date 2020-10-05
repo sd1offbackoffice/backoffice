@@ -158,7 +158,15 @@ Route::post('/bo/transaksi/penyesuaian/input/doc_new','BACKOFFICE\TRANSAKSI\PENY
 Route::post('/bo/transaksi/penyesuaian/input/doc_save','BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_save')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penyesuaian/input/doc_delete','BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_delete')->middleware('CheckLogin');
 
-
+Route::middleware(['CheckLogin'])->group(function(){
+    Route::prefix('/bo/transaksi/penyesuaian/cetak')->group(function(){
+        Route::get('/','BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@index');
+        Route::post('/get-data','BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@getData');
+        Route::post('/store-data','BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@storeData');
+        Route::get('/laporan','BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@laporan');
+        Route::get('/tes','BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@tes');
+    });
+});
 
 /******** Michelle ********/
 // INQUIRY SUPPLIER PER PRODUK
@@ -179,8 +187,11 @@ Route::post('/mstbarang/searchhelp','MASTER\barangController@searchHelp')->middl
 
 // BACK OFFICE / TRANSAKSI / BARANG HILANG
 Route::get('/bo/transaksi/brghilang/input/index', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@index')->middleware('CheckLogin');
-Route::post('/bo/transaksi/brghilang/input/showDataTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@showDataTrn')->middleware('CheckLogin');
-Route::get('/bo/transaksi/brghilang/input/helpTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@lovTrn')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/lov_trn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@lov_trn')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/lov_plu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@lov_plu')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/showTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@showTrn')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/showPlu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@showPlu')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/nmrBaruTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@nmrBaruTrn')->middleware('CheckLogin');
 
 /******** Jefri ********/
 // MASTER_CABANG
@@ -288,6 +299,10 @@ Route::get('/bo/transaksi/pemusnahan/bapemusnahan/printdoc/{doc}', 'BACKOFFICE\T
 
 /******** Ryan ********/
 //BACKOFFICE-TRANSAKSI-PERUBAHAN STATUS-ENTRY SORTIR BARANG
-Route::get('/bo/transaksi/perubahanstatus/entrySortirBarang/index',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@index')->middleware('CheckLogin');
-Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/choosesrt',   'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@chooseTrn')->middleware('CheckLogin');
-Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',   'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getNmrSrt')->middleware('CheckLogin');
+Route::get('/bo/transaksi/perubahanstatus/entrySortirBarang/index',             'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@index')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',     'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getNewNmrSrt')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getNmrSrt')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/choosesrt',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@chooseSrt')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',           'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getPlu')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/chooseplu',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@choosePlu')->middleware('CheckLogin');
+Route::get('/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/{doc}',    'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@printDocument')->middleware('CheckLogin');

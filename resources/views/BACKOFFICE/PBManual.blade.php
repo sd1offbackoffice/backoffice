@@ -552,7 +552,7 @@
                                 $('.input-plu').prop("disabled", "disabled");
                                 $('.input-ctn').prop("disabled", "disabled");
                                 $('.input-pcs').prop("disabled", "disabled");
-                                $('.btn-lov-plu').prop("disabled", "disabled");
+                                $('.btn-lov-plu').prop("disable d", "disabled");
                             }
 
                             $('#tgl-pb').prop("disabled", "disabled");

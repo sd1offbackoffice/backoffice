@@ -370,7 +370,7 @@
                                     @php $i = 0 @endphp
                                     @foreach($plu as $p)
                                         @php $i++ @endphp
-                                        <tr id="row_lov_plu_div_{{ $i }}" onclick="div_lov_plu_select({{ $i }})" class="row_lov">
+                                        <tr id="row_lov_plu_{{ $i }}" onclick="div_lov_plu_select({{ $i }})" class="row_lov">
                                             <td class="prd_prdcd">{{ $p->prd_prdcd }}</td>
                                             <td class="prd_deskripsipanjang">{{ $p->prd_deskripsipanjang }}</td>
                                             <td class="prd_satuan">{{ $p->prd_unit }}/{{ $p->prd_frac }}</td>
@@ -643,7 +643,7 @@
         $('#div_divisi1').on('keypress',function(e){
             if(e.which == 13){
                 // cek_divisi($(this).val(),$(this).attr('id'),'true');
-                divisi_select($(this).attr('id'));
+                divisi_select('div_divisi1');
             }
         });
 
@@ -661,7 +661,7 @@
                     })
                 }
                 // else cek_divisi($(this).val(),$(this).attr('id'),'true');
-                else divisi_select($(this).attr('id'));
+                else divisi_select('div_divisi2');
             }
         });
 
@@ -830,8 +830,8 @@
             }
         }
 
-        function kategori_select(id){
-            if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '') {
+        function kategori_select(id, condition){
+            if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '' && condition) {
                 swal({
                     title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
                     icon: 'error'
@@ -886,11 +886,11 @@
         function lov_divisi_select(i){
             kodedivisi = $('#row_lov_divisi_'+i).find('.div_kodedivisi').html();
 
-            if(currVar == 'divisi1'){
+            if(currVar == 'div_divisi1'){
                 $('#div_divisi1').val(kodedivisi);
                 $('#div_divisi2').select();
             }
-            else if(currVar == 'divisi2'){
+            else if(currVar == 'div_divisi2'){
                 $('#div_divisi2').val(kodedivisi);
                 $('#div_departement1').select();
             }
@@ -899,7 +899,7 @@
             $('.kategori').val('');
             $('.plu').val('');
 
-            divisi_select('div_'+currVar);
+            divisi_select(currVar);
         }
 
         function lov_departement_select(i){
@@ -907,11 +907,11 @@
 
             $('#m_lov_departement').modal('toggle');
 
-            if(currVar == 'departement1'){
+            if(currVar == 'div_departement1'){
                 $('#div_departement1').val(kodedepartement);
                 $('#div_departement2').select();
             }
-            else if(currVar == 'departement2'){
+            else if(currVar == 'div_departement2'){
                 $('#div_departement2').val(kodedepartement);
                 $('#div_kategori1').select();
             }
@@ -919,30 +919,38 @@
             $('.kategori').val('');
             $('.plu').val('');
 
-            departement_select('div_'+currVar);
+            departement_select(currVar);
         }
 
         function lov_kategori_select(i){
             kodekategori = $('#row_lov_kategori_'+i).find('.kat_kodekategori').html();
+            dep = $('#row_lov_kategori_'+i).find('.kat_kodedepartement').html();
 
             $('#m_lov_kategori').modal('toggle');
 
-            if(currVar == 'kategori1'){
+            console.log(dep);
+
+            condition = true;
+
+            if(currVar == 'div_kategori1'){
                 $('#div_kategori1').val(kodekategori);
                 $('#div_kategori2').select();
             }
-            else if(currVar == 'kategori2'){
+            else if(currVar == 'div_kategori2'){
                 $('#div_kategori2').val(kodekategori);
                 $('#div_plu1').select();
+
+                if(dep > $('#div_departement1').val())
+                    condition = false;
             }
 
             $('.plu').val('');
 
-            kategori_select('div_'+currVar);
+            kategori_select(currVar,condition);
         }
 
-        function div_lov_plu_select(i){
-            kodeplu = $('#row_lov_plu_div_'+i).find('.prd_prdcd').html();
+        function lov_plu_select(i){
+            kodeplu = $('#row_lov_plu_'+i).find('.prd_prdcd').html();
 
             if(currVar == 'div_plu1'){
                 $('#div_plu1').val(kodeplu);
@@ -988,7 +996,7 @@
         $('#div_pilihan').on('keypress',function(e){
             if(e.which == 13){
                 pil = $(this).val();
-                if(pil != 1 || pil != 2 || pil != 3 || pil != 4 || pil != 6){
+                if(pil < 1 || pil > 6 || pil == 5){
                     swal({
                         title: 'Pilihan tidak sesuai!',
                         icon: 'error'
@@ -1070,8 +1078,8 @@
                 })
             }
             else{
-                tgl1 = nvl(formatDateCustom(formatDate($('#div_tanggal1').val()),'dd-mm-yy'),'ALL');
-                tgl2 = nvl(formatDateCustom(formatDate($('#div_tanggal2').val()),'dd-mm-yy'),'ALL');
+                tgl1 = nvl($('#div_tanggal1').val().replace(/\//g,'-'),'ALL');
+                tgl2 = nvl($('#div_tanggal2').val().replace(/\//g,'-'),'ALL');
 
                 console.log(tgl1);
                 console.log(tgl2);

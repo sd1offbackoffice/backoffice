@@ -10,15 +10,6 @@
 
     <!-- CSS -->
     {{--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">--}}
-    <link href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
-    <link href={{ asset('css/datatables.css') }} rel="stylesheet">
-    {{--<link href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">--}}
-    <link href="{{ asset('css/stylee.css') }}" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
-
 
     {{-- JS --}}
     <script src={{asset('/js/jquery.js')}}></script>
@@ -31,6 +22,14 @@
     {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>
+
+    <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
+    <link rel="stylesheet" href={{ asset('css/datatables.css') }} rel="stylesheet">
+    <link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" rel="stylesheet">
 
 
     <title>Migrasi IAS</title>
@@ -99,6 +98,8 @@
                                                 IGR</a></li>
                                         <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
                                         <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Transaksi -
+                                                Penyesuaian</a></li>
+                                        <li><a href="{{url("/bo/transaksi/penyesuaian/cetak/")}}">Transaksi - Cetak
                                                 Penyesuaian</a></li>
                                         <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Transaksi -
                                                 Pemusnahan - Barang Rusak</a></li>
