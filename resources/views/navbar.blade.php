@@ -97,10 +97,6 @@
                                         <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
                                                 IGR</a></li>
                                         <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
-                                        <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Transaksi -
-                                                Penyesuaian</a></li>
-                                        <li><a href="{{url("/bo/transaksi/penyesuaian/cetak/")}}">Transaksi - Cetak
-                                                Penyesuaian</a></li>
                                         <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Transaksi -
                                                 Pemusnahan - Barang Rusak</a></li>
                                         <li><a href="{{url("/bo/transaksi/pengeluaran/input/index")}}">Transaksi -
@@ -128,6 +124,15 @@
                                                aria-expanded="false">Barang Hilang</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/brghilang/input/index")}}">Input</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Penyesuaian</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a></li>
                                             </ul>
                                         </li>
                                     </ul>

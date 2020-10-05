@@ -165,8 +165,12 @@ class barangHilangInputController extends Controller
 
     }
 
-    public function delDoc(){
+    public function deleteDoc(Request $request){
+        $nodoc = $request->nodoc;
 
+        DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
+
+        return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus!"]);
     }
 
 }

@@ -332,58 +332,10 @@
                         })
                     }
                 })
+            } else {
+                chooseDoc(nodoc);
             }
         }
-        // $('#nmrtrn').keypress(function (e) {
-        //     if (e.which === 13) {
-        //         let val = this.value;
-        //
-        //         // Get New TRN Nmr
-        //         if(val === ''){
-        //             swal({
-        //                 title: 'Buat Nomor Pemusnahan Baru?',
-        //                 icon: 'info',
-        //                 // dangerMode: true,
-        //                 buttons: true,
-        //             }).then(function (confirm) {
-        //                 if (confirm){
-        //                     ajaxSetup();
-        //                     $.ajax({
-        //                         url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getnewnmrtrn',
-        //                         type: 'post',
-        //                         data: {},
-        //                         beforeSend: function () {
-        //                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-        //                         },
-        //                         success: function (result) {
-        //                             $('#nmrtrn').val(result);
-        //                             $('#tgltrn').val(formatDate('now'));
-        //                             $('#keterangan').val('* TAMBAH');
-        //                             $('#deskripsiPanjang').val("");
-        //                             $('#totalItem').val("");
-        //                             $('#totalHarga').val("");
-        //                             $('#modal-loader').modal('hide')
-        //                             $('#deleteDoc').attr( 'disabled', true );
-        //                             $('#saveData').attr( 'disabled', false );
-        //                         }, error: function () {
-        //                             alert('error');
-        //                             $('#modal-loader').modal('hide')
-        //                         }
-        //                     })
-        //                     $('.baris').remove();
-        //                     for (i = 0; i< 11; i++) {
-        //                         $('#tbody').append(tempTable(i));
-        //                     }
-        //                 } else {
-        //                     $('#nmrtrn').val('')
-        //                     $('#keterangan').val('')
-        //                 }
-        //             })
-        //         } else {
-        //             chooseTrn(val)
-        //         }
-        //     }
-        // })
 
         function getNmrTRN() {
             ajaxSetup();
