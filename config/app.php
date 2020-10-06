@@ -177,7 +177,7 @@ return [
 
         Yajra\Oci8\Oci8ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ],
 
     /*

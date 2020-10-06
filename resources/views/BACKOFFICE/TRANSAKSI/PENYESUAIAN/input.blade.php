@@ -1,11 +1,14 @@
 @extends('navbar')
+
+@section('title','Input Penyesuaian')
+
 @section('content')
     {{--<head>--}}
     {{--<script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
     {{--</head>--}}
 
 
-    <div class="container mt-3">
+    <div class="container mt-0">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -59,13 +62,12 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <hr>
-                                    <fieldset class="card border-secondary">
+                                    <fieldset class="card border-secondary mt-3">
                                         <div class="card-body shadow-lg cardForm">
                                             <div class="row text-right">
                                                     <div class="col-sm-12">
-                                                        <h5 class="text-center"><strong>TEKAN ALT + L UNTUK MELIHAT DAFTAR</strong></h5>
-                                                        <hr color="black">
+                                                        {{--<h5 class="text-center"><strong>TEKAN ALT + L UNTUK MELIHAT DAFTAR</strong></h5>--}}
+                                                        {{--<hr color="black">--}}
                                                         <div class="form-group row mb-0">
                                                             <label for="plu" class="col-sm-2 col-form-label">PLU</label>
                                                             <div class="col-sm-3 buttonInside">
@@ -174,10 +176,10 @@
                                                             <button id="btn-save" class="col-sm-3 btn btn-success" onclick="simpan()">REKAM</button>
                                                             <button id="btn-print" class="col-sm-3 btn btn-danger" onclick="hapus()">HAPUS</button>
                                                         </div>
-                                                        <hr color="black">
-                                                        <div class="text-left">
-                                                            <strong>Tekan "CTRL + S" Untuk Menyimpan Dan Membuat Nomor Baru</strong>
-                                                        </div>
+                                                        {{--<hr color="black">--}}
+                                                        {{--<div class="text-left">--}}
+                                                            {{--<strong>Tekan "CTRL + S" Untuk Menyimpan Dan Membuat Nomor Baru</strong>--}}
+                                                        {{--</div>--}}
                                                     </div>
                                                 </div>
                                         </div>
@@ -374,7 +376,7 @@
                             html = "";
 
                             for (i = 0; i < response.length; i++) {
-                                html =  '<tr class="row_lov" onclick=lov_select("' + response[i].prd_prdcd + '")>' +
+                                html =  '<tr class="row_lov" onclick=plu_select("' + response[i].prd_prdcd + '")>' +
                                     '<td>' + response[i].prd_deskripsipanjang + '</td>' +
                                     '<td>' + response[i].prd_prdcd + '</td></tr>';
 
@@ -410,31 +412,37 @@
                     nodoc: $('#no_penyesuaian').val()
                 },
                 beforeSend: function(){
-                    $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal('hide');
+                    $('#m_lov_plu').modal('hide');
+                    if(typeof response.title !== 'undefined'){
+                        swal({
+                            title: response.title,
+                            icon: 'error'
+                        });
+                    }
+                    else{
+                        $('#plu').val(convertPlu(plu));
 
-                    console.log(response);
+                        $('#pcs').html(response.unit);
 
-                    $('#plu').val(convertPlu(plu));
-
-                    $('#pcs').html(response.unit);
-
-                    $('#deskripsi').val(response.barang);
-                    $('#kemasan').val(response.kemasan);
-                    $('#tag').val(response.tag);
-                    $('#bandrol').val(response.bandrol);
-                    $('#bkp').val(response.bkp);
-                    $('#lastcost').val(convertToRupiah(response.lastcost));
-                    $('#avgcost').val(convertToRupiah(response.avgcost));
-                    $('#persediaan').val(response.persediaan);
-                    $('#persediaan2').val(response.persediaan2);
-                    $('#hrgsatuan').val(convertToRupiah(response.hrgsatuan));
-                    $('#qty').val(parseInt(response.qty) % parseInt(response.kemasan.split('/').pop()));
-                    $('#qtyk').val(response.qtyk);
-                    $('#subtotal').val(convertToRupiah(response.subtotal));
-                    $('#keterangan').val(response.keterangan);
+                        $('#deskripsi').val(response.barang);
+                        $('#kemasan').val(response.kemasan);
+                        $('#tag').val(response.tag);
+                        $('#bandrol').val(response.bandrol);
+                        $('#bkp').val(response.bkp);
+                        $('#lastcost').val(convertToRupiah(response.lastcost));
+                        $('#avgcost').val(convertToRupiah(response.avgcost));
+                        $('#persediaan').val(response.persediaan);
+                        $('#persediaan2').val(response.persediaan2);
+                        $('#hrgsatuan').val(convertToRupiah(response.hrgsatuan));
+                        $('#qty').val(parseInt(response.qty) % parseInt(response.kemasan.split('/').pop()));
+                        $('#qtyk').val(response.qtyk);
+                        $('#subtotal').val(convertToRupiah(response.subtotal));
+                        $('#keterangan').val(response.keterangan);
+                    }
                 }
             });
         }

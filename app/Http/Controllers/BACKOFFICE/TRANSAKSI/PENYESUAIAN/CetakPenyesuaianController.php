@@ -67,6 +67,8 @@ class CetakPenyesuaianController extends Controller
             $_SESSION['pys_reprint'] = $request->reprint;
             $_SESSION['pys_jenis'] = $request->jenis;
             $_SESSION['pys_ukuran'] = $request->ukuran;
+            $_SESSION['pys_updateLokasi'] = $request->updateLokasi;
+            $_SESSION['pys_updatePkmt'] = $request->updatePkmt;
         }
         catch(\Exception $e){
             return 'false';
@@ -75,6 +77,8 @@ class CetakPenyesuaianController extends Controller
     }
 
     public function laporan(){
+//        dd($_SESSION);
+
         try{
             DB::beginTransaction();
 
@@ -146,8 +150,14 @@ class CetakPenyesuaianController extends Controller
                 $v_prd1st0 = 0;
 
                 $flag = '1';
-                $step114 = false;
-                $step143 = false;
+
+                if($_SESSION['pys_updateLokasi'] == 'true')
+                    $updateLokasi = true;
+                else $updateLokasi = false;
+
+                if($_SESSION['pys_updatePkmt'] == 'true')
+                    $updatePkmt = true;
+                else $updatePkmt = false;
 
                 $step = 0;
 
@@ -1436,7 +1446,7 @@ class CetakPenyesuaianController extends Controller
 
                                     if ($r->trbo_flagdisc1 == '3' && $r->trbo_qty > 0) {
                                         $step = 114;
-                                        if ($step114) {
+                                        if ($updateLokasi) {
                                             $jum = DB::table('tbmaster_barangbaru')
                                                 ->where('pln_prdcd', substr($prdcdlama, 0, 6) . '0')
                                                 ->where('pln_kodeigr', $_SESSION['kdigr'])
@@ -1621,7 +1631,8 @@ class CetakPenyesuaianController extends Controller
                                         }
                                     }
 
-                                    if ($step143 && $r->trbo_flagdisc1 == '3' && $r->trbo_qty > 0) {
+                                    $step = 143;
+                                    if ($updatePkmt && $r->trbo_flagdisc1 == '3' && $r->trbo_qty > 0) {
                                         if (($lfirst == '1' && $r->trbo_qty < 0) && ($lfirst == '0' && $r->trbo_qty < 0)) {
                                             if ($r->trbo_qty > 0) {
                                                 $step = 144;
@@ -2033,9 +2044,6 @@ class CetakPenyesuaianController extends Controller
                     'report' => $report,
                     'ukuran' => $ukuran
                 ];
-
-//                dd($data);
-
 
                 $dompdf = new PDF();
 

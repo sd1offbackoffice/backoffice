@@ -98,7 +98,8 @@ class entrySortirBarangController extends Controller
 
         $cursor = DB::select("
             SELECT PRD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_DESKRIPSIPANJANG, PRD_FRAC, PRD_UNIT, PRD_PERLAKUANBARANG, PRD_KODETAG, ST_AVGCOST
-            FROM TBMASTER_PRODMAST
+            FROM TBMASTER_PRODMAST a
+            LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '01'
             where  PRD_PRDCD = '$kode'    
         ");
 

@@ -24,7 +24,6 @@ $datetime->setTimezone($timezone);
             Hal. :
     </div>
     <h2 style="text-align: center">** EDIT NOTA PENYESUAIAN PERSEDIAAN **</h2>
-    {{--<h2>KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **<br>Periode : {{ $periode }}</h2>--}}
 </header>
 
 <footer>

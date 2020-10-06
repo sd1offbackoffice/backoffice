@@ -271,6 +271,9 @@
 
     <script>
 
+        let tempTrn;
+        let tempPlu;
+        var tempStock = [{'plu' : '0000000', 'stock' : '0', 'deskripsipanjang' : ''}];
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -295,6 +298,12 @@
                 chooseDoc(nodoc);
                 nmrBaruTrn(nodoc);
             }
+        });
+
+        $(document).on('click', '.btn-hapus', function (e) {
+                e.preventDefault();
+                let nodoc = $('#no-trn').val();
+                hapusDokumen(nodoc);
         });
 
         function nmrBaruTrn(nodoc){
@@ -507,39 +516,79 @@
             $('#modal-help-1').modal('hide');
         }
 
-        function choosePlu(noplu, index){
-
+        function choosePlu(kode,index) {
             for (let i =0 ; i <$('.plu').length; i++){
-                if ($('.plu')[i]['attributes'][2]['value'] == index){ //buat dapetin value di baris yang kita input
+                if ($('.plu')[i]['attributes'][2]['value'] == index){
                     index = i
                 }
             }
 
-            $('.plu')[index].value = noplu;
-            $('#modal-help-2').modal('hide');
+            $('.plu')[index].value = kode;
+            $('#modalHelp').modal('hide');
+
+            let type        = $('#pilihan').val();
+            let temp        = 0;
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/showPlu',
+                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/chooseplu',
                 type: 'post',
-                data: {noplu: noplu},
+                data: {
+                    kode: kode,
+                    type: type
+                },
                 beforeSend: function () {
-                    $('#modal-loader').modal('show');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    // console.log(result)
-                    if(result.noplu == 1){
 
-                        $('.plu')[index].value = result.st_prdcd;
-                        $('.deskripsi')[index].value = result.prd_deskripsipendek;
-                        // $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
-                        // $('.ctn')[index].value = '0';
-                        // $('.pcs')[index].value = '0';
-                        // $('.harga')[index].value = convertToRupiah(data.hrgsatuan);
-                        // $('.total')[index].value = '0';
-                        // $('#deskripsiPanjang').val(data.prd_deskripsipanjang)
+                    if (result.kode === 1){
+                        data = result.data[0];
+
+                        $('.plu')[index].value = data.st_prdcd;
+                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
+                        $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
+                        $('.ctn')[index].value = '0';
+                        $('.pcs')[index].value = '0';
+                        $('.harga')[index].value = convertToRupiah(data.hrgsatuan);
+                        $('.total')[index].value = '0';
+                        $('#deskripsiPanjang').val(data.prd_deskripsipanjang)
+
+                        tempStock.push({'plu' : data.st_prdcd, 'stock' : data.st_saldoakhir, 'deskripsipanjang' : data.prd_deskripsipanjang})
+                        for(i = 0; i < $('.plu').length; i++){
+                            if ($('.plu')[i].value != ''){
+                                temp = temp + 1;
+                            }
+                        }
+                        $('#totalItem').val(temp)
+                    } else if(result.kode === 0)  {
+                        swal('', result.msg, 'warning')
+                        $('#deskripsiPanjang').val('')
+
+                        data = result.data[0];
+                        $('.plu')[index].value = data.st_prdcd;
+                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
+                        $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
+                        $('.ctn')[index].value = '0';
+                        $('.pcs')[index].value = '0';
+                        $('.harga')[index].value = convertToRupiah(data.prd_avgcost);
+                        $('.total')[index].value = '0';
+                        $('#deskripsiPanjang').val(data.prd_deskripsipanjang)
+
+                        tempStock.push({'plu' : data.st_prdcd, 'stock' : data.st_saldoakhir,  'deskripsipanjang' : data.prd_deskripsipanjang})
+                        for(i = 0; i < $('.plu').length; i++){
+                            if ($('.plu')[i].value != ''){
+                                temp = temp + 1;
+                            }
+                        }
+                        $('#totalItem').val(temp)
+                    } else {
+                        swal('Error', 'Somethings error', 'error')
                     }
+                }, error: function (error) {
+                    $('#modal-loader').modal('hide')
+                    console.log(error)
                 }
             })
         }
@@ -593,6 +642,79 @@
             $('#gross').val(temp);
             $('#ppn').val(temp);
             $('#total').val(convertToRupiah(tempTtlHrg));
+        }
+
+        function clearField(){
+            $('#no-trn').val("");
+            $('#tgl-doc').val("");
+            $('#model').val("");
+            $('#deskripsiPanjang').val("");
+            $('#avg-cost').val("");
+            $('#total-item').val("");
+            $('#totalgross').val("");
+            $('#ppn').val("");
+            $('#total').val("");
+
+            // $('.baris').remove();
+
+            for (i = 0; i< 15; i++) {
+                tempTable = `<tr class="d-flex baris" onclick="putDesPanjang(this)">
+                                                <td style="width: 80px" class="text-center">
+                                                    <button disabled class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                </td>
+                                                <td class="buttonInside" style="width: 125px">
+                                                    <input disabled type="text" class="form-control plu" value="\` + result[i].trbo_prdcd + \`">
+                                                     <button id="btn-no-doc" type="button" class="btn btn-lov ml-3 mt-1" onclick="getPlu(this,'')" no="\` + i + \`">
+                                                        <img src="../../../../../public/image/icon/help.png" width="25px">
+                                                    </button>
+                                                </td>
+                                                <td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>
+                                                <td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control tag"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control stock text-right"></td>
+                                                <td style="width: 180px"><input disabled type="text" class="form-control hrgsatuan text-right"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" id="\`+ index +\`" onchange="calculateQty(this.value,this.id,1)"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" id="\` + i + \`" onchange="calculateQty(this.value,this.id,2)"></td>
+                                                <td style="width: 180px"><input disabled type="text" class="form-control gross text-right"></td>
+                                                <td style="width: 400px"><input disabled type="text" class="form-control keterangan"></td>
+                                            </tr>`;
+                $('#tbody').append(tempTable(i));
+            }
+
+            //    Memperbaharui LOV Nomor TRN
+            // tempTrn = null;
+        }
+
+        function hapusDokumen(nodoc) {
+            swal({
+                title: 'Nomor Dokumen Akan dihapus?',
+                icon: 'warning',
+                dangerMode: true,
+                buttons: true,
+            }).then(function (confirm) {
+                if (confirm){
+                    ajaxSetup();
+                    $.ajax({
+                        url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',
+                        type: 'post',
+                        data: {nodoc:nodoc},
+                        beforeSend: function () {
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (result) {
+                            $('#modal-loader').modal('hide');
+                            swal('Success', 'Dokumen Berhasil dihapus', 'success');
+                            clearField();
+                        }, error: function () {
+                            alert('error');
+                            $('#modal-loader').modal('hide')
+                        }
+                    })
+                } else {
+                    console.log('Tidak dihapus');
+                }
+            })
         }
 
     </script>

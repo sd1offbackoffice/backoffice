@@ -13,26 +13,26 @@
 
     {{-- JS --}}
     <script src={{asset('/js/jquery.js')}}></script>
+    <script src="{{asset('/js/jquery-ui.js')}}"></script>
     <script src={{asset('/js/bootstrap.bundle.js')}}></script>
     <script src={{asset('/js/moment.min.js')}}></script>
     <script src={{asset('/js/sweetalert.js')}}></script>
     <script src={{asset('/js/datatables.js')}}></script>
     <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
-    <script src="{{asset('/js/jquery-ui.js')}}"></script>
     {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>
 
+    <link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
     <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
     <link rel="stylesheet" href={{ asset('css/datatables.css') }} rel="stylesheet">
     <link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" rel="stylesheet">
 
 
-    <title>Migrasi IAS</title>
+    <title>IAS - @yield('title')</title>
 </head>
 <body>
 <div id="menu_area" class="menu-area">
@@ -133,6 +133,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery MPP</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -245,14 +246,11 @@
     <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
-                            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+                            <span class="sr-only"></span>
                         </div>
                     </div>
                 </div>

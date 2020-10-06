@@ -1,4 +1,7 @@
 @extends('navbar')
+
+@section('title','Cetak Penyesuaian')
+
 @section('content')
 
     <div class="container">
@@ -126,6 +129,8 @@
     <script>
         var listNomor = [];
         var selected = [];
+        var updateLokasi;
+        var updatePkmt;
         $(document).ready(function(){
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy",
@@ -213,50 +218,116 @@
             }
             else{
                 swal({
-                    title: 'Pilih ukuran laporan',
+                    title: 'Yakin ingin mencetak laporan?',
                     icon: 'warning',
-                    buttons: ['KECIL','BESAR'],
+                    buttons: true,
                     dangerMode: true
                 }).then((ok) => {
-                    if(ok)
-                        ukuran = 'besar';
-                    else ukuran = 'kecil';
-                    $.ajax({
-                        url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    swal({
+                        title: 'Update master lokasi dengan PLU baru?',
+                        icon: 'warning',
+                        buttons: {
+                            cancel: 'Cancel',
+                            no: {
+                                text: 'Tidak',
+                                value: 'no'
+                            },
+                            yes: {
+                                text: 'Ya',
+                                value: 'yes'
+                            },
                         },
-                        data: {
-                            nodoc: selected,
-                            reprint: reprint,
-                            jenis: $('#jenis').val(),
-                            ukuran: ukuran
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
+                        dangerMode: true
+                    }).then((ok) => {
+                        if(ok){
+                            if(ok == 'yes')
+                                updateLokasi = true;
+                            else updateLokasi = false;
 
-                            if(response == 'true'){
-                                window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
-                            }
-                            else{
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: 'Mohon coba kembali',
-                                    icon: 'error',
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
                             swal({
-                                title: 'Terjadi kesalahan!',
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
+                                title: 'Update tabel PKMT dengan PLU baru?',
+                                icon: 'warning', buttons: {
+                                    cancel: 'Cancel',
+                                    no: {
+                                        text: 'Tidak',
+                                        value: 'no'
+                                    },
+                                    yes: {
+                                        text: 'Ya',
+                                        value: 'yes'
+                                    },
+                                },
+                                dangerMode: true
+                            }).then((ok) => {
+                                if(ok){
+                                    if(ok == 'yes')
+                                        updatePkmt = true;
+                                    else updatePkmt = false;
+
+                                    swal({
+                                        title: 'Pilih ukuran laporan',
+                                        icon: 'warning',
+                                        buttons: {
+                                            cancel: 'Cancel',
+                                            catch: {
+                                                text: 'Kecil',
+                                                value: 'kecil'
+                                            },
+                                            defeat: {
+                                                text: 'Besar',
+                                                value: 'besar'
+                                            },
+                                        },
+                                        dangerMode: true
+                                    }).then((ok) => {
+                                        console.log(ok);
+                                        if(ok){
+                                            ukuran = ok;
+
+                                            $.ajax({
+                                                url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
+                                                type: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                                },
+                                                data: {
+                                                    nodoc: selected,
+                                                    reprint: reprint,
+                                                    jenis: $('#jenis').val(),
+                                                    ukuran: ukuran,
+                                                    updateLokasi: updateLokasi,
+                                                    updatePkmt: updatePkmt
+                                                },
+                                                beforeSend: function () {
+                                                    $('#modal-loader').modal('show');
+                                                },
+                                                success: function (response) {
+                                                    $('#modal-loader').modal('hide');
+
+                                                    if(response == 'true'){
+                                                        window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
+                                                    }
+                                                    else{
+                                                        swal({
+                                                            title: 'Terjadi kesalahan!',
+                                                            text: 'Mohon coba kembali',
+                                                            icon: 'error',
+                                                        })
+                                                    }
+                                                },
+                                                error: function (error) {
+                                                    $('#modal-loader').modal('hide');
+                                                    swal({
+                                                        title: 'Terjadi kesalahan!',
+                                                        text: error.responseJSON.message,
+                                                        icon: 'error',
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            })
                         }
                     });
                 });
