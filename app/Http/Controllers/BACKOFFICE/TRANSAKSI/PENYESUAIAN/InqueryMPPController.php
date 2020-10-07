@@ -14,7 +14,7 @@ use Yajra\DataTables\DataTables;
 class InqueryMPPController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE.TRANSAKSI.PENYESUAIAN.inquerympp');
+        return view('BACKOFFICE.TRANSAKSI.PENYESUAIAN.inquery-mpp');
     }
 
     public function getDataLov(){

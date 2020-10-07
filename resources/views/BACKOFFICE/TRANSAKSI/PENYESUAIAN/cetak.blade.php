@@ -91,23 +91,6 @@
             margin: 0;
         }
 
-        .buttonInside {
-            position: relative;
-        }
-
-        .btn-lov{
-            position:absolute;
-            right: 20px;
-            top: 4px;
-            border:none;
-            height:30px;
-            width:30px;
-            border-radius:100%;
-            outline:none;
-            text-align:center;
-            font-weight:bold;
-        }
-
         .row_lov:hover{
             cursor: pointer;
             background-color: #acacac;

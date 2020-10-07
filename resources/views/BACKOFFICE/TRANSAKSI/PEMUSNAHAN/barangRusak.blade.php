@@ -893,9 +893,6 @@
             $('#totalHarga').val(convertToRupiah(tempTtlHrg));
         }
 
-
-
-
     </script>
 
 @endsection

@@ -161,7 +161,7 @@ class barangHilangInputController extends Controller
         return response()->json($r);
     }
 
-    public function saveDoc(){
+    public function saveDoc(Request $request){
 
     }
 

@@ -134,6 +134,8 @@
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery MPP</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/pembatalanmpp")}}">Pembatalan MPP</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/perubahanplu")}}">Perubahan PLU</a></li>
                                             </ul>
                                         </li>
                                     </ul>

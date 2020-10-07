@@ -271,13 +271,19 @@
 
         function printDocument(){
             let doc         = $('#i_nomordokumen').val();
-            let keterangan  = $('#i_keterangan').val();
+            let keterangan  = $('#keterangan').val();
             let plu         = $('#i_PLU').val();
 
-            if (!doc || !keterangan || !plu){
-                swal('Data Tidak Boleh Kosong','','warning');
+            // if (!doc || !keterangan || !plu){
+            //     swal('Data Tidak Boleh Kosong','','warning');
+            //     return false;
+            // }
+
+            if (!doc || !keterangan){
+                swal('Data Tidak Boleh Kosong','','warning')
                 return false;
             }
+
             if(plu !== 'G' && plu !== "T"){
                 swal('Inputan Plu di Gudang / Toko Salah!','','warning');
                 return false;
@@ -285,9 +291,77 @@
             if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+doc+'/');
+                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+doc+'/');
                 clearField();
             }
+        }
+
+        function clearField() {
+            $('input').val('')
+            $('.baris').remove();
+
+            for (i = 0; i< 8; i++) {
+                $('#tbody').append(tempTable(i));
+            }
+
+            //    Memperbaharui LOV Nomor SRT
+            tempSrt = null;
+            tempPlu = null;
+
+        }
+
+        function saveData(status){
+            let tempPlu  = $('.plu');
+            let tempDate= $('#i_tgldokumen').val();
+            let noDoc   = $('#i_nomordokumen').val();
+            let keterangan    = $('#i_keterangan').val();
+            let pludi    = $('#i_PLU').val();
+            let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
+            let datas   = [{'plu' : '', 'qty' : '', 'harga' : '', 'total' : '', 'keterangan' : ''}];
+            if ($('.deskripsi').val().length < 1){
+                swal({
+                    title:'Data Tidak Boleh Kosong',
+                    text: ' ',
+                    icon:'warning',
+                    timer: 1000,
+                    buttons: {
+                        confirm: false,
+                    },
+                });
+
+                return false;
+            }
+
+            for (let i=0; i < tempPlu.length; i++){
+                var qty     = 0;
+                var total   = 0;
+                let temp    = $('.satuan')[i].value;
+                let frac    = temp.substr(temp.indexOf('/')+1);
+
+                if ( tempTR[i].value){
+                    qty  = parseInt( $('.ctn')[i].value * frac) + parseInt($('.pcs')[i].value);
+
+                    if (qty < 1){
+                        focusToRow(i);
+                        return false;
+                    }
+                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('.keterangan')[i].value})
+                }
+            }
+        }
+
+        function focusToRow(index) {
+            // swal('QTYB + QTYK < = 0','', 'warning')
+            swal({
+                title:'QTYB + QTYK < = 0',
+                text: ' ',
+                icon:'warning',
+                timer: 1000,
+                buttons: {
+                    confirm: false,
+                },
+            });
+            $('.ctn')[index].focus()
         }
 
         $('#searchModal').keypress(function (e) {

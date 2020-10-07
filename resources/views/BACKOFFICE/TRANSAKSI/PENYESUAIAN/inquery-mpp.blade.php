@@ -42,8 +42,8 @@
                     <fieldset class="card border-secondary m-2">
                         <div class="card-body">
                             <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
-                                <table id="table_data" class="table table-sm table-bordered mb-3 text-center">
-                                    <thead>
+                                <table id="table_data" class="table table-sm table-bordered mb-3 text-left">
+                                    <thead class="text-center">
                                     <tr>
                                         <th><i class="fas fa-info"></i> </th>
                                         <th>Kode</th>
@@ -270,7 +270,8 @@
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('row-lov').css({'cursor': 'pointer'});
                     $('#btn_lov').prop('disabled', false);
-                }
+                },
+                "order" : []
             });
         });
 
@@ -310,9 +311,9 @@
                                     <td>${response[i].mstd_prdcd}</td>
                                     <td>${response[i].prd_deskripsipanjang}</td>
                                     <td>${response[i].prd_unit}</td>
-                                    <td>${response[i].mstd_qty}</td>
-                                    <td>${convertToRupiah(response[i].mstd_hrgsatuan)}</td>
-                                    <td>${convertToRupiah2(response[i].mstd_gross)}</td>
+                                    <td class="text-right">${response[i].mstd_qty}</td>
+                                    <td class="text-right">${convertToRupiah(response[i].mstd_hrgsatuan)}</td>
+                                    <td class="text-right">${convertToRupiah2(response[i].mstd_gross)}</td>
                                 </tr>`;
 
                         total += parseFloat(response[i].mstd_gross);
