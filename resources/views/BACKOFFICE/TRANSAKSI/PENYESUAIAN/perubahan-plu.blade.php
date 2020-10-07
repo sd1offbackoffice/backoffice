@@ -266,6 +266,10 @@
                                     swal({
                                         title: response.title,
                                         icon: response.status,
+                                    }).then(() => {
+                                        if(response.status == 'success'){
+                                            window.open('{{ url('/bo/transaksi/penyesuaian/perubahanplu/laporan') }}','_blank');
+                                        }
                                     });
                                 },
                                 error: function (error) {

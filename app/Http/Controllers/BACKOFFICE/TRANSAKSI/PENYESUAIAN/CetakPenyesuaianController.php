@@ -1498,17 +1498,50 @@ class CetakPenyesuaianController extends Controller
                                                 $step = 121;
                                                 if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                     $step = 122;
-                                                    $data = DB::table('tbmaster_lokasi')
-                                                        ->where('lks_prdcd', $prdcdbaru)
-                                                        ->where('lks_kodeigr', $r->trbo_kodeigr)
-                                                        ->first()->toArray();
+//                                                    $data = DB::table('tbmaster_lokasi')
+//                                                        ->where('lks_prdcd', $prdcdbaru)
+//                                                        ->where('lks_kodeigr', $r->trbo_kodeigr)
+//                                                        ->first()->toArray();
+//
+//                                                    if ($data) {
+//                                                        $data['lks_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbmaster_lokasi')
+//                                                            ->insert($data);
+//                                                    }
 
-                                                    if ($data) {
-                                                        $data['lks_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbmaster_lokasi')
-                                                            ->insert($data);
-                                                    }
+                                                    DB::statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                                (LKS_KODEIGR, LKS_KODERAK,
+                                                                 LKS_KODESUBRAK, LKS_TIPERAK,
+                                                                 LKS_SHELVINGRAK, LKS_PRDCD,
+                                                                 LKS_NOURUT, LKS_DEPANBELAKANG,
+                                                                 LKS_ATASBAWAH, LKS_TIRKIRIKANAN,
+                                                                 LKS_TIRDEPANBELAKANG,
+                                                                 LKS_TIRATASBAWAH, LKS_MAXDISPLAY,
+                                                                 LKS_DIMENSILEBARPRODUK,
+                                                                 LKS_DIMENSITINGGIPRODUK,
+                                                                 LKS_DIMENSIPANJANGPRODUK,
+                                                                 LKS_FMMSQR, LKS_NOID,
+                                                                 LKS_FLAGUPDATE, LKS_CREATE_BY,
+                                                                 LKS_CREATE_DT, LKS_MODIFY_BY,
+                                                                 LKS_MODIFY_DT, LKS_NODOC)
+                                                        (SELECT LKS_KODEIGR, LKS_KODERAK,
+                                                                LKS_KODESUBRAK, LKS_TIPERAK,
+                                                                LKS_SHELVINGRAK, LKS_PRDCD,
+                                                                LKS_NOURUT, LKS_DEPANBELAKANG,
+                                                                LKS_ATASBAWAH, LKS_TIRKIRIKANAN,
+                                                                LKS_TIRDEPANBELAKANG,
+                                                                LKS_TIRATASBAWAH, LKS_MAXDISPLAY,
+                                                                LKS_DIMENSILEBARPRODUK,
+                                                                LKS_DIMENSITINGGIPRODUK,
+                                                                LKS_DIMENSIPANJANGPRODUK,
+                                                                LKS_FMMSQR, LKS_NOID,
+                                                                LKS_FLAGUPDATE, LKS_CREATE_BY,
+                                                                LKS_CREATE_DT, LKS_MODIFY_BY,
+                                                                LKS_MODIFY_DT, '".$r->trbo_nodoc."'
+                                                           FROM TBMASTER_LOKASI LKS
+                                                          WHERE LKS_PRDCD = '".$prdcdbaru."'
+                                                            AND LKS_KODEIGR = '".$_SESSION['kdigr']."')");
                                                 }
 
                                                 $step = 123;
@@ -1518,15 +1551,45 @@ class CetakPenyesuaianController extends Controller
                                                     ->delete();
 
                                                 $step = 124;
-                                                $data = DB::table('tbmaster_lokasi')
-                                                    ->where('lks_prdcd', $prdcdlama)
-                                                    ->where('lks_kodeigr', $r->trbo_kodeigr)
-                                                    ->first()->toArray();
+//                                                $data = DB::table('tbmaster_lokasi')
+//                                                    ->where('lks_prdcd', $prdcdlama)
+//                                                    ->where('lks_kodeigr', $r->trbo_kodeigr)
+//                                                    ->first()->toArray();
+//
+//                                                $data['lks_nodoc'] = $r->trbo_nodoc;
+//
+//                                                DB::table('temp_tbmaster_lokasi')
+//                                                    ->insert($data);
 
-                                                $data['lks_nodoc'] = $r->trbo_nodoc;
-
-                                                DB::table('temp_tbmaster_lokasi')
-                                                    ->insert($data);
+                                                DB::statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                            (LKS_KODEIGR, LKS_KODERAK,
+                                                             LKS_KODESUBRAK, LKS_TIPERAK,
+                                                             LKS_SHELVINGRAK, LKS_PRDCD, LKS_NOURUT,
+                                                             LKS_DEPANBELAKANG, LKS_ATASBAWAH,
+                                                             LKS_TIRKIRIKANAN, LKS_TIRDEPANBELAKANG,
+                                                             LKS_TIRATASBAWAH, LKS_MAXDISPLAY,
+                                                             LKS_DIMENSILEBARPRODUK,
+                                                             LKS_DIMENSITINGGIPRODUK,
+                                                             LKS_DIMENSIPANJANGPRODUK, LKS_FMMSQR,
+                                                             LKS_NOID, LKS_FLAGUPDATE,
+                                                             LKS_CREATE_BY, LKS_CREATE_DT,
+                                                             LKS_MODIFY_BY, LKS_MODIFY_DT,
+                                                             LKS_NODOC)
+                                                    (SELECT LKS_KODEIGR, LKS_KODERAK,
+                                                            LKS_KODESUBRAK, LKS_TIPERAK,
+                                                            LKS_SHELVINGRAK, LKS_PRDCD, LKS_NOURUT,
+                                                            LKS_DEPANBELAKANG, LKS_ATASBAWAH,
+                                                            LKS_TIRKIRIKANAN, LKS_TIRDEPANBELAKANG,
+                                                            LKS_TIRATASBAWAH, LKS_MAXDISPLAY,
+                                                            LKS_DIMENSILEBARPRODUK,
+                                                            LKS_DIMENSITINGGIPRODUK,
+                                                            LKS_DIMENSIPANJANGPRODUK, LKS_FMMSQR,
+                                                            LKS_NOID, LKS_FLAGUPDATE, LKS_CREATE_BY,
+                                                            LKS_CREATE_DT, LKS_MODIFY_BY,
+                                                            LKS_MODIFY_DT, '".$r->trbo_nodoc."'
+                                                       FROM TBMASTER_LOKASI LKS
+                                                      WHERE LKS_PRDCD = '".$prdcdlama."'
+                                                        AND LKS_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                 $step = 125;
                                                 DB::table('tbmaster_lokasi')
@@ -1555,15 +1618,22 @@ class CetakPenyesuaianController extends Controller
                                         if ($jum > 0) {
                                             if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                 $step = 135;
-                                                $data = DB::table('tbtr_promomd')
-                                                    ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdbaru, 0, 6))
-                                                    ->where('prmd_kodeigr', $_SESSION['kdigr'])
-                                                    ->first()->toArray();
+//                                                $data = DB::table('tbtr_promomd')
+//                                                    ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdbaru, 0, 6))
+//                                                    ->where('prmd_kodeigr', $_SESSION['kdigr'])
+//                                                    ->first()->toArray();
+//
+//                                                $data['prmd_nodoc'] = $r->trbo_nodoc;
+//
+//                                                DB::table('temp_tbtr_promomd')
+//                                                    ->insert($data);
 
-                                                $data['prmd_nodoc'] = $r->trbo_nodoc;
-
-                                                DB::table('temp_tbtr_promomd')
-                                                    ->insert($data);
+                                                DB::statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                                        (SELECT PRO.*, '".$r->trbo_nodoc."'
+                                                           FROM TBTR_PROMOMD PRO
+                                                          WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
+                                                                           SUBSTR ('".$prdcdbaru."', 1, 6)
+                                                            AND PRMD_KODEIGR = '".$_SESSION['kdigr']."')");
                                             }
 
                                             $step = 136;
@@ -1573,15 +1643,22 @@ class CetakPenyesuaianController extends Controller
                                                 ->delete();
 
                                             $step = 137;
-                                            $data = DB::table('tbtr_promomd')
-                                                ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdlama, 0, 6))
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
-                                                ->first()->toArray();
+//                                            $data = DB::table('tbtr_promomd')
+//                                                ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdlama, 0, 6))
+//                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+//                                                ->first()->toArray();
+//
+//                                            $data['prmd_nodoc'] = $r->trbo_nodoc;
+//
+//                                            DB::table('temp_tbtr_promomd')
+//                                                ->insert($data);
 
-                                            $data['prmd_nodoc'] = $r->trbo_nodoc;
-
-                                            DB::table('temp_tbtr_promomd')
-                                                ->insert($data);
+                                            DB::statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                                    (SELECT PRO.*, '".$r->trbo_nodoc."'
+                                                       FROM TBTR_PROMOMD PRO
+                                                      WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
+                                                                            SUBSTR ('".$prdcdlama."', 1, 6)
+                                                        AND PRMD_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                             $step = 138;
                                             DB::table('tbtr_promomd')
@@ -1636,7 +1713,7 @@ class CetakPenyesuaianController extends Controller
                                         if (($lfirst == '1' && $r->trbo_qty < 0) && ($lfirst == '0' && $r->trbo_qty < 0)) {
                                             if ($r->trbo_qty > 0) {
                                                 $step = 144;
-                                                $jum == DB::table('tbmaster_kkpkm')
+                                                $jum = DB::table('tbmaster_kkpkm')
                                                     ->where('pkm_prdcd', $prdcdlama)
                                                     ->where('pkm_kodeigr', $r->trbo_kodeigr)
                                                     ->get()->count();
@@ -1645,15 +1722,61 @@ class CetakPenyesuaianController extends Controller
                                                     $step = 145;
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 146;
-                                                        $data = DB::table('tbmaster_kkpkm')
-                                                            ->where('pkm_prdcd', $prdcdbaru)
-                                                            ->where('pkm_kodeigr', $_SESSION['kdigr'])
-                                                            ->first()->toArray();
+//                                                        $data = DB::table('tbmaster_kkpkm')
+//                                                            ->where('pkm_prdcd', $prdcdbaru)
+//                                                            ->where('pkm_kodeigr', $_SESSION['kdigr'])
+//                                                            ->first()->toArray();
+//
+//                                                        $data['pkm_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbmaster_kkpkm')
+//                                                            ->insert($data);
 
-                                                        $data['pkm_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbmaster_kkpkm')
-                                                            ->insert($data);
+                                                        DB::statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                                        (PKM_KODEIGR,
+                                                                         PKM_KODEDIVISI,
+                                                                         PKM_KODEDEPARTEMENT,
+                                                                         PKM_PERIODEPROSES,
+                                                                         PKM_KODEKATEGORIBARANG,
+                                                                         PKM_PRDCD,
+                                                                         PKM_KODESUPPLIER,
+                                                                         PKM_MINDISPLAY,
+                                                                         PKM_PERIODE1,
+                                                                         PKM_PERIODE2,
+                                                                         PKM_PERIODE3, PKM_QTY1,
+                                                                         PKM_QTY2, PKM_QTY3,
+                                                                         PKM_QTYAVERAGE,
+                                                                         PKM_MINORDER,
+                                                                         PKM_LEADTIME, PKM_STOCK,
+                                                                         PKM_PKM, PKM_MPKM,
+                                                                         PKM_PKMT, PKM_PKMB,
+                                                                         PKM_CREATE_BY,
+                                                                         PKM_CREATE_DT,
+                                                                         PKM_MODIFY_BY,
+                                                                         PKM_MODIFY_DT, PKM_NODOC)
+                                                                (SELECT PKM_KODEIGR,
+                                                                        PKM_KODEDIVISI,
+                                                                        PKM_KODEDEPARTEMENT,
+                                                                        PKM_PERIODEPROSES,
+                                                                        PKM_KODEKATEGORIBARANG,
+                                                                        PKM_PRDCD,
+                                                                        PKM_KODESUPPLIER,
+                                                                        PKM_MINDISPLAY,
+                                                                        PKM_PERIODE1, PKM_PERIODE2,
+                                                                        PKM_PERIODE3, PKM_QTY1,
+                                                                        PKM_QTY2, PKM_QTY3,
+                                                                        PKM_QTYAVERAGE,
+                                                                        PKM_MINORDER, PKM_LEADTIME,
+                                                                        PKM_STOCK, PKM_PKM,
+                                                                        PKM_MPKM, PKM_PKMT,
+                                                                        PKM_PKMB, PKM_CREATE_BY,
+                                                                        PKM_CREATE_DT,
+                                                                        PKM_MODIFY_BY,
+                                                                        PKM_MODIFY_DT,
+                                                                        '".$r->trbo_nodoc."'
+                                                                   FROM TBMASTER_KKPKM PKM
+                                                                  WHERE PKM_PRDCD = '".$prdcdbaru."'
+                                                                    AND PKM_KODEIGR = '".$_SESSION['kdigr']."')");
                                                     }
 
                                                     $step = 147;
@@ -1663,15 +1786,47 @@ class CetakPenyesuaianController extends Controller
                                                         ->delete();
 
                                                     $step = 148;
-                                                    $data = DB::table('tbmaster_kkpkm')
-                                                        ->where('pkm_prdcd', $prdcdlama)
-                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
-                                                        ->first()->toArray();
-
-                                                    $data['pkm_nodoc'] = $r->trbo_nodoc;
-
-                                                    DB::table('temp_tbmaster_kkpkm')
-                                                        ->insert($data);
+//                                                    $data = DB::table('tbmaster_kkpkm')
+//                                                        ->where('pkm_prdcd', $prdcdlama)
+//                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
+//                                                        ->first()->toArray();
+//
+//                                                    $data['pkm_nodoc'] = $r->trbo_nodoc;
+//
+//                                                    DB::table('temp_tbmaster_kkpkm')
+//                                                        ->insert($data);
+                                                    DB::statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                                    (PKM_KODEIGR, PKM_KODEDIVISI,
+                                                                     PKM_KODEDEPARTEMENT,
+                                                                     PKM_PERIODEPROSES,
+                                                                     PKM_KODEKATEGORIBARANG,
+                                                                     PKM_PRDCD, PKM_KODESUPPLIER,
+                                                                     PKM_MINDISPLAY, PKM_PERIODE1,
+                                                                     PKM_PERIODE2, PKM_PERIODE3,
+                                                                     PKM_QTY1, PKM_QTY2, PKM_QTY3,
+                                                                     PKM_QTYAVERAGE, PKM_MINORDER,
+                                                                     PKM_LEADTIME, PKM_STOCK,
+                                                                     PKM_PKM, PKM_MPKM, PKM_PKMT,
+                                                                     PKM_PKMB, PKM_CREATE_BY,
+                                                                     PKM_CREATE_DT, PKM_MODIFY_BY,
+                                                                     PKM_MODIFY_DT, PKM_NODOC)
+                                                            (SELECT PKM_KODEIGR, PKM_KODEDIVISI,
+                                                                    PKM_KODEDEPARTEMENT,
+                                                                    PKM_PERIODEPROSES,
+                                                                    PKM_KODEKATEGORIBARANG,
+                                                                    PKM_PRDCD, PKM_KODESUPPLIER,
+                                                                    PKM_MINDISPLAY, PKM_PERIODE1,
+                                                                    PKM_PERIODE2, PKM_PERIODE3,
+                                                                    PKM_QTY1, PKM_QTY2, PKM_QTY3,
+                                                                    PKM_QTYAVERAGE, PKM_MINORDER,
+                                                                    PKM_LEADTIME, PKM_STOCK,
+                                                                    PKM_PKM, PKM_MPKM, PKM_PKMT,
+                                                                    PKM_PKMB, PKM_CREATE_BY,
+                                                                    PKM_CREATE_DT, PKM_MODIFY_BY,
+                                                                    PKM_MODIFY_DT, '".$r->trbo_nodoc."'
+                                                               FROM TBMASTER_KKPKM PKM
+                                                              WHERE PKM_PRDCD = '".$prdcdlama."'
+                                                                AND PKM_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                     $step = 149;
                                                     DB::table('tbmaster_kkpkm')
@@ -1702,15 +1857,20 @@ class CetakPenyesuaianController extends Controller
 
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 153;
-                                                        $data = DB::table('tbtr_pkmgondola')
-                                                            ->where('pkmg_prdcd', $prdcdbaru)
-                                                            ->where('pkmg_kodeigr', $_SESSION['kdigr'])
-                                                            ->first()->toArray();
-
-                                                        $data['pkmg_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbtr_pkmgondola')
-                                                            ->insert($data);
+//                                                        $data = DB::table('tbtr_pkmgondola')
+//                                                            ->where('pkmg_prdcd', $prdcdbaru)
+//                                                            ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+//                                                            ->first()->toArray();
+//
+//                                                        $data['pkmg_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbtr_pkmgondola')
+//                                                            ->insert($data);
+                                                        DB::statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                                (SELECT PKM.*, '".$r->trbo_nodoc."'
+                                                                   FROM TBTR_PKMGONDOLA PKM
+                                                                  WHERE PKMG_PRDCD = '".$prdcdbaru."'
+                                                                    AND PKMG_KODEIGR = '".$_SESSION['kdigr']."')");
                                                     }
 
                                                     $step = 154;
@@ -1719,15 +1879,21 @@ class CetakPenyesuaianController extends Controller
                                                         ->where('pkmg_kodeigr', $_SESSION['kdigr'])
                                                         ->delete();
 
-                                                    $data = DB::table('tbtr_pkmgondola')
-                                                        ->where('pkmg_prdcd', $prdcdlama)
-                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
-                                                        ->first()->toArray();
+//                                                    $data = DB::table('tbtr_pkmgondola')
+//                                                        ->where('pkmg_prdcd', $prdcdlama)
+//                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+//                                                        ->first()->toArray();
+//
+//                                                    $data['pkmg_nodoc'] = $r->trbo_nodoc;
+//
+//                                                    DB::table('temp_tbtr_pkmgondola')
+//                                                        ->insert($data);
 
-                                                    $data['pkmg_nodoc'] = $r->trbo_nodoc;
-
-                                                    DB::table('temp_tbtr_pkmgondola')
-                                                        ->insert($data);
+                                                    DB::statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                            (SELECT PKM.*, '".$r->trbo_nodoc."'
+                                                               FROM TBTR_PKMGONDOLA PKM
+                                                              WHERE PKMG_PRDCD = '".$prdcdlama."'
+                                                                AND PKMG_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                     $step = 155;
                                                     DB::table('tbtr_pkmgondola')
@@ -1756,15 +1922,20 @@ class CetakPenyesuaianController extends Controller
                                                 if ($jum > 0) {
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 159;
-                                                        $data = DB::table('tbmaster_pkmplus')
-                                                            ->where('pkmp_prdcd', $prdcdbaru)
-                                                            ->where('pkmp_kodeigr', $_SESSION['kdigr'])
-                                                            ->first()->toArray();
-
-                                                        $data['pkmp_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbmaster_pkmplus')
-                                                            ->insert($data);
+//                                                        $data = DB::table('tbmaster_pkmplus')
+//                                                            ->where('pkmp_prdcd', $prdcdbaru)
+//                                                            ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+//                                                            ->first()->toArray();
+//
+//                                                        $data['pkmp_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbmaster_pkmplus')
+//                                                            ->insert($data);
+                                                        DB::statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                                (SELECT PKM.*, '".$r->trbo_nodoc."'
+                                                                   FROM TBMASTER_PKMPLUS PKM
+                                                                  WHERE PKMP_PRDCD = '".$prdcdbaru."'
+                                                                    AND PKMP_KODEIGR = '".$_SESSION['kdigr']."')");
                                                     }
 
                                                     $step = 160;
@@ -1773,15 +1944,21 @@ class CetakPenyesuaianController extends Controller
                                                         ->where('pkmp_kodeigr', $_SESSION['kdigr'])
                                                         ->delete();
 
-                                                    $data = DB::table('tbmaster_pkmplus')
-                                                        ->where('pkmp_prdcd', $prdcdlama)
-                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
-                                                        ->first()->toArray();
+//                                                    $data = DB::table('tbmaster_pkmplus')
+//                                                        ->where('pkmp_prdcd', $prdcdlama)
+//                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+//                                                        ->first()->toArray();
+//
+//                                                    $data['pkmp_nodoc'] = $r->trbo_nodoc;
+//
+//                                                    DB::table('temp_tbmaster_pkmplus')
+//                                                        ->insert($data);
 
-                                                    $data['pkmp_nodoc'] = $r->trbo_nodoc;
-
-                                                    DB::table('temp_tbmaster_pkmplus')
-                                                        ->insert($data);
+                                                    DB::statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                            (SELECT PKM.*, '".$r->trbo_nodoc."'
+                                                               FROM TBMASTER_PKMPLUS PKM
+                                                              WHERE PKMP_PRDCD = '".$prdcdlama."'
+                                                                AND PKMP_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                     $step = 161;
                                                     DB::table('tbtr_pkmplus')
@@ -1809,15 +1986,21 @@ class CetakPenyesuaianController extends Controller
                                                 if ($jum > 0) {
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 164;
-                                                        $data = DB::table('tbtr_gondola')
-                                                            ->where('gdl_prdcd', $prdcdbaru)
-                                                            ->where('gdl_kodeigr', $_SESSION['kdigr'])
-                                                            ->first()->toArray();
+//                                                        $data = DB::table('tbtr_gondola')
+//                                                            ->where('gdl_prdcd', $prdcdbaru)
+//                                                            ->where('gdl_kodeigr', $_SESSION['kdigr'])
+//                                                            ->first()->toArray();
+//
+//                                                        $data['gdl_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbtr_gondola')
+//                                                            ->insert($data);
 
-                                                        $data['gdl_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbtr_gondola')
-                                                            ->insert($data);
+                                                        DB::statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                                (SELECT GDL.*, '".$r->trbo_nodoc."'
+                                                                   FROM TBTR_GONDOLA GDL
+                                                                  WHERE GDL_PRDCD = '".$prdcdbaru."'
+                                                                    AND GDL_KODEIGR = '".$_SESSION['kdigr']."')");
                                                     }
 
                                                     $step = 165;
@@ -1827,15 +2010,21 @@ class CetakPenyesuaianController extends Controller
                                                         ->delete();
 
                                                     $step = 166;
-                                                    $data = DB::table('tbtr_gondola')
-                                                        ->where('gdl_prdcd', $prdcdlama)
-                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
-                                                        ->first()->toArray();
+//                                                    $data = DB::table('tbtr_gondola')
+//                                                        ->where('gdl_prdcd', $prdcdlama)
+//                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
+//                                                        ->first()->toArray();
+//
+//                                                    $data['gdl_nodoc'] = $r->trbo_nodoc;
+//
+//                                                    DB::table('temp_tbtr_gondola')
+//                                                        ->insert($data);
 
-                                                    $data['gdl_nodoc'] = $r->trbo_nodoc;
-
-                                                    DB::table('temp_tbtr_gondola')
-                                                        ->insert($data);
+                                                    DB::statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                            (SELECT GDL.*, '".$r->trbo_nodoc."'
+                                                               FROM TBTR_GONDOLA GDL
+                                                              WHERE GDL_PRDCD = '".$prdcdlama."'
+                                                                AND GDL_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                     $step = 167;
                                                     DB::table('tbtr_gondola')
@@ -1864,15 +2053,21 @@ class CetakPenyesuaianController extends Controller
                                                     $step = 170;
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 171;
-                                                        $data = DB::table('tbmaster_minimumorder')
-                                                            ->where('min_prdcd', $prdcdbaru)
-                                                            ->where('min_kodeigr', $_SESSION['kdigr'])
-                                                            ->first()->toArray();
+//                                                        $data = DB::table('tbmaster_minimumorder')
+//                                                            ->where('min_prdcd', $prdcdbaru)
+//                                                            ->where('min_kodeigr', $_SESSION['kdigr'])
+//                                                            ->first()->toArray();
+//
+//                                                        $data['min_nodoc'] = $r->trbo_nodoc;
+//
+//                                                        DB::table('temp_tbmaster_minimumorder')
+//                                                            ->insert($data);
 
-                                                        $data['min_nodoc'] = $r->trbo_nodoc;
-
-                                                        DB::table('temp_tbmaster_minimumorder')
-                                                            ->insert($data);
+                                                        DB::statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                                (SELECT ORD.*, '".$r->trbo_nodoc."'
+                                                                   FROM TBMASTER_MINIMUMORDER ORD
+                                                                  WHERE MIN_PRDCD = '".$prdcdbaru."'
+                                                                    AND MIN_KODEIGR = '".$_SESSION['kdigr']."')");
                                                     }
 
                                                     $step = 172;
@@ -1882,15 +2077,21 @@ class CetakPenyesuaianController extends Controller
                                                         ->delete();
 
                                                     $step = 173;
-                                                    $data = DB::table('tbmaster_minimumorder')
-                                                        ->where('min_prdcd', $prdcdlama)
-                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
-                                                        ->first()->toArray();
+//                                                    $data = DB::table('tbmaster_minimumorder')
+//                                                        ->where('min_prdcd', $prdcdlama)
+//                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
+//                                                        ->first()->toArray();
+//
+//                                                    $data['min_nodoc'] = $r->trbo_nodoc;
+//
+//                                                    DB::table('temp_tbmaster_minimumorder')
+//                                                        ->insert($data);
 
-                                                    $data['min_nodoc'] = $r->trbo_nodoc;
-
-                                                    DB::table('temp_tbmaster_minimumorder')
-                                                        ->insert($data);
+                                                    DB::statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                            (SELECT ORD.*, '".$r->trbo_nodoc."'
+                                                               FROM TBMASTER_MINIMUMORDER ORD
+                                                              WHERE MIN_PRDCD = '".$prdcdlama."'
+                                                                AND MIN_KODEIGR = '".$_SESSION['kdigr']."')");
 
                                                     $step = 174;
                                                     DB::table('tbmaster_minimumorder')

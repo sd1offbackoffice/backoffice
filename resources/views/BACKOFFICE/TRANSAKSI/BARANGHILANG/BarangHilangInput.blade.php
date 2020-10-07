@@ -186,7 +186,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="form-row col-sm">
-                        <input id="search-modal" class="form-control search-modal" type="text" placeholder="..." aria-label="Search">
+                        <input id="search-modal-1" class="form-control search-modal-1" type="text" placeholder="..." aria-label="Search">
                         <div class="invalid-feedback"> Inputkan minimal 3 karakter</div>
                     </div>
                 </div>
@@ -222,7 +222,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="form-row col-sm">
-                        <input id="search-modal" class="form-control search-modal" type="text" placeholder="..." aria-label="Search">
+                        <input id="search-modal-2" class="form-control search-modal-2" type="text" placeholder="..." aria-label="Search">
                         <div class="invalid-feedback"> Inputkan minimal 3 karakter</div>
                     </div>
                 </div>
@@ -300,8 +300,6 @@
             }
         });
 
-
-
         function nmrBaruTrn(nodoc){
             if(nodoc == ''){
                 swal({
@@ -343,6 +341,7 @@
         }
 
         function getNmrTRN() {
+            $('#search-modal-1').val('')
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
@@ -365,6 +364,84 @@
                 }
             });
         }
+
+        // function searchNmrTRN() {
+        $(document).on('keypress', '#search-modal-1', function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                let search = $(this).val()
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
+                    type: 'post',
+                    data: {search:search},
+                    success: function (result) {
+                        // console.log(result)
+                        $('.modalRow').remove();
+                        for (i = 0; i< result.length; i++){
+                            let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
+                                        <td>`+ result[i].trbo_nodoc +`</td>
+                                        <td>`+ result[i].trbo_tipe +`</td>
+                                        <td>`+ result[i].nota +`</td>
+                                     </tr>`;
+                            $('.tbody-modal-1').append(temp);
+                        }
+                        $('#modal-help-1').modal('show');
+                    }, error: function () {
+                        alert('error');
+                    }
+                });
+            }
+        })
+
+        // }
+
+        // $(document).on('keypress', '#search-modal-1', function (e) {
+        //     if (e.which === 13) {
+        //         e.preventDefault();
+        //         let search = $('#search-modal-1').val();
+        //         searchNmrTrn()
+        //     }
+        // })
+
+        // $(document).on('keypress', '.search-modal-1', function (e) {
+        //     if (e.which == 13) {
+        //         let type = this['attributes'][5]['nodeValue']
+        //         let search = $(this).val()
+        //
+        //         if (search.length < 3) {
+        //             $('.invalid-feedback').show();
+        //         } else {
+        //             $('.invalid-feedback').hide();
+        //             ajaxSetup();
+        //             $.ajax({
+        //                 url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
+        //                 type: 'post',
+        //                 data:({
+        //                     type:type,
+        //                     search:search
+        //                 }),
+        //                 success: function (result) {
+        //                     console.log(result)
+        //
+        //                     $('.modalRow').remove();
+        //                     for (i = 0; i< result.length; i++){
+        //                         let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
+        //                                 <td>`+ result[i].trbo_nodoc +`</td>
+        //                                 <td>`+ result[i].trbo_tipe +`</td>
+        //                                 <td>`+ result[i].nota +`</td>
+        //                              </tr>`;
+        //                         $('.tbody-modal-1').append(temp);
+        //                     }
+        //
+        //                 }, error : function (error) {
+        //                     console.log(error)
+        //                     swal("Error",'','error');
+        //                 }
+        //             })
+        //         }
+        //     }
+        // });
 
         function getPlu() {
             ajaxSetup();
@@ -514,13 +591,6 @@
 
         function choosePlu(noplu, index){
 
-            // for (let i =0 ; i <$('.plu').length; i++){
-            //     if ($('.plu')[i]['attributes'][2]['value'] == index){
-            //         index = i
-            //     }
-            // }
-            //
-            $('.plu')[index].value = noplu;
             $('#modal-help-2').modal('hide');
 
             let temp = 0;
@@ -537,25 +607,6 @@
                     $('#modal-loader').modal('hide');
 
                     // console.log(result)
-                if(result.noplu == 1){
-                    $('.plu').val(result[0].prd_prdcd);
-                    $('.deskripsi').val(result[0].prd_deskripsipendek);
-
-                    for(i = 0; i < $('.plu').length; i++){
-                        if ($('.plu')[i].value != ''){
-                            temp = temp + 1;
-                        }
-                    }
-                    $('#total-item').val(temp)
-
-                } else {
-                    $('.plu').val('');
-                    $('.deskripsi').val('');
-                }
-
-                }, error: function (error) {
-                    $('#modal-loader').modal('hide');
-                    console.log(error)
                 }
             })
         }
@@ -564,7 +615,7 @@
             let nodoc = $('#no-trn').val();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',
-                type: 'POST',
+                type: 'delete',
                 data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -575,8 +626,8 @@
                         icon: 'warning'
                     }).then((confirm) => {
                         $('#no-trn').val('');
-                        // $('.baris').remove();
-                        clear_field();
+                        $('.baris').remove();
+                        clearField();
                     });
                 },
                 complete: function () {
@@ -626,13 +677,13 @@
                     temp = temp + 1;
                 }
                 if($('.total')[i].value != ''){
-                    tempTtlHrg = parseFloat(tempTtlHrg) + parseFloat(unconvertToRupiah($('.total')[i].value));
+                    tempGross = parseFloat(tempGross) + parseFloat(unconvertToRupiah($('.gross')[i].value));
                 }
             }
             $('#total-item').val(temp);
-            $('#gross').val(temp);
+            $('#totalgross').val(temp);
             $('#ppn').val(temp);
-            $('#total').val(convertToRupiah(tempTtlHrg));
+            $('#total').val(convertToRupiah(tempGross));
         }
 
         function clearField(){

@@ -54,6 +54,16 @@ class PerubahanPLUController extends Controller
         try{
             DB::beginTransaction();
 
+            $dataplulama = DB::table('tbmaster_prodmast')
+                ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
+                ->where('prd_prdcd',$plulama)
+                ->first();
+
+            $dataplubaru = DB::table('tbmaster_prodmast')
+                ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
+                ->where('prd_prdcd',$plubaru)
+                ->first();
+
             if(true){
                 $temp = DB::table('tbmaster_stock')
                     ->where('st_prdcd',$plulama)
@@ -339,13 +349,24 @@ class PerubahanPLUController extends Controller
                                     ->get()->count();
 
                                 if($temp == 0){
-                                    $data = DB::table('tbmaster_barangbaru')
-                                        ->where('pln_kodeigr',$_SESSION['kdigr'])
-                                        ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plulama,0,6)."'")
-                                        ->first()->toArray();
+//                                    $data = DB::table('tbmaster_barangbaru')
+//                                        ->where('pln_kodeigr',$_SESSION['kdigr'])
+//                                        ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plulama,0,6)."'")
+//                                        ->first()->toArray();
+//
+//                                    DB::table('tbhistory_barangbaru')
+//                                        ->insert($data);
 
-                                    DB::table('tbhistory_barangbaru')
-                                        ->insert($data);
+                                    DB::statement("INSERT INTO TBHISTORY_BARANGBARU
+                                                (HPN_KODEIGR, HPN_PRDCD, HPN_PKMTOKO, HPN_KODETAG,
+                                                 HPN_TGLPENERIMAANBRG, HPN_TGLDAFTAR, HPN_CREATE_BY,
+                                                 HPN_CREATE_DT, HPN_MODIFY_BY, HPN_MODIFY_DT)
+                                                    (SELECT PLN_KODEIGR, PLN_PRDCD, PLN_PKMT, PLN_FLAGTAG, PLN_TGLBPB,
+                                                            PLN_TGLAKTIF, PLN_CREATE_BY, PLN_CREATE_DT, PLN_MODIFY_BY,
+                                                            PLN_MODIFY_DT
+                                                       FROM TBMASTER_BARANGBARU
+                                                      WHERE SUBSTR (PLN_PRDCD, 1, 6) = SUBSTR ('".$plulama."', 1, 6)
+                                                        AND PLN_KODEIGR = '".$_SESSION['kdigr']."')");
                                 }
 
                                 DB::table('tbmaster_barangbaru')
@@ -468,6 +489,12 @@ class PerubahanPLUController extends Controller
                 }
             }
 
+//            DB::commit();
+
+            $_SESSION['pys_dataplulama'] = $dataplulama;
+            $_SESSION['pys_dataplubaru'] = $dataplubaru;
+            $_SESSION['pys_ukuran'] = $ukuran;
+
             $status = 'success';
             $title = 'Berhasil melakukan perubahan PLU!';
             $message = '';
@@ -485,13 +512,34 @@ class PerubahanPLUController extends Controller
         }
     }
 
-    public function tes(){
-        $data = DB::table('tbtr_update_plu_md')
+    public function laporan(){
+        $plulama = $_SESSION['pys_dataplulama'];
+        $plubaru = $_SESSION['pys_dataplubaru'];
+        $ukuran = $_SESSION['pys_ukuran'];
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
-        $data = get_object_vars($data);
-        $data['x'] = 'x';
-        dd($data);
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENYESUAIAN.perubahan-plu-pdf',compact(['perusahaan','plulama','plubaru','ukuran']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Laporan Penyesuaian.pdf');
+    }
+
+    public function tes(){
+
     }
 
     public function nvl($value, $defaultvalue){
