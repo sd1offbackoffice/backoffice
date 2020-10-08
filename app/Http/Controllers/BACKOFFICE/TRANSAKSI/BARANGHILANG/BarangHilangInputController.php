@@ -162,7 +162,54 @@ class barangHilangInputController extends Controller
     }
 
     public function saveDoc(Request $request){
+        $datas  = $request->datas;
+        $date   = date('Y-M-d', strtotime($request->date));
+        $nodoc  = $request->nodoc;
+        $kodeigr= $_SESSION['kdigr'];
+        $ip = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
+        $userid = $_SESSION['usid'];
+        $today  = date('Y-m-d H:i:s');
 
+//        *** Get Doc No ***
+
+
+        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+
+        $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
+                            " .$ip. " || '7', 6, FALSE); END;");
+        oci_bind_by_name($s, ':ret', $r, 32);
+        oci_execute($s);
+
+//        *** Search DocNo for Edit ***
+        $getDoc = DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
+
+
+        if ($getDoc){
+//                *** Update Data ***
+            DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
+
+            for ($i = 1; $i < sizeof($datas); $i++){
+                $temp = $datas[$i];
+
+                DB::table('tbtr_backoffice')
+                    ->insert(['trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_nodoc' => $getDoc->trbo_nodoc, 'trbo_tgldoc' => $date, 'trbo_seqno' => $i, 'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'],
+                        'trbo_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'trbo_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $getDoc->rsk_create_by,
+                        'rsk_create_dt' => $getDoc->rsk_create_dt, 'rsk_modify_by' => $userid, 'rsk_modify_dt' => $today]);
+            }
+
+            return response()->json(['kode' => 1, 'msg' => $getDoc->rsk_nodoc]);
+        } else {
+//              *** Insert Data ***
+            for ($i = 1; $i < sizeof($datas); $i++){
+                $temp = $datas[$i];
+
+                DB::table('tbtr_barangrusak')
+                    ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $docNo, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
+                        'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $userid, 'rsk_create_dt' => $today]);
+            }
+
+            return response()->json(['kode' => 1, 'msg' => $docNo]);
+        }
     }
 
     public function deleteDoc(Request $request){

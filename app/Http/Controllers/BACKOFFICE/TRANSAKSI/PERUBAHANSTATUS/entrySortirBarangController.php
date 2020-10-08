@@ -115,46 +115,69 @@ class entrySortirBarangController extends Controller
 
     public function saveData(Request $request){
         $datas  = $request->datas;
+        $keterangan  = $request->keterangan;
+        $pludi  = $request->pludi;
         $date   = date('Y-M-d', strtotime($request->date));
-        $noTrn  = $request->noDoc;
+        $noSrt  = $request->noDoc;
         $kodeigr= $_SESSION['kdigr'];
         $userid = $_SESSION['usid'];
         $today  = date('Y-m-d H:i:s');
 
 //        *** Get Doc No ***
         $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','RSK','Nomor Pengeluaran Barang',
-                            'RSK' || '$kodeigr' || TO_CHAR (SYSDATE, 'YY'),
-							5,TRUE); END;");
+        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
+            'Nomor Sortir Barang',
+               'S'
+            || TO_CHAR (SYSDATE, 'yy')
+            || SUBSTR ('123456789ABC', TO_CHAR (SYSDATE, 'MM'), 1),
+            5,
+            TRUE); END;");
         oci_bind_by_name($query, ':ret', $docNo, 32);
         oci_execute($query);
 
 //        *** Search DocNo for Edit ***
-        $getDoc = DB::table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->first();
+        $getDoc = DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
 
 
         if ($getDoc){
 //                *** Update Data ***
-            DB::table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->delete();
-
-            for ($i = 1; $i < sizeof($datas); $i++){
-                $temp = $datas[$i];
-
-                DB::table('tbtr_barangrusak')
-                    ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $getDoc->rsk_nodoc, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
-                        'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $getDoc->rsk_create_by,
-                        'rsk_create_dt' => $getDoc->rsk_create_dt, 'rsk_modify_by' => $userid, 'rsk_modify_dt' => $today]);
-            }
-
-            return response()->json(['kode' => 1, 'msg' => $getDoc->rsk_nodoc]);
+//            DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->delete();
+//
+//            for ($i = 1; $i < sizeof($datas); $i++){
+//                $temp = $datas[$i];
+//
+//                DB::table('TBTR_SORTIR_BARANG')
+//                    ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $getDoc->rsk_nodoc, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
+//                        'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $getDoc->rsk_create_by,
+//                        'rsk_create_dt' => $getDoc->rsk_create_dt, 'rsk_modify_by' => $userid, 'rsk_modify_dt' => $today]);
+//            }
+//
+//            return response()->json(['kode' => 1, 'msg' => $getDoc->rsk_nodoc]);
         } else {
 //              *** Insert Data ***
             for ($i = 1; $i < sizeof($datas); $i++){
                 $temp = $datas[$i];
+                $prodMast = DB::table('TBMASTER_PRODMAST')
+                    ->where('prd_kodeigr', $kodeigr)
+                    ->where('prd_prdcd', $temp['plu'])
+                    ->get();
 
-                DB::table('tbtr_barangrusak')
-                    ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $docNo, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
-                        'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $userid, 'rsk_create_dt' => $today]);
+                $getVal = DB::table('TBMASTER_HARGABELI')
+                    ->leftJoin('TBMASTER_SUPPLIER', 'hgb_kodesupplier', 'sup_kodesupplier', 'hgb_kodeigr','sup_kodeigr')
+                    ->where('hgb_prdcd', $temp['plu'])
+                    ->where('hgb_tipe','=',2)
+                    ->where('hgb_kodeigr',$kodeigr)
+                    ->get();
+
+                DB::table('TBTR_SORTIR_BARANG')
+                    ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $docNo, 'rsk_tglsortir' => $date,
+                        'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal['hgb_kodesupplier'],
+                        'srt_pkp' => $getVal['sup_pkp'], 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_kodedivisi' => $prodMast['prd_kodedivisi'],
+                        'srt_kodedepartement' => $prodMast['prd_kodedepartement'], 'srt_kodekategoribarang' => $prodMast['prd_kodekategoribarang'], 'srt_bkp' => '',
+                        'srt_unit' => $temp['unit'], 'srt_frac' => $temp['frac'], 'srt_lokasi' => $kodeigr, 'srt_qtykarton' => $temp['ctn'], 'srt_qtypcs' => $temp['pcs'],
+                        'srt_qtybonus1' => '', 'srt_qtybonus2' => '', 'srt_hrgsatuan' => $temp['avgcost'], 'srt_flagdisc1' => '', 'srt_flagdisc2' => '',
+                        'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
+                        'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
             }
 
             return response()->json(['kode' => 1, 'msg' => $docNo]);
@@ -199,15 +222,15 @@ class entrySortirBarangController extends Controller
 //");
 
 //                Update rsk_recordid
-        DB::table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->whereNull('rsk_recordid')->update(['rsk_recordid' => '9']);
+        DB::table('tbtr_sortir_barang')->where('rsk_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.barangRusak-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.EntrySortirBarang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.BarangRusak-laporan');
+        return $pdf->stream('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.EntrySortirBarang-laporan');
     }
 }

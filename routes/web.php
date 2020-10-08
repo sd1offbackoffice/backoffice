@@ -330,4 +330,5 @@ Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',        
 Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/choosesrt',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@chooseSrt')->middleware('CheckLogin');
 Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',           'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getPlu')->middleware('CheckLogin');
 Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/chooseplu',        'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@choosePlu')->middleware('CheckLogin');
+Route::post('/bo/transaksi/perubahanstatus/entrySortirBarang/savedata',         'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@saveData')->middleware('CheckLogin');
 Route::get('/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/{doc}',    'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@printDocument')->middleware('CheckLogin');

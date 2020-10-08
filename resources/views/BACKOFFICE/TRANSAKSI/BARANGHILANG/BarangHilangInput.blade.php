@@ -75,7 +75,7 @@
                                             <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                         </td>
                                         <td class="buttonInside" style="width: 125px">
-                                            <input type="text" class="form-control plu" no="{{$i}}">
+                                            <input type="text" class="form-control plu" id="plu" no="{{$i}}">
                                             <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
@@ -205,6 +205,8 @@
                                         </thead>
                                         <tbody class="tbody-modal-1">
                                         </tbody>
+                                        <p class="text-hide" id="idModal"></p>
+                                        <p class="text-hide" id="idRow"></p>
                                     </table>
                                 </div>
                             </div>
@@ -271,9 +273,9 @@
 
     <script>
 
-        let tempTrn;
-        let tempPlu;
-        var tempStock = [{'plu' : '0000000', 'stock' : '0', 'deskripsipanjang' : ''}];
+        // let tempTrn;
+        // let tempPlu;
+        // var tempStock = [{'plu' : '0000000', 'stock' : '0', 'deskripsipanjang' : ''}];
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -365,18 +367,17 @@
             });
         }
 
-        // function searchNmrTRN() {
-        $(document).on('keypress', '#search-modal-1', function (e) {
+        $('#search-modal-1').keypress(function (e) {
             if (e.which === 13) {
-                e.preventDefault();
-                let search = $(this).val()
+                var search = $('#search-modal-1').val();
+
                 ajaxSetup();
                 $.ajax({
                     url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
-                        // console.log(result)
+                        console.log(result)
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
                             let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
@@ -393,55 +394,6 @@
                 });
             }
         })
-
-        // }
-
-        // $(document).on('keypress', '#search-modal-1', function (e) {
-        //     if (e.which === 13) {
-        //         e.preventDefault();
-        //         let search = $('#search-modal-1').val();
-        //         searchNmrTrn()
-        //     }
-        // })
-
-        // $(document).on('keypress', '.search-modal-1', function (e) {
-        //     if (e.which == 13) {
-        //         let type = this['attributes'][5]['nodeValue']
-        //         let search = $(this).val()
-        //
-        //         if (search.length < 3) {
-        //             $('.invalid-feedback').show();
-        //         } else {
-        //             $('.invalid-feedback').hide();
-        //             ajaxSetup();
-        //             $.ajax({
-        //                 url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
-        //                 type: 'post',
-        //                 data:({
-        //                     type:type,
-        //                     search:search
-        //                 }),
-        //                 success: function (result) {
-        //                     console.log(result)
-        //
-        //                     $('.modalRow').remove();
-        //                     for (i = 0; i< result.length; i++){
-        //                         let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
-        //                                 <td>`+ result[i].trbo_nodoc +`</td>
-        //                                 <td>`+ result[i].trbo_tipe +`</td>
-        //                                 <td>`+ result[i].nota +`</td>
-        //                              </tr>`;
-        //                         $('.tbody-modal-1').append(temp);
-        //                     }
-        //
-        //                 }, error : function (error) {
-        //                     console.log(error)
-        //                     swal("Error",'','error');
-        //                 }
-        //             })
-        //         }
-        //     }
-        // });
 
         function getPlu() {
             ajaxSetup();
@@ -589,24 +541,45 @@
             $('#modal-help-1').modal('hide');
         }
 
-        function choosePlu(noplu, index){
+        function choosePlu(noplu, index) {
+            for (let i =0 ; i <$('#plu').length; i++){
+                if ($('#plu')[i]['attributes'][2]['value'] == index){
+                    index = i
+                }
+            }
 
+            // $('.plu')[index].value = noplu;
             $('#modal-help-2').modal('hide');
-
             let temp = 0;
-
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/brghilang/input/showPlu',
-                type: 'POST',
-                data: {noplu: noplu},
+                type: 'post',
+                data: {noplu:noplu},
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
+                    if (result.noplu === 1) {
 
-                    // console.log(result)
+                        $('#plu')[index].value = result[0].st_prdcd;
+                        $('.deskripsi')[index].value = result[0].prd_deskripsipendek;
+                        // $('.satuan')[index].value = data.prd_unit + ' / ' + data.prd_frac;
+                        // $('.ctn')[index].value = '0';
+                        // $('.pcs')[index].value = '0';
+                        // $('.harga')[index].value = convertToRupiah(data.hrgsatuan);
+                        // $('.total')[index].value = '0';
+                        $('#deskripsiPanjang').val(data.prd_deskripsipanjang)
+
+
+                        for (i = 0; i < $('.plu').length; i++) {
+                            if ($('.plu')[i].value != '') {
+                                temp = temp + 1;
+                            }
+                        }
+                        $('#total-item').val(temp)
+                    }
                 }
             })
         }

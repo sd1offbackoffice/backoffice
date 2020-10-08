@@ -317,7 +317,7 @@
             let keterangan    = $('#i_keterangan').val();
             let pludi    = $('#i_PLU').val();
             let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
-            let datas   = [{'plu' : '', 'qty' : '', 'harga' : '', 'total' : '', 'keterangan' : ''}];
+            let datas   = [{'plu' : '', 'ctn' : '', 'pcs' : '', 'avgcost' : '', 'total' : ''}];
             if ($('.deskripsi').val().length < 1){
                 swal({
                     title:'Data Tidak Boleh Kosong',
@@ -334,20 +334,59 @@
 
             for (let i=0; i < tempPlu.length; i++){
                 var qty     = 0;
-                var total   = 0;
                 let temp    = $('.satuan')[i].value;
+                let tag    = $('.tag')[i].value;
+                let arr     = explode("/", temp, 2);
+                let unit    = arr[0];
                 let frac    = temp.substr(temp.indexOf('/')+1);
+                let ctn     = parseInt( $('.ctn')[i].value);
+                let pcs     = parseInt( $('.pcs')[i].value);
 
                 if ( tempTR[i].value){
-                    qty  = parseInt( $('.ctn')[i].value * frac) + parseInt($('.pcs')[i].value);
+                    qty  = (ctn * parseInt(frac) + pcs);
 
                     if (qty < 1){
                         focusToRow(i);
                         return false;
                     }
-                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('.keterangan')[i].value})
+                    datas.push({'plu': $('.plu')[i].value, 'unit' : unit , 'frac' : frac ,'ctn' : ctn, 'pcs' : pcs,'avgcost' : unconvertToRupiah($('.avgcost')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'tag' : tag)
                 }
             }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/savedata',
+                type: 'post',
+                data: {
+                    datas:datas,
+                    date:date,
+                    keterangan:keterangan,
+                    pludi:pludi,
+                    noDoc:noDoc
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    console.log(result.kode)
+                    if(result.kode == '1'){
+                        if (status == 'cetak'){
+                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+result.msg+'/');
+                            clearField();
+                        } else {
+                            swal('Dokumen Berhasil disimpan','','success')
+                        }
+                    } else {
+                        swal('ERROR', "Something's Error", 'error')
+                    }
+                    $('#modal-loader').modal('hide')
+                    $('#pilihan').val('M');
+                    //$('#saveData').attr("disabled", true)
+                    clearField();
+                }, error: function () {
+                    alert('error');
+                }
+            })
         }
 
         function focusToRow(index) {
