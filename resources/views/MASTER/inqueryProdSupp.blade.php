@@ -30,8 +30,6 @@
                                     </form>
                                     <tbody>
                                     </tbody>
-                                    </table>
-                                {{--</fieldset>--}}
                             </div>
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">

@@ -791,7 +791,6 @@
                     console.log('Tidak dihapus');
                 }
             })
-
         }
 
         function printDocument(){

@@ -17,7 +17,7 @@ class barangHilangInputController extends Controller
 
     public function lov_trn(Request $request)
     {
-        $search = $request->value;
+        $search = $request->search;
 
         $result = DB::table('tbtr_backoffice')
             ->selectRaw("trbo_nodoc,
@@ -39,7 +39,7 @@ class barangHilangInputController extends Controller
 
     public function lov_plu(Request $request)
     {
-        $search = $request->value;
+        $search = $request->search;
 
         $result = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
@@ -114,6 +114,7 @@ class barangHilangInputController extends Controller
             ->selectRaw("PRD_KODESUPPLIER")
             ->where('st_lokasi', '=', '01')
             ->where('prd_prdcd', '=', $noplu)
+            ->limit(100)
             ->get();
 
         if (is_null($result)) {
@@ -140,7 +141,7 @@ class barangHilangInputController extends Controller
                 $hrgsatuan = $result[0]->st_avgcost * $trim;
                 $avgcost = $result[0]->st_avgcost * $trim;
 
-                return response()->json(['message' => '', 'result' => $result, 'hrgsatuan' => $hrgsatuan, 'avgcost' => $avgcost]);
+                return response()->json(['message' => '', 'data' => $result, 'hrgsatuan' => $hrgsatuan, 'avgcost' => $avgcost]);
             }
 
         }
@@ -162,52 +163,74 @@ class barangHilangInputController extends Controller
     }
 
     public function saveDoc(Request $request){
-        $datas  = $request->datas;
-        $date   = date('Y-M-d', strtotime($request->date));
+        $kodeigr = $_SESSION['kdigr'];
         $nodoc  = $request->nodoc;
-        $kodeigr= $_SESSION['kdigr'];
-        $ip = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
+        $data = $request->data;
+        $date = date('Y-M-D', strtotime($request->date));
         $userid = $_SESSION['usid'];
         $today  = date('Y-m-d H:i:s');
 
-//        *** Get Doc No ***
-
+        //get new no trn
+        $ip = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
 
         $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
         $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
                             " .$ip. " || '7', 6, FALSE); END;");
-        oci_bind_by_name($s, ':ret', $r, 32);
+        oci_bind_by_name($s, ':ret', $docNo, 32);
         oci_execute($s);
 
-//        *** Search DocNo for Edit ***
         $getDoc = DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
 
+        if($getDoc){
+            DB::table('tbtr_baranghilang')->where('trbo_nodoc', $nodoc)->delete();
 
-        if ($getDoc){
-//                *** Update Data ***
-            DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
-
-            for ($i = 1; $i < sizeof($datas); $i++){
-                $temp = $datas[$i];
+            for ($i = 1; $i < sizeof($data); $i++){
+                $temp = $data[$i];
 
                 DB::table('tbtr_backoffice')
-                    ->insert(['trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_nodoc' => $getDoc->trbo_nodoc, 'trbo_tgldoc' => $date, 'trbo_seqno' => $i, 'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'],
-                        'trbo_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'trbo_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $getDoc->rsk_create_by,
-                        'rsk_create_dt' => $getDoc->rsk_create_dt, 'rsk_modify_by' => $userid, 'rsk_modify_dt' => $today]);
+                    ->insert([
+                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'X','trbo_nodoc' => $getDoc->trbo_nodoc,
+                        'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
+                        'trbo_nofaktur' => '', 'trbo_tglfaktur' => '', 'trbo_istype' => '', 'trbo_invno' => '', 'trbo_tglinv' => '',
+                        'trbo_nott' => '', 'trbo_tgltt' => '', 'trbo_kodesupplier' => '', 'trbo_kodeigr2' => '', 'trbo_seqno' => $i,
+                        'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'], 'trbo_qtybonus1' => '', 'trbo_qtybonus2' => '',
+                        'trbo_hrgsatuan' => $temp['hrgsatuan'], 'trbo_persendisc1' => '', 'trbo_rphdisc1' => '', 'trbo_flagdisc1' => '1',
+                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
+                        'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
+                        'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $temp['avgcost'], 'trbo_oldcost' => '', 'trbo_postqty' => '',
+                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
+                        'trbo_create_by' => $getDoc->rsk_create_by, 'trbo_create_dt' => $getDoc->trbo_create_dt, 'trbo_modify_by' => $userid,
+                        'trbo_modify_dt' => $today, 'trbo_stokqty' => $temp['stokqty'], 'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '',
+                        'trbo_tglnota' => ''
+                    ]);
             }
 
-            return response()->json(['kode' => 1, 'msg' => $getDoc->rsk_nodoc]);
+            return response()->json(['kode' => 1, 'msg' => $getDoc->trbo_nodoc]);
         } else {
-//              *** Insert Data ***
-            for ($i = 1; $i < sizeof($datas); $i++){
-                $temp = $datas[$i];
+            for ($i = 1; $i < sizeof($data); $i++) {
+                $temp = $data[$i];
 
-                DB::table('tbtr_barangrusak')
-                    ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $docNo, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
-                        'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $userid, 'rsk_create_dt' => $today]);
+                DB::table('tbtr_backoffice')
+                    ->insert([
+                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'X','trbo_nodoc' => $docNo,
+                        'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
+                        'trbo_nofaktur' => '', 'trbo_tglfaktur' => '', 'trbo_istype' => '', 'trbo_invno' => '', 'trbo_tglinv' => '',
+                        'trbo_nott' => '', 'trbo_tgltt' => '', 'trbo_kodesupplier' => '', 'trbo_kodeigr2' => '', 'trbo_seqno' => $i,
+                        'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'], 'trbo_qtybonus1' => '', 'trbo_qtybonus2' => '',
+                        'trbo_hrgsatuan' => $temp['hrgsatuan'], 'trbo_persendisc1' => '', 'trbo_rphdisc1' => '', 'trbo_flagdisc1' => '1',
+                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
+                        'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
+                        'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $temp['avgcost'], 'trbo_oldcost' => '', 'trbo_postqty' => '',
+                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
+                        'trbo_create_by' => $userid, 'trbo_create_dt' => $today, 'trbo_stokqty' => $temp['stokqty'],
+                        'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '', 'trbo_tglnota' => ''
+                    ]);
             }
-
             return response()->json(['kode' => 1, 'msg' => $docNo]);
         }
     }

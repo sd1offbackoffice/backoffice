@@ -97,8 +97,6 @@
                                         <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
                                                 IGR</a></li>
                                         <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
-                                        <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Transaksi -
-                                                Pemusnahan - Barang Rusak</a></li>
                                         <li><a href="{{url("/bo/transaksi/pengeluaran/input/index")}}">Transaksi -
                                                 Pengeluaran - Input</a></li>
                                     </ul>
@@ -115,7 +113,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Barang Rusak</a></li>
                                                 <li><a href="{{url("/bo/transaksi/pemusnahan/bapemusnahan/index")}}">Berita Acara Pemusnahan</a></li>
-                                                {{--<li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Barang Rusak</a></li>--}}
+                                                <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan BA Pemusnahan</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">
@@ -136,6 +134,14 @@
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery MPP</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/pembatalanmpp")}}">Pembatalan MPP</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/perubahanplu")}}">Perubahan PLU</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Pengiriman ke Cabang</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/input/")}}">Input</a></li>
                                             </ul>
                                         </li>
                                     </ul>
