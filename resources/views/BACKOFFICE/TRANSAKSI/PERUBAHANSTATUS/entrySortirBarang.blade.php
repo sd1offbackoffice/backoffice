@@ -6,7 +6,7 @@
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <fieldset class="card">
                     <legend class="w-auto ml-5">Header Dokumen Sortir Barang</legend>
                     <div class="card-body shadow-lg cardForm">
@@ -24,7 +24,10 @@
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_tgldokumen" placeholder="V_TGLSORTIR">
                                         </div>
-                                        <input type="text" id="keterangan" class="form-control col-sm-3 text-right"  disabled>
+                                        <div class="col-sm-1">
+                                            {{--this div just for filling space--}}
+                                        </div>
+                                        <input type="text" id="keterangan" class="form-control col-sm-2 text-right" placeholder="STATUS DOKUMEN" disabled>
                                         <label for="i_keterangan" class="col-sm-4 col-form-label">Keterangan</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_keterangan" placeholder="V_KET">
@@ -48,40 +51,40 @@
                                 <table class="table table-striped table-bordered" id="table2">
                                     <thead class="thead-dark">
                                     <tr class="d-flex text-center">
-                                        <th style="width: 80px;">X</th>
-                                        <th style="width: 150px">PLU</th>
-                                        <th style="width: 400px">Deskripsi</th>
-                                        <th style="width: 130px">Satuan</th>
-                                        <th style="width: 80px">TAG</th>
-                                        <th style="width: 140px">AVG.COST</th>
-                                        <th style="width: 80px">CTN</th>
-                                        <th style="width: 80px">PCS</th>
-                                        <th style="width: 80px">PT</th>
-                                        <th style="width: 80px">RT/TG</th>
-                                        <th style="width: 150px">Total Harga</th>
+                                        <th style="width: 4%;">X</th>
+                                        <th style="width: 8%">PLU</th>
+                                        <th style="width: 32%">Deskripsi</th>
+                                        <th style="width: 8%">Satuan</th>
+                                        <th style="width: 6%">TAG</th>
+                                        <th style="width: 9%">AVG.COST</th>
+                                        <th style="width: 6%">CTN</th>
+                                        <th style="width: 6%">PCS</th>
+                                        <th style="width: 6%">PT</th>
+                                        <th style="width: 6%">RT/TG</th>
+                                        <th style="width: 9%">Total Harga</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody">
                                     @for($i = 0; $i< 8; $i++)
                                         <tr class="d-flex baris">
-                                            <td style="width: 80px" class="text-center">
-                                                <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                            <td style="width: 4%" class="text-center">
+                                                <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                             </td>
-                                            <td class="buttonInside" style="width: 150px">
+                                            <td class="buttonInside" style="width: 8%">
                                                 <input type="text" class="form-control plu" no="{{$i}}">
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </td>
-                                            <td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>
-                                            <td style="width: 130px"><input disabled type="text" class="form-control satuan"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control tag text-right"></td>
-                                            <td style="width: 140px"><input disabled type="text" class="form-control avgcost"></td>
-                                            <td style="width: 80px"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                            <td style="width: 80px"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control pt text-right"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control rttg text-right"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control total text-right"></td>
+                                            <td style="width: 32%"><input disabled type="text" class="form-control deskripsi"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control tag text-right"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control avgcost"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control pt text-right"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right"></td>
                                         </tr>
                                     @endfor
                                     </tbody>
@@ -261,6 +264,7 @@
                                     $('#i_tgldokumen').val(formatDate('now'));
                                     $('#keterangan').val('* TAMBAH');
                                     $('#totalItem').val("");
+                                    $('#totalItem').val(0);
                                     $('#modal-loader').modal('hide')
                                     //$('#deleteDoc').attr( 'disabled', true );
                                     //$('#saveData').attr( 'disabled', false );
@@ -524,21 +528,21 @@
                                     result[i].srt_tag = "";
                                 }
                                 let temp =  ` <tr class="d-flex baris">
-                                                <td style="width: 80px" class="text-center">
-                                                    <button disabled class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 4%" class="text-center">
+                                                    <button disabled class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 150px">
+                                                <td class="buttonInside" style="width: 8%">
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                                 </td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
-                                                <td style="width: 140px"><input disabled type="text"  class="form-control avgcost" value="`+ convertToRupiah(result[i].srt_avgcost) +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
+                                                <td style="width: 32%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
+                                                <td style="width: 9%"><input disabled type="text"  class="form-control avgcost" value="`+ convertToRupiah(result[i].srt_avgcost) +`"></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
                                             </tr>`
 
                                 $('#tbody').append(temp);
@@ -565,24 +569,24 @@
                                 alert(result[i].srt_prdcd);
 
                                 let temp =  ` <tr class="d-flex baris"">
-                                                <td style="width: 80px" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 4%" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 150px">
+                                                <td class="buttonInside" style="width: 8%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                                      <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ i +`">
                                                         <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
-                                                <td style="width: 140px"><input disabled type="text"  class="form-control avgcost" value="`+ convertToRupiah(result[i].srt_avgcost) +`"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
-                                                <td style="width: 80px"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
+                                                <td style="width: 32%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
+                                                <td style="width: 9%"><input disabled type="text"  class="form-control avgcost" value="`+ convertToRupiah(result[i].srt_avgcost) +`"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                                <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
                                                 </td>
                                             </tr>`
 
@@ -844,24 +848,24 @@
 
         function tempTable(index) {
             var temptbl =  ` <tr class="d-flex baris">
-                                                <td style="width: 80px" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 4%" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 150px">
+                                                <td class="buttonInside" style="width: 8%">
                                                     <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">
                                                      <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ index +`">
                                                         <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value=""></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan" value=""></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control tag text-right" value=""></td>
-                                                <td style="width: 140px"><input disabled type="text" class="form-control avgcost" value=""></td>
-                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control pt text-right" value=""></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control rttg text-right" value=""></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value=""></td>
+                                                <td style="width: 32%"><input disabled type="text"  class="form-control deskripsi" value=""></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control satuan" value=""></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control tag text-right" value=""></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control avgcost" value=""></td>
+                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control pt text-right" value=""></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right" value=""></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value=""></td>
                                             </tr>`
 
             return temptbl;
@@ -892,6 +896,7 @@
             }
             $('#totalItem').val(temp);
             $('#totalHarga').val(convertToRupiah(tempTtlHrg));
+            calculateQty();
         }
     </script>
 @endsection

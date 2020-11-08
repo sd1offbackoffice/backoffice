@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','Barang Rusak')
 @section('content')
 
     <div class="container-fluid mt-4">

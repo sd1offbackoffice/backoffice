@@ -161,7 +161,8 @@
                 success: function (response) {
                     if (response['message']) {
                         swal({
-                            title: response['message'],
+                            title: 'Gagal!',
+                            text: response['message'],
                             icon: 'warning',
                         }).then(function () {
                             clear();

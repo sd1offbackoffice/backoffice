@@ -6,7 +6,7 @@
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <fieldset class="card">
                     <legend class="w-auto ml-5">Header Perubahan Status Barang</legend>
                     <div class="card-body shadow-lg cardForm">
@@ -18,8 +18,8 @@
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_nomordokumen" placeholder="TXT_NODOC">
                                         </div>
-                                        <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
-                                        <div class="col-sm-3" style="margin-left: -70px; margin-right: auto; margin-top: auto">
+                                        <div class="col-sm-4 text-left" style="margin-left: -34px">
+                                            <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrRSN('')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                             <input type="checkbox" id="qtyplanogram" value="planogram"><label>&nbsp;&nbsp;Potong Qty Planogram</label>
                                         </div>
                                         <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
@@ -27,7 +27,10 @@
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_tgldokumen" placeholder="TXT_TGLDOC">
                                         </div>
-                                        <input type="text" id="keterangan" class="form-control col-sm-3 text-right"  disabled>
+                                        <div class="col-sm-1" style="margin-right: -34px">
+                                            {{--this div just for filling space--}}
+                                        </div>
+                                        <input type="text" id="keterangan" class="form-control col-sm-2 text-right" disabled PLACEHOLDER="STATUS DOKUMEN">
                                         <label for="i_keterangan" class="col-sm-4 col-form-label">Keterangan</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_keterangan" placeholder="TXT_KETERANGAN">
@@ -36,15 +39,16 @@
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_nosortir" placeholder="TXT_NOSORTIR">
                                         </div>
+                                        <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_gudang" placeholder="TXT_GUDANG" disabled>
                                         </div>
                                         <div class="col-sm-3">
                                             {{--this div just for filling space--}}
                                         </div>
-                                        <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tanggal Dokumen</label>
+                                        <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tanggal Sortir</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_tglsortir" placeholder="TXT_TGLSORTIR">
+                                            <input type="text" class="form-control" id="i_tglsortir" placeholder="TXT_TGLSORTIR" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -60,46 +64,34 @@
                                 <table class="table table-striped table-bordered">
                                     <thead class="thead-dark">
                                         <tr class="d-flex align-items-center text-center">
-                                            <th style="width: 80px"><br>X</th>
-                                            <th style="width: 150px"><br>PLU</th>
-                                            <th style="width: 400px"><br>Deskripsi</th>
-                                            <th style="width: 130px"><br>Satuan</th>
-                                            <th style="width: 80px"><br>PT</th>
-                                            <th style="width: 80px"><br>RT/TG</th>
-                                            <th style="width: 80px"><br>CTN</th>
-                                            <th style="width: 80px"><br>PCS</th>
-                                            <th style="width: 140px">HRG.SATUAN<br>(IN CTN)</th>
-                                            <th style="width: 150px"><br>NILAI</th>
+                                            <th style="width: 8%"><br>PLU</th>
+                                            <th style="width: 42%"><br>Deskripsi</th>
+                                            <th style="width: 8%"><br>Satuan</th>
+                                            <th style="width: 6%"><br>PT</th>
+                                            <th style="width: 6%"><br>RT/TG</th>
+                                            <th style="width: 6%"><br>CTN</th>
+                                            <th style="width: 6%"><br>PCS</th>
+                                            <th style="width: 9%">HRG.SATUAN<br>(IN CTN)</th>
+                                            <th style="width: 9%"><br>NILAI</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
-                                    @for($i = 0; $i< 7; $i++)
+                                    @for($i = 0; $i< 8; $i++)
                                         <tr class="d-flex baris">
-                                            <td style="width: 80px" class="text-center">
-                                                <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                            <td class="buttonInside" style="width: 8%">
+                                                <input disabled="" type="text" class="form-control plu" no="{{$i}}">
                                             </td>
-                                            <td class="buttonInside" style="width: 150px">
-                                                <input type="text" class="form-control plu" no="{{$i}}">
-                                                <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
-                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                </button>
-                                            </td>
-                                            <td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>
-                                            <td style="width: 130px"><input disabled type="text" class="form-control satuan"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control pt text-right"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control rttg text-right"></td>
-                                            <td style="width: 80px"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                            <td style="width: 80px"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
-                                            <td style="width: 140px"><input disabled type="text" class="form-control PRICE"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control total text-right"></td>
+                                            <td style="width: 42%"><input disabled type="text" class="form-control deskripsi"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control pt text-right"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateQty()"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateQty()"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control price"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right"></td>
                                         </tr>
                                     @endfor
                                     </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <td><button id="addNewRow" class="btn btn-warning btn-block" onclick="addNewRow()">Tambah Baris Baru</button></td>
-                                    </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <div class="row mt-2">
@@ -113,7 +105,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-form-label col-sm-6 text-left">TOTAL QTY</label>
-                                    <input type="text" class="form-control col-sm-6 text-right" style="float:right" value="0" disabled>
+                                    <input id="totalQty" type="text" class="form-control col-sm-6 text-right" style="float:right" value="0" disabled>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +135,6 @@
                                             <th id="modalThName1"></th>
                                             <th id="modalThName2"></th>
                                             <th id="modalThName3"></th>
-                                            <th id="modalThName4"></th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbodyModalHelp"></tbody>
@@ -161,34 +152,532 @@
         </div>
     </div>
 
+    <!-- Modal SRT-->
+    <div class="modal fade" id="modalHelpSRT" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="searchModalSRT" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="tableFixedHeader">
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th id="modalThNameSRT1"></th>
+                                            <th id="modalThNameSRT2"></th>
+                                            <th id="modalThNameSRT3"></th>
+                                            <th id="modalThNameSRT4"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyModalHelpSRT"></tbody>
+                                    </table>
+                                    <p class="text-hide" id="idModalSRT"></p>
+                                    <p class="text-hide" id="idRowSRT"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         tbody td {
             padding: 3px !important;
         }
+        #printdoc:hover{
+            cursor: pointer;
+        }
     </style>
     <script>
+        let tempRsn;
+        let tempSrt;
         function isNumberKey(evt){
             var charCode = (evt.which) ? evt.which : evt.keyCode
             if (charCode > 31 && (charCode < 48 || charCode > 57))
                 return false;
             return true;
         }
-        function deleteRow(e) {
-            let temp        = 0;
-            let tempTtlHrg  = 0;
 
-            $(e).parents("tr").remove();
-
+        function calculateQty(){
+            let qty = 0;
             for(i = 0; i < $('.plu').length; i++){
                 if ($('.plu')[i].value != ''){
-                    temp = temp + 1;
-                }
-                if($('.total')[i].value != ''){
-                    tempTtlHrg = parseFloat(tempTtlHrg) + parseFloat(unconvertToRupiah($('.total')[i].value));
+                    let satuancounter    = $('.satuan')[i].value;
+                    let ctncounter     = $('.ctn')[i].value;
+                    let pcscounter     = $('.pcs')[i].value;
+                    let fraccounter    = satuancounter.substr(satuancounter.indexOf('/')+1);
+                    if(pcscounter != 0){
+                        qty = qty + parseInt(pcscounter);
+                    }
+                    if(ctncounter != 0){
+                        qty = qty + (parseInt(ctncounter) * parseInt(fraccounter));
+                    }
                 }
             }
-            $('#totalItem').val(temp);
-            $('#totalHarga').val(convertToRupiah(tempTtlHrg));
+            $('#totalQty').val(qty);
+        }
+
+        function tempTable(index) {
+            var temptbl =  ` <tr class="d-flex baris">
+                                                <td class="buttonInside" style="width: 8%">
+                                                    <input disabled type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">
+
+                                                </td>
+                                                <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value=""></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control satuan" value=""></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control pt text-right" value=""></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right" value=""></td>
+                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateQty()"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateQty()"></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value=""></td>
+                                                <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value=""></td>
+                                            </tr>`
+
+            return temptbl;
+        }
+
+        $('#i_nomordokumen').keypress(function (e) {
+            if (e.which === 13) {
+                let val = this.value;
+
+                // Get New RSN Nmr
+                if(val === ''){
+                    swal({
+                        title: 'Buat Nomor Rubah Status Baru?',
+                        icon: 'info',
+                        // dangerMode: true,
+                        buttons: true,
+                    }).then(function (confirm) {
+                        if (confirm){
+                            ajaxSetup();
+                            $.ajax({
+                                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnewnmrrsn',
+                                type: 'post',
+                                data: {},
+                                beforeSend: function () {
+                                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                },
+                                success: function (result) {
+                                    $('#i_nomordokumen').val(result);
+                                    $('#i_tgldokumen').val(formatDate('now'));
+                                    $('#keterangan').val('* TAMBAH');
+                                    $('#totalQty').val(0);
+                                    $('#modal-loader').modal('hide');
+                                    $('#i_nosortir').val('');
+                                    $('#i_tglsortir').val('');
+                                    $('#i_gudang').val('');
+                                    //$('#deleteDoc').attr( 'disabled', true );
+                                    //$('#saveData').attr( 'disabled', false );
+                                }, error: function (e) {
+                                    alert('error');
+                                    $('#modal-loader').modal('hide')
+                                }
+                            })
+                            $('.baris').remove();
+                            for (i = 0; i< 8; i++) {
+                                $('#tbody').append(tempTable(i));
+                            }
+                        } else {
+                            $('#i_nomordokumen').val('');
+                            $('#keterangan').val('');
+                        }
+                    })
+                } else {
+                    chooseRsn(val);
+                }
+            }
+        })
+
+        $('#searchModal').keypress(function (e) {
+            if (e.which === 13) {
+                let idModal = $('#idModal').val();
+                let idRow   = $('#idRow').val();
+                let val = $('#searchModal').val().toUpperCase();
+                if(idModal === 'RSN'){
+                    searchNmrRSN(val)
+                } else {
+                    searchPlu(idRow,val)
+                }
+            }
+        })
+
+        function searchNmrRSN(val) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrrsn',
+                type: 'post',
+                data: {
+                    val:val
+                },
+                success: function (result) {
+                    $('#modalThName1').text('NO.DOC');
+                    $('#modalThName2').text('TGL.DOC');
+                    $('#modalThName3').text('KETERANGAN');
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        if(result[i].msth_keterangan_header == null){
+                            result[i].msth_keterangan_header = "";
+                        }
+                        $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ result[i].msth_nopo+"') class='modalRow'><td>"+ result[i].msth_nopo +"</td> <td>"+ formatDate(result[i].msth_tglpo) +"</td> <td>"+ result[i].msth_keterangan_header +"</td></tr>")
+                    }
+
+                    $('#idModal').val('RSN')
+                    $('#modalHelp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function getNmrRSN(val) {
+            $('#searchModal').val('')
+            if(tempRsn == null){
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrrsn',
+                    type: 'post',
+                    data: {
+                        val:val
+                    },
+                    success: function (result) {
+                        $('#modalThName1').text('NO.DOC');
+                        $('#modalThName2').text('TGL.DOC');
+                        $('#modalThName3').text('KETERANGAN');
+
+                        tempRsn = result;
+                        $('.modalRow').remove();
+                        for (i = 0; i< result.length; i++){
+                            if(result[i].msth_keterangan_header == null){
+                                result[i].msth_keterangan_header = "";
+                            }
+                            $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ result[i].msth_nopo+"') class='modalRow'><td>"+ result[i].msth_nopo +"</td> <td>"+ formatDate(result[i].msth_tglpo) +"</td> <td>"+ result[i].msth_keterangan_header +"</td></tr>")
+                        }
+
+                        $('#idModal').val('RSN')
+                        $('#modalHelp').modal('show');
+                    }, error: function () {
+                        alert('error');
+                    }
+                })
+            } else {
+                $('#modalThName1').text('NO.DOC');
+                $('#modalThName2').text('TGL.DOC');
+                $('#modalThName3').text('KETERANGAN');
+
+                $('.modalRow').remove();
+                for (i = 0; i< tempRsn.length; i++){
+                    if(tempRsn[i].msth_keterangan_header == null){
+                        tempRsn[i].msth_keterangan_header = " ";
+                    }
+                    $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ tempRsn[i].msth_nopo+"') class='modalRow'><td>"+ tempRsn[i].msth_nopo +"</td> <td>"+ formatDate(tempRsn[i].msth_tglpo) +"</td> <td>"+ tempRsn[i].msth_keterangan_header +"</td></tr>")
+                }
+
+                $('#idModal').val('RSN')
+                $('#modalHelp').modal('show');
+            }
+        }
+
+        function getNmrSRT(val) {
+            $('#searchModalSRT').val('')
+            if(tempSrt == null){
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrsrt',
+                    type: 'post',
+                    data: {
+                        val:val
+                    },
+                    success: function (result) {
+                        $('#modalThNameSRT1').text('NO.DOC');
+                        $('#modalThNameSRT2').text('TGL.DOC');
+                        $('#modalThNameSRT3').text('KETERANGAN');
+                        $('#modalThNameSRT4').text('PLU DI');
+
+                        tempSrt = result;
+                        $('.modalRowSRT').remove();
+                        for (i = 0; i< result.length; i++){
+                            if(result[i].srt_keterangan == null){
+                                result[i].srt_keterangan = " ";
+                            }
+                            $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
+                        }
+
+                        $('#idModalSRT').val('SRT')
+                        $('#modalHelpSRT').modal('show');
+                    }, error: function () {
+                        alert('error');
+                    }
+                })
+            } else {
+                $('#modalThNameSRT1').text('NO.DOC');
+                $('#modalThNameSRT2').text('TGL.DOC');
+                $('#modalThNameSRT3').text('KETERANGAN');
+                $('#modalThNameSRT4').text('PLU DI');
+
+                $('.modalRowSRT').remove();
+                for (i = 0; i< tempSrt.length; i++){
+                    if(tempSrt[i].srt_keterangan == null){
+                        tempSrt[i].srt_keterangan = " ";
+                    }
+                    $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ tempSrt[i].srt_nosortir+"') class='modalRow'><td>"+ tempSrt[i].srt_nosortir +"</td> <td>"+ formatDate(tempSrt[i].srt_tglsortir) +"</td> <td>"+ tempSrt[i].srt_keterangan +"</td><td>"+ tempSrt[i].srt_gudangtoko +"</td></tr>")
+                }
+
+                $('#idModalSRT').val('SRT')
+                $('#modalHelpSRT').modal('show');
+            }
+        }
+
+        function chooseRsn(kode) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/choosersn',
+                type: 'post',
+                data: {
+                    kode:kode
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    if(result.length === 0){
+                        $('.baris').remove();
+                        for (i = 0; i< 7; i++) {
+                            $('#tbody').append(tempTable());
+                        }
+                    } else {
+                        $('#i_nomordokumen').val(result[0].msth_nopo);
+                        $('#i_tgldokumen').val(formatDate(result[0].msth_tgldoc));
+                        $('#i_keterangan').val(result[0].msth_keterangan_header);
+                        $('#i_nosortir').val(result[0].srt_nosortir);
+                        $('#i_tglsortir').val(formatDate(result[0].srt_tglsortir));
+                        if(result[0].srt_gudangtoko == 'G'){
+                            $('#i_gudang').val('GUDANG')
+                        }else if(result[0].srt_gudangtoko == 'T'){
+                            $('#i_gudang').val('TOKO')
+                        }
+                        if (result[0].nota === 'Data Sudah Dicetak') {
+                            $('#keterangan').val(result[0].nota);
+                            $('#addNewRow').attr('disabled', true);
+                        }else{
+                            $('#keterangan').val('*KOREKSI*');
+                            $('#addNewRow').attr( 'disabled', false);
+                        }
+                        $('.baris').remove();
+                        for (i = 0; i< result.length; i++) {
+                            let tempPT = "";
+                            let tempRT = "";
+                            if(result[i].prd_perlakuanbarang === "PT"){
+                                tempPT = "PT"
+                            }
+                            else{
+                                tempRT = result[i].prd_perlakuanbarang;
+                            }
+                            let temp =  ` <tr class="d-flex baris">
+                                            <td class="buttonInside" style="width: 8%">
+                                                <input disabled type="text" class="form-control plu" value="`+ result[i].mstd_prdcd +`">
+                                            </td>
+                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].mstd_hrgsatuan) +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + result[i].mstd_gross +`"></td>
+                                        </tr>`
+
+                            $('#tbody').append(temp);
+                            }
+                        }
+                    $('#modal-loader').modal('hide');
+                    calculateQty();
+                }, error: function (e) {
+                    alert('error');
+                    $('#modal-loader').modal('hide');
+                }
+            })
+            $('#modalHelp').modal('hide')
+        }
+
+        function chooseSrt(kode) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/choosesrt',
+                type: 'post',
+                data: {
+                    kode:kode
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    if(result.length === 0){
+                        swal('', "Nomor Dokumen Sortir Tidak Ada !!", 'warning');
+                    }else if(result[0].srt_flagdisc3 == 'P' || result[0].srt_flagdisc3 == 'p') {
+                        swal('', "Nomor Dokumen Sortir Telah Diproses !!", 'warning');
+                    }else{
+                        $('#i_nosortir').val(result[0].srt_nosortir);
+                        $('#i_tglsortir').val(formatDate(result[0].srt_tglsortir));
+                        $('#i_PLU').val(result[0].srt_gudangtoko);
+                        $('.baris').remove();
+                        for (i = 0; i< result.length; i++) {
+                            let tempPT = "";
+                            let tempRT = "";
+                            let temppcs = 0;
+                            let tempktn = 0;
+                            if(result[i].prd_perlakuanbarang === "PT"){
+                                tempPT = "PT"
+                            }
+                            else{
+                                tempRT = result[i].prd_perlakuanbarang;
+                            }
+                            if(result[i].srt_qtykarton != null){
+                                tempktn = parseInt(result[i].srt_qtykarton);
+                            }
+                            if(result[i].srt_qtypcs != null){
+                                temppcs = parseInt(result[i].srt_qtypcs);
+                            }
+                            let temp =  ` <tr class="d-flex baris">
+                                            <td style="width: 4%" class="text-center">
+                                                <button disabled class="btn btn-danger btn-delete"  style="width: 57%" onclick="deleteRow(this)">X</button>
+                                            </td>
+                                            <td class="buttonInside" style="width: 8%">
+                                                <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
+                                            </td>
+                                            <td style="width: 38%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + tempktn +`"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + temppcs +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td style="width: 9%px"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * temppcs)+ parseFloat(result[i].srt_hrgsatuan * (tempktn/result[i].prd_frac))) +`"></td>
+                                        </tr>`
+
+                            $('#tbody').append(temp);
+                        }
+                    }
+                    $('#modal-loader').modal('hide');
+                    calculateQty();
+                }, error: function () {
+                    alert('error');
+                    $('#modal-loader').modal('hide');
+                }
+            })
+            $('#modalHelpSRT').modal('hide')
+        }
+
+        function printDocument(){
+            let doc         = $('#i_nomordokumen').val();
+            let keterangan  = $('#keterangan').val();
+            let docSort     = $('#i_nosortir').val();
+
+            if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
+                saveData('cetak');
+            } else {
+                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/');
+                clearField();
+            }
+        }
+
+        function saveData(status){
+            let tempPlu  = $('.plu');
+            let tempDate= $('#i_tgldokumen').val();
+            let noDoc   = $('#i_nomordokumen').val();
+            let noSort   = $('#i_nosortir').val();
+            let tglSort   = $('#i_tglsortir').val();
+            let keterangan    = $('#i_keterangan').val();
+            let pludi    = $('#i_PLU').val();
+            let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
+            let dateSort    = tglSort.substr(3,2) + '/'+ tglSort.substr(0,2)+ '/'+ tglSort.substr(6,4);
+            let datas   = [{'plu' : '', 'ctn' : '', 'pcs' : '', 'avgcost' : '', 'total' : ''}];
+            if ($('.deskripsi').val().length < 1){
+                swal({
+                    title:'Data Tidak Boleh Kosong',
+                    text: ' ',
+                    icon:'warning',
+                    timer: 1000,
+                    buttons: {
+                        confirm: false,
+                    },
+                });
+
+                return false;
+            }
+
+            for (let i=0; i < tempPlu.length; i++){
+                var qty     = 0;
+                let temp    = $('.satuan')[i].value;
+                let tag    = $('.tag')[i].value;
+                let arr     = temp.split(" / ");
+                let unit    = arr[0];
+                let frac    = temp.substr(temp.indexOf('/')+1);
+                let ctn     = parseInt( $('.ctn')[i].value);
+                let pcs     = parseInt( $('.pcs')[i].value);
+
+                if ( tempPlu[i].value){
+                    qty  = (ctn * parseInt(frac) + pcs);
+
+                    if (qty < 1){
+                        focusToRow(i);
+                        return false;
+                    }
+                    datas.push({'plu': $('.plu')[i].value, 'unit' : unit , 'frac' : frac ,'ctn' : ctn, 'pcs' : pcs,'avgcost' : unconvertToRupiah($('.avgcost')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'tag' : tag})
+                }
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/savedata',
+                type: 'post',
+                data: {
+                    datas:datas,
+                    date:date,
+                    keterangan:keterangan,
+                    pludi:pludi,
+                    noDoc:noDoc
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    console.log(result.kode)
+                    if(result.kode == '1'){
+                        if (status == 'cetak'){
+                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+result.msg+'/');
+                            clearField();
+                        } else {
+                            swal('Dokumen Berhasil disimpan','','success')
+                        }
+                    } else if(result.kode == '2'){
+                        swal('', result.msg, 'warning');
+                    } else if(result.kode == '3'){
+                        swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!')
+                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+result.msg+'/');
+                        clearField();
+                    }else {
+                        swal('ERROR', "Something's Error", 'error')
+                    }
+                    $('#modal-loader').modal('hide')
+                    $('#pilihan').val('M');
+                    //$('#saveData').attr("disabled", true)
+                    clearField();
+                }, error: function (e) {
+                    console.log(e);
+                    alert('error');
+                }
+            })
         }
     </script>
 @endsection

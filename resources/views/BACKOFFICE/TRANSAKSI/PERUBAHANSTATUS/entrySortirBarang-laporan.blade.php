@@ -76,7 +76,7 @@ $datetime->setTimezone($timezone);
         <hr style="margin-top: 20px">
     </header>
 
-    <body">
+    <body>
         <table class="table table-bordered table-responsive">
             <thead style="border-top: 3px solid black;border-bottom: 3px solid black;">
                 <tr style="text-align: center; vertical-align: center">

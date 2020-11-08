@@ -22,6 +22,7 @@
     {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>
+    <script src={{asset('/js/sticktable.js')}}></script>
 
     <link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
     <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
@@ -29,7 +30,8 @@
     <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
     <link rel="stylesheet" href={{ asset('css/datatables.css') }} rel="stylesheet">
     <link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href={{ asset('css/sticktable.css') }}  rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" >
 
 
     <title>IAS - @yield('title')</title>
@@ -114,6 +116,7 @@
                                                 <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Barang Rusak</a></li>
                                                 <li><a href="{{url("/bo/transaksi/pemusnahan/bapemusnahan/index")}}">Berita Acara Pemusnahan</a></li>
                                                 <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan BA Pemusnahan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pemusnahan/inquerybapb/index")}}">Inquery BA Pemusnahan</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">
@@ -139,9 +142,37 @@
                                         <li class="dropdown">
                                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                                data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Pengeluaran</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/input")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/cetak")}}">Cetak Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/batal")}}">Batal Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
                                                aria-expanded="false">Pengiriman ke Cabang</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/transaksi/kirimcabang/input/")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/input")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/cetak")}}">Cetak Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/batal")}}">Batal Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/inquery")}}">Inquery Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/sj-packlist")}}">Transaksi SJ Packlist</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/transfer-sj")}}">Transfer Surat Jalan</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Penerimaan</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a></li>
                                             </ul>
                                         </li>
                                     </ul>

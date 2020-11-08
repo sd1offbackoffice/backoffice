@@ -56,7 +56,7 @@
                                                 <th style="width: 125px">Satuan</th>
                                                 <th style="width: 70px">TAG</th>
                                                 <th style="width: 70px">BKP</th>
-                                                <th style="width: 80px">Stock</th>
+                                                <th style="width: 90px">Stock</th>
                                                 <th style="width: 180px">Hrg. Satuan</th>
                                                 <th style="width: 80px">CTN</th>
                                                 <th style="width: 80px">PCS</th>
@@ -66,9 +66,9 @@
                                             </thead>
                                             <tbody id="tbody">
                                             @for($i = 0; $i< 15; $i++)
-                                                <tr class="d-flex baris" onclick="putDesPanjang(this)">
+                                                <tr class="d-flex baris">
                                                     <td style="width: 80px" class="text-center">
-                                                        <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow()">X</button>
+                                                        <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                                     </td>
                                                     <td class="buttonInside" style="width: 125px">
                                                         <input type="text" class="form-control plu" id="plu" no="{{$i}}">
@@ -78,21 +78,21 @@
                                                     </td>
                                                     <td style="width: 400px"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td>
                                                     <td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>
-                                                    <td style="width: 70px"><input disabled type="text" class="form-control tag text-right"></td>
+                                                    <td style="width: 70px"><input disabled type="text" class="form-control tag"></td>
                                                     <td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>
-                                                    <td style="width: 80px"><input disabled type="text" class="form-control stock"></td>
-                                                    <td style="width: 180px"><input type="text" class="form-control hrgsatuan"></td>
-                                                    <td style="width: 80px"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 1)"></td>
-                                                    <td style="width: 80px"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 2)"></td>
+                                                    <td style="width: 90px"><input disabled type="text" class="form-control stock text-right"></td>
+                                                    <td style="width: 180px"><input type="text" class="form-control hrgsatuan text-right"></td>
+                                                    <td style="width: 80px"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
+                                                    <td style="width: 80px"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="qty(this.value,this.id,2)"></td>
                                                     <td style="width: 180px"><input disabled type="text" class="form-control gross text-right"></td>
-                                                    <td style="width: 400px"><input type="text" class="form-control keterangan text-right"></td>
+                                                    <td style="width: 400px"><input type="text" class="form-control keterangan"></td>
                                                 </tr>
                                             @endfor
                                             </tbody>
                                             <tfoot>
                                             <tr>
                                                 <td>
-                                                    <button class="btn btn-warning btn-block" id="btn-addRow" onclick="addRow()">
+                                                    <button class="btn btn-warning btn-block" id="btn-addRow" >
                                                         TAMBAH BARIS BARU
                                                     </button>
                                                 </td>
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div class="form-group row mb-0">
                                                     <div class="col-sm-4">
-                                                        <button class="btn btn-primary pl-2 pr-2 mr-2" id="btn-save" onclick="saveDokumen('new')">
+                                                        <button class="btn btn-primary pl-2 pr-2 mr-2" id="btn-save" type="button">
                                                             SAVE DOKUMEN
                                                         </button>
                                                     </div>
@@ -378,7 +378,7 @@
                         //console.log(result)
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
+                            let temp = `<tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
                                         <td>`+ result[i].trbo_nodoc +`</td>
                                         <td>`+ result[i].trbo_tipe +`</td>
                                         <td>`+ result[i].nota +`</td>
@@ -395,20 +395,21 @@
 
         $('#search-modal-2').keypress(function (e) {
             if (e.which === 13) {
-                let search = $('#search-modal-2').val('');
-                let index = temp['attributes'][4]['value'];
+                let search = $('#search-modal-2').val();
+                let index = this['attributes'][4]['value'];
                 ajaxSetup();
                 $.ajax({
                     url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_plu',
-                    type: 'post',
+                    type: 'POST',
                     data: {search: search},
                     success: function (result) {
-                        //console.log(result)
+                        // console.log(result)
                         $('.modalRow').remove();
                         for (i = 0; i < result.length; i++) {
-                            let temp = "<tr onclick=choosePlu('" + result[i].prd_prdcd + "','" + index + "') class='modalRow'><td>" +
-                                result[i].prd_deskripsipanjang + "</td> <td>"
-                                + result[i].prd_prdcd + "</td></tr>"
+                            let temp = "<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'>" +
+                                "<td>"+ result[i].prd_deskripsipanjang +"</td> " +
+                                "<td>"+ result[i].prd_prdcd +"</td>" +
+                                "</tr>"
                             $('.tbody-modal-2').append(temp);
                         }
                         // $('#modal-help-1').modal('show');
@@ -417,7 +418,7 @@
                     }
                 });
             }
-        })
+        });
 
         function getPlu(temp) {
             $('#search-modal-2').val('')
@@ -471,11 +472,11 @@
                         for(i=0; i<result.length; i++){
                             qtyctn = result[i].trbo_qty / result[i].prd_frac;
                             qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                            ppn = result[i].trbo_ppnrph * 0;
+                            // ppn = result[i].trbo_ppnrph * 0;
 
-                            html = `<tr class="d-flex baris" onclick="putDesPanjang(this)">
+                            html = `<tr class="d-flex baris">
                                                 <td style="width: 80px" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow()">X</button>
+                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 125px">
                                                     <input type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
@@ -484,10 +485,10 @@
                                                 <td style="width: 125px"><input disabled type="text" class="form-control satuan" value="`+ nvl(result[i].prd_unit, '') +` / `+ nvl(result[i].prd_frac, '') +`"></td>
                                                 <td style="width: 70px"><input disabled type="text" class="form-control tag" value="`+ nvl(result[i].prd_kodetag, '') +`"></td>
                                                 <td style="width: 70px"><input disabled type="text" class="form-control bkp" value="`+ nvl(result[i].prd_flagbkp1, '') +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
+                                                <td style="width: 90px"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
                                                 <td style="width: 180px"><input type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,1)"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
+                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
+                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
                                                 <td style="width: 180px"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
                                                 <td style="width: 400px"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
@@ -499,12 +500,12 @@
                             $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
                             $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
                             $('#total-item').val(result.length);
-                            $('#ppn').val(convertToRupiah(ppn));
+                            $('#ppn').val('0');
                             $('#btn-save').attr('disabled', false);
                             $('#btn-hapus').attr('disabled', false);
                             $('#btn-addRow').attr('disabled', false);
-                            total = tempgross + ppn;
-                            $('#total').val(convertToRupiah(total));
+                            // total = tempgross + ppn;
+                            $('#total').val(convertToRupiah(tempgross));
                         }
                     } else {
                         var html = "";
@@ -514,11 +515,11 @@
                         for (i = 0; i < result.length; i++) {
                             qtyctn = result[i].trbo_qty / result[i].prd_frac;
                             qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                            ppn = result[i].trbo_ppnrph * 0;
+                            // ppn = result[i].trbo_ppnrph * 0;
 
-                            html = `<tr class="d-flex baris" onclick="putDesPanjang(this)">
+                            html = `<tr class="d-flex baris">
                                                 <td style="width: 80px" class="text-center">
-                                                    <button disabled class="btn btn-danger btn-delete" style="width: 40px" onclick="deleteRow()">X</button>
+                                                    <button disabled class="btn btn-danger btn-delete" style="width: 40px" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 125px">
                                                     <input disabled type="text" class="form-control plu" value="` + result[i].trbo_prdcd + `">
@@ -527,10 +528,10 @@
                                                 <td style="width: 125px"><input disabled type="text" class="form-control satuan" value="` + nvl(result[i].prd_unit,'') + ` / ` + nvl(result[i].prd_frac, '') + `"></td>
                                                 <td style="width: 70px"><input disabled type="text" class="form-control tag" value="` + nvl(result[i].prd_kodetag, '') + `"></td>
                                                 <td style="width: 70px"><input disabled type="text" class="form-control bkp" value="` + nvl(result[i].prd_flagbkp1, '') + `"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control stock text-right" value="` + nvl(result[i].trbo_qty, '') + `"></td>
+                                                <td style="width: 90px"><input disabled type="text" class="form-control stock text-right" value="` + nvl(result[i].trbo_stokqty, '') + `"></td>
                                                 <td style="width: 180px"><input disabled type="text" class="form-control hrgsatuan text-right" value="` + nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') + `"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) + `" id="` + i + `" onchange="calculateQty(this.value,this.id,1)"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + qtypcs + `" id="` + i + `" onchange="calculateQty(this.value,this.id,2)"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) + `" id="` + i + `"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" value="` + qtypcs + `" id="` + i + `"></td>
                                                 <td style="width: 180px"><input disabled type="text" class="form-control gross text-right" value="` + nvl(convertToRupiah(result[i].trbo_gross), '') + `"></td>
                                                 <td style="width: 400px"><input disabled type="text" class="form-control keterangan" value="` + nvl(result[i].trbo_keterangan, '') + `"></td>
                                             </tr>`;
@@ -542,15 +543,14 @@
                             $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
                             $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
                             $('#total-item').val(result.length);
-                            $('#ppn').val(ppn);
+                            $('#ppn').val('0');
                             $('#btn-save').attr('disabled', true);
                             $('#btn-hapus').attr('disabled', true);
                             $('#btn-addRow').attr('disabled', true);
-                            total = tempgross + ppn;
-                            $('#total').val(convertToRupiah(total));
+                            // total = tempgross + ppn;
+                            $('#total').val(convertToRupiah(tempgross));
                         }
                     }
-
                 }
                 // alert("No DOC yg dipilih : " + val)
             })
@@ -579,32 +579,7 @@
                 success: function (result) { //result bukan dr controller, cuma penamaan
                     $('#modal-loader').modal('hide');
 
-                    if(result.noplu == 0){
-                        swal('', result.message, 'warning')
-                        $('#deskripsiPanjang').val('')
-
-                        data = result.data[0];
-
-                        $('.plu')[index].value = data.st_prdcd;
-                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
-                        $('.satuan')[index].value = data.prd_unit + ' / ' + data.prd_frac;
-                        $('.tag')[index].value = data.prd_kodetag;
-                        $('.bkp')[index].value = data.prd_flagbkp1;
-                        $('.ctn')[index].value = '0';
-                        $('.pcs')[index].value = '0';
-                        $('.hrgsatuan')[index].value = convertToRupiah(data.hrgsatuan);
-                        $('.stock')[index].value = data.st_saldoakhir;
-                        $('#avg-cost')[index].value = convertToRupiah(data.hrgsatuan);
-                        $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
-
-                        // tempStock.push({'plu' : data.st_prdcd, 'stock' : data.st_saldoakhir, 'deskripsipanjang' : data.prd_deskripsipanjang})
-                        for (i = 0; i < $('.plu').length; i++) {
-                            if ($('.plu')[i].value != '') {
-                                temp = temp + 1;
-                            }
-                        }
-                        $('#total-item').val(temp)
-                    } else {
+                    if(result.noplu === 1){
                         data = result.data[0]; //array sebagai penanda data mana yang dipilih, pake result.data krn controller nya manggil byk
 
                         $('.plu')[index].value = data.st_prdcd;
@@ -615,26 +590,51 @@
                         $('.ctn')[index].value = '0';
                         $('.pcs')[index].value = '0';
                         $('.hrgsatuan')[index].value = convertToRupiah(data.hrgsatuan);
-                        $('.stock')[index].value = data.st_saldoakhir;
-                        $('#avg-cost')[index].value = convertToRupiah(data.hrgsatuan);
+                        $('.stock')[index].value = convertToRupiah2(data.st_saldoakhir);
+                        $('#avg-cost').val(convertToRupiah(data.hrgsatuan));
                         $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
 
-                        // tempStock.push({'plu' : data.st_prdcd, 'stock' : data.st_saldoakhir, 'deskripsipanjang' : data.prd_deskripsipanjang})
                         for (i = 0; i < $('.plu').length; i++) {
                             if ($('.plu')[i].value != '') {
                                 temp = temp + 1;
                             }
                         }
                         $('#total-item').val(temp)
-                    }
+                    } else if (result.noplu === 0){
+                        swal('', result.message, 'warning')
+                        $('#deskripsiPanjang').val('');
+                        $('#avg-cost').val('');
 
+                        data = result.data[0]; //array sebagai penanda data mana yang dipilih, pake result.data krn controller nya manggil byk
+
+                        $('.plu')[index].value = data.st_prdcd;
+                        $('.deskripsi')[index].value = data.prd_deskripsipendek;
+                        $('.satuan')[index].value = data.prd_unit + ' / ' + data.prd_frac;
+                        $('.tag')[index].value = data.prd_kodetag;
+                        $('.bkp')[index].value = data.prd_flagbkp1;
+                        $('.ctn')[index].value = '0';
+                        $('.pcs')[index].value = '0';
+                        $('.hrgsatuan')[index].value = convertToRupiah(data.hrgsatuan);
+                        $('.stock')[index].value = convertToRupiah2(data.st_saldoakhir);
+                        $('#avg-cost').val(convertToRupiah(data.hrgsatuan));
+                        $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
+
+                        for (i = 0; i < $('.plu').length; i++) {
+                            if ($('.plu')[i].value != '') {
+                                temp = temp + 1;
+                            }
+                        }
+                        $('#total-item').val(temp)
+                    } else {
+                        swal('Error', '', 'error')
+                    }
                 }, error: function (error) {
-                    console.log(error);
+                    $('#modal-loader').modal('hide')
+                    console.log(error)
                 }
             })
             // alert("No PLU yg dipilih : " + noplu)
         }
-
 
         $('.plu').keypress(function (e) {
             if (e.which === 13) {
@@ -644,30 +644,78 @@
             }
         })
 
-        function saveDokumen(status) {
+        function qty(value, index, noplu){
+            let plu     = $('.plu')[index].value;
+            let temp    = $('.satuan')[index].value;
+            let ctn     = $('.ctn')[index];
+            let pcs     = $('.pcs')[index];
+            let hrgsatuan = $('.hrgsatuan')[index].value;
+            let gross   = $('.gross')[index];
+            let totalgross = $('#totalgross');
+            let total = $('#total');
+            let ppn = $('#ppn');
+            let tempTtlGross = 0;
+            let frac    = temp.substr(temp.indexOf('/')+1);
+            let stock;
+            let qty = 0;
+            let qty1 = 0;
+            let qty2 = 0;
+            let ttl;
+            let hitqty;
+            let hitctn;
+            let hitpcs;
+
+            hitqty = (parseInt(ctn.value) * frac) + parseInt(pcs.value);
+            hitctn = hitqty/frac;
+            hitpcs = hitqty%frac;
+
+            qty1 = ctn.value * frac;
+            qty2 = pcs.value;
+            qty  = parseInt(qty1) + parseInt(qty2);
+
+            price = qty * unconvertToRupiah(hrgsatuan) / frac;
+            parseInt(totalgross,10);
+            parseInt(price,10);
+            gross.value = convertToRupiah(price);
+
+            for(i = 0; i < $('.gross').length; i++){
+                if($('.gross')[i].value != ''){
+                    tempTtlGross = parseFloat(tempTtlGross) + parseFloat(unconvertToRupiah($('.gross')[i].value));
+                }
+            }
+            totalgross.val(convertToRupiah(tempTtlGross));
+            ctn.value = Math.floor(hitctn,0);
+            pcs.value = hitpcs;
+            ppn.value = 0;
+            ppn.val('0');
+            ttl = tempTtlGross + ppn;
+            total.val(convertToRupiah(tempTtlGross));
+
+        }
+
+        $('#btn-save').on('click', function () {
             let tempTR  = $('.plu');
             let tempDate= $('#tgl-doc').val();
-            let noDoc   = $('#no-trn').val();
-            // let type    = $('#pilihan').val();
+            let nodoc   = $('#no-trn').val();
             let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
-            let data   = [{'plu' : '', 'qty' : '', 'harga' : '', 'total' : '', 'keterangan' : ''}];
+            let data   = [{'plu' : '', 'qty' : '', 'hrgsatuan' : '', 'keterangan' : ''}];
 
-            if ($('.deskripsi').val().length < 1){
-                swal({
-                    title:'Data Tidak Boleh Kosong',
-                    text: ' ',
-                    icon:'warning',
-                    timer: 1000,
-                    buttons: {
-                        confirm: false,
-                    },
-                });
-                return false;
-            }
+            // if ($('.deskripsi').val().length < 1){
+            //     swal({
+            //         title:'Data Tidak Boleh Kosong',
+            //         text: ' ',
+            //         icon:'warning',
+            //         timer: 1000,
+            //         buttons: {
+            //             confirm: false,
+            //         },
+            //     });
+            //
+            //     return false;
+            // }
 
             for (let i=0; i < tempTR.length; i++){
                 var qty     = 0;
-                var total   = 0;
                 let temp    = $('.satuan')[i].value;
                 let frac    = temp.substr(temp.indexOf('/')+1);
 
@@ -678,95 +726,107 @@
                         focusToRow(i);
                         return false;
                     }
-                    data.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('.keterangan')[i].value})
+                    data.push({'plu': $('.plu')[i].value, 'qty' : qty, 'hrgsatuan' : unconvertToRupiah($('.hrgsatuan')[i].value), 'keterangan' : $('.keterangan')[i].value})
                 }
             }
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public//bo/transaksi/brghilang/input/saveDoc',
+                url: '/BackOffice/public/bo/transaksi/brghilang/input/saveDoc',
                 type: 'post',
                 data: {
                     data:data,
                     date:date,
-                    type:type,
-                    noDoc:noDoc
+                    nodoc:nodoc
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
-                    console.log(result.kode)
+                    console.log(result)
                     if(result.kode == '1'){
                         swal('Dokumen Berhasil disimpan','','success')
                     } else {
                         swal('ERROR', "Something's Error", 'error')
                     }
                     $('#modal-loader').modal('hide')
-                    // $('#pilihan').val('M');
                     $('#btn-save').attr("disabled", true)
                     clearField();
                 }, error: function () {
                     alert('error');
                 }
             })
+        });
+
+        function focusToRow(index) {
+            swal({
+                title:'QTYB + QTYK < = 0',
+                text: ' ',
+                icon:'warning',
+                timer: 1000,
+                buttons: {
+                    confirm: false,
+                },
+            });
+            $('.ctn')[index].focus()
         }
 
-        {{--$('#btn-hapus').on('click', function () {--}}
-            {{--let nodoc = $('#no-trn').val();--}}
-            {{--$.ajax({--}}
-                {{--url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',--}}
-                {{--type: 'GET',--}}
-                {{--data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},--}}
-                {{--beforeSend: function () {--}}
-                    {{--$('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
-                {{--},--}}
-                {{--success: function (result) {--}}
-                    {{--swal({--}}
-                        {{--title: 'Nomor Dokumen Dihapus?',--}}
-                        {{--icon: 'warning'--}}
-                    {{--}).then((confirm) => {--}}
-                        {{--$('#no-trn').val('');--}}
-                        {{--$('.baris').remove();--}}
-                        {{--clearField();--}}
-                    {{--});--}}
-                {{--},--}}
-                {{--complete: function () {--}}
-                    {{--$('#modal-loader').modal('hide');--}}
-                {{--}--}}
-            {{--});--}}
-        {{--});--}}
+        $('#btn-hapus').on('click', function () {
+            let nodoc = $('#no-trn').val();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',
+                type: 'GET',
+                data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    swal({
+                        title: 'Nomor Dokumen Dihapus?',
+                        icon: 'warning'
+                    }).then((confirm) => {
+                        $('#no-trn').val('');
+                        $('.baris').remove();
+                        clearField();
+                    });
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                }
+            });
+        });
 
-        {{--$('#btn-addRow').on('click', function(e) {--}}
-            {{--var temp = $('#tbody').find('tr').length;--}}
-            {{--let index = parseInt(temp, 10)--}}
-            {{--var tempTable = `<tr class="d-flex baris" onclick="putDesPanjang(this)">--}}
-                                                {{--<td style="width: 80px" class="text-center">--}}
-                                                    {{--<button disabled class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow()">X</button>--}}
-                                                {{--</td>--}}
-                                                {{--<td class="buttonInside" style="width: 125px">--}}
-                                                    {{--<input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">--}}
-                                                     {{--<button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu()" no="`+ index +`">--}}
-                                                        {{--<img src="../../../../../public/image/icon/help.png" width="25px">--}}
-                                                    {{--</button>--}}
-                                                {{--</td>--}}
-                                                {{--<td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>--}}
-                                                {{--<td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>--}}
-                                                {{--<td style="width: 70px"><input disabled type="text" class="form-control tag"></td>--}}
-                                                {{--<td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control stock text-right"></td>--}}
-                                                {{--<td style="width: 180px"><input disabled type="text" class="form-control hrgsatuan text-right"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" id="`+ index +`" onchange="calculateQty(this.value,this.id,1)"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" id="` + i + `" onchange="calculateQty(this.value,this.id,2)"></td>--}}
-                                                {{--<td style="width: 180px"><input disabled type="text" class="form-control gross text-right"></td>--}}
-                                                {{--<td style="width: 400px"><input disabled type="text" class="form-control keterangan"></td>--}}
-                                            {{--</tr>`;--}}
-            {{--$('#tbody').append(tempTable(index));--}}
-        {{--});--}}
+        $('#btn-addRow').on('click', function() {
+            var temp = $('#tbody').find('tr').length;
+            let index = parseInt(temp, 10)
+            html = `<tr class="d-flex baris">
+                                                <td style="width: 80px" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                </td>
+                                                <td class="buttonInside" style="width: 125px">
+                                                    <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`">
+                                                     <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="`+ index +`">
+                                                        <img src="../../../../../public/image/icon/help.png" width="25px">
+                                                    </button>
+                                                </td>
+                                                <td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>
+                                                <td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control tag"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>
+                                                <td style="width: 90px"><input disabled type="text" class="form-control stock text-right"></td>
+                                                <td style="width: 180px"><input type="text" class="form-control hrgsatuan text-right"></td>
+                                                <td style="width: 80px"><input type="text" class="form-control ctn text-right" id="`+ index +`" onchange="qty(this.value,this.id,1)"></td>
+                                                <td style="width: 80px"><input type="text" class="form-control pcs text-right" id="` + i + `" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 180px"><input disabled type="text" class="form-control gross text-right"></td>
+                                                <td style="width: 400px"><input type="text" class="form-control keterangan"></td>
+                                            </tr>`;
+            $('#tbody').append(html);
+        });
 
         function deleteRow(e) {
             let temp        = 0;
             let tempGross  = 0;
+            let tempTtl = 0;
 
             $(e).parents("tr").remove();
             $('#deskripsiPanjang').val('')
@@ -775,55 +835,64 @@
                 if ($('.plu')[i].value != ''){
                     temp = temp + 1;
                 }
-                if($('.total')[i].value != ''){
+                if($('.gross')[i].value != ''){
                     tempGross = parseFloat(tempGross) + parseFloat(unconvertToRupiah($('.gross')[i].value));
+                }
+                if($('#total')[i].value != ''){
+                    tempTtl = parseFloat(tempTtl) + parseFloat(unconvertToRupiah($('.gross')[i].value));
                 }
             }
             $('#total-item').val(temp);
             $('#totalgross').val(convertToRupiah(tempGross));
+            $('#total').val(convertToRupiah(tempTtl));
         }
 
-        {{--function clearField(){--}}
-            {{--$('#no-trn').val("");--}}
-            {{--$('#tgl-doc').val("");--}}
-            {{--$('#model').val("");--}}
-            {{--$('#deskripsiPanjang').val("");--}}
-            {{--$('#avg-cost').val("");--}}
-            {{--$('#total-item').val("");--}}
-            {{--$('#totalgross').val("");--}}
-            {{--$('#ppn').val("");--}}
-            {{--$('#total').val("");--}}
+        function clearField(){
+            $('#no-trn').val("");
+            $('#tgl-doc').val("");
+            $('#model').val("");
+            $('#deskripsiPanjang').val("");
+            $('#avg-cost').val("");
+            $('#total-item').val("");
+            $('#totalgross').val("");
+            $('#ppn').val("");
+            $('#total').val("");
 
-            {{--$('.baris').remove();--}}
+            $('.baris').remove();
 
-            {{--for (i = 0; i< 15; i++) {--}}
-               {{--var tempTable = `<tr class="d-flex baris" onclick="putDesPanjang(this)">--}}
-                                                {{--<td style="width: 80px" class="text-center">--}}
-                                                    {{--<button disabled class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>--}}
-                                                {{--</td>--}}
-                                                {{--<td class="buttonInside" style="width: 125px">--}}
-                                                    {{--<input disabled type="text" class="form-control plu" value="\` + result[i].trbo_prdcd + \`">--}}
-                                                     {{--<button id="btn-no-doc" type="button" class="btn btn-lov ml-3 mt-1" onclick="getPlu(this,'')" no="` + i + `">--}}
-                                                        {{--<img src="../../../../../public/image/icon/help.png" width="25px">--}}
-                                                    {{--</button>--}}
-                                                {{--</td>--}}
-                                                {{--<td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>--}}
-                                                {{--<td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>--}}
-                                                {{--<td style="width: 70px"><input disabled type="text" class="form-control tag"></td>--}}
-                                                {{--<td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control stock text-right"></td>--}}
-                                                {{--<td style="width: 180px"><input disabled type="text" class="form-control hrgsatuan text-right"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control ctn text-right" id="`+ index +`" onchange="calculateQty(this.value,this.id,1)"></td>--}}
-                                                {{--<td style="width: 80px"><input disabled type="text" class="form-control pcs text-right" id="` + i + `" onchange="calculateQty(this.value,this.id,2)"></td>--}}
-                                                {{--<td style="width: 180px"><input disabled type="text" class="form-control gross text-right"></td>--}}
-                                                {{--<td style="width: 400px"><input disabled type="text" class="form-control keterangan"></td>--}}
-                                            {{--</tr>`;--}}
-                {{--$('#tbody').append(tempTable(i));--}}
-            {{--}--}}
+            for (i = 0; i< 15; i++) {
+                $('#tbody').append(temptable(i));
+            }
 
-            {{--//    Memperbaharui LOV Nomor TRN--}}
-            {{--// tempTrn = null;--}}
-        {{--}--}}
+            //    Memperbaharui LOV Nomor TRN
+            // tempTrn = null;
+        }
+
+        function temptable(index){
+            var tmptbl = `<tr class="d-flex baris">
+                                                <td style="width: 80px" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                </td>
+                                                <td class="buttonInside" style="width: 125px">
+                                                    <input disabled type="text" class="form-control plu">
+                                                     <button id="btn-no-plu" type="button" class="btn btn-lov ml-3 mt-1" onclick="getPlu(this,'')" no="` + i + `">
+                                                        <img src="../../../../../public/image/icon/help.png" width="25px">
+                                                    </button>
+                                                </td>
+                                                <td style="width: 400px"><input disabled type="text" class="form-control deskripsi"></td>
+                                                <td style="width: 125px"><input disabled type="text" class="form-control satuan"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control tag"></td>
+                                                <td style="width: 70px"><input disabled type="text" class="form-control bkp"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control stock"></td>
+                                                <td style="width: 180px"><input disabled type="text" class="form-control hrgsatuan"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control ctn" id="`+ index +`"></td>
+                                                <td style="width: 80px"><input disabled type="text" class="form-control pcs" id="` + i + `"></td>
+                                                <td style="width: 180px"><input disabled type="text" class="form-control gross"></td>
+                                                <td style="width: 400px"><input disabled type="text" class="form-control keterangan"></td>
+                                            </tr>`;
+
+            return tmptbl;
+        }
 
     </script>
 

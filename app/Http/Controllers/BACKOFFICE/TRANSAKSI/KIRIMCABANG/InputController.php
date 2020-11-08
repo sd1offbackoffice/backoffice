@@ -79,6 +79,11 @@ class InputController extends Controller
         oci_bind_by_name($s, ':ret', $no, 32);
         oci_execute($s);
 
+        DB::table('tbtr_tac')
+            ->where('tac_kodeigr',$_SESSION['kdigr'])
+            ->where('tac_nodoc',$no)
+            ->delete();
+
         return $no;
     }
 

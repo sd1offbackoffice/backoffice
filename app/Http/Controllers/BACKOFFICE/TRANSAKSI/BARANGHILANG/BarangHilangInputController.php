@@ -39,7 +39,7 @@ class barangHilangInputController extends Controller
 
     public function lov_plu(Request $request)
     {
-        $search = $request->search;
+        $search = strtoupper($request->search);
 
         $result = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
@@ -81,9 +81,6 @@ class barangHilangInputController extends Controller
             ->selectRaw('trbo_keterangan')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('trbo_averagecost')
-            ->selectRaw("trbo_ppnrph")
-//            ->selectRaw("st_saldoakhir as stock")
-//            ->selectRaw("SUM(trbo_gross) as totalgross")
             ->where('TRBO_TYPETRN', '=', 'H')
             ->where('TRBO_NODOC', '=', $nodoc)
             ->orderBy('TRBO_SEQNO')
@@ -99,39 +96,25 @@ class barangHilangInputController extends Controller
         $ppn = '';
         $trim = 0;
 
-        $result = DB::Table('tbmaster_prodmast')
-            ->leftJoin('tbmaster_stock', 'prd_prdcd', '=', 'st_prdcd')
-            ->selectRaw("PRD_DESKRIPSIPENDEK")
-            ->selectRaw("PRD_DESKRIPSIPANJANG")
-            ->selectRaw("NVL(PRD_FRAC,1) as PRD_FRAC")
-            ->selectRaw("PRD_UNIT")
-            ->selectRaw("PRD_FLAGBKP1")
-            ->selectRaw("PRD_KODETAG")
-            ->selectRaw("PRD_AVGCOST as hrgsatuan")
-            ->selectRaw("ST_AVGCOST")
-            ->selectRaw("NVL(ST_PRDCD,'XXXXXXX') ST_PRDCD")
-            ->selectRaw("ST_SALDOAKHIR")
-            ->selectRaw("PRD_KODESUPPLIER")
-            ->where('st_lokasi', '=', '01')
-            ->where('prd_prdcd', '=', $noplu)
-            ->limit(100)
-            ->get();
+        $result = DB::select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST as hrgsatuan,
+                ST_AVGCOST,NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD,Nvl(ST_SALDOAKHIR,0) as ST_SALDOAKHIR, PRD_KODESUPPLIER
+                FROM TBMASTER_PRODMAST tp
+                LEFT JOIN TBMASTER_STOCK ts ON prd_prdcd = st_prdcd and st_lokasi = '01' 
+                where  PRD_PRDCD = '$noplu'");
 
-        if (is_null($result)) {
-            $message = "Kode Produk Tidak Terdaftar!";
-            $status = 'error';
-            return compact(['message', 'status']);
-        }
+        if (!$result) {
+            $message = "Kode ".$noplu." Tidak Terdaftar";
 
-        if ($result[0]->st_prdcd == 'XXXXXXX') {
-            $message = "Plu Belum Melakukan Perubahan Status!";
-            return response()->json(['message' => $message, 'data' => $result]);
+            return response()->json(['noplu' => 0, 'message' => $message, 'data' => '']);
+        } else if ($result[0]->st_prdcd == 'XXXXXXX') {
 
+            $message = "Plu ".$noplu." Belum Melakukan Perubahan Status";
+
+            return response()->json(['noplu' => 0, 'message' => $message, 'data' => $result]);
         } else {
             if (is_null($result[0]->st_avgcost) || $result[0]->st_avgcost == 0) {
                 $hrgsatuan = $result[0]->prd_avgcost;
                 $avgcost = $result[0]->prd_avgcost;
-
             } else {
                 if ($result[0]->prd_unit == 'KG') {
                     $trim = $result[0]->prd_frac / 1000;
@@ -140,10 +123,8 @@ class barangHilangInputController extends Controller
                 }
                 $hrgsatuan = $result[0]->st_avgcost * $trim;
                 $avgcost = $result[0]->st_avgcost * $trim;
-
-                return response()->json(['message' => '', 'data' => $result, 'hrgsatuan' => $hrgsatuan, 'avgcost' => $avgcost]);
             }
-
+            return response()->json(['noplu' => 1, 'message' => '', 'data' => $result, 'hrgsatuan' => $hrgsatuan, 'avgcost' => $avgcost]);
         }
     }
 
@@ -166,7 +147,7 @@ class barangHilangInputController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $nodoc  = $request->nodoc;
         $data = $request->data;
-        $date = date('Y-M-D', strtotime($request->date));
+        $date = date('Y-m-d', strtotime($request->date));
         $userid = $_SESSION['usid'];
         $today  = date('Y-m-d H:i:s');
 
@@ -176,14 +157,15 @@ class barangHilangInputController extends Controller
         $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
         $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
-                            " .$ip. " || '7', 6, FALSE); END;");
+                            " .$ip. " || '7', 6, TRUE); END;");
         oci_bind_by_name($s, ':ret', $docNo, 32);
         oci_execute($s);
 
         $getDoc = DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
 
+
         if($getDoc){
-            DB::table('tbtr_baranghilang')->where('trbo_nodoc', $nodoc)->delete();
+            DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
 
             for ($i = 1; $i < sizeof($data); $i++){
                 $temp = $data[$i];
@@ -199,11 +181,11 @@ class barangHilangInputController extends Controller
                         'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
                         'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
                         'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
-                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '',
-                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $temp['avgcost'], 'trbo_oldcost' => '', 'trbo_postqty' => '',
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => '', 'trbo_discrph' => '', 'trbo_ppnrph' => '',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => '', 'trbo_oldcost' => '', 'trbo_posqty' => '',
                         'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
-                        'trbo_create_by' => $getDoc->rsk_create_by, 'trbo_create_dt' => $getDoc->trbo_create_dt, 'trbo_modify_by' => $userid,
-                        'trbo_modify_dt' => $today, 'trbo_stokqty' => $temp['stokqty'], 'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '',
+                        'trbo_create_by' => $getDoc->trbo_create_by, 'trbo_create_dt' => $getDoc->trbo_create_dt, 'trbo_modify_by' => $userid,
+                        'trbo_modify_dt' => $today, 'trbo_stokqty' => '', 'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '',
                         'trbo_tglnota' => ''
                     ]);
             }
@@ -224,10 +206,10 @@ class barangHilangInputController extends Controller
                         'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
                         'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
                         'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
-                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '',
-                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $temp['avgcost'], 'trbo_oldcost' => '', 'trbo_postqty' => '',
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => '', 'trbo_discrph' => '', 'trbo_ppnrph' => '',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => '', 'trbo_oldcost' => '', 'trbo_posqty' => '',
                         'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
-                        'trbo_create_by' => $userid, 'trbo_create_dt' => $today, 'trbo_stokqty' => $temp['stokqty'],
+                        'trbo_create_by' => $userid, 'trbo_create_dt' => $today, 'trbo_stokqty' => '',
                         'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '', 'trbo_tglnota' => ''
                     ]);
             }
@@ -238,7 +220,10 @@ class barangHilangInputController extends Controller
     public function deleteDoc(Request $request){
         $nodoc = $request->nodoc;
 
-        DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
+        DB::table('tbtr_backoffice')
+            ->where('trbo_nodoc', $nodoc)
+            ->where('trbo_typetrn','=','H')
+            ->delete();
 
         return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus!"]);
     }

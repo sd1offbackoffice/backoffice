@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Penyesuaian</title>
+    <title>Edit List Surat Jalan</title>
 </head>
 <body>
 
@@ -18,12 +18,12 @@ $datetime->setTimezone($timezone);
         </p>
     </div>
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d-m-Y") }}<br><br>
+        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
             Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
             <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
             Hal. :
     </div>
-    <h2 style="text-align: center">** EDIT NOTA PENYESUAIAN PERSEDIAAN **</h2>
+    <h2 style="text-align: center">EDIT LIST SURAT JALAN</h2>
 </header>
 
 <footer>
@@ -36,156 +36,98 @@ $datetime->setTimezone($timezone);
         $i = 0;
         $total = 0;
     @endphp
-    @foreach($report as $d)
-    @if($temp != $d->msth_nodoc)
+    @foreach($data as $d)
+    @if($temp != $d->trbo_nodoc)
     @if($temp != '')
     </tbody>
     <tfoot style="text-align: center">
     <tr>
-        <td colspan="13"></td>
-        <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-        <td>{{ number_format($total,1) }}</td>
+        <td colspan="6"></td>
+        <td style="text-align: left"><strong>TOTAL SELURUHNYA</strong></td>
+        <td style="text-align: right">{{ number_format($total,2) }}</td>
         <td></td>
     </tr>
+    <hr>
     </tfoot>
     </table>
-    <table style="width: 100%; font-weight: bold" class="table-ttd">
-        <tr>
-            <td>DIBUAT</td>
-            <td>DIPERIKSA</td>
-            <td>MENYETUJUI</td>
-            <td>PELAKSANA</td>
-            <td>PENERIMA</td>
-        </tr>
-        <tr class="blank-row">
-            <td colspan="5">ttd</td>
-        </tr>
-        <tr>
-            <td>ADMINISTRASI</td>
-            <td>KEPALA GUDANG</td>
-            <td>STORE MANAGER</td>
-            <td>STOCK CLERK / PETUGAS GUDANG</td>
-            <td>CABANG PENERIMA</td>
-        </tr>
-    </table>
+    <hr>
     <div class="page-break"></div>
     @endif
     @php
-        $temp = $d->msth_nodoc;
+        $temp = $d->trbo_nodoc;
         $i = 0;
+        $total = 0;
     @endphp
     <table class="table-borderless table-header">
         <tr style="text-align: left">
             <td>
-                Nomor Penyesuaian<br>
-                Nomor Refferensi<br>
-                Keterangan
+                Nomor Trn<br>
+                Tanggal<br>
+                Nomor Referensi
             </td>
             <td>
-                : {{ $d->msth_nodoc }}<br>
-                : <br>
-                : {{ $d->keterangan_h }}
+                : {{ $d->trbo_nodoc }}<br>
+                : @if($d->trbo_tgldoc != '')
+                    {{ date('d/m/Y', strtotime($d->trbo_tgldoc)) }}
+                @endif <br>
+                : {{ $d->trbo_noreff }}
             </td>
             <td>
-                Tanggal<br>
-                Tanggal<br>
+                Untuk Cabang<br>
+                Gudang<br>
                 <span style="color:white">.</span>
             </td>
             <td>
-                : @if($d->msth_tgldoc != '')
-                    {{ date('d/m/Y', strtotime($d->msth_tgldoc)) }}
-                @endif
-                <br>
-                : @if($d->trbo_tglreff != '')
-                    {{ date('d/m/Y', strtotime($d->trbo_tglreff)) }}
-                @endif
-                <br>
+                : {{ $d->trbo_loc }} {{ $d->cab_namacabang }}<br>
+                : {{ $d->trbo_gdg }} {{ $d->gdg_namagudang }}<br>
                 <span style="color:white">.</span>
             </td>
+            <td style="font-size: 18px;">@if($reprint == '1') RE-PRINT @endif</td>
         </tr>
     </table>
-
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th class="tengah" rowspan="2">No</th>
+            <th class="tengah" rowspan="2">NO</th>
             <th class="tengah" rowspan="2">PLU</th>
             <th class="tengah" rowspan="2">NAMA BARANG</th>
             <th class="tengah" rowspan="2">KEMASAN</th>
             <th colspan="2">KWANTUM</th>
-            <th colspan="3">PPN</th>
-            <th colspan="3">RPH</th>
-            <th colspan="2">QTY</th>
-            <th class="tengah">HARGA</th>
+            <th class="tengah" rowspan="2">HARGA SATUAN</th>
             <th class="tengah" rowspan="2">TOTAL</th>
             <th class="tengah" rowspan="2">KETERANGAN</th>
         </tr>
         <tr>
             <th>BESAR</th>
             <th>KECIL</th>
-            <th>RPH</th>
-            <th>BMRPH</th>
-            <th>BTLRPH</th>
-            <th>DISC 1</th>
-            <th>DISC 2</th>
-            <th>DISC 3</th>
-            <th>BONUS 1</th>
-            <th>BONUS 2</th>
-            <th>IN CTN</th>
         </tr>
         </thead>
         <tbody>
         @endif
         <tr>
             <td>{{ ++$i }}</td>
-            <td>{{ $d->mstd_prdcd }}</td>
+            <td>{{ $d->trbo_prdcd }}</td>
             <td class="left">{{ $d->prd_deskripsipanjang }}</td>
-            <td>{{ $d->kemasan }}</td>
-            <td>{{ number_format($d->mstd_qty / $d->mstd_frac,0) }}</td>
-            <td>{{ $d->mstd_qty % $d->mstd_frac }}</td>
-            <td>{{ $d->mstd_ppnrph }}</td>
-            <td>{{ $d->mstd_ppnbmrph }}</td>
-            <td>{{ $d->mstd_ppnbtlrph }}</td>
-            <td>{{ $d->mstd_rphdisc1 }}</td>
-            <td>{{ $d->mstd_rphdisc2 }}</td>
-            <td>{{ $d->mstd_rphdisc3 }}</td>
-            <td>{{ $d->mstd_qtybonus1}}</td>
-            <td>{{ $d->mstd_qtybonus2 }}</td>
-            <td>{{ number_format($d->mstd_hrgsatuan,2) }}</td>
-            <td>{{ number_format($d->mstd_gross,1) }}</td>
-            <td>{{ $d->mstd_keterangan }}</td>
+            <td>{{ $d->prd_unit }}/{{ $d->prd_frac }}</td>
+            <td>{{ $d->ctn }}</td>
+            <td>{{ $d->pcs }}</td>
+            <td>{{ number_format($d->trbo_hrgsatuan,2) }}</td>
+            <td style="text-align: right">{{ number_format($d->total,2) }}</td>
+            <td>{{ $d->trbo_keterangan }}</td>
         </tr>
-        @php $total += $d->mstd_gross; @endphp
+        @php $total += $d->total;@endphp
         @endforeach
         </tbody>
         <tfoot style="text-align: center">
         <tr>
-            <td colspan="13"></td>
-            <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-            <td>{{ $total }}</td>
+            <td colspan="6"></td>
+            <td style="text-align: left"><strong>TOTAL SELURUHNYA</strong></td>
+            <td style="text-align: right">{{ number_format($total,2) }}</td>
             <td></td>
         </tr>
         </tfoot>
     </table>
-    <table style="width: 100%; font-weight: bold" class="table-ttd">
-        <tr>
-            <td>DIBUAT</td>
-            <td>DIPERIKSA</td>
-            <td>MENYETUJUI</td>
-            <td>PELAKSANA</td>
-            <td>PENERIMA</td>
-        </tr>
-        <tr class="blank-row">
-            <td colspan="5">ttd</td>
-        </tr>
-        <tr>
-            <td>ADMINISTRASI</td>
-            <td>KEPALA GUDANG</td>
-            <td>STORE MANAGER</td>
-            <td>STOCK CLERK / PETUGAS GUDANG</td>
-            <td>CABANG PENERIMA</td>
-        </tr>
-    </table>
+    <hr>
 </main>
 
 <br>
@@ -194,12 +136,8 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        @if($ukuran == 'besar')
-        size: 595pt 842pt;
-        @else
         size: 595pt 442pt;
-    @endif
-}
+    }
     header {
         position: fixed;
         top: 0cm;
@@ -220,7 +158,7 @@ $datetime->setTimezone($timezone);
     }
     tbody {
         display: table-row-group;
-        vertical-align: tengah;
+        vertical-align: middle;
         border-color: inherit;
     }
     tr {
@@ -246,14 +184,19 @@ $datetime->setTimezone($timezone);
     }
     .table{
         width: 100%;
-        font-size: 6px;
+        font-size: 7px;
         /*white-space: nowrap;*/
         color: #212529;
         /*padding-top: 20px;*/
         /*margin-top: 25px;*/
     }
     .table-ttd{
-        width: 15%;
+        width: 100%;
+        font-size: 9px;
+        /*white-space: nowrap;*/
+        color: #212529;
+        /*padding-top: 20px;*/
+        /*margin-top: 25px;*/
     }
     .table tbody td {
         /*font-size: 6px;*/
@@ -292,5 +235,11 @@ $datetime->setTimezone($timezone);
     .tengah{
         vertical-align: middle !important;
     }
+    .blank-row
+    {
+        line-height: 50px!important;
+        color: white;
+    }
+
 </style>
 </html>

@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Cetak Penyesuaian')
+@section('title','Cetak Surat Jalan')
 
 @section('content')
 
@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">Cetak Penyesuaian</legend>
+                    <legend  class="w-auto ml-3">Cetak Surat Jalan</legend>
                     <fieldset class="card border-secondary m-4">
                         <div class="card-body">
                             <div class="row form-group">
@@ -22,7 +22,7 @@
                                 </div>
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm">
-                                    <button class="btn btn-success" onclick="cetak()">Cetak Penyesuaian</button>
+                                    <button class="btn btn-success" onclick="cetak()">Cetak List</button>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -41,16 +41,16 @@
                         </div>
                     </fieldset>
                     <fieldset class="card border-secondary m-4">
-                        <legend class="w-auto ml-3">Daftar Penyesuaian</legend>
+                        <legend class="w-auto ml-3">Daftar Surat Jalan</legend>
                         <div class="card-body">
                             <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
                                 <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
                                     <thead>
-                                        <tr>
-                                            <th width="50%">Nomor Penyesuaian</th>
-                                            <th width="35%">Tanggal</th>
-                                            <th width="15%"></th>
-                                        </tr>
+                                    <tr>
+                                        <th width="50%">Nomor Surat Jalan</th>
+                                        <th width="35%">Tanggal</th>
+                                        <th width="15%"></th>
+                                    </tr>
                                     </thead>
                                     <tbody>
 
@@ -112,12 +112,15 @@
     <script>
         var listNomor = [];
         var selected = [];
-        var updateLokasi;
-        var updatePkmt;
+        var reprint;
         $(document).ready(function(){
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy",
             });
+
+            $('.tanggal').datepicker('setDate', new Date());
+
+            // $('#tanggal1').val('01/04/2020');
         });
 
         function getData(){
@@ -128,7 +131,7 @@
                 else reprint = 0;
 
                 $.ajax({
-                    url: '{{ url('/bo/transaksi/penyesuaian/cetak/get-data') }}',
+                    url: '{{ url('/bo/transaksi/kirimcabang/cetak/get-data') }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -152,10 +155,10 @@
 
                             tr = `<tr><td>${response[i].no}</td><td>${formatDate(response[i].tgl)}</td>` +
                                 `<td>` +
-                                    `<div class="custom-control custom-checkbox text-center">` +
-                                        `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
-                                        `<label for="cb_${i}" class="custom-control-label"></label>` +
-                                    `</div>` +
+                                `<div class="custom-control custom-checkbox text-center">` +
+                                `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
+                                `<label for="cb_${i}" class="custom-control-label"></label>` +
+                                `</div>` +
                                 `</td></tr>`;
                             $('#table_daftar tbody').append(tr);
                         }
@@ -204,111 +207,41 @@
                     buttons: true,
                     dangerMode: true
                 }).then((ok) => {
-                    swal({
-                        title: 'Update master lokasi dengan PLU baru?',
-                        icon: 'warning',
-                        buttons: {
-                            cancel: 'Cancel',
-                            no: {
-                                text: 'Tidak',
-                                value: 'no'
-                            },
-                            yes: {
-                                text: 'Ya',
-                                value: 'yes'
-                            },
+                    $.ajax({
+                        url: '{{ url('/bo/transaksi/kirimcabang/cetak/store-data') }}',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
-                        dangerMode: true
-                    }).then((ok) => {
-                        if(ok){
-                            if(ok == 'yes')
-                                updateLokasi = true;
-                            else updateLokasi = false;
+                        data: {
+                            nodoc: selected,
+                            reprint: reprint,
+                            jenis: $('#jenis').val(),
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
 
+                            if(response == 'true'){
+                                window.open('{{ url('/bo/transaksi/kirimcabang/cetak/laporan') }}','_blank');
+                            }
+                            else{
+                                swal({
+                                    title: 'Terjadi kesalahan!',
+                                    text: 'Mohon coba kembali',
+                                    icon: 'error',
+                                })
+                            }
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
                             swal({
-                                title: 'Update tabel PKMT dengan PLU baru?',
-                                icon: 'warning', buttons: {
-                                    cancel: 'Cancel',
-                                    no: {
-                                        text: 'Tidak',
-                                        value: 'no'
-                                    },
-                                    yes: {
-                                        text: 'Ya',
-                                        value: 'yes'
-                                    },
-                                },
-                                dangerMode: true
-                            }).then((ok) => {
-                                if(ok){
-                                    if(ok == 'yes')
-                                        updatePkmt = true;
-                                    else updatePkmt = false;
-
-                                    swal({
-                                        title: 'Pilih ukuran laporan',
-                                        icon: 'warning',
-                                        buttons: {
-                                            cancel: 'Cancel',
-                                            catch: {
-                                                text: 'Kecil',
-                                                value: 'kecil'
-                                            },
-                                            defeat: {
-                                                text: 'Besar',
-                                                value: 'besar'
-                                            },
-                                        },
-                                        dangerMode: true
-                                    }).then((ok) => {
-                                        console.log(ok);
-                                        if(ok){
-                                            ukuran = ok;
-
-                                            $.ajax({
-                                                url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
-                                                type: 'POST',
-                                                headers: {
-                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                                },
-                                                data: {
-                                                    nodoc: selected,
-                                                    reprint: reprint,
-                                                    jenis: $('#jenis').val(),
-                                                    ukuran: ukuran,
-                                                    updateLokasi: updateLokasi,
-                                                    updatePkmt: updatePkmt
-                                                },
-                                                beforeSend: function () {
-                                                    $('#modal-loader').modal('show');
-                                                },
-                                                success: function (response) {
-                                                    $('#modal-loader').modal('hide');
-
-                                                    if(response == 'true'){
-                                                        window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
-                                                    }
-                                                    else{
-                                                        swal({
-                                                            title: 'Terjadi kesalahan!',
-                                                            text: 'Mohon coba kembali',
-                                                            icon: 'error',
-                                                        })
-                                                    }
-                                                },
-                                                error: function (error) {
-                                                    $('#modal-loader').modal('hide');
-                                                    swal({
-                                                        title: 'Terjadi kesalahan!',
-                                                        text: error.responseJSON.message,
-                                                        icon: 'error',
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            })
+                                title: 'Terjadi kesalahan!',
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            });
                         }
                     });
                 });
