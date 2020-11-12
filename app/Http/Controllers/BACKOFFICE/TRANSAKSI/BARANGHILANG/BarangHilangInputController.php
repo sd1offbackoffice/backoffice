@@ -170,20 +170,25 @@ class barangHilangInputController extends Controller
             for ($i = 1; $i < sizeof($data); $i++){
                 $temp = $data[$i];
 
+                $prodmast = DB::table('tbmaster_prodmast')
+                    ->where('prd_kodeigr', $kodeigr)
+                    ->where('prd_prdcd', $temp['plu'])
+                    ->first();
+//update
                 DB::table('tbtr_backoffice')
                     ->insert([
-                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'X','trbo_nodoc' => $getDoc->trbo_nodoc,
+                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $getDoc->trbo_nodoc,
                         'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
                         'trbo_nofaktur' => '', 'trbo_tglfaktur' => '', 'trbo_istype' => '', 'trbo_invno' => '', 'trbo_tglinv' => '',
                         'trbo_nott' => '', 'trbo_tgltt' => '', 'trbo_kodesupplier' => '', 'trbo_kodeigr2' => '', 'trbo_seqno' => $i,
                         'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'], 'trbo_qtybonus1' => '', 'trbo_qtybonus2' => '',
                         'trbo_hrgsatuan' => $temp['hrgsatuan'], 'trbo_persendisc1' => '', 'trbo_rphdisc1' => '', 'trbo_flagdisc1' => '1',
-                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
+                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '', 'trbo_persendisc2ii' => '',
                         'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
                         'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
-                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => '', 'trbo_discrph' => '', 'trbo_ppnrph' => '',
-                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => '', 'trbo_oldcost' => '', 'trbo_posqty' => '',
-                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '0',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $prodmast->prd_avgcost, 'trbo_oldcost' => '', 'trbo_posqty' => '',
+                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '0',
                         'trbo_create_by' => $getDoc->trbo_create_by, 'trbo_create_dt' => $getDoc->trbo_create_dt, 'trbo_modify_by' => $userid,
                         'trbo_modify_dt' => $today, 'trbo_stokqty' => '', 'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '',
                         'trbo_tglnota' => ''
@@ -195,22 +200,27 @@ class barangHilangInputController extends Controller
             for ($i = 1; $i < sizeof($data); $i++) {
                 $temp = $data[$i];
 
+                $prodmast = DB::table('tbmaster_prodmast')
+                    ->where('prd_kodeigr', $kodeigr)
+                    ->where('prd_prdcd', $temp['plu'])
+                    ->first();
+
                 DB::table('tbtr_backoffice')
                     ->insert([
-                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'X','trbo_nodoc' => $docNo,
+                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $docNo,
                         'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
                         'trbo_nofaktur' => '', 'trbo_tglfaktur' => '', 'trbo_istype' => '', 'trbo_invno' => '', 'trbo_tglinv' => '',
                         'trbo_nott' => '', 'trbo_tgltt' => '', 'trbo_kodesupplier' => '', 'trbo_kodeigr2' => '', 'trbo_seqno' => $i,
                         'trbo_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'], 'trbo_qtybonus1' => '', 'trbo_qtybonus2' => '',
                         'trbo_hrgsatuan' => $temp['hrgsatuan'], 'trbo_persendisc1' => '', 'trbo_rphdisc1' => '', 'trbo_flagdisc1' => '1',
-                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '1', 'trbo_persendisc2ii' => '',
+                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '', 'trbo_persendisc2ii' => '',
                         'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
                         'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
-                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => '', 'trbo_discrph' => '', 'trbo_ppnrph' => '',
-                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => '', 'trbo_oldcost' => '', 'trbo_posqty' => '',
-                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '1',
-                        'trbo_create_by' => $userid, 'trbo_create_dt' => $today, 'trbo_stokqty' => '',
-                        'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '', 'trbo_tglnota' => ''
+                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '0',
+                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $prodmast->prd_avgcost, 'trbo_oldcost' => '', 'trbo_posqty' => '',
+                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '0',
+                        'trbo_create_by' => $userid, 'trbo_create_dt' => $today, 'trbo_stokqty' => '', 'trbo_loc' => '', 'trbo_notaok' => '',
+                        'trbo_nonota' => '', 'trbo_tglnota' => ''
                     ]);
             }
             return response()->json(['kode' => 1, 'msg' => $docNo]);

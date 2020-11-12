@@ -1,6 +1,5 @@
 @extends('navbar')
 @section('content')
-
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-sm-12">
@@ -71,23 +70,23 @@
                     <legend class="w-auto ml-5"> Header</legend>
 
                     <div class="card-body cardForm">
-                        <div class="card-body p-0 tableFixedHeader" style="height: 250px; width: 1200px;">
-                            <table class="table table-striped table-bordered"
+                        <div class="card-body p-0 tableFixedHeader" style="height: 250px;">
+                            <table class="table table-sm table-striped table-bordered "
                                    id="table-header">
                                 <thead class="thead-dark">
                                 <tr class="table-sm text-center">
                                     <th width="3%" class="text-center small"></th>
-                                    <th width="7%" class="text-left small">PLU</th>
+                                    <th width="10%" class="text-left small">PLU</th>
                                     <th width="20%" class="text-left small">DESKRIPSI</th>
                                     <th width="10%" class="text-center small">SATUAN</th>
-                                    <th width="5%" class="text-center small">BKP</th>
-                                    <th width="5%" class="text-center small">STOCK</th>
-                                    <th width="5%" class="text-center small">CTN</th>
-                                    <th width="5%" class="text-center small">PCS</th>
-                                    <th width="40%" class="text-left small">KETERANGAN</th>
+                                    <th width="7%" class="text-center small">BKP</th>
+                                    <th width="7%" class="text-center small">STOCK</th>
+                                    <th width="7%" class="text-center small">CTN</th>
+                                    <th width="7%" class="text-center small">PCS</th>
+                                    <th width="29%" class="text-left small">KETERANGAN</th>
                                 </tr>
                                 </thead>
-                                <tbody id="body-table-detail">
+                                <tbody id="body-table-header">
                                 </tbody>
                             </table>
                         </div>
@@ -96,37 +95,39 @@
 
                 <fieldset class="card border-dark">
                     <legend class="w-auto ml-5">Detail</legend>
-
                     <div class="card-body cardForm">
                         <div class="card-body p-0 tableFixedHeader">
-                            <table class="table table-striped table-bordered"
+                            <table class="table table-sm table-striped table-bordered"
                                    id="table-detail">
                                 <thead class="thead-dark">
                                 <tr class="table-sm text-center">
-                                    <th class="text-center small"></th>
-                                    <th width="5%" class="text-center small">PLU</th>
-                                    <th width="18%" class="text-center small">DESKRIPSI</th>
-                                    <th width="5%" class="text-center small">SATUAN</th>
-                                    <th width="1%" class="text-center small">BKP</th>
-                                    <th width="2%" class="text-center small">STOCK</th>
-                                    <th width="5%" class="text-center small">HRG.SATUAN (IN CTN)</th>
-                                    <th width="3%" class="text-center small">CTN</th>
-                                    <th width="3%" class="text-center small">PCS</th>
-                                    <th width="5%" class="text-center small">GROSS</th>
-                                    <th width="5%" class="text-center small">DISC %</th>
-                                    <th width="5%" class="text-center small">DISC Rp</th>
-                                    <th width="5%" class="text-center small">PPN</th>
-                                    <th width="5%" class="text-center small">FAKTUR</th>
-                                    <th width="5%" class="text-center small">PAJAK No.</th>
-                                    <th width="5%" class="text-center small">TGL FP</th>
-                                    <th width="5%" class="text-center small">NoReff BTB</th>
-                                    <th width="18%" class="text-center small">KETERANGAN</th>
+                                    <th class="text-center small">PLU</th>
+                                    <th class="text-center small">DESKRIPSI</th>
+                                    <th class="text-center small">SATUAN</th>
+                                    <th width="3%" class="text-center small">BKP</th>
+                                    <th width="5%" class="text-center small">STOCK</th>
+                                    <th class="text-center small">HRG.SATUAN (IN CTN)</th>
+                                    <th width="4%" class="text-center small">CTN</th>
+                                    <th width="4%" class="text-center small">PCS</th>
+                                    <th class="text-center small">GROSS</th>
+                                    <th width="3%" class="text-center small">DISC %</th>
+                                    <th class="text-center small">DISC Rp</th>
+                                    <th width="4%" class="text-center small">PPN</th>
+                                    <th class="text-center small">FAKTUR</th>
+                                    <th class="text-center small">PAJAK No.</th>
+                                    <th class="text-center small">TGL FP</th>
+                                    <th class="text-center small">NoReff BTB</th>
+                                    <th class="text-center small">KETERANGAN</th>
                                 </tr>
                                 </thead>
                                 <tbody id="body-table-detail">
                                 </tbody>
                             </table>
                         </div>
+
+                        <br>
+                        <input type="text" id="label-deskripsi"
+                               class="text-center form-control col-sm-6 font-weight-bold" disabled>
                     </div>
                 </fieldset>
 
@@ -137,28 +138,28 @@
                             <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TOTAL
                                 ITEM</label>
                             <input type="text" id="total-item"
-                                   class="text-center form-control form-control-sm col-sm-2">
+                                   class="text-center form-control form-control-sm col-sm-2" disabled>
                             <label class="col-sm-1 col-form-label text-sm-right offset-3"
                                    style="font-size: 12px">GROSS</label>
                             <input type="text" id="gross"
-                                   class="text-center form-control form-control-sm col-sm-2">
+                                   class="text-center form-control form-control-sm col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6" style="font-size: 12px">POTONGAN</label>
                             <input type="text" id="potongan"
-                                   class="text-center form-control form-control-sm col-sm-2">
+                                   class="text-center form-control form-control-sm col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6"
                                    style="font-size: 12px">PPN</label>
                             <input type="text" id="ppn"
-                                   class="text-center form-control form-control-sm col-sm-2">
+                                   class="text-center form-control form-control-sm col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6"
                                    style="font-size: 12px">TOTAL</label>
                             <input type="text" id="total"
-                                   class="text-center form-control form-control-sm col-sm-2">
+                                   class="text-center form-control form-control-sm col-sm-2" disabled>
                         </div>
                     </div>
                 </fieldset>
@@ -269,12 +270,16 @@
             font-weight: bold;
 
         }
+        .input-group-text{
+            background-color: white;
+        }
     </style>
 
 
     <script>
 
         $(document).ready(function () {
+            reset();
             $('#dtTglDoc').datepicker({
                 "dateFormat": "dd/mm/yy",
                 "setDate": new Date()
@@ -350,6 +355,18 @@
             $('#m_lov_supplier').modal('hide');
         });
 
+        function reset() {
+            $('#body-table-header').empty();
+            $('#body-table-detail').empty();
+            $('#btnHapusDokumen').attr('disabled', true);
+            $('#btnUsulanRetur').attr('disabled', true);
+
+            $('#txtKdSupplier').val('');
+            $('#txtNmSupplier').val('');
+            $('#txtPKP').val('');
+            $('#txtModel').val('');
+        }
+
         function getDataTrn(notrn) {
             if (notrn == '') {
                 swal({
@@ -367,6 +384,7 @@
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
+                                reset();
                             },
                             success: function (response) {
                                 $('#txtNoDoc').prop('disabled', true);
@@ -387,6 +405,43 @@
                                     $("#dtTglDoc").datepicker().datepicker("setDate", new Date());
                                     $('#txtModel').val(response.model);
                                     $('#txtKdSupplier').focus();
+
+                                    $('#body-table-header').append('<tr>' +
+                                        '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                                        '<td><div class="input-group input-group-sm">\n' +
+                                        '    <input type="text" class="form-control" placeholder="PLU" aria-describedby="btnGroupAddon2">\n' +
+                                        '    <div class="input-group-prepend">\n' +
+                                        '      <div class="input-group-text p-0" ><button class="btn btn-sm btn-primary m-0">?</button></div>\n' +
+                                        '    </div>\n' +
+                                        '  </div></td>' +
+                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                        '</tr>');
+
+                                    // $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail">' +
+                                    //     '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '</tr>');
                                 }
 
                             },
@@ -419,25 +474,110 @@
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
+                        reset();
                     },
                     success: function (response) {
-                        $('#modal-loader').modal('hide');
+                        $('#btnHapusDokumen').attr('disabled', false);
+                        $('#btnUsulanRetur').attr('disabled', false);
+
+
                         console.log(response);
+                        $('#modal-loader').modal('hide');
+                        $('#txtModel').val(response.model);
+
                         var datas = response.datas;
+                        $('#dtTglDoc').val(response.tgldoc);
+                        $('#txtKdSupplier').val(response.supplier);
+                        $('#txtNmSupplier').val(response.nmsupplier);
+                        $('#txtPKP').val(response.pkp);
 
-                        datas.forEach(function (data) {
-                            var plu = data.h_plu == null ? '' : data.h_plu;
-                            var deskripsi = data.h_deskripsi == null ? '' : data.h_deskripsi;
-                            var satuan = data.h_satuan == null ? '' : data.h_satuan;
-                            var bkp = data.h_bkp == null ? '' : data.h_bkp;
-                            var stock = data.h_stock == null ? '' : data.h_stock;
-                            var ctn = data.h_ctn == null ? '' : data.h_ctn;
-                            var pcs = data.h_pcs == null ? '' : data.h_pcs;
-                            var ket = data.h_ket == null ? '' : data.h_ket;
+                        var datas_header = response.datas_header;
+                        datas_header.forEach(function (dh) {
+                            var plu = dh.h_plu == null ? '' : dh.h_plu;
+                            var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                            var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                            var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                            var stock = dh.h_stock == null ? '' : dh.h_stock;
+                            var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                            var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                            var ket = dh.h_ket == null ? '' : dh.h_ket;
 
-                            $('#body-table-detail').empty();
-                            $('#body-table-detail').append('<tr><td></td><td>' + plu + '</td><td>' + deskripsi + '</td><td>' + satuan + '</td><td>' + bkp + '</td><td>' + stock + '</td><td>' + ctn + '</td><td>' + pcs + '</td><td>' + ket + '</td></tr>');
+                            $('#body-table-header').append('<tr>' +
+                                '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + deskripsi + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + ket + '"></td>' +
+                                '</tr>');
                         });
+
+                        var datas_detail = response.datas_detail;
+                        var i = 1;
+                        var tot_gross = 0;
+                        var tot_potongan = 0;
+                        var tot_ppn = 0;
+                        var tot_total = 0;
+                        datas_detail.forEach(function (dd) {
+                            var plu = dd.plu == null ? '' : dd.plu;
+                            var desk = dd.desk == null ? '' : dd.desk;
+                            var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                            var satuan = dd.satuan == null ? '' : dd.satuan;
+                            var bkp = dd.bkp == null ? '' : dd.bkp;
+                            var stock = dd.stok == null ? '' : dd.stok;
+                            var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
+                            var ctn = dd.ctn == null ? '' : dd.ctn;
+                            var pcs = dd.pcs == null ? '' : dd.pcs;
+                            var gross = dd.gross == null ? '' : dd.gross;
+                            var discper = dd.discper == null ? '' : dd.discper;
+                            var discrp = dd.discrp == null ? '' : dd.discrp;
+                            var ppn = dd.ppn == null ? '' : dd.ppn;
+                            var faktur = dd.faktur == null ? '' : dd.faktur;
+                            var pajakno = dd.pajakno == null ? '' : dd.pajakno;
+                            var tglfp = dd.tglfp == null ? '' : dd.tglfp;
+                            var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
+                            var keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                            var pkp = dd.pkp == null ? '' : dd.pkp;
+                            var frac = dd.frac == null ? '' : dd.frac;
+                            var unit = dd.unit == null ? '' : dd.unit;
+
+                            $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + desk + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + hrgsatuan + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + gross + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + discper + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + discrp + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + ppn + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + faktur + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + pajakno + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + tglfp + '"></td>' +
+                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + noreffbtb + '"></td>' +
+                                '<td><input class="form-control form-control-sm" type="text" value="' + keterangan + '"></td>' +
+                                '</tr>');
+                            i++;
+                            tot_gross += parseFloat(gross);
+                            tot_potongan += parseFloat(discrp);
+                            tot_ppn += parseFloat(ppn);
+                        });
+                        tot_total = tot_gross - tot_potongan + tot_ppn;
+
+                        $('#gross').val(convertToRupiah2(tot_gross));
+                        $('#potongan').val(convertToRupiah2(tot_potongan));
+                        $('#ppn').val(convertToRupiah2(tot_ppn));
+                        $('#total').val(convertToRupiah2(tot_total));
+                        $('#total-item').val(convertToRupiah2(i - 1));
+
+                        // if
+                        $('.btn-delete-row-header').attr('disabled', true);
 
                     },
                     error: function (error) {
@@ -455,6 +595,15 @@
             }
 
         }
+
+        $(document).on('click', '.row-detail', function () {
+            var currentElement = $(this);
+            $('.row-detail').css('background-color', '');
+            currentElement.css('background-color', 'lightgray');
+
+            var deskripsi = currentElement.attr('deskripsi');
+            $('#label-deskripsi').val(deskripsi);
+        });
     </script>
 
 

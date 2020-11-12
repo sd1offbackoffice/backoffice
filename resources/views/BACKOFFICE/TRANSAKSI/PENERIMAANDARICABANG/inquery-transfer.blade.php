@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Input | Pengiriman ke Cabang')
+@section('title','Inquery Transfer Antar Cabang | Penerimaan dari Cabang')
 
 @section('content')
 
@@ -10,7 +10,7 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <div class="row">
-                            <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR SJ</label>
+                            <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR BPB</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="notrn" disabled>
                             </div>
@@ -23,13 +23,6 @@
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="tgltrn" disabled>
                             </div>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">UNTUK CABANG</label>
-                            <div class="col-sm-1" style="position: relative">
-                                <input maxlength="2" type="text" class="form-control" id="kodecabang" disabled>
-                            </div>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control" id="namacabang" disabled>
-                            </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR REFF</label>
@@ -41,9 +34,9 @@
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="tglreff" disabled>
                             </div>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">GUDANG</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="kodegudang" disabled>
+                            <label class="col-sm-2 pr-0 text-right col-form-label">DARI CABANG</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="cabang" disabled>
                             </div>
                         </div>
                     </div>
@@ -51,19 +44,19 @@
                         <div class="card-body">
                             <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
                                 <thead>
-                                    <tr>
-                                        <th width="2%" class="align-middle" rowspan="2"><i class="fas fa-info"></i> </th>
-                                        <th width="5%" class="align-middle" rowspan="2">PLU</th>
-                                        <th width="25%" class="align-middle" rowspan="2">DESKRIPSI</th>
-                                        <th width="6%" class="align-middle" rowspan="2">SATUAN</th>
-                                        <th width="16%" class="align-middle" colspan="2">KUANTUM</th>
-                                        <th width="8%" class="align-middle" rowspan="2">H.P.P</th>
-                                        <th width="6%" class="align-middle" rowspan="2">TOTAL</th>
-                                    </tr>
-                                    <tr>
-                                        <th width="">CTN</th>
-                                        <th width="">PCS</th>
-                                    </tr>
+                                <tr>
+                                    <th width="2%" class="align-middle" rowspan="2"><i class="fas fa-info"></i> </th>
+                                    <th width="5%" class="align-middle" rowspan="2">PLU</th>
+                                    <th width="25%" class="align-middle" rowspan="2">NAMA BARANG</th>
+                                    <th width="6%" class="align-middle" rowspan="2">SATUAN</th>
+                                    <th colspan="2" width="16%" class="align-middle">KUANTUM</th>
+                                    <th width="8%" class="align-middle" rowspan="2">H.P.P</th>
+                                    <th width="6%" class="align-middle" rowspan="2">TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <th>QTY</th>
+                                    <th>QTYK</th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
@@ -88,7 +81,7 @@
 
     <div class="modal fade" id="m_lov_trn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <br>
                 <div class="modal-body">
@@ -123,8 +116,11 @@
                     <div class="container">
                         <div class="row form-group">
                             <label class="col-sm-2 pr-0 text-right col-form-label">PLU</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-2">
                                 <input type="text" class="form-control" id="d_plu" disabled>
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="d_deskripsi" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -146,11 +142,13 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-2 pr-0 text-right col-form-label">LCOST</label>
+                            <label class="col-sm-2 pr-0 text-right col-form-label">LAST COST</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control text-right" id="d_lcost" disabled>
                             </div>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">ACOST</label>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-sm-2 pr-0 text-right col-form-label">AVG COST</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control text-right" id="d_acost" disabled>
                             </div>
@@ -158,11 +156,11 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pr-0 text-right col-form-label">PERSEDIAAN</label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" id="d_persediaan" disabled>
+                                <input type="text" class="form-control text-right" id="d_prs1" disabled>
                             </div>
                             <label class="col-sm-1 pr-0 text-center col-form-label"><i class="fas fa-plus"></i></label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" id="d_pcs" disabled>
+                                <input type="text" class="form-control text-right" id="d_prs2" disabled>
                             </div>
                             <label class="col pl-0 text-left col-form-label">PCS</label>
                         </div>
@@ -171,57 +169,20 @@
                             <div class="col-sm-3">
                                 <input type="text" class="form-control text-right" id="d_hrgsatuan" disabled>
                             </div>
-                            <div class="col-sm-2"></div>
-                            <label class="col-sm-2 pr-0 text-right col-form-label">DPP</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control text-right" id="d_drp3" disabled>
-                            </div>
                         </div>
                         <div class="row form-group">
                             <label class="col-sm-2 pr-0 text-right col-form-label">KUANTUM</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="d_kqty" disabled>
-                            </div>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="d_kunit" disabled>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control text-right" id="d_kqty" disabled>
                             </div>
                             <label class="col-sm-1 pr-0 text-center col-form-label"><i class="fas fa-plus"></i></label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" id="d_kqtyk" disabled>
+                                <input type="text" class="form-control text-right" id="d_kqtyk" disabled>
                             </div>
                             <label class="col pl-0 text-left col-form-label">PCS</label>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">GROSS</label>
+                            <label class="col-sm-1 pr-0 text-right col-form-label">---></label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control text-right" id="d_drp1" disabled>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-sm-2 pr-0 text-right col-form-label">POTONGAN</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control text-right" id="d_prs1" disabled>
-                            </div>
-                            <div class="col-sm-3"></div>
-                            <label class="col-sm-2 pr-0 text-right col-form-label">POTONGAN</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control text-right" id="d_drp2" disabled>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <label class="col-sm-2 pr-0 text-right col-form-label">PPN</label>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control text-right" id="d_prs2" disabled>
-                            </div>
-                            <div class="col-sm-3"></div>
-                            <label class="col-sm-2 pr-0 text-right col-form-label">PPN</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control text-right" id="d_drp4" disabled>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-sm-7"></div>
-                            <label class="col-sm-2 pr-0 text-right col-form-label">TOTAL</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control text-right" id="d_drp5" disabled>
+                                <input type="text" class="form-control text-right" id="d_total" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -303,6 +264,8 @@
         var nosj;
         var data = [];
 
+        // $('#m_detail').modal('show');
+
         $(document).ready(function(){
             tgltrn = $('#tgltrn').datepicker({
                 "dateFormat" : "dd/mm/yy",
@@ -321,7 +284,7 @@
 
         function getLov(){
             lovtrn = $('#table_lov_trn').DataTable({
-                "ajax": '{{ url('/bo/transaksi/kirimcabang/inquery/get-data-lov') }}',
+                "ajax": '{{ url()->current().'/get-data-lov' }}',
                 "columns": [
                     {data: 'no', name: 'no'},
                     {data: 'tgl', name: 'tgl'},
@@ -353,11 +316,11 @@
         function getData(nosj){
             $.ajax({
                 type: "GET",
-                url: "{{ url('/bo/transaksi/kirimcabang/inquery/get-data') }}",
+                url: "{{ url()->current().'/get-data' }}",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: {no: nosj},
+                data: {nosj: nosj},
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
@@ -369,13 +332,11 @@
                         $("#table_daftar tbody [role='row']").remove();
                     }
 
-                    $('#notrn').val(response[0].msth_nodoc);
-                    $('#tgltrn').val(response[0].msth_tgldoc);
-                    $('#noreff').val(response[0].msth_noref3);
-                    $('#tglreff').val(response[0].msth_tgref3);
-                    $('#kodecabang').val(response[0].msth_loc);
-                    $('#namacabang').val(response[0].cab_namacabang);
-                    $('#kodegudang').val(response[0].msth_loc2);
+                    $('#notrn').val(response[0].mstd_nodoc);
+                    $('#tgltrn').val(response[0].mstd_tgldoc);
+                    $('#noreff').val(response[0].mstd_nopo);
+                    $('#tglreff').val(response[0].mstd_tglpo);
+                    $('#cabang').val(response[0].mstd_loc2);
 
                     $('#totalitem').val(response.length);
 
@@ -389,15 +350,15 @@
                                 <td>${response[i].mstd_prdcd}</td>
                                 <td class="text-left">${response[i].prd_deskripsipanjang}</td>
                                 <td>${response[i].satuan}</td>
-                                <td>${response[i].mstd_qtyk}</td>
-                                <td>${response[i].mstd_qty}</td>
-                                <td class="text-right">${convertToRupiah(response[i].nprice)}</td>
-                                <td class="text-right">${convertToRupiah(response[i].namt)}</td>
+                                <td>${response[i].qty}</td>
+                                <td>${response[i].qtyk}</td>
+                                <td class="text-right">${convertToRupiah(response[i].mstd_hrgsatuan)}</td>
+                                <td class="text-right">${convertToRupiah(response[i].mstd_gross)}</td>
                             </tr>`;
 
                         $('#table_daftar tbody').append(html);
 
-                        total += parseFloat(response[i].namt);
+                        total += parseFloat(response[i].mstd_gross);
                     }
 
                     $('#total').val(convertToRupiah(total));
@@ -427,24 +388,20 @@
         function detailItem(i){
             d = data[i];
 
-            $('#d_plu').val(d.mstd_prdcd + ' - ' + d.prd_deskripsipanjang);
+            $('#d_plu').val(d.mstd_prdcd);
+            $('#d_deskripsi').val(d.prd_deskripsipanjang);
             $('#d_kemasan').val(d.satuan);
             $('#d_tag').val(d.tag);
             $('#d_bandrol').val(d.bandrol);
             $('#d_bkp').val(d.bkp);
-            $('#d_lcost').val('Rp ' + convertToRupiah(d.lastcost));
-            $('#d_acost').val('Rp ' + convertToRupiah(d.avgcost));
-            $('#d_hrgsatuan').val('Rp ' + convertToRupiah(d.hrgsat));
+            $('#d_lcost').val('Rp ' + convertToRupiah(d.lcost));
+            $('#d_acost').val('Rp ' + convertToRupiah(d.acost));
+            $('#d_hrgsatuan').val('Rp ' + convertToRupiah(d.mstd_hrgsatuan));
             $('#d_kqty').val(d.qty);
-            $('#d_kunit').val(d.unit);
             $('#d_kqtyk').val(d.qtyk);
-            $('#d_prs1').val( parseFloat(d.discrph * 100 / d.gross).toFixed(2));
-            $('#d_prs2').val( parseFloat(d.ppnrph * 100 / (d.gross - d.discrph)).toFixed(2));
-            $('#d_drp1').val('Rp ' + convertToRupiah(d.gross));
-            $('#d_drp2').val('Rp ' + convertToRupiah(d.discrph));
-            $('#d_drp3').val('Rp ' + convertToRupiah(d.gross - d.discrph));
-            $('#d_drp4').val('Rp ' + convertToRupiah(d.ppnrph));
-            $('#d_drp5').val('Rp ' + convertToRupiah(parseFloat(d.gross - d.discrph + parseFloat(d.ppnrph))));
+            $('#d_prs1').val(d.prs1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#d_prs2').val(d.prs2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#d_total').val('Rp ' + convertToRupiah(d.mstd_gross));
             $('#d_keterangan').val(d.ket);
 
             $('#m_detail').modal('show');

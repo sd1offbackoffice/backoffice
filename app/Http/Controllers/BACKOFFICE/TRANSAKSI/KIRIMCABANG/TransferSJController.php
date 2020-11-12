@@ -43,7 +43,6 @@ class TransferSJController extends Controller
 
         DB::statement("truncate table temp_sj");
 
-
         try{
             DB::beginTransaction();
 
@@ -72,6 +71,10 @@ class TransferSJController extends Controller
 								and prd_prdcd=mstd_prdcd
 								and prd_kodeigr=mstd_kodeigr");
 
+            DB::update("update tbtr_mstran_h
+                              set msth_flagdoc = '*' 
+                              where msth_nodoc in ".$nodoc." and msth_typetrn='O'");
+
             DB::commit();
 
             return 'success';
@@ -84,6 +87,8 @@ class TransferSJController extends Controller
 
     public function download(){
         $data = DB::select("select * from temp_sj");
+
+        DB::statement("truncate table temp_sj");
 
         $column = DB::select("select column_name FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ' 
                                     ORDER BY column_id");

@@ -42,7 +42,7 @@
         <div class="row">
             <nav class="navbar navbar-light navbar-expand-lg mainmenu">
                 <a class="navbar-brand" href="{{url("/")}}"> <img src="{{asset('image/Indogrosir_logo.jpg')}}"
-                                                                  width=100px"></a>
+                                                                  width="100px"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -165,6 +165,17 @@
                                                 <li><a href="{{url("/bo/transaksi/kirimcabang/sj-packlist")}}">Transaksi SJ Packlist</a></li>
                                                 <li><a href="{{url("/bo/transaksi/kirimcabang/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>
                                                 <li><a href="{{url("/bo/transaksi/kirimcabang/transfer-sj")}}">Transfer Surat Jalan</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Penerimaan dari Cabang</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/penerimaandaricabang/penerimaan-transfer")}}">Penerimaan / Transfer Antar Cabang</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaandaricabang/cetak-transfer")}}">Cetak Transfer Antar Cabang</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaandaricabang/inquery-transfer")}}">Inquery Transfer Antar Cabang</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaandaricabang/batal-transfer")}}">Batal Transfer Antar Cabang</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">

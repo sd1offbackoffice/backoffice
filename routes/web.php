@@ -283,6 +283,29 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/download', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@download');
                 });
             });
+
+            Route::prefix('/penerimaandaricabang')->group(function () {
+                Route::prefix('/penerimaan-transfer')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\PenerimaanTransferController@index');
+                });
+
+                Route::prefix('/cetak-transfer')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\CetakTransferController@index');
+                    Route::get('/get-data-lov', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\CetakTransferController@getDataLov');
+                });
+
+                Route::prefix('/inquery-transfer')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\InqueryTransferController@index');
+                    Route::get('/get-data-lov', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\InqueryTransferController@getDataLov');
+                    Route::get('/get-data', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\InqueryTransferController@getData');
+                });
+
+                Route::prefix('/batal-transfer')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\BatalTransferController@index');
+                    Route::get('/get-data-lov', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\BatalTransferController@getDataLov');
+                    Route::post('/batal', 'BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG\BatalTransferController@batal');
+                });
+            });
         });
     });
 });
@@ -304,7 +327,7 @@ Route::post('/mstbarang/showBarang', 'MASTER\barangController@showBarang')->midd
 Route::get('/mstbarang/helpSelect', 'MASTER\barangController@helpSelect')->middleware('CheckLogin');
 Route::post('/mstbarang/searchhelp', 'MASTER\barangController@searchHelp')->middleware('CheckLogin');
 
-// BACK OFFICE / TRANSAKSI / BARANG HILANG
+// BACK OFFICE / TRANSAKSI / BARANG HILANG / INPUT
 Route::get('/bo/transaksi/brghilang/input/index', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@index')->middleware('CheckLogin');
 Route::post('/bo/transaksi/brghilang/input/lov_trn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@lov_trn')->middleware('CheckLogin');
 Route::post('/bo/transaksi/brghilang/input/lov_plu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@lov_plu')->middleware('CheckLogin');
@@ -312,7 +335,12 @@ Route::post('/bo/transaksi/brghilang/input/showTrn', 'BACKOFFICE\TRANSAKSI\BARAN
 Route::post('/bo/transaksi/brghilang/input/showPlu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@showPlu')->middleware('CheckLogin');
 Route::post('/bo/transaksi/brghilang/input/nmrBaruTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@nmrBaruTrn')->middleware('CheckLogin');
 Route::post('/bo/transaksi/brghilang/input/saveDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@saveDoc')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/input/deleteDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@saveDoc')->middleware('CheckLogin');
 
+// BACK OFFICE / TRANSAKSI / BARANG HILANG / PEMBATALAN NBH
+Route::get('/bo/transaksi/brghilang/pembatalannbh/index', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\pembatalanNBHController@index')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/pembatalannbh/lov_NBH', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\pembatalanNBHController@lov_NBH')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/pembatalannbh/showDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\pembatalanNBHController@showDoc')->middleware('CheckLogin');
 
 /******** Jefri ********/
 // MASTER_CABANG
@@ -433,8 +461,11 @@ Route::post('/bo/transaksi/pemusnahan/inquerybapb/detailplu',               'BAC
 
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-INPUT
 Route::get('/bo/transaksi/penerimaan/input/index',                          'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@index')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penerimaan/input/showbtb',                         'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showBTB')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penerimaan/input/choosebtb',                         'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@chooseBTB')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/input/showbtb',                       'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showBTB')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/input/choosebtb',                     'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@chooseBTB')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/input/getnewnobtb',                   'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@getNewNoBTB')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/input/showpo',                        'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showPO')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/input/choosepo',                      'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@choosePO')->middleware('CheckLogin');
 
 /******** Ryan ********/
 //BACKOFFICE-TRANSAKSI-PERUBAHAN STATUS-ENTRY SORTIR BARANG

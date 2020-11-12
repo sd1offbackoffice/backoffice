@@ -16,55 +16,52 @@
                                            <div class="form-group row mb-1 pt-4">
                                                <label class="col-sm-2 col-form-label text-right">No BTB</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="no_penyesuaian">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showBTB()">
+                                                   <input type="text" class="form-control" id="noBTB">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showBTB('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl BTB</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control" id="">
+                                                   <input type="text" class="form-control" id="tglBTB" placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
                                            <div class="form-group row mb-1">
                                                <label class="col-sm-2 col-form-label text-right">No PO</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="no_penyesuaian">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_penyesuaian">
+                                                   <input type="text" class="form-control" id="noPO">
+                                                   <button id="" type="button" class="btn btn-lov p-0" onclick="showPO('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl PO</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control" id="" disabled>
+                                                   <input type="text" class="form-control" id="tglPO" disabled>
                                                </div>
                                            </div>
 
                                            <div class="form-group row mb-2">
                                                <label class="col-sm-2 col-form-label text-right">Supplier</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="no_penyesuaian">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_penyesuaian">
+                                                   <input type="text" class="form-control" id="kodeSupplier">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <div class="col-sm-7">
-                                                   <input type="text" class="form-control" id="" disabled>
+                                                   <input type="text" class="form-control" id="namaSupplier" disabled>
                                                </div>
                                            </div>
 
                                            <div class="form-group row pb-4">
                                                <label class="col-sm-2 col-form-label text-right">No Faktur</label>
-                                               <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="no_penyesuaian">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_penyesuaian">
-                                                       <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                   </button>
+                                               <div class="col-sm-2">
+                                                   <input type="text" class="form-control" id="noFaktur">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control" id="" >
+                                                   <input type="text" class="form-control" id="tglFaktur" >
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">TOP</label>
                                                <div class="col-sm-1">
@@ -72,7 +69,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">PKP</label>
                                                <div class="col-sm-1">
-                                                   <input type="text" class="form-control" id="" disabled>
+                                                   <input type="text" class="form-control" id="pkp" disabled>
                                                </div>
                                            </div>
                                        </form>
@@ -498,6 +495,7 @@
                                             <th id="modalThName1"></th>
                                             <th id="modalThName2"></th>
                                             <th id="modalThName3"></th>
+                                            <th id="modalThName4"></th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbodyModalHelp"></tbody>
@@ -606,18 +604,78 @@
         </div>
     </div>
 
+    <!-- Modal Lotorisasi-->
+    <div class="modal fade" id="modalLotorisasi" tabindex="-1" role="dialog" aria-labelledby="m_Lotorisasi" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered  modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Otoritasi Penolakan PO</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">User</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Password</label>
+                                        <input type="password" class="form-control" id="exampleInputPassword1">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let typeTrn;
+        let tempPO          = [];
         let modalThName1    = $('#modalThName1');
         let modalThName2    = $('#modalThName2');
         let modalThName3    = $('#modalThName3');
+        let modalThName4    = $('#modalThName4');
+        let modalHelp       = $('#modalHelp');
+        let noBTB           = $('#noBTB');
+        let noPO            = $('#noPO');
+        let tglBTB          = $('#tglBTB');
+        let tglPO           = $('#tglPO');
+        let kodeSupp        = $('#kodeSupplier');
+        let namaSupp        = $('#namaSupplier');
+        let noFaktur        = $('#noFaktur');
+        let tglFaktur       = $('#tglFaktur');
+        let pkp             = $('#pkp');
+
+        tglBTB.datepicker({
+            "dateFormat" : "dd/mm/yy",
+        });
+
+        tglPO.datepicker({
+            "dateFormat" : "dd/mm/yy",
+        });
+
+        tglFaktur.datepicker({
+            "dateFormat" : "dd/mm/yy",
+        });
 
         $(document).ready(function () {
            // startAlert();
             $('#cardInput2').hide();
             typeTrn = 'B'
-            // showBTB();
-            chooseBTB('0420000042', '8H3E63045')
+            showPO('');
+            // chooseBTB('0440002383', '2H6G85854')
         });
 
         function startAlert() {
@@ -644,10 +702,11 @@
                     default:
                         typeTrn = 'N';
                 }
+                noBTB.focus();
             })
         }
 
-        function showBTB() {
+        function showBTB(value) {
             if(!typeTrn || typeTrn === 'N'){
                 startAlert();
 
@@ -659,89 +718,100 @@
                 url: '/BackOffice/public/bo/transaksi/penerimaan/input/showbtb',
                 type: 'post',
                 data: {
-                    typeTrn:typeTrn
+                    typeTrn : typeTrn,
+                    value   : value
                 },
                 success: function (result) {
                     modalThName1.text('No Dokumen');
                     modalThName2.text('No PO');
                     modalThName3.text('Tgl BTB');
                     modalThName3.show();
-
-                    console.log(result)
+                    modalThName4.hide();
 
                     $('.modalRow').remove();
                     for (i = 0; i< result.length; i++){
                         $('#tbodyModalHelp').append("<tr onclick=chooseBTB('"+ result[i].trbo_nodoc +"','"+ result[i].trbo_nopo +"') class='modalRow'><td>"+ result[i].trbo_nodoc +"</td> <td>"+ result[i].trbo_nopo +"</td> <td>"+ formatDate(result[i].trbo_tglreff)+"</td></tr>")
                     }
 
-                    $('#modalHelp').modal('show');
+                    modalHelp.modal('show');
+                    $('#idModal').val('BTB');
                 }, error: function () {
                     alert('error');
                 }
             })
         }
 
-        function chooseBTB(noDoc, noPO) {
+        function chooseBTB(noDoc, noPo) {
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/penerimaan/input/choosebtb',
                 type: 'post',
                 data: {
                     noDoc:noDoc,
-                    noPO:noPO,
+                    noPO:noPo,
                     typeTrn:typeTrn
+                },
+                beforeSend: function () {
+                    $('.rowTbodyTableDetail').remove();
+                    modalHelp.modal('hide');
                 },
                 success: function (result) {
                     console.log(result)
-                    console.log(result.data[0].trbo_prdcd)
+                    // console.log(formatDate(result.data[0].trbo_tgldoc))
+                    // console.log((result.data[0].trbo_nopo))
 
                     if (result.kode == 0){
                         swal("", result.msg, 'warning');
+                        $('#cardInput2').hide();
+                        $('#cardInput1').show();
                     } else {
-                        $('.rowTbodyTableDetail').remove();
-
                         for (let i = 0; i< result.data.length; i++){
                             value = result.data[i];
 
                             $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail">
                                                                 <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
                                                                 <td class="sticky-cell">`+ value.prd_deskripsipanjang +`</td>
-                                                                <td class="sticky-cell" >`+ value.trbo_qty+`</td>
-                                                                <td class="sticky-cell" >`+ value.trbo_qty+`</td>
+                                                                <td class="sticky-cell text-right" >`+ value.qty +`</td>
+                                                                <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.prd_frac)) +`</td>
                                                                 <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
-                                                                <td class="sticky-cell" >`+ value.prd_frac +`</td>
+                                                                <td class="sticky-cell text-center" >/`+ value.prd_frac +`</td>
                                                                 <td>`+value.prd_kodetag+`</td>
-                                                                <td>BKP</td>
+                                                                <td>`+value.prd_flagbkp1+`</td>
                                                                 <td  class="text-right">`+value.trbo_qtybonus1+`</td>
                                                                 <td  class="text-right">`+value.trbo_qtybonus2+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc1+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc1+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_persendisc1)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc1)+`</td>
                                                                 <td  class="text-right">`+value.trbo_persendisc2+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc2+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2)+`</td>
                                                                 <td  class="text-right">`+value.trbo_persendisc2ii+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc2ii+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2ii)+`</td>
                                                                 <td  class="text-right">`+value.trbo_persendisc2iii+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc2iii+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2iii)+`</td>
                                                                 <td  class="text-right">`+value.trbo_persendisc3+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc3+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc3)+`</td>
                                                                 <td  class="text-right">`+value.trbo_persendisc4+`</td>
-                                                                <td  class="text-right">`+value.trbo_rphdisc4+`</td>
-                                                                <td>`+value.trbo_gross+`</td>
-                                                                <td>PPN</td>
-                                                                <td>`+value.trbo_averagecost+`</td>
-                                                                <td>Last Cost</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_rphdisc4)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_gross)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_ppnrph)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_averagecost)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
                                                             </tr>`);
                         }
+
+                        noBTB.val(result.data[0].trbo_nodoc);
+                        noPO.val(result.data[0].trbo_nopo);
+                        tglBTB.val(formatDate(result.data[0].trbo_tgldoc));
+                        tglPO.val(formatDate(result.data[0].trbo_tglpo));
+                        kodeSupp.val(result.data[0].trbo_kodesupplier);
+                        namaSupp.val(result.data[0].sup_namasupplier);
+                        noFaktur.val(result.data[0].trbo_nofaktur);
+                        tglFaktur.val(formatDate(result.data[0].trbo_tglfaktur));
+                        pkp.val(result.data[0].sup_pkp);
+
+                        $('#cardInput2').show();
+                        $('#cardInput1').hide();
+                        $( document ).trigger( "stickyTable" );
                     }
-
-
-                    $('#modalHelp').modal('hide');
-                    $('#cardInput2').show();
-                    $('#cardInput1').hide();
-
-                    $( document ).trigger( "stickyTable" );
-
-
                 }, error: function () {
                     alert('error');
                 }
@@ -753,7 +823,178 @@
             $('#cardInput1').show();
         }
 
+        function getNewNoBTB() {
+            if(!typeTrn || typeTrn === 'N'){
+                startAlert();
+
+                return false;
+            }
+
+            swal({
+                title: 'Buat Nomor Penerimaan Baru?',
+                icon: 'info',
+                buttons: true,
+            }).then(function (confirm) {
+               if (confirm){
+                   ajaxSetup();
+                   $.ajax({
+                       url: '/BackOffice/public/bo/transaksi/penerimaan/input/getnewnobtb',
+                       type: 'post',
+                       data: {
+                           typeTrn: typeTrn
+                       },
+                       success: function (result) {
+                           if (result.length > 0) {
+                               noBTB.val(result)
+                               tglBTB.focus()
+                           }
+                       }, error: function (error) {
+                           console.log(error)
+                       }
+                   });
+               } else {
+                   console.log('Cancel!')
+               }
+
+            })
+        }
+
+        function showPO(value) {
+            if(!typeTrn || typeTrn === 'N'){
+                startAlert();
+
+                return false;
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showpo',
+                type: 'post',
+                data: {
+                    typeTrn : typeTrn,
+                    value   : value,
+                },
+                success: function (result) {
+                    console.log(result)
+                    modalThName1.text('No PO');
+                    modalThName2.text('Tgl PO');
+                    modalThName3.text('Kode Supplier');
+                    modalThName4.text('Nama Supplier');
+                    modalThName3.show();
+                    modalThName4.show();
+
+                    tempPO = result;
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=choosePO('"+ result[i].tpoh_nopo +"') class='modalRow'><td>"+ result[i].tpoh_nopo +"</td><td>"+ formatDate(result[i].tpoh_tglpo)+"</td><td>"+ result[i].tpoh_kodesupplier +"</td><td>"+ result[i].sup_namasupplier +"</td></tr>")
+                    }
+
+                    $('#idModal').val('PO');
+                    modalHelp.modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function choosePO(noPo) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/choosepo',
+                type: 'post',
+                data: {
+                    typeTrn : typeTrn,
+                    noPo    : noPo
+                },
+                success: function (result) {
+                   console.log(result)
+
+                    if (result.kode == 0){
+                        swal("", result.msg, 'warning');
+                        noPO.focus()
+                    } else if(result.kode == 2){
+                        swal({
+                            icon: 'warning',
+                            text: result.msg,
+                            buttons: false,
+                            timer: 2000,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                        });
+
+                        setTimeout(() => {  $('#modalLotorisasi').modal('show'); }, 2000);
+                    }
+
+                }, error: function (error) {
+                    console.log(error)
+                }
+            });
+
+
+        }
+
+        noBTB.keypress(function (e) {
+            if (e.which === 13) {
+                getNewNoBTB();
+            } else {
+                return false;
+            }
+        });
+
+        tglBTB.keypress(function (e) {
+            if (e.which === 13) {
+                noPO.focus();
+            }
+        });
+
+        noPO.keypress(function (e) {
+            if (e.which === 13) {
+                // choosePO('VHAH93164');
+
+                let val = $(this).val();
+
+                if(!val){
+                    kodeSupp.focus();
+                } else {
+                    choosePO(val)
+                }
+            }
+        });
+
+        $('#searchModal').keypress(function (e) {
+            if (e.which === 13) {
+                let value   = $(this).val();
+                let idModal = $('#idModal').val();
+
+                if (idModal === 'BTB'){
+                    showBTB(value);
+                } else  if (idModal === 'PO'){
+                    showPO(value);
+                }
+
+            }
+        })
+
+
+
 
     </script>
 
 @endsection
+
+
+{{--// for (var i=0; i < tempPO.length; i++) {--}}
+{{--//     if (tempPO[i].tpoh_nopo === noPo) {--}}
+{{--//         console.log(tempPO[i])--}}
+{{--//         noPO.val(tempPO[i].tpoh_nopo);--}}
+{{--//         tglPO.val(formatDate(tempPO[i].tpoh_tglpo));--}}
+{{--//         kodeSupp.val(tempPO[i].tpoh_kodesupplier);--}}
+{{--//         namaSupp.val(tempPO[i].sup_namasupplier);--}}
+{{--//--}}
+{{--//         kodeSupp.attr('disabled', true);--}}
+{{--//         $('.btnLOVSupplier').attr('disabled', true);--}}
+{{--//         modalHelp.modal('hide');--}}
+{{--//         noFaktur.focus();--}}
+{{--//     }--}}
+{{--// }--}}

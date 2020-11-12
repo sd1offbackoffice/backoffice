@@ -1,64 +1,81 @@
 @extends('navbar')
 
-@section('title','Transfer Surat Jalan')
+@section('title','Penerimaan / Transfer')
 
 @section('content')
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">Transfer Surat Jalan</legend>
-                    <div class="m-4">
-                        <fieldset class="card border-secondary mb-2">
-                            <div class="card-body">
-                                <div class="row form-group">
-                                    <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
-                                    <div class="col-sm-2">
+                    <legend  class="w-auto ml-3">Penerimaan / Transfer Antar Cabang</legend>
+                    <div class="row m-2">
+                        <div class="col-sm-6">
+                            <fieldset class="card border-secondary">
+                                <div class="card-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
+                                        <table id="" class="table table-sm table-bordered mb-3 text-center">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>DOCNO</th>
+                                                <th>TANGGAL</th>
+                                                <th>JUMLAH</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row form-group mt-3 mb-0">
+                                        <div class="custom-control custom-checkbox col-sm-2 ml-3">
+                                            <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">
+                                            <label for="cb_checkall" class="custom-control-label">Check All</label>
+                                        </div>
+                                        <div class="col-sm-7"></div>
+                                        <button class="col btn btn-primary">PROSES TLKSJ</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6">
+                            <fieldset class="card border-secondary">
+                                <div class="row m-2">
+                                    <label for="tanggal" class="col-sm-2 text-right col-form-label">DIREKTORI FILE</label>
+                                    <div class="col-sm-6">
                                         <input maxlength="10" type="text" class="form-control tanggal" id="tanggal" onchange="getData()">
                                     </div>
+                                    <button class="col-sm-2 btn btn-primary">ISI TO</button>
                                 </div>
-                            </div>
-                        </fieldset>
-                        <fieldset class="card border-secondary">
-                            <div class="card-body">
-                                <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
-                                    <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                        <thead>
-                                        <tr>
-                                            <th width="50%">Cabang</th>
-                                            <th width="35%">Nomor Dokumen</th>
-                                            <th width="15%"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
+                            </fieldset>
+                            <fieldset class="card border-secondary">
+                                <div class="card-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
+                                        <table id="" class="table table-sm table-bordered mb-3 text-center">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>DOCNO</th>
+                                                <th>TANGGAL</th>
+                                                <th>JUMLAH</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row form-group mt-3 mb-0">
-                                    <div class="custom-control custom-checkbox col-sm-2 ml-3">
-                                        <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">
-                                        <label for="cb_checkall" class="custom-control-label">Check All</label>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row form-group mt-3 mb-0">
+                                        <div class="custom-control custom-checkbox col-sm-2 ml-3">
+                                            <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">
+                                            <label for="cb_checkall" class="custom-control-label">Check All</label>
+                                        </div>
+                                        <div class="col-sm-7"></div>
+                                        <button class="col btn btn-primary">PROSES TO</button>
                                     </div>
                                 </div>
-                            </div>
-                        </fieldset>
-                        {{--<div class="row form-group mt-2">--}}
-                            {{--<div class="col">--}}
-                                {{--<select class="form-control">--}}
-                                    {{--<option>1. Transfer Data via e-mail</option>--}}
-                                    {{--<option>2. Transfer Data via FTP</option>--}}
-                                {{--</select>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                        <div class="row form-group mt-2">
-                            <div class="col-sm-6">
-                                <button class="col btn btn-primary" onclick="transfer()">Transfer Surat Jalan</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <button class="col btn btn-danger">Batal</button>
-                            </div>
+                            </fieldset>
                         </div>
                     </div>
                 </fieldset>

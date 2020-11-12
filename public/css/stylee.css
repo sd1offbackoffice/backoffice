@@ -53,6 +53,7 @@ label {
 /*Created By : JR(27/02/2020) | Modify By :  */
 .tableFixedHeader {
     overflow-y: auto;
+    /*overflow-x: auto;*/
     /*overflow: scroll;*/
     /*overflow: auto;*/
     height: 500px;
