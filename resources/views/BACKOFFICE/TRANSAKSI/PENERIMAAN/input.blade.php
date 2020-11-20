@@ -37,7 +37,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl PO</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="tglPO" disabled>
+                                                   <input type="text" class="form-control" id="tglPO" disabled placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
@@ -45,7 +45,7 @@
                                                <label class="col-sm-2 col-form-label text-right">Supplier</label>
                                                <div class="col-sm-2 buttonInside">
                                                    <input type="text" class="form-control" id="kodeSupplier">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier" onclick="showSupplier('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
@@ -61,11 +61,11 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="tglFaktur" >
+                                                   <input type="text" class="form-control" id="tglFaktur" placeholder="dd/mm/yyyy" value="{{\Carbon\Carbon::today()->format('d/m/Y')}}">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">TOP</label>
                                                <div class="col-sm-1">
-                                                   <input type="text" class="form-control" id="">
+                                                   <input type="text" class="form-control text-right" id="top">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">PKP</label>
                                                <div class="col-sm-1">
@@ -120,8 +120,8 @@
                                            <div class="form-group row mb-0">
                                                <label class="col-sm-1 col-form-label text-right">PLU</label>
                                                <div class="col-sm-1 buttonInside">
-                                                   <input type="text" class="form-control" id="no_penyesuaian">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0">
+                                                   <input type="text" class="form-control" id="i_plu">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showPlu('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
@@ -481,7 +481,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
+                        <input id="searchModal" class="form-control search_lov searchModal" type="text" placeholder="..." aria-label="Search">
                     </div>
                 </div>
                 <div class="modal-body ">
@@ -502,6 +502,55 @@
                                     </table>
                                     <p class="text-hide" id="idModal"></p>
                                     <p class="text-hide" id="idRow"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal LOV Plu-->
+    <div class="modal fade" id="modalHelpPlu" tabindex="-1" role="dialog" aria-labelledby="m_lovPlu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="searchModal" class="form-control search_lov searchModal" type="text" placeholder="..." aria-label="Search">
+                    </div>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="tableFixedHeader">
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th style="min-width: 300px !important;">Barang</th>
+                                            <th>PLU</th>
+                                            <th>Kemasan</th>
+                                            <th>Qty Ctn</th>
+                                            <th>QtyK</th>
+                                            <th>Bonus1</th>
+                                            <th>Bonus2</th>
+                                            <th>Persen disc1</th>
+                                            <th>Disc Rph1</th>
+                                            <th>Persen disc2</th>
+                                            <th>Disc Rph2</th>
+                                            <th>Persen disc3</th>
+                                            <th>Disc Rph3</th>
+                                            <th>Disc Rph4</th>
+                                            <th>No PO</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbodyModalHelpPlu"></tbody>
+                                    </table>
+                                    {{--<p class="text-hide" id="idModal"></p>--}}
+                                    {{--<p class="text-hide" id="idRow"></p>--}}
                                 </div>
                             </div>
                         </div>
@@ -643,11 +692,14 @@
     <script>
         let typeTrn;
         let tempPO          = [];
+        let tempSupplier    = [];
+        let tempPlu         = [];
         let modalThName1    = $('#modalThName1');
         let modalThName2    = $('#modalThName2');
         let modalThName3    = $('#modalThName3');
         let modalThName4    = $('#modalThName4');
         let modalHelp       = $('#modalHelp');
+        let modalHelpPlu    = $('#modalHelpPlu');
         let noBTB           = $('#noBTB');
         let noPO            = $('#noPO');
         let tglBTB          = $('#tglBTB');
@@ -657,6 +709,9 @@
         let noFaktur        = $('#noFaktur');
         let tglFaktur       = $('#tglFaktur');
         let pkp             = $('#pkp');
+        let topPo           = $('#top');
+
+        let i_plu       = $('#i_plu');
 
         tglBTB.datepicker({
             "dateFormat" : "dd/mm/yy",
@@ -674,8 +729,10 @@
            // startAlert();
             $('#cardInput2').hide();
             typeTrn = 'B'
-            showPO('');
+            // showPO('');
             // chooseBTB('0440002383', '2H6G85854')
+            // choosePO('HHBK26794')
+            // showPlu('');
         });
 
         function startAlert() {
@@ -908,7 +965,7 @@
                     noPo    : noPo
                 },
                 success: function (result) {
-                   console.log(result)
+                    modalHelp.modal('hide');
 
                     if (result.kode == 0){
                         swal("", result.msg, 'warning');
@@ -924,12 +981,206 @@
                         });
 
                         setTimeout(() => {  $('#modalLotorisasi').modal('show'); }, 2000);
+                    } else {
+                        let data = result['data'][0];
+
+                        noPO.val(data.tpoh_nopo);
+                        tglPO.val(formatDate(data.tpoh_tglpo));
+                        kodeSupp.val(data.tpoh_kodesupplier);
+                        namaSupp.val(data.sup_namasupplier);
+                        pkp.val(data.sup_pkp);
+                        topPo.val(data.tpoh_top);
+
+                        kodeSupp.attr('disabled', true);
+                        $('.btnLOVSupplier').attr('disabled', true);
+                        noFaktur.focus();
                     }
 
                 }, error: function (error) {
                     console.log(error)
                 }
             });
+
+
+        }
+
+        function showSupplier(value) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
+                type: 'post',
+                data: {
+                    typeTrn : typeTrn,
+                    value   : value,
+                },
+                success: function (result) {
+                    console.log(result)
+                    tempSupplier = result;
+
+                    modalThName1.text('Nama Supplier');
+                    modalThName2.text('Kode Supplier');
+                    modalThName3.text('PKP');
+                    modalThName4.text('TOP');
+                    modalThName3.show();
+                    modalThName4.show();
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=chooseSupplier('"+ result[i].sup_kodesupplier +"') class='modalRow'><td>"+ result[i].sup_namasupplier +"</td><td>"+ result[i].sup_kodesupplier +"</td><td>"+ result[i].sup_pkp +"</td><td>"+ result[i].sup_top +"</td></tr>")
+                    }
+
+                    $('#idModal').val('Supplier');
+                    modalHelp.modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function chooseSupplier(supp) {
+            if(typeTrn == 'L'){
+                swal('','Kode Supplier Tidak Boleh Diisi !!', 'warning')
+                kodeSupp.val('');
+                namaSupp.val('');
+                noFaktur.focus();
+            } else {
+                for(let i = 0; i< tempSupplier.length; i++){
+                    if (tempSupplier[i].sup_kodesupplier === supp){
+                        kodeSupp.val(tempSupplier[i].sup_kodesupplier);
+                        namaSupp.val(tempSupplier[i].sup_namasupplier);
+                        pkp.val(tempSupplier[i].sup_pkp);
+                        topPo.val(tempSupplier[i].sup_top);
+                    }
+                }
+            }
+
+            modalHelp.modal('hide');
+        }
+
+        function showPlu(value) {
+            let supplier    = kodeSupp.val();
+            let noPo        = noPO.val();
+            let typeLov     = '';
+
+            if (typeTrn == 'B'){
+                if (noPo == ''){
+                    if (supplier == ''){
+                        swal({
+                            icon: 'info',
+                            title: "Isi Supplier!",
+                            text:'       ',
+                            buttons: false,
+                            timer: 2000,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                        });
+
+                        kodeSupp.focus();
+                    } else {
+                        typeLov = 'PLU';
+                    }
+                } else {
+                    if (supplier != ''){
+                        typeLov = 'PLU_PO';
+                    } else {
+                        kodeSupp.focus();
+                    }
+                }
+            } else {
+                typeLov = 'LOV155';
+            }
+
+            console.log(typeLov)
+            ajaxSetup();
+
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showplu',
+                type: 'post',
+                data: {
+                    typeTrn : typeTrn,
+                    value   : value,
+                    supplier: supplier,
+                    noPo    : noPo,
+                    typeLov : typeLov
+                },
+                success: function (result) {
+                    console.log(result)
+
+                    if(typeLov == 'PLU_PO'){
+                        tempPlu = result;
+
+                        $('.modalRow').remove();
+                        for (i = 0; i< result.length; i++){
+                            $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].tpod_prdcd +"') class='modalRow text-right'><td class='text-left'>"+ result[i].prd_deskripsipanjang +"</td><td class='text-left'>"+ result[i].tpod_prdcd+"</td><td class='text-left'>"+ result[i].kemasan +"</td><td>"+ result[i].qty+"</td>" +
+                                "<td>"+ result[i].qtyk+"</td><td>"+ result[i].bonus1+"</td><td>"+ result[i].bonus2+"</td><td>"+ result[i].tpod_persentasedisc1+"</td><td>"+ result[i].tpod_rphdisc1+"</td><td>"+ result[i].tpod_persentasedisc2+"</td>" +
+                                "<td>"+ result[i].tpod_rphdisc2+"</td><td>"+ result[i].tpod_persentasedisc3+"</td><td>"+ result[i].tpod_rphdisc3+"</td><td>"+ result[i].tpod_rphdisc4+"</td><td class='text-left'>"+ result[i].tpod_nopo+"</td> </tr>")
+                        }
+
+                        modalHelpPlu.modal('show');
+                    } else {
+                        modalThName1.text('Nama Barang');
+                        modalThName2.text('PLU');
+                        modalThName3.hide();
+                        modalThName4.hide();
+
+                        $('.modalRow').remove();
+                        for (i = 0; i< result.length; i++){
+                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
+                        }
+
+                        modalHelp.modal('show');
+                    }
+
+                    $('#idModal').val('PLU');
+
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function choosePlu(plu) {
+            let temp    = convertPlu(plu);
+            let prdcd   = temp.replace(temp.substr(6,1), '0');
+            let noDoc   = noBTB.val();
+            let noPo    = noPO.val();
+            let supplier= kodeSupp.val();
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/chooseplu',
+                type: 'post',
+                data: {
+                    typeTrn : typeTrn,
+                    prdcd   : prdcd,
+                    noDoc   : noDoc,
+                    noPo    : noPo,
+                    supplier:supplier
+                },
+                success: function (result) {
+                    console.log(result)
+
+                    if(result.kode == '2'){
+                        swal({
+                            icon: 'warning',
+                            text: result.msg,
+                            buttons: false,
+                            timer: 2000,
+                            closeOnClickOutside: false,
+                            closeOnEsc: false,
+                        });
+
+                        i_plu.focus();
+                    }
+
+
+
+                }, error: function () {
+                    alert('error');
+                }
+            })
+
+
 
 
         }
@@ -962,39 +1213,50 @@
             }
         });
 
-        $('#searchModal').keypress(function (e) {
+        kodeSupp.keypress(function (e) {
+            if (e.which === 13) {
+                if(typeTrn == 'L'){
+                    swal('','Kode Supplier Tidak Boleh Diisi !!', 'warning')
+                    kodeSupp.val('');
+                    namaSupp.val('');
+                }
+                noFaktur.focus();
+            }
+        });
+
+        tglFaktur.keypress(function (e) {
+            if (e.which === 13) {
+                i_plu.focus();
+            }
+        });
+
+        i_plu.keypress(function (e) {
+            if (e.which === 13) {
+                let val = $(this).val();
+
+                choosePlu(val)
+            }
+        });
+
+        $('.searchModal').keypress(function (e) {
             if (e.which === 13) {
                 let value   = $(this).val();
                 let idModal = $('#idModal').val();
 
                 if (idModal === 'BTB'){
                     showBTB(value);
-                } else  if (idModal === 'PO'){
+                } else if (idModal === 'PO'){
                     showPO(value);
+                } else if (idModal === 'Supplier'){
+                    showSupplier(value)
+                } else if(idModal === 'PLU'){
+                    showPlu(value)
                 }
 
             }
         })
 
-
-
-
     </script>
 
 @endsection
 
-
-{{--// for (var i=0; i < tempPO.length; i++) {--}}
-{{--//     if (tempPO[i].tpoh_nopo === noPo) {--}}
-{{--//         console.log(tempPO[i])--}}
-{{--//         noPO.val(tempPO[i].tpoh_nopo);--}}
-{{--//         tglPO.val(formatDate(tempPO[i].tpoh_tglpo));--}}
-{{--//         kodeSupp.val(tempPO[i].tpoh_kodesupplier);--}}
-{{--//         namaSupp.val(tempPO[i].sup_namasupplier);--}}
-{{--//--}}
-{{--//         kodeSupp.attr('disabled', true);--}}
-{{--//         $('.btnLOVSupplier').attr('disabled', true);--}}
-{{--//         modalHelp.modal('hide');--}}
-{{--//         noFaktur.focus();--}}
-{{--//     }--}}
-{{--// }--}}

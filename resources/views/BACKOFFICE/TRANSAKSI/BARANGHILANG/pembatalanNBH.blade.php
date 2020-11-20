@@ -18,7 +18,7 @@
                                         <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal-NBH">
                                             <img src="{{asset('image/icon/help.png')}}" width="30px">
                                         </button>
-                                        <button type="button" class="btn btn-danger col-sm-2 offset-sm-1" id="btn-hapus">
+                                        <button type="button" class="btn btn-danger col-sm-2 offset-sm-1" id="btn-hapus" onclick="deleteDoc()">
                                             HAPUS NBH
                                         </button>
                                     </div>
@@ -35,15 +35,26 @@
                                 <table class="table table-striped table-bordered" id="table-detail">
                                     <thead class="thead-dark">
                                     <tr class="d-flex text-center">
-                                        <th style="width: 150px">PLU</th>
-                                        <th style="width: 400px">NAMA BARANG</th>
+                                        <th style="width: 110px">PLU</th>
+                                        <th style="width: 500px">NAMA BARANG</th>
                                         <th style="width: 130px">KEMASAN</th>
                                         <th style="width: 160px">KUANTUM</th>
-                                        <th style="width: 120px">H.P.P</th>
+                                        <th style="width: 150px">H.P.P</th>
                                         <th style="width: 150px">TOTAL</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody">
+                                    @for($i = 0; $i< 8; $i++)
+                                        <tr class="d-flex baris">
+                                            <td style="width: 110px"><input disabled type="text" class="form-control plu" id="plu"></td>
+                                            <td style="width: 500px"><input disabled type="text" class="form-control nama-barang"></td>
+                                            <td style="width: 130px"><input disabled type="text" class="form-control kemasan"></td>
+                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum1"></td>
+                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum2"></td>
+                                            <td style="width: 150px"><input disabled type="text" class="form-control hpp"></td>
+                                            <td style="width: 150px"><input disabled type="text" class="form-control total"></td>
+                                        </tr>
+                                    @endfor
                                     </tbody>
                                 </table>
                             </div>
@@ -100,8 +111,6 @@
                                         @endforeach
                                         </tbody>
                                     </table>
-                                    {{--<p class="text-hide" id="idModal"></p>--}}
-                                    {{--<p class="text-hide" id="idRow"></p>--}}
                                 </div>
                             </div>
                         </div>
@@ -112,6 +121,14 @@
             </div>
         </div>
     </div>
+
+    <style>
+
+        tbody td {
+            padding: 3px !important;
+        }
+
+    </style>
 
     <script>
 
@@ -127,7 +144,7 @@
             $('#modal-NBH').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/showDoc',
+                url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/showData',
                 type: 'post',
                 data: {nonbh: nonbh},
                 beforeSend: function () {
@@ -135,26 +152,30 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    // $('#tabledetail .rowdetail').remove();
+                    $('.baris').remove();
                     if (result) {
+                        console.log(result)
+                        var html = "";
+                        var i;
                         for (i = 0; i < result.length; i++) {
-                            var html = "";
-                            var i = "";
                             qty = result[i].mstd_qty / result[i].mstd_frac;
                             qtyk = result[i].mstd_qty % result[i].mstd_frac;
 
                             html = `<tr class="d-flex baris">
-                                        <td style="width: 150px"><input disabled type="text" class="form-control plu" value="` + nvl(result[i].mstd_prdcd, '') + `"></td>
-                                        <td style="width: 400px"><input disabled type="text" class="form-control nama-barang" value="` + nvl(result[i].prd_deskripsipanjang, '') + `"></td>
+                                        <td style="width: 110px"><input disabled type="text" class="form-control plu" value="` + result[i].mstd_prdcd + `"></td>
+                                        <td style="width: 500px"><input disabled type="text" class="form-control nama-barang" value="` + result[i].prd_deskripsipanjang + `"></td>
                                         <td style="width: 130px"><input disabled type="text" class="form-control kemasan" value="` + nvl(result[i].mstd_unit, '') + ` / ` + nvl(result[i].mstd_frac, '') + `"></td>
-                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum1" value="` + qty + `"></td>
-                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum2" value="` + Math.floor(qtyk) + `"></td>
-                                        <td style="width: 120px"><input disabled type="text" class="form-control hpp" value="` + nvl(result[i].mstd_hrgsatuan, '') + `"></td>
-                                        <td style="width: 150px"><input disabled type="text" class="form-control total" value="` + nvl(result[i].mstd_gross, '') + `"></td>
+                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum1 text-right" value="` + Math.floor(qty) + `"></td>
+                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum2 text-right" value="` + Math.floor(qtyk) + `"></td>
+                                        <td style="width: 150px"><input disabled type="text" class="form-control hpp text-right" value="` + convertToRupiah(nvl(result[i].mstd_hrgsatuan, '')) + `"></td>
+                                        <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(nvl(result[i].mstd_gross, '')) + `"></td>
                                     </tr>`;
-
+                            $('#no-nbh').val(result[i].mstd_nodoc);
                             $('#tbody').append(html);
                         }
+                    } else {
+                        alert('Data Tidak Ada');
+                        $('#no-nbh').val('');
                     }
                 }, error: function () {
                     alert('error');
@@ -162,6 +183,116 @@
             })
         }
 
+        $('#searchModal').keypress(function (e) {
+            if (e.which === 13) {
+                let search = $('#searchModal').val();
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/lovNBH',
+                    type: 'post',
+                    data: {search:search},
+                    success: function (result) {
+                        $('.modalRow').remove();
+                        for (i = 0; i < result.length; i++){
+                            let temp = `<tr class="modalRow" onclick=showDoc('`+ result[i].msth_nodoc+`')>
+                                        <td>`+ result[i].msth_nodoc +`</td>
+                                        <td>`+ formatDateCustom(result[i].msth_tgldoc, 'd-M-y') +`</td>
+                                     </tr>`;
+                            $('#tbodyModalHelp').append(temp);
+                        }
+                    }, error: function () {
+                        alert('error');
+                    }
+                });
+            }
+        })
+
+        function deleteDoc(){
+            let nonbh = $('#no-nbh').val();
+
+            if (!nonbh){
+                swal('Pilih Nomor!', '', 'warning');
+                return false;
+            }
+
+            swal({
+                title: 'Peringatan NBH Akan Dibatalkan?',
+                icon: 'warning',
+                dangerMode: true,
+                buttons: true,
+            }).then(function (confirm) {
+                if (confirm){
+                    ajaxSetup();
+                    $.ajax({
+                        url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/deleteData',
+                        type: 'post',
+                        data: {"_token": "{{ csrf_token() }}", nonbh: nonbh},
+                        beforeSend: function () {
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (result) {
+                            console.log(result)
+                            $('#modal-loader').modal('hide');
+                            if (result.kode === 1) {
+                                swal(result.msg, '', 'success');
+                                clearField();
+                            } else {
+                                swal(result.msg, '', 'warning');
+                            }
+                        }, error: function (error) {
+                            swal('Error', '', 'error');
+                            console.log(error)
+                        }
+                    });
+                } else {
+                    console.log('Tidak dihapus');
+                }
+            });
+        }
+
+        {{--function deleteDoc() {--}}
+            {{--let nonbh = $('#no-nbh').val();--}}
+            {{--$.ajax({--}}
+                {{--url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/deleteData',--}}
+                {{--type: 'post',--}}
+                {{--data: {"_token": "{{ csrf_token() }}", nonbh: nonbh},--}}
+                {{--beforeSend: function () {--}}
+                    {{--$('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                {{--},--}}
+                {{--success: function (result) {--}}
+                    {{--console.log(result)--}}
+                    {{--swal({--}}
+                        {{--title: 'Peringatan NBH Akan Dibatalkan?',--}}
+                        {{--icon: 'warning'--}}
+                    {{--}).then((confirm) => {--}}
+                        {{--$('#no-nbh').val('');--}}
+                        {{--$('.baris').remove();--}}
+                        {{--clearField();--}}
+                    {{--});--}}
+                {{--},--}}
+                {{--complete: function () {--}}
+                    {{--$('#modal-loader').modal('hide');--}}
+                {{--}--}}
+            {{--});--}}
+        {{--}--}}
+
+        function clearField(){
+            $('#no-nbh').val('');
+            $('.baris').remove();
+
+            for (i = 0; i< 8; i++) {
+                var tempTable = `<tr class="d-flex baris">
+                                            <td style="width: 110px"><input disabled type="text" class="form-control plu"></td>
+                                            <td style="width: 500px"><input disabled type="text" class="form-control nama-barang"></td>
+                                            <td style="width: 130px"><input disabled type="text" class="form-control kemasan"></td>
+                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum1"></td>
+                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum2"></td>
+                                            <td style="width: 150px"><input disabled type="text" class="form-control hpp"></td>
+                                            <td style="width: 150px"><input disabled type="text" class="form-control total"></td>
+                                 </tr>`;
+                $('#tbody').append(tempTable);
+            }
+        }
 
     </script>
 

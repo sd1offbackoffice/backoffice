@@ -172,9 +172,9 @@ return [
 
         'igrPLG' => [
             'driver' => 'oracle',
-            'host' => '192.168.232.192',
+            'host' => '192.168.232.191',
             'port' => '1521',
-            'database' => 'IGRPLG2',
+            'database' => 'IGRPLG',
             'username' => 'igrplg',
             'password' => 'V4lkyr13PLG!',
             'charset' => 'AL32UTF8',

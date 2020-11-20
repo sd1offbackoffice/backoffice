@@ -12,19 +12,19 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">No BPB</label>
                             <div class="col-sm-2 pr-0">
-                                <input type="text" class="form-control tgl" id="bpb1">
+                                <input type="text" class="form-control tgl" id="bpb1" disabled>
                             </div>
                             <div class="col-sm-1 pl-0">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov" disabled>
+                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 1;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             <label class="col-form-label">s/d</label>
                             <div class="col-sm-2 pr-0">
-                                <input type="text" class="form-control tgl" id="bpb2">
+                                <input type="text" class="form-control tgl" id="bpb2" disabled>
                             </div>
                             <div class="col-sm-1 pl-0">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov" disabled>
+                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 2;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -35,7 +35,7 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Ukuran Kertas</label>
                             <div class="col-sm-2 pr-0">
-                                <select class="form-control">
+                                <select class="form-control" id="ukuran">
                                     <option>BESAR</option>
                                     <option>KECIL</option>
                                 </select>
@@ -101,6 +101,8 @@
     </style>
 
     <script>
+        var f_bpb;
+
         $(document).ready(function(){
             $('.tgl').datepicker({
                 "dateFormat" : "dd/mm/yy",
@@ -134,48 +136,49 @@
                         nosj = $(this).find('td:eq(0)').html();
 
                         $('#m_lov_trn').modal('hide');
-                        getData(nosj);
+
+                        if(f_bpb == 1){
+                            $('#bpb1').val(nosj);
+                        }
+                        else{
+                            $('#bpb2').val(nosj);
+                        }
+
+                        cekBPB();
                     });
                 }
             });
         }
 
-        function cetak(){
-            if($('#tgl1').val() == '' || $('#tgl2').val() == ''){
+        function cekBPB(){
+            if($('#bpb1').val() > $('#bpb2').val() && $('#bpb1').val() != '' && $('#bpb2').val() != ''){
                 swal({
-                    title: 'Tanggal belum lengkap!',
+                    title: 'No BPB pertama lebih besar dari no BPB kedua!',
+                    icon: 'error'
+                }).then(() => {
+                    if(f_bpb == 1){
+                        $('#bpb1').val('');
+                    }
+                    else{
+                        $('#bpb2').val('');
+                    }
+                });
+            }
+        }
+
+        function cetak(){
+            if($('#bpb1').val() == '' || $('#bpb2').val() == ''){
+                swal({
+                    title: 'No BPB belum lengkap!',
                     icon: 'warning'
                 });
             }
             else{
-                $.ajax({
-                    url: '{{ url('/bo/transaksi/kirimcabang/cetak-sj-packlist/cetak') }}',
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-
-                        if(response.status == 'error'){
-                            swal({
-                                title: response.title,
-                                icon: 'error'
-                            });
-                        }
-                        else{
-                            tgl1 = $('#tgl1').val();
-                            tgl2 = $('#tgl2').val();
-
-                            window.open('{{ url('/bo/transaksi/kirimcabang/cetak-sj-packlist/get-pdf') }}?tgl1='+tgl1+'&tgl2='+tgl2);
-                        }
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                    }
+                swal({
+                    title: 'Proses mungkin membutuhkan waktu jika data terlalu banyak!',
+                    icon: 'warning'
+                }).then(() => {
+                    window.open('{{ url()->current() }}/cetak?bpb1='+$('#bpb1').val()+'&bpb2='+$('#bpb2').val()+'&size='+$('#ukuran').val());
                 });
             }
         }

@@ -467,8 +467,8 @@
                     }
                     $('#totalgross').val(convertToRupiah(tempgross));
 
-                    if(result[0].nota == 'Belum Cetak Nota'){
-                        // console.log(result)
+                    if(result[0].nota === 'Belum Cetak Nota'){
+                        console.log(result[0])
                         var html = "";
                         var i;
                         $('.baris').remove();

@@ -259,8 +259,6 @@ class barangController extends Controller
             return response()->json($pluOmi);
 
         }
-
-
     }
 
 }

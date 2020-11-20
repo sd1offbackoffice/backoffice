@@ -66,10 +66,10 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="card border-dark">
+                <fieldset class="card border-dark card-hdr cardForm">
                     <legend class="w-auto ml-5"> Header</legend>
 
-                    <div class="card-body cardForm">
+                    <div class="card-body">
                         <div class="card-body p-0 tableFixedHeader" style="height: 250px;">
                             <table class="table table-sm table-striped table-bordered "
                                    id="table-header">
@@ -93,7 +93,7 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="card border-dark">
+                <fieldset class="card border-dark  card-dtl">
                     <legend class="w-auto ml-5">Detail</legend>
                     <div class="card-body cardForm">
                         <div class="card-body p-0 tableFixedHeader">
@@ -240,6 +240,40 @@
         </div>
     </div>
 
+    {{--MODAL PLU--}}
+    <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Supplier</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table" id="table_lov_plu">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <td>PLU</td>
+                                        <td>Deskripsi</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .row-lov-trn:hover {
             cursor: pointer;
@@ -259,8 +293,8 @@
 
         .btn-lov-plu {
             position: absolute;
-            right: 4px;
-            top: 1px;
+            /*right: 4px;*/
+            /*top: 1px;*/
             border: none;
             height: 30px;
             width: 30px;
@@ -270,14 +304,15 @@
             font-weight: bold;
 
         }
-        .input-group-text{
+
+        .input-group-text {
             background-color: white;
         }
     </style>
 
 
     <script>
-
+        var rowheader;
         $(document).ready(function () {
             reset();
             $('#dtTglDoc').datepicker({
@@ -291,6 +326,19 @@
             if (e.keyCode == 13) {
                 var nodoc = $(this).val();
                 getDataTrn(nodoc);
+            }
+        });
+
+        $('#txtKdSupplier').keypress(function (e) {
+            if (e.keyCode == 13) {
+                kdsup = $('#txtKdSupplier').val();
+                getDataSupplier(kdsup);
+            }
+        });
+
+        $(document).on('click', '.card-hdr,.card-dtl', function () {
+            if ($('#txtKdSupplier').val() == '' && $('#txtNoDoc').val() != '' && $('#dtTglDoc').val() != '') {
+                $('#txtKdSupplier').focus();
             }
         });
 
@@ -345,21 +393,159 @@
         $(document).on('click', '.row-lov-supplier', function () {
             var currentButton = $(this);
             kdsup = currentButton.children().first().next().text();
-            namasupplier = currentButton.children().first().text();
-            pkp = currentButton.children().first().next().next().text();
-
-            $('#txtKdSupplier').val(kdsup);
-            $('#txtNmSupplier').val(namasupplier);
-            $('#txtPKP').val(pkp);
+            getDataSupplier(kdsup);
 
             $('#m_lov_supplier').modal('hide');
         });
+
+        $('#table_lov_plu').DataTable({
+            "ajax": '{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}',
+            "columns": [
+                {data: 'prd_prdcd', name: 'prd_prdcd'},
+                {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'}
+            ],
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('row-lov-plu').css({'cursor': 'pointer'});
+            },
+            "order": []
+        });
+
+        $(document).on('click', '.btn-lov-plu, .plu-header', function () {
+            rowheader = $(this).attr("rowheader");
+        });
+        $(document).on('keypress', '.plu-header', function (e) {
+            if (e.keyCode == 13) {
+                var temp = '';
+                for (var i = 0; i < 7 - $(this).val().length; i++) {
+                    temp = '0' + temp;
+                }
+                temp = temp + $(this).val();
+                $(this).val(temp);
+                getDataPLU(temp);
+            }
+        });
+        $(document).on('click', '.row-lov-plu', function () {
+            var currentButton = $(this);
+
+            var plu = currentButton.children().first().text();
+
+            getDataPLU(plu);
+            $('#m_lov_plu').modal('hide');
+        });
+
+        function getDataPLU(plu) {
+            if (kdsup == '') {
+                swal({
+                    title: '',
+                    text: response.message,
+                    icon: response.status
+                });
+            }
+            $.ajax({
+                type: "GET",
+                url: "{{ url('/bo/transaksi/pengeluaran/input/get-data-plu') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    plu: plu,
+                    kdsup: kdsup
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    if (response.message) {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {
+                        });
+                    }
+                    if (response.result) {
+                        $(".plu-header-" + rowheader).val(response.result.st_prdcd);
+                        $(".plu-header-" + rowheader).attr('max_qty', response.result.qtypb);
+                        $(".deskripsi-header-" + rowheader).val(response.result.prd_deskripsipendek);
+                        $(".satuan-header-" + rowheader).val(response.result.satuan);
+                        $(".bkp-header-" + rowheader).val(response.result.prd_flagbkp1);
+                        $(".stock-header-" + rowheader).val(response.result.st_saldoakhir);
+                        $(".ctn-header-" + rowheader).focus();
+                    }
+
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.exception,
+                        text: error.responseJSON.message,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+
+        function getDataSupplier(kdsup) {
+            $.ajax({
+                type: "GET",
+                url: "{{ url('/bo/transaksi/pengeluaran/input/get-data-supplier') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    kdsup: kdsup
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    if (response.message) {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {
+                        });
+                    }
+                    else {
+                        namasupplier = response.result.sup_namasupplier;
+                        pkp = response.result.sup_pkp;
+
+                        $('#txtKdSupplier').val(kdsup);
+                        $('#txtNmSupplier').val(namasupplier);
+                        $('#txtPKP').val(pkp);
+                    }
+
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.exception,
+                        text: error.responseJSON.message,
+                        icon: 'error'
+                    }).then(() => {
+
+                    });
+                }
+            });
+        }
 
         function reset() {
             $('#body-table-header').empty();
             $('#body-table-detail').empty();
             $('#btnHapusDokumen').attr('disabled', true);
             $('#btnUsulanRetur').attr('disabled', true);
+            $('#txtKdSupplier').attr('disabled', false);
 
             $('#txtKdSupplier').val('');
             $('#txtNmSupplier').val('');
@@ -409,18 +595,18 @@
                                     $('#body-table-header').append('<tr>' +
                                         '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
                                         '<td><div class="input-group input-group-sm">\n' +
-                                        '    <input type="text" class="form-control" placeholder="PLU" aria-describedby="btnGroupAddon2">\n' +
-                                        '    <div class="input-group-prepend">\n' +
-                                        '      <div class="input-group-text p-0" ><button class="btn btn-sm btn-primary m-0">?</button></div>\n' +
-                                        '    </div>\n' +
-                                        '  </div></td>' +
-                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                        '<input type="text" class="form-control plu-header-1 plu-header" aria-describedby="btnGroupAddon2" rowheader="1">\n' +
+                                        '<div class="input-group-prepend">\n' +
+                                        '<button class="btn btn-sm btn-primary btn-lov-plu m-0" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">?</button></div>\n' +
+                                        '</div>\n' +
+                                        '</div></td>' +
+                                        '<td><input disabled class="form-control form-control-sm deskripsi-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm satuan-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm bkp-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control form-control-sm stock-header-1" type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control form-control-sm keteragan-header keterangan-header-1" rowheader=1 type="text"></td>' +
                                         '</tr>');
 
                                     // $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail">' +
@@ -480,104 +666,121 @@
                         $('#btnHapusDokumen').attr('disabled', false);
                         $('#btnUsulanRetur').attr('disabled', false);
 
+                        if (response.status == 'error' || response.status == 'info') {
+                            swal({
+                                title: response.status,
+                                text: response.message,
+                                icon: response.status
+                            }).then(() => {
+                            });
+                        }
+                        else {
 
-                        console.log(response);
-                        $('#modal-loader').modal('hide');
-                        $('#txtModel').val(response.model);
+                            $('#modal-loader').modal('hide');
+                            $('#txtModel').val(response.model);
 
-                        var datas = response.datas;
-                        $('#dtTglDoc').val(response.tgldoc);
-                        $('#txtKdSupplier').val(response.supplier);
-                        $('#txtNmSupplier').val(response.nmsupplier);
-                        $('#txtPKP').val(response.pkp);
 
-                        var datas_header = response.datas_header;
-                        datas_header.forEach(function (dh) {
-                            var plu = dh.h_plu == null ? '' : dh.h_plu;
-                            var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
-                            var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
-                            var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
-                            var stock = dh.h_stock == null ? '' : dh.h_stock;
-                            var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
-                            var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
-                            var ket = dh.h_ket == null ? '' : dh.h_ket;
+                            var datas = response.datas;
+                            $('#dtTglDoc').val(response.tgldoc);
+                            $('#txtKdSupplier').val(response.supplier);
+                            $('#txtNmSupplier').val(response.nmsupplier);
+                            $('#txtPKP').val(response.pkp);
 
-                            $('#body-table-header').append('<tr>' +
-                                '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + deskripsi + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + ket + '"></td>' +
-                                '</tr>');
-                        });
+                            var datas_header = response.datas_header;
+                            datas_header.forEach(function (dh) {
+                                var plu = dh.h_plu == null ? '' : dh.h_plu;
+                                var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                                var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                                var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                                var stock = dh.h_stock == null ? '' : dh.h_stock;
+                                var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                                var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                                var ket = dh.h_ket == null ? '' : dh.h_ket;
 
-                        var datas_detail = response.datas_detail;
-                        var i = 1;
-                        var tot_gross = 0;
-                        var tot_potongan = 0;
-                        var tot_ppn = 0;
-                        var tot_total = 0;
-                        datas_detail.forEach(function (dd) {
-                            var plu = dd.plu == null ? '' : dd.plu;
-                            var desk = dd.desk == null ? '' : dd.desk;
-                            var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
-                            var satuan = dd.satuan == null ? '' : dd.satuan;
-                            var bkp = dd.bkp == null ? '' : dd.bkp;
-                            var stock = dd.stok == null ? '' : dd.stok;
-                            var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
-                            var ctn = dd.ctn == null ? '' : dd.ctn;
-                            var pcs = dd.pcs == null ? '' : dd.pcs;
-                            var gross = dd.gross == null ? '' : dd.gross;
-                            var discper = dd.discper == null ? '' : dd.discper;
-                            var discrp = dd.discrp == null ? '' : dd.discrp;
-                            var ppn = dd.ppn == null ? '' : dd.ppn;
-                            var faktur = dd.faktur == null ? '' : dd.faktur;
-                            var pajakno = dd.pajakno == null ? '' : dd.pajakno;
-                            var tglfp = dd.tglfp == null ? '' : dd.tglfp;
-                            var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
-                            var keterangan = dd.keterangan == null ? '' : dd.keterangan;
-                            var pkp = dd.pkp == null ? '' : dd.pkp;
-                            var frac = dd.frac == null ? '' : dd.frac;
-                            var unit = dd.unit == null ? '' : dd.unit;
+                                $('#body-table-header').append('<tr>' +
+                                    '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + deskripsi + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + ket + '"></td>' +
+                                    '</tr>');
+                            });
 
-                            $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + desk + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + hrgsatuan + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + gross + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + discper + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + discrp + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + ppn + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + faktur + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + pajakno + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + tglfp + '"></td>' +
-                                '<td><input disabled class="form-control form-control-sm" type="text" value="' + noreffbtb + '"></td>' +
-                                '<td><input class="form-control form-control-sm" type="text" value="' + keterangan + '"></td>' +
-                                '</tr>');
-                            i++;
-                            tot_gross += parseFloat(gross);
-                            tot_potongan += parseFloat(discrp);
-                            tot_ppn += parseFloat(ppn);
-                        });
-                        tot_total = tot_gross - tot_potongan + tot_ppn;
+                            var datas_detail = response.datas_detail;
+                            var i = 1;
+                            var tot_gross = 0;
+                            var tot_potongan = 0;
+                            var tot_ppn = 0;
+                            var tot_total = 0;
+                            datas_detail.forEach(function (dd) {
+                                var plu = dd.plu == null ? '' : dd.plu;
+                                var desk = dd.desk == null ? '' : dd.desk;
+                                var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                                var satuan = dd.satuan == null ? '' : dd.satuan;
+                                var bkp = dd.bkp == null ? '' : dd.bkp;
+                                var stock = dd.stok == null ? '' : dd.stok;
+                                var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
+                                var ctn = dd.ctn == null ? '' : dd.ctn;
+                                var pcs = dd.pcs == null ? '' : dd.pcs;
+                                var gross = dd.gross == null ? '' : dd.gross;
+                                var discper = dd.discper == null ? '' : dd.discper;
+                                var discrp = dd.discrp == null ? '' : dd.discrp;
+                                var ppn = dd.ppn == null ? '' : dd.ppn;
+                                var faktur = dd.faktur == null ? '' : dd.faktur;
+                                var pajakno = dd.pajakno == null ? '' : dd.pajakno;
+                                var tglfp = dd.tglfp == null ? '' : dd.tglfp;
+                                var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
+                                var keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                                var pkp = dd.pkp == null ? '' : dd.pkp;
+                                var frac = dd.frac == null ? '' : dd.frac;
+                                var unit = dd.unit == null ? '' : dd.unit;
 
-                        $('#gross').val(convertToRupiah2(tot_gross));
-                        $('#potongan').val(convertToRupiah2(tot_potongan));
-                        $('#ppn').val(convertToRupiah2(tot_ppn));
-                        $('#total').val(convertToRupiah2(tot_total));
-                        $('#total-item').val(convertToRupiah2(i - 1));
+                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + desk + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + hrgsatuan + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + gross + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + discper + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + discrp + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + ppn + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + faktur + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + pajakno + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + tglfp + '"></td>' +
+                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + noreffbtb + '"></td>' +
+                                    '<td><input class="form-control form-control-sm" type="text" value="' + keterangan + '"></td>' +
+                                    '</tr>');
+                                i++;
+                                tot_gross += parseFloat(gross);
+                                tot_potongan += parseFloat(discrp);
+                                tot_ppn += parseFloat(ppn);
+                            });
+                            tot_total = tot_gross - tot_potongan + tot_ppn;
 
-                        // if
-                        $('.btn-delete-row-header').attr('disabled', true);
+                            $('#gross').val(convertToRupiah2(tot_gross));
+                            $('#potongan').val(convertToRupiah2(tot_potongan));
+                            $('#ppn').val(convertToRupiah2(tot_ppn));
+                            $('#total').val(convertToRupiah2(tot_total));
+                            $('#total-item').val(convertToRupiah2(i - 1));
+
+                            // if
+                            $('.btn-delete-row-header').attr('disabled', true);
+
+                            if (response.model == '* NOTA SUDAH DICETAK *') {
+                                $('.card-hdr input').attr('disabled', true);
+                                $('.card-dtl input').attr('disabled', true);
+                                $('#txtKdSupplier').attr('disabled', true);
+                                $('#dtTglDoc').attr('disabled', true);
+                            }
+                        }
 
                     },
                     error: function (error) {
@@ -595,6 +798,51 @@
             }
 
         }
+
+        $(document).on('keypress', '.ctn-header', function (e) {
+            console.log('asdasda');
+            if (e.keyCode == 13) {
+                var nodoc = $(this).val();
+                var current = $(this);
+                var rh = current.attr('rowheader');
+                var ctn = current.val();
+                var pcs = $('.pcs-header-' + rh).val();
+                var stock = $('.pcs-stock-' + rh).val();
+                var satuan = $('.satuan-header-' + rh).val();
+                var tempFrac = satuan.split('/');
+                var frac = tempFrac[1];
+                var max_qty = $('.plu-header-' + rh).attr('max_qty');
+
+                if (ctn < 0) {
+                    current.val(0);
+                    swal({
+                        title: 'Info',
+                        text: 'Quantity Carton < 0',
+                        icon: 'info'
+                    })
+                    e.preventDefault();
+                }
+                // ????
+                if ((ctn * frac) + pcs > stock) {
+                    ctn = 0;
+                    current.val(ctn);
+                    swal({
+                        title: 'Info',
+                        text: 'Quantity[' + ((ctn * frac) + pcs) + '] > Stock Retur[' + max_qty + ']',
+                        icon: 'info'
+                    });
+                    e.preventDefault();
+                }
+                $('.pcs-header-' + rh).focus();
+            }
+
+        });
+
+        $(document).on('click', '.pcs-header', function () {
+            var current = $(this);
+            var rh = current.attr('rowheader');
+
+        });
 
         $(document).on('click', '.row-detail', function () {
             var currentElement = $(this);

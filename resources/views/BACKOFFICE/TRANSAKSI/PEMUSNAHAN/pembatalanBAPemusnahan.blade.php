@@ -189,49 +189,75 @@
         }
 
         function deleteDoc() {
-            let doc = $('#noDoc').val();
-
-            if (!doc){
-                swal('Pilih Nomor!', '', 'warning');
-                return false;
-            }
-
-            swal({
-                title: 'Nomor Dokumen Akan dihapus?',
-                icon: 'warning',
-                dangerMode: true,
-                buttons: true,
-            }).then(function (confirm) {
-                if (confirm){
-                    ajaxSetup();
-                    $.ajax({
-                        url: '/BackOffice/public/bo/transaksi/pemusnahan/bapbatal/deletedoc',
-                        type: 'post',
-                        data: {doc: doc},
-                        beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function (result) {
-                            console.log(result)
-                            $('#modal-loader').modal('hide');
-                            if (result.kode === 1) {
-                                swal(result.msg, '', 'success');
-                                $('#noDoc').val('');
-                                tableDetail.clear().draw();
-                            } else {
-                                swal(result.msg, '', 'warning');
-                            }
-
-                        }, error: function (error) {
-                            swal('Error', '', 'error');
-                            console.log(error)
-                        }
+            let nonbh = $('#no-nbh').val();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',
+                type: 'post',
+                data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    console.log(result)
+                    swal({
+                        title: 'Nomor Dokumen Dihapus?',
+                        icon: 'warning'
+                    }).then((confirm) => {
+                        $('#no-trn').val('');
+                        $('.baris').remove();
+                        clearField();
                     });
-                } else {
-                    console.log('Tidak dihapus');
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
                 }
             });
         }
+
+        // function deleteDoc() {
+        //     let doc = $('#noDoc').val();
+        //
+        //     if (!doc){
+        //         swal('Pilih Nomor!', '', 'warning');
+        //         return false;
+        //     }
+        //
+        //     swal({
+        //         title: 'Nomor Dokumen Akan dihapus?',
+        //         icon: 'warning',
+        //         dangerMode: true,
+        //         buttons: true,
+        //     }).then(function (confirm) {
+        //         if (confirm){
+        //             ajaxSetup();
+        //             $.ajax({
+        //                 url: '/BackOffice/public/bo/transaksi/pemusnahan/bapbatal/deletedoc',
+        //                 type: 'post',
+        //                 data: {doc: doc},
+        //                 beforeSend: function () {
+        //                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+        //                 },
+        //                 success: function (result) {
+        //                     console.log(result)
+        //                     $('#modal-loader').modal('hide');
+        //                     if (result.kode === 1) {
+        //                         swal(result.msg, '', 'success');
+        //                         $('#noDoc').val('');
+        //                         tableDetail.clear().draw();
+        //                     } else {
+        //                         swal(result.msg, '', 'warning');
+        //                     }
+        //
+        //                 }, error: function (error) {
+        //                     swal('Error', '', 'error');
+        //                     console.log(error)
+        //                 }
+        //             });
+        //         } else {
+        //             console.log('Tidak dihapus');
+        //         }
+        //     });
+        // }
 
 
     </script>

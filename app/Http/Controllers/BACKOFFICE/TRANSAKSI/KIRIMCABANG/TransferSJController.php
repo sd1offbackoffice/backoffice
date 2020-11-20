@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
 use Yajra\DataTables\DataTables;
+use ZipArchive;
+use File;
 
 class TransferSJController extends Controller
 {
@@ -26,7 +28,7 @@ class TransferSJController extends Controller
                     and mstd_kodeigr = msth_kodeigr
                     and mstd_nodoc = msth_nodoc
                     and trunc(mstd_tgldoc) =TO_DATE('".$request->tgl."','DD/MM/YYYY')
-                    and cab_kodecabang = msth_loc
+                    and cab_kodecabang = msth_loc2
                     and cab_kodeigr = msth_kodeigr
                     and nvl(msth_flagdoc,' ') <> '*'
                     order by msth_loc2");
@@ -90,6 +92,22 @@ class TransferSJController extends Controller
 
         DB::statement("truncate table temp_sj");
 
+//        dd($data);
+
+        $temp = '';
+        $datas = [];
+        $x = [];
+        foreach($data as $d){
+            if($temp != $d->docno){
+                $temp = $d->docno;
+                if(count($x) > 0)
+                    $datas[] = $x;
+                $x = [];
+            }
+            $x[] = $d;
+        }
+        $datas[] = $x;
+
         $column = DB::select("select column_name FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ' 
                                     ORDER BY column_id");
 
@@ -98,26 +116,47 @@ class TransferSJController extends Controller
             $columnHeader[] = $c->column_name;
         }
 
-        $rows = collect($data)->map(function ($x) {
-            return (array)$x;
-        })->toArray();
+        foreach($datas as $data){
+            $rows = collect($data)->map(function ($x) {
+                return (array)$x;
+            })->toArray();
 
-        $tgl = date_format(Carbon::now(),'d-m-Y His');
+           $filename = $data[0]->docno.'.csv';
 
-        $filename = 'TRANSFER SURAT JALAN '.$tgl.'.csv';
-
-        $headers = [
-            "Content-type" => "text/csv",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        ];
-        $file = fopen($filename, 'w');
-        fputcsv($file, $columnHeader, '|');
-        foreach ($rows as $row) {
-            fputcsv($file, $row, '|');
+            $headers = [
+                "Content-type" => "text/csv",
+                "Pragma" => "no-cache",
+                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+                "Expires" => "0"
+            ];
+            $file = fopen('TRFSJ/'.$filename, 'w');
+            fputcsv($file, $columnHeader, '|');
+            foreach ($rows as $row) {
+                fputcsv($file, $row, '|');
+            }
+            fclose($file);
         }
-        fclose($file);
-        return response()->download($filename, $filename, $headers)->deleteFileAfterSend(true);
+
+        $zip = new ZipArchive;
+
+        $tgl = date('d-m-Y',strtotime($datas[0][0]->dateo));
+
+        $filename = 'TRFSJ CAB '.$datas[0][0]->loc2.' '.$tgl.'.zip';
+
+        if ($zip->open(public_path($filename), ZipArchive::CREATE) === TRUE)
+        {
+            $files = File::files(public_path('TRFSJ'));
+
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+
+            $zip->close();
+        }
+
+        File::delete($files);
+
+        return response()->download(public_path($filename))->deleteFileAfterSend(true);
     }
 }
