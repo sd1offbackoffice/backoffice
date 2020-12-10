@@ -43,8 +43,8 @@ class loginController extends Controller
                 ->update(['useraktif' => '']);
             $Freset = true;
             $message = 'USER AKTIF UNTUK IP ' . $ipx . ' SUDAH BERHASIL DIRESET';
-
-            return compact('message');
+            $status = 'success';
+            return compact(['message','status']);
         }
 
         $jum = DB::table('tbmaster_computer')
@@ -54,8 +54,9 @@ class loginController extends Controller
 
         if ($jum == 0) {
             $message = 'IP ANDA ' . $ipx . ' BELUM TERDAFTAR DI TBMASTER_COMPUTER!!! SILAHKAN MENGHUBUNGI EDP';
+            $status = 'info';
             $login = false;
-            return compact('message');
+            return compact(['message','status']);
         }
         $ipx = DB::table('tbmaster_computer')
             ->select('ip')
@@ -71,10 +72,12 @@ class loginController extends Controller
                 $message = 'Untuk Melakukan RESET Silahkan Login Kembali Dengan :' . chr(10) . chr(13) .
                     'USER : RST' . chr(10) . chr(13) .
                     'PASS : RST' . chr(10) . chr(13);
-                return compact('message');
+                $status = 'info';
+                return compact(['message','status']);
             } else {
                 $message = 'USER ' . $request->username . ' SUDAH LOGIN DI IP = ' . $ipx;
-                return compact('message');
+                $status = 'info';
+                return compact(['message','status']);
             }
             $login = false;
         } else {
@@ -129,7 +132,7 @@ class loginController extends Controller
                 $_SESSION['eml'] = '';
                 $_SESSION['rptname'] = $prs->prs_rptname;
                 $_SESSION['ip'] = $vip;
-                $_SESSION['id'] = str_replace('.','',$vip);
+                $_SESSION['id'] = str_replace('.', '', $vip);
                 $_SESSION['ppn'] = $prs->prs_nilaippn;
                 $_SESSION['stat'] = 99;
                 $_SESSION['conUser'] = $conUser;
@@ -152,11 +155,13 @@ class loginController extends Controller
 
                 if (!$user) {
                     $message = 'User Tidak Ditemukan!';
-                    return compact('message');
-                }else{
-                    if($user->encryptpwd != md5($request->password)){
+                    $status = 'error';
+                    return compact(['message', 'status']);
+                } else {
+                    if ($user->encryptpwd != md5($request->password)) {
                         $message = 'User / Password Salah!';
-                        return compact('message');
+                        $status = 'error';
+                        return compact(['message', 'status']);
                     }
                 }
                 $_SESSION['kdigr'] = $prs->prs_kodeigr;
@@ -165,7 +170,7 @@ class loginController extends Controller
                 $_SESSION['eml'] = $user->email;
                 $_SESSION['rptname'] = $prs->prs_rptname;
                 $_SESSION['ip'] = $vip;
-                $_SESSION['id'] = str_replace('.','',$vip);
+                $_SESSION['id'] = str_replace('.', '', $vip);
                 $_SESSION['ppn'] = $prs->prs_nilaippn;
                 $_SESSION['conUser'] = $conUser;
                 $_SESSION['conPassword'] = $conPassword;
@@ -183,7 +188,7 @@ class loginController extends Controller
                         DB::table('tbmaster_computer')
                             ->where('ip', $ipx)
                             ->update(['useraktif' => $request->username]);
-                        $status = 'ADM';
+                        $userstatus = 'ADM';
 
                     } else {
                         DB::table('TBMASTER_PERUSAHAAN')
@@ -196,13 +201,13 @@ class loginController extends Controller
                         DB::table('tbmaster_computer')
                             ->where('ip', $ipx)
                             ->update(['useraktif' => $request->username]);
-                        $status = 'USR';
+                        $userstatus = 'USR';
                     }
                 }
             }
         }
 
-        return compact(['status']);
+        return compact(['userstatus']);
     }
 
     public function logout()
@@ -227,11 +232,11 @@ class loginController extends Controller
             $status = 'error';
         } else {
             DB::table('tbmaster_computer')->insert(
-                ['ip' => $ipx, 'station' => rand(1,9), 'computername' => 'SERVER', 'useraktif' => '', 'create_by' => 'WEB', 'create_dt' => '', 'modify_dt' => '', 'kodeigr' => '22', 'recordid' => '']);
+                ['ip' => $ipx, 'station' => rand(1, 9), 'computername' => 'SERVER', 'useraktif' => '', 'create_by' => 'WEB', 'create_dt' => '', 'modify_dt' => '', 'kodeigr' => '22', 'recordid' => '']);
             $message = 'IP berhasil didaftarkan!';
             $status = 'success';
         }
-        return compact(['message','status']);
+        return compact(['message', 'status']);
 
     }
 }

@@ -1924,31 +1924,4 @@ class PenerimaanTransferController extends Controller
 
         return compact(['status','alert']);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -1,64 +1,52 @@
 @extends ('navbar')
+@section('title','BARANG HILANG | PEMBATALAN NBH')
 @section ('content')
 
     <div class="container mt-3">
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-5">Pembatalan NBH</legend>
+                <fieldset class="card">
+                    <legend class="w-auto ml-5">PEMBATALAN NBH</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
                                         <label for="no-nbh" class="col-sm-2 col-form-label text-right">NOMOR NBH</label>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-3 buttonInside">
                                             <input type="text" class="form-control" id="no-nbh">
+                                            <button id="btn-no-nbh" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal-NBH">
+                                                <img src="{{asset('image/icon/help.png')}}" width="30px">
+                                            </button>
                                         </div>
-                                        <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal-NBH">
-                                            <img src="{{asset('image/icon/help.png')}}" width="30px">
-                                        </button>
                                         <button type="button" class="btn btn-danger col-sm-2 offset-sm-1" id="btn-hapus" onclick="deleteDoc()">
                                             HAPUS NBH
                                         </button>
                                     </div>
                                 </div>
+                                <div class="col-sm-12 mt-3">
+                                    <hr>
+                                    <table class="table table-striped table-bordered" id="table-detail" style="width: 100%">
+                                        <thead class="header-table" style="color: white;">
+                                        <tr class="text-center">
+                                            <th rowspan="2" style="width: 50px">PLU</th>
+                                            <th rowspan="2" style="width: 800px">NAMA BARANG</th>
+                                            <th rowspan="2" style="width: 60px">KEMASAN</th>
+                                            <th colspan="2" style="width: 30px">KUANTUM</th>
+                                            <th rowspan="2" style="width: 80px">H.P.P</th>
+                                            <th rowspan="2" style="width: 80px">TOTAL</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width: 10px">QTYK</th>
+                                            <th style="width: 10px">QTY</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </form>
-                    </div>
-                </fieldset>
-                <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-5">Detail</legend>
-                    <div class="card-body shadow-lg cardForm">
-                        <div class="col-sm-12">
-                            <div class="tableFixedHeader">
-                                <table class="table table-striped table-bordered" id="table-detail">
-                                    <thead class="thead-dark">
-                                    <tr class="d-flex text-center">
-                                        <th style="width: 110px">PLU</th>
-                                        <th style="width: 500px">NAMA BARANG</th>
-                                        <th style="width: 130px">KEMASAN</th>
-                                        <th style="width: 160px">KUANTUM</th>
-                                        <th style="width: 150px">H.P.P</th>
-                                        <th style="width: 150px">TOTAL</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbody">
-                                    @for($i = 0; $i< 8; $i++)
-                                        <tr class="d-flex baris">
-                                            <td style="width: 110px"><input disabled type="text" class="form-control plu" id="plu"></td>
-                                            <td style="width: 500px"><input disabled type="text" class="form-control nama-barang"></td>
-                                            <td style="width: 130px"><input disabled type="text" class="form-control kemasan"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum1"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum2"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control hpp"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control total"></td>
-                                        </tr>
-                                    @endfor
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -90,7 +78,7 @@
                         <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
                     </div>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
@@ -123,14 +111,29 @@
     </div>
 
     <style>
-
-        tbody td {
-            padding: 3px !important;
+        .header-table{
+            background: #0079C2;
         }
 
     </style>
 
     <script>
+
+        let tableDetail;
+
+        $(document).ready(function () {
+            tableDetail = $('#table-detail').DataTable({
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    {className: "text-right"},
+                    {className: "text-right"},
+                    {className: "text-right"},
+                    {className: "text-right"},
+                ],
+            });
+        });
 
         $(document).on('keypress', '#no-nbh', function (e) {
             if(e.which == 13) {
@@ -151,8 +154,9 @@
                     $('#modal-loader').modal('show');
                 },
                 success: function (result) {
+                    tableDetail.clear().draw();
                     $('#modal-loader').modal('hide');
-                    $('.baris').remove();
+                    // $('.baris').remove();
                     if (result) {
                         console.log(result)
                         var html = "";
@@ -161,17 +165,12 @@
                             qty = result[i].mstd_qty / result[i].mstd_frac;
                             qtyk = result[i].mstd_qty % result[i].mstd_frac;
 
-                            html = `<tr class="d-flex baris">
-                                        <td style="width: 110px"><input disabled type="text" class="form-control plu" value="` + result[i].mstd_prdcd + `"></td>
-                                        <td style="width: 500px"><input disabled type="text" class="form-control nama-barang" value="` + result[i].prd_deskripsipanjang + `"></td>
-                                        <td style="width: 130px"><input disabled type="text" class="form-control kemasan" value="` + nvl(result[i].mstd_unit, '') + ` / ` + nvl(result[i].mstd_frac, '') + `"></td>
-                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum1 text-right" value="` + Math.floor(qty) + `"></td>
-                                        <td style="width: 80px"><input disabled type="text" class="form-control kuantum2 text-right" value="` + Math.floor(qtyk) + `"></td>
-                                        <td style="width: 150px"><input disabled type="text" class="form-control hpp text-right" value="` + convertToRupiah(nvl(result[i].mstd_hrgsatuan, '')) + `"></td>
-                                        <td style="width: 150px"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(nvl(result[i].mstd_gross, '')) + `"></td>
-                                    </tr>`;
+                            tableDetail.row.add(
+                                [result[i]['mstd_prdcd'], result[i]['prd_deskripsipanjang'].toUpperCase(), result[i]['mstd_unit'] + '/' + result[i]['mstd_frac'], Math.floor(qty),
+                                    Math.floor(qtyk), convertToRupiah(result[i]['mstd_hrgsatuan']), convertToRupiah(result[i]['mstd_gross'])]
+                            ).draw();
+
                             $('#no-nbh').val(result[i].mstd_nodoc);
-                            $('#tbody').append(html);
                         }
                     } else {
                         alert('Data Tidak Ada');
@@ -235,7 +234,7 @@
                             $('#modal-loader').modal('hide');
                             if (result.kode === 1) {
                                 swal(result.msg, '', 'success');
-                                clearField();
+                                tableDetail.clear().draw();
                             } else {
                                 swal(result.msg, '', 'warning');
                             }
@@ -248,50 +247,6 @@
                     console.log('Tidak dihapus');
                 }
             });
-        }
-
-        {{--function deleteDoc() {--}}
-            {{--let nonbh = $('#no-nbh').val();--}}
-            {{--$.ajax({--}}
-                {{--url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/deleteData',--}}
-                {{--type: 'post',--}}
-                {{--data: {"_token": "{{ csrf_token() }}", nonbh: nonbh},--}}
-                {{--beforeSend: function () {--}}
-                    {{--$('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
-                {{--},--}}
-                {{--success: function (result) {--}}
-                    {{--console.log(result)--}}
-                    {{--swal({--}}
-                        {{--title: 'Peringatan NBH Akan Dibatalkan?',--}}
-                        {{--icon: 'warning'--}}
-                    {{--}).then((confirm) => {--}}
-                        {{--$('#no-nbh').val('');--}}
-                        {{--$('.baris').remove();--}}
-                        {{--clearField();--}}
-                    {{--});--}}
-                {{--},--}}
-                {{--complete: function () {--}}
-                    {{--$('#modal-loader').modal('hide');--}}
-                {{--}--}}
-            {{--});--}}
-        {{--}--}}
-
-        function clearField(){
-            $('#no-nbh').val('');
-            $('.baris').remove();
-
-            for (i = 0; i< 8; i++) {
-                var tempTable = `<tr class="d-flex baris">
-                                            <td style="width: 110px"><input disabled type="text" class="form-control plu"></td>
-                                            <td style="width: 500px"><input disabled type="text" class="form-control nama-barang"></td>
-                                            <td style="width: 130px"><input disabled type="text" class="form-control kemasan"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum1"></td>
-                                            <td style="width: 80px"><input disabled type="text" class="form-control kuantum2"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control hpp"></td>
-                                            <td style="width: 150px"><input disabled type="text" class="form-control total"></td>
-                                 </tr>`;
-                $('#tbody').append(tempTable);
-            }
         }
 
     </script>

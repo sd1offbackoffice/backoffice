@@ -52,7 +52,7 @@ label {
 /*UNTUK FIX HEADER TABLE*/
 /*Created By : JR(27/02/2020) | Modify By :  */
 .tableFixedHeader {
-    overflow-y: auto;
+    overflow-y: scroll;
     /*overflow-x: auto;*/
     /*overflow: scroll;*/
     /*overflow: auto;*/
@@ -60,7 +60,7 @@ label {
 }
 
 .tableFixedHeader thead th {
-    position: sticky;
+    /*position: sticky;*/
     top: 0;
 }
 
@@ -109,4 +109,10 @@ label {
     outline:none;
     text-align:center;
     font-weight:bold;
+}
+
+
+.thColor{
+    background: #5AA4DD;
+    color: white
 }

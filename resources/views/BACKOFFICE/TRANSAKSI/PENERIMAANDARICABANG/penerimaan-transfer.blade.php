@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Penerimaan / Transfer')
+@section('title','PENERIMAAN CABANG | PENERIMAAN / TRANSFER')
 
 @section('content')
 
@@ -15,7 +15,7 @@
                                 <div class="card-body">
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky;height:455px">
                                         <table id="table_tsj" class="table table-sm table-bordered mb-3 text-center">
-                                            <thead>
+                                            <thead class="thColor">
                                             <tr>
                                                 <th></th>
                                                 <th>DOCNO</th>
@@ -56,7 +56,7 @@
                                 <div class="card-body">
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
                                         <table id="table_to" class="table table-sm table-bordered mb-3 text-center">
-                                            <thead>
+                                            <thead class="thColor">
                                             <tr>
                                                 <th></th>
                                                 <th>DOCNO</th>

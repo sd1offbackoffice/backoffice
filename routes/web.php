@@ -26,6 +26,13 @@ Route::get('/testnewnav', function () {
 Route::get('/login', 'Auth\loginController@index');
 Route::get('/logout', 'Auth\loginController@logout')->middleware('CheckLogin');
 
+
+
+/******** Template ********/
+Route::get('/template/index',   'TemplateController@index')->middleware('CheckLogin');
+Route::get('/template/datamodal',   'TemplateController@dataModal')->middleware('CheckLogin');
+
+
 /******** Arie ********/
 // BACK OFFICE / PENGELUARAN /INPUT
 Route::get('/bo/transaksi/pengeluaran/input/index', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\inputController@index')->middleware('CheckLogin');
@@ -69,8 +76,13 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/get-data-supplier', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@getDataSupplier');
                     Route::get('/get-data-lks', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@getDataLKS');
                     Route::post('/save-data-lks', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@saveDataLKS');
-                    Route::post('/delete-data-lks', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@deleteDataLKS');
+                    Route::post('/delete', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@delete');
                     Route::post('/save-data-trn', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@saveDataTrn');
+                    Route::post('/cek-pcs-1', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@cekPCS1');
+                    Route::post('/cek-pcs-2', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@cekPCS2');
+                    Route::post('/cek-pcs-3', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@cekPCS3');
+                    Route::post('/cek-pcs-4', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@cekPCS4');
+                    Route::post('/proses', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@proses');
                 });
 
                 Route::prefix('/cetak')->group(function () {
@@ -318,6 +330,20 @@ Route::middleware(['CheckLogin'])->group(function () {
                 });
             });
         });
+        Route::prefix('/proses')->group(function() {
+            Route::prefix('/konversi')->group(function(){
+                Route::get('/','BACKOFFICE\PROSES\KonversiController@index');
+                Route::get('/get-data-lov-plu-utuh','BACKOFFICE\PROSES\KonversiController@getDataLovPluUtuh');
+                Route::get('/get-data-lov-plu-mix','BACKOFFICE\PROSES\KonversiController@getDataLovPluMix');
+                Route::get('/get-data-lov-nodoc','BACKOFFICE\PROSES\KonversiController@getDataLovNodoc');
+                Route::get('/get-data-plu-olahan','BACKOFFICE\PROSES\KonversiController@getDataPluOlahan');
+                Route::post('/konversi-utuh-olahan','BACKOFFICE\PROSES\KonversiController@konversiUtuhOlahan');
+                Route::post('/konversi-olahan-mix','BACKOFFICE\PROSES\KonversiController@konversiOlahanMix');
+                Route::get('/print-bukti','BACKOFFICE\PROSES\KonversiController@printBukti');
+                Route::get('/print-laporan-rekap','BACKOFFICE\PROSES\KonversiController@printLaporanRekap');
+                Route::get('/print-laporan-detail','BACKOFFICE\PROSES\KonversiController@printLaporanDetail');
+           });
+        });
     });
 });
 
@@ -354,6 +380,15 @@ Route::post('/bo/transaksi/brghilang/pembatalannbh/lovNBH', 'BACKOFFICE\TRANSAKS
 Route::post('/bo/transaksi/brghilang/pembatalannbh/showData', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\pembatalanNBHController@showData')->middleware('CheckLogin');
 Route::post('/bo/transaksi/brghilang/pembatalannbh/deleteData', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\pembatalanNBHController@deleteData')->middleware('CheckLogin');
 
+// BACK OFFICE / TRANSAKSI / BARANG HILANG / INQUERY NBH
+Route::get('/bo/transaksi/brghilang/inquerynbh/index', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\inqueryNBHController@index')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/inquerynbh/lov_NBH', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\inqueryNBHController@lov_NBH')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/inquerynbh/showDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\inqueryNBHController@showDoc')->middleware('CheckLogin');
+Route::post('/bo/transaksi/brghilang/inquerynbh/detail_Plu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\inqueryNBHController@detail_Plu')->middleware('CheckLogin');
+
+// PROSES - SETTING PAGI HARI
+Route::get('/bo/proses/settingpagihari/index', 'BACKOFFICE\PROSES\settingPagiHariController@index')->middleware('CheckLogin');
+Route::get('/bo/proses/settingpagihari/cetak_perubahan_hrgjual', 'BACKOFFICE\PROSES\settingPagiHariController@cetak_perubahan_hrgjual')->middleware('CheckLogin');
 
 /******** Jefri ********/
 // MASTER_CABANG

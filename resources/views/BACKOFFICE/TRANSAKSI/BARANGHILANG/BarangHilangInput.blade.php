@@ -1,7 +1,8 @@
 @extends('navbar')
+@section('title','BARANG HILANG | INPUT')
 @section('content')
 
-    <div class="container-fluid mt-3">
+    <div class="container-fluid mt-2">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -14,11 +15,12 @@
                                         <div class="col-sm-12">
                                             <div class="form-group row mb-0">
                                                 <label for="no-trn" class="col-sm-2 col-form-label">NOMOR TRN</label>
-                                                <div class="col-sm-2">
+                                                <div class="col-sm-2 buttonInside">
                                                     <input type="text" class="form-control" id="no-trn">
+                                                    <button id="btn-no-trn" type="button" class="btn btn-lov p-0" onclick="getNmrTRN()">
+                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                    </button>
                                                 </div>
-                                                <button type="button" class="btn p-0" onclick="getNmrTRN()">
-                                                    <img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                             </div>
                                             <div class="form-group row mb-0">
                                                 <label for="tgl-doc" class="col-sm-2 col-form-label">TANGGAL DOC</label>
@@ -51,44 +53,44 @@
                         <div class="col-sm-12">
                             <div class="card-body p-0 tableFixedHeader" style="border-bottom: 1px solid black">
                                 <table class="table table-striped table-bordered" id="table-detail">
-                                    <thead class="thead-dark">
+                                    <thead class="header-table">
                                     <tr class="d-flex text-center">
-                                        <th style="width: 5%">X</th>
-                                        <th style="width: 8%">PLU</th>
-                                        <th style="width: 32%">Deskripsi</th>
+                                        <th style="width: 3%">X</th>
+                                        <th style="width: 7%">PLU</th>
+                                        <th style="width: 27%">Deskripsi</th>
                                         <th style="width: 7%">Satuan</th>
                                         <th style="width: 5%">TAG</th>
                                         <th style="width: 5%">BKP</th>
-                                        <th style="width: 6%">Stock</th>
-                                        <th style="width: 9%">Hrg. Satuan</th>
-                                        <th style="width: 6%">CTN</th>
-                                        <th style="width: 6%">PCS</th>
-                                        <th style="width: 9%">Gross</th>
-                                        <th style="width: 25%">Keterangan</th>
+                                        <th style="width: 5%">Stock</th>
+                                        <th style="width: 8%">Hrg. Satuan</th>
+                                        <th style="width: 5%">CTN</th>
+                                        <th style="width: 5%">PCS</th>
+                                        <th style="width: 8%">Gross</th>
+                                        <th style="width: 15%">Keterangan</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody">
-                                    @for($i = 0; $i< 15; $i++)
+                                    @for($i = 0; $i< 8; $i++)
                                         <tr class="d-flex baris">
-                                            <td style="width: 5%" class="text-center">
-                                                <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                            <td style="width: 3%" class="text-center">
+                                                <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                             </td>
-                                            <td class="buttonInside" style="width: 8%">
+                                            <td class="buttonInside" style="width: 7%">
                                                 <input type="text" class="form-control plu" id="plu" no="{{$i}}">
                                                 <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="{{$i}}">
-                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="20px">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </td>
-                                            <td style="width: 32%"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td>
+                                            <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td>
                                             <td style="width: 7%"><input disabled type="text" class="form-control satuan"></td>
                                             <td style="width: 5%"><input disabled type="text" class="form-control tag"></td>
                                             <td style="width: 5%"><input disabled type="text" class="form-control bkp"></td>
-                                            <td style="width: 6%"><input disabled type="text" class="form-control stock text-right"></td>
-                                            <td style="width: 9%"><input type="text" class="form-control hrgsatuan text-right"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="qty(this.value,this.id,2)"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control gross text-right"></td>
-                                            <td style="width: 25%"><input type="text" class="form-control keterangan"></td>
+                                            <td style="width: 5%"><input disabled type="text" class="form-control stock text-right"></td>
+                                            <td style="width: 8%"><input type="text" class="form-control hrgsatuan text-right"></td>
+                                            <td style="width: 5%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
+                                            <td style="width: 5%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="qty(this.value,this.id,2)"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control gross text-right"></td>
+                                            <td style="width: 15%"><input type="text" class="form-control keterangan"></td>
                                         </tr>
                                     @endfor
                                     </tbody>
@@ -145,7 +147,7 @@
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-4">
-                                                            <button class="btn btn-primary pl-2 pr-2 mr-2" id="btn-save" type="button">
+                                                            <button class="btn btn-primary pl-4 pr-4 mr-4" id="btn-save" type="button">
                                                                 SAVE DOKUMEN
                                                             </button>
                                                         </div>
@@ -260,6 +262,10 @@
         .header-modal{
             background: #0079C2;
             position: sticky; top: 0;
+        }
+
+        .header-table{
+            background: #0079C2;
         }
 
         .font{
@@ -479,22 +485,22 @@
                             // ppn = result[i].trbo_ppnrph * 0;
 
                             html = `<tr class="d-flex baris">
-                                                <td style="width: 5%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 3%" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 8%">
+                                                <td class="buttonInside" style="width: 7%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
                                                 </td>
-                                                <td style="width: 32%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
                                                 <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ nvl(result[i].prd_unit, '') +` / `+ nvl(result[i].prd_frac, '') +`"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ nvl(result[i].prd_kodetag, '') +`"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ nvl(result[i].prd_flagbkp1, '') +`"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
-                                                <td style="width: 9%"><input type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
-                                                <td style="width: 25%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
+                                                <td style="width: 8%"><input type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
+                                                <td style="width: 15%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 
                             $('#tbody').append(html);
@@ -522,22 +528,22 @@
                             // ppn = result[i].trbo_ppnrph * 0;
 
                             html = `<tr class="d-flex baris">
-                                                <td style="width: 5%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 3%" class="text-center">
+                                                    <button disabled class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 8%">
-                                                    <input type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
+                                                <td class="buttonInside" style="width: 7%">
+                                                    <input disabled type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
                                                 </td>
-                                                <td style="width: 32%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
                                                 <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ nvl(result[i].prd_unit, '') +` / `+ nvl(result[i].prd_frac, '') +`"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ nvl(result[i].prd_kodetag, '') +`"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ nvl(result[i].prd_flagbkp1, '') +`"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
-                                                <td style="width: 9%"><input type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
-                                                <td style="width: 25%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
+                                                <td style="width: 15%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 
                             $('#tbody').append(html);
@@ -806,25 +812,25 @@
             var temp = $('#tbody').find('tr').length;
             let index = parseInt(temp, 10)
             html = `<tr class="d-flex baris">
-                                                <td style="width: 5%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 3%" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 8%">
+                                                <td class="buttonInside" style="width: 7%">
                                                     <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`">
                                                      <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="`+ index +`">
-                                                        <img src="../../../../../public/image/icon/help.png" width="20px">
+                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>
-                                                <td style="width: 32%"><input disabled type="text" class="form-control deskripsi"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi"></td>
                                                 <td style="width: 7%"><input disabled type="text" class="form-control satuan"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control tag"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control bkp"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control stock text-right"></td>
-                                                <td style="width: 9%"><input type="text" class="form-control hrgsatuan text-right"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="`+ index +`" onchange="qty(this.value,this.id,1)"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="` + index + `" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control gross text-right"></td>
-                                                <td style="width: 25%"><input type="text" class="form-control keterangan"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right"></td>
+                                                <td style="width: 8%"><input type="text" class="form-control hrgsatuan text-right"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control ctn text-right" id="`+ index +`" onchange="qty(this.value,this.id,1)"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control pcs text-right" id="` + index + `" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right"></td>
+                                                <td style="width: 15%"><input type="text" class="form-control keterangan"></td>
                                             </tr>`;
             $('#tbody').append(html);
         });
@@ -876,25 +882,25 @@
 
         function temptable(index){
             var tmptbl = `<tr class="d-flex baris">
-                                                <td style="width: 5%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
+                                                <td style="width: 3%" class="text-center">
+                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 8%">
+                                                <td class="buttonInside" style="width: 7%">
                                                     <input disabled type="text" class="form-control plu">
                                                      <button id="btn-no-plu" type="button" class="btn btn-lov ml-3 mt-1" onclick="getPlu(this)" no="` + i + `">
-                                                        <img src="../../../../../public/image/icon/help.png" width="20px">
+                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>
-                                                <td style="width: 32%"><input disabled type="text" class="form-control deskripsi"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi"></td>
                                                 <td style="width: 7%"><input disabled type="text" class="form-control satuan"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control tag"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control bkp"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control stock"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control hrgsatuan"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control ctn" id="`+ index +`"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control pcs" id="` + index + `"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control gross"></td>
-                                                <td style="width: 320px"><input disabled type="text" class="form-control keterangan"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control hrgsatuan"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control ctn" id="`+ index +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control pcs" id="` + index + `"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross"></td>
+                                                <td style="width: 15%"><input disabled type="text" class="form-control keterangan"></td>
                                             </tr>`;
 
             return tmptbl;

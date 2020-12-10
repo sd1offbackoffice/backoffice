@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','Input Penerimaan')
+{{--@section('title','Input Penerimaan')--}}
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -365,7 +365,7 @@
 
                                            <div class="form-group row mb-0 mt-5">
                                                <div class="col-sm-3 text-center">
-                                                   <button type="button" class="btn btn-primary btn-block" onclick="test()">Rekam Record</button>
+                                                   <button type="button" class="btn btn-primary pr-5 pl-5" onclick="test()">Rekam Record</button>
                                                </div>
                                                <div class="col-sm-3 text-center">
                                                    <button type="button" class="btn btn-primary btn-block">Transfer PO</button>

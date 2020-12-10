@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Batal Surat Jalan')
+@section('title','KIRIM CABANG | BATAL SJ')
 
 @section('content')
 
@@ -30,7 +30,7 @@
                     <fieldset class="card border-secondary m-4">
                         <legend class="w-auto ml-3">Daftar Surat Jalan</legend>
                         <div class="card-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden tableFixedHeader" style="position: sticky">
                                 <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
                                     <thead>
                                     <tr>

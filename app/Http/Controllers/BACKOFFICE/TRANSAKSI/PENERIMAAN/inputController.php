@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class inputController extends Controller
 {
+    public $getDataPlu;
+    public $param_cek;
+    public $param_error;
+    public $i_hrgbeli;
+    public $i_gross;
 
-    public $test = 10;
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.input');
+      return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.input');
     }
 
     public function showBTB(Request $request){
@@ -440,6 +444,8 @@ class inputController extends Controller
         $supplier= $request->supplier;
         $kodeigr = $_SESSION['kdigr'];
 
+        $this->param_cek = 'Y';
+
         $temp1  = DB::select("SELECT NVL (COUNT (1), 0) as temp1
                                       FROM TBTR_BACKOFFICE
                                      WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
@@ -475,59 +481,69 @@ class inputController extends Controller
             return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
         } else {
 //            ----------------- Else dari prdcd yg di cek ke data temp
-
             if (!$noPo && $prdcd){
                 if ($typeTrn != 'L'){
-                    var_dump('asd');
-//                    :I_FLAGDISC1 := 'K';
-//                    :I_FLAGDISC2 := 'K';
-//                    :I_FLAGDISC3 := 'K';
-//                    :I_FLAGDISC4 := 'K';
+                    $I_FLAGDISC1 = 'K';
+                    $I_FLAGDISC2 = 'K';
+                    $I_FLAGDISC3 = 'K';
+                    $I_FLAGDISC4 = 'K';
+                }
+                else {
+                    $I_FLAGDISC1 = '';
+                    $I_FLAGDISC2 = '';
+                    $I_FLAGDISC3 = '';
+                    $I_FLAGDISC4 = '';
                 }
 
                 $getItemData    = $this->getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo);
 
-                return response()->json(['kode' => $getItemData[0], 'msg' => $getItemData[1], 'data' => $getItemData[2]]);
-            } else {
-//                -------------  if (!$noPo && $prdcd)
-                $data   = DB::table('TBTR_BACKOFFICE')->where('trbo_prdcd', $prdcd)->first();
+                if ($getItemData[0] == '0'){
+                    $getItemData[2]->i_flagdisc1 = $I_FLAGDISC1;
+                    $getItemData[2]->i_flagdisc2 = $I_FLAGDISC2;
+                    $getItemData[2]->i_flagdisc3 = $I_FLAGDISC3;
+                    $getItemData[2]->i_flagdisc4 = $I_FLAGDISC4;
 
+                    $this->getDataPlu = $getItemData[2];
+                } else {
+                    return response()->json(['kode' => $getItemData[0], 'msg' => $getItemData[1], 'data' => $getItemData[2]]);
+                }
+            } else {
+                $data   = DB::table('TBTR_BACKOFFICE')->where('trbo_prdcd', $prdcd)->first();
+//                PROSES LOOPING
                 if ($data->trbo_prdcd == $prdcd){
                     $status = 1;
                 } else {
                     $status = 0;
-
-                    if (!$data->trbo_prdcd){
-                        //EXIT
-                    }
-
-                    //NEXT_RECORD
                 }
 
-                //CHK_GETS (1)
-                $chkGets    = $this->chkGets(1,$prdcd,$kodeigr,$supplier,$noPo);
+                if ($status == 0){
+                    //GET_PO_DETAIL;
+                }
 
-                dd($chkGets);
+            }
 
-//                IF :PARAMETER.ERR = 0
+//            dd($this->getDataPlu);
+
+            $chkGets    = $this->chkGets(1,$prdcd,$kodeigr,$supplier,$noPo);
+
+            dd($chkGets);
+
+
+//            CHK_GETS (1);
+//            IF :PARAMETER.ERR = 0
+//            THEN
+//                DC_ALERT.OK (:PARAMETER.ALERT);
+//                GO_BLOCK ('INPUT');
+//                CLEAR_BLOCK;
+//                RAISE FORM_TRIGGER_FAILURE;
+//                ELSE
+//                    IF :PARAMETER.ERR = 5
 //                THEN
 //                    DC_ALERT.OK (:PARAMETER.ALERT);
-//                    GO_BLOCK ('INPUT');
-//                    CLEAR_BLOCK;
-//                    RAISE FORM_TRIGGER_FAILURE;
-//                        ELSE
-//                            IF :PARAMETER.ERR = 5
-//                    THEN
-//                        DC_ALERT.OK (:PARAMETER.ALERT);
-//                            ELSE
-//                                NEXT_ITEM;
-//                                END IF;
-//                END IF;
-
-                dd($data);
-
-                return response()->json(['kode' => '1', 'msg' => 'data', 'data' => $data]);
-            }
+//                    ELSE
+//                        NEXT_ITEM;
+//                        END IF;
+//            END IF;
         }
     }
 
@@ -565,7 +581,7 @@ class inputController extends Controller
                         return (['2', "PLU ".$prdcd." DISCONTINUE ( Flag Tidak Boleh Order )", ""]);
                     }
 
-                    if ($data->ftfbot == 'Y' && !$noPo && $supplier){
+                    if ($data->ftftbo == 'Y' && !$noPo && $supplier){
                         return (['2', "PLU ".$prdcd." harus menggunakan PO", ""]);
                     }
                 }
@@ -590,21 +606,21 @@ class inputController extends Controller
             $data->i_kemasan  = $data->i_unit.' / '.$data->i_frac;
 
             if (!$noPo && !$supplier){
-                $i_hrgbeli  = 0;
+                $this->i_hrgbeli = 0;
             } else {
-                $i_hrgbeli      = ($data->v_hrgbeli * $data->i_frac) / (($data->i_unit == 'KG') ? 1000 : 1);
+                $this->i_hrgbeli = ($data->v_hrgbeli * $data->i_frac) / (($data->i_unit == 'KG') ? 1000 : 1);
             }
 
             $data->i_lcost  = $data->v_lastcost;
 
             if (!$data->i_barang){
                 return (['2', "Item Tidak Terdaftar", ""]);
-            } elseif (!$i_hrgbeli){
+            } elseif (!$this->i_hrgbeli){
                 return (['2', "Harga Tidak Tercatat", ""]);
             }
         }
 
-        return false;
+        return (['0', "", $data]);
     }
 
     public function query1($supplier, $prdcd, $kodeigr){
@@ -659,47 +675,130 @@ class inputController extends Controller
     }
 
     public function chkGets($col, $prdcd, $kodeigr, $supplier, $noPo){
-        $data   = $this->query2($prdcd,$kodeigr,$supplier,$noPo);
+        $datas   = $this->query2($prdcd,$kodeigr,$supplier,$noPo);
+        $this->param_error = 0;
+        $getDataPlu = $this->getDataPlu;
 
-        if (!$data){
-            //EXIT
-        } else {
-            $data = $data[0];
-        }
-
-        $nilhrgbeli = $data->hgb_hrgbeli;
-        $i_prdcd    = $prdcd;
-        $i_qtypo    = $data->tpod_qtypo;
-
-        if ($noPo){
-            if (!$data->tpod_prdcd){
-                return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar dalam No.PO ini :".$prdcd." !!!", 'data' => '']);
+        foreach ($datas as $data){
+            if (!$data){
+                break; //EXIT
             }
+
+            $nilhrgbeli = $data->hgb_hrgbeli;
+            $i_prdcd    = $prdcd;
+            $i_qtypo    = $data->tpod_qtypo;
+
+            if ($noPo){
+                if (!$data->tpod_prdcd){
+                    return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar dalam No.PO ini :".$prdcd." !!!", 'data' => '']);
+                }
+            }
+
+            if (!$data->prd_prdcd){
+                return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar", 'data' => '']);
+            }
+
+            $nsvlcost   = $data->prd_lastcost;
+            $nsvacost   = $data->st_avgcost * (($data->prd_unit == 'KG') ? 1 : $data->tpod_isibeli);
+            $cbkp       = $data->prd_flagbkp1;
+            $cfobkp     = $data->prd_flagbkp2;
+
+            if (!$data->prd_kategoritoko && !$data->prd_kodecabang){
+                return (['kode' => 2, 'msg' => "Produk ini tidak sesuai kategory-nya", 'data' => '']);
+                break; //EXIT
+            }
+
+            if ($data->prd_kodetag != 'T' && $data->prd_kodetag != 'G' && $data->prd_kodetag != 'Q' && $data->prd_kodetag != 'U'){
+                if ($data->tag_tidakbolehorder == 'Y'){
+                    return (['kode' => 2, 'msg' => "Produk DISCONTINUE", 'data' => '']);
+                    break; //EXIT
+                }
+
+                if ($data->prd_flagbarangordertoko != 'Y' && !$noPo && $supplier){
+                    return (['kode' => 2, 'msg' => "Produk ini harus menggunakan PO", 'data' => '']);
+                    break; //EXIT
+                }
+
+                $ndivcost = 0;
+
+                if ($nsvlcost != '0' && $data->st_prdcd){
+                    $ndivcost   = (abs($nsvlcost - $nsvacost)) / $nsvlcost;
+
+                    if ($ndivcost >= '0.20'){
+                        $this->param_error = 2;
+                    }
+                }
+
+                if (!$noPo && !$supplier && $data->st_saldoakhir <= 0){
+                    return (['kode' => 2, 'msg' => "Stok Barang <= 0, tidak dapat menginput BPB Lain Lain", 'data' => '']);
+                    break;
+                }
+            }
+
+
+            if (!$supplier && !$noPo){
+                if ($this->i_hrgbeli != 0 && $data->prd_kodedivisi != '4'){
+                    break;
+                }
+            }
+
+            if ($this->i_hrgbeli < 0){
+                $this->param_error = 0;
+                break;
+            }
+
+            $lhigh = false;
+
+            if ($noPo && $data->tpod_prdcd){
+                if ($data->prd_unit != 'KG'){
+                    if (round(($this->i_hrgbeli / $data->tpod_isibeli)) > round($data->tpod_hrgsatuan)){
+                        $lhigh = true;
+                    }
+                } else {
+                    if (round($this->i_hrgbeli,0) > round($data->tpod_hrgsatuan,0)){
+                        $lhigh = true;
+                    }
+                }
+
+                if ($lhigh == true){
+                    return (['kode' => 2, 'msg' => "Harga Satuan Barang melebihi PO", 'data' => '']);
+                }
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                $nsvlcost   = $data->prd_lastcost;
+                $nsvacost   = $data->st_avgcost * (($data->prd_unit == 'KG') ? 1 : $data->tpod_isibeli);
+                $ndivprice  = 0;
+
+                if ($nsvlcost != 0){
+                    $ndivprice  = (abs($data->tpod_hrgsatuan - $nilhrgbeli)) / $data->tpod_hrgsatuan;
+
+                    if ($ndivprice >= 0.20){
+                        if ($this->param_cek == 'Y'){
+                            $this->param_cek = 'N';
+                            return (['kode' => 2, 'msg' => "Selisih cost - price terlalu besar", 'data' => '']);
+                        }
+                    }
+                }
+
+//                :i_qty * :i_hrgbeli + :i_qtyk * :i_hrgbeli / rec.tpod_isibeli;
+                $this->i_gross = $this->getDataPlu->i_qty * $this->i_hrgbeli *
+
+
+            } else {
+                if (!$supplier){
+
+                }
+            }
+
+
+
+
+
+
+
         }
-
-        if (!$data->prd_prdcd){
-            return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar", 'data' => '']);
-        }
-
-        $nsvlcost   = $data->prd_lastcost;
-        $nsvacost   = $data->st_avgcost * (($data->prd_unit == 'KG') ? 1 : $data->tpod_isibeli);
-        $cbkp       = $data->prd_flagbkp1;
-        $cfobkp     = $data->prd_flagbkp2;
-
-        if (!$data->prd_kategoritoko && !$data->prd_kodecabang){
-            return (['kode' => 2, 'msg' => "Produk ini tidak sesuai kategory-nya", 'data' => '']);
-            //EXIT
-        }
-
-
-//        IF rec.prd_kategoritoko IS NULL AND rec.prd_kodecabang IS NULL
-//          THEN
-//          :parameter.alert := 'Produk ini tidak sesuai kategory-nya';
-//             :parameter.err := 0;
-//             EXIT;
-//          END IF;
-
-
+        //EXCEPTION
         return 0;
     }
 

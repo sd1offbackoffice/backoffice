@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Input | Pengiriman ke Cabang')
+@section('title','KIRIM CABANG | INPUT')
 
 @section('content')
 
@@ -11,25 +11,37 @@
                     <div class="card-body">
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR TRN</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="notrn">
-                            </div>
-                            <div class="">
-                                <button class="btn btn-primary rounded-circle btn_lov" id="btn_lov_trn" data-toggle="modal" data-target="#m_lov_trn" disabled>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="notrn" disabled>
+                                <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_trn" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
+                            {{--<div class="col-sm-1">--}}
+                                {{--<input type="text" class="form-control" id="notrn">--}}
+                            {{--</div>--}}
+                            {{--<div class="">--}}
+                                {{--<button class="btn btn-primary rounded-circle btn_lov" id="btn_lov_trn" data-toggle="modal" data-target="#m_lov_trn" disabled>--}}
+                                    {{--<i class="fas fa-spinner fa-spin"></i>--}}
+                                {{--</button>--}}
+                            {{--</div>--}}
                             <label class="col-sm-1 pr-0 text-right col-form-label">TANGGAL TRN</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="tgltrn">
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">UNTUK CABANG</label>
-                            <div class="col-sm-1" style="position: relative">
-                                <input maxlength="2" type="text" class="form-control" id="kodecabang">
-                                <button type="button" class="btn btn_lov btn-lov-cabang" id="btn_lov_cabang" data-toggle="modal" data-target="#m_lov_cabang">
-                                    <img src="{{ asset('image/icon/help.png') }}" width="30px">
+                            <div class="col-sm-1 buttonInside">
+                                <input type="text" class="form-control" id="kodecabang" disabled>
+                                <button id="btn_lov_cabang" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_cabang" disabled>
+                                    <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
+                            {{--<div class="col-sm-1" style="position: relative">--}}
+                                {{--<input maxlength="2" type="text" class="form-control" id="kodecabang">--}}
+                                {{--<button type="button" class="btn btn_lov btn-lov-cabang" id="btn_lov_cabang" data-toggle="modal" data-target="#m_lov_cabang">--}}
+                                    {{--<img src="{{ asset('image/icon/help.png') }}" width="30px">--}}
+                                {{--</button>--}}
+                            {{--</div>--}}
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="namacabang" disabled>
                             </div>
@@ -40,14 +52,20 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR REFF</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="noreff">
-                            </div>
-                            <div class="">
-                                <button class="btn btn-primary rounded-circle btn_lov" id="btn_lov_ipb" data-toggle="modal" data-target="#m_lov_ipb" disabled>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="noreff" disabled>
+                                <button id="btn_lov_ipb" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_ipb" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
+                            {{--<div class="col-sm-1">--}}
+                                {{--<input type="text" class="form-control" id="noreff">--}}
+                            {{--</div>--}}
+                            {{--<div class="">--}}
+                                {{--<button class="btn btn-primary rounded-circle btn_lov" id="btn_lov_ipb" data-toggle="modal" data-target="#m_lov_ipb" disabled>--}}
+                                    {{--<i class="fas fa-spinner fa-spin"></i>--}}
+                                {{--</button>--}}
+                            {{--</div>--}}
                             <label class="col-sm-1 pr-0 text-right col-form-label">TANGGAL REFF</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="tglreff" disabled>
@@ -67,7 +85,7 @@
                     <fieldset class="card border-secondary ml-2 mr-2 mt-0">
                         <div class="card-body">
                             <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                <thead>
+                                <thead class="thColor">
                                     <tr>
                                         <th width="3%" class="align-middle" rowspan="2"><i class="fas fa-trash"></i> </th>
                                         <th width="8%" class="align-middle" rowspan="2">PLU</th>
@@ -433,6 +451,8 @@
             });
 
             getLovTrn();
+            getLovIpb();
+            getLovCabang();
 
             // $('#m_lks').modal('show');
         });
@@ -466,8 +486,6 @@
 
                         getDataTrn(notrn);
                     });
-
-                    getLovIpb();
                 }
             });
         }
@@ -508,8 +526,6 @@
                         $('#kodecabang').val(kodecabang);
                         $('#namacabang').val(namacabang);
                     });
-
-                    getLovCabang();
                 }
             });
         }
@@ -533,6 +549,8 @@
                 },
                 "order" : [],
                 "initComplete" : function(){
+                    $('#btn_lov_cabang').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+
                     $(document).on('click', '.row-lov-cabang', function (e) {
                         kodecabang = $(this).find('td:eq(0)').html();
                         namacabang = $(this).find('td:eq(1)').html();

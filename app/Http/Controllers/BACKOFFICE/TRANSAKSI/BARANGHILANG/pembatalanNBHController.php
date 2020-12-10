@@ -121,28 +121,24 @@ class pembatalanNBHController extends Controller
                 ->insert(['hcs_kodeigr' => $kodeigr, 'hcs_typetrn' => 'H', 'hcs_lokasi' => str_pad($data->fdisc1,2,0),
                     'hcs_prdcd' => $data->mstd_prdcd, 'hcs_tglbpb' => $data->mstd_tgldoc, 'hcs_nodocbpb' => $data->mstd_nodoc,
                     'hcs_qtybaru' => $data->mstd_qty, 'hcs_qtylama' => $data->st_saldoakhir, 'hcs_avglama' => ($data->st_avgcost * $data->frac),
-                    'hcs_avgbaru' => $nAcostBaru * $data->frac, 'hcs_lastqty' => ($data->st_saldoakhir + $data->mstd_qty),
+                    'hcs_avgbaru' => ($nAcostBaru * $data->frac), 'hcs_lastqty' => ($data->st_saldoakhir + $data->mstd_qty),
                     'hcs_create_by' => $userid, 'hcs_create_dt' => $dateTime
                 ]);
 
-            // Update Data tbMaster_Stock
-
-                $v_lok   = '';
-                $v_msg   = '';
-
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-
-                $query = oci_parse($connect, "BEGIN sp_igr_update_stock ('$kodeigr', lpad($data->fdisc1,2,'0'), $data->mstd_prdcd, '',
-						 													'TRFOUT', -1*$data->mstd_qty, $data->st_lastcost, $nAcostBaru,
-						 													$userid, v_lok, v_message); ");
-                oci_bind_by_name($query, ':v_lok', $v_lok,10);
-                oci_bind_by_name($query, ':v_message', $v_msg,100);
-                oci_execute($query);
+//            // Update Data tbMaster_Stock
+//                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+//
+//                $query = oci_parse($connect, "sp_igr_update_stock_2 ('$kodeigr', lpad($data->fdisc1,2,'0'), $data->mstd_prdcd, '',
+//						 													'TRFOUT', -1*$data->mstd_qty, $data->st_lastcost, $nAcostBaru,
+//						 													$userid, v_lok, v_message); ");
+//                oci_bind_by_name($query, ':v_lok', $v_lok,10);
+//                oci_bind_by_name($query, ':v_message', $v_msg,100);
+//                oci_execute($query);
         }
 
         //Simpan Data Yang Dihapus
 
-        DB::select(" INSERT INTO tbtr_hapusplu (DEL_KODEIGR,DEL_RTYPE,DEL_NODOKUMEN,DEL_TGLDOKUMEN,
+        DB::raw(" INSERT INTO tbtr_hapusplu (DEL_KODEIGR,DEL_RTYPE,DEL_NODOKUMEN,DEL_TGLDOKUMEN,
             DEL_STOKQTYOLD, DEL_AVGCOSTOLD, DEL_CREATE_BY, DEL_CREATE_DT, DEL_PRDCD)
  					    SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
   							     mstd_qty, mstd_avgcost, '$userid', '$dateTime', mstd_prdcd

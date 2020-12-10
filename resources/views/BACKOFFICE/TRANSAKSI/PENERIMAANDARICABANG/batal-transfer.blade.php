@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Batal Transfer | Penerimaan dari Cabang')
+@section('title','PENERIMAAN CABANG | BATAL TRANSFER')
 
 @section('content')
 
@@ -11,11 +11,9 @@
                     <div class="card-body">
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Nomor SJ</label>
-                            <div class="col-sm-2 pr-0">
+                            <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="nosj" disabled>
-                            </div>
-                            <div class="col-sm-1 pl-0">
-                                <button class="btn btn-primary rounded-circle" id="btn_lov" data-toggle="modal" data-target="#m_lov" disabled>
+                                <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>

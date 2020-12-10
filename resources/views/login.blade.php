@@ -161,14 +161,14 @@
                 success: function (response) {
                     if (response['message']) {
                         swal({
-                            title: 'Gagal!',
+                            title:  response['status'],
                             text: response['message'],
-                            icon: 'warning',
+                            icon:  response['status']
                         }).then(function () {
                             clear();
                         });
                     }
-                    else if (response['status'] == 'ADM') {
+                    else if (response['userstatus'] == 'ADM') {
                         swal({
                             text: 'Login sebagai Admin',
                             icon: 'info'
@@ -177,7 +177,7 @@
                             window.location.replace("{{url("/")}}");
                         });
                     }
-                    else if (response['status'] != 'ADM') {
+                    else if (response['userstatus'] != 'ADM') {
                         swal({
                             text: 'Login sebagai User',
                             icon: 'info'
@@ -218,6 +218,84 @@
 
     });
 
+    var name = "DENNI AFREDO SURYONO HARTANU";
+    var nik = "2015133629";
+    var phoneNumber = "089653485351";
+    var nama_atasan = "ANDY JAYA";
+    var nik_atasan = "2007004011";
+    var phoneNumber_atasan = "087878300086";
+    var dataJawaban1 = "TIDAK";
+    var dataJawaban1a = "";
+    var dataJawaban2 = "TIDAK";
+    var dataJawaban3 = "TIDAK";
+    var dataJawaban4 = "TIDAK";
+    var dataJawaban5a = "TIDAK";
+    var dataJawaban5b = "TIDAK";
+    var dataJawaban5c = "TIDAK";
+    var dataJawaban5d = "TIDAK";
+    var dataJawaban5e = "TIDAK";
+    var dataJawaban5f = "TIDAK";
+    var dataJawaban5g = "TIDAK";
+    var dataJawaban5h = "TIDAK";
+    var dataJawaban5i = "TIDAK";
+    var dataJawaban5j = "TIDAK";
+    var dataJawaban5k = "TIDAK";
+    var dataJawaban5l = "TIDAK";
+    var dataJawaban5m = "TIDAK";
+    var dataJawaban5n = "TIDAK";
+    var dataJawaban5o = "TIDAK";
+    var dataJawaban6 = "TIDAK";
+    var dataJawaban7a = null;
+    var dataJawaban7b = null;
+    var dataJawaban8 = null;
+    var dataJawaban8a = null;
 
+    $.ajax({
+        dataType: 'JSON',
+        type: 'POST',
+        url: 'https://hrindomaret.com/api/covidform/insert',
+        data: {
+            nama: name,
+            nik: nik,
+            nohp: phoneNumber,
+            namaatasan: nama_atasan,
+            nikatasan: nik_atasan,
+            nohpatasan: phoneNumber_atasan,
+            param1: dataJawaban1,
+            ketparam1: dataJawaban1a,
+            param2: dataJawaban2,
+            param3: dataJawaban3,
+            param4: dataJawaban4,
+            param51: dataJawaban5a,
+            param52: dataJawaban5b,
+            param53: dataJawaban5c,
+            param54: dataJawaban5d,
+            param55: dataJawaban5e,
+            param56: dataJawaban5f,
+            param57: dataJawaban5g,
+            param58: dataJawaban5h,
+            param59: dataJawaban5i,
+            param510: dataJawaban5j,
+            param511: dataJawaban5k,
+            param512: dataJawaban5l,
+            param513: dataJawaban5m,
+            param514: dataJawaban5n,
+            param515: dataJawaban5o,
+            param6: dataJawaban6,
+            param71: dataJawaban7a,
+            param72: dataJawaban7b,
+            param8: dataJawaban8,
+            ketparam8: dataJawaban8a
+        },
+        beforeSend: function () {
+            console.log('assestment hehe');
+        },
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
 </script>
 

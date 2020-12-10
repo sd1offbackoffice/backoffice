@@ -68,7 +68,7 @@ $datetime->setTimezone($timezone);
     <main>
         <table class="table table-bordered table-responsive">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-            <tr style="text-align: center;">
+            <tr style="      text-align: center;">
                 <th rowspan="2" style="width: 20px">NO</th>
                 <th rowspan="2" style="width: 40px">PLU</th>
                 <th rowspan="2" style="width: 285px !important; text-align: left">DESKRIPSI</th>

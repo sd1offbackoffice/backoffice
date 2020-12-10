@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Inquery Transfer Antar Cabang | Penerimaan dari Cabang')
+@section('title','PENERIMAAN CABANG | INQUERY TRANSFER')
 
 @section('content')
 
@@ -11,11 +11,9 @@
                     <div class="card-body">
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR BPB</label>
-                            <div class="col-sm-1">
+                            <div class="col-sm-1 buttonInside">
                                 <input type="text" class="form-control" id="notrn" disabled>
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-primary rounded-circle btn_lov" id="btn_lov_trn" data-toggle="modal" data-target="#m_lov_trn" disabled>
+                                <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -29,7 +27,6 @@
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="noreff" disabled>
                             </div>
-                            <div class="col-sm-1"></div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TANGGAL</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="tglreff" disabled>

@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Transaksi SJ Packlist | Pengiriman ke Cabang')
+@section('title','KIRIM CABANG | TRANSAKSI SJ PACKLIST')
 
 @section('content')
 
@@ -16,7 +16,7 @@
                     <fieldset class="card border-secondary ml-2 mr-2 mt-0 mb-2">
                         <div class="card-body">
                             <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                <thead>
+                                <thead class="thColor">
                                     <tr>
                                         <th>Cabang</th>
                                         <th>No Packing List</th>

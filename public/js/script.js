@@ -108,3 +108,21 @@ function checkDate(date){
     }
     else return false;
 }
+
+//nvl
+function nvl(str,ret){
+    if(str == null || str == ''){
+        return ret;
+    }
+    else str;
+}
+
+function testjr(temp) {
+    let data = temp['text'];
+
+    $('#title').text(data)
+
+    console.log(data)
+
+
+}

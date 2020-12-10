@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Cetak Transfer | Penerimaan dari Cabang')
+@section('title','PENERIMAAN CABANG | CETAK TRANSFER')
 
 @section('content')
 
@@ -11,20 +11,16 @@
                     <div class="card-body">
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">No BPB</label>
-                            <div class="col-sm-2 pr-0">
-                                <input type="text" class="form-control tgl" id="bpb1" disabled>
-                            </div>
-                            <div class="col-sm-1 pl-0">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 1;" disabled>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="bpb1" disabled>
+                                <button id="btn_lov_plu_utuh" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 1;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             <label class="col-form-label">s/d</label>
-                            <div class="col-sm-2 pr-0">
-                                <input type="text" class="form-control tgl" id="bpb2" disabled>
-                            </div>
-                            <div class="col-sm-1 pl-0">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 2;" disabled>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="bpb2" disabled>
+                                <button id="btn_lov_plu_utuh" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 2;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -34,7 +30,7 @@
                         </div>
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Ukuran Kertas</label>
-                            <div class="col-sm-2 pr-0">
+                            <div class="col-sm-2">
                                 <select class="form-control" id="ukuran">
                                     <option>BESAR</option>
                                     <option>KECIL</option>

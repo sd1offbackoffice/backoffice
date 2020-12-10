@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','Input Penerimaan')
 @section('content')
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
@@ -9,56 +10,63 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <form class="form">
+                                    {{--<div class="form-group row mb-0 ">--}}
+                                    {{--<label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">I0519</label>--}}
+                                    {{--<label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">000390</label>--}}
+                                    {{--</div>--}}
                                     <div class="form-group row mb-0 ">
                                         <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">NOMOR
                                             TRN</label>
-                                        <input type="text" id="txtNoDoc"
-                                               class="text-center form-control form-control-sm col-sm-2">
-                                        <div class="col-sm-3">
-                                            <button class="btn float-left pl-0 btn-sm" type="button"
-                                                    data-target="#m_lov_trn" data-toggle="modal" id="btn-lov-trn"
-                                                    onclick=""><img
-                                                        src="{{asset('image/icon/help.png')}}" height="20px"
-                                                        width="20px">
+                                        <div class="col-sm-2 buttonInside">
+                                            <input type="text" class="form-control" id="txtNoDoc">
+                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_trn"
+                                                    data-toggle="modal" id="btn-lov-trn">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
+                                        </div>
+                                        <div class="col-sm-2">
                                             <button type="button" id="btnHapusDokumen"
-                                                    class="btn btn-danger btn-sm float-left "><i
+                                                    class="btn btn-danger float-left "><i
                                                         class="icon fas fa-trash"></i> Hapus Dokumen
                                             </button>
                                         </div>
-                                        <input type="text" id="txtModel"
-                                               class="text-center form-control form-control-sm col-sm-3" disabled>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtModel"
+                                                   class="text-center form-control" disabled>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0 ">
                                         <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TANGGAL</label>
-                                        <input type="text" id="dtTglDoc"
-                                               class="text-center form-control form-control-sm col-sm-2">
+                                        <div class="col-sm-2">
+                                            <input type="text" id="dtTglDoc"
+                                                   class="text-center form-control">
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">SUPPLIER</label>
-                                        <input type="text" id="txtKdSupplier"
-                                               class="text-center form-control form-control-sm col-sm-1">
-                                        <div class="col-sm-5">
-                                            <button class="btn float-left pl-0 btn-sm" type="button"
-                                                    data-target="#m_lov_supplier" data-toggle="modal"
-                                                    onclick=""><img src="{{asset('image/icon/help.png')}}" height="20px"
-                                                                    width="20px">
+                                        <div class="col-sm-2 buttonInside">
+                                            <input type="text" class="form-control" id="txtKdSupplier">
+                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_supplier"
+                                                    data-toggle="modal" id="btn-lov-trn">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
-
-                                            <div class="row">
-                                                <input type="text" id="txtNmSupplier"
-                                                       class="form-control form-control-sm col-sm-8" disabled>
-                                                <label class="col-form-label text-sm-right col-sm-2"
-                                                       style="font-size: 12px">PKP</label>
-                                                <input type="text" id="txtPKP"
-                                                       class="form-control form-control-sm text-center col-sm-1"
-                                                       disabled>
-                                            </div>
                                         </div>
-                                        <button type="button" id="btnUsulanRetur"
-                                                class="btn btn-info btn-sm float-left offset-3 col-sm-2"><i
-                                                    class="icon fas fa-upload"></i> Usulan Retur
-                                        </button>
+                                        <div class=" col-sm-4">
+                                            <input type="text" id="txtNmSupplier"
+                                                   class="form-control" disabled>
+                                        </div>
+                                        <label class="col-form-label text-sm-right col-sm-1"
+                                               style="font-size: 12px">PKP</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" id="txtPKP"
+                                                   class="form-control text-center" disabled>
+                                        </div>
+                                        <div class="offset-1 col-sm-2">
+                                            <button type="button" id="btnUsulanRetur" data-target="#m_usulan_retur"
+                                                    data-toggle="modal" class="btn btn-info"><i
+                                                        class="icon fas fa-upload"></i> Usulan Retur
+                                            </button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -73,17 +81,17 @@
                         <div class="card-body p-0 tableFixedHeader" style="height: 250px;">
                             <table class="table table-sm table-striped table-bordered "
                                    id="table-header">
-                                <thead class="thead-dark">
+                                <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
                                     <th width="3%" class="text-center small"></th>
-                                    <th width="10%" class="text-left small">PLU</th>
-                                    <th width="20%" class="text-left small">DESKRIPSI</th>
+                                    <th width="10%" class="text-center small">PLU</th>
+                                    <th width="20%" class="text-center small">DESKRIPSI</th>
                                     <th width="10%" class="text-center small">SATUAN</th>
                                     <th width="7%" class="text-center small">BKP</th>
                                     <th width="7%" class="text-center small">STOCK</th>
                                     <th width="7%" class="text-center small">CTN</th>
                                     <th width="7%" class="text-center small">PCS</th>
-                                    <th width="29%" class="text-left small">KETERANGAN</th>
+                                    <th width="29%" class="text-center small">KETERANGAN</th>
                                 </tr>
                                 </thead>
                                 <tbody id="body-table-header">
@@ -99,7 +107,7 @@
                         <div class="card-body p-0 tableFixedHeader">
                             <table class="table table-sm table-striped table-bordered"
                                    id="table-detail">
-                                <thead class="thead-dark">
+                                <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
                                     <th class="text-center small">PLU</th>
                                     <th class="text-center small">DESKRIPSI</th>
@@ -138,28 +146,28 @@
                             <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TOTAL
                                 ITEM</label>
                             <input type="text" id="total-item"
-                                   class="text-center form-control form-control-sm col-sm-2" disabled>
+                                   class="text-center form-control  col-sm-2" disabled>
                             <label class="col-sm-1 col-form-label text-sm-right offset-3"
                                    style="font-size: 12px">GROSS</label>
                             <input type="text" id="gross"
-                                   class="text-center form-control form-control-sm col-sm-2" disabled>
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6" style="font-size: 12px">POTONGAN</label>
                             <input type="text" id="potongan"
-                                   class="text-center form-control form-control-sm col-sm-2" disabled>
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6"
                                    style="font-size: 12px">PPN</label>
                             <input type="text" id="ppn"
-                                   class="text-center form-control form-control-sm col-sm-2" disabled>
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
                         <div class="form-group row mb-0">
                             <label class="col-sm-1 col-form-label text-sm-right offset-6"
                                    style="font-size: 12px">TOTAL</label>
                             <input type="text" id="total"
-                                   class="text-center form-control form-control-sm col-sm-2" disabled>
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
                     </div>
                 </fieldset>
@@ -274,6 +282,69 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_usulan_retur" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Usulan Retur Melebihi Batas Retur</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group row mb-0 ">
+                            <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">No. Dok</label>
+                            <div class="col-sm-3">
+                                <input type="text" id="txt-usl-nodok" class="text-center form-control" disabled>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" id="txt-usl-keterangan" class="text-center form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0 ">
+                            <label class="col-sm-1 col-form-label text-sm-right"
+                                   style="font-size: 12px">Supplier</label>
+                            <div class="col-sm-2">
+                                <input type="text" id="txt-usl-kode-supplier" class="text-center form-control" disabled>
+                            </div>
+                            <div class="offset-1 col-sm-5">
+                                <input type="text" id="txt-usl-nama-supplier" class="text-center form-control" disabled>
+                            </div>
+                            <label class="col-sm-1 col-form-label text-sm-right"
+                                   style="font-size: 12px;text-align: right">PKP</label>
+                            <div class="col-sm-1">
+                                <input type="text" id="txt-usl-pkp" class="text-center form-control" disabled>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col lov">
+                                <div class="card-body p-0 tableFixedHeader">
+                                    <table class="table table-striped table-bordered"
+                                           id="table-detail">
+                                        <thead class="theadDataTables">
+                                        <tr class="table-sm text-center">
+                                            <th class="text-center small">PRDCD</th>
+                                            <th class="text-center small">DESKRIPSI</th>
+                                            <th class="text-center small">QTY YG BISA RETUR</th>
+                                            <th class="text-center small">*QTY USULAN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="body-table-usulan">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .row-lov-trn:hover {
             cursor: pointer;
@@ -313,8 +384,11 @@
 
     <script>
         var rowheader;
+        var row = 1;
         $(document).ready(function () {
             reset();
+            $('#btnUsulanRetur').attr('disabled', false);
+
             $('#dtTglDoc').datepicker({
                 "dateFormat": "dd/mm/yy",
                 "setDate": new Date()
@@ -356,6 +430,8 @@
             "info": true,
             "autoWidth": false,
             "responsive": true,
+            "processing": true,
+            "serverSide": true,
             "createdRow": function (row, data, dataIndex) {
                 $(row).addClass('row-lov-trn').css({'cursor': 'pointer'});
             },
@@ -384,6 +460,8 @@
             "info": true,
             "autoWidth": false,
             "responsive": true,
+            "processing": true,
+            "serverSide": true,
             "createdRow": function (row, data, dataIndex) {
                 $(row).addClass('row-lov-supplier').css({'cursor': 'pointer'});
             },
@@ -411,6 +489,8 @@
             "info": true,
             "autoWidth": false,
             "responsive": true,
+            "processing": true,
+            "serverSide": true,
             "createdRow": function (row, data, dataIndex) {
                 $(row).addClass('row-lov-plu').css({'cursor': 'pointer'});
             },
@@ -440,13 +520,63 @@
             $('#m_lov_plu').modal('hide');
         });
 
+        $(document).on('click', '#btnHapusDokumen', function () {
+            var nodoc = $('#txtNoDoc').val();
+            swal({
+                title: "Hapus No Doc" + nodoc + " ?",
+                text: "Tekan Tombol Ya untuk Melanjutkan!",
+                icon: "question",
+                buttons: true,
+            }).then((yes) => {
+                if (yes) {
+                    ajaxSetup();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('/bo/transaksi/pengeluaran/input/delete') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: response.status,
+                                text: response.message,
+                                icon: 'error'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            // handle error
+                            swal({
+                                title: error.responseJSON.exception,
+                                text: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+
         function getDataPLU(plu) {
             if (kdsup == '') {
                 swal({
-                    title: '',
-                    text: response.message,
-                    icon: response.status
+                    title: 'Info',
+                    text: 'Tentukan Supplier Terlebih dahulu',
+                    icon: 'warning'
+                }).then(() => {
+                    $('#txtKdSupplier').focus();
                 });
+                return false;
             }
             $.ajax({
                 type: "GET",
@@ -493,7 +623,9 @@
             });
         }
 
-        function getDataSupplier(kdsup) {
+        function getDataSupplier(k) {
+            kdsup = k;
+            $('#txtKdSupplier').val(kdsup);
             $.ajax({
                 type: "GET",
                 url: "{{ url('/bo/transaksi/pengeluaran/input/get-data-supplier') }}",
@@ -508,6 +640,7 @@
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
+                    $('.plu-header-1').focus();
 
                     if (response.message) {
                         swal({
@@ -591,42 +724,46 @@
                                     $("#dtTglDoc").datepicker().datepicker("setDate", new Date());
                                     $('#txtModel').val(response.model);
                                     $('#txtKdSupplier').focus();
-
-                                    $('#body-table-header').append('<tr>' +
-                                        '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                                        '<td><div class="input-group input-group-sm">\n' +
-                                        '<input type="text" class="form-control plu-header-1 plu-header" aria-describedby="btnGroupAddon2" rowheader="1">\n' +
-                                        '<div class="input-group-prepend">\n' +
-                                        '<button class="btn btn-sm btn-primary btn-lov-plu m-0" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">?</button></div>\n' +
-                                        '</div>\n' +
-                                        '</div></td>' +
-                                        '<td><input disabled class="form-control form-control-sm deskripsi-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm satuan-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm bkp-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control form-control-sm stock-header-1" type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
-                                        '<td><input class="form-control form-control-sm keteragan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+                                    // getDataSupplier('I0519');
+                                    // 0000390
+                                    $('#body-table-header').append(
+                                        '<tr class="row-header-1">' +
+                                        '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
+                                        '<td class="buttonInside" style="width: 8%">' +
+                                        '<input type="text" class="form-control plu-header-1 plu-header" rowheader="1">' +
+                                        '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">' +
+                                        '<img src="../../../../public/image/icon/help.png" width="30px">' +
+                                        '</button>' +
+                                        '</td>' +
+                                        '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control satuan-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
+                                        '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control keteragan-header keterangan-header-1" rowheader=1 type="text"></td>' +
                                         '</tr>');
 
+                                    // $('.plu-header-1').focus();
+
                                     // $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail">' +
-                                    //     '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input disabled class="form-control form-control-sm" type="text"></td>' +
-                                    //     '<td><input class="form-control form-control-sm" type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
                                     //     '</tr>');
                                 }
 
@@ -663,10 +800,12 @@
                         reset();
                     },
                     success: function (response) {
+                        $('#modal-loader').modal('hide');
+
                         $('#btnHapusDokumen').attr('disabled', false);
                         $('#btnUsulanRetur').attr('disabled', false);
 
-                        if (response.status == 'error' || response.status == 'info') {
+                        if (response.status == 'error') {
                             swal({
                                 title: response.status,
                                 text: response.message,
@@ -675,12 +814,8 @@
                             });
                         }
                         else {
-
-                            $('#modal-loader').modal('hide');
                             $('#txtModel').val(response.model);
 
-
-                            var datas = response.datas;
                             $('#dtTglDoc').val(response.tgldoc);
                             $('#txtKdSupplier').val(response.supplier);
                             $('#txtNmSupplier').val(response.nmsupplier);
@@ -698,15 +833,15 @@
                                 var ket = dh.h_ket == null ? '' : dh.h_ket;
 
                                 $('#body-table-header').append('<tr>' +
-                                    '<td><button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + deskripsi + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + ket + '"></td>' +
+                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                                    '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                                     '</tr>');
                             });
 
@@ -740,23 +875,23 @@
                                 var unit = dd.unit == null ? '' : dd.unit;
 
                                 $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + plu + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + desk + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + satuan + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + bkp + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + stock + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + hrgsatuan + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + ctn + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + pcs + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + gross + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + discper + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + discrp + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + ppn + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + faktur + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + pajakno + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + tglfp + '"></td>' +
-                                    '<td><input disabled class="form-control form-control-sm" type="text" value="' + noreffbtb + '"></td>' +
-                                    '<td><input class="form-control form-control-sm" type="text" value="' + keterangan + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(hrgsatuan) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ctn) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(pcs) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(gross) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + discper + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(discrp) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ppn) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + faktur + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + pajakno + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + tglfp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + noreffbtb + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + keterangan + '"></td>' +
                                     '</tr>');
                                 i++;
                                 tot_gross += parseFloat(gross);
@@ -780,27 +915,35 @@
                                 $('#txtKdSupplier').attr('disabled', true);
                                 $('#dtTglDoc').attr('disabled', true);
                             }
+                            if (response.status == 'info') {
+                                swal({
+                                    title: response.status,
+                                    text: response.message,
+                                    icon: response.status
+                                }).then(() => {
+                                });
+                            }
                         }
 
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');
                         // handle error
-                        swal({
-                            title: error.responseJSON.exception,
-                            text: error.responseJSON.message,
-                            icon: 'error'
-                        }).then(() => {
-
-                        });
+                        console.log(error);
                     }
                 });
             }
 
         }
 
+        $(document).on('click', '.btn-delete-row-header', function (e) {
+            var current = $(this);
+            var rh = current.attr('rowheader');
+            $('.row-header-' + rh).empty();
+            $('.row-detail-' + rh).empty();
+
+        });
         $(document).on('keypress', '.ctn-header', function (e) {
-            console.log('asdasda');
             if (e.keyCode == 13) {
                 var nodoc = $(this).val();
                 var current = $(this);
@@ -813,14 +956,14 @@
                 var frac = tempFrac[1];
                 var max_qty = $('.plu-header-' + rh).attr('max_qty');
 
-                if (ctn < 0) {
+                if (ctn < 0 || ctn == '') {
                     current.val(0);
                     swal({
                         title: 'Info',
                         text: 'Quantity Carton < 0',
                         icon: 'info'
-                    })
-                    e.preventDefault();
+                    });
+                    return false;
                 }
                 // ????
                 if ((ctn * frac) + pcs > stock) {
@@ -831,18 +974,343 @@
                         text: 'Quantity[' + ((ctn * frac) + pcs) + '] > Stock Retur[' + max_qty + ']',
                         icon: 'info'
                     });
-                    e.preventDefault();
+                    return false;
                 }
                 $('.pcs-header-' + rh).focus();
             }
 
         });
 
-        $(document).on('click', '.pcs-header', function () {
-            var current = $(this);
-            var rh = current.attr('rowheader');
+        $(document).on('keypress', '.pcs-header', function (e) {
+            if (e.keyCode == 13) {
 
+                $('#modal-loader').modal('show');
+                var current = $(this);
+                var rh = current.attr('rowheader');
+                var model = $('#txtModel').val();
+                var nodoc = $('#txtNoDoc').val();
+                var tgldoc = $('#dtTglDoc').val();
+                var kdsup = $('#txtKdSupplier').val();
+                var plu = $('.plu-header-' + rh).val();
+                var ctn = parseInt($('.ctn-header-' + rh).val());
+                var fracTemp = $('.satuan-header-' + rh).val().split('/');
+                var frac = parseInt(fracTemp[1]);
+                var pcs = parseInt($('.pcs-header-' + rh).val());
+                var stock = parseInt($('.stock-header-' + rh).val());
+                var bkp = $('.bkp-header-' + rh).val();
+
+                var message = '';
+                var status = '';
+                var inputan = '';
+                var qtypb = '';
+                var qtyretur = '';
+                var qtysisa = '';
+
+                if (model == 'KOREKSI') {
+                    return false;
+                }
+                if ($('.pcs-header-' + rh).val() < 0 || $('.pcs-header-' + rh).val() == '') {
+                    $('.pcs-header-' + rh).val(0);
+                    pcs = 0;
+                }
+                if ((ctn * frac) + pcs <= 0) {
+                    message = 'QTYB + QTYK <= 0';
+                    status = 'error';
+                    swal({
+                        title: status,
+                        text: message,
+                        icon: status
+                    }).then(() => {
+                        $('#modal-loader').modal('hide');
+                    });
+                    return false;
+                }
+                else {
+                    if (stock < (ctn * frac) + pcs) {
+                        inputan = (ctn * frac) + pcs;
+                        message = 'Stock Barang Retur (' + stock + ') < INPUTAN (' + inputan + ') [set ctn pcs 0]';
+                        status = 'error';
+                        $('.ctn-header-' + rh).val(0);
+                        $('.pcs-header-' + rh).val(0);
+                        $('.ctn-header-' + rh).focus();
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: status,
+                            text: message,
+                            icon: status
+                        }).then(() => {
+                            $('#modal-loader').modal('hide');
+                        });
+
+                        return false;
+                    }
+                    //step 1
+                    ajaxSetup();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-1') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            plu: plu,
+                            kdsup: kdsup
+                        },
+                        beforeSend: function () {
+                        },
+                        success: function (response) {
+                            // console.log(response);
+                            qtypb = response.qtypb;
+                            qtyretur = response.qtyretur;
+                            qtysisa = response.qtysisa;
+                            console.log(qtyretur);
+
+                            inputan = ((ctn * frac) + pcs);
+                            if (inputan > qtyretur && qtysisa > qtyretur) {
+                                if (inputan > qtysisa) {
+                                    message = 'qty PLU yang bisa diretur hanya ' + qtysisa + ' [set ctn pcs 0]';
+                                    status = 'info';
+                                    swal({
+                                        title: status,
+                                        text: message,
+                                        icon: status
+                                    }).then(() => {
+                                        $('#modal-loader').modal('hide');
+                                    });
+                                    return false;
+                                }
+
+                                message = 'Qty yang diretur ('
+                                    + inputan
+                                    + ') tidak boleh lebih dari '
+                                    + qtyretur
+                                    + ', untuk sisanya silahkan buat Struk Penjualan atau minta otorisasi Finance.'
+                                    + 'Proses untuk otorisasi Finance?';
+                                status = 'question';
+                                swal({
+                                    title: "Mohon dijawab.",
+                                    text: message,
+                                    icon: status,
+                                    buttons: true,
+                                    dangerMode: true,
+                                }).then((confirm) => {
+                                    if (confirm) {
+                                        if (inputan > qtysisa) {
+                                            inputan = qtysisa;
+                                            message = 'Qty yang bisa diretur hanya ' + qtysisa;
+                                            status = 'warning';
+                                            swal({
+                                                title: status,
+                                                text: message,
+                                                icon: status
+                                            }).then(() => {
+                                                $('#modal-loader').modal('hide');
+                                            });
+                                        }
+                                        ajaxSetup();
+                                        $.ajax({
+                                            url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-2') }}",
+                                            type: 'Post',
+                                            data: {
+                                                nodoc: nodoc,
+                                                plu: plu,
+                                                kdsup: kdsup,
+                                                tgldoc: tgldoc,
+                                                bkp: bkp,
+                                                inputan: inputan,
+                                                qtyretur: qtyretur
+                                            },
+                                            success: function (response) {
+                                                // console.log(response);
+                                            }, error: function (error) {
+                                                console.log(error);
+
+                                            }
+                                        });
+
+                                        ctn = 0;
+                                        pcs = qtyretur;
+                                        $('.ctn-header-' + rh).val(ctn);
+                                        $('.pcs-header-' + rh).val(pcs);
+                                    } else {
+                                        ctn = 0;
+                                        pcs = 0;
+                                        $('.ctn-header-' + rh).val(ctn);
+                                        $('.pcs-header-' + rh).val(pcs);
+                                    }
+                                });
+                            }
+                            else {
+                                ajaxSetup();
+                                $.ajax({
+                                    url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-3') }}",
+                                    type: 'POST',
+                                    data: {
+                                        nodoc: nodoc,
+                                        plu: plu
+                                    },
+                                    success: function (response) {
+                                        if (response.status == 'question') {
+                                            swal({
+                                                title: "Mohon dijawab.",
+                                                text: response.message,
+                                                icon: response.status,
+                                                buttons: true,
+                                                dangerMode: true,
+                                            }).then((confirm) => {
+                                                if (confirm) {
+                                                    ajaxSetup();
+                                                    $.ajax({
+                                                        url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-4') }}",
+                                                        type: 'Post',
+                                                        data: {
+                                                            nodoc: nodoc,
+                                                            plu: plu
+                                                        },
+                                                        success: function (response) {
+                                                            swal({
+                                                                title: response.status,
+                                                                text: response.message,
+                                                                icon: response.status
+                                                            });
+                                                        }, error: function (error) {
+                                                            console.log(error);
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        }
+                                    }, error: function (error) {
+                                        console.log(error);
+
+                                    }
+                                });
+                            }
+
+                            if (inputan > qtyretur && qtysisa == qtyretur) {
+                                ctn = 0;
+                                pcs = qtyretur;
+                                $('.ctn-header-' + rh).val(ctn);
+                                $('.pcs-header-' + rh).val(pcs);
+                                console.log(qtyretur);
+                                message = 'qty plu yang bisa diretur hanya ' + qtyretur;
+                                status = 'info';
+                                swal({
+                                    title: status,
+                                    text: message,
+                                    icon: status
+                                }).then(() => {
+                                    $('#modal-loader').modal('hide');
+                                });
+                            }
+                            if (model == '*TAMBAH*' || model == '*KOREKSI*') {
+                                proses(plu, (ctn * frac) + pcs);
+                            }
+
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            // handle error
+                            console.log(error);
+
+                        }
+                    });
+
+
+                }
+                $('#modal-loader').modal('hide');
+            }
         });
+
+        function proses(plu, qtyretur) {
+            var nodoc = $('#txtNoDoc').val();
+            var pkp = $('#txtPKP').val();
+            ajaxSetup();
+            $.ajax({
+                url: "{{ url('/bo/transaksi/pengeluaran/input/proses') }}",
+                type: 'POST',
+                data: {
+                    qtyretur: qtyretur,
+                    p_prdcd: plu,
+                    nodoc: nodoc,
+                    pkp: pkp
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    datas_detail = response.datas;
+                    console.log(response);
+                    if (datas_detail.length > 0) {
+                        console.log(response);
+
+                        datas_detail.forEach(function (dd) {
+                            $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_prdcd + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.desk + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.satuan + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.bkp + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_posqty + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(dd.trbo_hrgsatuan) + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.qtyctn + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.qtypcs + '"></td>' +
+                                '<td><input disabled class="form-control gross" type="text" value="' + dd.trbo_gross + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.discper + '"></td>' +
+                                '<td><input disabled class="form-control discrph" type="text" value="' + convertToRupiah2(dd.trbo_discrph) + '"></td>' +
+                                '<td><input disabled class="form-control ppn" type="text" value="' + dd.trbo_ppnrph + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_istype + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_inv + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_tgl + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_noreff + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + nvl(dd.trbo_keterangan, '') + '"></td>' +
+                                '</tr>');
+                        });
+
+                        row++;
+                        $('#body-table-header').append(
+                            '<tr class="row-header-' + row + '">' +
+                            '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="' + row + '"><i class="icon fas fa-times"></i></button></td>' +
+                            '<td class="buttonInside" style="width: 8%">' +
+                            '<input type="text" class="form-control plu-header-' + row + ' plu-header" rowheader="' + row + '">' +
+                            '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="' + row + '" data-target="#m_lov_plu" data-toggle="modal">' +
+                            '<img src="../../../../public/image/icon/help.png" width="30px">' +
+                            '</button>' +
+                            '</td>' +
+                            '<td><input disabled class="form-control deskripsi-header-' + row + '" type="text"></td>' +
+                            '<td><input disabled class="form-control satuan-header-' + row + '" type="text"></td>' +
+                            '<td><input disabled class="form-control bkp-header-' + row + '" type="text"></td>' +
+                            '<td><input disabled class="form-control stock-header-' + row + '" type="text"></td>' +
+                            '<td><input class="form-control ctn-header ctn-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
+                            '<td><input class="form-control pcs-header pcs-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
+                            '<td><input class="form-control keteragan-header keterangan-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
+                            '</tr>');
+
+                        var tot_gross = 0;
+                        var tot_potongan = 0;
+                        var tot_ppn = 0;
+                        var tot_total = 0;
+                        var i = 0;
+                        $('#body-table-detail tr').each(function () {
+                            var gross = $(this).find(".gross").val();
+                            var potongan = $(this).find(".discrph").val();
+                            var ppn = $(this).find(".ppn").val();
+
+                            tot_gross += gross;
+                            tot_potongan += potongan;
+                            tot_ppn += ppn;
+                            i++;
+                        });
+                        tot_total = tot_gross - tot_potongan + tot_ppn;
+                        $('#gross').val(convertToRupiah2(tot_gross));
+                        $('#potongan').val(convertToRupiah2(tot_potongan));
+                        $('#ppn').val(convertToRupiah2(tot_ppn));
+                        $('#total').val(convertToRupiah2(tot_total));
+                        $('#total-item').val(convertToRupiah2(i - 1));
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
 
         $(document).on('click', '.row-detail', function () {
             var currentElement = $(this);

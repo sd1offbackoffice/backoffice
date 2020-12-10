@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Transfer Surat Jalan')
+@section('title','KIRIM CABANG | TRANSFER SJ')
 
 @section('content')
 
@@ -24,7 +24,7 @@
                             <div class="card-body">
                                 <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
                                     <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                        <thead>
+                                        <thead class="thColor">
                                         <tr>
                                             <th width="50%">Cabang</th>
                                             <th width="35%">Nomor Dokumen</th>
@@ -136,21 +136,29 @@
                     success: function (response) {
                         $('#modal-loader').modal('hide');
 
-                        $('#table_daftar tbody tr').remove();
-                        listNomor = [];
-                        for(i=0;i<response.length;i++){
-                            listNomor.push(response[i].no);
+                       if(response.length == 0){
+                           swal({
+                               title: 'Data tidak ditemukan!',
+                               icon: 'warning'
+                           })
+                       }
+                       else{
+                           $('#table_daftar tbody tr').remove();
+                           listNomor = [];
+                           for(i=0;i<response.length;i++){
+                               listNomor.push(response[i].no);
 
-                            tr = `<tr><td>${response[i].msth_loc2} - ${response[i].cab_namacabang}</td>` +
-                                `<td>${response[i].no}</td>` +
-                                `<td>` +
-                                `<div class="custom-control custom-checkbox text-center">` +
-                                `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
-                                `<label for="cb_${i}" class="custom-control-label"></label>` +
-                                `</div>` +
-                                `</td></tr>`;
-                            $('#table_daftar tbody').append(tr);
-                        }
+                               tr = `<tr><td>${response[i].msth_loc2} - ${response[i].cab_namacabang}</td>` +
+                                   `<td>${response[i].no}</td>` +
+                                   `<td>` +
+                                   `<div class="custom-control custom-checkbox text-center">` +
+                                   `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
+                                   `<label for="cb_${i}" class="custom-control-label"></label>` +
+                                   `</div>` +
+                                   `</td></tr>`;
+                               $('#table_daftar tbody').append(tr);
+                           }
+                       }
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');

@@ -29,12 +29,14 @@
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}"/>
     <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
     <link rel="stylesheet" href={{ asset('css/datatables.css') }} rel="stylesheet">
-    <link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">
+    {{--<link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">--}}
     <link rel="stylesheet" href={{ asset('css/sticktable.css') }}  rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" >
+    {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" >--}}
+    {{--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" >--}}
 
 
-    <title>IAS - @yield('title')</title>
+    <title id="title">@yield('title')</title>
 </head>
 <body>
 <div id="menu_area" class="menu-area">
@@ -125,6 +127,8 @@
                                                aria-expanded="false">Barang Hilang</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/brghilang/input/index")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/brghilang/pembatalannbh/index")}}">Pembatalan NBH</a></li>
+                                                <li><a href="{{url("/bo/transaksi/brghilang/inquerynbh/index")}}">Inquery NBH</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">
@@ -188,6 +192,14 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Proses</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/proses/konversi")}}">Konversi Item Perishable Olahan</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -205,6 +217,9 @@
                                 <li><a href="{{url("/admuser/index")}}">User</a></li>
                             </ul>
                         </li>
+
+                        <li><a href="{{url("template/index")}}" >Template Migrasi IAS</a></li>
+
                         <li class="dropdown" style="position: relative; left: 400px;">
                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true"

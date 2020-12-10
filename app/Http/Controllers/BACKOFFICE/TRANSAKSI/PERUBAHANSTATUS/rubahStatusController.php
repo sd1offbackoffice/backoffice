@@ -137,8 +137,13 @@ class rubahStatusController extends Controller
             ->selectRaw('prd_frac')
             ->selectRaw('prd_unit')
             ->selectRaw('prd_perlakuanbarang')
+            ->selectRaw('HGB_STATUSBARANG')
+            ->selectRaw('SUP_FLAGPENANGANANPRODUK')
             ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'srt_prdcd')
+            ->leftJoin('TBMASTER_HARGABELI','HGB_PRDCD','SRT_PRDCD')
+            ->leftJoin('TBMASTER_SUPPLIER','SUP_KODESUPPLIER','HGB_KODESUPPLIER')
             ->where('SRT_NOSORTIR', $kode)
+            ->where('HGB_TIPE','=','2')
             ->get();
 
 //        $test = DB::table('tbtr_barangrusak')->limit(10)->get()->toArray();
@@ -160,6 +165,21 @@ class rubahStatusController extends Controller
         $flagretur = $_SESSION['flag_retur'];
         $today  = date('Y-m-d H:i:s');
         $tglSort = date($request->tglSort);
+
+        $case = 0;
+        $checker = DB::table('TBTR_MSTRAN_D')
+            ->selectRaw('MSTD_TGLDOC')
+            ->selectRaw('MSTD_CREATE_BY')
+            ->where('MSTD_NOPO','=',$noDoc)
+            ->where('MSTD_TYPETRN','=','Z')
+            ->first();
+        if(!$checker){
+            DB::table('TBTR_MSTRAN_D')
+                ->where('MSTD_NOPO','=',$noDoc)
+                ->where('MSTD_TYPETRN','=','Z')
+                ->delete();
+            $case = 1;
+        }
         for ($i = 1; $i < sizeof($datas); $i++){
             $temp = $datas[$i];
             $FRACPRD = 0;
@@ -219,7 +239,7 @@ class rubahStatusController extends Controller
                     ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                     ->where('ST_LOKASI','=',$LOC1)
                     ->first();
-                if($tempStock){
+                if(!$tempStock){
                     DB::table('TBMASTER_STOCK')
                         ->insert(['ST_KODEIGR' => $kodeigr, 'ST_LOKASI' => $LOC1, 'ST_PRDCD' => $temp['mstd_prdcd'],
                             'ST_SALDOAKHIR' => $temp['mstd_qty'], 'ST_TRFOUT' => $temp['mstd_qty'],
@@ -284,7 +304,7 @@ class rubahStatusController extends Controller
                             }
                             DB::table('TBHISTORY_RUBAHSTATUS_RAK')
                                 ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
-                                    'nosortir' => $temp['mstd_nofaktur'].' - '.$gudangtoko,
+                                    'nosortir' => $noSort.' - '.$gudangtoko,
                                     'prdcd' => $temp['mstd_prdcd'], 'descprd' => $temp['mstd_desc'],
                                     'qty' => $temp['mstd_qty'], 'keterangan' => substr($keterangan,1,100)]);
                         }
@@ -337,7 +357,7 @@ class rubahStatusController extends Controller
                                 $keterangan = $keterangan.$rak;
                                 DB::table('TBHISTORY_RUBAHSTATUS_RAK')
                                     ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
-                                        'nosortir' => $temp['mstd_nofaktur'].' - '.$gudangtoko,
+                                        'nosortir' => $noSort.' - '.$gudangtoko,
                                         'prdcd' => $temp['mstd_prdcd'], 'descprd' => $temp['mstd_desc'],
                                         'qty' => $temp['mstd_qty'], 'keterangan' => substr($keterangan,1,100)]);
                             }
@@ -376,7 +396,7 @@ class rubahStatusController extends Controller
                                 $keterangan = $keterangan.$rak;
                                 DB::table('TBHISTORY_RUBAHSTATUS_RAK')
                                     ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
-                                        'nosortir' => $temp['mstd_nofaktur'].' - '.$gudangtoko,
+                                        'nosortir' => $noSort.' - '.$gudangtoko,
                                         'prdcd' => $temp['mstd_prdcd'], 'descprd' => $temp['mstd_desc'],
                                         'qty' => $temp['mstd_qty'], 'keterangan' => substr($keterangan,1,100)]);
                             }
@@ -423,7 +443,7 @@ class rubahStatusController extends Controller
                 DB::table('TBTR_SORTIR_BARANG')
                     ->where('SRT_KODEIGR','=',$kodeigr)
                     ->where('SRT_TYPE','=','S')
-                    ->where('SRT_NOSORTIR','=',$temp['mstd_nofaktur'])
+                    ->where('SRT_NOSORTIR','=',$noSort)
                     ->where('SRT_PRDCD','=',$temp['mstd_prdcd'])
                     ->update(['SRT_FLAGDISC3' => 'P']);
 
@@ -521,7 +541,7 @@ class rubahStatusController extends Controller
                         $_SESSION['flag_putus'] = 'Y';
                     }
                 }
-                //$noDoc = $dokumen;
+                $mstd_nodoc = $dokumen;
                 $flagdisc3 = 'P';
 
                 $STOK_CUR = DB::table('TBMASTER_STOCK')
@@ -673,7 +693,7 @@ class rubahStatusController extends Controller
                             'HCS_AVGLAMA' => ($oldcostx * $FRACPRD),'HCS_AVGBARU' => ($newAcostx * $FRACPRD),
                             'HCS_LASTCOSTLAMA' => ($lCostStk * $FRACPRD), 'HCS_LASTCOSTBARU' => ($lCostStk * $FRACPRD),
                             'HCS_CREATE_BY' => $userid, 'HCS_CREATE_DT' => $today, 'HCS_QTYLAMA' => $qtyakhir,
-                            'HCS_QTYBARU' => $temp['mstd_qty'], 'HCS_LASTQTY' => ($temp['mstd_qty'] = $qtyakhir)]);
+                            'HCS_QTYBARU' => $temp['mstd_qty'], 'HCS_LASTQTY' => ($temp['mstd_qty'] + $qtyakhir)]);
                 }
                 if($LOC2 = '01'){
                     DB::table('TBMASTER_PRODMAST')
@@ -709,16 +729,99 @@ class rubahStatusController extends Controller
                         $_SESSION['flagisi'] = 'N';
                     }
                 }
+//                 here probably better
+            }
+//             should be here
+            $sortData = DB::table('TBTR_SORTIR_BARANG')
+                ->selectRaw('SRT_KODESUPPLIER')
+                ->selectRaw('MSTD_KODEDEPARTEMENT')
+                ->selectRaw('SRT_PKP')
+                ->selectRaw('SRT_BKP')
+                ->selectRaw('SRT_KODEDIVISI')
+                ->selectRaw('SRT_KODEKATEGORIBARANG')
+                ->selectRaw('SRT_UNIT')
+                ->selectRaw('SRT_FRAC')
+                ->selectRaw('SRT_HRGSATUAN')
+                ->where('SRT_KODEIGR','=',$kodeigr)
+                ->where('SRT_TYPE','=','S')
+                ->where('SRT_NOSORTIR','=',$noSort)
+                ->where('SRT_PRDCD','=',$temp['mstd_prdcd'])
+                ->first();
+
+            if($case == 1){
+                $crDate = $checker->mstd_tgldoc;
+                $creator = $checker->mstd_create_by;
 
                 DB::table('TBTR_MSTRAN_D')
-                    ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => , 'MSTD_TYPETRN' => , 'MSTD_NODOC' => , 'MSTD_TGLDOC' => ,
-                        'MSTD_DOCNO2' => , 'MSTD_DATE2' => , 'MSTD_NOPO' => , 'MSTD_TGLPO' => , 'MSTD_NOFAKTUR' => , 'MSTD_TGLFAKTUR' => ,
-                        'MSTD_NOREF3' => , 'MSTD_TGLREF3' => , 'MSTD_ISTYPE' => , 'MSTD_INVO' => , 'MSTD_DATE3' => , 'MSTD_NOTT' => ,
-                        'MSTD_TGLTT' => , 'MSTD_KODESUPLLIER' => , 'MSTD_PKP' => , 'MSTD_CTERM' => , 'MSTD_SEQNO' => , 'MSTD_PRDCD' => ,
-                        'MSTD_KODEDIVISI' => , 'MSTD_KODEDEPARTEMENT' => ,]);
-                // here probably better
+                    ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $crDate,
+                        'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $today, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
+                        'MSTD_NOREF3' => null, 'MSTD_TGLREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
+                        'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
+                        'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
+                        'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty'] * $sortData->srt_frac), 'MSTD_QTYBONUS1' => null,
+                        'MSTD_QTYBONUS2' => null, 'MSTD_HRGSATUAN' => $sortData->srt_hrgsatuan, 'MSTD_PERSENDISC1' => null, 'MSTD_RPHDISC1' => null, 'MSTD_FLAGDISC1' => $temp['flagdisc1'],
+                        'MSTD_PERSENDISC2' => null, 'MSTD_RPHDISC2' => null, 'MSTD_FLAGDISC2' => $temp['flagdisc2'], 'MSTD_PERSENDISC2II' => null, 'MSTD_RPHDISC2II' => null,
+                        'MSTD_PERSENDISC2III' => null, 'MSTD_RPHDISC2III' => null, 'MSTD_PERSENDISC3' => null, 'MSTD_RPHDISC3' => null, 'MSTD_FLAGDISC3' => 'P',
+                        'MSTD_PERSENDISC4' => null, 'MSTD_RPHDISC4' => null, 'MSTD_FLAGDISC4' => $flagdisc4, 'MSTD_DIS4CP' => null, 'MSTD_DIS4CR' => null,
+                        'MSTD_DIS4RP' => null, 'MSTD_DIS4RR' => null, 'MSTD_DIS4JP' => null, 'MSTD_DIS4JR' => null, 'MSTD_GROSS' => $temp['gross'], 'MSTD_DISCRPH' => null,
+                        'MSTD_PPNRPH' => null, 'MSTD_PPNBMRPH' => null, 'MSTD_PPNBTLRPH' => null, 'MSTD_AVGCOST' => $mstd_avgcost, 'MSTD_OCOST' => $ocost, 'MSTD_POSQTY' => $postqty,
+                        'MSTD_KETERANGAN' => null, 'MSTD_FK' => null, 'MSTD_TGLFP' => null, 'MSTD_KODETAG' => null, 'MSTD_FURGNT' => null, 'MSTD_GDG' => null,
+                        'MSTD_CREATE_BY' => $creator, 'MSTD_CREATE_DT' => $crDate, 'MSTD_MODIFY_BY' => $userid, 'MSTD_MODIFY_DT' => $today]);
+
+            }else{
+                DB::table('TBTR_MSTRAN_D')
+                    ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $today,
+                        'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $today, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
+                        'MSTD_NOREF3' => null, 'MSTD_TGLREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
+                        'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
+                        'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
+                        'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty'] * $sortData->srt_frac), 'MSTD_QTYBONUS1' => null,
+                        'MSTD_QTYBONUS2' => null, 'MSTD_HRGSATUAN' => $sortData->srt_hrgsatuan, 'MSTD_PERSENDISC1' => null, 'MSTD_RPHDISC1' => null, 'MSTD_FLAGDISC1' => $temp['flagdisc1'],
+                        'MSTD_PERSENDISC2' => null, 'MSTD_RPHDISC2' => null, 'MSTD_FLAGDISC2' => $temp['flagdisc2'], 'MSTD_PERSENDISC2II' => null, 'MSTD_RPHDISC2II' => null,
+                        'MSTD_PERSENDISC2III' => null, 'MSTD_RPHDISC2III' => null, 'MSTD_PERSENDISC3' => null, 'MSTD_RPHDISC3' => null, 'MSTD_FLAGDISC3' => 'P',
+                        'MSTD_PERSENDISC4' => null, 'MSTD_RPHDISC4' => null, 'MSTD_FLAGDISC4' => $flagdisc4, 'MSTD_DIS4CP' => null, 'MSTD_DIS4CR' => null,
+                        'MSTD_DIS4RP' => null, 'MSTD_DIS4RR' => null, 'MSTD_DIS4JP' => null, 'MSTD_DIS4JR' => null, 'MSTD_GROSS' => $temp['gross'], 'MSTD_DISCRPH' => null,
+                        'MSTD_PPNRPH' => null, 'MSTD_PPNBMRPH' => null, 'MSTD_PPNBTLRPH' => null, 'MSTD_AVGCOST' => $mstd_avgcost, 'MSTD_OCOST' => $ocost, 'MSTD_POSQTY' => $postqty,
+                        'MSTD_KETERANGAN' => null, 'MSTD_FK' => null, 'MSTD_TGLFP' => null, 'MSTD_KODETAG' => null, 'MSTD_FURGNT' => null, 'MSTD_GDG' => null,
+                        'MSTD_CREATE_BY' => $userid, 'MSTD_CREATE_DT' => $today, 'MSTD_MODIFY_BY' => null, 'MSTD_MODIFY_DT' => null]);
             }
-            // should be here
         }
+    }
+    public function printDocument(Request $request){
+        $noDoc      = $request->doc;
+        $p_reprint  = 'Y';
+
+        $cekStatusPrint = DB::table('TBTR_MSTRAN_D')->where('MSTD_NOPO', $noDoc)->first();
+
+        if ($cekStatusPrint->mstd_flagdisc3 == 'P' || $cekStatusPrint->mstd_flagdisc3 == 'p'){
+            $p_reprint = 'Y';
+        } elseif ($cekStatusPrint->mstd_flagdisc3 == null || $cekStatusPrint->mstd_flagdisc3 == '') {
+            $p_reprint = '';
+        }
+
+        $datas = DB::select("select prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_namawilayah, prs_npwp, prs_telepon, msth_nodoc, msth_tgldoc, msth_nopo, msth_nofaktur, msth_keterangan_header, 
+                                              mstd_unit, mstd_frac, mstd_flagdisc4, mstd_prdcd, mstd_hrgsatuan, FLOOR(mstd_qty/prd_frac) qty, mod(mstd_qty,prd_frac) qtyk, hgb_kodesupplier, sup_namasupplier, prd_deskripsipanjang
+                                    from tbtr_mstran_d, tbtr_mstran_h, tbmaster_perusahaan, tbmaster_prodmast, tbmaster_hargabeli, tbmaster_supplier
+                                    where mstd_nopo = '$noDoc'
+                                              and mstd_typetrn = 'Z'
+                                              and prs_kodeigr = mstd_kodeigr
+                                              and prd_prdcd = mstd_prdcd
+                                              and prd_kodeigr = mstd_kodeigr
+                                              and hgb_prdcd = mstd_prdcd
+                                              and sup_kodesupplier = mstd_kodesupplier
+                                              and msth_nopo = mstd_nopo
+                                    order by srt_seqno
+");
+
+        DB::table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
+
+        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatus-laporan', ['datas' => $datas]);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatus-laporan');
     }
 }
