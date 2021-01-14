@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENGELUARAN;
 
 use App\Http\Controllers\Connection;
 use Carbon\Carbon;
+use Dompdf\Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -48,10 +49,10 @@ class InputController extends Controller
         $status = '';
 
         $model = "*TAMBAH*";
-        DB::Raw('delete from tbtr_usul_returlebih
-					where not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc)
-				and usl_status <> \'SUDAH CETAK NOTA\';');
-
+//        DB::select("delete from tbtr_usul_returlebih where usl_status <> 'SUDAH CETAK NOTA' and not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc) ");
+        DB::table('tbtr_usul_returlebih')
+            ->whereRaw('usl_status <> \'SUDAH CETAK NOTA\' and not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc)')
+            ->delete();
         $count = DB::table('tbtr_usul_returlebih')
             ->where('usl_status', '!=', 'SUDAH CETAK NOTA')
             ->count();
@@ -329,13 +330,13 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
         $errm = '';
-//        $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
-//
-//        $exec = oci_parse($connect, "BEGIN  SP_FILLTEMPRETUR_164(:kodesup,:pkp,'9999999',:errm); END;"); //Procedure asli diganti ke varchar
-//        oci_bind_by_name($exec, ':kodesup', $result->sup_kodesupplier);
-//        oci_bind_by_name($exec, ':pkp', $result->sup_pkp);
-//        oci_bind_by_name($exec, ':errm', $errm, 200);
-//        oci_execute($exec);
+        $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+
+        $exec = oci_parse($connect, "BEGIN  SP_FILLTEMPRETUR_164(:kodesup,:pkp,'9999999',:errm); END;"); //Procedure asli diganti ke varchar
+        oci_bind_by_name($exec, ':kodesup', $result->sup_kodesupplier);
+        oci_bind_by_name($exec, ':pkp', $result->sup_pkp);
+        oci_bind_by_name($exec, ':errm', $errm, 200);
+        oci_execute($exec);
 //        dd($errm);
 
         //    -->>> alert untuk PLu BKP yg belum keluar tax3 nya <<<--
@@ -575,6 +576,7 @@ class InputController extends Controller
         $trbo_discrph = '';
         $datas = [];
 
+        $ppn = 0;
         $trbo_prdcd = '';
         $desk = '';
         $satuan = '';
@@ -589,47 +591,52 @@ class InputController extends Controller
         $trbo_tglinv = '';
         $trbo_noreff = '';
 
-        $temp = DB::table('temp_urut_retur')
-            ->where('prdcd', '=', $plu)
-            ->count(1);
-
-        if ($temp > 0) {
-            $minmax = DB::table('temp_urut_retur')
-                ->selectRaw('MIN (TRN) min, MAX (TRN) max')
+        try {
+            $temp = DB::table('temp_urut_retur')
                 ->where('prdcd', '=', $plu)
-                ->first();
+                ->count(1);
 
-            $mintrn = $minmax->min;
-            $maxtrn = $minmax->max;
-        }
-        $ke = $mintrn;
+            if ($temp > 0) {
+                $minmax = DB::table('temp_urut_retur')
+                    ->selectRaw('MIN (TRN) min, MAX (TRN) max')
+                    ->where('prdcd', '=', $plu)
+                    ->first();
+
+                $mintrn = $minmax->min;
+                $maxtrn = $minmax->max;
+            }
+            $ke = $mintrn;
 //        DB::table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
 //            ->update(['nodoc_bo' => $nodoc]);
 
-        for ($i = $mintrn; $i < $maxtrn; $i++) {
-            $trbo = DB::table('tbtr_backoffice')
-                ->where('trbo_prdcd', '=', $plu)
-                ->where('trbo_typetrn', '=', 'K')
-                ->first();
-            $trbo_discrph = $trbo->trbo_discrph;
+            for ($i = $mintrn; $i < $maxtrn; $i++) {
+                $trbo = DB::table('tbtr_backoffice')
+                    ->where('trbo_prdcd', '=', $plu)
+                    ->where('trbo_typetrn', '=', 'K')
+                    ->first();
 
-            $res = DB::table('temp_urut_retur')
-                ->selectRaw("QTYPB, QTYHISTRETUR, NVL (NODOC_BPB, 'zz') NO_BPB, TGLINV, HRGSATUAN, NODOC_BO")
-                ->where('PRDCD', '=', $plu)
-                ->where('trn', '=', $ke)
-                ->first();
-            $qty_pb = $res->qtypb;
-            $qty_histretur = $res->qtyhistretur;
-            $no_bpb = $res->no_bpb;
-            $tgl_fps = $res->tglinv;
-            $hrg_satuan = $res->hrgsatuan;
-            $no_doc = $res->nodoc_bo;
-            if ($qty_pb > $qty_histretur || $ke == $maxtrn) {
+                $trbo_discrph = 0;
+                if ($trbo) {
+                    $trbo_discrph = $trbo->trbo_discrph;
+                }
 
-                DB::Connection('simsmg')->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
+                $res = DB::table('temp_urut_retur')
+                    ->selectRaw("QTYPB, QTYHISTRETUR, NVL (NODOC_BPB, 'zz') NO_BPB, TGLINV, HRGSATUAN, NODOC_BO")
+                    ->where('PRDCD', '=', $plu)
+                    ->where('trn', '=', $ke)
+                    ->first();
+                $qty_pb = $res->qtypb;
+                $qty_histretur = $res->qtyhistretur;
+                $no_bpb = $res->no_bpb;
+                $tgl_fps = $res->tglinv;
+                $hrg_satuan = $res->hrgsatuan;
+                $no_doc = $res->nodoc_bo;
+                if ($qty_pb > $qty_histretur || $ke == $maxtrn) {
 
-                $trbo_prdcd = $plu;
-                $res = DB::Connection('simsmg')->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
+                    DB::Connection('simsmg')->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
+
+                    $trbo_prdcd = $plu;
+                    $res = DB::Connection('simsmg')->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
                    prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb
               from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
               where prd_prdcd = st_prdcd(+)
@@ -638,133 +645,150 @@ class InputController extends Controller
                 and prd_prdcd = prdcd
                 and nvl(nodoc_bpb, 'zz') = " . $no_bpb);
 
-                $res = $res[0];
-                $deskripsi = $res->prd_deskripsipanjang;
-                $desk = $res->prd_deskripsipendek;
-                $frac = $res->frac;
-                $bkp = $res->prd_flagbkp1;
-                $acostprd = $res->prd_avgcost;
-                $acostst = $res->st_avgcost;
-                $trbo_posqty = $res->st_saldoakhir;
-                $trbo_hrgsatuan = $res->hrgsatuan;
-                $max_qty = $res->qtypb;
+                    $res = $res[0];
+                    $deskripsi = $res->prd_deskripsipanjang;
+                    $desk = $res->prd_deskripsipendek;
+                    $frac = $res->frac;
+                    $bkp = $res->prd_flagbkp1;
+                    $acostprd = $res->prd_avgcost;
+                    $acostst = $res->st_avgcost;
+                    $trbo_posqty = $res->st_saldoakhir;
+                    $trbo_hrgsatuan = $res->hrgsatuan;
+                    $max_qty = $res->qtypb;
 
 //                --++get unit from mstran btb
-                $temp = DB::table('tbtr_mstran_btb')
-                    ->where('btb_prdcd', '=', $plu)
-                    ->where('btb_nodoc', '=', $no_bpb)
-                    ->count(1);
-
-                if ($temp > 0) {
-                    $unit = DB::table('tbtr_mstran_btb')
-                        ->select('btb_unit')
+                    $temp = DB::table('tbtr_mstran_btb')
                         ->where('btb_prdcd', '=', $plu)
                         ->where('btb_nodoc', '=', $no_bpb)
+                        ->count(1);
+
+                    if ($temp > 0) {
+                        $unit = DB::table('tbtr_mstran_btb')
+                            ->select('btb_unit')
+                            ->where('btb_prdcd', '=', $plu)
+                            ->where('btb_nodoc', '=', $no_bpb)
+                            ->first();
+                        $unit = $unit->btb_unit;
+                    }
+                    $satuan = $unit . '/' . $frac;
+
+                    $trbo_qty = db::table('temp_urut_retur')
+                        ->select('qtyretur')
+                        ->where('prdcd', '=', $plu)
+                        ->where('trn', '=', $ke)
                         ->first();
-                    $unit = $unit->btb_unit;
-                }
-                $satuan = $unit . '/' . $frac;
-
-                $trbo_qty = db::table('temp_urut_retur')
-                    ->select('qtyretur')
-                    ->where('prdcd', '=', $plu)
-                    ->where('trn', '=', $ke)
-                    ->first();
-                $trbo_qty = $trbo_qty->qtyretur;
-                if ($unit == 'KG') {
-                    $frac = 1;
-                }
-                $qtyctn = intval($trbo_qty / $frac);
-                $qtypcs = $trbo_qty % $frac;
+                    $trbo_qty = $trbo_qty->qtyretur;
+                    if ($unit == 'KG') {
+                        $frac = 1;
+                    }
+                    $qtyctn = intval($trbo_qty / $frac);
+                    $qtypcs = $trbo_qty % $frac;
 
 
-                if ($acostst == '' || $acostst == 0) {
-                    $trbo_averagecost = $acostprd;
-                } else {
-                    $trbo_averagecost = $acostst * $frac;
-                }
+                    if ($acostst == '' || $acostst == 0) {
+                        $trbo_averagecost = $acostprd;
+                    } else {
+                        $trbo_averagecost = $acostst * $frac;
+                    }
 
 //            ---** hitung ppn ** ---
-                if ($pkp == 'y' && $bkp == 'y') {
-                    $ppn = 10;
+                    if ($pkp == 'Y' && $bkp == 'Y') {
+                        $ppn = 10;
+                    } else {
+                        $ppn = 0;
+                    }
+
+                    $temp = DB::table('temp_urut_retur')
+                        ->selectRaw('istype, invno, tglinv, qtypb, hrgsatuan, nodoc_bpb, nodoc_bo')
+                        ->where('prdcd', '=', $plu)
+                        ->where('trn', '=', $ke)
+                        ->first();
+
+                    $trbo_istype = $temp->istype;
+                    $trbo_invno = $temp->invno;
+                    $trbo_tglinv = $temp->tglinv;
+                    $max_qty = $temp->qtypb;
+                    $trbo_hrgsatuan = $temp->hrgsatuan;
+                    $trbo_noreff = $temp->nodoc_bpb;
+                    $trbo_nodo = $temp->nodoc_bo;
+
+                    if ($trbo_invno == '' && $trbo_noreff != '') {
+                        $message = 'no.faktur pajak untuk btb ' . $trbo_noreff . ' tidak ditemukan';
+                        $status = 'warning';
+                        return compact(['message', 'status']);
+                    }
+
+                    $trbo_discrph = DB::table('temp_urut_retur')
+                        ->selectRaw('(discrphperpcs) * ((' . $qtyctn . ' * ' . $frac . ') + ' . $qtypcs . ') discrph')
+                        ->where('prdcd', '=', $plu)
+                        ->whereRaw("nvl(nodoc_bpb, 'zz') = nvl(" . $trbo_noreff . ", 'zz')")
+                        ->first();
+
+                    $trbo_discrph = $trbo_discrph->discrph;
+
+                }
+
+                $temp1 = 0;
+                if ($ke == $maxtrn) {
+                    $temp1 = $qty;
                 } else {
-                    $ppn = 0;
+                    if (($qty_pb - $qty_histretur) < 0) {
+                        $temp1 = 0;
+                    } else {
+                        $temp1 = ($qty_pb - $qty_histretur);
+                    }
+                }
+                $qty = $qty - $temp1;
+
+//            VALIDATE_ITEM
+
+                $trbo_gross = ($qtyctn * $trbo_hrgsatuan) + (($trbo_hrgsatuan / $frac) * $qtypcs);
+
+                $trbo_discper = ($trbo_discrph / $trbo_gross) * 100;
+
+                if ($trbo_discper > 0) {
+                    $trbo_discrph = ($trbo_gross * $trbo_discper) / 100;
                 }
 
-                $temp = DB::table('temp_urut_retur')
-                    ->selectRaw('istype, invno, tglinv, qtypb, hrgsatuan, nodoc_bpb, nodoc_bo')
-                    ->where('prdcd', '=', $plu)
-                    ->where('trn', '=', $ke)
-                    ->first();
+                $trbo_ppnrph = (($trbo_gross - $trbo_discrph) * $ppn) / 100;
 
-                $trbo_istype = $temp->istype;
-                $trbo_invno = $temp->invno;
-                $trbo_tglinv = $temp->tglinv;
-                $max_qty = $temp->qtypb;
-                $trbo_hrgsatuan = $temp->hrgsatuan;
-                $trbo_noreff = $temp->nodoc_bpb;
-                $trbo_nodo = $temp->nodoc_bo;
 
-                if ($trbo_invno == '' && $trbo_noreff != '') {
-                    $message = 'no.faktur pajak untuk btb ' . $trbo_noreff . ' tidak ditemukan';
-                    $status = 'warning';
-                    return compact(['message', 'status']);
+                $ke = $ke + 1;
+//            $trbo_discper = ($trbo_discrph / $trbo->trbo_gross) * 100;
+
+                if ($qty_pb > $qty_histretur) {
+                    $data = (object)'';
+
+                    $data->trbo_prdcd = $trbo->trbo_prdcd;
+                    $data->desk = $desk;
+                    $data->deskripsi = $deskripsi;
+                    $data->satuan = $satuan;
+                    $data->bkp = $bkp;
+                    $data->trbo_posqty = $trbo_posqty;
+                    $data->trbo_hrgsatuan = $trbo_hrgsatuan;
+                    $data->qtyctn = $qtyctn;
+                    $data->qtypcs = $qtypcs;
+                    $data->trbo_gross = $trbo_gross;
+                    $data->discper = $trbo_discper;
+                    $data->trbo_discrph = $trbo_discrph;
+                    $data->trbo_ppnrph = $trbo_ppnrph;
+                    $data->trbo_istype = $trbo_istype;
+                    $data->trbo_inv = $trbo_invno;
+                    $data->trbo_tgl = $trbo_tglinv;
+                    $data->trbo_noreff = $trbo_noreff;
+                    $data->trbo_keterangan = $trbo->trbo_keterangan;
+                    array_push($datas, $data);
                 }
-
-                $trbo_discrph = DB::table('temp_urut_retur')
-                    ->selectRaw('(discrphperpcs) * ((' . $qtyctn . ' * ' . $frac . ') + ' . $qtypcs . ') discrph')
-                    ->where('prdcd', '=', $plu)
-                    ->whereRaw("nvl(nodoc_bpb, 'zz') = nvl(" . $trbo_noreff . ", 'zz')")
-                    ->first();
-
-                $trbo_discrph = $trbo_discrph->discrph;
-
-            }
-
-            $temp1 = 0;
-            if ($ke == $maxtrn) {
-                $temp1 = $qty;
-            } else {
-                if (($qty_pb - $qty_histretur) < 0) {
-                    $temp1 = 0;
-                } else {
-                    $temp1 = ($qty_pb - $qty_histretur);
+                if ($qty <= 0) {
+                    break;
                 }
             }
-            $qty = $qty - $temp1;
-
-            $ke = $ke + 1;
-            $trbo_discper = ($trbo_discrph / $trbo->trbo_gross) * 100;
-
-            if ($qty_pb > $qty_histretur) {
-                $data = (object)'';
-
-                $data->trbo_prdcd = $trbo->trbo_prdcd;
-                $data->desk = $desk;
-                $data->deskripsi = $deskripsi;
-                $data->satuan = $satuan;
-                $data->bkp = $bkp;
-                $data->trbo_posqty = $trbo_posqty;
-                $data->trbo_hrgsatuan = $trbo_hrgsatuan;
-                $data->qtyctn = $qtyctn;
-                $data->qtypcs = $qtypcs;
-                $data->trbo_gross = $trbo->trbo_gross;
-                $data->discper = $trbo_discper;
-                $data->trbo_discrph = $trbo_discrph;
-                $data->trbo_ppnrph = $trbo->trbo_ppnrph;
-                $data->trbo_istype = $trbo_istype;
-                $data->trbo_inv = $trbo_invno;
-                $data->trbo_tgl = $trbo_tglinv;
-                $data->trbo_noreff = $trbo_noreff;
-                $data->trbo_keterangan = $trbo->trbo_keterangan;
-                array_push($datas, $data);
-            }
-            if ($qty <= 0) {
-                break;
-            }
+        } catch (Exception $exception) {
+            return $exception;
         }
         return compact(['datas']);
     }
+
 
     public function ceknull(string $value, string $ret)
     {
@@ -777,7 +801,7 @@ class InputController extends Controller
     public function delete(Request $request)
     {
         $nodoc = $request->nodoc;
-        DB::table('tbTr_BackOffice')
+        DB::table('TBTR_BACKOFFICE')
             ->where('TRBO_NODOC', '=', $nodoc)
             ->where('TRBO_TYPETRN', '=', 'K')
             ->delete();
@@ -786,158 +810,428 @@ class InputController extends Controller
         return compact(['message', 'status']);
     }
 
-//    public function cekPCS(Request $request)
-//    {
-//        $message = '';
-//        $status = '';
-//
-//        $plu = $request->plu;
-//        $kdsup = $request->kdsup;
-//        $model = $request->model;
-//        $pcs = $request->pcs;
-//        $ctn = $request->ctn;
-//        $frac = $request->frac;
-//        $stock = $request->stock;
-//        $nodoc = $request->nodoc;
-//        $tgldoc = $request->tgldoc;
-//        $bkp = $request->bkp;
-//        $pkp = $request->pkp;
-//
-//        //UI
-//        if ($model == 'KOREKSI') {
-//            return;
-//        }
-//
-//        //UI
-//        if (($ctn * $frac) + $pcs <= 0) {
-//            $message = 'QTYB + QTYK <= 0';
-//            $status = 'error';
-//            return compact(['message', 'status']);
-//        } else {
-//            if ($stock < ($ctn * $frac) + $pcs) {
-//                $inputan = ($ctn * $frac) + $pcs;
-//                $message = 'Stock Barang Retur (' . $stock . ') < INPUTAN (' . $inputan . ') [set ctn pcs 0]';
-//                $status = 'error';
-//                return compact(['message', 'status']);
-//            }
-////            get from db step 1
-//            $qtypb = DB::table('TEMP_URUT_RETUR')
-//                ->selectRaw('SUM (qtypb - (qtyretur + qtyhistretur)) AS qtypb')
-//                ->where('prdcd', '=', $plu)
-//                ->first();
-//
-//            $qtypb = $qtypb->qtypb;
-//
-//            $qtyretur = DB::table('TEMP_URUT_RETUR')
-//                ->selectRaw('SUM (qtypb - qtyhistretur) AS qtytretur')
-//                ->where('prdcd', '=', $plu)
-//                ->first();
-//
-//            $qtyretur = $qtyretur->qtyretur;
-//
-//            $qtysisa = DB::CONNECTION('simsmg')
-//                ->selectRaw('SELECT qtybpb-qtyhretur qtysisa
-//			  FROM (SELECT nvl(SUM (btb_qty),0) qtybpb
-//			          FROM TBTR_MSTRAN_BTB
-//			         WHERE BTB_ISTYPE || BTB_INVNO IS NOT NULL
-//                        AND BTB_KODESUPPLIER = :supplier
-//                        AND btb_prdcd = ' . $plu . '),
-//			       (SELECT nvl(SUM (
-//			                  CASE
-//			                     WHEN hsr_qtyretur > hsr_qtypb THEN hsr_qtypb
-//			                     ELSE hsr_qtyretur
-//			                  END),0)
-//			                  qtyhretur
-//			          FROM tbhistory_retursupplier
-//			         WHERE hsr_KODESUPPLIER = ' . $kdsup . ' AND hsr_prdcd = ' . $plu . ')');
-////            end of step 1
-//
-//            // UI
-//            $inputan = ($ctn * $frac) + $pcs;
-//            if ($inputan > $qtyretur && $qtysisa > $qtyretur) {
-//                if ($inputan > $qtysisa) {
-//                    $message = 'qty PLU yang bisa diretur hanya ' . $qtysisa . ' [set ctn pcs 0]';
-//                    $status = 'info';
-//                    return compact(['message', 'status']);
-//                }
-//
-//                $message = 'Qty yang diretur ('
-//                    . $inputan
-//                    . ') tidak boleh lebih dari '
-//                    . $qtyretur
-//                    . ', untuk sisanya silahkan buat Struk Penjualan atau minta otorisasi Finance.'
-//                    . 'Proses untuk otorisasi Finance?';
-//                $status = 'question';
-//
-//                $confirm = 'OK';
-//                if ($confirm == 'OK') {
-//                    if ($inputan > $qtysisa) {
-//                        $inputan = $qtysisa;
-//                        $message = 'Qty yang bisa diretur hanya '
-//                            . $qtysisa;
-//                        $status = 'warning';
-//                    }
-////                    get data from db step 2
-//                    $temp = DB::table('tbtr_usul_returlebih')
-//                        ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
-//                        ->where('usl_trbo_nodoc', '=', $nodoc)
-//                        ->where('usl_prdcd', '=', $plu)
-//                        ->count();
-//                    if ($temp == 0) {
-//                        DB::table('tbtr_usul_returlebih')->insert(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_kodesupplier' => $kdsup, 'usl_prdcd' => $plu, 'usl_flagbkp' => $bkp, 'usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_status' => 'USULAN', 'usl_create_by' => $_SESSION['usid'], 'usl_create_dt' => Carbon::now()]);
-//                    } else {
-//                        DB::table('tbtr_usul_returlebih')->where(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_prdcd' => $plu])
-//                            ->update(['usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_modify_by' => $_SESSION['usid'], 'usl_modify_dt' => Carbon::now()]);
-//                    }
-////                    end of step 2
-//                    $ctn = 0;
-//                    $pcs = $qtyretur;
-//                    $message = 'PLU masuk usulan retur, qty yang ditampilkan, hanya qty yang bisa diretur. Bila ingin retur melebihi batas, masuk ke menu USULAN RETUR';
-//                    $status = 'info';
-//                } else {
-//                    $pcs = 0;
-//                    $ctn = 0;
-//                    return compact(['message', 'status']);
-//                }
-//            } else {
-////                step 3
-//                $temp = DB::table('tbtr_usul_returlebih')
-//                    ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
-//                    ->where('usl_trbo_nodoc', '=', $nodoc)
-//                    ->where('usl_prdcd', '=', $plu)
-//                    ->count();
-////                end of step 3
-//                if ($temp > 0) {
-//                    $message = 'Hapus usulan retur lebih?';
-//                    $status = 'question';
-//                    $confirm = 'OK';
-//                    if ($confirm == 'OK') {
-////                        step4
-//                        DB::table('tbtr_usul_returlebih')
-//                            ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
-//                            ->where('usl_trbo_nodoc', '=', $nodoc)
-//                            ->where('usl_prdcd', '=', $plu)
-//                            ->delete();
-////                        end of step 4
-//                    }
-//
-//                }
-//            }
-//            if ($inputan > $qtyretur && $qtysisa == $qtyretur) {
-//                $ctn = 0;
-//                $pcs = $qtyretur;
-//                $message = 'qty plu yang bisa diretur hanya ' . $qtyretur;
-//                $status = 'info';
-//                return compact(['message', 'status']);
-//            }
-//            if ($model == '* tambah *' || $model == '* koreksi *') {
-//                Self::proses($plu, ($ctn * $frac) + $pcs);
-//            }
-//
-//        }
-//
-//
-//        return compact(['result', 'message', 'status']);
-//    }
+    public function save(Request $request)
+    {
+
+        $trbo_kodeigr = $_SESSION['kdigr'];
+        $trbo_typetrn = 'K';
+        $trbo_flagdoc = 0;
+        $trbo_create_by = $_SESSION['usid'];
+        $trbo_create_dt = Carbon::now()->format('Y-m-d');
+        DB::beginTransaction();
+        foreach ($request->datas as $data)
+            $temp = DB::table('TBTR_BACKOFFICE')
+                ->where([
+                    'trbo_kodeigr' => $trbo_kodeigr,
+                    'trbo_nodoc' => $data['nodoc'],
+                    'trbo_prdcd' => $data['plu']
+                ])
+                ->count();
+        $avg_cost = DB::table('tbmaster_prodmast')
+            ->select('prd_avgcost')
+            ->where('prd_prdcd', '=', $data['plu'])
+            ->first();
+//        dd( Carbon::parse($data['tgldoc']));
+        $avg_cost = $avg_cost->prd_avgcost;
+        if ($temp > 0) {
+            DB::table('TBTR_BACKOFFICE')
+                ->where([
+                    'trbo_kodeigr' => $trbo_kodeigr,
+                    'trbo_nodoc' => $data['nodoc'],
+                    'trbo_prdcd' => $data['plu']
+                ])
+                ->update([
+                    'trbo_typetrn' => $trbo_typetrn,
+                    'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+                    'trbo_noreff' => $data['noreff'],
+                    'trbo_istype' => $data['istype'],
+                    'trbo_invno' => $data['invno'],
+                    'trbo_tglinv' => $data['tglinv'],
+                    'trbo_kodesupplier' => $data['kdsup'],
+                    'trbo_qty' => $data['qty'],
+                    'trbo_hrgsatuan' => $data['hargasatuan'],
+                    'trbo_persendisc1' => $data['persendisc'],
+                    'trbo_gross' => $data['gross'],
+                    'trbo_discrph' => $data['discrph'],
+                    'trbo_ppnrph' => $data['ppnrph'],
+                    'trbo_averagecost' => $avg_cost,
+                    'trbo_posqty' => $data['posqty'],
+                    'trbo_flagdoc' => $trbo_flagdoc,
+                    'trbo_create_by' => $trbo_create_by,
+                    'trbo_create_dt' => $trbo_create_dt
+                ]);
+        } else {
+            DB::table('TBTR_BACKOFFICE')->insert([
+                'trbo_kodeigr' => $trbo_kodeigr,
+                'trbo_nodoc' => $data['nodoc'],
+                'trbo_prdcd' => $data['plu'],
+                'trbo_typetrn' => $trbo_typetrn,
+                'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+                'trbo_noreff' => $data['noreff'],
+                'trbo_istype' => $data['istype'],
+                'trbo_invno' => $data['invno'],
+                'trbo_tglinv' => $data['tglinv'],
+                'trbo_kodesupplier' => $data['kdsup'],
+                'trbo_qty' => $data['qty'],
+                'trbo_hrgsatuan' => $data['hargasatuan'],
+                'trbo_persendisc1' => $data['persendisc'],
+                'trbo_gross' => $data['gross'],
+                'trbo_discrph' => $data['discrph'],
+                'trbo_ppnrph' => $data['ppnrph'],
+                'trbo_averagecost' => $avg_cost,
+                'trbo_posqty' => $data['posqty'],
+                'trbo_flagdoc' => $trbo_flagdoc,
+                'trbo_create_by' => $trbo_create_by,
+                'trbo_create_dt' => $trbo_create_dt
+            ]);
+        }
+        DB::commit();
+
+        $message = 'Nodoc ' . $request->datas[0]['nodoc'] . ' Berhasil di simpan';
+        $status = 'success';
+        return compact(['message', 'status']);
+    }
+
+    public function getDataUsulan(Request $request)
+    {
+        $nodoc = $request->nodoc;
+        $kdsup = $request->kdsup;
+
+        $temp = DB::table('tbtr_usul_returlebih')
+            ->where('usl_trbo_nodoc', '=', $nodoc)
+            ->where('usl_kodesupplier', '=', $kdsup)
+            ->count();
+
+        if ($temp == 0) {
+            $message = 'Tidak ada usulan retur lebih untuk dokumen ' . $nodoc;
+            $status = 'info';
+            return compact(['message', 'status']);
+        }
+
+        $dataUsulan = DB::table('tbtr_usul_returlebih')
+            ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
+            ->selectRaw('usl_kodeigr, usl_trbo_nodoc, usl_kodesupplier, usl_prdcd, prd_deskripsipanjang,
+                        usl_qty_retur, usl_qty_sisaretur, usl_status')
+            ->where('usl_trbo_nodoc', '=', $nodoc)
+            ->where('usl_kodesupplier', '=', $kdsup)
+            ->get();
+        $usul_status = $dataUsulan[0]->usl_status;
+
+        if ($usul_status == 'USULAN' || $usul_status == 'MENUNGGU KONFIRMASI') {
+            $set_btn_send = 1;
+        } else {
+            $set_btn_send = 0;
+        }
+
+        if ($usul_status == 'MENUNGGU KONFIRMASI') {
+            $set_input_text = 1;
+        } else {
+            $set_input_text = 1;
+        }
+
+        return compact(['dataUsulan']);
+    }
+
+    public function sendUsulan(Request $request)
+    {
+
+//	OTP_FIN;
+        $ip = (int)(substr($request->nodoc, 1, 3));
+        $doc = (int)(substr($request->nodoc, 5));
+        $nodoc = $doc;
+        $kdigr = (int)($_SESSION['kdigr']);
+        $select = DB::Select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
+        $kdsup = (int)$select[0]->ret;
+        $splitted_tgldoc = explode('/', $request->tgldoc);
+        $dd = (int)$splitted_tgldoc[0];
+        $mm = (int)$splitted_tgldoc[1];
+
+        $message = '';
+        $status = '';
+
+//        --DIGIT1
+        $digit1 = $kdigr * $ip * $dd * $kdsup;
+        $digit1 = floor(sqrt($digit1));
+        $digit1 = Self::f_sum_digits($digit1);
+        $digit1 = substr(($digit1), -1, 1);
+
+//   --DIGIT2
+        $digit2 = $kdigr * $doc * $mm * $kdsup;
+        $digit2 = floor(sqrt($digit2));
+        $digit2 = Self::f_sum_digits($digit2);
+        $digit2 = substr(($digit2), -1, 1);
+
+//        --digit3
+        $digit3 = $kdigr * $kdsup * ($dd + $mm);
+        $digit3 = floor(sqrt($digit3));
+        $digit3 = Self::f_sum_digits($digit3);
+        $digit3 = substr(($digit3), -1, 1);
+
+//   --digit4
+        $digit4 = $kdigr * $ip * $doc * $kdsup;
+        $digit4 = floor(sqrt($digit4));
+        $digit4 = Self::f_sum_digits($digit4);
+        $digit4 = substr(($digit4), -1, 1);
+
+//   --digit5
+        $digit5 = $kdigr * $doc * $kdsup;
+        $digit5 = floor(sqrt($digit5));
+        $digit5 = Self::f_sum_digits($digit5);
+        $digit5 = substr(($digit5), -1, 1);
+
+//   --digit6
+        $digit6 = $kdigr * $ip * $kdsup;
+        $digit6 = floor(sqrt($digit6));
+        $digit6 = Self::f_sum_digits($digit6);
+        $digit6 = substr(($digit6), -1, 1);
+
+//   --otp
+        $otp = $digit1 . $digit2 . $digit3 . $digit4 . $digit5 . $digit6;
+
+        $nodoc = $request->nodoc;
+        $kdsup = $request->kdsup;
+//        $tgldoc = date("m/d/Y", strtotime($request->tgldoc));
+        $tgldoc = $request->tgldoc;
+        $kdigr = $_SESSION['kdigr'];
+        $errm = '';
+        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $s = oci_parse($c, "BEGIN sp_usulanretur(:kodeigr,:nodoc,to_date('" . $tgldoc . "','dd/mm/yyyy'),:supplier,:otp,:userid,:errm); END;");
+        oci_bind_by_name($s, ':kodeigr', $kdigr);
+        oci_bind_by_name($s, ':nodoc', $nodoc);
+//        oci_bind_by_name($s, ':tgldoc', $tgldoc);
+        oci_bind_by_name($s, ':supplier', $kdsup);
+        oci_bind_by_name($s, ':otp', $otp);
+        oci_bind_by_name($s, ':userid', $_SESSION['usid']);
+        oci_bind_by_name($s, ':errm', $errm, 200);
+
+        oci_execute($s);
+
+        if ($errm != '') {
+            $message = $errm;
+            $status = 'error';
+            return compact(['message', 'status']);
+        } else {
+            $message = 'usulan retur sudah dikirm ke email finance';
+            $status = 'info';
+        }
+
+        $status_usul = DB::table('tbtr_usul_returlebih')
+            ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
+            ->select('usl_status')
+            ->where('usl_trbo_nodoc', '=', $nodoc)
+            ->where('usl_kodesupplier', '=', $kdsup)
+            ->distinct()
+            ->first();
+
+        $status_usul = $status_usul->usl_status;
+        return compact(['message', 'status', 'status_usul']);
+    }
+
+    public function f_sum_digits($num)
+    {
+        $sum = 0;
+        $rem = 0;
+        for ($i = 0; $i <= strlen($num); $i++) {
+            $rem = $num % 10;
+            $sum = $sum + $rem;
+            $num = $num / 10;
+        }
+        return $sum;
+    }
+
+    public function cekOTP(Request $request)
+    {
+        $datas = $request->datas;
+        $datah = $request->datah;
+        $datad = $request->datad;
+
+        $ip = (int)(substr($request->nodoc, 1, 3));
+        $doc = (int)(substr($request->nodoc, 5));
+        $nodoc = $doc;
+        $kdigr = (int)($_SESSION['kdigr']);
+        $select = DB::Select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
+        $kdsup = (int)$select[0]->ret;
+        $splitted_tgldoc = explode('/', $request->tgldoc);
+        $dd = (int)$splitted_tgldoc[0];
+        $mm = (int)$splitted_tgldoc[1];
+
+        $message = '';
+        $status = '';
+
+//        --DIGIT1
+        $digit1 = $kdigr * $ip * $dd * $kdsup;
+        $digit1 = floor(sqrt($digit1));
+        $digit1 = Self::f_sum_digits($digit1);
+        $digit1 = substr(($digit1), -1, 1);
+
+//   --DIGIT2
+        $digit2 = $kdigr * $doc * $mm * $kdsup;
+        $digit2 = floor(sqrt($digit2));
+        $digit2 = Self::f_sum_digits($digit2);
+        $digit2 = substr(($digit2), -1, 1);
+
+//        --digit3
+        $digit3 = $kdigr * $kdsup * ($dd + $mm);
+        $digit3 = floor(sqrt($digit3));
+        $digit3 = Self::f_sum_digits($digit3);
+        $digit3 = substr(($digit3), -1, 1);
+
+//   --digit4
+        $digit4 = $kdigr * $ip * $doc * $kdsup;
+        $digit4 = floor(sqrt($digit4));
+        $digit4 = Self::f_sum_digits($digit4);
+        $digit4 = substr(($digit4), -1, 1);
+
+//   --digit5
+        $digit5 = $kdigr * $doc * $kdsup;
+        $digit5 = floor(sqrt($digit5));
+        $digit5 = Self::f_sum_digits($digit5);
+        $digit5 = substr(($digit5), -1, 1);
+
+//   --digit6
+        $digit6 = $kdigr * $ip * $kdsup;
+        $digit6 = floor(sqrt($digit6));
+        $digit6 = Self::f_sum_digits($digit6);
+        $digit6 = substr(($digit6), -1, 1);
+
+//   --otp
+        $otp = $digit1 . $digit2 . $digit3 . $digit4 . $digit5 . $digit6;
+        if ($request->otp == $otp) {
+            $usuls = DB::table('tbtr_usul_returlebih')
+                ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
+                ->selectRaw('usl_prdcd, usl_qty_retur')
+                ->where('usl_trbo_nodoc', '=', $request->nodoc)
+                ->get();
+
+            $datahke = 0;
+            foreach ($usuls as $usul) {
+//                [[proses usulan]]
+                while (1) {
+                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd)
+                        $datah[$datahke]['ctn'] = round($usul->usl_qty_retur / $datah[$datahke]['frac']);
+                    $datah[$datahke]['pcs'] = $usul->usl_qty_retur % $datah[$datahke]['frac'];
+
+                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd) {
+                        break;
+                    }
+                    $datahke++;
+                }
+
+//    [HAPUS]
+                $lastrecord = 0;
+                if (isset($datad)) {
+                    $lastrecord = sizeof($datad) - 1;
+                }
+
+                $j = 0;
+                for ($i = 1; $i < $lastrecord; $i++) {
+                    for ($j = 1; $j < $lastrecord; $j++) {
+                        if ($datad[$j]->plu == $datah[$datahke]['plu']) {
+                            array_splice($datad, $j, 1);
+                        }
+                    }
+                }
+
+                DB::Select('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
+
+                //====
+
+                $PLU = $usul->usl_prdcd;
+
+                $data_usuls = DB::table('temp_usul_retur')
+                    ->where('prdcd', '=', $PLU)
+                    ->orderBy('trn')
+                    ->get();
+
+                foreach ($data_usuls as $data_usul) {
+                    $data = (object)'';
+
+                    $NO_BPB = $data_usul->nodoc_bpb;
+                    $data->prdcd = $PLU;
+
+                    $res = DB::select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
+
+                    $data->deskripsi = $res[0]->prd_deskripsipanjang;
+                    $data->desk = $res[0]->prd_deskripsipendek;
+                    $data->frac = $res[0]->frac;
+                    $data->bkp = $res[0]->prd_flagbkp1;
+                    $data->acostprd = $res[0]->prd_avgcost;
+                    $data->acostst = $res[0]->st_avgcost;
+                    $data->trbo_posqty = $res[0]->st_saldoakhir;
+                    $data->trbo_hrgsatuan = $res[0]->hrgsatuan;
+                    $data->max_qty = $res[0]->qtypb;
+//            --++Get Unit From mstran BTB
+                    $temp = DB::table('tbtr_mstran_btb')
+                        ->select('btb_unit')
+                        ->where('btb_prdcd', '=', $PLU)
+                        ->where('btb_nodoc', '=', $NO_BPB)
+                        ->count();
+
+                    if ($temp > 0) {
+                        $unit = DB::table('tbtr_mstran_btb')
+                            ->select('btb_unit')
+                            ->where('btb_prdcd', '=', $PLU)
+                            ->where('btb_nodoc', '=', $NO_BPB)
+                            ->first();
+                        $data->unit = $unit->btb_unit;
+                    }
+
+
+//            ----Get Unit From mstran BTB
+
+                    $data->satuan = $data->unit . '/' . TO_CHAR($data->frac);
+                    $data->trbo_qty = $data_usul->qtyretur;
+                    $data->qtyctn = round($data->trbo_qty / $data->frac);
+                    $data->qtypcs = $data->trbo_qty % $data->frac;
+
+                    if ($data->acostst == '' || !isset($data->acostst) || $data->acostst == 0) {
+                        $data->trbo_averagecost = $data->acostprd;
+                    } else {
+                        $data->trbo_averagecost = $data->acostst * $data->frac;
+                    }
+
+//            ---** Hitung PPN ** ---
+                    if ($request->pkp == 'Y' AND $data->bkp == 'Y') {
+                        $data->ppn = 10;
+                    } else {
+                        $data->ppn = 0;
+                    }
+
+                    $data->trbo_istype = $data_usul->istype;
+                    $data->trbo_invno = $data_usul->invno;
+                    $data->trbo_tglinv = $data_usul->tglinv;
+                    $data->max_qty = $data_usul->qtybpb;
+                    $data->trbo_hrgsatuan = $data_usul->hrgsatuan;
+                    $data->trbo_noreff = $data_usul->nodoc_bpb;
+                    $data->trbo_nodoc = $data_usul->nodoc_bo;
+
+
+                    if (!isset($data->trbo_invno) && isset($data->trbo_noreff)) {
+                        $message = 'No.Faktur Pajak Untuk BTB ' . $data->trbo_noreff . ' tidak ditemukan';
+                        $status = 'error';
+                    }
+
+
+                    $data->trbo_discrph = ($data_usul->disrphperpcs) * (($data->qtyctn * $data->frac) + $data->qtypcs);
+
+                    array_push($datad, $data);
+                }
+
+
+                DB::table('tbtr_usul_returlebih')
+                    ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
+                    ->where('usl_trbo_nodoc', '=', $request->nodoc)
+                    ->update(['usl_status' => 'USULAN DISETUJUI']);
+
+                $message = 'Kode OTP yang dimasukkan berhasil.';
+                $status = 'success';
+                return compact(['message', 'status', 'datah', 'datad']);
+            }
+        } else {
+            $message = 'Kode OTP yang dimasukkan salah, silahkan hubungi kembali finance HO';
+            $status = 'error';
+            return compact(['message', 'status']);
+        }
+    }
 
 }

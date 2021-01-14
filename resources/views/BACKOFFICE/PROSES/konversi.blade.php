@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','PENERIMAAN CABANG | INQUERY TRANSFER')
+@section('title','PROSES | KONVERSI ITEM PERISHABLE OLAHAN')
 
 @section('content')
 
@@ -84,7 +84,7 @@
                             </div>
                             <br>
                             <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                <thead>
+                                <thead class="thColor">
                                 <tr>
                                     <th width="20%">PLU Olahan</th>
                                     <th width="60%">Deskripsi</th>

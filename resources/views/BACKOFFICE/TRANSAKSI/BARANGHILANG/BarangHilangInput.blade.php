@@ -491,15 +491,15 @@
                                                 <td class="buttonInside" style="width: 7%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
                                                 </td>
-                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
-                                                <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ nvl(result[i].prd_unit, '') +` / `+ nvl(result[i].prd_frac, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ nvl(result[i].prd_kodetag, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ nvl(result[i].prd_flagbkp1, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
-                                                <td style="width: 8%"><input type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
+                                                <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ result[i].prd_kodetag +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ result[i].prd_flagbkp1 +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].trbo_stokqty +`"></td>
+                                                <td style="width: 8%"><input type="text" class="form-control hrgsatuan text-right" value="`+ convertToRupiah(result[i].trbo_hrgsatuan) +`"></td>
                                                 <td style="width: 5%"><input type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
                                                 <td style="width: 5%"><input type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ convertToRupiah(result[i].trbo_gross) +`"></td>
                                                 <td style="width: 15%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 
@@ -534,15 +534,15 @@
                                                 <td class="buttonInside" style="width: 7%">
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].trbo_prdcd +`">
                                                 </td>
-                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ nvl(result[i].prd_deskripsipendek, '') +`"></td>
-                                                <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ nvl(result[i].prd_unit, '') +` / `+ nvl(result[i].prd_frac, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ nvl(result[i].prd_kodetag, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ nvl(result[i].prd_flagbkp1, '') +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ nvl(result[i].trbo_stokqty, '') +`"></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control hrgsatuan text-right" value="`+ nvl(convertToRupiah(result[i].trbo_hrgsatuan), '') +`"></td>
+                                                <td style="width: 27%"><input disabled type="text" class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
+                                                <td style="width: 7%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control tag" value="`+ result[i].prd_kodetag +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control bkp" value="`+ result[i].prd_flagbkp1 +`"></td>
+                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].trbo_stokqty +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control hrgsatuan text-right" value="`+ convertToRupiah(result[i].trbo_hrgsatuan) +`"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control ctn text-right" value="` + Math.floor(qtyctn) +`" id="`+ i +`" onchange="qty(this.value,this.id,1)"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control pcs text-right" value="` + qtypcs +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ nvl(convertToRupiah(result[i].trbo_gross), '') +`"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control gross text-right" value="`+ convertToRupiah(result[i].trbo_gross) +`"></td>
                                                 <td style="width: 15%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 

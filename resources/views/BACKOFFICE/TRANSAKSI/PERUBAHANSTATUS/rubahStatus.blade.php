@@ -85,8 +85,8 @@
                                             <td style="width: 8%"><input disabled type="text" class="form-control satuan"></td>
                                             <td style="width: 6%"><input type="text" class="form-control pt text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td style="width: 6%"><input type="text" class="form-control rttg text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal()"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateTotal()"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
                                             <td style="width: 9%"><input disabled type="text" class="form-control price"></td>
                                             <td style="width: 9%"><input disabled type="text" class="form-control total text-right"></td>
                                         </tr>
@@ -219,12 +219,36 @@
             let total = 0;
             for(i = 0; i < $('.plu').length; i++){
                 if ($('.plu')[i].value != ''){
-                    let gross           = $('.total')[i].value;
+                    let gross = unconvertToRupiah($('.total')[i].value);
                     total = total + parseFloat(gross);
                 }
             }
-            total = total.toFixed(2);
-            $('#total').val(total);
+            //total = total.toFixed(2);
+            $('#total').val(convertToRupiah(total));
+        }
+
+        function calculateHarga(value, index) {
+            let satuan    = $('.satuan')[index].value;
+            let ctn     = $('.ctn')[index].value;
+            let pcs     = $('.pcs')[index].value;
+            let frac    = satuan.substr(satuan.indexOf('/')+1);
+            let price;
+            if(frac == 'KG'){
+                price   = parseFloat(unconvertToRupiah($('.price')[index].value))
+            }else{
+                price   = parseFloat(unconvertToRupiah($('.price')[index].value))/frac;
+            }
+            if($('.plu')[index].value != ''){
+                $('.total')[index].value = 0;
+                if(ctn != 0 || ctn != ''){
+                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat(ctn * price);
+                }
+                if(pcs != 0 || pcs != ''){
+                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat((pcs/frac) * price );
+                }
+                $('.total')[index].value = convertToRupiah($('.total')[index].value);
+            }
+            calculateTotal();
         }
 
         function tempTable(index) {
@@ -235,10 +259,10 @@
                                                 </td>
                                                 <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value=""></td>
                                                 <td style="width: 8%"><input disabled type="text" class="form-control satuan" value=""></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control pt text-right" value=""></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right" value=""></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal()"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal()"></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control pt text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                                <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
                                                 <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value=""></td>
                                                 <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value=""></td>
                                             </tr>`
@@ -298,6 +322,16 @@
             }
         })
 
+        $('#i_nosortir').keypress(function (e) {
+            if (e.which === 13) {
+                let val = this.value;
+
+                // Get Nmr SRT
+                chooseSrt(val);
+
+            }
+        })
+
         $('#searchModal').keypress(function (e) {
             if (e.which === 13) {
                 let idModal = $('#idModal').val();
@@ -307,6 +341,19 @@
                     searchNmrRSN(val)
                 } else {
                     searchPlu(idRow,val)
+                }
+            }
+        })
+
+        $('#searchModalSRT').keypress(function (e) {
+            if (e.which === 13) {
+                let idModalSRT = $('#idModalSRT').val();
+                let idRowSRT   = $('#idRowSRT').val();
+                let val = $('#searchModalSRT').val().toUpperCase();
+                if(idModalSRT === 'SRT'){
+                    searchNmrSRT(val)
+                } else {
+                    searchPlu(idRowSRT,val)
                 }
             }
         })
@@ -388,6 +435,33 @@
             }
         }
 
+        function searchNmrSRT(val) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrsrt',
+                type: 'post',
+                data: {
+                    val:val
+                },
+                success: function (result) {
+                    $('#modalThName1').text('NO.DOC');
+                    $('#modalThName2').text('TGL.DOC');
+                    $('#modalThName3').text('KETERANGAN');
+                    $('#modalThName4').text('PLU DI');
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
+                    }
+
+                    $('#idModalSRT').val('SRT')
+                    $('#modalHelpSRT').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
         function getNmrSRT(val) {
             $('#searchModalSRT').val('')
             if(tempSrt == null){
@@ -459,49 +533,18 @@
                         $('#i_nomordokumen').val(result[0].msth_nopo);
                         $('#i_tgldokumen').val(formatDate(result[0].msth_tgldoc));
                         $('#i_keterangan').val(result[0].msth_keterangan_header);
-                        $('#i_nosortir').val(result[0].srt_nosortir);
-                        $('#i_tglsortir').val(formatDate(result[0].srt_tglsortir));
-                        if(result[0].srt_gudangtoko == 'G'){
-                            $('#i_gudang').val('GUDANG')
-                        }else if(result[0].srt_gudangtoko == 'T'){
-                            $('#i_gudang').val('TOKO')
-                        }
+                        $('#i_nosortir').val(result[0].msth_nofaktur);
                         if (result[0].nota === 'Data Sudah Dicetak') {
                             $('#keterangan').val(result[0].nota);
-                            $('#addNewRow').attr('disabled', true);
+                            //$('#addNewRow').attr('disabled', true);
                         }else{
                             $('#keterangan').val('*KOREKSI*');
-                            $('#addNewRow').attr( 'disabled', false);
+                            //$('#addNewRow').attr( 'disabled', false);
                         }
-                        $('.baris').remove();
-                        for (i = 0; i< result.length; i++) {
-                            let tempPT = "";
-                            let tempRT = "";
-                            if(result[i].prd_perlakuanbarang === "PT"){
-                                tempPT = "PT"
-                            }
-                            else{
-                                tempRT = result[i].prd_perlakuanbarang;
-                            }
-                            let temp =  ` <tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 8%">
-                                                <input disabled type="text" class="form-control plu" value="`+ result[i].mstd_prdcd +`">
-                                            </td>
-                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                            <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
-                                            <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
-                                            <td style="width: 6%"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`"></td>
-                                            <td style="width: 6%"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].mstd_hrgsatuan) +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + result[i].mstd_gross +`"></td>
-                                        </tr>`
-
-                            $('#tbody').append(temp);
-                            }
+                        chooseSrt("fromRsn");
                         }
                     $('#modal-loader').modal('hide');
-                    calculateTotal();
+                    //calculateTotal();
                 }, error: function (e) {
                     alert('error');
                     $('#modal-loader').modal('hide');
@@ -511,6 +554,11 @@
         }
 
         function chooseSrt(kode) {
+            let fromRsn = false;
+            if(kode == "fromRsn"){
+                kode = $('#i_nosortir').val();
+                fromRsn = true;
+            }
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/choosesrt',
@@ -522,12 +570,94 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
+                    //from Rsn
+                    if(fromRsn){
+                        if(result.length === 0){
+                            swal('', "Nomor Dokumen Sortir Tidak Ada !!", 'warning');
+                        }else{
+                            $('#i_tglsortir').val(formatDate(result[0].srt_tglsortir));
+                            if(result[0].srt_gudangtoko == 'G'){
+                                $('#i_gudang').val("GUDANG");
+                            }else{
+                                $('#i_gudang').val("TOKO");
+                            }
+                            $('.baris').remove();
+                            for (i = 0; i< result.length; i++) {
+                                let tempPT = "";
+                                let tempRT = "";
+                                let temppcs = 0;
+                                let tempktn = 0;
+                                tempPT = "B";
+                                if(result[i].hgb_statusbarang = "PT"){
+                                    tempRT = "R"
+                                }else if(result[i].hgb_statusbarang = "RT"){
+                                    tempRT = "T"
+                                }else if(result[i].hgb_statusbarang = "TG"){
+                                    tempRT = "T"
+                                }else if(result[i].sup_flagpenangananproduk = "PT"){
+                                    tempRT = "R"
+                                }else if(result[i].sup_flagpenangananproduk = "RT"){
+                                    tempRT = "T"
+                                }else if(result[i].sup_flagpenangananproduk = "TG"){
+                                    tempRT = "T"
+                                }
+                                if(result[i].srt_qtykarton != null){
+                                    tempktn = parseInt(result[i].srt_qtykarton);
+                                }
+                                if(result[i].srt_qtypcs != null){
+                                    temppcs = parseInt(result[i].srt_qtypcs);
+                                }
+                                if($('#keterangan').val() === "Data Sudah Dicetak"){
+                                    let temp =  ` <tr class="d-flex baris">
+                                            <td class="buttonInside" style="width: 8%">
+                                                <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
+                                            </td>
+                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td style="width: 6%"><input disabled type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                        </tr>`
+                                    $('#tbody').append(temp);
+                                }else{
+                                    let temp =  ` <tr class="d-flex baris">
+                                            <td class="buttonInside" style="width: 8%">
+                                                <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
+                                            </td>
+                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td style="width: 6%"><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                        </tr>`
+                                    $('#tbody').append(temp);
+                                }
+
+                            }
+                        }calculateTotal();return;
+                    }
+
+                    //new Srt
                     if(result.length === 0){
                         swal('', "Nomor Dokumen Sortir Tidak Ada !!", 'warning');
-                    }else{
+                    }else if(result[0].srt_flagdisc3 === 'P'){
+                        swal('', "Nomor Dokumen Sortir Telah Diproses !!", 'warning');
+                    }
+                    else{
                         $('#i_nosortir').val(result[0].srt_nosortir);
                         $('#i_tglsortir').val(formatDate(result[0].srt_tglsortir));
-                        $('#i_PLU').val(result[0].srt_gudangtoko);
+                        if(result[0].srt_gudangtoko == 'G'){
+                            $('#i_gudang').val("GUDANG");
+                        }else{
+                            $('#i_gudang').val("TOKO");
+                        }
+
                         $('.baris').remove();
                         for (i = 0; i< result.length; i++) {
                             let tempPT = "";
@@ -561,20 +691,17 @@
                                 temppcs = parseInt(result[i].srt_qtypcs);
                             }
                             let temp =  ` <tr class="d-flex baris">
-                                            <td style="width: 4%" class="text-center">
-                                                <button disabled class="btn btn-danger btn-delete"  style="width: 57%" onclick="deleteRow(this)">X</button>
-                                            </td>
                                             <td class="buttonInside" style="width: 8%">
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
                                             <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
                                             <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + tempktn +`"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + temppcs +`"></td>
+                                            <td style="width: 6%"><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
                                             <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td style="width: 9%px"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * temppcs)+ parseFloat(result[i].srt_hrgsatuan * (tempktn/result[i].prd_frac))) +`"></td>
+                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
 
                             $('#tbody').append(temp);
@@ -603,10 +730,28 @@
             if(doc && docSort && keterangan === '* TAMBAH' || doc && docSort && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/');
+                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/','_blank');
+
+                ajaxSetup();
+                $.ajax({
+                    type: "post",
+                    url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                    data: {noDoc:doc},
+                    success: function (result) {
+                        if(result.rak == '1'){
+                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+doc+'/','_blank');
+                        }
+                    }
+                });
+
                 clearField();
             }
         }
+
+        // function printDocumentRak() {
+        //     let doc         = $('#i_nomordokumen').val();
+        //     window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+doc+'/','_blank');
+        // }
 
         function focusToRow(index) {
             // swal('QTYB + QTYK < = 0','', 'warning')
@@ -653,19 +798,15 @@
             let tempPlu  = $('.plu');
             let tempDate= $('#i_tgldokumen').val();
             let noDoc   = $('#i_nomordokumen').val();
+            let tglDoc = $('#i_tgldokumen').val();
             let noSort   = $('#i_nosortir').val();
             let tglSort   = $('#i_tglsortir').val();
             let keterangan    = $('#i_keterangan').val();
-            let pludi    = $('#i_PLU').val();
             let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
             let dateSort    = tglSort.substr(3,2) + '/'+ tglSort.substr(0,2)+ '/'+ tglSort.substr(6,4);
-            let gt    = $('.i_gudang')[i].value;
-            if(gt == "GUDANG"){
-                gt = 'G';
-            }else if(gt == "TOKO"){
-                gt = 'T';
-            }
-            let plano    = $('#qtyplanogram')[i].value;
+            let gt    = $('.i_gudang').val();
+
+            let plano    = $('#qtyplanogram').val();
             let datas   = [{'mstd_prdcd' : '', 'flagdisc1' : '', 'flagdisc2' : '', 'mstd_qty' : '', 'mstd_desc' : '' ,'gross' : ''}];
             if ($('.deskripsi').val().length < 1){
                 swal({
@@ -684,7 +825,6 @@
             for (let i=0; i < tempPlu.length; i++){
                 var qty     = 0;
                 let temp    = $('.satuan')[i].value;
-                let tag    = $('.tag')[i].value;
                 let arr     = temp.split(" / ");
                 let unit    = arr[0];
                 let fd1     = $('.pt')[i].value;
@@ -710,7 +850,7 @@
                         focusToRowfd(i);
                         return false;
                     }
-                    datas.push({'mstd_prdcd': $('.plu')[i].value, 'flagdisc1' : fd1 , 'flagdisc2' : fd2 ,'mstd_qty' : qty, 'mstd_desc' : desc, 'gross' : unconvertToRupiah($('.total')[i].value), 'tag' : tag})
+                    datas.push({'mstd_prdcd': $('.plu')[i].value, 'flagdisc1' : fd1 , 'flagdisc2' : fd2 ,'mstd_qty' : qty, 'mstd_desc' : desc, 'gross' : unconvertToRupiah($('.total')[i].value)})
                 }
             }
 
@@ -722,8 +862,8 @@
                     datas:datas,
                     date:date,
                     keterangan:keterangan,
-                    pludi:pludi,
                     noDoc:noDoc,
+                    tglDoc:tglDoc,
                     noSort:noSort,
                     tglSort:tglSort,
                     statusPlano:plano,
@@ -734,10 +874,19 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
-                    console.log(result.kode)
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/');
+                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/','_blank');
+                            $.ajax({
+                                type: "post",
+                                url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                                data: {noDoc:noDoc},
+                                success: function (result) {
+                                    if(result.rak == '1'){
+                                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+result.msg+'/','_blank');
+                                    }
+                                }
+                            });
                             clearField();
                         } else {
                             swal('Dokumen Berhasil disimpan','','success')
@@ -745,11 +894,21 @@
                     } else if(result.kode == '2'){
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
-                        swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!')
-                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/');
+                        swal('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!');
+                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/','_blank');
+                        $.ajax({
+                            type: "post",
+                            url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                            data: {noDoc:noDoc},
+                            success: function (result) {
+                                if(result.rak == '1'){
+                                    window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+result.msg+'/','_blank');
+                                }
+                            }
+                        });
                         clearField();
                     }else {
-                        swal('ERROR', "Something's Error", 'error')
+                        swal('ERROR', "Something's Error", 'error');
                     }
                     $('#modal-loader').modal('hide')
                     $('#pilihan').val('M');

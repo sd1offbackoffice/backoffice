@@ -87,7 +87,7 @@ class CetakTransferController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAANDARICABANG.cetak-transfer-pdf',compact(['perusahaan','data','ukuran']));
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAANDARICABANG.cetak-transfer-pdf', compact(['perusahaan','data','ukuran']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 

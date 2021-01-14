@@ -218,74 +218,60 @@
 
     });
 
-    var name = "DENNI AFREDO SURYONO HARTANU";
-    var nik = "2015133629";
-    var phoneNumber = "089653485351";
-    var nama_atasan = "ANDY JAYA";
-    var nik_atasan = "2007004011";
-    var phoneNumber_atasan = "087878300086";
-    var dataJawaban1 = "TIDAK";
-    var dataJawaban1a = "";
-    var dataJawaban2 = "TIDAK";
-    var dataJawaban3 = "TIDAK";
-    var dataJawaban4 = "TIDAK";
-    var dataJawaban5a = "TIDAK";
-    var dataJawaban5b = "TIDAK";
-    var dataJawaban5c = "TIDAK";
-    var dataJawaban5d = "TIDAK";
-    var dataJawaban5e = "TIDAK";
-    var dataJawaban5f = "TIDAK";
-    var dataJawaban5g = "TIDAK";
-    var dataJawaban5h = "TIDAK";
-    var dataJawaban5i = "TIDAK";
-    var dataJawaban5j = "TIDAK";
-    var dataJawaban5k = "TIDAK";
-    var dataJawaban5l = "TIDAK";
-    var dataJawaban5m = "TIDAK";
-    var dataJawaban5n = "TIDAK";
-    var dataJawaban5o = "TIDAK";
-    var dataJawaban6 = "TIDAK";
-    var dataJawaban7a = null;
-    var dataJawaban7b = null;
-    var dataJawaban8 = null;
-    var dataJawaban8a = null;
-
     $.ajax({
         dataType: 'JSON',
         type: 'POST',
         url: 'https://hrindomaret.com/api/covidform/insert',
         data: {
-            nama: name,
-            nik: nik,
-            nohp: phoneNumber,
-            namaatasan: nama_atasan,
-            nikatasan: nik_atasan,
-            nohpatasan: phoneNumber_atasan,
-            param1: dataJawaban1,
-            ketparam1: dataJawaban1a,
-            param2: dataJawaban2,
-            param3: dataJawaban3,
-            param4: dataJawaban4,
-            param51: dataJawaban5a,
-            param52: dataJawaban5b,
-            param53: dataJawaban5c,
-            param54: dataJawaban5d,
-            param55: dataJawaban5e,
-            param56: dataJawaban5f,
-            param57: dataJawaban5g,
-            param58: dataJawaban5h,
-            param59: dataJawaban5i,
-            param510: dataJawaban5j,
-            param511: dataJawaban5k,
-            param512: dataJawaban5l,
-            param513: dataJawaban5m,
-            param514: dataJawaban5n,
-            param515: dataJawaban5o,
-            param6: dataJawaban6,
-            param71: dataJawaban7a,
-            param72: dataJawaban7b,
-            param8: dataJawaban8,
-            ketparam8: dataJawaban8a
+        nama: "DENNI AFREDO SURYONO HARTANU",
+        nik: "2015133629",
+        nohp: "089653485351",
+        namaatasan: "ANDY JAYA",
+        nikatasan: "2007004011",
+        nohpatasan: "087878300086",
+        param1: "TIDAK",
+        ketparam1: "",
+        param2: "TIDAK",
+        ketparam2: "",
+        param3: "TIDAK",
+        ketparam3: "",
+        param4: "TIDAK",
+        param41: "TIDAK",
+        param42: "",
+        param43: "",
+        param44: "",
+        param45: "",
+        param46: "",
+        param47: "",
+        param471:"",
+        param472:"",
+        param48: "",
+        param51: "TIDAK",
+        param52: "TIDAK",
+        param53: "TIDAK",
+        param54: "TIDAK",
+        param55: "TIDAK",
+        param56: "TIDAK",
+        param57: "TIDAK",
+        param58: "TIDAK",
+        param59: "TIDAK",
+        param510: "TIDAK",
+        param511: "TIDAK",
+        param512: "TIDAK",
+        param513: "TIDAK",
+        param514: "TIDAK",
+        param515: "TIDAK",
+        ketparam515: "",
+        param516: "TIDAK",
+        param517: "TIDAK",
+        param6: "TIDAK",
+        param7: "",
+        param711: "",
+        param712: "",
+        param72: "",
+        param73: "",
+        param8: "",
+        ketparam8: "",
         },
         beforeSend: function () {
             console.log('assestment hehe');
@@ -297,5 +283,7 @@
             console.log(response);
         }
     });
+
+
 </script>
 

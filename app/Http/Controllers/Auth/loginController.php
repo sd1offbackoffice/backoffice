@@ -148,7 +148,7 @@ class loginController extends Controller
 
             } else {
                 $user = DB::table('tbmaster_user')
-                    ->selectRaw('userid, username, userpassword, email, encryptpwd')
+                    ->selectRaw('userid, username, userpassword, email, encryptpwd, userlevel')
                     ->whereRaw('nvl(recordid, \'0\') <> \'1\'')
                     ->where('userid', $request->username)
                     ->first();
@@ -175,6 +175,7 @@ class loginController extends Controller
                 $_SESSION['conUser'] = $conUser;
                 $_SESSION['conPassword'] = $conPassword;
                 $_SESSION['conString'] = $conString;
+                $_SESSION['userlevel'] = $user->userlevel;
 
                 if (!is_null($_SESSION['usid']) AND $_SESSION['usid'] != 'NUL') {
                     if ($_SESSION['usid'] == 'ADM') {

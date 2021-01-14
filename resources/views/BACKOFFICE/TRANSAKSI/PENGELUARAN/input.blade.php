@@ -26,13 +26,18 @@
                                         </div>
                                         <div class="col-sm-2">
                                             <button type="button" id="btnHapusDokumen"
-                                                    class="btn btn-danger float-left "><i
+                                                    class="btn btn-danger float-left" disabled><i
                                                         class="icon fas fa-trash"></i> Hapus Dokumen
                                             </button>
                                         </div>
                                         <div class="col-sm-3">
                                             <input type="text" id="txtModel"
                                                    class="text-center form-control" disabled>
+                                        </div>
+                                        <div class="offset-2 col-sm-2">
+                                            <button type="button" id="btnSimpan" class="btn btn-primary"><i
+                                                        class="icon fas fa-save"></i> Simpan
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0 ">
@@ -292,26 +297,26 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group row mb-0 ">
-                            <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">No. Dok</label>
+                            <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px">No. Dok</label>
                             <div class="col-sm-3">
                                 <input type="text" id="txt-usl-nodok" class="text-center form-control" disabled>
                             </div>
                             <div class="col-sm-5">
-                                <input type="text" id="txt-usl-keterangan" class="text-center form-control" disabled>
+                                <input type="text" id="txt-usl-status" class="text-center form-control" disabled>
                             </div>
                         </div>
                         <div class="form-group row mb-0 ">
-                            <label class="col-sm-1 col-form-label text-sm-right"
+                            <label class="col-sm-2 col-form-label text-sm-right"
                                    style="font-size: 12px">Supplier</label>
                             <div class="col-sm-2">
                                 <input type="text" id="txt-usl-kode-supplier" class="text-center form-control" disabled>
                             </div>
-                            <div class="offset-1 col-sm-5">
+                            <div class="col-sm-5">
                                 <input type="text" id="txt-usl-nama-supplier" class="text-center form-control" disabled>
                             </div>
                             <label class="col-sm-1 col-form-label text-sm-right"
                                    style="font-size: 12px;text-align: right">PKP</label>
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                                 <input type="text" id="txt-usl-pkp" class="text-center form-control" disabled>
                             </div>
                         </div>
@@ -337,9 +342,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
+                <div class="modal-footer justify-content-center row">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                        class="icon fas fa-times"></i> CANCEL
+                            </button>
+                        </div>
+
+                        <label class="col-sm-2 col-form-label text-sm-right"
+                               style="font-size: 12px;text-align: right">One Time Password</label>
+                        <div class="col-sm-3">
+                            <input type="text" id="txt-usl-otp" class="text-center form-control">
+                        </div>
+                        <div class="col-sm-5">
+                            <button type="button" class="btn btn-primary" id="btnKirimUsulan" data-dismiss="modal"><i
+                                        class="icon fas fa-upload"></i> KIRIM USULAN KE FINANCE
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <label class="col-sm col-form-label text-danger text-left"
+                               style="font-size: 12px">*Qty usulan adalah qty yang diinput oleh user
+                            dengan batasan qty maksimal dari semua nomor referensi BPB yang ada</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -385,16 +412,14 @@
     <script>
         var rowheader;
         var row = 1;
+        var kdsup = '';
         $(document).ready(function () {
             reset();
-            $('#btnUsulanRetur').attr('disabled', false);
-
             $('#dtTglDoc').datepicker({
-                "dateFormat": "dd/mm/yy",
+                "dateFormat": "mm/dd/yy",
                 "setDate": new Date()
             });
         });
-
 
         $('#txtNoDoc').keypress(function (e) {
             if (e.keyCode == 13) {
@@ -500,6 +525,7 @@
         $(document).on('click', '.btn-lov-plu, .plu-header', function () {
             rowheader = $(this).attr("rowheader");
         });
+
         $(document).on('keypress', '.plu-header', function (e) {
             if (e.keyCode == 13) {
                 var temp = '';
@@ -511,6 +537,7 @@
                 getDataPLU(temp);
             }
         });
+
         $(document).on('click', '.row-lov-plu', function () {
             var currentButton = $(this);
 
@@ -548,7 +575,6 @@
                             }).then(() => {
                                 window.location.reload();
                             });
-
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
@@ -568,7 +594,7 @@
         });
 
         function getDataPLU(plu) {
-            if (kdsup == '') {
+            if (kdsup == '' || kdsup == null) {
                 swal({
                     title: 'Info',
                     text: 'Tentukan Supplier Terlebih dahulu',
@@ -624,7 +650,7 @@
         }
 
         function getDataSupplier(k) {
-            kdsup = k;
+            kdsup = k.toUpperCase();
             $('#txtKdSupplier').val(kdsup);
             $.ajax({
                 type: "GET",
@@ -676,14 +702,29 @@
         function reset() {
             $('#body-table-header').empty();
             $('#body-table-detail').empty();
+            $('#body-table-usulan').empty();
             $('#btnHapusDokumen').attr('disabled', true);
             $('#btnUsulanRetur').attr('disabled', true);
+            $('#btnSimpan').attr('disabled', true);
             $('#txtKdSupplier').attr('disabled', false);
 
             $('#txtKdSupplier').val('');
             $('#txtNmSupplier').val('');
             $('#txtPKP').val('');
             $('#txtModel').val('');
+
+            $('#txt-usl-pkp').val('');
+            $('#txt-usl-nama-supplier').val('');
+            $('#txt-usl-kode-supplier').val('');
+            $('#txt-usl-status').val('');
+            $('#txt-usl-nodok').val('');
+            $('#txt-usl-otp').val('');
+
+            $('#gross').val('');
+            $('#total-item').val('');
+            $('#potongan').val('');
+            $('#ppn').val('');
+            $('#total').val('');
         }
 
         function getDataTrn(notrn) {
@@ -709,6 +750,8 @@
                                 $('#txtNoDoc').prop('disabled', true);
                                 $('#dtTglDoc').prop('disabled', true);
                                 $('#btn-lov-trn').prop('disabled', true);
+                                $('#btnSimpan').attr('disabled', false);
+                                $('#btnUsulanRetur').attr('disabled', false);
 
                                 $('#modal-loader').modal('hide');
                                 if (response.status == 'error') {
@@ -717,6 +760,7 @@
                                         text: response.message,
                                         icon: 'error'
                                     }).then(() => {
+                                        window.location.reload();
                                     });
                                 }
                                 else {
@@ -736,12 +780,12 @@
                                         '</button>' +
                                         '</td>' +
                                         '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control satuan-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control satuan-header satuan-header-1" type="text"></td>' +
                                         '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
                                         '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
                                         '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
                                         '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
-                                        '<td><input class="form-control keteragan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
                                         '</tr>');
 
                                     // $('.plu-header-1').focus();
@@ -776,7 +820,6 @@
                                     text: error.responseJSON.message,
                                     icon: 'error'
                                 }).then(() => {
-
                                 });
                             }
                         });
@@ -801,8 +844,6 @@
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
-
-                        $('#btnHapusDokumen').attr('disabled', false);
                         $('#btnUsulanRetur').attr('disabled', false);
 
                         if (response.status == 'error') {
@@ -814,12 +855,24 @@
                             });
                         }
                         else {
+                            if (response.model == '* NOTA SUDAH DICETAK *') {
+                                $('#btnHapusDokumen').attr('disabled', true);
+                            }
+                            else {
+                                $('#btnHapusDokumen').attr('disabled', false);
+                            }
+
                             $('#txtModel').val(response.model);
 
                             $('#dtTglDoc').val(response.tgldoc);
                             $('#txtKdSupplier').val(response.supplier);
                             $('#txtNmSupplier').val(response.nmsupplier);
                             $('#txtPKP').val(response.pkp);
+
+                            $('#txt-usl-nodok').val(notrn);
+                            $('#txt-usl-kode-supplier').val(response.supplier);
+                            $('#txt-usl-nama-supplier').val(response.nmsupplier);
+                            $('#txt-usl-pkp').val(response.pkp);
 
                             var datas_header = response.datas_header;
                             datas_header.forEach(function (dh) {
@@ -943,6 +996,7 @@
             $('.row-detail-' + rh).empty();
 
         });
+
         $(document).on('keypress', '.ctn-header', function (e) {
             if (e.keyCode == 13) {
                 var nodoc = $(this).val();
@@ -981,7 +1035,7 @@
 
         });
 
-        $(document).on('keypress', '.pcs-header', function (e) {
+        $(document).on('keypress', '.pcs-header, .keterangan-header', function (e) {
             if (e.keyCode == 13) {
 
                 $('#modal-loader').modal('show');
@@ -998,6 +1052,7 @@
                 var pcs = parseInt($('.pcs-header-' + rh).val());
                 var stock = parseInt($('.stock-header-' + rh).val());
                 var bkp = $('.bkp-header-' + rh).val();
+                // var keterangan = $('.keterangan-header-' + rh).val();
 
                 var message = '';
                 var status = '';
@@ -1049,9 +1104,6 @@
                     $.ajax({
                         type: "POST",
                         url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-1') }}",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
                         data: {
                             plu: plu,
                             kdsup: kdsup
@@ -1086,7 +1138,7 @@
                                     + qtyretur
                                     + ', untuk sisanya silahkan buat Struk Penjualan atau minta otorisasi Finance.'
                                     + 'Proses untuk otorisasi Finance?';
-                                status = 'question';
+                                status = 'info';
                                 swal({
                                     title: "Mohon dijawab.",
                                     text: message,
@@ -1095,6 +1147,7 @@
                                     dangerMode: true,
                                 }).then((confirm) => {
                                     if (confirm) {
+                                        $('#modal-loader').modal('hide');
                                         if (inputan > qtysisa) {
                                             inputan = qtysisa;
                                             message = 'Qty yang bisa diretur hanya ' + qtysisa;
@@ -1205,7 +1258,7 @@
                                 });
                             }
                             if (model == '*TAMBAH*' || model == '*KOREKSI*') {
-                                proses(plu, (ctn * frac) + pcs);
+                                proses(plu, (ctn * frac) + pcs, rh);
                             }
 
                         },
@@ -1223,9 +1276,11 @@
             }
         });
 
-        function proses(plu, qtyretur) {
+        function proses(plu, qtyretur, rh) {
             var nodoc = $('#txtNoDoc').val();
             var pkp = $('#txtPKP').val();
+            var keterangan = $('.keterangan-header-' + rh).val();
+
             ajaxSetup();
             $.ajax({
                 url: "{{ url('/bo/transaksi/pengeluaran/input/proses') }}",
@@ -1242,26 +1297,26 @@
                     console.log(response);
                     if (datas_detail.length > 0) {
                         console.log(response);
-
+                        $('.row-detail-' + rh).remove();
                         datas_detail.forEach(function (dd) {
                             $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_prdcd + '"></td>' +
+                                '<td><input disabled class="form-control plu" type="text" value="' + dd.trbo_prdcd + '"></td>' +
                                 '<td><input disabled class="form-control " type="text" value="' + dd.desk + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.satuan + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.bkp + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_posqty + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(dd.trbo_hrgsatuan) + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.qtyctn + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.qtypcs + '"></td>' +
+                                '<td><input disabled class="form-control satuan" type="text" value="' + dd.satuan + '"></td>' +
+                                '<td><input disabled class="form-control bkp" type="text" value="' + dd.bkp + '"></td>' +
+                                '<td><input disabled class="form-control posqty" type="text" value="' + dd.trbo_posqty + '"></td>' +
+                                '<td><input disabled class="form-control hargasatuan" type="text" value="' + dd.trbo_hrgsatuan + '"></td>' +
+                                '<td><input disabled class="form-control qtyctn" type="text" value="' + dd.qtyctn + '"></td>' +
+                                '<td><input disabled class="form-control qtypcs" type="text" value="' + dd.qtypcs + '"></td>' +
                                 '<td><input disabled class="form-control gross" type="text" value="' + dd.trbo_gross + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.discper + '"></td>' +
-                                '<td><input disabled class="form-control discrph" type="text" value="' + convertToRupiah2(dd.trbo_discrph) + '"></td>' +
+                                '<td><input disabled class="form-control persendisc" type="text" value="' + dd.discper + '"></td>' +
+                                '<td><input disabled class="form-control discrph" type="text" value="' + dd.trbo_discrph + '"></td>' +
                                 '<td><input disabled class="form-control ppn" type="text" value="' + dd.trbo_ppnrph + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_istype + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_inv + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_tgl + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + dd.trbo_noreff + '"></td>' +
-                                '<td><input disabled class="form-control " type="text" value="' + nvl(dd.trbo_keterangan, '') + '"></td>' +
+                                '<td><input disabled class="form-control istype" type="text" value="' + dd.trbo_istype + '"></td>' +
+                                '<td><input disabled class="form-control invno" type="text" value="' + dd.trbo_inv + '"></td>' +
+                                '<td><input disabled class="form-control tglinv" type="text" value="' + dd.trbo_tgl + '"></td>' +
+                                '<td><input disabled class="form-control noreff" type="text" value="' + dd.trbo_noreff + '"></td>' +
+                                '<td><input disabled class="form-control keterangan" type="text" value="' + keterangan + '"></td>' +
                                 '</tr>');
                         });
 
@@ -1276,12 +1331,12 @@
                             '</button>' +
                             '</td>' +
                             '<td><input disabled class="form-control deskripsi-header-' + row + '" type="text"></td>' +
-                            '<td><input disabled class="form-control satuan-header-' + row + '" type="text"></td>' +
+                            '<td><input disabled class="form-control satuan-header satuan-header-' + row + '" type="text"></td>' +
                             '<td><input disabled class="form-control bkp-header-' + row + '" type="text"></td>' +
                             '<td><input disabled class="form-control stock-header-' + row + '" type="text"></td>' +
                             '<td><input class="form-control ctn-header ctn-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
                             '<td><input class="form-control pcs-header pcs-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
-                            '<td><input class="form-control keteragan-header keterangan-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
+                            '<td><input class="form-control keterangan-header keterangan-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
                             '</tr>');
 
                         var tot_gross = 0;
@@ -1290,9 +1345,9 @@
                         var tot_total = 0;
                         var i = 0;
                         $('#body-table-detail tr').each(function () {
-                            var gross = $(this).find(".gross").val();
-                            var potongan = $(this).find(".discrph").val();
-                            var ppn = $(this).find(".ppn").val();
+                            var gross = parseFloat($(this).find(".gross").val());
+                            var potongan = parseFloat($(this).find(".discrph").val());
+                            var ppn = parseFloat($(this).find(".ppn").val());
 
                             tot_gross += gross;
                             tot_potongan += potongan;
@@ -1304,7 +1359,7 @@
                         $('#potongan').val(convertToRupiah2(tot_potongan));
                         $('#ppn').val(convertToRupiah2(tot_ppn));
                         $('#total').val(convertToRupiah2(tot_total));
-                        $('#total-item').val(convertToRupiah2(i - 1));
+                        $('#total-item').val(convertToRupiah2(i));
                     }
                 }, error: function (error) {
                     console.log(error);
@@ -1320,6 +1375,392 @@
             var deskripsi = currentElement.attr('deskripsi');
             $('#label-deskripsi').val(deskripsi);
         });
+
+        $(document).on('keyup', '#txt-usl-otp', function (e) {
+            var currentElement = $(this);
+            if (e.keyCode == 13) {
+                var nodoc = $('#txtNoDoc').val();
+                var otp = currentElement.val();
+                var tgldoc = $('#dtTglDoc').val();
+                var kdsup = $('#txtKdSupplier').val();
+                var pkp = $('#txtPKP').val();
+                var datas = [];
+
+                $('#body-table-usulan tr').each(function () {
+                    var data = {};
+                    data.prdcd = $(this).find(".usl-prdcd").val();
+                    data.qty = $(this).find(".usl-qty").val();
+                    datas.push(data);
+                });
+
+                var datah = [];
+                $('#body-table-header tr').each(function () {
+                    var data = {};
+
+                    data.plu = $(this).find(".plu-header").val();
+                    data.ctn = $(this).find(".ctn-header").val();
+                    data.qty = $(this).find(".pcs-header").val();
+                    satuan = $(this).find(".satuan-header").val();
+                    split_satuan = satuan.split('/');
+                    data.frac = split_satuan[1];
+                    datah.push(data);
+                });
+
+                var datad = [];
+                $('#body-table-detail tr').each(function () {
+                    var data = {};
+
+                    data.plu = $(this).find(".plu").val();
+                    data.ctn = $(this).find(".qtyctn").val();
+                    data.qty = $(this).find(".qtypcs").val();
+
+                    data.noreff = $(this).find(".noreff").val();
+                    data.istype = $(this).find(".istype").val();
+                    data.invno = $(this).find(".invno").val();
+                    data.tglinv = $(this).find(".tglinv").val();
+                    data.kdsup = kdsup;
+                    data.plu = $(this).find(".plu").val();
+                    data.ctn = $(this).find(".qtyctn").val();
+                    data.qty = $(this).find(".qtypcs").val();
+                    data.hargasatuan = $(this).find(".hargasatuan").val();
+                    data.persendisc = $(this).find(".persendisc").val();
+                    data.gross = parseFloat($(this).find(".gross").val());
+                    data.discrph = parseFloat($(this).find(".discrph").val());
+                    data.ppnrph = parseFloat($(this).find(".ppn").val());
+                    data.posqty = parseFloat($(this).find(".posqty").val());
+                    data.keterangan = $(this).find(".keterangan").val();
+                    datad.push(data);
+                });
+
+                ajaxSetup();
+                $.ajax({
+                    url: "{{ url('/bo/transaksi/pengeluaran/input/cek-OTP') }}",
+                    type: 'POST',
+                    data: {
+                        nodoc: nodoc,
+                        datas: datas,
+                        datah: datah,
+                        datad: datad,
+                        otp: otp,
+                        kdsup: kdsup,
+                        tgldoc: tgldoc,
+                        pkp: pkp
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+
+                        if (response.status == 'error') {
+                            $('#txt-usl-otp').val('');
+
+                        }
+                        else {
+                            var datas_header = response.datah;
+                            datas_header.forEach(function (dh) {
+                                var plu = dh.h_plu == null ? '' : dh.h_plu;
+                                var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                                var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                                var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                                var stock = dh.h_stock == null ? '' : dh.h_stock;
+                                var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                                var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                                var ket = dh.h_ket == null ? '' : dh.h_ket;
+
+                                $('#body-table-header').append('<tr>' +
+                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                                    '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
+                                    '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
+                                    '</tr>');
+                            });
+
+                            var datas_detail = response.datad;
+                            var i = 1;
+                            var tot_gross = 0;
+                            var tot_potongan = 0;
+                            var tot_ppn = 0;
+                            var tot_total = 0;
+                            datas_detail.forEach(function (dd) {
+                                var plu = dd.plu == null ? '' : dd.plu;
+                                var desk = dd.desk == null ? '' : dd.desk;
+                                var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                                var satuan = dd.satuan == null ? '' : dd.satuan;
+                                var bkp = dd.bkp == null ? '' : dd.bkp;
+                                var stock = dd.stok == null ? '' : dd.stok;
+                                var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
+                                var ctn = dd.ctn == null ? '' : dd.ctn;
+                                var pcs = dd.pcs == null ? '' : dd.pcs;
+                                var gross = dd.gross == null ? '' : dd.gross;
+                                var discper = dd.discper == null ? '' : dd.discper;
+                                var discrp = dd.discrp == null ? '' : dd.discrp;
+                                var ppn = dd.ppn == null ? '' : dd.ppn;
+                                var faktur = dd.faktur == null ? '' : dd.faktur;
+                                var pajakno = dd.pajakno == null ? '' : dd.pajakno;
+                                var tglfp = dd.tglfp == null ? '' : dd.tglfp;
+                                var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
+                                var keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                                var pkp = dd.pkp == null ? '' : dd.pkp;
+                                var frac = dd.frac == null ? '' : dd.frac;
+                                var unit = dd.unit == null ? '' : dd.unit;
+
+                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                                    '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(hrgsatuan) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ctn) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(pcs) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(gross) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + discper + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(discrp) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ppn) + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + faktur + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + pajakno + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + tglfp + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + noreffbtb + '"></td>' +
+                                    '<td><input disabled class="form-control " type="text" value="' + keterangan + '"></td>' +
+                                    '</tr>');
+                                i++;
+                                tot_gross += parseFloat(gross);
+                                tot_potongan += parseFloat(discrp);
+                                tot_ppn += parseFloat(ppn);
+                            });
+                            tot_total = tot_gross - tot_potongan + tot_ppn;
+                        }
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {
+                            getDataUsulan();
+                        });
+                    }, error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '#btnSimpan', function () {
+            var currentButton = $(this);
+            var count = 0;
+            $('#body-table-detail tr').each(function () {
+                count++;
+            });
+            if (count > 0) {
+                swal({
+                    title: "Simpan Data?",
+                    text: "Tekan Tombol Ya untuk Melanjutkan!",
+                    icon: "info",
+                    buttons: true,
+                }).then((yes) => {
+                    if (yes) {
+                        var nodoc = $('#txtNoDoc').val();
+                        var tgldoc = $('#dtTglDoc').val();
+                        var kdsup = $('#txtKdSupplier').val();
+
+                        datas = [];
+                        $('#body-table-detail tr').each(function () {
+                            var data = {};
+
+                            data.nodoc = nodoc;
+                            data.tgldoc = tgldoc;
+                            data.noreff = $(this).find(".noreff").val();
+                            data.istype = $(this).find(".istype").val();
+                            data.invno = $(this).find(".invno").val();
+                            data.tglinv = $(this).find(".tglinv").val();
+                            data.kdsup = kdsup;
+                            data.plu = $(this).find(".plu").val();
+                            data.ctn = $(this).find(".qtyctn").val();
+                            data.qty = $(this).find(".qtypcs").val();
+                            data.hargasatuan = $(this).find(".hargasatuan").val();
+                            data.persendisc = $(this).find(".persendisc").val();
+                            data.gross = parseFloat($(this).find(".gross").val());
+                            data.discrph = parseFloat($(this).find(".discrph").val());
+                            data.ppnrph = parseFloat($(this).find(".ppn").val());
+                            data.posqty = parseFloat($(this).find(".posqty").val());
+                            data.keterangan = $(this).find(".keterangan").val();
+                            datas.push(data);
+                        });
+
+                        ajaxSetup();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                            data: {
+                                datas: datas
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+                                swal({
+                                    title: response.status,
+                                    text: response.message,
+                                    icon: response.status
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
+                                // handle error
+                                swal({
+                                    title: 'Gagal!',
+                                    text: 'Data gagal disimpan!',
+                                    icon: 'error'
+                                }).then(() => {
+                                });
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            }
+            else {
+                swal({
+                    title: "Error",
+                    text: 'Tidak ada data yang bisa disimpan!',
+                    icon: 'error'
+                }).then(() => {
+                });
+            }
+        });
+
+        function getDataUsulan() {
+            var nodoc = $('#txtNoDoc').val();
+            var kdsup = $('#txtKdSupplier').val();
+            var pkp = $('#txtPKP').val();
+            var namasup = $('#txtNmSupplier').val();
+            ajaxSetup();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('/bo/transaksi/pengeluaran/input/get-data-usulan') }}",
+                data: {
+                    nodoc: nodoc,
+                    kdsup: kdsup
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    if (response.message) {
+
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {
+                        });
+                    }
+                    else {
+                        $('#body-table-usulan').empty();
+                        $('#txt-usl-pkp').val(pkp);
+                        $('#txt-usl-nama-supplier').val(namasup);
+                        $('#txt-usl-kode-supplier').val(kdsup);
+                        $('#txt-usl-status').val(response.dataUsulan[0].usl_status);
+                        $('#txt-usl-nodok').val(nodoc);
+
+                        for (var i = 0; i < response.dataUsulan.length; i++) {
+                            $('#body-table-usulan').append('<tr class="table-sm">\n' +
+                                '                               <td class="small usl-prdcd">' + response.dataUsulan[i].usl_prdcd + '</td>\n' +
+                                '                               <td class="small usl-desk">' + response.dataUsulan[i].prd_deskripsipanjang + '</td>\n' +
+                                '                               <td class="small usl-qty">' + response.dataUsulan[i].usl_qty_sisaretur + '</td>\n' +
+                                '                               <td class="small usl-status">' + response.dataUsulan[i].usl_status + '</td>\n' +
+                                '                            </tr>')
+                        }
+                    }
+
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    // handle error
+                    swal({
+                        title: 'Gagal!',
+                        text: 'Data gagal diambil!',
+                        icon: 'error'
+                    }).then(() => {
+                    });
+                }
+            });
+        }
+
+        $(document).on('click', '#btnUsulanRetur', function () {
+            var currentButton = $(this);
+            getDataUsulan();
+        });
+
+        $(document).on('click', '#btnKirimUsulan', function () {
+            var currentButton = $(this);
+            var nodoc = $('#txt-usl-nodok').val();
+            var kdsup = $('#txt-usl-kode-supplier').val();
+            var pkp = $('#txt-usl-pkp').val();
+            var status = $('#txt-usl-status').val();
+            var tgldoc = $('#dtTglDoc').val();
+
+            if (status != 'USULAN') {
+                swal({
+                    title: 'Info',
+                    text: 'Usulan Sudah Diretur!',
+                    icon: 'info'
+                }).then(() => {
+                });
+            }
+
+            ajaxSetup();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('/bo/transaksi/pengeluaran/input/send-usulan') }}",
+                data: {
+                    nodoc: nodoc,
+                    kdsup: kdsup,
+                    tgldoc: tgldoc
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    if (response.message) {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {
+                        });
+                    }
+                    if (response.status_usul) {
+                        $('#txt-usl-status').val(response.status_usul);
+                    }
+
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    // handle error
+                    swal({
+                        title: 'Gagal!',
+                        text: 'Data gagal diambil!',
+                        icon: 'error'
+                    }).then(() => {
+                    });
+                }
+            });
+        });
+
+
     </script>
 
 

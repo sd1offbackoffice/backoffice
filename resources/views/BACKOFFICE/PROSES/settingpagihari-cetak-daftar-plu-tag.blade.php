@@ -23,7 +23,7 @@ $datetime->setTimezone($timezone);
             PROGRAM : SETTING PAGI HARI <br><br>
             JAM : {{ $datetime->format('H:i:s') }}<br><br>
     </div>
-    <h2 style="text-align: center">** DAFTAR PERUBAHAN HARGA JUAL **</h2>
+    <h2 style="text-align: center">** DAFTAR PLU TAG N, X **</h2>
 </header>
 
 <footer>
@@ -34,87 +34,65 @@ $datetime->setTimezone($timezone);
     <table class="table table-responsive">
         <thead style="border-top: double; border-bottom: double;">
         <tr>
-            <th class="tengah" rowspan="2" width="5%">KODE</th>
-            <th class="tengah" rowspan="2" width="30%">NAMA BARANG</th>
-            <th class="tengah" rowspan="2" width="4%">UNIT</th>
-            <th class="tengah" rowspan="2" width="3%">FRAC</th>
-            <th class="tengah" rowspan="2" width="8%">MIN JUAL</th>
-            <th class="tengah" rowspan="2" width="8%">HPP TERAKHIR</th>
-            <th class="tengah" rowspan="2" width="8%">HPP RATA</th>
-            <th class="tengah" colspan="2" width="10%">HARGA JUAL</th>
-            <th class="tengah" rowspan="2" width="8%">MARGIN BARU</th>
-            <th class="tengah" rowspan="2" width="8%">TGL AKTIF</th>
-            <th class="tengah" rowspan="2" width="3%">TAG</th>
-            <th class="tengah" rowspan="2" width="5%">PROMO</th>
+            <th class="tengah" width="5%">No.</th>
+            <th class="tengah" style="text-align: left" width="10%">PLU</th>
+            <th class="tengah" style="text-align: left" width="30%">Deskripsi</th>
+            <th class="tengah" width="10%">Frac</th>
+            <th class="tengah" width="10%">Tag</th>
+            <th class="tengah" width="10%">Flag</th>
+            <th class="tengah" width="10%">Qty</th>
+            <th class="tengah" width="10%">OMI</th>
+            <th class="tengah" width="5%">Rak</th>
         </tr>
-        <tr>
-            <th>LAMA</th>
-            <th>BARU</th>
-        </tr>
+
         </thead>
         <tbody>
-        @for($j = 0; $j < sizeof($data); $j++)
-            @if($j == 0)
+        @for($j = 1; $j < sizeof($data); $j++)
+            @if($j == 1)
                 <tr style="padding-top: 50px !important;">
-                    <td colspan="13" style="text-align: left"><b>DIVISI : {{$data[$j]->prd_kodedivisi}} - {{$data[$j]->div_namadivisi}}</b></td>
+                    <td colspan="13" style="text-align: left"><b>{{$data[$j]->prd_kodedivisi}} {{$data[$j]->prd_kodedepartement}} {{$data[$j]->prd_kodekategoribarang}}
+                        - {{$data[$j]->div_namadivisi}}, {{$data[$j]->dep_namadepartement}}, {{$data[$j]->kat_namakategori}}</b></td>
                 </tr>
                 <tr>
                     <td colspan="13" style="border-bottom: 1px black solid"></td>
                 </tr>
-                <tr>
-                    <td colspan="13" style="text-align: left"><b>DEPARTMENT : {{$data[$j]->prd_kodedepartement}} - {{ $data[$j]->dep_namadepartement }}
-                            KATEGORI : {{ $data[$j]->prd_kodekategoribarang }} - {{ $data[$j]->kat_namakategori }}</b></td>
-                </tr>
-                <tr>
-                    <td colspan="13" style="border-bottom: 1px black solid"></td>
-                </tr>
-                @else
+            @else
                 @if($data[$j]->prd_kodedivisi != $data[$j-1]->prd_kodedivisi)
-                    <tr>
-                        <td colspan="13" style="border-top: 1px black solid"></td>
-                    </tr>
-                    <tr style="padding-top: 50px !important;">
-                        <td colspan="13" style="text-align: left"><b>DIVISI : {{$data[$j]->prd_kodedivisi}} - {{$data[$j]->div_namadivisi}}</b></td>
-                    </tr>
                     <tr>
                         <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
-                    <tr>
-                        <td colspan="13" style="text-align: left"><b>DEPARTMENT : {{$data[$j]->prd_kodedepartement}} - {{ $data[$j]->dep_namadepartement }}
-                                KATEGORI : {{ $data[$j]->prd_kodekategoribarang }} - {{ $data[$j]->kat_namakategori }}</b></td>
+                    <tr style="padding-top: 50px !important;">
+                        <td colspan="13" style="text-align: left"><b>{{$data[$j]->prd_kodedivisi}} {{$data[$j]->prd_kodedepartement}} {{$data[$j]->prd_kodekategoribarang}}
+                                - {{$data[$j]->div_namadivisi}}, {{$data[$j]->dep_namadepartement}}, {{$data[$j]->kat_namakategori}}</b></td>
                     </tr>
                     <tr>
                         <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
                 @elseif($data[$j]->prd_kodedepartement != $data[$j-1]->prd_kodedepartement)
                     <tr>
-                        <td colspan="13" style="border-top: 1px black solid"></td>
+                        <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
-                    <tr>
-                        <td colspan="13" style="text-align: left"><b>DEPARTMENT : {{$data[$j]->prd_kodedepartement}} - {{ $data[$j]->dep_namadepartement }}
-                                KATEGORI : {{ $data[$j]->prd_kodekategoribarang }} - {{ $data[$j]->kat_namakategori }}</b></td>
+                    <tr style="padding-top: 50px !important;">
+                        <td colspan="13" style="text-align: left"><b>{{$data[$j]->prd_kodedivisi}} {{$data[$j]->prd_kodedepartement}} {{$data[$j]->prd_kodekategoribarang}}
+                                - {{$data[$j]->div_namadivisi}}, {{$data[$j]->dep_namadepartement}}, {{$data[$j]->kat_namakategori}}</b></td>
                     </tr>
                     <tr>
                         <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
                 @endif
             @endif
-        <tr>
-            <td>{{ $data[$j]->prdcd }}</td>
-            <td style="text-align: left">{{ $data[$j]->prd_deskripsipanjang }}</td>
-            <td>{{ $data[$j]->unit }}</td>
-            <td>{{ $data[$j]->prd_frac }}</td>
-            <td>{{ $data[$j]->prd_minjual }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_lastcost, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_avgcost, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual2, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual, 2) }}</td>
-            <td>{{ number_format($nActMargin, 2) }}%</td>
-            <td>{{ date('d-M-y', strtotime($data[$j]->prd_tglhrgjual))}}</td>
-            <td>{{ $data[$j]->prd_kodetag }}</td>
-            <td></td>
-        </tr>
-            @endfor
+            <tr>
+                <td>{{ $j }}</td>
+                <td style="text-align: left">{{ $data[$j]->prd_prdcd }}</td>
+                <td style="text-align: left">{{ $data[$j]->prd_deskripsipanjang }}</td>
+                <td>{{ $data[$j]->prd_frac }}</td>
+                <td>{{ $data[$j]->prd_kodetag }}</td>
+                <td> </td>
+                <td>{{ $data[$j]->st_saldoakhir }}</td>
+                <td>{{ $data[$j]->omi }}</td>
+                <td>{{ $data[$j]->lks_koderak }}</td>
+            </tr>
+        @endfor
         </tbody>
         <tr>
             <td colspan="13" style="border-bottom: 1px black solid"></td>
@@ -129,7 +107,7 @@ $datetime->setTimezone($timezone);
     @page {
         margin: 25px 20px;
         size: 595pt 842pt;
-}
+    }
     header {
         position: fixed;
         top: 0cm;
@@ -173,7 +151,7 @@ $datetime->setTimezone($timezone);
 
     .table{
         width: 100%;
-        font-size: 8px;
+        font-size: 9px;
         /*white-space: nowrap;*/
         color: #212529;
         /*padding-top: 20px;*/

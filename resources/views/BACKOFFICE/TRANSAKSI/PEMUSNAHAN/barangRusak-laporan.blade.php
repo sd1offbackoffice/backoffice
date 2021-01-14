@@ -182,8 +182,9 @@ $datetime->setTimezone($timezone);
             </tbody>
         </table>
         <p style="text-align: right"> ** Akhir Dari Laporan ** </p>
-
+    </main>
 @endif
 
 </body>
 </html>
+

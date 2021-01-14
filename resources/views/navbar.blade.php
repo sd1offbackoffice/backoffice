@@ -23,6 +23,7 @@
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>
     <script src={{asset('/js/sticktable.js')}}></script>
+    <script src="{{ asset('/js/MonthPicker.js') }}"></script>
 
     <link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
     <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
@@ -32,6 +33,7 @@
     {{--<link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">--}}
     <link rel="stylesheet" href={{ asset('css/sticktable.css') }}  rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" >
+    <link rel="stylesheet" href="{{ asset('css/MonthPicker.css') }}">
     {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" >--}}
     {{--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" >--}}
 
@@ -149,12 +151,12 @@
                                                aria-expanded="false">Pengeluaran</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/pengeluaran/input")}}">Input</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/cetak")}}">Cetak Surat Jalan</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/batal")}}">Batal Surat Jalan</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery Surat Jalan</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>
-                                                <li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery NPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/pembatalan")}}">Pembatalan NPB</a></li>
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery Surat Jalan</a></li>--}}
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>--}}
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>--}}
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>--}}
                                             </ul>
                                         </li>
                                         <li class="dropdown">
@@ -198,6 +200,35 @@
                                        aria-expanded="false">Proses</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bo/proses/konversi")}}">Konversi Item Perishable Olahan</a></li>
+                                        <li><a href="{{url("/bo/proses/settingpagihari/index")}}">Setting Pagi Hari</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Laporan-Laporan</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/laporan/penyesuaian")}}">Laporan Penyesuaian Persediaan</a></li>
+                                        <li><a href="{{url("/bo/laporan/pengiriman")}}">Laporan Daftar Pengiriman Antar Cabang</a></li>
+                                        <li><a href="{{url("/bo/laporan/penerimaan")}}">Laporan Daftar Penerimaan Antar Cabang</a></li>
+                                        <li><a href="{{url("/bo/laporan/laporanservicelevel/index")}}">Laporan Service Level PO Thd BPB</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Transfer</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/transfer/po")}}">Transfer PO</a></li>
+                                        <li><a href="{{url("/bo/transfer/pb-ke-md")}}">Transfer PB ke MD</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Menu PKM Toko</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/pkm/kertas-kerja")}}">Proses Kertas Kerja PKM</a></li>
                                     </ul>
                                 </li>
                             </ul>

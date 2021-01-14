@@ -17,8 +17,8 @@ function convertToUpper(val, id) {
 // Untuk merubah angka biasa menjadi format Rupiah
 // Created By : Denni(21/02/2020) | Modify By :
 function convertToRupiah(number) {
-    if (!number)
-        return 0;
+    if (!number || number == '0')
+        return '0.00';
     else
         number = parseFloat(number).toFixed(2);
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -117,12 +117,15 @@ function nvl(str,ret){
     else str;
 }
 
-function testjr(temp) {
-    let data = temp['text'];
+// Template alert error di ajax
+// Created By : JR (05/01/2021) | Modify By :
 
-    $('#title').text(data)
+function alertError(title, text) {
+    swal(title, text.substr(0,48), 'error')
+}
 
-    console.log(data)
-
-
+// Fungsi untuk mengecek float
+// Created By : Leo (13/01/2021) | Modify By :
+function isFloat(value) {
+    return value === +value && value !== (value|0);
 }

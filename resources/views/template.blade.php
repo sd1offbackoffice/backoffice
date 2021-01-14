@@ -62,7 +62,7 @@
                                     <button type="button" class="btn btn-success btn-block">Button Cetak</button>
                                 </div>
                                 <div class="col-sm-2 text-center">
-                                    <button type="button" class="btn btn-danger btn-block">Button Detele</button>
+                                    <button type="button" class="btn btn-danger btn-block">Button Delete</button>
                                 </div>
                                 <div class="col-sm-2 text-center">
                                     <button type="button" class="btn btn-primary btn-block">Button Lainnya</button>

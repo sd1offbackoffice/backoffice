@@ -82,7 +82,7 @@ $datetime->setTimezone($timezone);
                 <tr style="text-align: center; vertical-align: center">
                     <th style="width: 40px">PLU</th>
                     <th style="width: 385px !important; text-align: left">DESKRIPSI</th>
-                    <th style="width: 60px">SATUAN</th>
+                    <th colspan="2" style="width: 60px">SATUAN</th>
                     <th style="width: 55px">QTY</th>
                     <th style="width: 55px">Fr</th>
                     <th style="width: 35px">TAG</th>
@@ -96,20 +96,14 @@ $datetime->setTimezone($timezone);
                     <tr>
                         <td style="width: 40px">{{$datas[$i]->srt_prdcd}}</td>
                         <td style="width: 385px !important; text-align: left">{{$datas[$i]->prd_deskripsipanjang}}</td>
-                        <td style="width: 60px; text-align: center">{{$datas[$i]->satuan}}</td>
+                        <td style="width: 30px; text-align: right">{{$datas[$i]->prd_unit}} /</td>
+                        <td style="width: 30px; text-align: left"> {{$datas[$i]->prd_frac}}</td>
                         <td style="width: 55px; text-align: center">{{$datas[$i]->srt_qtykarton}}</td>
                         <td style="width: 55px; text-align: center">{{$datas[$i]->srt_qtypcs}}</td>
                         <td style="width: 35px; text-align: center">{{$datas[$i]->prd_kodetag}}</td>
-                        @if($datas[$i]->prd_perlakuanbarang == 'PT')
-                            <td style="width: 25px; text-align: center">{{$datas[$i]->prd_perlakuanbarang}}</td>
-                            <td style="width: 55px; text-align: center"></td>
-                            @elseif($datas[$i]->prd_perlakuanbarang == 'RT' || $datas[$i]->prd_perlakuanbarang == 'TG')
-                            <td style="width: 25px; text-align: center"></td>
-                            <td style="width: 55px; text-align: center">{{$datas[$i]->prd_perlakuanbarang}}</td>
-                            @else
-                            <td style="width: 25px; text-align: center"></td>
-                            <td style="width: 55px; text-align: center"></td>
-                        @endif
+                        <td style="width: 25px; text-align: center">{{$datas[$i]->flag_pt}}</td>
+                        <td style="width: 55px; text-align: center">{{$datas[$i]->flag_rttg}}</td>
+
                     </tr>
                     @if($i==$counter)
                             </tbody>
@@ -121,7 +115,7 @@ $datetime->setTimezone($timezone);
                             <tr style="text-align: center; vertical-align: center">
                                 <th style="width: 40px">PLU</th>
                                 <th style="width: 385px !important; text-align: left">DESKRIPSI</th>
-                                <th style="width: 60px">SATUAN</th>
+                                <th colspan="2" style="width: 60px">SATUAN</th>
                                 <th style="width: 55px">QTY</th>
                                 <th style="width: 55px">Fr</th>
                                 <th style="width: 35px">TAG</th>

@@ -115,119 +115,135 @@ class entrySortirBarangController extends Controller
     }
 
     public function saveData(Request $request){
-        $datas  = $request->datas;
-        $keterangan  = $request->keterangan;
-        $pludi  = $request->pludi;
-        $date   = date('Y-M-d', strtotime($request->date));
-        $noSrt  = $request->noDoc;
-        $kodeigr= $_SESSION['kdigr'];
-        $userid = $_SESSION['usid'];
-        $today  = date('Y-m-d H:i:s');
+        try{
+            DB::beginTransaction();
+            $datas  = $request->datas;
+            $keterangan  = $request->keterangan;
+            $pludi  = $request->pludi;
+            $date   = date('Y-M-d', strtotime($request->date));
+            $noSrt  = $request->noDoc;
+            $kodeigr= $_SESSION['kdigr'];
+            $userid = $_SESSION['usid'];
+            $today  = date('Y-m-d H:i:s');
 
 //        *** Get Doc No ***
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
+            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
             'Nomor Sortir Barang',
                'S'
             || TO_CHAR (SYSDATE, 'yy')
             || SUBSTR ('123456789ABC', TO_CHAR (SYSDATE, 'MM'), 1),
             5,
             TRUE); END;");
-        oci_bind_by_name($query, ':ret', $docNo, 32);
-        oci_execute($query);
+            oci_bind_by_name($query, ':ret', $docNo, 32);
+            oci_execute($query);
 
 //        *** Search DocNo for Edit ***
-        $getDoc = DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
+            $getDoc = DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
 
 
-        if ($getDoc){
-            if($getDoc->srt_flagdisc3 == 'P' || $getDoc->srt_flagdisc3 == 'p'){
-                return response()->json(['kode' => 3, 'msg' => $getDoc->srt_nosortir]);
-            }
+            if ($getDoc){
+                if($getDoc->srt_flagdisc3 == 'P' || $getDoc->srt_flagdisc3 == 'p'){
+                    return response()->json(['kode' => 3, 'msg' => $getDoc->srt_nosortir]);
+                }
 //                *** Update Data ***
-            DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->delete();
+                $prevVal = DB::table('TBTR_SORTIR_BARANG')
+                    ->selectRaw("srt_create_dt")
+                    ->selectRaw("srt_create_by")
+                    ->where('srt_nosortir', $noSrt)
+                    ->first();
+                $today  = date('Y-m-d H:i:s', strtotime($prevVal->srt_create_dt));
+                $userid = $prevVal->srt_create_by;
+                DB::table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->delete();
 
-            for ($i = 1; $i < sizeof($datas); $i++){
-                $temp = $datas[$i];
+                for ($i = 1; $i < sizeof($datas); $i++){
+                    $temp = $datas[$i];
 
-                $cekStatusPrint = DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
+                    $cekStatusPrint = DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
 
-                if($cekStatusPrint->srt_flagdisc1 <> ' ' && $cekStatusPrint->srt_flagdisc2 <> ' ' && $cekStatusPrint->srt_flagdisc1 <> $cekStatusPrint->srt_flagdisc1){
-                    return response()->json(['kode' => 2, 'msg' => "Isian Status Aw & Ak Harus Beda !!"]);
+                    if($cekStatusPrint->srt_flagdisc1 <> ' ' && $cekStatusPrint->srt_flagdisc2 <> ' ' && $cekStatusPrint->srt_flagdisc1 <> $cekStatusPrint->srt_flagdisc1){
+                        return response()->json(['kode' => 2, 'msg' => "Isian Status Aw & Ak Harus Beda !!"]);
+                    }
+
+
+                    $prodMast = DB::table('TBMASTER_PRODMAST')
+                        ->where('prd_kodeigr', $kodeigr)
+                        ->where('prd_prdcd', $temp['plu'])
+                        ->first();
+
+                    $getVal = DB::table('TBMASTER_HARGABELI')
+                        ->LeftJoin('TBMASTER_SUPPLIER',function($join){
+                            $join->on('hgb_kodesupplier','sup_kodesupplier');
+                            $join->on('hgb_kodeigr','sup_kodeigr');
+                        })
+                        ->where('hgb_prdcd', $temp['plu'])
+                        ->where('hgb_tipe','=',2)
+                        ->where('hgb_kodeigr',$kodeigr)
+                        ->first();
+
+
+
+                    DB::table('TBTR_SORTIR_BARANG')
+                        ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $docNo, 'srt_tglsortir' => $date,
+                            'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
+                            'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
+                            'srt_kodedepartement' => $prodMast->prd_kodedepartement, 'srt_kodekategoribarang' => $prodMast->prd_kodekategoribarang, 'srt_bkp' => '',
+                            'srt_unit' => $temp['unit'], 'srt_frac' => $temp['frac'], 'srt_lokasi' => $kodeigr, 'srt_qtykarton' => $temp['ctn'], 'srt_qtypcs' => $temp['pcs'],
+                            'srt_qtybonus1' => '', 'srt_qtybonus2' => '', 'srt_hrgsatuan' => $temp['avgcost'], 'srt_flagdisc1' => '', 'srt_flagdisc2' => '',
+                            'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
+                            'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-
-
-                $prodMast = DB::table('TBMASTER_PRODMAST')
-                    ->where('prd_kodeigr', $kodeigr)
-                    ->where('prd_prdcd', $temp['plu'])
-                    ->first();
-
-                $getVal = DB::table('TBMASTER_HARGABELI')
-                    ->LeftJoin('TBMASTER_SUPPLIER',function($join){
-                        $join->on('hgb_kodesupplier','sup_kodesupplier');
-                        $join->on('hgb_kodeigr','sup_kodeigr');
-                    })
-                    ->where('hgb_prdcd', $temp['plu'])
-                    ->where('hgb_tipe','=',2)
-                    ->where('hgb_kodeigr',$kodeigr)
-                    ->first();
-
-                DB::table('TBTR_SORTIR_BARANG')
-                    ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $docNo, 'srt_tglsortir' => $date,
-                        'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
-                        'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
-                        'srt_kodedepartement' => $prodMast->prd_kodedepartement, 'srt_kodekategoribarang' => $prodMast->prd_kodekategoribarang, 'srt_bkp' => '',
-                        'srt_unit' => $temp['unit'], 'srt_frac' => $temp['frac'], 'srt_lokasi' => $kodeigr, 'srt_qtykarton' => $temp['ctn'], 'srt_qtypcs' => $temp['pcs'],
-                        'srt_qtybonus1' => '', 'srt_qtybonus2' => '', 'srt_hrgsatuan' => $temp['avgcost'], 'srt_flagdisc1' => '', 'srt_flagdisc2' => '',
-                        'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
-                        'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
-            }
-
-           return response()->json(['kode' => 1, 'msg' => $getDoc->srt_nosortir]);
-        } else {
+                DB::commit();
+                return response()->json(['kode' => 1, 'msg' => $getDoc->srt_nosortir]);
+            } else {
 //              *** Insert Data ***
-            for ($i = 1; $i < sizeof($datas); $i++){
-                $temp = $datas[$i];
+                for ($i = 1; $i < sizeof($datas); $i++){
+                    $temp = $datas[$i];
 
-                $cekStatusPrint = DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
+//                $cekStatusPrint = DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
+//
+//                if($cekStatusPrint->srt_flagdisc1 <> ' ' && $cekStatusPrint->srt_flagdisc2 <> ' ' && $cekStatusPrint->srt_flagdisc1 <> $cekStatusPrint->srt_flagdisc1){
+//                    return response()->json(['kode' => 2, 'msg' => "Isian Status Aw & Ak Harus Beda !!"]);
+//                }
 
-                if($cekStatusPrint->srt_flagdisc1 <> ' ' && $cekStatusPrint->srt_flagdisc2 <> ' ' && $cekStatusPrint->srt_flagdisc1 <> $cekStatusPrint->srt_flagdisc1){
-                    return response()->json(['kode' => 2, 'msg' => "Isian Status Aw & Ak Harus Beda !!"]);
+
+                    $prodMast = DB::table('TBMASTER_PRODMAST')
+                        ->where('prd_kodeigr', $kodeigr)
+                        ->where('prd_prdcd', $temp['plu'])
+                        ->first();
+
+                    $getVal = DB::table('TBMASTER_HARGABELI')
+                        ->LeftJoin('TBMASTER_SUPPLIER',function($join){
+                            $join->on('hgb_kodesupplier','sup_kodesupplier');
+                            $join->on('hgb_kodeigr','sup_kodeigr');
+                        })
+                        ->where('hgb_prdcd', $temp['plu'])
+                        ->where('hgb_tipe','=',2)
+                        ->where('hgb_kodeigr',$kodeigr)
+                        ->first();
+
+                    DB::table('TBTR_SORTIR_BARANG')
+                        ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $docNo, 'srt_tglsortir' => $date,
+                            'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
+                            'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
+                            'srt_kodedepartement' => $prodMast->prd_kodedepartement, 'srt_kodekategoribarang' => $prodMast->prd_kodekategoribarang, 'srt_bkp' => '',
+                            'srt_unit' => $temp['unit'], 'srt_frac' => $temp['frac'], 'srt_lokasi' => $kodeigr, 'srt_qtykarton' => $temp['ctn'], 'srt_qtypcs' => $temp['pcs'],
+                            'srt_qtybonus1' => '', 'srt_qtybonus2' => '', 'srt_hrgsatuan' => $temp['avgcost'], 'srt_flagdisc1' => '', 'srt_flagdisc2' => '',
+                            'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
+                            'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-
-
-                $prodMast = DB::table('TBMASTER_PRODMAST')
-                    ->where('prd_kodeigr', $kodeigr)
-                    ->where('prd_prdcd', $temp['plu'])
-                    ->first();
-
-                $getVal = DB::table('TBMASTER_HARGABELI')
-                    ->LeftJoin('TBMASTER_SUPPLIER',function($join){
-                        $join->on('hgb_kodesupplier','sup_kodesupplier');
-                        $join->on('hgb_kodeigr','sup_kodeigr');
-                    })
-                    ->where('hgb_prdcd', $temp['plu'])
-                    ->where('hgb_tipe','=',2)
-                    ->where('hgb_kodeigr',$kodeigr)
-                    ->first();
-
-                DB::table('TBTR_SORTIR_BARANG')
-                    ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $docNo, 'srt_tglsortir' => $date,
-                        'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
-                        'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
-                        'srt_kodedepartement' => $prodMast->prd_kodedepartement, 'srt_kodekategoribarang' => $prodMast->prd_kodekategoribarang, 'srt_bkp' => '',
-                        'srt_unit' => $temp['unit'], 'srt_frac' => $temp['frac'], 'srt_lokasi' => $kodeigr, 'srt_qtykarton' => $temp['ctn'], 'srt_qtypcs' => $temp['pcs'],
-                        'srt_qtybonus1' => '', 'srt_qtybonus2' => '', 'srt_hrgsatuan' => $temp['avgcost'], 'srt_flagdisc1' => '', 'srt_flagdisc2' => '',
-                        'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
-                        'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
+                DB::commit();
+                return response()->json(['kode' => 1, 'msg' => $docNo]);
             }
-
-            return response()->json(['kode' => 1, 'msg' => $docNo]);
+        }catch (\Exception $e){
+            return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
         }
+
     }
 
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
+        $kodeigr= $_SESSION['kdigr'];
         $p_reprint  = 'Y';
 
         $cekStatusPrint = DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->first();
@@ -241,18 +257,31 @@ class entrySortirBarangController extends Controller
 
         }
 
-        $datas = DB::select("select prs_namaperusahaan, prs_namacabang, prs_namaregional, prs_npwp, prs_alamat1, srt_tglsortir, srt_nosortir, srt_keterangan, prs_telepon, prd_perlakuanbarang, srt_prdcd, srt_qtykarton, srt_qtypcs, prd_deskripsipanjang, prd_unit||' / '||prd_frac SATUAN, prd_kodetag, hgb_statusbarang, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
-                                    from tbmaster_perusahaan, tbtr_sortir_barang, tbmaster_prodmast, tbmaster_hargabeli
-                                    where srt_nosortir = '$noDoc'
-                                              and prs_kodeigr = srt_kodeigr
-                                              and prd_prdcd = srt_prdcd
-                                              and prd_kodeigr = srt_kodeigr
-                                              and hgb_prdcd = srt_prdcd
-                                    order by srt_seqno
+//        $datas = DB::select("select prs_namaperusahaan, prs_namacabang, prs_namaregional, prs_npwp, prs_alamat1, srt_tglsortir, srt_nosortir, srt_keterangan, prs_telepon, prd_perlakuanbarang, srt_prdcd, srt_qtykarton, srt_qtypcs, prd_deskripsipanjang, prd_unit||' / '||prd_frac SATUAN, prd_kodetag, hgb_statusbarang, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
+//                                    from tbmaster_perusahaan, tbtr_sortir_barang, tbmaster_prodmast, tbmaster_hargabeli
+//                                    where srt_nosortir = '$noDoc'
+//                                              and prs_kodeigr = srt_kodeigr
+//                                              and prd_prdcd = srt_prdcd
+//                                              and prd_kodeigr = srt_kodeigr
+//                                              and hgb_prdcd = srt_prdcd
+//                                    order by srt_seqno
+//");
+        $datas = DB::select("SELECT srt_tglsortir, srt_nosortir || ' / ' || case when srt_gudangtoko = 'G' then 'GUDANG' else 'TOKO' end srt_nosortir, srt_prdcd, srt_qtykarton, srt_qtypcs, srt_keterangan, 
+                                                   prd_deskripsipanjang, prd_unit, prd_frac, prd_kodetag,
+                                                   hgb_statusbarang, CASE WHEN hgb_statusbarang = 'PT' THEN 'Y' ELSE '' END AS flag_pt, 
+                                                   CASE WHEN hgb_statusbarang = 'RT' OR hgb_statusbarang = 'TG' THEN 'Y' ELSE '' END AS flag_rttg,
+                                                   prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_namaregional, prs_npwp, prs_telepon 
+                                    FROM TBTR_SORTIR_BARANG,  TBMASTER_PRODMAST, TBMASTER_HARGABELI, TBMASTER_PERUSAHAAN
+                                    WHERE srt_nosortir = '$noDoc' AND srt_type = 'S' AND srt_kodeigr = '$kodeigr'
+                                             AND prd_kodeigr = srt_kodeigr AND prd_prdcd = srt_prdcd  
+                                            AND hgb_kodeigr = srt_kodeigr AND hgb_tipe = '2' AND hgb_prdcd = srt_prdcd
+                                            AND prs_kodeigr = srt_kodeigr
+                                    ORDER BY SRT_SEQNO
 ");
-//                Update rsk_recordid
+//                Update srt_flagdisc3
+        DB::beginTransaction();
         DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
-
+        DB::commit();
         $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.EntrySortirBarang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

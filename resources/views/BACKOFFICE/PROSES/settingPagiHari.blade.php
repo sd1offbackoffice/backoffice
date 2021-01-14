@@ -46,10 +46,6 @@
         </div>
     </div>
 
-    <style>
-
-    </style>
-
     <script>
 
         var today = new Date();
@@ -61,12 +57,8 @@
         // $("#tgl-transKmrn").datepicker({
         //     "dateFormat" : "dd/mm/yy",
         // });
-
+        //
         // $("#tgl-sistemSkrg").datepicker({
-        //     "dateFormat" : "dd/mm/yy",
-        // });
-
-        // $("#tgl-transSkrg").datepicker({
         //     "dateFormat" : "dd/mm/yy",
         // });
 
@@ -75,26 +67,10 @@
         $("#tgl-sistemSkrg").val(today)
 
         $('#btn-proses').on('click', function () {
-            // let doc         = $('#nmrtrn').val();
-            // let keterangan  = $('#keterangan').val();
-
-            // if (!doc || !keterangan){
-            //     swal('Data Tidak Boleh Kosong','','warning')
-            //     return false;
-            // }
-
-            // if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
-            //     saveData('cetak');
-            // } else {
-                window.open('/BackOffice/public/bo/proses/settingpagihari/cetak_perubahan_hrgjual/');
-                // clearField();
-            // }
+            window.open('/BackOffice/public/bo/proses/settingpagihari/cetak_perubahan_harga_jual/', "_blank");
+            window.open('/BackOffice/public/bo/proses/settingpagihari/cetak_daftar_plu_tag/', "_blank");
+            // window.location.href="/BackOffice/public/bo/proses/settingpagihari/cetak_perubahan_hrgjual/";
         });
-
-
-
-
-
 
     </script>
 

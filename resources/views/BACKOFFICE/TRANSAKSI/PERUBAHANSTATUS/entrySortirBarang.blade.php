@@ -16,7 +16,7 @@
                                     <div class="form-group row mb-0">
                                         <label for="i_nomordokumen" class="col-sm-4 col-form-label">Nomor Dokumen</label>
                                         <div class="col-sm-5">
-                                            <input onchange="checkNo()" type="text" class="form-control" id="i_nomordokumen" placeholder="V_NOSORTIR">
+                                            <input type="text" class="form-control" id="i_nomordokumen" placeholder="V_NOSORTIR">
                                         </div>
                                         <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px;margin-right: auto"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                         <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
@@ -167,48 +167,55 @@
         let tempSrt;
         let tempPlu;
 
-        function checkNo(){
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',
-                type: 'post',
-                data: {},
-                beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
-                success: function (result) {
-                    if($('#i_nomordokumen').value != result){
-                        swal('Nomor Sortir Salah!','','warning');
-                        $('#modal-loader').modal('hide');
-                        $('#i_nomordokumen').val('');
-                        return false;
-                    }
-                    else{
-                        $.ajax({
-                            url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
-                            type: 'post',
-                            data: {
-                                val:$('#i_nomordokumen').value
-                            },
-                            success: function (result) {
-                                if(!result[0].srt_nosortir){
-                                    swal('Nomor Sortir Salah!','','warning')
-                                    return false;
-                                }
-                            }, error: function () {
-                                alert('error');
-                            }
-                        })
-                    }
-
-                    $('#i_tgldokumen').val(formatDate('now'));
-                    $('#modal-loader').modal('hide');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-
-        }
+        // function checkNo(){
+        //     let checker = 0;
+        //     ajaxSetup();
+        //     $.ajax({
+        //         url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',
+        //         type: 'post',
+        //         data: {},
+        //         beforeSend: function () {
+        //             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+        //         },
+        //         success: function (result) {
+        //             if($('#i_nomordokumen').value != result){
+        //                 checker = checker + 1;
+        //                 //swal('Nomor Sortir Salah 1!','','warning');
+        //                 // $('#modal-loader').modal('hide');
+        //                 // $('#i_nomordokumen').val('');
+        //                 return false;
+        //             }
+        //             $.ajax({
+        //                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
+        //                 type: 'post',
+        //                 data: {
+        //                     val:$('#i_nomordokumen').value
+        //                 },
+        //                 success: function (result) {
+        //                     if(!result[0].srt_nosortir){
+        //                         checker = checker + 1;
+        //                         //swal('Nomor Sortir Salah 2!','','warning')
+        //                         //return false;
+        //                     }
+        //                 }, error: function () {
+        //                     alert('error');
+        //                 }
+        //             })
+        //
+        //             $('#modal-loader').modal('hide');
+        //             if(checker != 0){
+        //                 $('#i_nomordokumen').val('');
+        //             }else{
+        //                 $('#i_tgldokumen').val(formatDate('now'));
+        //                 $('#modal-loader').modal('hide');
+        //             }
+        //
+        //         }, error: function () {
+        //             alert('error');
+        //         }
+        //     })
+        //
+        // }
 
         function searchPlu2(val, row){
             choosePlu(convertPlu(val),row)
@@ -519,10 +526,10 @@
                                 let tempPT = "";
                                 let tempRT = "";
                                 if(result[i].prd_perlakuanbarang === "PT"){
-                                    tempPT = "PT"
+                                    tempPT = "Y"
                                 }
                                 else{
-                                    tempRT = result[i].prd_perlakuanbarang;
+                                    tempRT = "Y";
                                 }
                                 if(result[i].srt_tag === null){
                                     result[i].srt_tag = "";
@@ -558,10 +565,10 @@
                                 let tempPT = "";
                                 let tempRT = "";
                                 if(result[i].prd_perlakuanbarang === "PT"){
-                                    tempPT = "PT"
+                                    tempPT = "Y"
                                 }
                                 else{
-                                    tempRT = result[i].prd_perlakuanbarang;
+                                    tempRT = "Y";
                                 }
                                 if(result[i].srt_tag === null){
                                     result[i].srt_tag = "";
@@ -734,12 +741,12 @@
                             $('.ctn')[index].value = '0';
                             $('.pcs')[index].value = '0';
                             if(data.prd_perlakuanbarang === "PT"){
-                                $('.pt')[index].value = 'PT';
+                                $('.pt')[index].value = 'Y';
                                 $('.rttg')[index].value = '';
                             }
                             else{
                                 $('.pt')[index].value = '';
-                                $('.rttg')[index].value = data.prd_perlakuanbarang;
+                                $('.rttg')[index].value = 'Y';
                             }
                         }
                         for(i = 0; i < $('.plu').length; i++){

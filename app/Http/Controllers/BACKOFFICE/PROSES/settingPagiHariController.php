@@ -33,21 +33,18 @@ class settingPagiHariController extends Controller
             $tgltrskrg = $dateTime;
         }
         return response()->json(['kode' => 1, 'tgltrkmrn' => $tgltrkmrn, 'tglsistem' => $tglsistem, 'tgltrskrg' => $tgltrskrg]);
-
     }
 
-    public function cetak_perubahan_hrgjual(){
+    public function cetak_perubahan_harga_jual(){
 
         $kodeigr = $_SESSION['kdigr'];
         $ppn = '';
+        $nActMargin = '';
 
-        $temp = DB::select("Select DISTINCT NVL(count(1),0) INTO EOF
-        From TBTEMP_SETTING_PAGI_HARI;");
-
-        $perusahaan = DB::select("Select PRS_NAMAPERUSAHAAN,PRS_NAMACABANG
-          INTO NPers,NCab
-          From tbMaster_Perusahaan
-          WHERE PRS_KODEIGR = '$kodeigr';");
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->select('prs_namaperusahaan', 'prs_namacabang')
+            ->where('prs_kodeigr', '=', $kodeigr)
+            ->first();
 
         if($ppn = 0){
             $ppn = 1.1;
@@ -68,14 +65,16 @@ class settingPagiHariController extends Controller
                nvl(prd.prd_hrgjual,0) prd_hrgjual,
                nvl(prd.prd_hrgjual2,0) prd_hrgjual2,
                nvl(prd.prd_hrgjual3,0) prd_hrgjual3,
-               prd.prd_unit,
+               prd.prd_unit as unit,
                nvl(prd.prd_frac,1) prd_frac,
                prd_minjual,
                nvl(prd.prd_lastcost,0) prd_lastcost,
                nvl(prd.prd_avgcost,0) prd_avgcost,
-               prd.prd_tglhrgjual,
+               prd.prd_tglhrgjual prd_tglhrgjual,
                prd.prd_tglhrgjual3,
-               prd.prd_kodetag,
+               prd.prd_hrgjual prd_hrgjual,
+               prd.prd_hrgjual2 prd_hrgjual2,
+               prd.prd_kodetag as prd_kodetag,
                SUBSTR(prd.prd_deskripsipanjang,1,50) prd_deskripsipanjang,
                prmd.prmd_tglawal,
                prmd.prmd_tglakhir,
@@ -98,7 +97,40 @@ class settingPagiHariController extends Controller
         AND kat.kat_kodekategori(+) = prd.prd_kodekategoribarang
         order by prd_kodedivisi,prd_kodedepartement,prd_kodekategoribarang,temp.prdcd");
 
-        $pdf = PDF::loadview('BACKOFFICE/PROSES/settingpagihari-cetak-hrgjual', ['data' => $data]);
+            if($data[0]->prd_flagbkp1 == 'Y')
+            {
+                if($data[0]->awal == 'Y'){
+                    $nActMargin = ((($data[0]->prmd_hrgjual - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prmd_hrgjual) * 100);
+                }
+                if($data[0]->akhir == 'Y'){
+                    $nActMargin = ((($data[0]->prd_hrgjual2 - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prd_hrgjual2) * 100);
+                }
+                if($data[0]->awal == 'T' && $data[0]->akhir == 'T') {
+                    if ($data[0]->prd_hrgjual) {
+                        $nActMargin = 100;
+                    } else {
+                        $nActMargin = ((($data[0]->prd_hrgjual - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prd_hrgjual) * 100);
+                    }
+                }
+            } else {
+                if($data[0]->awal == 'Y'){
+                    $nActMargin = ((($data[0]->prmd_hrgjual - $data[0]->prd_lastcost) / $data[0]->prmd_hrgjual) * 100);
+                }
+                if($data[0]->akhir == 'Y'){
+                    $nActMargin = ((($data[0]->prd_hrgjual2 - $data[0]->prd_lastcost) / $data[0]->prd_hrgjual2) * 100);
+                }
+                if($data[0]->awal == 'T' && $data[0]->akhir == 'T'){
+                    if($data[0]->prd_hrgjual3){
+                        $nActMargin = 100;
+                    } else {
+                        $nActMargin = ((($data[0]->prd_hrgjual - $data[0]->prd_lastcost) / $data[0]->prd_hrgjual) * 100);
+                    }
+                }
+            }
+
+//            dd($data);
+
+        $pdf = PDF::loadview('BACKOFFICE/PROSES/settingpagihari-cetak-hrgjual', compact(['perusahaan', 'data', 'nActMargin']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -109,41 +141,16 @@ class settingPagiHariController extends Controller
 
     }
 
-    public function cetak_daftar_plu_tag(Request $request){
+    public function cetak_daftar_plu_tag(){
 
         $kodeigr = $_SESSION['kdigr'];
 
-        $data = DB::select("Select DISTINCT NVL(count(1),0) INTO EOF 
-	  FROM tbmaster_prodmast,
-		       tbmaster_stock,
-		       tbmaster_prodcrm,
-		       tbmaster_lokasi,
-		       tbmaster_divisi,
-		       tbmaster_departement,
-		       tbmaster_kategori
-		 WHERE prd_kodeigr = :global.KDIGR
-        AND SUBSTR(prd_prdcd, -1, 1) = '0'
-        AND prd_kodetag IN('N', 'X')
-        AND st_prdcd = prd_prdcd
-        AND st_kodeigr = prd_kodeigr
-        AND NVL(st_saldoakhir, 0) <> 0
-        AND st_lokasi = '01'
-        AND prc_kodeigr(+) = prd_kodeigr
-        AND prc_pluigr(+) = prd_prdcd
-        AND lks_kodeigr(+) = prd_kodeigr
-        AND lks_prdcd(+) = prd_prdcd
-        AND div_kodedivisi(+) = prd_kodedivisi
-        AND dep_kodedivisi(+) = prd_kodedivisi
-        AND dep_kodedepartement(+) = prd_kodedepartement
-        AND kat_kodedepartement(+) = prd_kodedepartement
-        AND kat_kodekategori(+) = prd_kodekategoribarang;");
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->select('prs_namaperusahaan', 'prs_namacabang')
+            ->where('prs_kodeigr', '=', $kodeigr)
+            ->first();
 
-        $temp = DB::select("Select PRS_NAMAPERUSAHAAN,PRS_NAMACABANG 
-          INTO NPers,NCab
-          From tbMaster_Perusahaan
-          WHERE PRS_KODEIGR = '$kodeigr'");
-
-        $data2 = DB::select("SELECT prd_prdcd,
+        $data = DB::select("SELECT prd_prdcd,
 		       prd_kodedivisi,
 		       div_namadivisi,
 		       prd_kodedepartement,
@@ -168,7 +175,7 @@ class settingPagiHariController extends Controller
 		       tbmaster_divisi,
 		       tbmaster_departement,
 		       tbmaster_kategori
-		 WHERE prd_kodeigr = :global.KDIGR
+		 WHERE prd_kodeigr = '$kodeigr'
 		   AND SUBSTR(prd_prdcd, -1, 1) = '0'
 		   AND prd_kodetag IN('N', 'X')
 		   AND st_prdcd = prd_prdcd
@@ -186,8 +193,14 @@ class settingPagiHariController extends Controller
 		   AND kat_kodekategori(+) = prd_kodekategoribarang
 		 ORDER BY PRD_KODEDIVISI,PRD_KODEDEPARTEMENT,PRD_KODEKATEGORIBARANG,PRD_PRDCD");
 
+        $pdf = PDF::loadview('BACKOFFICE/PROSES/settingpagihari-cetak-daftar-plu-tag', compact(['data', 'perusahaan']));
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
+        return $pdf->stream('BACKOFFICE/PROSES/settingpagihari-cetak-daftar-plu-tag');
 
     }
 }

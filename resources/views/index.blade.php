@@ -44,7 +44,6 @@
                                     echo ' ip = '.$_SESSION['ip'].'<br>';
                                     echo ' id = '.$_SESSION['id'].'<br>';
                                     echo ' ppn = '.$_SESSION['ppn'].'<br>';
-
                                 @endphp
                                 </marquee>
 
