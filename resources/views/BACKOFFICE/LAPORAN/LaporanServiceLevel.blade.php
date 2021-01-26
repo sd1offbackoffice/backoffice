@@ -14,11 +14,11 @@
                                     <div class="form-group row mb-0">
                                         <label for="tgl" class="col-sm-4 col-form-label text-right">Tanggal</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control field field1" field="1" id="tgl1">
+                                            <input type="text" class="form-control field field1" field="1" id="tgl1" onchange="checkDate('tgl1')">
                                         </div>
                                         <label for="tglsd" class="col-sm-1 col-form-label">s/d</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control field field2" field="2" id="tgl2">
+                                            <input type="text" class="form-control field field2" field="2" id="tgl2" onchange="checkDate('tgl2')">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -31,22 +31,22 @@
                                         </div>
                                         <label for="suppliersd" class="col-sm-1 col-form-label">s/d</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="supplier2">
+                                            <input type="text" class="form-control field field4" field="4" id="supplier2">
                                             <button id="btnSupp2" type="button" class="btn btn-lov p-0" data-toggle="modal" onclick="helpSupp('supplier2')">
                                                 <img src="{{asset('image/icon/help.png')}}" width="20px">
                                             </button>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="kodeMonitoringSupp" class="col-sm-4 col-form-label text-right">Kode Monitoring Supplier</label>
+                                        <label for="kodeMonitoring" class="col-sm-4 col-form-label text-right">Kode Monitoring Supplier</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="kodeMonitoringSupp">
-                                            <button id="btnKode" type="button" class="btn btn-lov p-0" data-toggle="modal" onclick="helpMonitoring('kodeMonitoringSupp')">
+                                            <input type="text" class="form-control field field5" field="5" id="kodeMtrSupp">
+                                            <button id="btnKode" type="button" class="btn btn-lov p-0" data-toggle="modal" onclick="helpMtrSupp('kodeMtrSupp')">
                                                 <img src="{{asset('image/icon/help.png')}}" width="20px">
                                             </button>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input disabled type="text" class="form-control" id="namaMonitoringSupp">
+                                            <input disabled type="text" class="form-control" id="namaMtrSupp">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -145,6 +145,9 @@
             "dateFormat" : "dd/mm/yy",
         });
 
+        $("#tgl1").val(today);
+        $("#tgl2").val(today);
+
         $(document).on('keypress', '.field', function (e) {
             if(e.which == 13) {
                 e.preventDefault();
@@ -159,22 +162,39 @@
             $('#modalHelp').modal('hide');
         }
 
+        function checkDate(periode){
+            if($('#tgl1').datepicker('getDate') > $('#tgl2').datepicker('getDate') && ($('#tgl1').val() != '' && $('#tgl2').val() != '')){
+                if(periode === 'tgl1'){
+                    swal({
+                        title: 'Tanggal Pertama lebih besar dari Tanggal Kedua!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $('#tgl1').val('').select();
+                    });
+                } else {
+                    swal({
+                        title: 'Tanggal Kedua lebih kecil dari Tanggal Pertama!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $('#tgl2').val('').select();
+                    });
+                }
+            }
+        }
+
         $('#searchModal').keypress(function (e) {
             if (e.which === 13) {
                 let idModal = $('#idModal').text();
                 let idField = $('#idField').text();
-                let input   = $('#searchModal').val();
+                let input = $('#searchModal').val();
 
-                if (idModal === 'supp'){
-                    searchSupp(input.toUpperCase(),idField);
-                } else if(idModal === 'kodemonitor'){
-                    searchDivisi(input.toUpperCase(),idField);
+                console.log(idField);
+
+                if (idModal === 'supp') {
+                    searchSupp(input, idField);
+                } else if (idModal === 'kodemonitor') {
+                    searchMtrSupp(input, idField);
                 }
-                // else if(idModal === 'D'){
-                //     searchDepartemen(input.toUpperCase(),idField);
-                // } else if(idModal === 'K'){
-                //     searchKategori(input.toUpperCase(),idField);
-                // }
             }
         });
 
@@ -211,7 +231,34 @@
             }
         }
 
-        function helpMonitoring(field) {
+        function searchSupp(input, field) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/laporan/laporanservicelevel/lov_supplier',
+                type: 'post',
+                data: {
+                    search:input
+                },
+                success: function (result) {
+                    $('#modalThName1').text('Kode Supplier');
+                    $('#modalThName2').text('Nama Supplier');
+                    $('#idModal').text('supp');
+                    $('#idField').text(field);
+                    $('#searchModal').val('');
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].sup_kodesupplier+"') class='modalRow'><td>"+ result[i].sup_kodesupplier +"</td><td>"+ result[i].sup_namasupplier +"</td></tr>")
+                    }
+
+                    $('#modalHelp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
+        }
+
+        function helpMtrSupp(field) {
             let supp1   = $('#supplier1').val();
             let supp2   = $('#supplier2').val();
 
@@ -239,7 +286,7 @@
 
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].msu_kodemonitoring+"') class='modalRow'><td>"+ result[i].msu_kodemonitoring +"</td><td>"+ result[i].msu_namamonitoring +"</td></tr>")
+                            $('#tbodyModalHelp').append("<tr onclick=chooseMtrSupp('"+ field +"','"+ result[i].msu_kodemonitoring+"') class='modalRow'><td>"+ result[i].msu_kodemonitoring +"</td><td>"+ result[i].msu_namamonitoring +"</td></tr>")
                         }
 
                         $('#modalHelp').modal('show');
@@ -248,6 +295,42 @@
                     }
                 })
             }
+        }
+
+        function chooseMtrSupp(kode,name) {
+            $('#kodeMtrSupp').val(kode);
+            $('#namaMtrSupp').val(name);
+            $('#modalHelp').modal('hide');
+        }
+
+        function searchMtrSupp(input, field) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/laporan/laporanservicelevel/lov_monitoring',
+                type: 'post',
+                data: {
+                    search: input
+                },
+                success: function (result) {
+                    $('#modalThName2').show();
+                    $('#modalThName3').hide();
+                    $('#modalThName2').show();
+                    $('#modalThName1').text('Kode Monitoring');
+                    $('#modalThName2').text('Nama Monitoring');
+                    $('#idModal').text('kodemonitor');
+                    $('#idField').text(field);
+                    $('#searchModal').val('');
+
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        $('#tbodyModalHelp').append("<tr onclick=chooseMtrSupp('"+ result[i].msu_kodemonitoring +"','"+ result[i].msu_namamonitoring+"') class='modalRow'><td>"+ result[i].msu_kodemonitoring +"</td><td>"+ result[i].msu_namamonitoring +"</td></tr>")
+                    }
+
+                    $('#modalHelp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            })
         }
 
         function cetak(){

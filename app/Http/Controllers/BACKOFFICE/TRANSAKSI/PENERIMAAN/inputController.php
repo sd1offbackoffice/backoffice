@@ -11,10 +11,14 @@ use Illuminate\Support\Facades\DB;
 class inputController extends Controller
 {
     public $getDataPlu;
+    public $tempDataSave = [];
+    public $tempPrdcdSave = [];
     public $param_cek;
     public $param_error;
     public $param_ndpp;
-    public $tempDataSave;
+    public $param_rec = 0;
+    public $param_seqno = 0;
+    public $param_simpanData;
 
     public function index()
     {
@@ -85,7 +89,7 @@ class inputController extends Controller
 
         }
 
-        $data = DB::select("SELECT a.*, b.prd_deskripsipanjang, b.prd_unit, b.prd_frac, b.prd_kodetag, nvl(b.prd_flagbkp1, ' ') as prd_flagbkp1, c.sup_namasupplier, c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
+        $data = DB::select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier, c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
                                       FROM tbtr_backoffice a
                                            LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
                                            LEFT JOIN tbmaster_supplier c ON a.trbo_kodesupplier = c.sup_kodesupplier and a.trbo_kodeigr = c.sup_kodeigr
@@ -1607,6 +1611,295 @@ class inputController extends Controller
         }
 
         return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
+    }
+
+    public function changeBonus1(Request $request){
+        $bonus1     = $request->bonus1;
+        $prdcd      = $request->prdcd;
+        $supplier   = $request->supplier;
+        $noPo       = $request->noPo;
+        $kodeigr    = $_SESSION['kdigr'];
+        $tempDataPlu= $request->tempDataPLU;
+        $this->getDataPlu = (object) $tempDataPlu;
+        $msg        = '';
+        $kode       = 0;
+
+        $this->getDataPlu->i_bonus1 = $bonus1;
+
+        $chkGets    = $this->chkGets(2, $prdcd, $kodeigr, $supplier, $noPo);
+
+        if ($chkGets['kode'] == 2){
+            if ($this->param_error == 0){
+                $msg = $chkGets['msg'];
+            }
+        } else {
+            $kode = 1;
+            $msg  = "Success";
+        }
+
+        return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
+    }
+
+    public function changeRphDisc(Request $request) {
+        $prdcd = $request->prdcd;
+        $supplier = $request->supplier;
+        $noPo = $request->noPo;
+        $kodeigr = $_SESSION['kdigr'];
+        $tempDataPlu = $request->tempDataPLU;
+        $this->getDataPlu = (object)$tempDataPlu;
+        $msg = '';
+        $kode = 0;
+
+        $chkGets    = $this->chkGets(7, $prdcd, $kodeigr, $supplier, $noPo);
+
+        if ($chkGets['kode'] == 2){
+            if ($this->param_error == 0){
+                $msg = $chkGets['msg'];
+            }
+        } else {
+            $kode = 1;
+            $msg  = "Success";
+        }
+
+        return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
+
+    }
+
+    public function rekamData(Request $request){
+        $prdcd  = $request->prdcd;
+        $noBtb  = $request->noBTB;
+        $noPo   = $request->noPo;
+        $kodeigr = $_SESSION['kdigr'];
+        $tempDataPlu = $request->tempDataPLU;
+        $tempData    = $request->tempDataSave;
+        $this->getDataPlu = (object)$tempDataPlu;
+        $data = $this->getDataPlu; //**** tempdataplu -> getdataplu supaya berbentuk object. dari getdataplu ke data supaya pakainya lebih mudah
+
+//        dd($data);
+
+        if ($tempData){
+            foreach ($tempData as $datas){
+                if ($datas['trbo_prdcd'] != $prdcd){
+                    array_push($this->tempDataSave,$datas);
+                }
+            }
+        }
+
+        $checkBtb   = DB::table('tbtr_backoffice')->where('trbo_nodoc', $noBtb)->get()->toArray();
+
+        if ($checkBtb){
+//            --- Tidak dipakai, karena validasi pas pakai noPO ini belum bisa dibuat, karena ketika halaman ditutup, belum bisa update otomatis supaya noPO dapat di pakai oleh user lain
+//            UPDATE TBTR_PO_H
+//            SET TPOH_RECORDID = NULL
+//            WHERE TPOH_NOPO = :NO_PO AND NVL (TPOH_RECORDID, '9') <> 'X';
+//
+//            UPDATE TBTR_PO_D
+//            SET TPOD_RECORDID = NULL
+//            WHERE  TPOD_NOPO = :NO_PO AND NVL (TPOD_RECORDID, '9') <> 'X' AND NVL (TPOD_QTYPB, 0) = 0;
+
+            $msg = "Nomor BPB ".$noBtb." Sudah Ada di TBTR_BACKOFFICE !! Hubungi EDP !!";
+
+            return response()->json(['kode' => 0, 'msg' => $msg, 'data' => $data]);
+        } else {
+//            if (((int)$data->i_totalpo) - ((int)$data->grant_total) > 500){
+//                return response()->json(['kode' => 0, 'msg' => "Selisih Total PO > 500 !!", 'data' => '']);
+//            } // ----- Tidak dipakai karena tidak ada yg init i_totalpo dan grant_total
+
+            if ($data->i_qty * $data->i_frac + $data->i_qtyk > $data->qty_po){
+                $data->i_qty = floor($data->qty_po / $data->tpod_isibeli);
+                $data->i_qtyk = $data->qty_po - ($data->i_qty * $data->tpod_isibeli);
+
+                return response()->json(['kode' => 0, 'msg' => "Kuantum melebihi PO", 'data' => $data]);
+            } else {
+//               --- Part dimana cek parameter.arr_plu di hilangkan karena bisa pakai tempDataSave
+
+                if ($this->param_rec == 0){
+                    $temp = new \stdClass();
+
+                    $temp->trbo_prdcd       = $prdcd;
+                    $temp->trbo_kodetag     = $data->i_tag;
+                    $temp->trbo_bkp         = $data->i_bkp;
+                    $temp->trbo_hrgsatuan    = $data->i_hrgbeli;
+                    $temp->qty              = $data->i_qty;
+                    $temp->qtyk             = $data->i_qtyk;
+                    $temp->trbo_qty         = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
+                    $temp->trbo_qtybonus1   = $data->i_bonus1;
+                    $temp->trbo_qtybonus2   = $data->i_bonus2;
+                    $temp->trbo_persendisc1   = $data->i_persendis1;
+                    $temp->trbo_rphdisc1   = $data->i_rphdisc1;
+                    $temp->trbo_persendisc2 = $data->i_persendis2;
+                    $temp->trbo_rphdisc2    = $data->i_rphdisc2;
+                    $temp->trbo_persendisc2ii = $data->i_persendis2a;
+                    $temp->trbo_rphdisc2ii  = $data->i_rphdisc2a;
+                    $temp->trbo_persendisc2iii = $data->i_persendis2b;
+                    $temp->trbo_rphdisc2iii = $data->i_rphdisc2b;
+                    $temp->trbo_persendisc3 = $data->i_persendis3;
+                    $temp->trbo_rphdisc3    = $data->i_rphdisc3;
+                    $temp->trbo_persendisc4 = $data->i_persendis4;
+                    $temp->trbo_rphdisc4    = $data->i_rphdisc4;
+                    $temp->trbo_keterangan   = $data->i_keterangan;
+                    $temp->trbo_bkp         = $data->i_bkp;
+                    $temp->trbo_kodetag     = $data->i_tag;
+                    $temp->barang           = $data->i_barang;
+                    $temp->trbo_averagecost = ($data->i_unit == 'KG') ? $data->i_acost * 1 : $data->i_acost * $data->i_frac;
+                    $temp->trbo_lcost       = $data->i_lcost;
+                    $temp->kemasan          = $data->i_kemasan;
+                    $temp->total_disc       = $data->i_totaldisc;
+                    $temp->total_rph        = $data->i_total;
+                    $temp->trbo_gross       = $data->i_gross;
+                    $temp->trbo_ppnrph      = $data->i_ppn;
+                    $temp->trbo_ppnbmrph    = $data->i_bm;
+                    $temp->trbo_ppnbtlrph   = $data->i_botol;
+                    $temp->trbo_kodeigr     = $kodeigr;
+                    $temp->trbo_kodedivisi  = $data->tpod_kodedivisi;
+                    $temp->trbo_kodedepartement = $data->tpod_kodedepartemen;
+                    $temp->trbo_kodekategoribrg = $data->tpod_kategoribarang;
+                    $temp->trbo_unit        = $data->i_unit;
+                    $temp->trbo_frac        = $data->i_frac;
+                    $temp->item             = 1;
+                    $temp->trbo_flagdisc1   = $data->i_flagdisc1;
+                    $temp->trbo_flagdisc2   = $data->i_flagdisc2;
+                    $temp->trbo_flagdisc3   = $data->i_flagdisc3;
+                    $temp->trbo_flagdisc4   = $data->i_flagdisc4;
+                    $temp->trbo_discrph     = $data->i_disc1 + $data->i_disc2 + $data->i_disc2a + $data->i_disc2b + $data->i_disc3 + $data->i_disc4;
+                    $temp->trbo_dis4cp      = $data->i_dis4cp;
+                    $temp->trbo_dis4cr      = $data->i_dis4cr;
+                    $temp->trbo_dis4rp      = $data->i_dis4rp;
+                    $temp->trbo_dis4rr      = $data->i_dis4rr;
+                    $temp->trbo_dis4jp      = $data->i_dis4jp;
+                    $temp->trbo_dis4jr      = $data->i_dis4jr;
+                    $this->param_seqno      = $this->param_seqno + 1;
+                    $temp->trbo_seqno       = $this->param_seqno;
+                    $temp->trbo_furgnt      = $data->i_jenispb;
+                    $temp->trbo_oldcost     = $data->i_lcost;
+
+                    array_push($this->tempDataSave,$temp);
+
+                    $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
+//                    $updatePoD  = DB::table('tbtr_po_d')
+//                        ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
+//                        ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
+//
+//                    $updatePoH  = DB::table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
+                }
+
+            }
+
+            return response()->json(['kode' => 1, 'msg' => "Rekam Data Berhasil", 'data' => $this->tempDataSave]);
+        }
+    }
+
+    public function transferPO(Request $request){
+        $prdcd  = $request->prdcd;
+        $noBtb  = $request->noBTB;
+        $supplier = $request->supplier;
+        $noPo   = $request->noPo;
+        $kodeigr = $_SESSION['kdigr'];
+
+
+//        $temp1 = DB::select("SELECT NVL (COUNT (1), 0) as temp1
+//                                      FROM TBTR_BACKOFFICE
+//                                     WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NOPO = NVL('$noPo', '123') AND NVL(trbo_recordid, '0') <> 1
+//                                         AND NVL(TRBO_RECORDID, '0') <> 1");
+//
+//        $temp2 = DB::select("SELECT NVL (COUNT (1), 0) as temp2
+//                                      FROM TBTR_MSTRAN_D
+//                                     WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'  AND NVL(MSTD_RECORDID, '0') <> 1");
+//
+//        if ($temp1 != 0 || $temp2 != 0){
+//            return response()->json(['kode' => 2, 'msg' => "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D, Program Akan Keluar Otomatis !!", 'data' => '']);
+//        }
+//
+//        if ($noPo == '' || !$noPo){
+//            return response()->json(['kode' => 2, 'msg' => "Check No PO", 'data' => '']);
+//        }
+//
+//        $recID  = DB::select("SELECT NVL (TPOH_RECORDID, 0)
+//                                      FROM TBTR_PO_H
+//                                     WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
+//
+//        if ($recID == 'X'){
+//            return response()->json(['kode' => 2, 'msg' => "PO Sedang Dipakai di DCP", 'data' => '']);
+//        }
+
+        $getPOData  = $this->getPOData($kodeigr,$supplier,$noPo);
+
+        dd($getPOData);
+
+    }
+
+    public function getPOData($kodeigr, $supplier, $noPo){
+        $query4 = $this->query4($kodeigr, $supplier, $noPo);
+
+        return $query4;
+    }
+
+    public function query4($kodeigr, $supplier, $noPo){
+        $data   = DB::select("SELECT  tpod_kodeigr,
+                                             tpod_recordid,
+                                             tpod_nopo,
+                                             tpod_tglpo,
+                                             tpod_kodedivisi,
+                                             tpod_kodedepartemen,
+                                             tpod_kategoribarang,
+                                             tpod_prdcd,
+                                             NVL(tpod_qtypo, 0) qty_po,
+                                             tpod_hrgsatuan,
+                                             tpod_satuanbeli,
+                                             tpod_isibeli,
+                                             tpod_persentasedisc1,
+                                             tpod_rphdisc1,
+                                             tpod_flagdisc1,
+                                             tpod_persentasedisc2,
+                                             tpod_persentasedisc2ii,
+                                             tpod_persentasedisc2iii,
+                                             tpod_rphdisc2,
+                                             tpod_rphdisc2ii,
+                                             tpod_rphdisc2iii,
+                                             tpod_flagdisc2,
+                                             tpod_persentasedisc3,
+                                             tpod_rphdisc3,
+                                             tpod_flagdisc3,
+                                             tpod_flagdisc4,
+                                             tpod_jenispb,
+                                             NVL(tpod_bonuspo1, 0) bonus1,
+                                             NVL(tpod_bonuspo2, 0) bonus2,
+                                             NVL(tpod_gross, 0) gross,
+                                             NVL(tpod_rphttldisc, 0) tpod_rphttldisc,
+                                             NVL(tpod_ppn, 0) tpod_ppn,
+                                             NVL(tpod_ppnbm, 0) tpod_ppnbm,
+                                             NVL(tpod_ppnbotol, 0) tpod_ppnbotol,
+                                             NVL(tpod_persentasedisc4cashdisc, 0) dis4cp,
+                                             NVL(tpod_rphdisc4, 0) dis4rp,
+                                             NVL(tpod_persentasedisc4df, 0) dis4jp,
+                                             NVL(tpod_rphdisc4cash, 0) dis4cr,
+                                             NVL(tpod_rphdisc4retur, 0) dis4rr,
+                                             NVL(tpod_rphdisc4df, 0) dis4jr,
+                                             tpod_keterangan,
+                                             prd_deskripsipanjang,
+                                             prd_frac,
+                                             prd_flagbkp1,
+                                             prd_flagbkp2,
+                                             prd_unit,
+                                             prd_lastcost,
+                                             prd_kodetag,
+                                             st_avgcost,
+                                             st_lastcost,
+                                             sup_pkp,
+                                             prd_isibeli
+                                        FROM tbtr_po_d aa, tbmaster_prodmast bb, tbmaster_stock, tbmaster_supplier
+                                       WHERE tpod_nopo = '$noPo'
+                                         AND tpod_kodeigr = '$kodeigr'
+                                         AND bb.prd_prdcd = aa.tpod_prdcd
+                                         AND bb.prd_kodeigr = aa.tpod_kodeigr
+                                         AND st_prdcd(+) = aa.tpod_prdcd
+                                         AND st_kodeigr(+) = aa.tpod_kodeigr
+                                         AND st_lokasi(+) = '01'
+                                         AND sup_kodesupplier(+) = '$supplier'
+                                         AND sup_kodeigr(+) = '$kodeigr'
+                                    ORDER BY tpod_prdcd");
+
+        return $data;
     }
 
 

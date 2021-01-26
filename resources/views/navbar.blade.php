@@ -24,6 +24,10 @@
     <script src={{asset('/js/boostable.js')}}></script>
     <script src={{asset('/js/sticktable.js')}}></script>
     <script src="{{ asset('/js/MonthPicker.js') }}"></script>
+    {{--<script src="vendor/daterangepicker/moment.min.js"></script>--}}
+    {{--<script src="vendor/daterangepicker/daterangepicker.js"></script>--}}
+    <script src="{{ asset('login_assets/vendor/daterangepicker/moment.min.js')}}"></script>
+    <script src="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.js')}}"></script>
 
     <link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
     <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
@@ -34,6 +38,8 @@
     <link rel="stylesheet" href={{ asset('css/sticktable.css') }}  rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/MonthPicker.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.css')}}">
+
     {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" >--}}
     {{--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" >--}}
 
@@ -153,7 +159,7 @@
                                                 <li><a href="{{url("/bo/transaksi/pengeluaran/input")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery NPB</a></li>
                                                 <li><a href="{{url("/bo/transaksi/pengeluaran/pembatalan")}}">Pembatalan NPB</a></li>
-                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery Surat Jalan</a></li>--}}
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inqueryrtrsup")}}">Inquery Retur Barang Per Supplier</a></li>
                                                 {{--<li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>--}}
                                                 {{--<li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>--}}
                                                 {{--<li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>--}}
@@ -201,6 +207,8 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bo/proses/konversi")}}">Konversi Item Perishable Olahan</a></li>
                                         <li><a href="{{url("/bo/proses/settingpagihari/index")}}">Setting Pagi Hari</a></li>
+                                        <li><a href="{{url("/bo/proses/hitungulangstock")}}">Hitung Ulang Stock</a></li>
+                                        <li><a href="{{url("/bo/proses/monthend")}}">Month End</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
@@ -229,6 +237,7 @@
                                        aria-expanded="false">Menu PKM Toko</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bo/pkm/kertas-kerja")}}">Proses Kertas Kerja PKM</a></li>
+                                        <li><a href="{{url("/bo/pkm/entry-inquery")}}">Entry & Inquery Kertas Kerja PKM</a></li>
                                     </ul>
                                 </li>
                             </ul>

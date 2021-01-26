@@ -89,6 +89,7 @@ class PembatalanController extends Controller
         if ($periode <> $tgltran) {
             $message = 'Transaksi tidak bisa dibatalkan, karena sudah closing/month end!';
             $status = 'error';
+            return compact(['message', 'status']);
         } else {
             DB::beginTransaction();
             $datas = DB::table('tbtr_mstran_h')

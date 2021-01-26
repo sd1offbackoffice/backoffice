@@ -110,12 +110,12 @@ function checkDate(date){
 }
 
 //nvl
-function nvl(str,ret){
-    if(str == null || str == ''){
-        return ret;
-    }
-    else str;
-}
+// function nvl(str,ret){
+//     if(str == null || str == ''){
+//         return ret;
+//     }
+//     else str;
+// }
 
 // Template alert error di ajax
 // Created By : JR (05/01/2021) | Modify By :

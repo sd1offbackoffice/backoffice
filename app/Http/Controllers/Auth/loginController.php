@@ -114,6 +114,7 @@ class loginController extends Controller
                     . SUBSTR($tgl, 11, 1)
                     . SUBSTR($tgl, 17, 1)
                     . SUBSTR($tgl, 1, 1);
+//                dd($truepass);
                 if ($request->password == $truepass) {
                     $flagedp = 1;
                     DB::table('tbmaster_computer')

@@ -8,73 +8,86 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">PROSES ALL DATA PKM</legend>
-
+                    <legend  class="w-auto ml-3">ENTRY & INQUERY KERTAS KERJA PKM</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <label for="periode" class="col-sm-3 text-right col-form-label">Periode Proses</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="periode" onchange="check()">
-                            </div>
-                            <label class="col-form-label">[ MM/YYYY ]</label>
-                        </div>
-                        <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PRDCD</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd" disabled>
-                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-form-label">[ ALL PLU -> KOSONG ]</label>
                         </div>
                         <div class="row form-group">
-                            <label for="desk" class="col-sm-3 text-right col-form-label"></label>
-                            <div class="col-sm-8">
+                            <label for="desk" class="col-sm-3 text-right col-form-label">DESKRIPSI</label>
+                            <div class="col-sm-7 pr-0">
+                                <input type="text" class="form-control" id="desk" disabled>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="unit" disabled>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row form-group">
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DIVISI</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="div_kode" disabled>
+                                <button id="btn_divisi" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_divisi">
+                                    <i class="fas fa-question"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-5 pl-0 pr-0">
+                                <input maxlength="10" type="text" class="form-control" id="div_nama" disabled>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="dep_kode" disabled>
+                                <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_departement">
+                                    <i class="fas fa-question"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-5 pl-0 pr-0">
+                                <input maxlength="10" type="text" class="form-control" id="dep_nama" disabled>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="prdcd" disabled>
+                                <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_kategori">
+                                    <i class="fas fa-question"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-5 pl-0 pr-0">
                                 <input maxlength="10" type="text" class="form-control" id="desk" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="sales1" class="col-sm-3 text-right col-form-label">Periode Sales 1</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales1" onchange="check()">
-                            </div>
-                            <label class="col-form-label">[ MM/YYYY ]</label>
-                        </div>
-                        <div class="row form-group">
-                            <label for="sales2" class="col-sm-3 text-right col-form-label">Periode Sales 2</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales2" onchange="check()">
-                            </div>
-                            <label class="col-form-label">[ MM/YYYY ]</label>
-                        </div>
-                        <div class="row form-group">
-                            <label for="sales3" class="col-sm-3 text-right col-form-label">Periode Sales 3</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales3" onchange="check()">
-                            </div>
-                            <label class="col-form-label">[ MM/YYYY ]</label>
-                        </div>
-                        <div class="row form-group">
-                            <label for="sales3" class="col-sm-3 text-right col-form-label">Hitung Ulang Data Sales</label>
+                            <label for="sales3" class="col-sm-3 text-right col-form-label">ITEM</label>
                             <div class="col-sm-2">
                                 <select class="form-control">
-                                    <option>Ya</option>
-                                    <option selected>Tidak</option>
+                                    <option value="1">1 - NASIONAL</option>
+                                    <option value="2">2 - OMI / IDM</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body pt-0 mr-3">
-                        <div class="row">
-                            <button id="btn_history" class="col-sm-4 btn btn-primary ml-3" onclick="showHistoryView()">
-                                History Proses dan Inquery
-                            </button>
-                            <div class="col"></div>
-                            <button class="col-sm-4 btn btn-success mr-2" onclick="proses()">PROSES ALL DATA PKM</button>
+                        <hr>
+                        <div class="row form-group">
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KODE MONITORING PLU</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="prdcd" disabled>
+                                <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd">
+                                    <i class="fas fa-question"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-5 pl-0 pr-0">
+                                <input maxlength="10" type="text" class="form-control" id="desk" disabled>
+                            </div>
                         </div>
                     </div>
-
                 </fieldset>
             </div>
         </div>
@@ -163,7 +176,93 @@
                                     <tr>
                                         <th>Deskripsi</th>
                                         <th>PLU</th>
-                                        <th>Konversi</th>
+                                        <th>Unit</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    </tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_divisi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0 text-center" id="table_divisi">
+                                    <thead class="thColor">
+                                    <tr>
+                                        <th>Nama Divisi</th>
+                                        <th>Kode Divisi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    </tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_departement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0 text-center" id="table_departement">
+                                    <thead class="thColor">
+                                    <tr>
+                                        <th>Nama Departement</th>
+                                        <th>Kode Departement</th>
+                                        <th>Kode Divisi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    </tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_kategori" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0 text-center" id="table_kategori">
+                                    <thead class="thColor">
+                                    <tr>
+                                        <th>Nama Kategori</th>
+                                        <th>Kode Kategori</th>
+                                        <th>Kode Departement</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -250,13 +349,14 @@
                 Button: false
             });
 
-            getPRDCD();
-            getHistory();
+            // getPRDCD();
+            // getHistory();
+            getDivisi();
         });
 
         function getPRDCD(){
             lovutuh = $('#table_prdcd').DataTable({
-                "ajax": '{{ url()->current().'/get-data-lov-prdcd' }}',
+                "ajax": '{{ url()->current().'/get-lov-prdcd' }}',
                 "columns": [
                     {data: 'desk', name: 'desk'},
                     {data: 'plu', name: 'plu'},
@@ -275,7 +375,7 @@
                 },
                 "order" : [],
                 "initComplete": function(){
-                    $('#btn_prdcd').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+                    // $('#btn_prdcd').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
 
                     $(document).on('click', '.row-prdcd', function (e) {
                         $('#prdcd').val($(this).find('td:eq(1)').html());
@@ -283,6 +383,132 @@
                         // $('#olahan_plu').val($(this).find('td:eq(3)').html());
 
                         $('#m_prdcd').modal('hide');
+                    });
+                }
+            });
+        }
+
+        function getDivisi(){
+            if($.fn.DataTable.isDataTable('#table_divisi')){
+                $('#table_divisi').DataTable().destroy();
+            }
+
+            $("#table_divisi tbody [role='row']").remove();
+
+            lovutuh = $('#table_divisi').DataTable({
+                "ajax": '{{ url()->current().'/get-lov-divisi' }}',
+                "columns": [
+                    {data: 'div_namadivisi'},
+                    {data: 'div_kodedivisi'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-divisi').css({'cursor': 'pointer'});
+                },
+                "order" : [],
+                "initComplete": function(){
+                    // $('#btn_divisi').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+
+                    $(document).on('click', '.row-divisi', function (e) {
+                        $('#div_kode').val($(this).find('td:eq(1)').html());
+                        $('#div_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                        getDepartement();
+
+                        $('#m_divisi').modal('hide');
+                    });
+                }
+            });
+        }
+
+        function getDepartement(){
+            if($.fn.DataTable.isDataTable('#table_departement')){
+                $('#table_departement').DataTable().destroy();
+            }
+
+            $("#table_departement tbody [role='row']").remove();
+
+            lovutuh = $('#table_departement').DataTable({
+                "ajax": {
+                    url: '{{ url()->current().'/get-lov-departement' }}',
+                    data: {
+                        kodedivisi: $('#div_kode').val()
+                    }
+                },
+                "columns": [
+                    {data: 'dep_namadepartement'},
+                    {data: 'dep_kodedepartement'},
+                    {data: 'dep_kodedivisi'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-departement').css({'cursor': 'pointer'});
+                },
+                "order" : [],
+                "initComplete": function(){
+                    // $('#btn_departement').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+
+                    $(document).on('click', '.row-departement', function (e) {
+                        $('#dep_kode').val($(this).find('td:eq(1)').html());
+                        $('#dep_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                        $('#m_departement').modal('hide');
+                    });
+                }
+            });
+        }
+
+        function getKategori(){
+            if($.fn.DataTable.isDataTable('#table_kategori')){
+                $('#table_kategori').DataTable().destroy();
+            }
+
+            $("#table_kategori tbody [role='row']").remove();
+
+            lovutuh = $('#table_kategori').DataTable({
+                "ajax": {
+                    url: '{{ url()->current().'/get-lov-kategori' }}',
+                    data: {
+                        kodedepartement: $('#div_kode').val()
+                    }
+                },
+                "columns": [
+                    {data: 'kat_namakategori'},
+                    {data: 'kat_kodekategori'},
+                    {data: 'kat_kodedepartement'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-kategori').css({'cursor': 'pointer'});
+                },
+                "order" : [],
+                "initComplete": function(){
+                    $(document).on('click', '.row-kategori', function (e) {
+                        $('#kat_kode').val($(this).find('td:eq(1)').html());
+                        $('#kat_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                        $('#m_kategori').modal('hide');
                     });
                 }
             });
@@ -460,78 +686,78 @@
             {{--periodeAktif = $.datepicker.formatDate('mm/yy', new Date());--}}
 
             {{--if(!$('#periode').val() || !$('#prdcd').val() || !$('#sales1').val() || !$('#sales2').val() || !$('#sales3').val()){--}}
-                {{--swal({--}}
-                    {{--title: 'Inputan belum lengkap!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--swal({--}}
+            {{--title: 'Inputan belum lengkap!',--}}
+            {{--icon: 'error'--}}
+            {{--});--}}
             {{--}--}}
             {{--else if($('#periode').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--swal({--}}
+            {{--title: 'Periode lebih besar dari periode aktif!',--}}
+            {{--icon: 'error'--}}
+            {{--});--}}
             {{--}--}}
             {{--else if($('#sales1').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 1 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--swal({--}}
+            {{--title: 'Periode Sales 1 lebih besar dari periode aktif!',--}}
+            {{--icon: 'error'--}}
+            {{--});--}}
             {{--}--}}
             {{--else if($('#sales2').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 2 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--swal({--}}
+            {{--title: 'Periode Sales 2 lebih besar dari periode aktif!',--}}
+            {{--icon: 'error'--}}
+            {{--});--}}
             {{--}--}}
             {{--else if($('#sales3').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 3 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--swal({--}}
+            {{--title: 'Periode Sales 3 lebih besar dari periode aktif!',--}}
+            {{--icon: 'error'--}}
+            {{--});--}}
             {{--}--}}
             {{--else{--}}
-                {{--swal({--}}
-                    {{--title: 'Yakin ingin melakukan proses data?',--}}
-                    {{--icon: 'warning',--}}
-                    {{--buttons: true,--}}
-                    {{--dangerMode: true--}}
-                {{--}).then((ok) => {--}}
-                    {{--if(ok){--}}
-                        {{--$.ajax({--}}
-                            {{--url: '{{ url()->current() }}/proses',--}}
-                            {{--type: 'POST',--}}
-                            {{--headers: {--}}
-                                {{--'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-                            {{--},--}}
-                            {{--data: {--}}
-                                {{--periode: $('#periode').val(),--}}
-                                {{--sales1: $('#sales1').val(),--}}
-                                {{--sales2: $('#sales2').val(),--}}
-                                {{--sales3: $('#sales3').val(),--}}
+            {{--swal({--}}
+            {{--title: 'Yakin ingin melakukan proses data?',--}}
+            {{--icon: 'warning',--}}
+            {{--buttons: true,--}}
+            {{--dangerMode: true--}}
+            {{--}).then((ok) => {--}}
+            {{--if(ok){--}}
+            {{--$.ajax({--}}
+            {{--url: '{{ url()->current() }}/proses',--}}
+            {{--type: 'POST',--}}
+            {{--headers: {--}}
+            {{--'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+            {{--},--}}
+            {{--data: {--}}
+            {{--periode: $('#periode').val(),--}}
+            {{--sales1: $('#sales1').val(),--}}
+            {{--sales2: $('#sales2').val(),--}}
+            {{--sales3: $('#sales3').val(),--}}
 
-                            {{--},--}}
-                            {{--beforeSend: function () {--}}
-                                {{--$('#modal-loader').modal('show');--}}
-                            {{--},--}}
-                            {{--success: function (response) {--}}
-                                {{--$('#modal-loader').modal('hide');--}}
-                                {{--swal({--}}
-                                    {{--title: response.title,--}}
-                                    {{--text: response.message,--}}
-                                    {{--icon: response.status,--}}
-                                {{--});--}}
-                            {{--},--}}
-                            {{--error: function (error) {--}}
-                                {{--$('#modal-loader').modal('hide');--}}
-                                {{--swal({--}}
-                                    {{--title: 'Terjadi kesalahan!',--}}
-                                    {{--text: error.responseJSON.message,--}}
-                                    {{--icon: 'error',--}}
-                                {{--});--}}
-                            {{--}--}}
-                        {{--});--}}
-                    {{--}--}}
-                {{--});--}}
+            {{--},--}}
+            {{--beforeSend: function () {--}}
+            {{--$('#modal-loader').modal('show');--}}
+            {{--},--}}
+            {{--success: function (response) {--}}
+            {{--$('#modal-loader').modal('hide');--}}
+            {{--swal({--}}
+            {{--title: response.title,--}}
+            {{--text: response.message,--}}
+            {{--icon: response.status,--}}
+            {{--});--}}
+            {{--},--}}
+            {{--error: function (error) {--}}
+            {{--$('#modal-loader').modal('hide');--}}
+            {{--swal({--}}
+            {{--title: 'Terjadi kesalahan!',--}}
+            {{--text: error.responseJSON.message,--}}
+            {{--icon: 'error',--}}
+            {{--});--}}
+            {{--}--}}
+            {{--});--}}
+            {{--}--}}
+            {{--});--}}
             {{--}--}}
         }
 

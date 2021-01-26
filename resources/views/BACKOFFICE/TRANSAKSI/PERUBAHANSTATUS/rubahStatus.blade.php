@@ -730,7 +730,7 @@
             if(doc && docSort && keterangan === '* TAMBAH' || doc && docSort && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/','_blank');
+                window.open('url(\'/bo/transaksi/pengeluaran/inqueryrtrsup/get-data-detail\')transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/','_blank');
 
                 ajaxSetup();
                 $.ajax({

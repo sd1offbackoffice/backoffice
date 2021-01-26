@@ -217,17 +217,15 @@ class ProsesKertasKerjaPKMController extends Controller
                     pkm_periode3,
                  pkM_qty3,
                  pkm_hari3,
+                 pkm_pkmt,
                  pkm_kodesupplier,
                  to_char(pkm_koefisien) pkm_koefisien,
-                 to_char(to_date(pkm_periodeproses,'mmyyyy'),'MON-YY') pkm_periodeproses ,
-                 pkm_pkmt,
-                 pkm_mpkm,
-                 nvl(pkm_qtymplus,0) pkm_qtyminor, pkm_adjust_by,
+                 to_char(to_date(pkm_periodeproses,'mmyyyy'),'MON-YY') pkm_periodeproses,
                  to_char(NVL (NVL (pkm_adjust_dt, pkm_modify_dt), pkm_create_dt),'dd-MON-yy') || ' - '||
-                 NVL (NVL (pkm_adjust_by, pkm_modify_by), pkm_create_by) pkm_edit,
-                 pkm_last_pkm,
+                 NVL (NVL (pkm_adjust_by, pkm_modify_by), pkm_create_by) pkm_edit, pkm_last_pkm, pkm_adjust_by,
                  NVL (lks_maxdisplay, 0) maxdisplay,
-                 NVL (mpt_maxqty * prd_frac, 0) maxpallet
+                 NVL (mpt_maxqty * prd_frac, 0) maxpallet,
+                 pkm_mpkm, nvl(pkm_qtymplus,0) pkm_qtyminor
             FROM tbmaster_perusahaan,
                  tbmaster_kkpkm,
                  tbmaster_prodmast,
@@ -259,7 +257,53 @@ class ProsesKertasKerjaPKMController extends Controller
             where rownum=1)
         ORDER BY pkm_prdcd");
 
-        dd($datas[1]);
+        $p_rowsk = 80;
+        $p_rowsb = 130;
+
+        $v_prsnsk = round((($p_rowsk / $p_rowsb) * 50));
+
+        foreach($datas as $data){
+            $v_qtysk = round($data->maxpallet * $v_prsnsk / 100);
+
+            $v_pkmt50minor = $data->pkm_last_pkm + $data->pkm_qtyminor + round($data->pkm_minorder * 50 / 100);
+
+            if($v_pkmt50minor > $v_qtysk)
+                $data->cp_laststatus = 'S';
+            else if($v_pkmt50minor > $data->maxdisplay && $v_pkmt50minor < $v_qtysk)
+                $data->cp_laststatus = 'SK';
+            else if($v_pkmt50minor <= $data->maxdisplay)
+                $data->cp_laststatus = 'NS';
+            else $data->cp_laststatus = '';
+
+            $v_pkmt50minor = ($data->pkm_mpkm + $data->pkm_qtyminor) + round($data->pkm_minorder * 50 / 100);
+
+            if($v_pkmt50minor > $v_qtysk)
+                $data->cp_status = 'S';
+            else if($v_pkmt50minor > $data->maxdisplay && $v_pkmt50minor < $v_qtysk)
+                $data->cp_status = 'SK';
+            else if($v_pkmt50minor <= $data->maxdisplay)
+                $data->cp_status = 'NS';
+            else $data->cp_status = '';
+
+            $data->cp_adjstatus = '';
+            if($data->pkm_adjust_by){
+                $v_pkmt50minor = $data->pkm_pkmt + round($data->pkm_minorder * 50 / 100);
+
+                if($v_pkmt50minor > $v_qtysk)
+                    $data->cp_adjstatus = 'S';
+                else if($v_pkmt50minor > $data->maxdisplay && $v_pkmt50minor < $v_qtysk)
+                    $data->cp_adjstatus = 'SK';
+                else if($v_pkmt50minor <= $data->maxdisplay)
+                    $data->cp_adjstatus = 'NS';
+            }
+
+            unset($data->pkm_last_pkm);
+            unset($data->pkm_adjust_by);
+            unset($data->maxdisplay);
+            unset($data->maxpallet);
+            unset($data->pkm_mpkm);
+            unset($data->pkm_qtyminor);
+        }
 
         $columnHeader = [
             'PLU',
@@ -285,29 +329,26 @@ class ProsesKertasKerjaPKMController extends Controller
             'Adjust (by user)'
         ];
 
+        $rows = collect($datas)->map(function ($x) {
+            return (array)$x;
+        })->toArray();
 
+        $filename = 'Laporan Perubahan Status Storage Hasil Pemrosesan PKM Periode '.$rows[0]['pkm_periodeproses'].'.csv';
 
-        foreach($datas as $data){
-            $rows = collect($data)->map(function ($x) {
-                return (array)$x;
-            })->toArray();
+//        dd($rows);
 
-            dd($rows);
-
-            $filename = $data[0]->docno.'.csv';
-
-            $headers = [
-                "Content-type" => "text/csv",
-                "Pragma" => "no-cache",
-                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-                "Expires" => "0"
-            ];
-            $file = fopen('TRFSJ/'.$filename, 'w');
-            fputcsv($file, $columnHeader, '|');
-            foreach ($rows as $row) {
-                fputcsv($file, $row, '|');
-            }
-            fclose($file);
+        $headers = [
+            "Content-type" => "text/csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+        $file = fopen($filename, 'w');
+        fputcsv($file, $columnHeader, '|');
+        foreach ($rows as $row) {
+            fputcsv($file, $row, '|');
         }
+        fclose($file);
+        return response()->download($filename, $filename, $headers)->deleteFileAfterSend(true);
     }
 }

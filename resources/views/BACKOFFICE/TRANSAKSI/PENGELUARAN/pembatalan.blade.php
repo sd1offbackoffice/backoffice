@@ -224,18 +224,9 @@
                     }
                 ],
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).children().first().css({
-                        'vertical-align': 'middle'
-                    });
-                    $(row).children().first().next().css({
-                        'vertical-align': 'middle'
-                    });
-                    $(row).children().first().next().next().css({
-                        'vertical-align': 'middle'
-                    });
                     $(row).children().first().next().next().next().css({
                         'vertical-align': 'middle',
-                        'text-align': 'center'
+                        'text-align': 'right'
                     });
                     $(row).children().first().next().next().next().next().css({
                         'vertical-align': 'middle',
@@ -250,13 +241,8 @@
                         'text-align': 'right'
                     });
 
-                    // console.log(data);
-                    // console.log(dataIndex);
-                    // $(row).children().first().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().text()));
-                    // $(row).children().first().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().text()));
-                    // $(row).children().first().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().text()));
-                    // $(row).children().first().next().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().next().text()));
-
+                    $(row).children().first().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().text()));
                     $('#modal-loader').modal('hide');
 
                 }
@@ -266,37 +252,42 @@
         $(document).on('click', '#btnDelete', function () {
             var currentButton = $(this);
             var no_npb = $('#txtNoDoc').val();
-            swal({
-                title: "NPB " + no_npb + " akan dibatalkan ?",
-                text: "Tekan Tombol Ya untuk Melanjutkan!",
-                icon: "info",
-                buttons: true,
-            }).then((yes) => {
-                if (yes) {
-                    ajaxSetup();
-                    $.ajax({
-                        url: "{{ url('/bo/transaksi/pengeluaran/pembatalan/delete') }}",
-                        type: 'POST',
-                        data: {
-                            no_npb: no_npb,
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            console.log(response);
-                            if (response.message) {
-                                swal('Error', response.message, 'error');
+            if (no_npb == '') {
+                swal('Info', 'Pilih No. NPB terlebih dahulu!', 'info');
+            }
+            else {
+                swal({
+                    title: "NPB " + no_npb + " akan dibatalkan ?",
+                    text: "Tekan Tombol Ya untuk Melanjutkan!",
+                    icon: "info",
+                    buttons: true,
+                }).then((yes) => {
+                    if (yes) {
+                        ajaxSetup();
+                        $.ajax({
+                            url: "{{ url('/bo/transaksi/pengeluaran/pembatalan/delete') }}",
+                            type: 'POST',
+                            data: {
+                                no_npb: no_npb,
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+                                console.log(response);
+                                if (response.message) {
+                                    swal(response.status, response.message, response.status);
+                                }
+                            }, error: function (error) {
+                                console.log(error);
                             }
-                        }, error: function (error) {
-                            console.log(error);
-                        }
-                    });
-                } else {
-                    return false;
-                }
-            });
-
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            }
         });
     </script>
 

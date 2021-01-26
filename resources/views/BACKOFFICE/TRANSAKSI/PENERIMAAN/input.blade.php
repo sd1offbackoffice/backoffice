@@ -16,21 +16,21 @@
                                            <div class="form-group row mb-1 pt-4">
                                                <label class="col-sm-2 col-form-label text-right">No BTB</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="noBTB">
+                                                   <input type="text" class="form-control nullPermission" id="noBTB" value="2340000001">
                                                    <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showBTB('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl BTB</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="tglBTB" placeholder="dd/mm/yyyy">
+                                                   <input type="text" class="form-control nullPermission" id="tglBTB" placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
                                            <div class="form-group row mb-1">
                                                <label class="col-sm-2 col-form-label text-right">No PO</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="noPO">
+                                                   <input type="text" class="form-control nullPermission" id="noPO">
                                                    <button id="" type="button" class="btn btn-lov p-0" onclick="showPO('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
@@ -44,7 +44,7 @@
                                            <div class="form-group row mb-2">
                                                <label class="col-sm-2 col-form-label text-right">Supplier</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control" id="kodeSupplier">
+                                                   <input type="text" class="form-control nullPermission" id="kodeSupplier">
                                                    <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier" onclick="showSupplier('')">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
@@ -57,19 +57,19 @@
                                            <div class="form-group row pb-4">
                                                <label class="col-sm-2 col-form-label text-right">No Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="noFaktur">
+                                                   <input type="text" class="form-control nullPermission" id="noFaktur">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="tglFaktur" placeholder="dd/mm/yyyy" value="{{\Carbon\Carbon::today()->format('d/m/Y')}}">
+                                                   <input type="text" class="form-control nullPermission" id="tglFaktur" placeholder="dd/mm/yyyy" value="{{\Carbon\Carbon::today()->format('d/m/Y')}}">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">TOP</label>
                                                <div class="col-sm-1">
-                                                   <input type="text" class="form-control text-right" id="top">
+                                                   <input type="text" class="form-control text-right nullPermission" id="top">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">PKP</label>
                                                <div class="col-sm-1">
-                                                   <input type="text" class="form-control" id="pkp" disabled>
+                                                   <input type="text" class="form-control nullPermission" id="pkp" disabled>
                                                </div>
                                            </div>
                                        </form>
@@ -82,28 +82,28 @@
                                     <div class="card-body">
                                         <form>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">Gross</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">Gross</label>
+                                                <input type="text" id="v_gross" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">Discount</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">Discount</label>
+                                                <input type="text" id="v_discount" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">PPN</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">PPN</label>
+                                                <input type="text" id="v_ppn" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">PPB BM</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">PPB BM</label>
+                                                <input type="text" id="v_ppbBm" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">PPN Botol</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">PPN Botol</label>
+                                                <input type="text" id="v_ppnBotol" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label class="col-sm-3 col-form-label text-md-right">Grant Total</label>
-                                                <input type="text" id="noDoc" class="form-control col-sm-5" disabled>
+                                                <label class="col-sm-3 col-form-label text-right">Grant Total</label>
+                                                <input type="text" id="v_grantTotal" class="form-control col-sm-5 text-right" disabled>
                                             </div>
                                         </form>
                                     </div>
@@ -328,7 +328,7 @@
                                            <div class="form-group row mb-0 mt-3">
                                                <label class="col-sm-1 col-form-label text-right">Keterangan</label>
                                                <div class="col-sm-6">
-                                                   <input type="text" class="form-control text-right" id="i_keterangan" >
+                                                   <input type="text" class="form-control text-uppercase" id="i_keterangan">
                                                </div>
 
                                                <label class="col-sm-2 col-form-label text-right">PPN</label>
@@ -370,13 +370,13 @@
 
                                            <div class="form-group row mb-0 mt-5">
                                                <div class="col-sm-3 text-center">
-                                                   <button type="button" class="btn btn-primary pr-5 pl-5" onclick="test()">Rekam Record</button>
+                                                   <button type="button" class="btn btn-primary btn-block" onclick="rekamData()">Rekam Record</button>
                                                </div>
                                                <div class="col-sm-3 text-center">
-                                                   <button type="button" class="btn btn-primary btn-block">Transfer PO</button>
+                                                   <button type="button" class="btn btn-primary btn-block" onclick="transferPO()">Transfer PO</button>
                                                </div>
                                                <div class="col-sm-3 text-center">
-                                                   <button type="button" class="btn btn-primary btn-block">List/Hapus Record</button>
+                                                   <button type="button" class="btn btn-primary btn-block" onclick="viewList()">List/Hapus Record</button>
                                                </div>
                                                <div class="col-sm-3 text-center">
                                                    <button type="button" class="btn btn-primary btn-block">Simpan Data</button>
@@ -462,11 +462,12 @@
                                                 <div class="col-sm-3 offset-sm-1 text-center">
                                                     <button type="button" class="btn btn-primary btn-block" onclick="closeCardInput2()">Tutup Daftar</button>
                                                 </div>
-                                                <div class="col-sm-3 offset-sm-1 text-center">
-                                                    <button type="button" class="btn btn-primary btn-block">Koreksi</button>
-                                                </div>
-                                                <div class="col-sm-3 offset-sm-1 text-center">
-                                                    <button type="button" class="btn btn-primary btn-block">Hapus Record</button>
+                                                {{--<div class="col-sm-3 offset-sm-1 text-center">--}}
+                                                    {{--<button type="button" class="btn btn-primary btn-block">Koreksi</button>--}}
+                                                {{--</div>--}}
+                                                <div class="col-sm offset-sm-1 text-center">
+                                                    {{--<button type="button" class="btn btn-primary btn-block">Hapus Record</button>--}}
+                                                    <p class="text-secondary text-right">* Klik Plu untuk koreksi atau hapus</p>
                                                 </div>
                                             </div>
                                         </form>
@@ -694,13 +695,27 @@
         </div>
     </div>
 
+    <style>
+        .rowTbodyTableDetail{
+            cursor: pointer;
+        }
+
+        .rowTbodyTableDetail:hover{
+            background-color: #e9ecef;
+        }
+
+
+    </style>
+
     <script>
         let typeTrn;
+        let flagNewBTB      = 'N';
         let tempPO          = [];
         let tempSupplier    = [];
         let tempPlu         = [];
         let tempDataBTB     = [];
         let tempDataPLU     = [];
+        let tempDataSave    = '';
         let modalThName1    = $('#modalThName1');
         let modalThName2    = $('#modalThName2');
         let modalThName3    = $('#modalThName3');
@@ -717,6 +732,13 @@
         let tglFaktur       = $('#tglFaktur');
         let pkp             = $('#pkp');
         let topPo           = $('#top');
+
+         let v_gross        = $('#v_gross');
+         let v_discount     = $('#v_discount');
+         let v_ppn          = $('#v_ppn');
+         let v_ppbBm        = $('#v_ppbBm');
+         let v_ppnBotol     = $('#v_ppnBotol');
+         let v_grantTotal   = $('#v_grantTotal');
 
         let i_plu       = $('#i_plu');
         let i_deskripsi = $('#i_deskripsi');
@@ -755,6 +777,7 @@
         let i_rphdisc4  = $('#i_rphdisc4');
         let i_flagdisc4 = $('#i_flagdisc4');
         let i_disc4     = $('#i_disc4');
+        let i_keterangan= $('#i_keterangan');
         let i_ppn       = $('#i_ppn');
         let i_botol     = $('#i_botol');
         let i_bm        = $('#i_bm');
@@ -783,33 +806,15 @@
             $('#cardInput2').hide();
             typeTrn = 'B'
             // showPO('');
-            // chooseBTB('0440002383', '2H6G85854')
-            choosePO('CH1L22925')
+            // chooseBTB('0420000613', 'GH6H71400')
+            choosePO('PH1L76267')
             // choosePO('5H1L79346')
             // showPlu('');
             isiBeliForm.hide()
-            testa()
+
+            // deletePlu('123')
 
         });
-
-
-        let testa = async () => {
-            console.log('calling');
-            // const result = await resolveAfter2Seconds();
-            // const result = await new Promise(resolve => {
-            //     setTimeout(() => {
-            //         resolve('resolved');
-            //     }, 2000);
-            // });
-
-            const results = await new Promise(resolve => {
-                // setTimeout(() => {
-                    resolve('resolved');
-                // }, 2000)
-            })
-            // console.log(result);
-            console.log('end');
-        }
 
         function startAlert() {
             swal({
@@ -897,45 +902,46 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    tempDataBTB = result.data;
+                    tempDataBTB = result.data; console.log(result.data)
 
                     if (result.kode == 0){
                         swal("", result.msg, 'warning');
                         $('#cardInput2').hide();
                         $('#cardInput1').show();
                     } else {
-                        for (let i = 0; i< result.data.length; i++){
-                            value = result.data[i];
-
-                            $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail">
-                                                                <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
-                                                                <td class="sticky-cell">`+ value.prd_deskripsipanjang +`</td>
-                                                                <td class="sticky-cell text-right" >`+ value.qty +`</td>
-                                                                <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.prd_frac)) +`</td>
-                                                                <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
-                                                                <td class="sticky-cell text-center" >/`+ value.prd_frac +`</td>
-                                                                <td>`+value.prd_kodetag+`</td>
-                                                                <td>`+value.prd_flagbkp1+`</td>
-                                                                <td  class="text-right">`+value.trbo_qtybonus1+`</td>
-                                                                <td  class="text-right">`+value.trbo_qtybonus2+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_persendisc1)+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc1)+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc2+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2)+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc2ii+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2ii)+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc2iii+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2iii)+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc3+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc3)+`</td>
-                                                                <td  class="text-right">`+value.trbo_persendisc4+`</td>
-                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_rphdisc4)+`</td>
-                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_gross)+`</td>
-                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_ppnrph)+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_averagecost)+`</td>
-                                                                <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
-                                                            </tr>`);
-                        }
+                        // for (let i = 0; i< result.data.length; i++){
+                        //     value = result.data[i];
+                        //
+                        //     $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail"  onclick="editDeletePlu()">
+                        //                                         <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
+                        //                                         <td class="sticky-cell">`+ value.prd_deskripsipanjang +`</td>
+                        //                                         <td class="sticky-cell text-right" >`+ value.qty +`</td>
+                        //                                         <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.prd_frac)) +`</td>
+                        //                                         <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
+                        //                                         <td class="sticky-cell text-center" >/`+ value.prd_frac +`</td>
+                        //                                         <td>`+value.prd_kodetag+`</td>
+                        //                                         <td>`+value.prd_flagbkp1+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_qtybonus1+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_qtybonus2+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_persendisc1)+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc1)+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_persendisc2+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2)+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_persendisc2ii+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2ii)+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_persendisc2iii+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2iii)+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_persendisc3+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc3)+`</td>
+                        //                                         <td  class="text-right">`+value.trbo_persendisc4+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_rphdisc4)+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_gross)+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_ppnrph)+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_averagecost)+`</td>
+                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
+                        //                                     </tr>`);
+                        // }
+                        setValueTableDetail(result.data)
 
                         noBTB.val(result.data[0].trbo_nodoc);
                         noPO.val(result.data[0].trbo_nopo);
@@ -992,6 +998,7 @@
                                noBTB.val(result);
                                tglBTB.focus();
                                tempDataBTB = [];
+                               clearSecondField();
                            }
                        }, error: function (err) {
                            $('#modal-loader').modal('hide');
@@ -1256,6 +1263,8 @@
             let noPo    = noPO.val();
             let supplier= kodeSupp.val();
 
+            let tempData = (tempDataBTB.length < 1) ? tempDataSave : tempDataBTB;
+
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/penerimaan/input/chooseplu',
@@ -1266,7 +1275,7 @@
                     noDoc   : noDoc,
                     noPo    : noPo,
                     supplier:supplier,
-                    tempDataBTB:tempDataBTB
+                    tempData:tempData
                 }, beforeSend : function () {
                     $('#modal-loader').modal('show');
                     modalHelpPlu.modal('hide');
@@ -1285,14 +1294,8 @@
                     if(result.kode == '0'){
                         let data = result.data;
                         tempDataPLU = data;
-
                         setValue(data);
                         i_hrgbeli.focus();
-
-                        console.log(data.i_disc2)
-                        console.log(data.i_disc4)
-                        console.log(convertToRupiah(data.i_disc2))
-                        console.log(convertToRupiah(String(data.i_disc4)))
 
                     } else if(result.kode == '2'){
                         swal({
@@ -1351,7 +1354,7 @@
            $.ajax({
                url: '/BackOffice/public/bo/transaksi/penerimaan/input/changehargabeli',
                type: 'post',
-               data: {hargaBeli : hrgBeli, qty:qty, qtyk:qtyk, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
+               data: {hargaBeli : unconvertToRupiah(hrgBeli), qty:qty, qtyk:qtyk, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
                beforeSend : () =>{
                    $('#modal-loader').modal('show');
                },
@@ -1362,6 +1365,7 @@
                    if (result.kode == 0){
                        swal('', result.msg, 'warning');
                    } else {
+                       tempDataPLU = result.data;
                        setValue(result.data);
                        i_qty.focus();
                        console.log(result.data)
@@ -1375,7 +1379,7 @@
            });
         }
 
-        function changeQty(qty, qtyk, hrgbeli) {
+        function changeQty(qty, qtyk, hrgbeli,next) {
 
             if (!noPO.val() && !kodeSupp.val() && qty != 0){
                 swal({
@@ -1398,16 +1402,15 @@
                     },
                     success: (result) => {
                         $('#modal-loader').modal('hide');
-                        console.log(result);
+                        next();
 
                         if (result.kode == 1){
-                            console.log(result.data);
+                            tempDataPLU = result.data;
                             setValue(result.data);
 
                         } else {
                             swal('', result.msg, 'warning');
                         }
-
                     }, error : (err) => {
                         $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0,100));
@@ -1418,6 +1421,271 @@
 
         }
 
+        function changeBonus1(bonus1) {
+            if ((bonus1 == 0 || !bonus1) &&!noPO.val() && !kodeSupp.val()){
+                swal({
+                    text: 'Pada Transaksi Bonus, Qty Bonus Harus Diisi !!',
+                    icon:'warning',
+                    timer: 1500,
+                    buttons: {
+                        confirm: false,
+                    },
+                });
+                i_bonus1.focus();
+                return false;
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/changebonus1',
+                type: 'post',
+                data: {bonus1 : bonus1, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
+                beforeSend : () =>{
+                    $('#modal-loader').modal('show');
+                },
+                success: (result) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(result);
+
+                    if (result.kode == 0){
+                        swal('', result.msg, 'warning');
+                    } else {
+                        tempDataPLU = result.data;
+                        setValue(result.data);
+                        checkRphDisc();
+                    }
+
+                }, error : (err) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        }
+
+        function changeRphDisc(next) {
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/changerphdisc',
+                type: 'post',
+                data: {prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
+                beforeSend : () =>{
+                    $('#modal-loader').modal('show');
+                },
+                success: (result) => {
+                    $('#modal-loader').modal('hide');
+                    next();
+
+                    if (result.kode == 0){
+                        swal('', result.msg, 'warning');
+                    } else {
+                        tempDataPLU = result.data;
+                        setValue(result.data);
+                    }
+
+                }, error : (err) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        }
+
+        function rekamData(){
+            if(!i_plu.val()){
+                swal({
+                    text: 'Plu Harus Diisi !!',
+                    icon:'warning',
+                    timer: 1500,
+                    buttons: {
+                        confirm: false,
+                    },
+                });
+
+                i_plu.focus();
+                return false;
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/rekamdata',
+                type: 'post',
+                data: {prdcd : i_plu.val(), noBTB: noBTB.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
+                beforeSend : () =>{
+                    $('#modal-loader').modal('show');
+                },
+                success: (result) => {
+                    $('#modal-loader').modal('hide');
+                    console.log((result))
+
+                    if (result.kode == 0){
+                        swal('', result.msg, 'warning');
+                    } else {
+                        tempDataSave = result.data;
+
+                        let gross = 0;
+                        let discount = 0;
+                        let ppn = 0;
+                        let ppbbm = 0;
+                        let ppnbotol = 0;
+                        let grantTotal = 0;
+                        for (let i=0; i < tempDataSave.length; i++){
+                            gross   = parseInt(gross) + parseInt(tempDataSave[i].trbo_gross);
+                            discount= parseInt(discount) + parseInt(unconvertToRupiah(tempDataSave[i].total_disc));
+                            ppn     = parseInt(ppn) +  parseInt(tempDataSave[i].trbo_ppnrph);
+                            ppbbm   = parseInt(ppbbm) +  parseInt(tempDataSave[i].trbo_ppnbmrph);
+                            ppnbotol = parseInt(ppnbotol) +  parseInt(tempDataSave[i].trbo_ppnbtlrph);
+                            grantTotal = parseInt(grantTotal) + parseInt(tempDataSave[i].total_rph);
+                        }
+
+                        sum_item.val(tempDataSave.length);
+                        i_totalpo.val(convertToRupiah(grantTotal));
+                        v_gross.val(convertToRupiah(gross));
+                        v_discount.val(convertToRupiah(discount));
+                        v_ppn.val(convertToRupiah(ppn));
+                        v_ppbBm.val(convertToRupiah(ppbbm));
+                        v_ppnBotol.val(convertToRupiah(ppnbotol));
+                        v_grantTotal.val(convertToRupiah(grantTotal));
+                        clearSecondField();
+                    }
+
+                }, error : (err) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        }
+
+        function viewList(){
+            $('#cardInput2').show();
+            $('#cardInput1').hide();
+
+            if (tempDataBTB.length > 0){
+                setValueTableDetail(tempDataBTB)
+                console.log(tempDataBTB)
+            } else if (tempDataSave.length > 0){
+                setValueTableDetail(tempDataSave)
+                console.log(tempDataSave)
+            } else {
+                console.log('Kosong')
+            }
+        }
+
+        function editDeletePlu(plu){
+            swal("Koreksi atau Hapus Plu "+plu+" ?", {
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        text: "Close",
+                        value: 'close',
+                        visible: true,
+                        className: "",
+                        // closeModal: true,
+                    },
+                    confirm: {
+                        text: "Koreksi",
+                        value: 'koreksi',
+                        visible: true,
+                        // className: "btn-danger",
+                        // closeModal: true
+                    },
+                    delete: {
+                        text: "Hapus",
+                        value: 'delete',
+                        visible: true,
+                        className: "",
+                        // closeModal: true
+                    },
+                },
+            }).then((value) => {
+                if(value === 'koreksi'){
+                   koreksiPlu(plu);
+                } else if(value === 'delete'){
+                    swal({
+                        title: "Hapus No Transaksi ini ?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                        buttons: ['Tidak', 'Ya']
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                          deletePlu(plu)
+                        }
+                    });
+                } else {
+                   console.log("Plu Aman");
+                }
+            });
+        }
+
+        async function koreksiPlu(plu){
+            let data;
+
+            await new Promise(next => {
+                for(let i=0; i < tempDataSave.length; i++){
+                    if (tempDataSave[i].trbo_prdcd == plu){
+                        data = tempDataSave[i];
+                        break;
+                    }
+                }
+                next();
+            });
+
+
+            clearRightFirstField();
+            if(data){
+                setValueFromTempDataSave(data);
+                $('#cardInput1').show();
+                $('#cardInput2').hide();
+            } else {
+                alertError("Error", "Data tidak ada !");
+            }
+
+
+        }
+
+        function deletePlu(plu){
+            for(let i=0; i < tempDataSave.length; i++){
+                if (tempDataSave[i].trbo_prdcd == plu){
+                   tempDataSave.splice(i,1);
+                   break;
+                }
+            }
+
+            let grantTotal = 0;
+            for (let i=0; i < tempDataSave.length; i++){
+                grantTotal = parseInt(grantTotal) + parseInt(tempDataSave[i].total_rph);
+            }
+
+            sum_item.val(tempDataSave.length);
+            i_totalpo.val(convertToRupiah(grantTotal));
+            clearRightFirstField();
+            setValueTableDetail(tempDataSave);
+        }
+
+        function transferPO(){
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/transferpo',
+                type: 'post',
+                data: {prdcd : i_plu.val(), noBTB: noBTB.val(), noPo : noPO.val(), supplier:kodeSupp.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
+                beforeSend : () =>{
+                    $('#modal-loader').modal('show');
+                },
+                success: (result) => {
+                    $('#modal-loader').modal('hide');
+                    console.log((result))
+
+                }, error : (err) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        }
+
+        //**************************************
         function setValue(data){
             i_plu.val(data.i_prdcd);
             i_deskripsi.val(data.i_barang);
@@ -1453,15 +1721,22 @@
             i_rphdisc3.val(convertToRupiah(data.i_rphdisc3));
             i_flagdisc3.val(data.i_flagdisc3 );
             i_disc3.val(convertToRupiah(data.i_disc3));
-            i_persendis4.val(convertToRupiah(String(data.i_persendis4)));
-            i_rphdisc4.val(convertToRupiah(String(data.i_rphdisc4)));
+
+            // i_persendis4.val(convertToRupiah(String(data.i_persendis4)));
+            // i_rphdisc4.val(convertToRupiah(String(data.i_rphdisc4)));
+            // i_flagdisc4.val(data.i_flagdisc4);
+            // i_disc4.val(convertToRupiah(String(data.i_disc4)));
+            i_persendis4.val(convertToRupiah((data.i_persendis4)));
+            i_rphdisc4.val(convertToRupiah((data.i_rphdisc4)));
             i_flagdisc4.val(data.i_flagdisc4);
-            i_disc4.val(convertToRupiah(String(data.i_disc4)));
+            i_disc4.val(convertToRupiah((data.i_disc4)));
+
+            i_keterangan.val(data.i_keterangan);
             i_ppn.val(convertToRupiah(data.i_ppn));
             i_botol.val(convertToRupiah(data.i_botol));
             i_bm.val(convertToRupiah(data.i_bm));
-            sum_item.val(data.sum_item);
-            i_totalpo.val(data.i_totalpo);
+            // sum_item.val(data.sum_item);
+            // i_totalpo.val(data.i_totalpo);
             i_total.val(convertToRupiah(data.i_total));
 
             if(parseInt(i_rphdisc1.val()) > 0){
@@ -1476,6 +1751,141 @@
                 i_rphdisc3.attr('disabled', true)
             } if (parseInt(i_rphdisc4.val()) > 0){
                 i_rphdisc4.attr('disabled', true)
+            }
+        }
+
+        function setValueFromTempDataSave(data) {
+            console.log(data);
+            i_plu.val(data.trbo_prdcd);
+            i_deskripsi.val(data.barang);
+            i_kemasan.val(data.kemasan);
+            i_tag.val(data.trbo_kodetag);
+            i_bkp.val(data.trbo_bkp);
+            i_bandrol.val(data.i_bandrol);
+            i_hrgbeli.val(convertToRupiah(data.trbo_hrgsatuan));
+            i_lcost.val(convertToRupiah(data.trbo_lcost));
+            i_acost.val(convertToRupiah((data.trbo_unit == 'KG') ? data.trbo_averagecost / 1 : data.trbo_averagecost / data.trbo_frac));
+            i_qty.val(data.qty);
+            i_qtyk.val(data.qtyk);
+            i_isibeli.val(convertToRupiah(data.isibeli));
+            i_bonus1.val(data.trbo_qtybonus1);
+            i_bonus2.val(data.trbo_qtybonus2);
+            i_gross.val(convertToRupiah(data.trbo_gross));
+
+            i_persendis1.val(convertToRupiah(data.trbo_persendis1));
+            i_rphdisc1.val(convertToRupiah(data.trbo_rphdisc1));
+            i_flagdisc1.val(data.trbo_flagdisc1);
+            i_disc1.val(convertToRupiah(data.trbo_disc1));
+            i_persendis2.val(convertToRupiah(data.trbo_persendis2));
+            i_rphdisc2.val(convertToRupiah(data.i_rphdisc2));
+            i_flagdisc2.val(data.trbo_flagdisc2);
+            i_disc2.val(convertToRupiah(data.trbo_disc2));
+            i_persendis2a.val(convertToRupiah(data.trbo_persendis2i));
+            i_rphdisc2a.val(convertToRupiah(data.trbo_rphdisc2i));
+            i_disc2a.val(convertToRupiah(data.trbo_disc2i));
+            i_persendis2b.val(convertToRupiah(data.trbo_persendis2ii));
+            i_rphdisc2b.val(convertToRupiah(data.trbo_rphdisc2ii));
+            i_disc2b.val(convertToRupiah(data.trbo_disc2ii));
+            i_persendis3.val(convertToRupiah(data.trbo_persendis3));
+            i_rphdisc3.val(convertToRupiah(data.trbo_rphdisc3));
+            i_flagdisc3.val(data.trbo_flagdisc3 );
+            i_disc3.val(convertToRupiah(data.trbo_disc3));
+            i_persendis4.val(convertToRupiah((data.trbo_persendis4)));
+            i_rphdisc4.val(convertToRupiah((data.trbo_rphdisc4)));
+            i_flagdisc4.val(data.trbo_flagdisc4);
+            i_disc4.val(convertToRupiah((data.trbo_disc4)));
+
+            i_keterangan.val(data.trbo_keterangan);
+            i_ppn.val(convertToRupiah(data.i_ppnrph));
+            i_botol.val(convertToRupiah(data.trbo_ppnbtlrph));
+            i_bm.val(convertToRupiah(data.trbo_ppnbmrph));
+            // sum_item.val(data.sum_item);
+            // i_totalpo.val(data.i_totalpo);
+            i_total.val(convertToRupiah(data.i_total));
+
+            if(parseInt(i_rphdisc1.val()) > 0){
+                i_rphdisc1.attr('disabled', true)
+            } if (parseInt(i_rphdisc2.val()) > 0){
+                i_rphdisc2.attr('disabled', true)
+            } if (parseInt(i_rphdisc2a.val()) > 0){
+                i_rphdisc2a.attr('disabled', true)
+            } if (parseInt(i_rphdisc2b.val()) > 0){
+                i_rphdisc2b.attr('disabled', true)
+            } if (parseInt(i_rphdisc3.val()) > 0){
+                i_rphdisc3.attr('disabled', true)
+            } if (parseInt(i_rphdisc4.val()) > 0){
+                i_rphdisc4.attr('disabled', true)
+            }
+        }
+
+        function setValueTableDetail(data){
+            $('.rowTbodyTableDetail').remove();
+            for (let i = 0; i< data.length; i++){
+                let value = data[i];
+
+                $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail"  onclick="editDeletePlu('`+ value.trbo_prdcd +`')">
+                                                                <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
+                                                                <td class="sticky-cell">`+ value.barang +`</td>
+                                                                <td class="sticky-cell text-right" >`+ value.qty +`</td>
+                                                                <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.trbo_frac)) +`</td>
+                                                                <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
+                                                                <td class="sticky-cell text-center" >/`+ value.trbo_frac +`</td>
+                                                                <td>`+nvl(value.trbo_kodetag, ' ')+`</td>
+                                                                <td>`+nvl(value.trbo_bkp, ' ')+`</td>
+                                                                <td  class="text-right">`+value.trbo_qtybonus1+`</td>
+                                                                <td  class="text-right">`+value.trbo_qtybonus2+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_persendisc1)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc1)+`</td>
+                                                                <td  class="text-right">`+value.trbo_persendisc2+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2)+`</td>
+                                                                <td  class="text-right">`+value.trbo_persendisc2ii+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2ii)+`</td>
+                                                                <td  class="text-right">`+value.trbo_persendisc2iii+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2iii)+`</td>
+                                                                <td  class="text-right">`+value.trbo_persendisc3+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc3)+`</td>
+                                                                <td  class="text-right">`+value.trbo_persendisc4+`</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_rphdisc4)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_gross)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah2(value.trbo_ppnrph)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_averagecost)+`</td>
+                                                                <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
+                                                            </tr>`);
+            }
+        }
+
+        function clearSecondField(){
+            setValue(0);
+            i_rphdisc1.attr('disabled', false)
+            i_rphdisc2.attr('disabled', false)
+            i_rphdisc2a.attr('disabled', false)
+            i_rphdisc2b.attr('disabled', false)
+            i_rphdisc3.attr('disabled', false)
+            i_rphdisc4.attr('disabled', false)
+        }
+
+        function clearRightFirstField() {
+            v_gross.val('');
+            v_discount.val('');
+            v_ppn.val('');
+            v_ppbBm.val('');
+            v_ppnBotol.val('');
+            v_grantTotal.val('');
+        }
+
+        function checkRphDisc(){
+            if (i_rphdisc1.val() == "0.00"){
+                i_rphdisc1.focus();
+            } else if (i_rphdisc4.val() == "0.00"){
+                i_rphdisc4.focus();
+            } else if (i_rphdisc2.val() == "0.00"){
+                i_rphdisc2.focus();
+            } else if (i_rphdisc2a.val() == "0.00"){
+                i_rphdisc2a.focus();
+            } else if (i_rphdisc2b.val() == "0.00"){
+                i_rphdisc2b.focus();
+            } else if (i_rphdisc3.val() == "0.00"){
+                i_rphdisc3.focus();
             }
         }
 
@@ -1528,18 +1938,19 @@
             if (e.which === 13) {
                 let val = $(this).val();
 
-                if (tempDataBTB.length < 1){
-                    choosePlu(val);
-                } else {
-                    for (let i = 0; i < tempDataBTB.length; i++){
-                        if (tempDataBTB[i].trbo_prdcd == val){
-                            console.log(tempDataBTB[i]);
-                            i_plu.val(tempDataBTB[i].trbo_prdcd);
-                            i_deskripsi.val(tempDataBTB[i].prd_deskripsipanjang);
-                        }
-                    }
-                }
-                // choosePlu(val)
+                choosePlu(val);
+
+                // if (tempDataBTB.length < 1){
+                //     choosePlu(val);
+                // } else {
+                //     for (let i = 0; i < tempDataBTB.length; i++){
+                //         if (tempDataBTB[i].trbo_prdcd == val){
+                //             console.log(tempDataBTB[i]);
+                //             i_plu.val(tempDataBTB[i].trbo_prdcd);
+                //             i_deskripsi.val(tempDataBTB[i].prd_deskripsipanjang);
+                //         }
+                //     }
+                // }
             }
         });
 
@@ -1559,25 +1970,181 @@
                 let qtyk     = i_qtyk.val();
                 let hrgbli  = unconvertToRupiah(i_hrgbeli.val());
 
-                let changeqty = await new Promise(resolve => {
-                    // changeQty(qty, qtyk, hrgbli);
-                    resolve()
-                } ) ;
-                console.log(changeqty)
+                let changeqty =  await new Promise(next => {
+                    changeQty(qty, qtyk, hrgbli,next);
+                });
+
+
                 i_qtyk.focus()
                 console.log('iqtyfocus')
             }
         });
 
-        i_qtyk.keypress(function (e) {
+        i_qtyk.keypress(async function (e) {
             if (e.which === 13) {
                 let qtyk    = $(this).val();
                 let qty     = i_qty.val();
                 let hrgbli  = unconvertToRupiah(i_hrgbeli.val());
 
-                changeQty(qty, qtyk, hrgbli);
+                let changeqty =  await new Promise(next => {
+                    changeQty(qty, qtyk, hrgbli,next);
+                });
                 i_bonus1.focus()
 
+            }
+        });
+
+        i_bonus1.keypress(function (e) {
+            if (e.which === 13) {
+                let bonus1  = $(this).val();
+
+                changeBonus1(bonus1)
+            }
+        });
+
+        i_rphdisc1.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis1.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc1 = rphdisc;
+                }
+
+                await new Promise(next => {
+                    changeRphDisc(next)
+                });
+                i_rphdisc1.attr('disabled', false);
+
+                if (i_rphdisc4[0]['disabled'] == false){
+                    i_rphdisc4.focus();
+                } else if (i_rphdisc2[0]['disabled'] == false){
+                    i_rphdisc2.focus();
+                } else if (i_rphdisc2a[0]['disabled'] == false){
+                    i_rphdisc2a.focus();
+                } else if (i_rphdisc2b[0]['disabled'] == false){
+                    i_rphdisc2b.focus();
+                } else if (i_rphdisc3[0]['disabled'] == false){
+                    i_rphdisc3.focus();
+                }
+            }
+        });
+
+        i_rphdisc4.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis4.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc4 = rphdisc;
+                }
+
+                await new Promise(next => {
+                    changeRphDisc(next);
+                });
+                i_rphdisc4.attr('disabled', false);
+
+                if (i_rphdisc2[0]['disabled'] == false){
+                    i_rphdisc2.focus();
+                } else if (i_rphdisc2a[0]['disabled'] == false){
+                    i_rphdisc2a.focus();
+                } else if (i_rphdisc2b[0]['disabled'] == false){
+                    i_rphdisc2b.focus();
+                } else if (i_rphdisc3[0]['disabled'] == false){
+                    i_rphdisc3.focus();
+                }
+            }
+        });
+
+        i_rphdisc2.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis2.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc2 = rphdisc;
+                }
+
+                await new Promise(next => {
+                    changeRphDisc(next);
+                });
+                i_rphdisc2.attr('disabled', false);
+
+                if (i_rphdisc2a[0]['disabled'] == false){
+                    i_rphdisc2a.focus();
+                } else if (i_rphdisc2b[0]['disabled'] == false){
+                    i_rphdisc2b.focus();
+                } else if (i_rphdisc3[0]['disabled'] == false){
+                    i_rphdisc3.focus();
+                }
+            }
+        });
+
+        i_rphdisc2a.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis2a.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc2a = rphdisc;
+                }
+
+                await new Promise(next => {
+                    changeRphDisc(next);
+                });
+                i_rphdisc2a.attr('disabled', false);
+
+                 if (i_rphdisc2b[0]['disabled'] == false){
+                    i_rphdisc2b.focus();
+                } else if (i_rphdisc3[0]['disabled'] == false){
+                    i_rphdisc3.focus();
+                }
+            }
+        });
+
+        i_rphdisc2b.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis2b.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc2b = rphdisc;
+                }
+
+                await new Promise(next => {
+                    changeRphDisc(next);
+                });
+                i_rphdisc2b.attr('disabled', false);
+
+                if (i_rphdisc3[0]['disabled'] == false){
+                    i_rphdisc3.focus();
+                }
+            }
+        });
+
+        i_rphdisc3.keypress(async function (e) {
+            if (e.which === 13) {
+                let persendisc = i_persendis3.val();
+                let rphdisc = $(this).val();
+
+                if(persendisc == 0){
+                    tempDataPLU.i_rphdisc3 = rphdisc;
+                }
+
+               await new Promise(next => {
+                    changeRphDisc(next);
+                });
+                i_rphdisc3.attr('disabled', false);
+                i_keterangan.focus();
+            }
+        });
+
+        i_keterangan.keypress(function (e) {
+            if(e.which === 13){
+                let keterangan = $(this).val().toUpperCase();
+                tempDataPLU.i_keterangan = keterangan;
+
+                rekamData();
             }
         });
 
@@ -1601,8 +2168,9 @@
 
         $('.form-control').on('focus', function (e) {
             let id= $(this).attr('id');
+            let className = $(this).attr('class');
 
-            if(id != 'i_plu' && id != 'searchModal'){
+            if(id != 'i_plu' && id != 'searchModal' && className.search('nullPermission') < 1){
                 if(!i_plu.val()) {
                     i_plu.focus();
                     return false;
