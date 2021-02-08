@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','PKM | PROSES KERTAS KERJA PKM')
+@section('title','PKM | ENTRY & INQUERY KERTAS KERJA PKM')
 
 @section('content')
 
@@ -14,7 +14,7 @@
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd" disabled>
-                                <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd" disabled>
+                                <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd">
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
@@ -56,19 +56,20 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="prdcd" disabled>
+                                <input type="text" class="form-control" id="kat_kode" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_kategori">
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
                             <div class="col-sm-5 pl-0 pr-0">
-                                <input maxlength="10" type="text" class="form-control" id="desk" disabled>
+                                <input maxlength="10" type="text" class="form-control" id="kat_nama" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
                             <label for="sales3" class="col-sm-3 text-right col-form-label">ITEM</label>
                             <div class="col-sm-2">
-                                <select class="form-control">
+                                <select class="form-control" id="item" onchange="cekItem()">
+                                    <option value="-" selected disabled>Pilih item</option>
                                     <option value="1">1 - NASIONAL</option>
                                     <option value="2">2 - OMI / IDM</option>
                                 </select>
@@ -78,13 +79,13 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">KODE MONITORING PLU</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="prdcd" disabled>
-                                <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd">
+                                <input type="text" class="form-control" id="mon_kode" disabled>
+                                <button id="btn_monitoring" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_monitoring">
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
                             <div class="col-sm-5 pl-0 pr-0">
-                                <input maxlength="10" type="text" class="form-control" id="desk" disabled>
+                                <input maxlength="10" type="text" class="form-control" id="mon_nama" disabled>
                             </div>
                         </div>
                     </div>
@@ -93,32 +94,91 @@
         </div>
     </div>
 
-    <div class="container-fluid" id="history_view" style="display: none">
+    <div class="container-fluid" id="detail_view" style="display: none">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">History Proses dan Inquery ALL PKM</legend>
+                    <legend  class="w-auto ml-3">ENTRY & INQUERY KERTAS KERJA PKM</legend>
                     <div class="card-body">
-                        <div class="row form-group">
+                        <div class="row">
                             <button class="ml-4 col-sm-1 btn btn-primary" onclick="showMainView()">BACK</button>
+                            <label for="desk" class="mon col-sm-2 text-right col-form-label">MONITORING</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="mon form-control" id="mon" disabled>
+                            </div>
+                            <div class="col"></div>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">DSI KAT</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="dsikat" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="desk" class="div col-sm-2 text-right col-form-label">DIVISI</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="div form-control" id="div" disabled>
+                            </div>
+                            <div class="col"></div>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">TOP KAT</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="topkat" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="desk" class="dep col-sm-2 text-right col-form-label">DEPARTEMENT</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="dep form-control" id="dep" disabled>
+                            </div>
+                            <div class="col"></div>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">MIN DISPLAY</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="mindis" disabled>
+                            </div>
                         </div>
                         <div class="row form-group">
-                            <table class="table table-sm mb-0 text-right" id="table_history">
+                            <label for="desk" class="kat col-sm-2 text-right col-form-label">KATEGORI</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="kat form-control" id="kat" disabled>
+                            </div>
+                            <div class="col"></div>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">MINOR</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="minor" disabled>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label for="" class="d_prdcd col-sm-2 text-right col-form-label">PLU</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="d_prdcd form-control" id="d_prdcd" disabled>
+                            </div>
+                            <label for="desk" class="col-sm-4 text-right col-form-label">USER</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="d_user" value="{{ $_SESSION['usertype'] }}" disabled>
+                            </div>
+                            <label for="desk" class="col-sm-2 text-right col-form-label">KETERANGAN</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="ketnewplu" disabled>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row form-group">
+                            <table class="table table-sm mb-0 text-right" id="table_detail">
                                 <thead class="text-center thColor">
                                 <tr>
-                                    <th class="align-middle">PRDCD</th>
-                                    <th class="text-center">Min<br>Display</th>
-                                    <th class="text-center">Min<br>Order</th>
-                                    <th class="text-center">AVG<br>3 bln akhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-3 terakhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-2 terakhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-1 terakhir</th>
-                                    <th class="align-middle">MPKM</th>
-                                    <th class="align-middle" width="6%">PKM*</th>
-                                    <th class="align-middle">M+</th>
-                                    <th class="align-middle">PKMT</th>
-                                    <th class="align-middle">Proses</th>
-                                    <th class="align-middle">Adjust</th>
+                                    <th>PLU</th>
+                                    <th>MDIS</th>
+                                    <th>MAX D</th>
+                                    <th>A_SLS</th>
+                                    <th>LT</th>
+                                    <th>KOEF</th>
+                                    <th>HARI_SALES</th>
+                                    <th>PKM</th>
+                                    <th>MPKM</th>
+                                    <th>PKMT</th>
+                                    <th>N+</th>
+                                    <th>PKMX</th>
+                                    <th>SLP</th>
+                                    <th>STS</th>
+                                    <th>% SL</th>
                                 </tr>
                                 </thead>
                                 <tbody id="">
@@ -126,34 +186,101 @@
                                 <tfoot></tfoot>
                             </table>
                         </div>
-                        <div class="row form-group">
+                        <hr>
+                        <div class="row mt-1">
                             <label for="desk" class="col-sm-1 text-right col-form-label">Deskripsi</label>
-                            <div class="col-sm-4">
-                                <input maxlength="10" type="text" class="form-control" id="h_desk" disabled>
+                            <div class="col-sm-5">
+                                <input maxlength="10" type="text" class="form-control" id="d_desk" disabled>
                             </div>
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Nama Supplier</label>
-                            <div class="col pr-5">
-                                <input maxlength="10" type="text" class="form-control" id="h_namasupplier" disabled>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-center" id="d_unit" disabled>
                             </div>
-                            <button class="mr-5 col-sm-2 btn btn-primary" id="btn_cetak">CETAK STATUS STORAGE</button>
                         </div>
-                        <div class="row form-group">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Periode Proses</label>
+                        <div class="row mt-1">
+                            <label for="desk" class="col-sm-1 text-right col-form-label">TAG</label>
                             <div class="col-sm-1">
-                                <input maxlength="10" type="text" class="form-control text-center" id="h_periode" disabled>
+                                <input maxlength="10" type="text" class="form-control text-center" id="tag" disabled>
                             </div>
-                            <div class="col-sm-3"></div>
+                            <label for="desk" class="ml-3 text-right col-form-label">MIN</label>
+                            <div class="col-sm-1">
+                                <input maxlength="10" type="text" class="form-control text-center" id="min" disabled>
+                            </div>
+                            <label for="desk" class="ml-3 text-right col-form-label">DSI</label>
+                            <div class="col-sm-1">
+                                <input maxlength="10" type="text" class="form-control text-center" id="dsi" disabled>
+                            </div>
+                            <label for="desk" class="ml-3 text-right col-form-label">TOP</label>
+                            <div class="col-sm-1">
+                                <input maxlength="10" type="text" class="form-control text-center" id="top" disabled>
+                            </div>
+                            <label for="desk" class="ml-3 text-right col-form-label">MAX PALET</label>
+                            <div class="col-sm-1">
+                                <input maxlength="10" type="text" class="form-control text-center" id="maxpalet" disabled>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
                             <label for="desk" class="col-sm-1 text-right col-form-label">Supplier</label>
                             <div class="col-sm-1">
-                                <input maxlength="10" type="text" class="form-control text-center" id="h_kodesupplier" disabled>
+                                <input maxlength="10" type="text" class="form-control text-center" id="sup_kode" disabled>
                             </div>
-                            <label for="desk" class="text-right col-form-label ml-3">Koef</label>
-                            <div class="col-sm-1">
-                                <input maxlength="10" type="text" class="form-control text-center" id="h_koef" disabled>
+                            <div class="col-sm-5 pl-0">
+                                <input maxlength="10" type="text" class="form-control" id="sup_nama" disabled>
                             </div>
-                            <label for="desk" class="text-right col-form-label ml-2">LT</label>
+                            <div class="col-sm-2"></div>
+                            <div class="col">
+                                MPKM = nilai PKM hasil perhitungan
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <label for="desk" class="col-sm-1 text-right col-form-label">Qty M+</label>
                             <div class="col-sm-1">
-                                <input maxlength="10" type="text" class="form-control text-center" id="h_lt" disabled>
+                                <input maxlength="10" type="text" class="form-control text-center" id="mplus" disabled>
+                            </div>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">OMI</label>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-center" id="omi" disabled>
+                            </div>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="bln3" disabled>
+                            </div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="bln2" disabled>
+                            </div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="bln1" disabled>
+                            </div>
+                            <div class="col">
+                                PKM = nilai PKM hasil perhitungan / adjust
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <input maxlength="10" type="text" class="form-control" id="kettag" disabled>
+                            </div>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="qty3" disabled>
+                            </div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="qty2" disabled>
+                            </div>
+                            <div class="col-sm-1 pl-0">
+                                <input maxlength="10" type="text" class="form-control text-right" id="qty1" disabled>
+                            </div>
+                            <div class="col">
+                                PKMT = PKM + Mplus
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="editplubaru" disabled>
+                            </div>
+                            <div class="col-sm-2"></div>
+                            <div class="col">
+                                PKMX = PKMT + Nplus
                             </div>
                         </div>
                     </div>
@@ -277,6 +404,34 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_monitoring" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0 text-center" id="table_monitoring">
+                                    <thead class="thColor">
+                                    <tr>
+                                        <th>Nama Monitoring</th>
+                                        <th>Kode Monitoring</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    </tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="m_history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered" role="document">
@@ -330,7 +485,7 @@
             display: block;
         }
 
-        .clicked, .row-history:hover{
+        .clicked, .row-detail:hover{
             background-color: grey !important;
             color: white;
         }
@@ -338,24 +493,27 @@
     </style>
 
     <script>
-        var listNomor = [];
-        var selected = [];
-        var dataNodoc = [];
-        var dataVNew = [];
-        var historyData = [];
+        var dataDetail = [];
+        var dataPrdcd = [];
 
         $(document).ready(function(){
             $('.tanggal').MonthPicker({
                 Button: false
             });
 
+            // getDivisi();
             // getPRDCD();
-            // getHistory();
-            getDivisi();
+            // getMonitoring();
+        });
+
+        $('#m_prdcd').on('shown.bs.modal',function(){
+            if(!$.fn.DataTable.isDataTable('#table_prdcd')){
+                getPRDCD();
+            }
         });
 
         function getPRDCD(){
-            lovutuh = $('#table_prdcd').DataTable({
+            $('#table_prdcd').DataTable({
                 "ajax": '{{ url()->current().'/get-lov-prdcd' }}',
                 "columns": [
                     {data: 'desk', name: 'desk'},
@@ -380,13 +538,21 @@
                     $(document).on('click', '.row-prdcd', function (e) {
                         $('#prdcd').val($(this).find('td:eq(1)').html());
                         $('#desk').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
-                        // $('#olahan_plu').val($(this).find('td:eq(3)').html());
+                        $('#unit').val($(this).find('td:eq(2)').html());
 
                         $('#m_prdcd').modal('hide');
+
+                        getDetail('prdcd');
                     });
                 }
             });
         }
+
+        $('#m_divisi').on('shown.bs.modal',function(){
+            if(!$.fn.DataTable.isDataTable('#table_divisi')){
+                getDivisi();
+            }
+        });
 
         function getDivisi(){
             if($.fn.DataTable.isDataTable('#table_divisi')){
@@ -429,345 +595,444 @@
         }
 
         function getDepartement(){
-            if($.fn.DataTable.isDataTable('#table_departement')){
-                $('#table_departement').DataTable().destroy();
-            }
-
-            $("#table_departement tbody [role='row']").remove();
-
-            lovutuh = $('#table_departement').DataTable({
-                "ajax": {
-                    url: '{{ url()->current().'/get-lov-departement' }}',
-                    data: {
-                        kodedivisi: $('#div_kode').val()
-                    }
-                },
-                "columns": [
-                    {data: 'dep_namadepartement'},
-                    {data: 'dep_kodedepartement'},
-                    {data: 'dep_kodedivisi'},
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-left');
-                    $(row).addClass('row-departement').css({'cursor': 'pointer'});
-                },
-                "order" : [],
-                "initComplete": function(){
-                    // $('#btn_departement').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
-
-                    $(document).on('click', '.row-departement', function (e) {
-                        $('#dep_kode').val($(this).find('td:eq(1)').html());
-                        $('#dep_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
-
-                        $('#m_departement').modal('hide');
-                    });
-                }
-            });
-        }
-
-        function getKategori(){
-            if($.fn.DataTable.isDataTable('#table_kategori')){
-                $('#table_kategori').DataTable().destroy();
-            }
-
-            $("#table_kategori tbody [role='row']").remove();
-
-            lovutuh = $('#table_kategori').DataTable({
-                "ajax": {
-                    url: '{{ url()->current().'/get-lov-kategori' }}',
-                    data: {
-                        kodedepartement: $('#div_kode').val()
-                    }
-                },
-                "columns": [
-                    {data: 'kat_namakategori'},
-                    {data: 'kat_kodekategori'},
-                    {data: 'kat_kodedepartement'},
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-left');
-                    $(row).addClass('row-kategori').css({'cursor': 'pointer'});
-                },
-                "order" : [],
-                "initComplete": function(){
-                    $(document).on('click', '.row-kategori', function (e) {
-                        $('#kat_kode').val($(this).find('td:eq(1)').html());
-                        $('#kat_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
-
-                        $('#m_kategori').modal('hide');
-                    });
-                }
-            });
-        }
-
-        function getHistory(){
-            $('#table_history').DataTable({
-                "ajax": '{{ url()->current().'/get-data-history' }}',
-                "columns": [
-                    {data: 'pkm_prdcd', name: 'pkm_prdcd'},
-                    {data: 'pkm_mindisplay'},
-                    {data: 'pkm_minorder'},
-                    {data: 'avgqty',render: function(data){
-                            return parseFloat(data).toFixed(3);
-                        }
-                    },
-                    {data: 'bln1'},
-                    {data: 'qty1',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'hari1',render: function(data){
-                            return '/' + data + ' hari';
-                        }
-                    },
-                    {data: 'bln2'},
-                    {data: 'qty2',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'hari2',render: function(data){
-                            return '/' + data + ' hari';
-                        }
-                    },
-                    {data: 'bln3'},
-                    {data: 'qty3',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'hari3',render: function(data){
-                            return '/' + data + ' hari';
-                        }
-                    },
-                    {data: 'pkm_mpkm',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: null},
-                    {data: 'pkm_qtymplus',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'pkm_pkmt',render: function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'proses'},
-                    {data: 'adjust'},
-                    {data: 'pkm_kodesupplier', visible: false, searchable: true},
-                    {data: 'sup_namasupplier', visible: false, searchable: true},
-                ],
-                columnDefs: [
-                    {
-                        targets: [0],
-                        className: 'text-center'
-                    },
-                    {
-                        targets: 14,
-                        className: 'pb-0 pt-0'
-                    }
-                ],
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).on('click',function(){
-                        $('.clicked').removeClass('clicked');
-                        $(row).addClass('clicked');
-                        showHistoryDetail(dataIndex);
-                    });
-                    $(row).find('td:eq(14)').empty().append('<input class="pb-0 pt-0 form-control text-right" value="'+data.pkm_pkm+'" onkeypress="changePKM(event,'+dataIndex+')">');
-                    $(row).addClass('row-history').css({'cursor': 'pointer'});
-
-                    historyData.push(data);
-                },
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "order" : [],
-                "initComplete": function(){
-
-                }
-            });
-            $('#table_history_wrapper').css('width','100%');
-        }
-
-        function showMainView(){
-            $('#main_view').show();
-            $('#history_view').hide();
-        }
-
-        function showHistoryView(){
-            $('#main_view').hide();
-            $('#history_view').show();
-        }
-
-        function showHistoryDetail(idx){
-            data = historyData[idx];
-
-            $('#h_desk').val(data.prd_deskripsipanjang);
-            $('#h_periode').val(data.bulan);
-            $('#h_namasupplier').val(data.sup_namasupplier);
-            $('#h_kodesupplier').val(data.pkm_kodesupplier);
-            $('#h_koef').val(data.pkm_koefisien);
-            $('#h_lt').val(data.pkm_leadtime);
-        }
-
-        function changePKM(e,idx){
-            if(e.which === 13){
+            if(!$('#div_kode').val()){
                 swal({
-                    title: 'Yakin ingin melakukan perubahan nilai PKM?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    if (ok) {
-                        data = historyData[idx];
-                        $.ajax({
-                            url: '{{ url()->current() }}/change-pkm',
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            data: {
-                                prdcd: data.pkm_prdcd,
-                                pkm: $(e.target).val(),
-                                mpkm: data.pkm_mpkm,
-                                qtymplus: data.pkm_qtymplus,
-                                pkmt: data.pkm_pkmt
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
-                                swal({
-                                    title: response.title,
-                                    icon: response.status,
-                                });
+                    title: 'Pilih Divisi terlebih dahulu!',
+                    icon: 'warning'
+                });
+            }
+            else{
+                if($.fn.DataTable.isDataTable('#table_departement')){
+                    $('#table_departement').DataTable().destroy();
+                }
 
-                                if(response.status === 'error')
-                                    $(e.target).val(data.pkm_pkm)
-                                else historyData[idx].pkm_pkm = $(e.target).val();
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: error.responseJSON.message,
-                                    icon: 'error',
-                                });
-                            }
+                $("#table_departement tbody [role='row']").remove();
+
+                lovutuh = $('#table_departement').DataTable({
+                    "ajax": {
+                        url: '{{ url()->current().'/get-lov-departement' }}',
+                        data: {
+                            kodedivisi: $('#div_kode').val()
+                        }
+                    },
+                    "columns": [
+                        {data: 'dep_namadepartement'},
+                        {data: 'dep_kodedepartement'},
+                        {data: 'dep_kodedivisi'},
+                    ],
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).find(':eq(0)').addClass('text-left');
+                        $(row).addClass('row-departement').css({'cursor': 'pointer'});
+                    },
+                    "order" : [],
+                    "initComplete": function(){
+                        // $('#btn_departement').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+
+                        $(document).on('click', '.row-departement', function (e) {
+                            $('#dep_kode').val($(this).find('td:eq(1)').html());
+                            $('#dep_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                            getKategori();
+
+                            $('#m_departement').modal('hide');
                         });
                     }
                 });
             }
         }
 
-        function proses(){
-            swal({
-                title: 'SKIP, TXT_MON',
-                icon: 'error'
-            });
-            {{--periodeAktif = $.datepicker.formatDate('mm/yy', new Date());--}}
+        function getKategori(){
+            if(!$('#dep_kode').val()){
+                swal({
+                    title: 'Pilih Departement terlebih dahulu!',
+                    icon: 'warning'
+                });
+            }
+            else{
+                if($.fn.DataTable.isDataTable('#table_kategori')){
+                    $('#table_kategori').DataTable().destroy();
+                }
 
-            {{--if(!$('#periode').val() || !$('#prdcd').val() || !$('#sales1').val() || !$('#sales2').val() || !$('#sales3').val()){--}}
-            {{--swal({--}}
-            {{--title: 'Inputan belum lengkap!',--}}
-            {{--icon: 'error'--}}
-            {{--});--}}
-            {{--}--}}
-            {{--else if($('#periode').val() > periodeAktif){--}}
-            {{--swal({--}}
-            {{--title: 'Periode lebih besar dari periode aktif!',--}}
-            {{--icon: 'error'--}}
-            {{--});--}}
-            {{--}--}}
-            {{--else if($('#sales1').val() > periodeAktif){--}}
-            {{--swal({--}}
-            {{--title: 'Periode Sales 1 lebih besar dari periode aktif!',--}}
-            {{--icon: 'error'--}}
-            {{--});--}}
-            {{--}--}}
-            {{--else if($('#sales2').val() > periodeAktif){--}}
-            {{--swal({--}}
-            {{--title: 'Periode Sales 2 lebih besar dari periode aktif!',--}}
-            {{--icon: 'error'--}}
-            {{--});--}}
-            {{--}--}}
-            {{--else if($('#sales3').val() > periodeAktif){--}}
-            {{--swal({--}}
-            {{--title: 'Periode Sales 3 lebih besar dari periode aktif!',--}}
-            {{--icon: 'error'--}}
-            {{--});--}}
-            {{--}--}}
-            {{--else{--}}
-            {{--swal({--}}
-            {{--title: 'Yakin ingin melakukan proses data?',--}}
-            {{--icon: 'warning',--}}
-            {{--buttons: true,--}}
-            {{--dangerMode: true--}}
-            {{--}).then((ok) => {--}}
-            {{--if(ok){--}}
-            {{--$.ajax({--}}
-            {{--url: '{{ url()->current() }}/proses',--}}
-            {{--type: 'POST',--}}
-            {{--headers: {--}}
-            {{--'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-            {{--},--}}
-            {{--data: {--}}
-            {{--periode: $('#periode').val(),--}}
-            {{--sales1: $('#sales1').val(),--}}
-            {{--sales2: $('#sales2').val(),--}}
-            {{--sales3: $('#sales3').val(),--}}
+                $("#table_kategori tbody [role='row']").remove();
 
-            {{--},--}}
-            {{--beforeSend: function () {--}}
-            {{--$('#modal-loader').modal('show');--}}
-            {{--},--}}
-            {{--success: function (response) {--}}
-            {{--$('#modal-loader').modal('hide');--}}
-            {{--swal({--}}
-            {{--title: response.title,--}}
-            {{--text: response.message,--}}
-            {{--icon: response.status,--}}
-            {{--});--}}
-            {{--},--}}
-            {{--error: function (error) {--}}
-            {{--$('#modal-loader').modal('hide');--}}
-            {{--swal({--}}
-            {{--title: 'Terjadi kesalahan!',--}}
-            {{--text: error.responseJSON.message,--}}
-            {{--icon: 'error',--}}
-            {{--});--}}
-            {{--}--}}
-            {{--});--}}
-            {{--}--}}
-            {{--});--}}
-            {{--}--}}
+                lovutuh = $('#table_kategori').DataTable({
+                    "ajax": {
+                        url: '{{ url()->current().'/get-lov-kategori' }}',
+                        data: {
+                            kodedepartement: $('#dep_kode').val()
+                        }
+                    },
+                    "columns": [
+                        {data: 'kat_namakategori'},
+                        {data: 'kat_kodekategori'},
+                        {data: 'kat_kodedepartement'},
+                    ],
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).find(':eq(0)').addClass('text-left');
+                        $(row).addClass('row-kategori').css({'cursor': 'pointer'});
+                    },
+                    "order" : [],
+                    "initComplete": function(){
+                        $(document).on('click', '.row-kategori', function (e) {
+                            $('#kat_kode').val($(this).find('td:eq(1)').html());
+                            $('#kat_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                            $('#m_kategori').modal('hide');
+                        });
+                    }
+                });
+            }
         }
 
-        $('#btn_cetak').on('click',() => {
-            swal({
-                title: 'File akan terdownload beberapa saat lagi',
-                icon: 'success'
-            });
-            window.location.href = '{{ url()->current().'/cetak-status-storage' }}';
+        $('#m_monitoring').on('shown.bs.modal',function(){
+            if(!$.fn.DataTable.isDataTable('#table_monitoring')){
+                getMonitoring();
+            }
         });
+
+        function getMonitoring(){
+            if($.fn.DataTable.isDataTable('#table_monitoring')){
+                $('#table_monitoring').DataTable().destroy();
+            }
+
+            $("#table_monitoring tbody [role='row']").remove();
+
+            lovutuh = $('#table_monitoring').DataTable({
+                "ajax": {
+                    url: '{{ url()->current().'/get-lov-monitoring' }}',
+                    data: {
+
+                    }
+                },
+                "columns": [
+                    {data: 'mpl_namamonitoring'},
+                    {data: 'mpl_kodemonitoring'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-monitoring').css({'cursor': 'pointer'});
+                },
+                "order" : [],
+                "initComplete": function(){
+                    $(document).on('click', '.row-monitoring', function (e) {
+                        $('#mon_kode').val($(this).find('td:eq(1)').html());
+                        $('#mon_nama').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
+
+                        $('#m_monitoring').modal('hide');
+
+                        getDetail('monitoring');
+                    });
+                }
+            });
+        }
+
+        function cekItem(){
+            if(!$('#kat_kode').val()){
+                swal({
+                    title: 'Pilih Kategori terlebih dahulu!',
+                    icon: 'warning'
+                });
+                $('#item').val('-');
+            }
+            else{
+                getDetail('divdepkat');
+            }
+        }
+
+        function showMainView(){
+            $('#main_view input').val('');
+            $('#item').val('-');
+
+            $('#main_view').show();
+            $('#detail_view').hide();
+        }
+
+        function getDetail(type){
+            $('#detail_view input').val('');
+            $('#d_user').val('{{ $_SESSION['usertype'] }}');
+
+            $('.d_prdcd').hide();
+
+            if(type == 'prdcd'){
+                data = {
+                    prdcd: $('#prdcd').val()
+                };
+
+                $('.d_prdcd').show();
+                $('.dep').hide();
+                $('.kat').hide();
+                $('.div').hide();
+                $('.mon').hide();
+            }
+            else if(type == 'divdepkat'){
+                $('#div').val($('#div_kode').val() + ' - ' + $('#div_nama').val());
+                $('#dep').val($('#dep_kode').val() + ' - ' + $('#dep_nama').val());
+                $('#kat').val($('#kat_kode').val() + ' - ' + $('#kat_nama').val());
+
+                data = {
+                    item: $('#item').val(),
+                    div: $('#div_kode').val(),
+                    dep: $('#dep_kode').val(),
+                    kat: $('#kat_kode').val()
+                };
+
+                $('.dep').show();
+                $('.kat').show();
+                $('.div').show();
+                $('.mon').hide();
+            }
+            else{
+                $('#mon').val($('#mon_kode').val() + ' - ' + $('#mon_nama').val());
+
+                data = {
+                    mon: $('#mon_kode').val()
+                };
+
+                $('.dep').hide();
+                $('.kat').hide();
+                $('.div').hide();
+                $('.mon').show();
+            }
+
+            dataDetail = [];
+            dataPrdcd = [];
+            $('#main_view').hide();
+            $('#detail_view').show();
+
+            if($.fn.DataTable.isDataTable('#table_detail')){
+                $('#table_detail').DataTable().destroy();
+            }
+
+            $("#table_detail tbody [role='row']").remove();
+
+            $('#table_detail').DataTable({
+                "ajax": {
+                    url: '{{ url()->current().'/get-detail' }}',
+                    data: data,
+                    beforeSend: function(){
+                        $('#modal-loader').modal('show');
+                    }
+                },
+                "columns": [
+                    {data: 'pkm_prdcd'},
+                    {data: 'pkm_mindisplay'},
+                    {data: 'maxd'},
+                    {data: 'pkm_qtyaverage'},
+                    {data: 'pkm_leadtime'},
+                    {data: 'pkm_koefisien'},
+                    {data: 'hari'},
+                    {data: 'pkm_pkm', render: function(data, type, full, meta){
+                            return '<input class="text-right row-pkm" onkeypress="changePKM(event, '+meta.row+')" style="width: 5vw" value="' + data + '">';
+                        }
+                    },
+                    {data: 'pkm_mpkm'},
+                    {data: 'pkm_pkmt'},
+                    {data: 'nplus'},
+                    {data: 'pkmx'},
+                    {data: 'slp'},
+                    {data: 'hgb_statusbarang'},
+                    {data: 'slv_servicelevel_qty'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    data.txt_acost = data.prd_avgcost;
+                    data.txt_unit3 = data.prd_unit;
+                    data.txt_frac = data.prd_frac;
+                    data.txt_ndsi1 = 0;
+                    data.txt_ndsi2 = 0;
+                    data.txt_ntop = 0;
+                    data.txt_nmin_rp = 0;
+                    data.txt_nmid_rp = 0;
+                    data.txt_nrph1 = 0;
+                    dataDetail.push(data);
+                    dataPrdcd.push(data.pkm_prdcd);
+
+                    $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-detail').css({'cursor': 'pointer'});
+                },
+                "order" : [],
+                "initComplete": function(){
+                    {{--if('{{ $_SESSION['usertype'] }}' == 'XXX'){--}}
+                        {{--$('.row-pkm').prop('disabled',true);--}}
+                    {{--}--}}
+                    {{--else $('.row-pkm').prop('disabled',false);--}}
+
+                    $('.row-pkm').prop('disabled',false);
+
+                    $('#modal-loader').modal('hide');
+
+                    $(document).on('click', '.row-detail', function (e) {
+                        $('.clicked').removeClass('clicked');
+                        $(this).addClass('clicked');
+                        showDesc($(this).find('td:eq(0)').html());
+                    });
+
+                    setTopRight();
+
+                    // $(document).on('keypress', '.row-pkm', function (e) {
+                    //     changePKM(e);
+                    // });
+
+                    showDesc(dataDetail[0].pkm_prdcd);
+                }
+            });
+
+            $('#table_detail_wrapper').css('width','100%');
+        }
+
+        function showDesc(prdcd){
+            i = $.inArray(prdcd,dataPrdcd);
+
+            $('#d_prdcd').val(dataDetail[i].pkm_prdcd);
+            $('#d_desk').val(decodeHtml(dataDetail[i].prd_deskripsipanjang));
+            $('#d_unit').val(dataDetail[i].unit);
+            $('#tag').val(dataDetail[i].prd_kodetag);
+            $('#min').val(dataDetail[i].min);
+            $('#dsi').val(dataDetail[i].dsi);
+            $('#top').val(dataDetail[i].jtopa);
+            $('#maxpalet').val(dataDetail[i].maxpalet);
+            $('#sup_kode').val(dataDetail[i].sup_kodesupplier);
+            $('#sup_nama').val(decodeHtml(dataDetail[i].sup_namasupplier));
+            $('#mplus').val(dataDetail[i].mplus);
+            $('#omi').val(dataDetail[i].omi);
+            $('#bln1').val(dataDetail[i].bln1);
+            $('#bln2').val(dataDetail[i].bln2);
+            $('#bln3').val(dataDetail[i].bln3);
+            $('#qty1').val(dataDetail[i].pkm_qty1);
+            $('#qty2').val(dataDetail[i].pkm_qty2);
+            $('#qty3').val(dataDetail[i].pkm_qty3);
+            $('#kettag').val(dataDetail[i].kettag);
+            $('#ketnewplu').val(dataDetail[i].ketnewplu);
+            if(dataDetail[i].ketnewplu != ''){
+                $('.row-pkm').prop('disabled',true);
+                $('#editplubaru').val('PLU Terdaftar Sbg Produk Baru, Update Via Menu Inquiry Monitoring Produk Baru');
+            }
+            else{
+                $('#editplubaru').val('');
+            }
+        }
+
+        function changePKM(e, index){
+            if(e.which == 13){
+                updateOK = true;
+                oldPkm = dataDetail[index].pkm_pkm;
+                pkm = $(e.target).val();
+                pkmt = parseInt(pkm ) + parseInt(dataDetail[index].mplus);
+                mpkm = Math.round(dataDetail[index].pkm_mpkm);
+                prdcd = dataDetail[index].pkm_prdcd;
+
+                $.ajax({
+                    url: '{{ url()->current() }}/change-pkm',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        prdcd: prdcd,
+                        pkm: pkm,
+                        pkmt: pkmt,
+                        mpkm: mpkm
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+
+                        swal({
+                            title: response.title,
+                            icon: response.status,
+                        });
+
+                        if(response.status === 'error')
+                            $(e.target).val(oldPkm);
+                        else{
+                            dataDetail[index].pkm_pkmt = pkmt;
+                            dataDetail[index].pkmx = pkmt + parseInt(dataDetail[index].nplus);
+
+                            $(e.target).parent().parent().find('td:eq(9)').html(pkmt);
+                            $(e.target).parent().parent().find('td:eq(11)').html(dataDetail[index].pkmx);
+
+                            dsi = Math.round((pkmt + parseInt(dataDetail[index].nplus)) / parseFloat(dataDetail[index].pkm_qtyaverage));
+                            $('#dsi').val(dsi);
+                            dataDetail[index].dsi = dsi;
+
+                            setTopRight();
+                        }
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: 'Terjadi kesalahan!',
+                            text: error.responseJSON.message,
+                            icon: 'error',
+                        });
+                    }
+                });
+            }
+        }
+
+        function setTopRight(){
+            ndsi1 = 0;
+            ntop = 0;
+            nmin_rp = 0;
+            nmid_rp = 0;
+            ndsi2 = 0;
+            nrph1 = 0;
+
+
+
+            tag = ['N','H','O','X','A','G'];
+
+            for(i=0;i<dataDetail.length;i++){
+                // console.log($.inArray(dataDetail[i].prd_kodetag, tag));
+                if($.inArray(dataDetail[i].prd_kodetag, tag) == -1){
+                    ndsi1 += parseFloat(dataDetail[i].pkmx);
+                    ntop += parseFloat(dataDetail[i].jtopa);
+                    nmin_rp += parseFloat(dataDetail[i].min);
+                    nmid_rp += parseFloat(dataDetail[i].pkm_mindisplay);
+                }
+
+                ndsi2 += parseFloat(dataDetail[i].pkm_qtyaverage);
+                nrph1 += parseFloat(dataDetail[i].pkm_qtyaverage);
+
+            }
+
+            console.log('ndsi1 : ' + ndsi1);
+            console.log('ndsi2 : ' + ndsi2);
+
+            $('#dsikat').val(ndsi2 === 0 ? 0 : Math.round(ndsi1/ndsi2));
+            $('#topkat').val(nrph1 === 0 ? 0 : Math.round(ntop/nrph1));
+            $('#mindis').val(ndsi2 === 0 ? 0 : Math.round(nmid_rp/ndsi2));
+            $('#minor').val(ndsi2 === 0 ? 0 : Math.round(nmin_rp/ndsi2));
+        }
 
     </script>
 

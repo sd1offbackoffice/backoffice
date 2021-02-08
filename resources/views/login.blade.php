@@ -164,17 +164,19 @@
                             title:  response['status'],
                             text: response['message'],
                             icon:  response['status']
-                        }).then(function () {
-                            clear();
+                        }).then((value) => {
+                            if (value) {
+                                clear();
+                            }
                         });
                     }
                     else if (response['userstatus'] == 'ADM') {
                         swal({
                             text: 'Login sebagai Admin',
                             icon: 'info'
-                        }).then((createData) => {
-                            clear();
-                            window.location.replace("{{url("/")}}");
+                        }).then((value) => {
+                                clear();
+                                window.location.replace("{{url("/")}}");
                         });
                     }
                     else if (response['userstatus'] != 'ADM') {
@@ -182,9 +184,8 @@
                             text: 'Login sebagai User',
                             icon: 'info'
                         }).then((createData) => {
-                            clear();
-                            window.location.replace("{{url("/")}}");
-
+                                clear();
+                                window.location.replace("{{url("/")}}");
                         });
                     }
                 },
@@ -207,8 +208,10 @@
                 success: function (response) {
                         swal({
                             text: response['message'],
-                            icon: response['status']
-                        }).then((createData) => {
+                            icon: response['status'],
+                        }).then((value) => {
+                            if (value) {
+                            }
                         });
                 },
                 complete: function () {

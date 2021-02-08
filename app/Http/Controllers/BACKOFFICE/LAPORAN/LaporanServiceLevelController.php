@@ -45,7 +45,22 @@ class LaporanServiceLevelController extends Controller
         return response()->json($monitoring);
     }
 
-    public function cetak(){
+    public function print_rep(Request $request){
 
+        $kodeigr = $_SESSION['kdigr'];
+
+        $data = DB::table('tbmaster_perusahaan')
+            ->select('prs_rptname', 'prs_namaperusahaan', 'prs_namacabang')
+            ->where('prs_kodeigr', '=', $kodeigr)
+            ->first();
+
+        $pdf = PDF::loadview('BACKOFFICE/LaporanServiceLevel-cetak', compact(['data', 'perusahaan']));
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE/LaporanServiceLevel-cetak');
     }
 }

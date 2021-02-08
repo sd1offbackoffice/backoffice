@@ -132,10 +132,12 @@
 
     <script>
         var today = new Date();
+        var date1 = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0');
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
+        date1.setDate(1);
 
         $("#tgl1").datepicker({
             "dateFormat" : "dd/mm/yy",
@@ -145,7 +147,7 @@
             "dateFormat" : "dd/mm/yy",
         });
 
-        $("#tgl1").val(today);
+        $("#tgl1").val(date1);
         $("#tgl2").val(today);
 
         $(document).on('keypress', '.field', function (e) {
@@ -286,7 +288,7 @@
 
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseMtrSupp('"+ field +"','"+ result[i].msu_kodemonitoring+"') class='modalRow'><td>"+ result[i].msu_kodemonitoring +"</td><td>"+ result[i].msu_namamonitoring +"</td></tr>")
+                            $('#tbodyModalHelp').append("<tr onclick=chooseRow('"+ field +"','"+ result[i].msu_kodemonitoring+"') class='modalRow'><td>"+ result[i].msu_kodemonitoring +"</td><td>"+ result[i].msu_namamonitoring +"</td></tr>")
                         }
 
                         $('#modalHelp').modal('show');
@@ -297,11 +299,11 @@
             }
         }
 
-        function chooseMtrSupp(kode,name) {
-            $('#kodeMtrSupp').val(kode);
-            $('#namaMtrSupp').val(name);
-            $('#modalHelp').modal('hide');
-        }
+        // function chooseMtrSupp(kode,name) {
+        //     $('#kodeMtrSupp').val(kode);
+        //     $('#namaMtrSupp').val(name);
+        //     $('#modalHelp').modal('hide');
+        // }
 
         function searchMtrSupp(input, field) {
             ajaxSetup();
@@ -338,7 +340,7 @@
             let tgl2 = $('#tgl2').val();
             let supp1 = $('#supplier1').val();
             let supp2 = $('#supplier2').val();
-            let kodeMonitoring = $('#kodeMonitoringSupp').val();
+            let kodeMonitoring = $('#kodeMtrSupp').val();
             // let namaMonitoring = $('#namaMonitoringSupp').val();
             let ranking = $('#ranking').val();
 
@@ -361,8 +363,8 @@
             $('#tgl2').val('');
             $('#supplier1').val('');
             $('#supplier2').val('');
-            $('#kodeMonitoringSupp').val('');
-            $('#namaMonitoringSupp').val('');
+            $('#kodeMtrSupp').val('');
+            $('#namaMtrSupp').val('');
             $('#ranking').val('');
         }
 

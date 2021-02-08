@@ -108,17 +108,17 @@
                                     </thead>
                                     <tbody id="body-table-header" style="height: 250px;">
                                     @for($i = 0 ; $i< 10 ; $i++)
-                                        <tr class="baris">
+                                        <tr class="baris" id="{{$i}}" onclick="showDesPanjang(this)">
                                             <td>
-                                                <button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i
+                                                <button id="{{$i}}" onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i
                                                             class="icon fas fa-times"></i></button>
                                             </td>
                                             <td>
-                                                <input onkeypress="return isPR(event)" onchange="PRchecker()" maxlength="1" class="form-control pr"
+                                                <input onkeypress="return isPR(event)" onchange="PRchecker(this)" maxlength="1" class="form-control pr"
                                                        type="text">
                                             </td>
                                             <td class="buttonInside" style="width: 150px;">
-                                                <input type="text" class="form-control plu" value="" no="{{$i}}">
+                                                <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" value="" no="{{$i}}">
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
@@ -144,12 +144,12 @@
                                                        type="text">
                                             </td>
                                             <td>
-                                                <input class="form-control ctn-header ctn-kuantum"
+                                                <input onchange="kuantumChecker(this)" onkeypress="return isNumberKey(event)" class="form-control ctn-header ctn-kuantum"
                                                        rowheader=1
                                                        type="text">
                                             </td>
                                             <td>
-                                                <input class="form-control pcs-header pcs-kuantum"
+                                                <input onchange="kuantumChecker(this)" onkeypress="return isNumberKey(event)" class="form-control pcs-header pcs-kuantum"
                                                        rowheader=1
                                                        type="text">
                                             </td>
@@ -188,10 +188,10 @@
                                 <input readonly id="preItem" type="text" style="margin-right: 30px" value="0">
 
                                 <label for="preGross" class="font-weight-normal" style="margin-right: 10px;">PRE-PACKING GROSS</label>
-                                <input readonly id="preGross" type="text" style="margin-right: 30px" value="0">
+                                <input readonly id="preGross" type="text" style="margin-right: 30px" value="0.00">
 
                                 <label for="ppnAlt" class="font-weight-normal" style="margin-right: 10px;">PPN</label>
-                                <input readonly id="ppnAlt" type="text" value="0">
+                                <input readonly id="ppnAlt" type="text" value="0.00">
                             </div>
 
                             <div class="d-flex justify-content-end">
@@ -199,10 +199,10 @@
                                 <input readonly id="reItem" type="text" style="margin-right: 39px" value="0">
 
                                 <label for="reGross" class="font-weight-normal" style="margin-right: 10px;">RE-PACKING GROSS</label>
-                                <input readonly id="reGross" type="text" style="margin-right: 16px" value="0">
+                                <input readonly id="reGross" type="text" style="margin-right: 16px" value="0.00">
 
                                 <label for="ppnAlt" class="font-weight-normal" style="margin-right: 10px;">TOTAL</label>
-                                <input readonly id="total" type="text" value="0">
+                                <input readonly id="total" type="text" value="0.00">
                             </div>
 
                             <div class="d-flex justify-content-end">
@@ -210,7 +210,7 @@
                                 <input readonly id="totItem" type="text" style="margin-right: 84px" value="0">
 
                                 <label for="totGross" class="font-weight-normal" style="margin-right: 10px;">TOTAL GROSS</label>
-                                <input readonly id="totGross" type="text" style="margin-right: 258px" value="0">
+                                <input readonly id="totGross" type="text" style="margin-right: 258px" value="0.00">
 
                                 {{--<button hidden id="hiddenSaveButton" type="button" onclick="saveMe()"></button>--}}
 
@@ -273,6 +273,7 @@
     <script>
         let tempTrn;
         let tempPlu;
+        let temporary;
 
         let saveBool = true;
         let model;
@@ -289,6 +290,8 @@
         let deskripsiPanjang = {};
         let trbo_averagecost = {};
         let parameterR = 0;
+        let totalGrossP = 0;
+        let totalGrossR = 0;
 
 
         $('#tanggalTrn').datepicker({
@@ -300,6 +303,25 @@
         function dropdownKecil() {
             $('#jenisKertas').val('Kecil');
         }
+
+        function isNumberKey(evt){
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
+        function penampungPlu(iniPlu){
+            if(iniPlu.value != ''){
+                temporary = iniPlu.value;
+            }
+
+        }
+
+        // $('input').on('focusin', function(){
+        //     console.log("Saving value " + $(this).val());
+        //     $(this).data('val', $(this).val());
+        // });
 
         function isY(evt){
             $('#perubahanPlu').keyup(function(){
@@ -314,12 +336,17 @@
             return false;
         }
         function perubahanPluChecker() {
-            group_option = 'R';
+            //group_option = 'R';
             if($('#perubahanPlu').val() == 'Y'){
-                $('.rVal').prop('checked',true);
+                $('.rVal').prop('checked',true); //GROUP OPTION MENJADI R
                 $('.radio').attr('disabled','disabled');
+                $('.baris').remove();
+                $('#body-table-header').append(tempTable(0));
+                $('#body-table-header').append(tempTable(1));
+                $('.baris td button').attr('hidden',true);
             }else{
                 $('.radio').removeAttr('disabled');
+                $('.baris td button').removeAttr('hidden');
             }
         }
 
@@ -338,54 +365,315 @@
             return false;
         }
 
-        function PRchecker(){
+        function deleteRow(e) {
+            deskripsiPanjang[e.id] = '';
+            trbo_averagecost[e.id] = 0;
+            $(e).parents("tr").remove();
+            $('#deskripsi').val('');
+            if($("input[type='radio'][name='optradio']:checked").val() === 'R'){
+                for(i = 0; i < $('.plu').length; i++){
+                    if($('.pr')[i].value === 'R'){
+                        rDinamis(i);
+                        break
+                    }
+                }
+            }
+            totalPPN();
+            totalGross();
+            qtyCounter();
+
+        }
+
+        function showDesPanjang(e) {
+            $('#deskripsi').val(deskripsiPanjang[e.id]);
+        }
+
+        function rDinamis(index){
+            totalGross();
+            let satuancounter   = $('.satuan')[index].value;
+            let fraccounter     = satuancounter.substr(satuancounter.indexOf('/')+1);
+            let ctnKuantum      = $('.ctn-kuantum')[index].value;
+            let pcsKuantum      = $('.pcs-kuantum')[index].value;
+
+            let totalKuantum = (parseInt(ctnKuantum) * parseInt(fraccounter)) + parseInt(pcsKuantum);
+
+            $('.hrg-satuan')[index].value = $('#preGross').value;
+            trbo_averagecost[index] = $('#preGross').value;
+            if($('.pr')[index].value === 'R' && totalKuantum > 0 && totalGrossP > 0){
+                $('.hrg-satuan')[index].value = convertToRupiah((totalGrossP/totalKuantum)*parseInt(fraccounter));
+                trbo_averagecost[index] = (totalGrossP/totalKuantum)*parseInt(fraccounter);
+            }
+            $('.gross')[index].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[index].value)) + ((unconvertToRupiah($('.hrg-satuan')[index].value)/fraccounter)*pcsKuantum) );
+        }
+
+        //Ini PRchecker v0.1
+        // function PRchecker(elem){
+        //     let trElement = elem.parentElement.parentElement;
+        //     let tr = document.getElementsByTagName('tr');
+        //     tr = Array.prototype.slice.call(tr);
+        //     let row = tr.indexOf(trElement)-2;
+        //
+        //     if($('#perubahanPlu').val() != 'Y'){
+        //         let index = null;
+        //         if($('.rVal').is(':checked')){
+        //             if($('.pr')[row].value == 'R'){
+        //                 for(i = 0; i < $('.pr').length; i++){
+        //                     if ($('.pr')[i].value == 'R' && i != row){
+        //                         swal({
+        //                             title:'Re-Packing',
+        //                             text: 'Sudah ada item re-packing, tidak bisa tambah data lagi',
+        //                             icon:'warning',
+        //                             timer: 2000,
+        //                             buttons: {
+        //                                 confirm: false,
+        //                             },
+        //                         });
+        //                         if ($('.plu')[row].value != ''){
+        //                             $('.pr')[row].value = 'P';
+        //                         }else{
+        //                             $('.pr')[row].value = '';
+        //                         }
+        //                         index = i;
+        //                         $('.pr')[row].focus();
+        //                         break
+        //                     }
+        //                 }if(index == null && $('.plu')[row].value != ''){
+        //                     rDinamis(row);
+        //                     totalGross();
+        //                 }
+        //             }else if($('.plu')[row].value != ''){
+        //                 choosePlu(($('.plu')[row].value),row); //ctn-kuantum dan pcs-kuantum kembali jadi 0
+        //             }
+        //
+        //         }else{
+        //             if($('.pr')[row].value == 'P'){
+        //                 for(i = 0; i < $('.pr').length; i++){
+        //                     if ($('.pr')[i].value == 'P' && i != row){
+        //                         swal({
+        //                             title:'Re-Packing',
+        //                             text: 'Sudah ada item pre-packing, tidak bisa tambah data lagi',
+        //                             icon:'warning',
+        //                             timer: 2000,
+        //                             buttons: {
+        //                                 confirm: false,
+        //                             },
+        //                         });
+        //                         if ($('.plu')[row].value != ''){
+        //                             $('.pr')[row].value = 'R';
+        //                         }else{
+        //                             $('.pr')[row].value = '';
+        //                         }
+        //                         $('.pr')[row].focus();
+        //                         break
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //
+        //     }
+        // }
+
+        function PRchecker(elem){
+            let trElement = elem.parentElement.parentElement;
+            let tr = document.getElementsByTagName('tr');
+            tr = Array.prototype.slice.call(tr);
+            let row = tr.indexOf(trElement)-2;
+            if(row-1 >= 0){
+                if($('.plu')[row-1].value == ''){
+                    swal({
+                        title:'Packing',
+                        text: 'Row atas masih kosong',
+                        icon:'warning',
+                        timer: 2000,
+                        buttons: {
+                            confirm: false,
+                        },
+                    });
+                    $('.pr')[row].value = '';
+                }
+            }
             if($('#perubahanPlu').val() != 'Y'){
-                let counter = 1;
-                let index = 0;
+                let index = null;
                 if($('.rVal').is(':checked')){
-                    for(i = 0; i < $('.pr').length; i++){
-                        if ($('.pr')[i].value == 'R'){
-                            counter--;
-                            if(index == 0)
-                                index = i;
+                    if($('.pr')[row].value == 'R'){
+                        if(row+1 <= $('.pr').length){
+                            if($('.pr')[row+1].value != ''){
+                                swal({
+                                    title:'Re-Packing',
+                                    text: 'Di row bawah ada data',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                $('.pr')[row].value = 'P';
+                                return;
+                            }
                         }
-                        if(counter<0){
+                        for(i = 0; i < $('.pr').length; i++){
+                            if ($('.pr')[i].value == 'R' && i != row){
+                                swal({
+                                    title:'Re-Packing',
+                                    text: 'Sudah ada item re-packing, tidak bisa tambah data lagi',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                if ($('.plu')[row].value != ''){
+                                    $('.pr')[row].value = 'P';
+                                }else{
+                                    $('.pr')[row].value = '';
+                                }
+                                index = i;
+                                $('.pr')[row].focus();
+                                break
+                            }
+                        }if(index == null && $('.plu')[row].value != ''){
+                            rDinamis(row);
+                            totalGross();
+                        }
+                    }else if($('.pr')[row].value == 'P'){
+                        for(i = 0; i < $('.pr').length; i++){
+                            if ($('.pr')[i].value == 'R'){
+                                swal({
+                                    title:'Re-Packing',
+                                    text: 'Sudah ada item re-packing, tidak bisa tambah data lagi',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                $('.pr')[row].value = '';
+                                $('.pr')[i].focus();
+                                break
+                            }
+                        }
+                    }else{
+                        if($('.plu')[row].value != ''){
                             swal({
                                 title:'Re-Packing',
-                                text: 'Sudah ada item re-packing, tidak bisa tambah data lagi',
+                                text: 'Item sudah ada, tidak bisa mengosongkan kolom',
                                 icon:'warning',
                                 timer: 2000,
                                 buttons: {
                                     confirm: false,
                                 },
                             });
-                            $('.pr')[index].value = '';
-                            $('.pr')[index].focus();
-                            break
+                            $('.pr')[row].value = 'P';
+                            choosePlu(($('.plu')[row].value),row); //ctn-kuantum dan pcs kuantum kembali menjadi 0
+                            $('.pr')[row].focus();
                         }
                     }
+
                 }else{
-                    for(i = 0; i < $('.pr').length; i++){
-                        if ($('.pr')[i].value == 'P'){
-                            counter--;
-                            if(index == 0)
-                                index = i;
+                    if($('.pr')[row].value == 'P'){
+                        if(row+1 <= $('.pr').length){
+                            if($('.pr')[row+1].value != ''){
+                                swal({
+                                    title:'Pre-Packing',
+                                    text: 'Di row bawah ada data',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                $('.pr')[row].value = 'R';
+                                return;
+                            }
                         }
-                        if(counter<0){
+                        for(i = 0; i < $('.pr').length; i++){
+                            if ($('.pr')[i].value == 'P' && i != row){
+                                swal({
+                                    title:'Pre-Packing',
+                                    text: 'Sudah ada item pre-packing, tidak bisa tambah data lagi',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                if ($('.plu')[row].value != ''){
+                                    $('.pr')[row].value = 'R';
+                                }else{
+                                    $('.pr')[row].value = '';
+                                }
+                                $('.pr')[row].focus();
+                                break
+                            }
+                        }
+                    }else if($('.pr')[row].value == 'R'){
+                        for(i = 0; i < $('.pr').length; i++){
+                            if ($('.pr')[i].value == 'P'){
+                                swal({
+                                    title:'Pre-Packing',
+                                    text: 'Sudah ada item pre-packing, tidak bisa tambah data lagi',
+                                    icon:'warning',
+                                    timer: 2000,
+                                    buttons: {
+                                        confirm: false,
+                                    },
+                                });
+                                $('.pr')[row].value = '';
+                                $('.pr')[i].focus();
+                                break
+                            }
+                        }
+                    }else{
+                        if($('.plu')[row].value != ''){
                             swal({
-                                title:'Re-Packing',
-                                text: 'Sudah ada item pre-packing, tidak bisa tambah data lagi',
+                                title:'Pre-Packing',
+                                text: 'Item sudah ada, tidak bisa mengosongkan kolom',
                                 icon:'warning',
                                 timer: 2000,
                                 buttons: {
                                     confirm: false,
                                 },
                             });
-                            $('.pr')[index].value = '';
-                            $('.pr')[index].focus();
-                            break
+                            $('.pr')[row].value = 'R';
+                            choosePlu(($('.plu')[row].value),row); //ctn-kuantum dan pcs kuantum kembali menjadi 0
+                            $('.pr')[row].focus();
                         }
                     }
+                }
+
+            }
+            else{
+                if($('.pr')[0].value == 'R'){
+                    $('.pr')[0].value = 'P';
+                }else if($('.pr')[0].value == '' && $('.plu')[0].value != ''){
+                    swal({
+                        title:'Pre-Packing',
+                        text: 'Item sudah ada, tidak bisa mengosongkan kolom',
+                        icon:'warning',
+                        timer: 2000,
+                        buttons: {
+                            confirm: false,
+                        },
+                    });
+                    $('.plu')[row].value = 'P'
+                }
+                if($('.pr')[1].value == 'P'){
+                    if($('.plu')[0].value == ''){
+                        $('.pr')[1].value = '';
+                    }else{
+                        $('.pr')[1].value = 'R';
+                    }
+                }else if($('.pr')[0].value == '' && $('.plu')[0].value != ''){
+                    swal({
+                        title:'Re-Packing',
+                        text: 'Item sudah ada, tidak bisa mengosongkan kolom',
+                        icon:'warning',
+                        timer: 2000,
+                        buttons: {
+                            confirm: false,
+                        },
+                    });
+                    $('.plu')[row].value = 'R'
                 }
             }
         }
@@ -413,6 +701,120 @@
             //$('.plu')[0].value = 'surprise';
         }
 
+        function qtyCounter(){
+            let qtyR = 0;
+            let qtyP = 0;
+            for(i = 0; i < $('.plu').length; i++) {
+                if ($('.plu')[i].value != '') {
+                    if($('.pr')[i].value === 'R'){
+                        qtyR++;
+                    }else{
+                        qtyP++;
+                    }
+                }
+            }
+            $('#reItem').val(qtyR);
+            $('#preItem').val(qtyP);
+            $('#totItem').val(qtyR+qtyP);
+        }
+
+        function kuantumChecker(elem){
+            let trElement = elem.parentElement.parentElement;
+            let tr = document.getElementsByTagName('tr');
+            tr = Array.prototype.slice.call(tr);
+            let row = tr.indexOf(trElement)-2;
+
+            if ($('.plu')[row].value != ''){
+                let satuancounter   = $('.satuan')[row].value;
+                let fraccounter     = satuancounter.substr(satuancounter.indexOf('/')+1);
+                let ctnStock        = $('.ctn-stock')[row].value;
+                let pcsStock        = $('.pcs-stock')[row].value;
+                let ctnKuantum      = parseInt($('.ctn-kuantum')[row].value);
+                let pcsKuantum      = parseInt($('.pcs-kuantum')[row].value);
+
+                let totalKuantum = (parseInt(ctnKuantum) * parseInt(fraccounter)) + parseInt(pcsKuantum);
+                let totalStock = (parseInt(ctnStock) * parseInt(fraccounter)) + parseInt(pcsStock);
+
+                if(totalKuantum > totalStock){
+                    swal({
+                        title:'Kuantum > Stock',
+                        text: ' ',
+                        icon:'warning',
+                        timer: 1000,
+                        buttons: {
+                            confirm: false,
+                        },
+                    });
+                    $('.ctn-kuantum')[row].focus();
+                    $('.ctn-kuantum')[row].value = 0;
+                    $('.pcs-kuantum')[row].value = 0;
+                    return false;
+                }
+                $('.gross')[row].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[row].value)) + ((unconvertToRupiah($('.hrg-satuan')[row].value)/fraccounter)*pcsKuantum) );
+                if($("input[type='radio'][name='optradio']:checked").val() === 'R'){
+                    let thereisR        = 0;
+
+                    if($('.pr')[row].value === 'P'){
+                        for(i = 0; i < $('.plu').length; i++){
+                            if($('.pr')[i].value === 'R'){
+                                thereisR = i;
+                                break
+                            }
+                        }
+                        if(thereisR != 0 ){
+                            rDinamis(thereisR);
+                        }
+                    }
+                    if($('.pr')[row].value === 'R' && totalKuantum > 0 && totalGrossP > 0){
+                        $('.hrg-satuan')[row].value = convertToRupiah((totalGrossP/totalKuantum)*parseInt(fraccounter));
+                        trbo_averagecost[row] = (totalGrossP/totalKuantum)*parseInt(fraccounter);
+                    }
+                }
+                else if($("input[type='radio'][name='optradio']:checked").val() === 'P'){
+                    if($('.pr')[row].value === 'P'){
+                        let acostp = trbo_averagecost[row] * ((ctnKuantum*parseInt(fraccounter))+pcsKuantum);
+                        let t_acost = unconvertToRupiah($('#reGross').val());
+                        alert(acostp);alert(t_acost);
+                        for(i = 0; i < $('.plu').length; i++){
+                            if($('.pr')[i].value === 'R'){
+                                $('.gross')[i].value = convertToRupiah( (unconvertToRupiah($('.gross')[i].value)/t_acost)*acostp );
+                                trbo_averagecost[i] = unconvertToRupiah($('.gross')[i].value)/(ctnKuantum+(pcsKuantum/parseInt(fraccounter)))
+                                $('.hrg-satuan')[i].value = convertToRupiah(trbo_averagecost[i]);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            totalGross();
+        }
+
+        function totalGross(){
+            totalGrossP = 0;
+            totalGrossR = 0;
+            for(i = 0; i < $('.plu').length; i++){
+                if ($('.pr')[i].value === 'P'){
+                    totalGrossP = totalGrossP + parseFloat(unconvertToRupiah($('.gross')[i].value));
+                }else{
+                    totalGrossR = totalGrossR + parseFloat(unconvertToRupiah($('.gross')[i].value));
+                }
+            }
+            $('#preGross').val(convertToRupiah(totalGrossP));
+            $('#reGross').val(convertToRupiah(totalGrossR));
+            $('#totGross').val(convertToRupiah(totalGrossP+totalGrossR));
+            $('#total').val(convertToRupiah(totalGrossP+totalGrossR+unconvertToRupiah($('#ppn').value)));
+        }
+
+        function totalPPN(){
+            let ppn = 0;
+            for(i = 0; i < $('.plu').length; i++){
+                ppn = ppn + unconvertToRupiah($('#ppn').value);
+            }
+            $('#ppn').val(convertToRupiah(ppn));
+            $('#total').val(convertToRupiah(unconvertToRupiah($('#totGross').value)+ppn));
+        }
+
         $('#searchModal').keypress(function (e) {
             if (e.which === 13) {
                 let idModal = $('#idModal').val();
@@ -426,21 +828,43 @@
             }
         });
 
-        $('.plu').change(function () {
 
-            let row = $(this).attr('no');
-            let val = convertPlu($(this).val());
-            if($('.plu')[row].value != ''){
+        function penangkapPlu(w){
+            let row = w.getAttribute("no");
+            let val = convertPlu(w.value);
+            if($('.deskripsi')[row].value !== '' && $('.plu')[row].value === ''){
+                swal('', "Data Kosong, harap mengisi plu dengan benar !!", 'warning');
+                $('.plu')[row].value = temporary;
+            }else if($('.plu')[row].value != ''){
                 if($('.pr')[row].value === '' || $('.pr')[row].value == null){
                     $('.plu')[row].value = '';
                     swal('', "Isi kolom P/R dahulu !!", 'warning');
                     return false;
-                }else{
+                }
+                else{
                     choosePlu(val,row);
+                    qtyCounter();
+                    totalPPN();
                 }
             }
-
-        });
+        }
+        // $('.plu').change(function () {
+        //
+        //     let row = $(this).attr('no');
+        //     let val = convertPlu($(this).val());
+        //     if($('.plu')[row].value != ''){
+        //         if($('.pr')[row].value === '' || $('.pr')[row].value == null){
+        //             $('.plu')[row].value = '';
+        //             swal('', "Isi kolom P/R dahulu !!", 'warning');
+        //             return false;
+        //         }else{
+        //             choosePlu(val,row);
+        //             qtyCounter();
+        //             totalPPN();
+        //         }
+        //     }
+        //
+        // });
 
         function searchNmrTrn(val) {
             ajaxSetup();
@@ -559,6 +983,7 @@
         }
 
         function chooseTrn(a){
+            deskripsiPanjang = {};
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/transaksi/repacking/chooseTrn',
@@ -583,7 +1008,7 @@
                         $('#keterangan').val(keterangan);
                         rubahPlu = rec[0].trbo_flagdisc3;
                         $('#perubahanPlu').val(rubahPlu);
-                        perubahanPluChecker();
+                        //perubahanPluChecker();
                         if(rec[0].trbo_flagdisc2 == 'R'){
                             $('.rVal').attr('checked',true);
                             $('.pVal').attr('checked',false);
@@ -597,7 +1022,7 @@
                         noDocPrint = rec[0].nota;
                         //noUrut = rec[0].trbo_seqno + 1;
                         for (i = 0; i< rec.length; i++) {
-                            $('#body-table-header').append(tempTable());
+                            $('#body-table-header').append(tempTable(i));
                             $('.pr')[i].value = rec[i].trbo_flagdisc1;
                             $('.plu')[i].value = rec[i].trbo_prdcd;
                             $('.deskripsi')[i].value = rec[i].prd_deskripsipendek;
@@ -622,20 +1047,26 @@
                             } else {
                                 saveBool = true;
                                 //enable savedata dan update data
-                                $('.baris td .pr').removeAttr('disabled');
-                                $('.baris td .plu').removeAttr('disabled');
-                                $('.baris td .ctn-kuantum').removeAttr('disabled');
-                                $('.baris td .pcs-kuantum').removeAttr('disabled');
-                                $('.baris td button').removeAttr('hidden');
+                                alert(rubahPlu);
+                                if(rubahPlu == 'Y'){
+                                    $('.baris td button').attr('hidden',true);
+                                }else{
+                                    $('.baris td button').removeAttr('hidden');
+                                }
                                 $('.pr').removeAttr('disabled');
                                 $('.plu').removeAttr('disabled');
                                 $('.ctn-kuantum').removeAttr('disabled');
                                 $('.pcs-kuantum').removeAttr('disabled');
+
                             }
                         } else {
                             saveBool = true;
                             //enable savedata dan update data
-                            $('.baris td button').removeAttr('hidden');
+                            if($('#perubahanPlu').value == 'Y'){
+                                $('.baris td button').attr('hidden',true);
+                            }else{
+                                $('.baris td button').removeAttr('hidden');
+                            }
                             $('.pr').removeAttr('disabled');
                             $('.plu').removeAttr('disabled');
                             $('.ctn-kuantum').removeAttr('disabled');
@@ -643,11 +1074,14 @@
                         }
                     }else{
                         for (i = 0; i< 10; i++) {
-                            $('#body-table-header').append(tempTable());
+                            $('#body-table-header').append(tempTable(i));
                         }
                     }
                     $('#modalHelp').modal('hide');
                     $('#modal-loader').modal('hide');
+                    totalGross();
+                    totalPPN();
+                    qtyCounter();
                 }, error: function () {
                 }
             })
@@ -730,12 +1164,12 @@
         }
 
         function validate_rec(index){
-            let tempPlu  = $('.plu');
+            let temp  = $('.plu');
             let counter = 1;
             if($('.pr')[index].value === 'R' && parameterR > 0){
                 return false;
             }
-            for (let i=0; i < tempPlu.length; i++){
+            for (let i=0; i < temp.length; i++){
                 if($('.plu')[i].value === $('.plu')[index].value){
                     counter--;
                 }
@@ -749,7 +1183,6 @@
         function choosePlu(kode,index){
 
             $('#modalHelp').modal('hide');
-            let temp        = 0;
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/transaksi/repacking/choosePlu',
@@ -762,6 +1195,7 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
+                    $('.plu')[index].value = kode;
 
                     if (result.kode === 1){
                         data = result.data;
@@ -783,16 +1217,18 @@
                         else if(!validate_rec(index)){
                             swal('', "Kode produk ".concat(kode," sudah ada"), 'warning');
                             $('.plu')[index].value = '';
+                            qtyCounter();
                         }
                         else{
                             $('.plu')[index].value = kode;
                             $('.deskripsi')[index].value = data.prd_deskripsipendek;
                             deskripsiPanjang[index] = data.prd_deskripsipanjang;
+                            $('#deskripsi').val(data.prd_deskripsipanjang);
                             $('.satuan')[index].value = data.prd_unit + ' / '+ data.prd_frac;
                             //hrgsatuan yang membingungkan
-                            if($('.rVal').attr('checked',true)){
+                            if($("input[type='radio'][name='optradio']:checked").val() === 'R'){
                                 if($('.pr')[index].value == 'R'){
-                                    $('.hrg-satuan')[index].value = $('#preGross').value;
+                                    $('.hrg-satuan')[index].value = $('#preGross').val();
                                     trbo_averagecost[index] = $('#preGross').value;
                                 }else{
                                     if(data.lcostst == null || data.lcostst == 0){
@@ -827,14 +1263,19 @@
                             $('.pcs-stock')[index].value = parseInt((data.trbo_stokqty)%(data.prd_frac));
                             $('.ctn-kuantum')[index].value = 0;
                             $('.pcs-kuantum')[index].value = 0;
-                        }
-                        for(i = 0; i < $('.plu').length; i++){
-                            if ($('.plu')[i].value != ''){
-                                temp = temp + 1;
+                            if(data.prd_flagbkp1 === 'Y'){
+                                $('.ppn')[index].value = convertToRupiah(0.00);
+                            }else{
+                                $('.ppn')[index].value = convertToRupiah(0.00);
                             }
                         }
-                        $('#totalItem').val(temp);
+
                     } else if(result.kode === 0)  {
+                        if($('.deskripsi')[index].value !== ''){
+                            swal('', "Data tidak ketemu !! \n Mengembalikan plu ke nilai sebelumnya karena ada data pada row ini !!", 'warning');
+                            $('.plu')[index].value = temporary;
+                            return;
+                        }
                         swal('', result.msg, 'warning');
 
                         $('.plu')[index].value = '';
@@ -846,12 +1287,10 @@
                         $('.pcs-stock')[index].value = '';
                         $('.ctn-kuantum')[index].value = '';
                         $('.pcs-kuantum')[index].value = '';
-                        for(i = 0; i < $('.plu').length; i++){
-                            if ($('.plu')[i].value != ''){
-                                temp = temp + 1;
-                            }
-                        }
-                        $('#totalItem').val(temp);
+                        $('.hrg-satuan')[index].value = '';
+                        $('.gross')[index].value = '';
+                        $('.ppn')[index].value = '';
+
                     } else {
                         swal('Error', 'Somethings error', 'error');
                     }
@@ -861,16 +1300,16 @@
             })
         }
         function tempTable(index) {
-            var temptbl =  ` <tr class="baris">
+            var temptbl =  ` <tr class="baris" id="`+ index +`" onclick="showDesPanjang(this)">
                                                 <td style="width: 4%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
+                                                    <button onclick="deleteRow(this)" class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td>
-                                                    <input onkeypress="return isPR(event)" onchange="PRchecker()" maxlength="1" class="form-control pr" value=""
+                                                    <input onkeypress="return isPR(event)" onchange="PRchecker(this)" maxlength="1" class="form-control pr" value=""
                                                            type="text">
                                                 </td>
                                                 <td class="buttonInside" style="width: 150px;">
-                                                    <input type="text" class="form-control plu" no="`+ index +`" value="">
+                                                    <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" no="`+ index +`" value="">
                                                     <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ index +`">
                                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
@@ -896,12 +1335,12 @@
                                                            type="text">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control ctn-header ctn-kuantum" value=""
+                                                    <input onchange="kuantumChecker(this)" onkeypress="return isNumberKey(event)" class="form-control ctn-header ctn-kuantum" value=""
                                                            rowheader=1
                                                            type="text">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control pcs-header pcs-kuantum" value=""
+                                                    <input onchange="kuantumChecker(this)" onkeypress="return isNumberKey(event)" class="form-control pcs-header pcs-kuantum" value=""
                                                            rowheader=1
                                                            type="text">
                                                 </td>

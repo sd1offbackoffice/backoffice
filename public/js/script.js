@@ -129,3 +129,32 @@ function alertError(title, text) {
 function isFloat(value) {
     return value === +value && value !== (value|0);
 }
+
+// Fungsi untuk encode html char
+// Created By : Leo (29/01/2021) | Modify By :
+function encodeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+// Fungsi untuk decode html char
+// Created By : Leo (29/01/2021) | Modify By :
+function decodeHtml(str)
+{
+    var map =
+        {
+            '&amp;': '&',
+            '&lt;': '<',
+            '&gt;': '>',
+            '&quot;': '"',
+            '&#039;': "'"
+        };
+    return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {return map[m];});
+}

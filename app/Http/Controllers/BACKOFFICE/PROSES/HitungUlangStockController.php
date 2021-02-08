@@ -116,12 +116,11 @@ class HitungUlangStockController extends Controller
 
     public function ProsesHapusPoint(Request $request)
     {
-        if(Date('mm') != 12){
+        if (Date('mm') != 12) {
             $status = 'error';
             $err_txt = 'Penghapusan Point dan Star harus dilakukan di 31 Desember !!';
             return compact(['status', 'err_txt']);
-        }
-        else{
+        } else {
             $status = '';
             $err_txt = '';
 
@@ -139,11 +138,32 @@ class HitungUlangStockController extends Controller
 
             $status = 'success';
             $err_txt = 'Data Penghapusan Akhir Tahun Sudah di Lakukan !! ' . $err_txt;
- // report hapus?
+            // report hapus?
             DB::commit();
 
             return compact(['mulai', 'akhir', 'status', 'err_txt']);
         }
+
+    }
+
+    public function PrintHapus(Request $request)
+    {
+        $kdsup = $request->kdsup;
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->select('prs_namaperusahaan', 'prs_namacabang')
+            ->where('prs_kodeigr', '=', $_SESSION['kdigr'])
+            ->first();
+
+        $data = DB::Select("select prs_namaperusahaan, prs_namacabang, prs_namawilayah, a.* from ( select 'S A L D O     P O I N T' jenis, lpp_kodemember kd_member, cus_namamember nm_member, lpp_saldoawal sebelum, lpp_saldoakhir sesudah, lpp_hapustahun hapus from tbtr_lpppoint, tbmaster_customer where lpp_periode = to_char(sysdate, 'yyyyMM') and nvl(lpp_hapustahun, 0) <> 0    and cus_kodemember(+) = lpp_kodemember union select 'S A L D O     S T A R' jenis, lps_kodemember kd_member, cus_namamember nm_member, lps_saldoawal sebelum, lps_saldoakhir sesudah, lps_hapustahun hapus from tbtr_lppstar, tbmaster_customer where lps_periode = to_char(sysdate, 'yyyyMM') and nvl(lps_hapustahun, 0) <> 0 and cus_kodemember(+) = lps_kodemember )a, tbmaster_perusahaan where prs_kodeigr = " . $_SESSION['kdigr'] . " order by jenis, kd_member");
+
+        $pdf = PDF::loadview('BACKOFFICE/PROSES/hapustahun-cetak', compact(['data', 'perusahaan']));
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE/PROSES/hapustahun-cetak');
 
     }
 }

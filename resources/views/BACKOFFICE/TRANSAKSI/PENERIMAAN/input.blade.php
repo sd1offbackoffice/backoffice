@@ -16,14 +16,14 @@
                                            <div class="form-group row mb-1 pt-4">
                                                <label class="col-sm-2 col-form-label text-right">No BTB</label>
                                                <div class="col-sm-2 buttonInside">
-                                                   <input type="text" class="form-control nullPermission" id="noBTB" value="2340000001">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showBTB('')">
+                                                   <input type="text" class="form-control nullPermission" id="noBTB" value="">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0" onclick="showBTB()">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl BTB</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control nullPermission" id="tglBTB" placeholder="dd/mm/yyyy">
+                                                   <input type="date" class="form-control nullPermission" id="tglBTB" placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
@@ -31,13 +31,13 @@
                                                <label class="col-sm-2 col-form-label text-right">No PO</label>
                                                <div class="col-sm-2 buttonInside">
                                                    <input type="text" class="form-control nullPermission" id="noPO">
-                                                   <button id="" type="button" class="btn btn-lov p-0" onclick="showPO('')">
+                                                   <button id="" type="button" class="btn btn-lov p-0" onclick="showPO()">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl PO</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control" id="tglPO" disabled placeholder="dd/mm/yyyy">
+                                                   <input type="date" class="form-control" id="tglPO" disabled placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
@@ -45,7 +45,7 @@
                                                <label class="col-sm-2 col-form-label text-right">Supplier</label>
                                                <div class="col-sm-2 buttonInside">
                                                    <input type="text" class="form-control nullPermission" id="kodeSupplier">
-                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier" onclick="showSupplier('')">
+                                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0 btnLOVSupplier" onclick="showSupplier()">
                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                    </button>
                                                </div>
@@ -61,7 +61,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="text" class="form-control nullPermission" id="tglFaktur" placeholder="dd/mm/yyyy" value="{{\Carbon\Carbon::today()->format('d/m/Y')}}">
+                                                   <input type="date" class="form-control nullPermission" id="tglFaktur" placeholder="dd/mm/yyyy">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">TOP</label>
                                                <div class="col-sm-1">
@@ -379,7 +379,7 @@
                                                    <button type="button" class="btn btn-primary btn-block" onclick="viewList()">List/Hapus Record</button>
                                                </div>
                                                <div class="col-sm-3 text-center">
-                                                   <button type="button" class="btn btn-primary btn-block">Simpan Data</button>
+                                                   <button type="button" class="btn btn-primary btn-block" onclick="saveData()">Simpan Data</button>
                                                </div>
                                            </div>
                                        </form>
@@ -486,6 +486,43 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h5 class="modal-title" id="modalHelpTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-sm" id="tableModalHelp">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th id="modalThName1"></th>
+                                        <th id="modalThName2"></th>
+                                        <th id="modalThName3"></th>
+                                        <th id="modalThName4"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                                <p class="text-hide" id="idModal"></p>
+                                <p class="text-hide" id="idRow"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal LOV Plu -->
+    <div class="modal fade" id="modalHelpPlu" tabindex="-1" role="dialog" aria-labelledby="m_lovPlu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
                     <div class="form-row col-sm">
                         <input id="searchModal" class="form-control search_lov searchModal" type="text" placeholder="..." aria-label="Search">
                     </div>
@@ -498,16 +535,14 @@
                                     <table class="table table-sm">
                                         <thead>
                                         <tr>
-                                            <th id="modalThName1"></th>
-                                            <th id="modalThName2"></th>
-                                            <th id="modalThName3"></th>
-                                            <th id="modalThName4"></th>
+                                            <th style="min-width: 300px !important;">Barang</th>
+                                            <th>PLU</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="tbodyModalHelp"></tbody>
+                                        <tbody id="tbodyModalHelpPlu"></tbody>
                                     </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
+                                    {{--<p class="text-hide" id="idModal"></p>--}}
+                                    {{--<p class="text-hide" id="idRow"></p>--}}
                                 </div>
                             </div>
                         </div>
@@ -519,8 +554,8 @@
         </div>
     </div>
 
-    <!-- Modal LOV Plu-->
-    <div class="modal fade" id="modalHelpPlu" tabindex="-1" role="dialog" aria-labelledby="m_lovPlu" aria-hidden="true">
+    <!-- Modal LOV Plu detail-->
+    <div class="modal fade" id="modalHelpPluDetail" tabindex="-1" role="dialog" aria-labelledby="m_lovPlu" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -553,7 +588,7 @@
                                             <th>No PO</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="tbodyModalHelpPlu"></tbody>
+                                        <tbody id="tbodyModalHelpPluDetail"></tbody>
                                     </table>
                                     {{--<p class="text-hide" id="idModal"></p>--}}
                                     {{--<p class="text-hide" id="idRow"></p>--}}
@@ -696,11 +731,11 @@
     </div>
 
     <style>
-        .rowTbodyTableDetail{
+        .rowTbodyTableDetail, .modalRowBTB, .modalRowPO, .modalRowSupplier{
             cursor: pointer;
         }
 
-        .rowTbodyTableDetail:hover{
+        .rowTbodyTableDetail:hover, .modalRowBTB:hover, .modalRowPO:hover, .modalRowSupplier:hover{
             background-color: #e9ecef;
         }
 
@@ -710,8 +745,6 @@
     <script>
         let typeTrn;
         let flagNewBTB      = 'N';
-        let tempPO          = [];
-        let tempSupplier    = [];
         let tempPlu         = [];
         let tempDataBTB     = [];
         let tempDataPLU     = [];
@@ -721,7 +754,10 @@
         let modalThName3    = $('#modalThName3');
         let modalThName4    = $('#modalThName4');
         let modalHelp       = $('#modalHelp');
+        let modalHelpTitle  = $('#modalHelpTitle');
         let modalHelpPlu    = $('#modalHelpPlu');
+        let modalHelpPluDetail = $('#modalHelpPluDetail');
+        let tableModalHelp  = $('#tableModalHelp').DataTable();
         let noBTB           = $('#noBTB');
         let noPO            = $('#noPO');
         let tglBTB          = $('#tglBTB');
@@ -733,12 +769,12 @@
         let pkp             = $('#pkp');
         let topPo           = $('#top');
 
-         let v_gross        = $('#v_gross');
-         let v_discount     = $('#v_discount');
-         let v_ppn          = $('#v_ppn');
-         let v_ppbBm        = $('#v_ppbBm');
-         let v_ppnBotol     = $('#v_ppnBotol');
-         let v_grantTotal   = $('#v_grantTotal');
+        let v_gross        = $('#v_gross');
+        let v_discount     = $('#v_discount');
+        let v_ppn          = $('#v_ppn');
+        let v_ppbBm        = $('#v_ppbBm');
+        let v_ppnBotol     = $('#v_ppnBotol');
+        let v_grantTotal   = $('#v_grantTotal');
 
         let i_plu       = $('#i_plu');
         let i_deskripsi = $('#i_deskripsi');
@@ -785,29 +821,15 @@
         let i_totalpo   = $('#i_totalpo');
         let i_total     = $('#i_total');
 
-
-
-        let isiBeliForm = $('.i_isibeli');
-
-        tglBTB.datepicker({
-            "dateFormat" : "dd/mm/yy",
-        });
-
-        tglPO.datepicker({
-            "dateFormat" : "dd/mm/yy",
-        });
-
-        tglFaktur.datepicker({
-            "dateFormat" : "dd/mm/yy",
-        });
+        let isiBeliForm = $('.i_isibeli'); //Tidak dimunculkan karna isibeli <> niisib di proc ChK_gets tidak di difine
 
         $(document).ready(function () {
-            // startAlert();
+            startAlert();
             $('#cardInput2').hide();
-            typeTrn = 'B'
+            // typeTrn = 'B'
             // showPO('');
             // chooseBTB('0420000613', 'GH6H71400')
-            choosePO('PH1L76267')
+            // choosePO('UH1L08295')
             // choosePO('5H1L79346')
             // showPlu('');
             isiBeliForm.hide()
@@ -844,45 +866,55 @@
             })
         }
 
-        function showBTB(value) {
+        function showBTB() {
             if(!typeTrn || typeTrn === 'N'){
                 startAlert();
 
                 return false;
             }
 
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showbtb',
-                type: 'post',
-                data: {
-                    typeTrn : typeTrn,
-                    value   : value
-                }, beforeSend : () => {
-                    $('#modal-loader').modal('show');
-                    modalHelp.modal('hide');
-                }, success: function (result) {
-                    $('#modal-loader').modal('hide');
-                    modalThName1.text('No Dokumen');
-                    modalThName2.text('No PO');
-                    modalThName3.text('Tgl BTB');
-                    modalThName3.show();
-                    modalThName4.hide();
+            modalHelp.modal('show');
+            modalHelpTitle.text("Daftar BTB");
+            modalThName1.text('No Dokumen');
+            modalThName2.text('No PO');
+            modalThName3.text('Tgl BTB');
+            modalThName3.show();
+            modalThName4.hide();
 
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseBTB('"+ result[i].trbo_nodoc +"','"+ result[i].trbo_nopo +"') class='modalRow'><td>"+ result[i].trbo_nodoc +"</td> <td>"+ result[i].trbo_nopo +"</td> <td>"+ formatDate(result[i].trbo_tglreff)+"</td></tr>")
-                    }
+            //Destroy datatable first
+            tableModalHelp.clear().destroy();
 
-                    modalHelp.modal('show');
-                    $('#idModal').val('BTB');
-                }, error: function (err) {
-                    $('#modal-loader').modal('hide');
-                    console.log(err.responseJSON.message.substr(0,100));
-                    alertError(err.statusText, err.responseJSON.message)
-                }
-            })
+            tableModalHelp = $('#tableModalHelp').DataTable({
+                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showbtb/'+typeTrn,
+                "columns": [
+                    {data: 'trbo_nodoc', name: 'No Dokumen'},
+                    {data: 'trbo_nopo', name: 'No Po'},
+                    {data: 'trbo_tglreff', name: 'Tgl BTB'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRowBTB');
+                },
+                "order": []
+            });
         }
+
+        $(document).on('click', '.modalRowBTB', function () {
+            let currentButton = $(this);
+            let noDoc   = currentButton.children().first().text();
+            let noPo    = currentButton.children().first().next().text();
+
+            console.log(noDoc);
+            console.log(noPo);
+
+            chooseBTB(noDoc,noPo);
+        });
 
         function chooseBTB(noDoc, noPo) {
             ajaxSetup();
@@ -945,8 +977,10 @@
 
                         noBTB.val(result.data[0].trbo_nodoc);
                         noPO.val(result.data[0].trbo_nopo);
-                        tglBTB.val(formatDate(result.data[0].trbo_tgldoc));
-                        tglPO.val(formatDate(result.data[0].trbo_tglpo));
+                        // tglBTB.val(formatDate(result.data[0].trbo_tgldoc));
+                        // tglPO.val(formatDate(result.data[0].trbo_tglpo));
+                        tglBTB.val((result.data[0].trbo_tgldoc.substr(0,10)));
+                        tglPO.val((result.data[0].trbo_tglpo).substr(0,10));
                         kodeSupp.val(result.data[0].trbo_kodesupplier);
                         namaSupp.val(result.data[0].sup_namasupplier);
                         noFaktur.val(result.data[0].trbo_nofaktur);
@@ -991,6 +1025,9 @@
                            typeTrn: typeTrn
                        }, beforeSend : () => {
                            $('#modal-loader').modal('show');
+                           clearLeftFirstField();
+                           clearRightFirstField();
+                           clearSecondField();
                        },
                        success: function (result) {
                            $('#modal-loader').modal('hide');
@@ -1013,49 +1050,53 @@
             })
         }
 
-        function showPO(value) {
+        function showPO() {
             if(!typeTrn || typeTrn === 'N'){
                 startAlert();
 
                 return false;
             }
 
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showpo',
-                type: 'post',
-                data: {
-                    typeTrn : typeTrn,
-                    value   : value,
-                }, beforeSend : function() {
-                    $('#modal-loader').modal('show');
-                    modalHelp.modal('hide');
-                }, success: function (result) {
-                    $('#modal-loader').modal('hide');
+            modalHelp.modal('show');
+            modalHelpTitle.text("Daftar PO");
+            modalThName1.text('No PO');
+            modalThName2.text('Tgl PO');
+            modalThName3.text('Kode Supplier');
+            modalThName4.text('Nama Supplier');
+            modalThName3.show();
+            modalThName4.show();
 
-                    modalThName1.text('No PO');
-                    modalThName2.text('Tgl PO');
-                    modalThName3.text('Kode Supplier');
-                    modalThName4.text('Nama Supplier');
-                    modalThName3.show();
-                    modalThName4.show();
+            //Destroy datatable first
+            tableModalHelp.clear().destroy();
 
-                    tempPO = result;
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=choosePO('"+ result[i].tpoh_nopo +"') class='modalRow'><td>"+ result[i].tpoh_nopo +"</td><td>"+ formatDate(result[i].tpoh_tglpo)+"</td><td>"+ result[i].tpoh_kodesupplier +"</td><td>"+ result[i].sup_namasupplier +"</td></tr>")
-                    }
-
-                    $('#idModal').val('PO');
-                    modalHelp.modal('show');
-                }, error: function (err) {
-                    $('#modal-loader').modal('hide');
-                    console.log(err.responseJSON.message.substr(0,100));
-                    alertError(err.statusText, err.responseJSON.message);
-                }
-            })
+            tableModalHelp = $('#tableModalHelp').DataTable({
+                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showpo/',
+                "columns": [
+                    {data: 'tpoh_nopo', name: 'No PO'},
+                    {data: 'tpoh_tglpo', name: 'Tgl PO'},
+                    {data: 'tpoh_kodesupplier', name: 'Kode Supplier'},
+                    {data: 'sup_namasupplier', name: 'Nama Supplier'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRowPO');
+                },
+                "order": []
+            });
         }
+
+        $(document).on('click', '.modalRowPO', function () {
+            let currentButton = $(this);
+            let noPo   = currentButton.children().first().text();
+
+            choosePO(noPo);
+        });
 
         function choosePO(noPo) {
             ajaxSetup();
@@ -1089,7 +1130,8 @@
                         let data = result['data'][0];
 
                         noPO.val(data.tpoh_nopo);
-                        tglPO.val(formatDate(data.tpoh_tglpo));
+                        tglPO.val(data.tpoh_tglpo.substr(0,10));
+                        // tglPO.val(formatDate(data.tpoh_tglpo));
                         kodeSupp.val(data.tpoh_kodesupplier);
                         namaSupp.val(data.sup_namasupplier);
                         pkp.val(data.sup_pkp);
@@ -1110,58 +1152,63 @@
 
         }
 
-        function showSupplier(value) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
-                type: 'post',
-                data: {
-                    typeTrn : typeTrn,
-                    value   : value,
-                }, beforeSend : function () {
-                    $('#modal-loader').modal('show');
-                    modalHelp.modal('hide');
-                }, success: function (result) {
-                    $('#modal-loader').modal('hide');
-                    tempSupplier = result;
+        function showSupplier() {
+            modalHelp.modal('show');
+            modalHelpTitle.text("Daftar Supplier");
+            modalThName1.text('Nama Supplier');
+            modalThName2.text('Kode Supplier');
+            modalThName3.text('PKP');
+            modalThName4.text('TOP');
+            modalThName3.show();
+            modalThName4.show();
 
-                    modalThName1.text('Nama Supplier');
-                    modalThName2.text('Kode Supplier');
-                    modalThName3.text('PKP');
-                    modalThName4.text('TOP');
-                    modalThName3.show();
-                    modalThName4.show();
+            //Destroy datatable first
+            tableModalHelp.clear().destroy();
 
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseSupplier('"+ result[i].sup_kodesupplier +"') class='modalRow'><td>"+ result[i].sup_namasupplier +"</td><td>"+ result[i].sup_kodesupplier +"</td><td>"+ result[i].sup_pkp +"</td><td>"+ result[i].sup_top +"</td></tr>")
-                    }
+            tableModalHelp = $('#tableModalHelp').DataTable({
+                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
+                "columns": [
+                    {data: 'sup_namasupplier', name: 'Nama Supplier'},
+                    {data: 'sup_kodesupplier', name: 'Kode Supplier'},
+                    {data: 'sup_pkp', name: 'PKP'},
+                    {data: 'sup_top', name: 'TOP'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRowSupplier');
+                },
+                "order": []
+            });
 
-                    $('#idModal').val('Supplier');
-                    modalHelp.modal('show');
-                },  error: function (err) {
-                    $('#modal-loader').modal('hide');
-                    console.log(err.responseJSON.message.substr(0,100));
-                    alertError(err.statusText, err.responseJSON.message);
-                }
-            })
         }
 
-        function chooseSupplier(supp) {
+        $(document).on('click', '.modalRowSupplier', function () {
+            let currentButton = $(this);
+            let nama   = currentButton.children().first().text();
+            let kode   = currentButton.children().first().next().text();
+            let pkp   = currentButton.children().first().next().next().text();
+            let top   = currentButton.children().first().next().next().next().text();
+
+            chooseSupplier(kode,nama,pkp,top);
+        });
+
+        function chooseSupplier(kode,nama,val_pkp,top) {
             if(typeTrn == 'L'){
                 swal('','Kode Supplier Tidak Boleh Diisi !!', 'warning')
                 kodeSupp.val('');
                 namaSupp.val('');
                 noFaktur.focus();
             } else {
-                for(let i = 0; i< tempSupplier.length; i++){
-                    if (tempSupplier[i].sup_kodesupplier === supp){
-                        kodeSupp.val(tempSupplier[i].sup_kodesupplier);
-                        namaSupp.val(tempSupplier[i].sup_namasupplier);
-                        pkp.val(tempSupplier[i].sup_pkp);
-                        topPo.val(tempSupplier[i].sup_top);
-                    }
-                }
+                kodeSupp.val(kode);
+                namaSupp.val(nama);
+                pkp.val(val_pkp);
+                topPo.val(top);
             }
 
             modalHelp.modal('hide');
@@ -1200,7 +1247,7 @@
                 typeLov = 'LOV155';
             }
 
-            console.log(typeLov)
+            console.log(typeLov);
             ajaxSetup();
 
             $.ajax({
@@ -1226,27 +1273,20 @@
 
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].tpod_prdcd +"') class='modalRow text-right'><td class='text-left'>"+ result[i].prd_deskripsipanjang +"</td><td class='text-left'>"+ result[i].tpod_prdcd+"</td><td class='text-left'>"+ result[i].kemasan +"</td><td>"+ result[i].qty+"</td>" +
+                            $('#tbodyModalHelpPluDetail').append("<tr onclick=choosePlu('"+ result[i].tpod_prdcd +"') class='modalRow text-right'><td class='text-left'>"+ result[i].prd_deskripsipanjang +"</td><td class='text-left'>"+ result[i].tpod_prdcd+"</td><td class='text-left'>"+ result[i].kemasan +"</td><td>"+ result[i].qty+"</td>" +
                                 "<td>"+ result[i].qtyk+"</td><td>"+ result[i].bonus1+"</td><td>"+ result[i].bonus2+"</td><td>"+ result[i].tpod_persentasedisc1+"</td><td>"+ result[i].tpod_rphdisc1+"</td><td>"+ result[i].tpod_persentasedisc2+"</td>" +
                                 "<td>"+ result[i].tpod_rphdisc2+"</td><td>"+ result[i].tpod_persentasedisc3+"</td><td>"+ result[i].tpod_rphdisc3+"</td><td>"+ result[i].tpod_rphdisc4+"</td><td class='text-left'>"+ result[i].tpod_nopo+"</td> </tr>")
                         }
 
-                        modalHelpPlu.modal('show');
+                        modalHelpPluDetail.modal('show');
                     } else {
-                        modalThName1.text('Nama Barang');
-                        modalThName2.text('PLU');
-                        modalThName3.hide();
-                        modalThName4.hide();
-
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
+                            $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
                         }
 
-                        modalHelp.modal('show');
+                        modalHelpPlu.modal('show');
                     }
-
-                    $('#idModal').val('PLU');
 
                 },  error: function (err) {
                     $('#modal-loader').modal('hide');
@@ -1279,6 +1319,7 @@
                 }, beforeSend : function () {
                     $('#modal-loader').modal('show');
                     modalHelpPlu.modal('hide');
+                    modalHelpPluDetail.modal('hide');
                     i_rphdisc1.attr('disabled', false)
                     i_rphdisc2.attr('disabled', false)
                     i_rphdisc2a.attr('disabled', false)
@@ -1635,6 +1676,7 @@
 
             clearRightFirstField();
             if(data){
+                // tempDataPLU = data;
                 setValueFromTempDataSave(data);
                 $('#cardInput1').show();
                 $('#cardInput2').hide();
@@ -1669,13 +1711,57 @@
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/penerimaan/input/transferpo',
                 type: 'post',
-                data: {prdcd : i_plu.val(), noBTB: noBTB.val(), noPo : noPO.val(), supplier:kodeSupp.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
+                data: {noPo : noPO.val(), supplier:kodeSupp.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
+                beforeSend : () =>{
+                    $('#modal-loader').modal('show');
+                    clearRightFirstField();
+                },
+                success: (result) => {
+                    $('#modal-loader').modal('hide');
+                    console.log((result))
+
+                    tempDataSave = [];
+                    tempDataSave = result.data;
+
+                    let grantTotal = 0;
+                    for (let i=0; i < tempDataSave.length; i++){
+                        grantTotal = parseInt(grantTotal) + parseInt(tempDataSave[i].total_rph);
+                    }
+
+                    viewList();
+                    sum_item.val(tempDataSave.length);
+                    i_totalpo.val(convertToRupiah(grantTotal));
+
+                }, error : (err) => {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        }
+
+        function saveData(){
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/penerimaan/input/savedata',
+                type: 'post',
+                data: {noBTB:noBTB.val(), tglBTB:tglBTB.datepicker({ dateFormat: 'mm-dd-yy' }).val(), noPO : noPO.val(), tglPO:tglPO.val(), supplier:kodeSupp.val(), noFaktur:noFaktur.val(), tglFaktur:tglFaktur.val(), tempDataSave:tempDataSave},
                 beforeSend : () =>{
                     $('#modal-loader').modal('show');
                 },
                 success: (result) => {
                     $('#modal-loader').modal('hide');
-                    console.log((result))
+                    console.log((result));
+
+                    if (result.kode == 1){
+                        swal('', result.msg, 'success');
+                        tempDataPLU = result.data;
+                        clearLeftFirstField();
+                        clearRightFirstField();
+                        clearSecondField();
+                    } else {
+                        swal('', result.msg, 'warning');
+                    }
 
                 }, error : (err) => {
                     $('#modal-loader').modal('hide');
@@ -1856,6 +1942,8 @@
 
         function clearSecondField(){
             setValue(0);
+            sum_item.val('');
+            i_totalpo.val('');
             i_rphdisc1.attr('disabled', false)
             i_rphdisc2.attr('disabled', false)
             i_rphdisc2a.attr('disabled', false)
@@ -1871,6 +1959,19 @@
             v_ppbBm.val('');
             v_ppnBotol.val('');
             v_grantTotal.val('');
+        }
+
+        function clearLeftFirstField() {
+            noBTB.val('');
+            noPO.val('');
+            tglBTB.val('');
+            tglPO.val('');
+            kodeSupp.val('');
+            namaSupp.val('');
+            noFaktur.val('');
+            tglFaktur.val('');
+            pkp.val('');
+            topPo.val('');
         }
 
         function checkRphDisc(){
@@ -1939,18 +2040,6 @@
                 let val = $(this).val();
 
                 choosePlu(val);
-
-                // if (tempDataBTB.length < 1){
-                //     choosePlu(val);
-                // } else {
-                //     for (let i = 0; i < tempDataBTB.length; i++){
-                //         if (tempDataBTB[i].trbo_prdcd == val){
-                //             console.log(tempDataBTB[i]);
-                //             i_plu.val(tempDataBTB[i].trbo_prdcd);
-                //             i_deskripsi.val(tempDataBTB[i].prd_deskripsipanjang);
-                //         }
-                //     }
-                // }
             }
         });
 
@@ -2182,3 +2271,16 @@
 
 @endsection
 
+
+
+{{--// tglBTB.datepicker({--}}
+{{--//     "dateFormat" : "dd/mm/yy",--}}
+{{--// });--}}
+{{--//--}}
+{{--// tglPO.datepicker({--}}
+{{--//     "dateFormat" : "dd/mm/yy",--}}
+{{--// });--}}
+
+{{--// tglFaktur.datepicker({--}}
+{{--//     "dateFormat" : "dd/mm/yy",--}}
+{{--// });--}}

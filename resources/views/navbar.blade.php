@@ -238,6 +238,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bo/pkm/kertas-kerja")}}">Proses Kertas Kerja PKM</a></li>
                                         <li><a href="{{url("/bo/pkm/entry-inquery")}}">Entry & Inquery Kertas Kerja PKM</a></li>
+                                        <li><a href="{{url("/bo/pkm/monitoring")}}">Entry & Inquery Monitoring PLU Baru</a></li>
                                     </ul>
                                 </li>
                             </ul>

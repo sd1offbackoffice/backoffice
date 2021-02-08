@@ -178,32 +178,48 @@ class loginController extends Controller
                 $_SESSION['conString'] = $conString;
                 $_SESSION['userlevel'] = $user->userlevel;
 
+                if(substr($_SESSION['eml'],0,2) == 'SM'){
+                    $usertype = 'SM';
+                }
+                else if(substr($_SESSION['eml'],0,3) == 'SJM'){
+                    $usertype = 'SJM';
+                }
+                else $usertype = 'XXX';
+
+                $_SESSION['usertype'] = $usertype;
+
                 if (!is_null($_SESSION['usid']) AND $_SESSION['usid'] != 'NUL') {
-                    if ($_SESSION['usid'] == 'ADM') {
-                        DB::table('TBMASTER_PERUSAHAAN')
-                            ->update([
-                                'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
-                                'PRS_MODIFY_BY' => $_SESSION['usid'],
-                                'PRS_MODIFY_DT' => DB::Raw('sysdate')
-                            ]);
+                    $cek = DB::table('tbmaster_perusahaan')
+                        ->whereRaw('prs_periodeterakhir = trunc(sysdate)')
+                        ->first();
 
-                        DB::table('tbmaster_computer')
-                            ->where('ip', $ipx)
-                            ->update(['useraktif' => $request->username]);
-                        $userstatus = 'ADM';
+                    if(!$cek){
+                        if ($_SESSION['usid'] == 'ADM') {
+                            DB::table('TBMASTER_PERUSAHAAN')
+                                ->update([
+                                    'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
+                                    'PRS_MODIFY_BY' => $_SESSION['usid'],
+                                    'PRS_MODIFY_DT' => DB::Raw('sysdate')
+                                ]);
 
-                    } else {
-                        DB::table('TBMASTER_PERUSAHAAN')
-                            ->update([
-                                'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
-                                'PRS_MODIFY_BY' => $_SESSION['usid'],
-                                'PRS_MODIFY_DT' => DB::Raw('sysdate')
-                            ]);
+                            DB::table('tbmaster_computer')
+                                ->where('ip', $ipx)
+                                ->update(['useraktif' => $request->username]);
+                            $userstatus = 'ADM';
 
-                        DB::table('tbmaster_computer')
-                            ->where('ip', $ipx)
-                            ->update(['useraktif' => $request->username]);
-                        $userstatus = 'USR';
+                        } else {
+                            DB::table('TBMASTER_PERUSAHAAN')
+                                ->update([
+                                    'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
+                                    'PRS_MODIFY_BY' => $_SESSION['usid'],
+                                    'PRS_MODIFY_DT' => DB::Raw('sysdate')
+                                ]);
+
+                            DB::table('tbmaster_computer')
+                                ->where('ip', $ipx)
+                                ->update(['useraktif' => $request->username]);
+                            $userstatus = 'USR';
+                        }
                     }
                 }
             }
