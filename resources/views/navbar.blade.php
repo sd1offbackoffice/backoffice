@@ -196,6 +196,8 @@
                                                aria-expanded="false">Penerimaan</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/inquery/index")}}">Inquery BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/pembatalan/index")}}">Pembatalan BPB</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -216,6 +218,7 @@
                                        data-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="false">Laporan-Laporan</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/laporan/daftar-pembelian")}}">Laporan Daftar Pembelian</a></li>
                                         <li><a href="{{url("/bo/laporan/penyesuaian")}}">Laporan Penyesuaian Persediaan</a></li>
                                         <li><a href="{{url("/bo/laporan/pengiriman")}}">Laporan Daftar Pengiriman Antar Cabang</a></li>
                                         <li><a href="{{url("/bo/laporan/penerimaan")}}">Laporan Daftar Penerimaan Antar Cabang</a></li>
@@ -241,6 +244,7 @@
                                         <li><a href="{{url("/bo/pkm/monitoring")}}">Entry & Inquery Monitoring PLU Baru</a></li>
                                     </ul>
                                 </li>
+                                <li><a href="{{url("/bo/cetak-register")}}">Cetak Register</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">

@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','IAS')
 
 @section('content')
     <div class="container">

@@ -1,5 +1,5 @@
 @extends('navbar')
-{{--@section('title','Input Penerimaan')--}}
+@section('title','PENERIMAAN | INPUT')
 @section('content')
 
     <div class="container-fluid mt-4">

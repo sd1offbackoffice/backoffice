@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
+class LaporanServiceLevelController extends Controller
+{
+    public function index(){
+
+        return view('BACKOFFICE/LAPORAN/LaporanServiceLevel');
+    }
+
+    public function lov_supplier(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $search = strtoupper($request->search);
+
+        $supplier = DB::table('tbmaster_supplier')
+            ->select('sup_namasupplier', 'sup_kodesupplier')
+            ->where('sup_namasupplier', 'LIKE', '%'.$search.'%')
+            ->where('sup_kodesupplier', 'LIKE', '%'.$search.'%')
+            ->where('sup_kodeigr','=', $kodeigr)
+            ->orderBy('sup_namasupplier')
+            ->limit(100)
+            ->get()->toArray();
+
+        return response()->json($supplier);
+    }
+
+    public function lov_monitoring(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $search = strtoupper($request->search);
+
+        $monitoring = DB::table('tbtr_monitoringsupplier')
+            ->select('msu_namamonitoring', 'msu_kodemonitoring')
+            ->where('msu_namamonitoring', 'LIKE', '%'.$search.'%')
+            ->where('msu_kodemonitoring', 'LIKE', '%'.$search.'%')
+            ->where('msu_kodeigr','=', $kodeigr)
+            ->orderBy('msu_namamonitoring')
+            ->limit(100)
+            ->get()->toArray();
+
+        return response()->json($monitoring);
+    }
+
+    public function cetak_laporan_rekap(Request $request){
+
+        $kodeigr    = $_SESSION['kdigr'];
+        $tgl1       = $request->tgl1;
+        $tgl2       = $request->tgl2;
+        $sup1       = $request->sup1;
+        $sup2       = $request->sup2;
+        $mtrSup     = $request->mtrSup;
+        $ranking    = $request->ranking;
+
+        $data = DB::select("SELECT ROWNUM NOMOR, HASIL.*
+  FROM (SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH, TPOH_KODESUPPLIER,
+                 SUP_NAMASUPPLIER, ITEMPO, QTYPO, NILAIPO, ITEMBPBAK, ITEMBPBNA, QTYBPB, NILAIBPB,
+                 NVL(ITEMOUT,0) ITEMOUT, NVL(QTYOUT,0) QTYOUT, NVL(NILAIOUT,0) NILAIOUT,  case when (ITEMPO - NVL(ITEMOUT,0) )  = 0 then 0 else ((ITEMBPBAK + ITEMBPBNA) / (ITEMPO - NVL(ITEMOUT,0) )) * 100 end SLITEM,
+                 case when  (QTYPO - NVL(QTYOUT,0) )  = 0 then 0 else (QTYBPB / (QTYPO - NVL(QTYOUT,0) )) * 100 end SLQTY, case when (NILAIPO - NVL(NILAIOUT,0) )  = 0 then 0 else (NILAIBPB / (NILAIPO - NVL(NILAIOUT,0) )) * 100 end SLNILAI
+            FROM (SELECT TPOH_KODESUPPLIER, ITEMPO, QTYPO, NILAIPO, ITEMBPBAK, ITEMBPBNA, QTYBPB,
+                         NILAIBPB
+                    FROM (SELECT   TPOH_KODESUPPLIER, SUM (ITEMPO) ITEMPO, SUM (TPOD_QTYPO) QTYPO,
+                                   SUM (NILAIPO) NILAIPO, SUM (ITEMBPBAK) ITEMBPBAK,
+                                   SUM (ITEMBPBNA) ITEMBPBNA, SUM (NVL (QTYBPB, 0)) QTYBPB,
+                                   SUM (NVL (NILAIBPB, 0)) NILAIBPB
+                              FROM (SELECT TPOH_KODESUPPLIER, 1 ITEMPO, (tpod_qtypo + nvl(tpod_bonuspo1, 0) + nvl(tpod_bonuspo2, 0))  TPOD_QTYPO,
+                                           (TPOD_GROSS + TPOD_PPN + TPOD_PPNBM + TPOD_PPNBOTOL) NILAIPO,
+                                           MSTD_KODESUPPLIER, PRD_KODETAG,
+                                           CASE
+                                               WHEN NVL (PRD_KODETAG, '9') NOT IN
+                                                                         ('X', 'N', 'H')
+                                                   THEN CASE
+                                                           WHEN MSTD_KODESUPPLIER IS NOT NULL
+                                                               THEN 1
+                                                           ELSE 0
+                                                       END
+                                               ELSE 0
+                                           END ITEMBPBAK,
+                                           CASE
+                                               WHEN NVL (PRD_KODETAG, '9') NOT IN
+                                                                         ('X', 'N', 'H')
+                                                   THEN 0
+                                               ELSE CASE
+                                               WHEN MSTD_KODESUPPLIER IS NOT NULL
+                                                   THEN 1
+                                               ELSE 0
+                                           END
+                                           END ITEMBPBNA,
+                                           (MSTD_QTY + MSTD_QTYBONUS1 + MSTD_QTYBONUS2) QTYBPB,
+                                           (MSTD_GROSS - MSTD_DISCRPH + MSTD_PPNBMRPH + MSTD_PPNBTLRPH + MSTD_PPNRPH
+                                           ) NILAIBPB
+                                      FROM TBTR_PO_H, TBTR_PO_D, TBMASTER_PRODMAST, TBTR_MSTRAN_D
+                                     WHERE TRUNC (TPOH_TGLPO) BETWEEN :p_tgl1 AND :p_tgl2
+                                       &p_and
+                                       AND NVL (TPOH_RECORDID, '0') <> '1'
+                                       AND TPOD_NOPO = TPOH_NOPO
+                                       AND PRD_PRDCD(+) = TPOD_PRDCD
+                                       AND MSTD_NOPO(+) = TPOD_NOPO
+                                       AND MSTD_PRDCD(+) = TPOD_PRDCD
+                                       AND MSTD_TGLDOC(+) <= trunc(sysdate)
+                                       AND MSTD_TYPETRN(+) = 'B'
+                                       AND NVL(MSTD_RECORDID(+),'0') <> '1'    
+                                       ) A
+                          GROUP BY TPOH_KODESUPPLIER) B) C,
+                 (SELECT   TPOH_KODESUPPLIER SUPOUT, SUM (ITEMOUT) ITEMOUT, SUM (QTYOUT) QTYOUT,
+                           SUM (NILAIOUT) NILAIOUT
+                      FROM (SELECT TPOH_KODESUPPLIER, NVL(ITEMOUT,0) ITEMOUT, NVL(QTYOUT,0) QTYOUT, NVL(NILAIOUT,0) NILAIOUT
+                              FROM (SELECT TPOH_KODESUPPLIER, MSTD_PRDCD, MSTD_TGLDOC, 1 ITEMOUT,
+                                           (TPOD_QTYPO) QTYOUT,
+                                           (TPOD_GROSS + TPOD_PPN + TPOD_PPNBM + TPOD_PPNBOTOL) NILAIOUT
+                                      FROM TBTR_PO_H, TBTR_PO_D, TBTR_MSTRAN_D
+                                     WHERE TRUNC (TPOH_TGLPO) BETWEEN '$tgl1' AND '$tgl2'
+                                       &p_and
+                                       AND NVL (TPOH_RECORDID, '0') NOT IN  ('1', '2')
+                                       AND TPOH_TGLPO + TPOH_JWPB > sysdate
+                                       AND TPOD_NOPO = TPOH_NOPO
+                                       AND MSTD_NOPO(+) = TPOD_NOPO
+                                       AND MSTD_PRDCD(+) = TPOD_PRDCD
+                                       AND NVL(MSTD_RECORDID(+),'0') <> '1'  ) L
+                             WHERE MSTD_PRDCD IS NULL OR MSTD_TGLDOC > sysdate) F
+                  GROUP BY TPOH_KODESUPPLIER) G,
+                 TBMASTER_SUPPLIER,
+                 TBMASTER_PERUSAHAAN
+           WHERE TPOH_KODESUPPLIER = SUPOUT(+)
+             AND SUP_KODESUPPLIER = TPOH_KODESUPPLIER
+             AND PRS_KODEIGR = '$kodeigr'
+        &p_order) HASIL ");
+
+        $pdf = PDF::loadview('BACKOFFICE/LAPORAN/laporanservicelevel-cetak-pdf', compact(['data']));
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE/LAPORAN/laporanservicelevel-cetak-pdf');
+    }
+}

@@ -21,6 +21,9 @@
                                 <div class="col-sm-2">
                                     <input type="text" class="form-control" id="tanggalTrn" placeholder="dd/mm/yyyy">
                                 </div>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="model" style="border: 0px; font-weight: bold; width: auto">
+                                </div>
                             </div>
                             <div class="form-group row mb-0">
                                 <label for="keterangan" class="col-sm-1 col-form-label">KETERANGAN</label>
@@ -28,7 +31,7 @@
                                     <input class="form-control" id="keterangan" type="text">
                                 </div>
 
-                                <button class="btn btn-danger col-sm-2 btn-block" type="button">
+                                <button disabled class="btn btn-danger col-sm-2 btn-block" id="hapusDoc" type="button">
                                     HAPUS DOKUMEN
                                 </button>
                             </div>
@@ -50,7 +53,7 @@
                         </div>
                         <div class="float-right">
                             <div class="col-sm-2 text-center">
-                                <button type="button" class="btn btn-success btn-block" style="width: 200px; margin-top: -120px; height: 60px">PRINT</button>
+                                <button onclick="print()" type="button" class="btn btn-success btn-block" style="width: 200px; margin-top: -120px; height: 60px">PRINT</button>
                             </div>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -108,9 +111,9 @@
                                     </thead>
                                     <tbody id="body-table-header" style="height: 250px;">
                                     @for($i = 0 ; $i< 10 ; $i++)
-                                        <tr class="baris" id="{{$i}}" onclick="showDesPanjang(this)">
+                                        <tr class="baris" onclick="showDesPanjang(this)">
                                             <td>
-                                                <button id="{{$i}}" onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i
+                                                <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i
                                                             class="icon fas fa-times"></i></button>
                                             </td>
                                             <td>
@@ -118,8 +121,8 @@
                                                        type="text">
                                             </td>
                                             <td class="buttonInside" style="width: 150px;">
-                                                <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" value="" no="{{$i}}">
-                                                <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
+                                                <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" value="">
+                                                <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </td>
@@ -287,8 +290,8 @@
         let trbo_flagdoc;
         let noDocPrint;
         let noUrut;
-        let deskripsiPanjang = {};
-        let trbo_averagecost = {};
+        let deskripsiPanjang = [];
+        let trbo_averagecost = [];
         let parameterR = 0;
         let totalGrossP = 0;
         let totalGrossR = 0;
@@ -366,10 +369,14 @@
         }
 
         function deleteRow(e) {
-            deskripsiPanjang[e.id] = '';
-            trbo_averagecost[e.id] = 0;
+            deskripsiPanjang.splice((e.parentNode.parentNode.rowIndex)-2, 1);
+            trbo_averagecost.splice((e.parentNode.parentNode.rowIndex)-2, 1);
+            //deskripsiPanjang[e.parentNode.parentNode.rowIndex] = '';
+            //trbo_averagecost[e.parentNode.parentNode.rowIndex] = 0;
+            //alert(e.parentNode.parentNode.rowIndex); cara mendapatkan row ketika onclick javascript
             $(e).parents("tr").remove();
             $('#deskripsi').val('');
+
             if($("input[type='radio'][name='optradio']:checked").val() === 'R'){
                 for(i = 0; i < $('.plu').length; i++){
                     if($('.pr')[i].value === 'R'){
@@ -385,7 +392,7 @@
         }
 
         function showDesPanjang(e) {
-            $('#deskripsi').val(deskripsiPanjang[e.id]);
+            $('#deskripsi').val(deskripsiPanjang[e.rowIndex-2]);
         }
 
         function rDinamis(index){
@@ -474,10 +481,7 @@
         // }
 
         function PRchecker(elem){
-            let trElement = elem.parentElement.parentElement;
-            let tr = document.getElementsByTagName('tr');
-            tr = Array.prototype.slice.call(tr);
-            let row = tr.indexOf(trElement)-2;
+            let row = elem.parentNode.parentNode.rowIndex-2;
             if(row-1 >= 0){
                 if($('.plu')[row-1].value == ''){
                     swal({
@@ -534,6 +538,7 @@
                         }if(index == null && $('.plu')[row].value != ''){
                             rDinamis(row);
                             totalGross();
+                            qtyCounter();
                         }
                     }else if($('.pr')[row].value == 'P'){
                         for(i = 0; i < $('.pr').length; i++){
@@ -680,25 +685,161 @@
 
         $(window).bind('keydown', function(event) {
             if (event.ctrlKey || event.metaKey) {
-                switch (String.fromCharCode(event.which).toLowerCase()) {
-                    case 's':
-                        event.preventDefault();
-                        //$('#hiddenSaveButton').click();
-                        //alert('ctrl-s');
-                        saveMe();
-                        break;
-                    case 'S':
-                        event.preventDefault();
-                        //$('#hiddenSaveButton').click();
-                        saveMe();
-                        break;
+                if(String.fromCharCode(event.which).toLowerCase() === 's'){
+                    event.preventDefault();
+                    saveMe();
                 }
+                // switch (String.fromCharCode(event.which).toLowerCase()) {
+                //     case 's':
+                //         event.preventDefault();
+                //         //$('#hiddenSaveButton').click();
+                //         //alert('ctrl-s');
+                //         saveMe();
+                //         break;
+                //     case 'S':
+                //         event.preventDefault();
+                //         //$('#hiddenSaveButton').click();
+                //         saveMe();
+                //         break;
+                // }
             }
         });
+        function focusToRowfd(index) {
+            // swal('QTYB + QTYK < = 0','', 'warning')
+            swal({
+                title:'There is something wrong',
+                text: ' ',
+                icon:'warning',
+                timer: 1000,
+                buttons: {
+                    confirm: false,
+                },
+            });
+            $('.ctn-kuantum')[index].focus();
+        }
 
         function saveMe() {
-            alert("save!");
-            //$('.plu')[0].value = 'surprise';
+            if(saveBool){
+                swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data akan disimpan!",
+                    icon: "warning",
+                    buttons: [
+                        'Tidak, batalkan!',
+                        'Ya, saya yakin!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        saveData();
+                    } else {
+                        swal("Dibatalkan", "Data tidak jadi disimpan", "error");
+                    }
+                });
+            }
+            else{
+                swal("Gagal", "Data tidak bisa disimpan", "error");
+            }
+        }
+
+        function saveData(){
+            let counter = 0;
+            for(i = 0; i < $('.plu').length; i++) {
+                if ($('.plu')[i].value != '') {
+                    counter++;
+                    if($('.ctn-kuantum')[i].value === ''){
+                        $('.ctn-kuantum')[i].value = 0;
+                    }
+                    if($('.pcs-kuantum')[i].value === ''){
+                        $('.pcs-kuantum')[i].value = 0;
+                    }
+                    if((parseInt($('.ctn-kuantum')[i].value) + parseInt($('.pcs-kuantum')[i].value)) === 0){
+                        $('.ctn-kuantum')[i].focus();
+                        swal("Gagal", "Qty CTN/PCS Tidak Boleh Kosong !!", "error");
+                        return false;
+                    }
+                }
+            }
+            if(counter === 0 || $('#nomorTrn').val() === ''){
+                swal("Gagal", "Tidak ada data !!", "error");
+                return false;
+            }
+
+            let nomorTrn = $('#nomorTrn').val();
+            let tempDate= $('#tanggalTrn').val();
+            let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
+            let keterangan = $('#keterangan').val();
+            let trbo_flagdisc3 = $('#perubahanPlu').val();
+            let trbo_flagdisc2 = $("input[type='radio'][name='optradio']:checked").val();
+            //let noReff = noReff; //liat no reff di pra insert
+            //tgl reff = date(tanggal trn)
+
+            let datas   = [{'flagdisc1' : '', 'plu' : '', 'stokqty':'', 'qty' : '','hrgsatuan' : '', 'averagecost' : '', 'gross' : '', 'ppn': ''}];
+
+            if ($('#model').val().length < 1){
+                swal({
+                    title:'Data Tidak Boleh Kosong',
+                    text: ' ',
+                    icon:'warning',
+                    timer: 1000,
+                    buttons: {
+                        confirm: false,
+                    },
+                });
+
+                return false;
+            }
+            for (let i=0; i < deskripsiPanjang.length; i++){
+                var qtystok = 0;
+                var qty     = 0;
+                let temp    = $('.satuan')[i].value;
+                let arr     = temp.split(" / ");
+                let unit    = arr[0];
+                let frac    = temp.substr(temp.indexOf('/')+1);
+                let ctnstok = parseInt( $('.ctn-stock')[i].value);
+                let pcsstok = parseInt( $('.pcs-stock')[i].value);
+                let ctn     = parseInt( $('.ctn-kuantum')[i].value);
+                let pcs     = parseInt( $('.pcs-kuantum')[i].value);
+
+                if ( $('.plu')[i].value){
+                    if(unit === "KG"){
+                        frac = 1;
+                    }
+                    qtystok = (ctnstok * parseInt(frac) + pcsstok);
+                    qty  = (ctn * parseInt(frac) + pcs);
+
+                    if (qty < 1){
+                        focusToRow(i);
+                        return false;
+                    }
+                    datas.push({'flagdisc1': $('.pr')[i].value, 'plu' : $('.plu')[i].value, 'stokqty' : qtystok , 'qty' : qty ,'hrgsatuan' : unconvertToRupiah($('.hrg-satuan')[i].value), 'averagecost' : trbo_averagecost[i] ,'gross' : unconvertToRupiah($('.gross')[i].value), 'ppn' : unconvertToRupiah($('.ppn')[i].value)})
+                }
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/transaksi/repacking/saveData',
+                type: 'post',
+                data: {
+                    nomorTrn:nomorTrn,
+                    tanggalTrn:date,
+                    keterangan:keterangan,
+                    trbo_flagdisc3:trbo_flagdisc3,
+                    trbo_flagdisc2:trbo_flagdisc2,
+                    noreff:noReff,
+                    datas:datas
+                },
+                success: function () {
+                    swal({
+                        title: 'Tersimpan!',
+                        text: 'Data telah berhasil disimpan!',
+                        icon: 'success'
+                    });
+                    clearForm();
+                }, error: function () {
+                    alert('error');
+                }
+            })
         }
 
         function qtyCounter(){
@@ -719,10 +860,7 @@
         }
 
         function kuantumChecker(elem){
-            let trElement = elem.parentElement.parentElement;
-            let tr = document.getElementsByTagName('tr');
-            tr = Array.prototype.slice.call(tr);
-            let row = tr.indexOf(trElement)-2;
+            let row = elem.parentNode.parentNode.rowIndex-2;
 
             if ($('.plu')[row].value != ''){
                 let satuancounter   = $('.satuan')[row].value;
@@ -750,7 +888,7 @@
                     $('.pcs-kuantum')[row].value = 0;
                     return false;
                 }
-                $('.gross')[row].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[row].value)) + ((unconvertToRupiah($('.hrg-satuan')[row].value)/fraccounter)*pcsKuantum) );
+                //$('.gross')[row].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[row].value)) + ((unconvertToRupiah($('.hrg-satuan')[row].value)/fraccounter)*pcsKuantum) );
                 if($("input[type='radio'][name='optradio']:checked").val() === 'R'){
                     let thereisR        = 0;
 
@@ -769,12 +907,13 @@
                         $('.hrg-satuan')[row].value = convertToRupiah((totalGrossP/totalKuantum)*parseInt(fraccounter));
                         trbo_averagecost[row] = (totalGrossP/totalKuantum)*parseInt(fraccounter);
                     }
+                    $('.gross')[row].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[row].value)) + ((unconvertToRupiah($('.hrg-satuan')[row].value)/fraccounter)*pcsKuantum) );
                 }
                 else if($("input[type='radio'][name='optradio']:checked").val() === 'P'){
+                    $('.gross')[row].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[row].value)) + ((unconvertToRupiah($('.hrg-satuan')[row].value)/fraccounter)*pcsKuantum) );
                     if($('.pr')[row].value === 'P'){
                         let acostp = trbo_averagecost[row] * ((ctnKuantum*parseInt(fraccounter))+pcsKuantum);
                         let t_acost = unconvertToRupiah($('#reGross').val());
-                        alert(acostp);alert(t_acost);
                         for(i = 0; i < $('.plu').length; i++){
                             if($('.pr')[i].value === 'R'){
                                 $('.gross')[i].value = convertToRupiah( (unconvertToRupiah($('.gross')[i].value)/t_acost)*acostp );
@@ -830,7 +969,7 @@
 
 
         function penangkapPlu(w){
-            let row = w.getAttribute("no");
+            let row = w.parentNode.parentNode.rowIndex-2;
             let val = convertPlu(w.value);
             if($('.deskripsi')[row].value !== '' && $('.plu')[row].value === ''){
                 swal('', "Data Kosong, harap mengisi plu dengan benar !!", 'warning');
@@ -848,6 +987,53 @@
                 }
             }
         }
+
+        $('#hapusDoc').click(function () {
+            if($('#nomorTrn').val() != ''){
+                swal({
+                    title: "Apakah anda yakin?",
+                    text: "Data tidak akan bisa diakses lagi bila dihapus!",
+                    icon: "warning",
+                    buttons: [
+                        'Tidak, batalkan!',
+                        'Ya, saya yakin!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        let val = $('#nomorTrn').val();
+                        ajaxSetup();
+                        $.ajax({
+                            url: '/BackOffice/public/transaksi/repacking/deleteTrn',
+                            type: 'post',
+                            data: {
+                                val:val
+                            },
+                            success: function (result) {
+                                if(result.kode == '1'){
+                                    swal({
+                                        title: 'Terhapus!',
+                                        text: 'Data telah berhasil dihapus!',
+                                        icon: 'success'
+                                    })
+                                    clearForm();
+                                }
+                                else{
+                                    swal("Gagal!", "Data tidak berhasil dihapus", "error");
+                                }
+                            }, error: function () {
+                                swal("Gagal!", "Data tidak berhasil dihapus", "error");
+                            }
+                        })
+                    } else {
+                        swal("Dibatalkan", "Data tidak jadi dihapus", "error");
+                    }
+                });
+            }else{
+                swal("Nomor transaksi kosong", "Data tidak berhasil dihapus", "error");
+            }
+        });
+
         // $('.plu').change(function () {
         //
         //     let row = $(this).attr('no');
@@ -865,6 +1051,45 @@
         //     }
         //
         // });
+
+        function clearForm(){
+            $('#hapusDoc').attr('disabled','disabled');
+            $('#model').val('');
+
+            $('#nomorTrn').val('');
+            $('#tanggalTrn').val('');
+            $('#keterangan').val('');
+            $('#perubahanPlu').val('');
+            $('#deskripsi').val('');
+            $('#preItem').val('0.00');
+            $('#reItem').val('0.00');
+            $('#totItem').val('0.00');
+            $('#preGross').val('0.00');
+            $('#reGross').val('0.00');
+            $('#totGross').val('0.00');
+            $('#ppnAlt').val('0.00');
+            $('#total').val('0.00');
+
+            $('.rVal').prop('checked',true);
+            $('.pVal').prop('checked',false);
+
+            $('.pr').removeAttr('disabled');
+            $('.plu').removeAttr('disabled');
+            $('.ctn-kuantum').removeAttr('disabled');
+            $('.pcs-kuantum').removeAttr('disabled');
+
+            $('.baris td button').removeAttr('hidden');
+
+            $('.baris').remove();
+            for (i = 0; i< 10; i++) {
+                $('#body-table-header').append(tempTable());
+            }
+
+            trbo_averagecost = [];
+            deskripsiPanjang = [];
+
+            dropdownKecil();
+        }
 
         function searchNmrTrn(val) {
             ajaxSetup();
@@ -914,11 +1139,13 @@
                                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                                 },
                                 success: function (result) {
+                                    $('#hapusDoc').attr('disabled','disabled');
                                     $('#nomorTrn').val(result.noDoc);
                                     noDoc = result.noDoc;
                                     $('#tanggalTrn').val(formatDate('now'));
                                     tglDoc = formatDate('now');
                                     model = result.model;
+                                    $('#model').val(model);
                                     noReff = result.noReff;
                                     $('#modal-loader').modal('hide')
                                 }, error: function () {
@@ -983,7 +1210,7 @@
         }
 
         function chooseTrn(a){
-            deskripsiPanjang = {};
+            deskripsiPanjang = [];
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/transaksi/repacking/chooseTrn',
@@ -998,6 +1225,7 @@
                     $('.baris').remove();
 
                     if(rec.length != 0) {
+                        $('#hapusDoc').removeAttr('disabled');
                         noDoc = rec[0].trbo_nodoc;
                         $('#nomorTrn').val(noDoc);
                         tglDoc = formatDate(rec[0].trbo_tgldoc);
@@ -1010,22 +1238,24 @@
                         $('#perubahanPlu').val(rubahPlu);
                         //perubahanPluChecker();
                         if(rec[0].trbo_flagdisc2 == 'R'){
-                            $('.rVal').attr('checked',true);
-                            $('.pVal').attr('checked',false);
+                            $('.rVal').prop('checked',true);
+                            $('.pVal').prop('checked',false);
                         }else{
-                            $('.pVal').attr('checked',true);
-                            $('.rVal').attr('checked',false);
+                            $('.pVal').prop('checked',true);
+                            $('.rVal').prop('checked',false);
                         }
                         group_option = rec[0].trbo_flagdisc2;
                         model = '* KOREKSI *';
+                        $('#model').val(model);
                         trbo_flagdoc = rec[0].trbo_flagdoc;
                         noDocPrint = rec[0].nota;
                         //noUrut = rec[0].trbo_seqno + 1;
                         for (i = 0; i< rec.length; i++) {
-                            $('#body-table-header').append(tempTable(i));
+                            $('#body-table-header').append(tempTable());
                             $('.pr')[i].value = rec[i].trbo_flagdisc1;
                             $('.plu')[i].value = rec[i].trbo_prdcd;
                             $('.deskripsi')[i].value = rec[i].prd_deskripsipendek;
+                            //deskripsiPanjang.push(rec[i].prd_deskripsipanjang);
                             deskripsiPanjang[i] = rec[i].prd_deskripsipanjang;
                             $('.satuan')[i].value = (rec[i].prd_unit).concat("/",(rec[i].prd_frac));
                             $('.tag')[i].value = rec[i].prd_kodetag;
@@ -1034,12 +1264,14 @@
                             $('.ctn-kuantum')[i].value = parseInt((rec[i].trbo_qty)/(rec[i].prd_frac));
                             $('.pcs-kuantum')[i].value = (rec[i].trbo_qty)%(rec[i].prd_frac);
                             $('.hrg-satuan')[i].value = rec[i].trbo_hrgsatuan;
+                            trbo_averagecost[i] = rec[i].trbo_averagecost;
                             $('.gross')[i].value = rec[i].trbo_gross;
                             $('.ppn')[i].value = rec[i].trbo_ppnrph;
                         }
                         if (model == '* KOREKSI *') {
                             if (trbo_flagdoc == '*') {
                                 model = '* NOTA SUDAH DICETAK *';
+                                $('#model').val(model);
                                 saveBool = false;
                                 //disable savedata dan update data
                                 $('.baris td input').attr('disabled','disabled');
@@ -1047,7 +1279,6 @@
                             } else {
                                 saveBool = true;
                                 //enable savedata dan update data
-                                alert(rubahPlu);
                                 if(rubahPlu == 'Y'){
                                     $('.baris td button').attr('hidden',true);
                                 }else{
@@ -1074,7 +1305,7 @@
                         }
                     }else{
                         for (i = 0; i< 10; i++) {
-                            $('#body-table-header').append(tempTable(i));
+                            $('#body-table-header').append(tempTable());
                         }
                     }
                     $('#modalHelp').modal('hide');
@@ -1089,7 +1320,7 @@
 
         function getPlu(no, val) {
             $('#searchModal').val('');
-            let index = no['attributes'][4]['nodeValue'];
+            let index = no.parentNode.parentNode.rowIndex-2;
 
             if($('.pr')[index].value === '' || $('.pr')[index].value == null){
                 swal('', "Isi kolom P/R dahulu !!", 'warning');
@@ -1280,7 +1511,7 @@
 
                         $('.plu')[index].value = '';
                         $('.deskripsi')[index].value = '';
-                        deskripsiPanjang = '';
+                        deskripsiPanjang[index] = '';
                         $('.tag')[index].value = '';
                         $('.satuan')[index].value = '';
                         $('.ctn-stock')[index].value = '';
@@ -1294,13 +1525,67 @@
                     } else {
                         swal('Error', 'Somethings error', 'error');
                     }
+                    qtyCounter();
+                    totalPPN();
                 }, error: function (error) {
                     $('#modal-loader').modal('hide');
                 }
             })
         }
-        function tempTable(index) {
-            var temptbl =  ` <tr class="baris" id="`+ index +`" onclick="showDesPanjang(this)">
+
+        function print(){
+            if($('#reItem').val() > 0 && $('#preItem').val() == 0){
+                swal('Re-packing', 'Tipe "P" belum diinput, proses tidak bisa dilakukan', 'warning');
+                return false;
+            }else if($('#preItem').val() > 0 && $('#reItem').val() == 0){
+                swal('Re-packing', 'Tipe "R" belum diinput, proses tidak bisa dilakukan', 'warning');
+                return false;
+            }
+            if($('#perubahanPlu').val() === 'Y'){
+                if($('#preItem').val() != 1){
+                    swal('Re-packing', 'Untuk Rubah PLU Tipe "P" tidak boleh lebih dari 1 item, proses tidak bisa dilakukan', 'warning');
+                    return false;
+                }else if($('#reItem').val() != 1){
+                    swal('Re-packing', 'Untuk Rubah PLU Tipe "R" tidak boleh lebih dari 1 item, proses tidak bisa dilakukan', 'warning');
+                    return false;
+                }
+            }
+            swal({
+                title: "Apakah anda yakin?",
+                text: "Data akan disimpan/perbaharui dan di cetak/print!",
+                icon: "warning",
+                buttons: [
+                    'Tidak, batalkan!',
+                    'Ya, saya yakin!'
+                ],
+                dangerMode: true,
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    let nomorTrn = $('#nomorTrn').val();
+                    if(true){
+                        ajaxSetup();
+                        $.ajax({
+                            url: '/BackOffice/public/transaksi/repacking/print',
+                            type: 'post',
+                            data: {
+                                nomorTrn:nomorTrn
+                            },
+                            success: function () {
+
+                                //clearForm();
+                            }, error: function () {
+                                alert('error');
+                            }
+                        })
+                    }
+                } else {
+                    swal("Dibatalkan", "Data tidak jadi disimpan/perbaharui dan di di cetak/print", "error");
+                }
+            });
+        }
+
+        function tempTable() {
+            var temptbl =  ` <tr class="baris" onclick="showDesPanjang(this)">
                                                 <td style="width: 4%" class="text-center">
                                                     <button onclick="deleteRow(this)" class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -1309,8 +1594,8 @@
                                                            type="text">
                                                 </td>
                                                 <td class="buttonInside" style="width: 150px;">
-                                                    <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" no="`+ index +`" value="">
-                                                    <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ index +`">
+                                                    <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu"  value="">
+                                                    <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')">
                                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
                                                 </td>

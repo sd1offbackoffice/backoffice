@@ -199,6 +199,9 @@ class rubahStatusController extends Controller
                 if($checker->mstd_flagdisc3 == 'P'){
                     return response()->json(['kode' => 3, 'msg' => $noDoc]);
                 }else{
+                    $crDate = $checker->mstd_tgldoc;
+                    $creator = $checker->mstd_create_by;
+                    $crDate2 = $checker->mstd_create_dt;
                     DB::table('TBTR_MSTRAN_D')
                         ->where('MSTD_NOPO','=',$noDoc)
                         ->where('MSTD_TYPETRN','=','Z')
@@ -799,9 +802,7 @@ class rubahStatusController extends Controller
 //            $crDate2 = $checker->mstd_create_dt;
 //            dd($crDate);
                 if($case == 1){
-                    $crDate = $checker->mstd_tgldoc;
-                    $creator = $checker->mstd_create_by;
-                    $crDate2 = $checker->mstd_create_dt;
+
 
                     DB::table('TBTR_MSTRAN_D')
                         ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $crDate,
