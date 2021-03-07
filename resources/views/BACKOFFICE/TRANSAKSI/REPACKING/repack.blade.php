@@ -171,6 +171,11 @@
                                         </tr>
                                     @endfor
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="13"><button id="addRow" class="btn btn-primary btn-block" onclick="addNewRow()">Tambah Baris Baru</button></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             <input style="margin-left: 200px" class="col-sm-6" readonly type="text" id="deskripsi">
@@ -218,8 +223,10 @@
                                 {{--<button hidden id="hiddenSaveButton" type="button" onclick="saveMe()"></button>--}}
 
                             </div>
+                            <br>
                             <div class="d-flex justify-content-start">
-                                <span style="font-weight: bold">Ctrl+S : Simpan Data</span>
+                                <span style="font-weight: bold">Ctrl+S : Simpan Data &nbsp;&nbsp; atau tekan &nbsp;&nbsp;</span>
+                                <button onclick="saveMe()" type="button" class="btn btn-primary btn-block col-sm-2">Save</button>
                             </div>
                         </div>
                     </fieldset>
@@ -347,9 +354,11 @@
                 $('#body-table-header').append(tempTable(0));
                 $('#body-table-header').append(tempTable(1));
                 $('.baris td button').attr('hidden',true);
+                $('#addRow').attr('hidden',true);
             }else{
                 $('.radio').removeAttr('disabled');
                 $('.baris td button').removeAttr('hidden');
+                $('#addRow').removeAttr('hidden');
             }
         }
 
@@ -366,6 +375,10 @@
             if (charCode == 82 || charCode == 80)
                 return true;
             return false;
+        }
+
+        function addNewRow() {
+            $('#body-table-header').append(tempTable());
         }
 
         function deleteRow(e) {
@@ -839,7 +852,7 @@
                 }, error: function () {
                     alert('error');
                 }
-            })
+            });
         }
 
         function qtyCounter(){
@@ -1079,6 +1092,8 @@
             $('.pcs-kuantum').removeAttr('disabled');
 
             $('.baris td button').removeAttr('hidden');
+            $('#addRow').removeAttr('hidden');
+
 
             $('.baris').remove();
             for (i = 0; i< 10; i++) {
@@ -1088,7 +1103,7 @@
             trbo_averagecost = [];
             deskripsiPanjang = [];
 
-            dropdownKecil();
+            //dropdownKecil();
         }
 
         function searchNmrTrn(val) {
@@ -1276,13 +1291,16 @@
                                 //disable savedata dan update data
                                 $('.baris td input').attr('disabled','disabled');
                                 $('.baris td button').attr('hidden',true);
+                                $('#addRow').attr('hidden',true);
                             } else {
                                 saveBool = true;
                                 //enable savedata dan update data
                                 if(rubahPlu == 'Y'){
                                     $('.baris td button').attr('hidden',true);
+                                    $('#addRow').attr('hidden',true);
                                 }else{
                                     $('.baris td button').removeAttr('hidden');
+                                    $('#addRow').removeAttr('hidden');
                                 }
                                 $('.pr').removeAttr('disabled');
                                 $('.plu').removeAttr('disabled');
@@ -1295,8 +1313,10 @@
                             //enable savedata dan update data
                             if($('#perubahanPlu').value == 'Y'){
                                 $('.baris td button').attr('hidden',true);
+                                $('#addRow').attr('hidden',true);
                             }else{
                                 $('.baris td button').removeAttr('hidden');
+                                $('#addRow').removeAttr('hidden');
                             }
                             $('.pr').removeAttr('disabled');
                             $('.plu').removeAttr('disabled');
@@ -1562,16 +1582,24 @@
             }).then(function(isConfirm) {
                 if (isConfirm) {
                     let nomorTrn = $('#nomorTrn').val();
+                    let keterangan = $('#keterangan').val();
+                    saveData();
                     if(true){
                         ajaxSetup();
                         $.ajax({
                             url: '/BackOffice/public/transaksi/repacking/print',
                             type: 'post',
                             data: {
-                                nomorTrn:nomorTrn
+                                nomorTrn:nomorTrn,
+                                noReff:noReff,
+                                keterangan:keterangan
                             },
                             success: function () {
+                                if($('#jenisKertas').val() == 'Biasa'){
+                                    window.open('/BackOffice/public/transaksi/repacking/printdoc/'+nomorTrn+'/','_blank');
+                                }else if($('#jenisKertas').val() == 'Kecil'){
 
+                                }
                                 //clearForm();
                             }, error: function () {
                                 alert('error');

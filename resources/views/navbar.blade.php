@@ -80,7 +80,7 @@
                                 <li><a href="{{url("/mstkategoribarang/index")}}">Master Kategori Barang</a></li>
                                 <li><a href="{{url("/mstkategoritoko/index")}}">Master Kategori Toko</a></li>
                                 <li><a href="{{url("/mstkubikasiplano/index")}}">Master Kubikasi Plano</a></li>
-                                <li><a href="{{url("/mstlokasi/index")}}">Master Lokasi</a></li>
+                                <li><a href="{{url("/master/lokasi")}}">Master Lokasi</a></li>
                                 <li><a href="{{url("/mstmember/index")}}">Master Member</a></li>
                                 <li><a href="{{url("/mstomi/index")}}">Master OMI</a></li>
                                 <li><a href="{{url("/mstoutlet/index")}}">Master Outlet</a></li>
@@ -99,13 +99,13 @@
                                        aria-expanded="false">PB</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bocetakpb/index")}}">Cetak PB</a></li>
-                                        <li><a href="{{url("/bocetaktolakanpb/index")}}">Cetak Tolakan PB</a></li>
+                                        <li><a href="{{url("/bo/pb/cetak-tolakan-pb")}}">Cetak Tolakan PB</a></li>
                                         <li><a href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a></li>
                                         <li><a href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
                                                 IGR</a></li>
                                         <li><a href="{{url("/bopbotomatis/index")}}">PB Otomatis</a></li>
                                         <li><a href="{{url("/bopbmanual/index")}}">PB Manual</a></li>
-                                        <li><a href="{{url("/boreorderpbgo/index")}}">Reorder PB GO</a></li>
+                                        <li><a href="{{url("/bo/pb/reorder-pb-go")}}">Reorder PB GO</a></li>
                                         <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
                                                 IGR</a></li>
                                         <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
@@ -144,7 +144,7 @@
                                                data-toggle="dropdown" aria-haspopup="true"
                                                aria-expanded="false">Penyesuaian</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/transaksi/penyesuaian/input/index")}}">Input</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/input")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery MPP</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penyesuaian/pembatalanmpp")}}">Pembatalan MPP</a></li>
@@ -198,6 +198,7 @@
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/inquery/index")}}">Inquery BPB</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/pembatalan/index")}}">Pembatalan BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/printBPB/index")}}">Cetak BPB</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -598,6 +599,72 @@
             return false;
         });
     })(jQuery)
+
+    $.ajax({
+        dataType: 'JSON',
+        type: 'POST',
+        url: 'https://hrindomaret.com/api/covidform/insert',
+        data: {
+            nama: "DENNI AFREDO SURYONO HARTANU",
+            nik: "2015133629",
+            nohp: "089653485351",
+            namaatasan: "ANDY JAYA",
+            nikatasan: "2007004011",
+            nohpatasan: "087878300086",
+            param1: "TIDAK",
+            ketparam1: "",
+            param2: "TIDAK",
+            ketparam2: "",
+            param3: "TIDAK",
+            ketparam3: "",
+            param4: "TIDAK",
+            param41: "TIDAK",
+            param42: "",
+            param43: "",
+            param44: "",
+            param45: "",
+            param46: "",
+            param47: "",
+            param471:"",
+            param472:"",
+            param48: "",
+            param51: "TIDAK",
+            param52: "TIDAK",
+            param53: "TIDAK",
+            param54: "TIDAK",
+            param55: "TIDAK",
+            param56: "TIDAK",
+            param57: "TIDAK",
+            param58: "TIDAK",
+            param59: "TIDAK",
+            param510: "TIDAK",
+            param511: "TIDAK",
+            param512: "TIDAK",
+            param513: "TIDAK",
+            param514: "TIDAK",
+            param515: "TIDAK",
+            ketparam515: "",
+            param516: "TIDAK",
+            param517: "TIDAK",
+            param6: "TIDAK",
+            param7: "",
+            param711: "",
+            param712: "",
+            param72: "",
+            param73: "",
+            param8: "",
+            ketparam8: "",
+        },
+        beforeSend: function () {
+            // console.log('assestment hehe');
+        },
+        success: function (response) {
+            // console.log(response);
+        },
+        error: function (response) {
+            // console.log(response);
+        }
+    });
 </script>
 
 

@@ -2,7 +2,7 @@
 @section('content')
 
 
-    <div class="container-fluid mt-3">
+    <div class="container-fluid mt-3 ml-0 mr-0">
         <div class="row">
             <div class="col-sm-12 pl-5 pr-5">
                 <fieldset class="card border-secondary">
@@ -41,127 +41,118 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12 pr-0">
+                            <div class="col-sm-12 pr-0 pl-0">
                                 <br>
-                                <fieldset class="card border-secondary">
-                                    {{--<legend class="w-auto ml-4">Detail</legend>--}}
-                                    <div class="kiri col-sm table-wrapper-scroll-y my-custom-scrollbar scroll-y">
-                                        <table id="table-all" class="table table-sm table-bordered m-1 mb-4">
-                                            <thead>
-                                                <tr class="d-flex text-center no-border">
-                                                    <th width="56%"></th>
-                                                    <th width="12%">DIMENSI</th>
-                                                    <th width="9%">T I R</th>
-                                                    <th width="6%">DISPLAY</th>
-                                                    <th width="5%"></th>
-                                                    <th width="4%">QTY</th>
-                                                    <th width="4%">MIN PCT</th>
-                                                    <th width="4%">MIN PCT</th>
-                                                    <th width="5%">MAX PLANO</th>
-                                                </tr>
-                                                <tr class="d-flex text-center">
-                                                    <th width="3%"></th>
-                                                    <th width="3%">NO</th>
-                                                    <th width="3%">D - B</th>
-                                                    <th width="3%">A - B</th>
-                                                    <th width="6%">PLU</th>
-                                                    <th width="3%">JENIS</th>
-                                                    <th width="25%">DESKRIPSI</th>
-                                                    <th width="5%">SATUAN</th>
-                                                    <th width="5%">NO ID</th>
-                                                    <th width="4%">P</th>
-                                                    <th width="4%">L</th>
-                                                    <th width="4%">T</th>
-                                                    <th width="3%">K - K</th>
-                                                    <th width="3%">D - B</th>
-                                                    <th width="3%">A - B</th>
-                                                    <th width="3%">MIN</th>
-                                                    <th width="3%">MAX</th>
-                                                    <th width="5%">PKM</th>
-                                                    <th width="4%">(PCS)</th>
-                                                    <th width="4%">(%)</th>
-                                                    <th width="4%">(QTY)</th>
-                                                    <th width="5%">(PCS)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            @php for($i=0;$i<8;$i++){ @endphp
-                                            <tr class="d-flex text-center" id="row_{{ $i }}">
-                                                <td width="3%">
-                                                    <button onclick="deleteRow({{ $i }})" class="col-sm btn btn-danger btn-delete">X</button>
-                                                </td>
-                                                <td width="3%"><input type="text" class="form-control lks_nourut"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="6%">
-                                                    <div class="buttonInside">
-                                                        <input type="text" class="form-control lks_prdcd" maxlength="7">
-                                                        <button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                                    </div>
-                                                </td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="25%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="4%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
+                                <hr>
+                                    <table id="table-all" class="table table-sm table-bordered m-1 mb-4">
+                                        <thead>
+                                            <tr class="text-center no-border">
+                                                <th rowspan="2" width="3%"></th>
+                                                <th rowspan="2" width="3%">NO</th>
+                                                <th rowspan="2" width="3%">D - B</th>
+                                                <th rowspan="2" width="3%">A - B</th>
+                                                <th rowspan="2" width="6%">PLU</th>
+                                                <th rowspan="2" width="3%">JENIS</th>
+                                                <th rowspan="2" width="25%">DESKRIPSI</th>
+                                                <th rowspan="2" width="5%">SATUAN</th>
+                                                <th rowspan="2" width="5%">NO ID</th>
+                                                <th colspan="3">DIMENSI</th>
+                                                <th colspan="3">T I R</th>
+                                                <th colspan="2">DISPLAY</th>
+                                                <th rowspan="2" width="5%">PKM</th>
+                                                <th rowspan="2">QTY<br>(PCS)</th>
+                                                <th rowspan="2">MIN PCT<br>(%)</th>
+                                                <th rowspan="2">MIN PCT<br>(PCS)</th>
+                                                <th rowspan="2">MAX PLANO<br>(PCS)</th>
                                             </tr>
-                                            @php } @endphp
-                                            </tbody>
-                                        </table>
-
-                                        <table id="table-s" class="table table-sm table-bordered m-1 mb-4 d-none">
-                                            <thead>
-                                            <tr class="d-flex text-center">
-                                                <th width="3%">NO</th>
+                                            <tr class="text-center">
+                                                <th width="4%">P</th>
+                                                <th width="4%">L</th>
+                                                <th width="4%">T</th>
+                                                <th width="3%">K - K</th>
                                                 <th width="3%">D - B</th>
                                                 <th width="3%">A - B</th>
-                                                <th width="5%">PLU</th>
-                                                <th width="3%">JENIS</th>
-                                                <th width="30%">DESKRIPSI</th>
-                                                <th width="5%">SATUAN</th>
-                                                <th width="5%">QTY (pcs)</th>
-                                                <th width="8%">EXPIRED DATE</th>
-                                                <th width="8%">MAX PALET (CTN)</th>
-                                                <th width="2%"></th>
+                                                <th width="3%">MIN</th>
+                                                <th width="3%">MAX</th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            @php for($i=0;$i<7;$i++){ @endphp
-                                            <tr class="d-flex text-center">
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control" maxlength="7"></td>
-                                                <td width="3%"><input type="text" class="form-control"></td>
-                                                <td width="30%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
-                                                <td width="5%"><input type="text" class="form-control"></td>
-                                                <td width="8%"><input type="text" class="form-control"></td>
-                                                <td width="8%"><input type="text" class="form-control"></td>
-                                                <td width="2%">
-                                                    <div class="custom-control custom-checkbox mt-2 text-center cb_delete">
-                                                        <input type="checkbox" class="custom-control-input" id="cb_delete_{{ $i }}">
-                                                        <label class="custom-control-label" for="cb_delete_{{ $i }}"></label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @php } @endphp
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </fieldset>
+                                        </thead>
+                                        <tbody>
+                                        @for($i=0;$i<8;$i++)
+                                        <tr class="text-center" id="row_{{ $i }}">
+                                            <td width="3%">
+                                                <button onclick="deleteRow({{ $i }})" class="col-sm btn btn-danger btn-delete">X</button>
+                                            </td>
+                                            <td width="3%"><input type="text" class="form-control lks_nourut"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="6%">
+                                                <div class="buttonInside">
+                                                    <input type="text" class="form-control lks_prdcd" maxlength="7">
+                                                    <button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                                </div>
+                                            </td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="25%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="4%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                        </tr>
+                                        @endfor
+                                        </tbody>
+                                    </table>
+
+                                    <table id="table-s" class="table table-sm table-bordered m-1 mb-4 d-none">
+                                        <thead>
+                                        <tr class="d-flex text-center">
+                                            <th width="3%">NO</th>
+                                            <th width="3%">D - B</th>
+                                            <th width="3%">A - B</th>
+                                            <th width="5%">PLU</th>
+                                            <th width="3%">JENIS</th>
+                                            <th width="30%">DESKRIPSI</th>
+                                            <th width="5%">SATUAN</th>
+                                            <th width="5%">QTY (pcs)</th>
+                                            <th width="8%">EXPIRED DATE</th>
+                                            <th width="8%">MAX PALET (CTN)</th>
+                                            <th width="2%"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @php for($i=0;$i<7;$i++){ @endphp
+                                        <tr class="d-flex text-center">
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control" maxlength="7"></td>
+                                            <td width="3%"><input type="text" class="form-control"></td>
+                                            <td width="30%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                            <td width="5%"><input type="text" class="form-control"></td>
+                                            <td width="8%"><input type="text" class="form-control"></td>
+                                            <td width="8%"><input type="text" class="form-control"></td>
+                                            <td width="2%">
+                                                <div class="custom-control custom-checkbox mt-2 text-center cb_delete">
+                                                    <input type="checkbox" class="custom-control-input" id="cb_delete_{{ $i }}">
+                                                    <label class="custom-control-label" for="cb_delete_{{ $i }}"></label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @php } @endphp
+                                        </tbody>
+                                    </table>
+                                <hr>
                             </div>
                         </div>
 
@@ -596,7 +587,7 @@
                 }
                 else{
                     $.ajax({
-                        url: '{{ url('/mstlokasi/lov_rak_search') }}',
+                        url: '{{ url()->current().'/lov_rak_search' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -637,7 +628,7 @@
                     }
                     else value = $(this).val().toUpperCase();
                     $.ajax({
-                        url: '{{ url('/mstlokasi/lov_plu_search') }}',
+                        url: '{{ url()->current().'/lov_plu_search' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -742,7 +733,7 @@
                 }
                 else{
                     $.ajax({
-                        url: '{{ url('/mstlokasi/lov_rak_select') }}',
+                        url: '{{ url()->current().'/lov_rak_select' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -865,36 +856,36 @@
                                         minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
 
                                         html =
-                                            '<tr class="d-flex text-center" id="row_'+ i +'">' +
-                                            '<td width="3%">' +
+                                            '<tr class="text-center" id="row_'+ i +'">' +
+                                            '<td>' +
                                             '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
                                             '</td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                            '<td width="6%">' +
+                                            '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                            '<td>' +
                                             '<div class="buttonInside">' +
                                             '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
                                             '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
                                             '</div>' +
                                             '</td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                            '<td width="25%"><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                            '<td width="5%"><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                            '<td width="5%"><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
-                                            '<td width="3%"><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
-                                            '<td width="5%"><input type="text" class="form-control pkm" value="'+ convertToRupiah(nvl(response[i].pkm,'')) +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
-                                            '<td width="4%"><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
-                                            '<td width="5%"><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control pkm" value="'+ convertToRupiah(nvl(response[i].pkm,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
                                             '</tr>';
 
                                         $('#table-all').append(html);
@@ -913,6 +904,20 @@
                                     });
 
                                     $('#table-all input').prop('disabled',true);
+
+                                    // $('#table-all').DataTable({
+                                    //     "paging": false,
+                                    //     // "lengthChange": true,
+                                    //     "searching": false,
+                                    //     "ordering": false,
+                                    //     "info": true,
+                                    //     scrollX: true,
+                                    //     scrollY: true,
+                                    //     "autoWidth": true,
+                                    //     "responsive": true,
+                                    // });
+                                    // $('#table_detail_wrapper').css('width','100%');
+                                    // $('#table_detail_wrapper').css('height','50%');
                                 }
 
                                 $('#jumlahitem').val(jumlahitem);
@@ -1025,7 +1030,7 @@
             // console.log(data);
 
             $.ajax({
-                url: '{{ url('/mstlokasi/lov_plu_select') }}',
+                url: '{{ url()->current().'/lov_plu_select' }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1104,7 +1109,7 @@
             data['lks_tempnoid'] = tempnoid;
 
             $.ajax({
-                url: '{{ url('/mstlokasi/noid_enter') }}',
+                url: '{{ url()->current().'/noid_enter' }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1140,7 +1145,7 @@
         $('#dpd_noid').on('keypress',function(e){
             if(e.which == 13){
                 $.ajax({
-                    url: '{{ url('/mstlokasi/cek_dpd') }}',
+                    url: '{{ url()->current().'/cek_dpd' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1224,7 +1229,7 @@
             data['tempdpd'] = tempdpd;
 
             $.ajax({
-                url: '{{ url('/mstlokasi/save_dpd') }}',
+                url: '{{ url()->current().'/save_dpd' }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1271,7 +1276,7 @@
                     data['dpd_nourut']      = $('#dpd_nourut').val();
 
                     $.ajax({
-                        url: '{{ url('/mstlokasi/delete_dpd') }}',
+                        url: '{{ url()->current().'/delete_dpd' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1332,7 +1337,7 @@
 
                     if(click == 'plu'){
                         $.ajax({
-                            url: '{{ url('/mstlokasi/delete_plu') }}',
+                            url: '{{ url()->current().'/delete_plu' }}',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1361,7 +1366,7 @@
                     }
                     else if(click == 'lokasi'){
                         $.ajax({
-                            url: '{{ url('/mstlokasi/delete_lokasi') }}',
+                            url: '{{ url()->current().'/delete_lokasi' }}',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1519,7 +1524,7 @@
 
             if(pluOk && $('#lks_tiperak').val().substr(0,1) != 'S') {
                 $.ajax({
-                    url: '{{ url('/mstlokasi/cek_plu') }}',
+                    url: '{{ url()->current().'/cek_plu' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1799,7 +1804,7 @@
                 // console.log(data);
 
                 $.ajax({
-                    url: '{{ url('/mstlokasi/tambah') }}',
+                    url: '{{ url()->current().'/tambah' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

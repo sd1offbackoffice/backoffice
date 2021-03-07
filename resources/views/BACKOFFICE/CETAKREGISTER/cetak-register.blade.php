@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','CETAK REGISTER')
+@section('title','BO | CETAK REGISTER')
 
 @section('content')
 
@@ -152,7 +152,53 @@
                     dangerMode: true
                 }).then((ok) => {
                     if(ok){
-                        window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}`,'_blank');
+                        if($.inArray($('#register').val(), ['K','X']) > -1){
+                            swal({
+                                title: 'Pilih ukuran cetakan',
+                                icon: 'warning',
+                                buttons: {
+                                    cancel: 'Cancel',
+                                    besar: {
+                                        text: 'Besar',
+                                        value: 'besar'
+                                    },
+                                    kecil: {
+                                        text: 'Kecil',
+                                        value: 'kecil'
+                                    }
+                                },
+                                dangerMode: true
+                            }).then((ukuran) => {
+                                if(ukuran){
+                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&ukuran=${ukuran}`,'_blank');
+                                }
+                            });
+                        }
+                        else if($('#register').val() == 'B2'){
+                            swal({
+                                title: 'Pilih Jenis Penerimaan',
+                                icon: 'warning',
+                                buttons: {
+                                    cancel: 'Cancel',
+                                    pembelian: {
+                                        text: 'Pembelian',
+                                        value: 'B'
+                                    },
+                                    lain: {
+                                        text: 'Lain-lain',
+                                        value: 'L'
+                                    }
+                                },
+                                dangerMode: true
+                            }).then((jenis) => {
+                                if(jenis){
+                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&jenis=${jenis}`,'_blank');
+                                }
+                            });
+                        }
+                        else{
+                            window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}`,'_blank');
+                        }
                     }
                 });
             }

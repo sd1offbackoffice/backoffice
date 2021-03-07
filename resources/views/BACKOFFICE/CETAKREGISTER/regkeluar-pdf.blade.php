@@ -57,6 +57,12 @@ $datetime->setTimezone($timezone);
         @php
             $i = 1;
             $temp = '';
+            $subgross = 0;
+            $subdiscount = 0;
+            $submstd_ppnrph = 0;
+            $submstd_ppnbmrph = 0;
+            $submstd_ppnbtlrph = 0;
+            $subtotal = 0;
         @endphp
         @foreach($data as $d)
             @if($temp != $d->msth_tgldoc)
@@ -112,7 +118,7 @@ $datetime->setTimezone($timezone);
             @endphp
         @endforeach
         <tr>
-            <td class="border-top left" colspan="6">SUBTOTAL TANGGAL {{ $d->msth_tgldoc }}</td>
+            <td class="border-top left" colspan="6">SUBTOTAL TANGGAL {{ $temp }}</td>
             <td class="border-top right">{{ number_format(round($subgross), 0, '.', ',') }}</td>
             <td class="border-top right">{{ number_format(round($subdiscount), 0, '.', ',') }}</td>
             <td class="border-top right">{{ number_format(round($submstd_ppnrph), 0, '.', ',') }}</td>
@@ -186,8 +192,12 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
+        @if($ukuran == 'kecil')
+        size: 595pt 442pt;
+        @else
         size: 595pt 842pt;
-    }
+    @endif
+}
     header {
         position: fixed;
         top: 0cm;

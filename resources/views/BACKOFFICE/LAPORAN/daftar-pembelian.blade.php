@@ -33,27 +33,30 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="row">
-                                <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">TANGGAL</label>
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="tgl1" onchange="cekTanggal('tgl1')">
+                            <div class="menu-default">
+                                <div class="row">
+                                    <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">TANGGAL</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" id="tgl1" onchange="cekTanggal('tgl1')">
+                                    </div>
+                                    <label class="col-sm-1 pt-1 text-center">s/d</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" id="tgl2" onchange="cekTanggal('tgl2')">
+                                    </div>
                                 </div>
-                                <label class="col-sm-1 pt-1 text-center">s/d</label>
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="tgl2" onchange="cekTanggal('tgl2')">
+                                <div class="row">
+                                    <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SORT BY</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" id="sort">
+                                            <option value="1">1. Tgl BPB
+                                            </option>
+                                            <option value="2">2. Tgl PO
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SORT BY</label>
-                                <div class="col-sm-2">
-                                    <select class="form-control" id="sortby">
-                                        <option value="1">1. Tgl BPB
-                                        </option>
-                                        <option value="2">2. Tgl PO
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+
                             <div class="menu-divdepkat">
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">MULAI DIV</label>
@@ -516,34 +519,35 @@
         $(document).ready(function () {
             $('.menu-kodemtr').hide();
             $('.menu-supplier').hide();
+            getLovDivisi1();
 
-            swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", '', 'info', {
-                buttons: {
-                    divdepkat: "Divisi/Departement/Kategori!",
-                    kodemtr: "KODE MONITORING"
-                },
-
-            })
-                .then((value) => {
-                    switch (value) {
-                        case "divdepkat":
-                            $('.menu-divdepkat').show();
-                            $('.menu-kodemtr').hide();
-                            getLovDivisi1();
-                            break;
-
-                        case "kodemtr":
-                            $('.menu-kodemtr').show();
-                            $('.menu-divdepkat').hide();
-                            getLovMtr();
-                            break;
-                        default:
-                            $('.menu-divdepkat').show();
-                            $('.menu-kodemtr').hide();
-                            getLovDivisi1();
-                            break;
-                    }
-                });
+            // swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", '', 'info', {
+            //     buttons: {
+            //         divdepkat: "Divisi/Departement/Kategori!",
+            //         kodemtr: "KODE MONITORING"
+            //     },
+            //
+            // })
+            //     .then((value) => {
+            //         switch (value) {
+            //             case "divdepkat":
+            //                 $('.menu-divdepkat').show();
+            //                 $('.menu-kodemtr').hide();
+            //                 getLovDivisi1();
+            //                 break;
+            //
+            //             case "kodemtr":
+            //                 $('.menu-kodemtr').show();
+            //                 $('.menu-divdepkat').hide();
+            //                 getLovMtr();
+            //                 break;
+            //             default:
+            //                 $('.menu-divdepkat').show();
+            //                 $('.menu-kodemtr').hide();
+            //                 getLovDivisi1();
+            //                 break;
+            //         }
+            //     });
 
             $('#tgl1').datepicker({
                 "dateFormat": "dd/mm/yy",
@@ -974,13 +978,13 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).find(':eq(0)').addClass('text-left');
-                    $(row).addClass('row-lov-sup').css({'cursor': 'pointer'});
+                    $(row).addClass('row-lov-sup-1').css({'cursor': 'pointer'});
                 },
                 "order": [],
                 "initComplete": function () {
                     $('#btn_lov_sup_1').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
 
-                    $(document).on('click', '.row-lov-sup', function (e) {
+                    $(document).on('click', '.row-lov-sup-1', function (e) {
                         $('#sup1_nama').val($(this).find(':eq(1)').html());
                         $('#sup1').val($(this).find(':eq(0)').html().replace('&amp;', '&'));
 
@@ -1024,13 +1028,13 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).find(':eq(0)').addClass('text-left');
-                    $(row).addClass('row-lov-sup').css({'cursor': 'pointer'});
+                    $(row).addClass('row-lov-sup-2').css({'cursor': 'pointer'});
                 },
                 "order": [],
                 "initComplete": function () {
                     $('#btn_lov_sup_2').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
 
-                    $(document).on('click', '.row-lov-mtr', function (e) {
+                    $(document).on('click', '.row-lov-sup-2', function (e) {
                         $('#sup2_nama').val($(this).find(':eq(1)').html());
                         $('#sup2').val($(this).find(':eq(0)').html().replace('&amp;', '&'));
 
@@ -1039,7 +1043,7 @@
 
                         // getLovDivisi2();
 
-                        $('#m_lov_sup').modal('hide');
+                        $('#m_lov_sup_2').modal('hide');
                     });
                 }
             });
@@ -1047,75 +1051,88 @@
 
         $('#tipe').on('change', function () {
             if ($(this).val() == 1 || $(this).val() == 3 || $(this).val() == 5) {
-                swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", {
-                    buttons: {
-                        divdepkat: "Divisi/Departement/Kategori!",
-                        kodemtr: "KODE MONITORING"
-                    },
-                })
-                    .then((value) => {
-                        switch (value) {
-                            case "divdepkat":
-                                $('.menu-divdepkat').show();
-                                $('.menu-kodemtr').hide();
-                                $('.menu-supplier').hide();
-                                getLovDivisi1();
-                                break;
-
-                            case "kodemtr":
-                                $('.menu-kodemtr').show();
-                                $('.menu-divdepkat').hide();
-                                $('.menu-supplier').hide();
-                                getLovMtr();
-                                break;
-                            default:
-                                $('.menu-divdepkat').show();
-                                $('.menu-kodemtr').hide();
-                                $('.menu-supplier').hide();
-                                getLovDivisi1();
-                                break;
-                        }
-                    });
+                $('.menu-divdepkat').show();
+                $('.menu-kodemtr').hide();
+                $('.menu-supplier').hide();
+                getLovDivisi1();
+                // swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", {
+                //     buttons: {
+                //         divdepkat: "Divisi/Departement/Kategori!",
+                //         kodemtr: "KODE MONITORING"
+                //     },
+                // })
+                //     .then((value) => {
+                //         switch (value) {
+                //             case "divdepkat":
+                //                 $('.menu-divdepkat').show();
+                //                 $('.menu-kodemtr').hide();
+                //                 $('.menu-supplier').hide();
+                //                 getLovDivisi1();
+                //                 break;
+                //
+                //             case "kodemtr":
+                //                 $('.menu-kodemtr').show();
+                //                 $('.menu-divdepkat').hide();
+                //                 $('.menu-supplier').hide();
+                //                 getLovMtr();
+                //                 break;
+                //             default:
+                //                 $('.menu-divdepkat').show();
+                //                 $('.menu-kodemtr').hide();
+                //                 $('.menu-supplier').hide();
+                //                 getLovDivisi1();
+                //                 break;
+                //         }
+                //     });
             }
             else if ($(this).val() == 2 || $(this).val() == 4 || $(this).val() == 6 || $(this).val() == 7) {
-                swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", {
-                    buttons: {
-                        sup: "SUPPLIER",
-                        kodemtr: "KODE MONITORING"
-                    },
-                })
-                    .then((value) => {
-                        switch (value) {
-                            case "sup":
-                                $('.menu-supplier').show();
-                                $('.menu-divdepkat').hide();
-                                $('.menu-kodemtr').hide();
-                                getLovSup1();
-                                break;
-
-                            case "kodemtr":
-                                $('.menu-kodemtr').show();
-                                $('.menu-divdepkat').hide();
-                                $('.menu-supplier').hide();
-                                getLovMtr();
-                                break;
-
-                            default:
-                                $('.menu-supplier').show();
-                                $('.menu-divdepkat').hide();
-                                $('.menu-kodemtr').hide();
-                                getLovSup1();
-                                break;
-                        }
-                    });
+                $('.menu-supplier').show();
+                $('.menu-divdepkat').hide();
+                $('.menu-kodemtr').hide();
+                getLovSup1();
+                // swal("PILIHAN DAFTAR PEMBELIAN BERDASARKAN ?", {
+                //     buttons: {
+                //         sup: "SUPPLIER",
+                //         kodemtr: "KODE MONITORING"
+                //     },
+                // })
+                //     .then((value) => {
+                //         switch (value) {
+                //             case "sup":
+                //                 $('.menu-supplier').show();
+                //                 $('.menu-divdepkat').hide();
+                //                 $('.menu-kodemtr').hide();
+                //                 getLovSup1();
+                //                 break;
+                //
+                //             case "kodemtr":
+                //                 $('.menu-kodemtr').show();
+                //                 $('.menu-divdepkat').hide();
+                //                 $('.menu-supplier').hide();
+                //                 getLovMtr();
+                //                 break;
+                //
+                //             default:
+                //                 $('.menu-supplier').show();
+                //                 $('.menu-divdepkat').hide();
+                //                 $('.menu-kodemtr').hide();
+                //                 getLovSup1();
+                //                 break;
+                //         }
+                //     });
             }
         });
 
         function cetak() {
+            valid_default = true;
             valid_divdepkat = true;
             valid_kodemtr = true;
             valid_supplier = true;
 
+            $('.menu-default input').each(function () {
+                if (!$(this).val())
+                    valid_default = false;
+            });
             $('.menu-divdepkat input').each(function () {
                 if (!$(this).val())
                     valid_divdepkat = false;
@@ -1128,6 +1145,14 @@
                 if (!$(this).val())
                     valid_supplier = false;
             });
+            if (!valid_default) {
+                swal({
+                    title: 'Inputan belum lengkap!',
+                    icon: 'warning'
+                });
+                $('#tgl1').focus();
+                return false;
+            }
 
             if (!valid_divdepkat && !valid_kodemtr && !valid_supplier) {
                 swal({
@@ -1136,7 +1161,7 @@
                 });
             }
             else {
-                window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}&mtr=${$('#mtr').val()}`, '_blank');
+                window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}&mtr=${$('#mtr').val()}&sort=${$('#sort').val()}`, '_blank');
             }
         }
     </script>

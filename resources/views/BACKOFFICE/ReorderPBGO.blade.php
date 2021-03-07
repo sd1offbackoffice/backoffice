@@ -45,7 +45,7 @@
                                 </div>
                                 <br>
                                 <div class="col-sm">
-                                    <button class="btn btn-info col-sm-4" onclick="$('#modal-tolakan').modal('toggle')">Tutup</button>
+                                    <button class="btn btn-info col-sm-4" onclick="$('#modal-tolakan').modal('hide')">Tutup</button>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
             }).then(function(ok){
                 if (ok) {
                     $.ajax({
-                        url: '{{ url('/boreorderpbgo/proses_go') }}',
+                        url: '{{ url()->current().'/proses_go' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -129,7 +129,7 @@
                                         icon: 'warning',
                                         title: 'Terdapat barang tolakan!',
                                     }).then(function(){
-                                        $('#modal-tolakan').modal('toggle');
+                                        $('#modal-tolakan').modal('show');
                                     });
                                 }
                             });

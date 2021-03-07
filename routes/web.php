@@ -166,52 +166,67 @@ Route::get('/bokkei/laporan', 'BACKOFFICE\KKEIController@laporan_view')->middlew
 
 Route::get('/bokkei/test', 'BACKOFFICE\KKEIController@test');
 
-/*MASTER LOKASI*/
-Route::get('/mstlokasi/index', 'MASTER\lokasiController@index')->middleware('CheckLogin');
-Route::post('/mstlokasi/lov_rak_search', 'MASTER\lokasiController@lov_rak_search')->middleware('CheckLogin');
-Route::post('/mstlokasi/lov_rak_select', 'MASTER\lokasiController@lov_rak_select')->middleware('CheckLogin');
-Route::post('/mstlokasi/lov_plu_search', 'MASTER\lokasiController@lov_plu_search')->middleware('CheckLogin');
-Route::post('/mstlokasi/lov_plu_select', 'MASTER\lokasiController@lov_plu_select')->middleware('CheckLogin');
-Route::post('/mstlokasi/noid_enter', 'MASTER\lokasiController@noid_enter')->middleware('CheckLogin');
-Route::post('/mstlokasi/delete_plu', 'MASTER\lokasiController@delete_plu')->middleware('CheckLogin');
-Route::post('/mstlokasi/delete_lokasi', 'MASTER\lokasiController@delete_lokasi')->middleware('CheckLogin');
-Route::post('/mstlokasi/cek_plu', 'MASTER\lokasiController@cek_plu')->middleware('CheckLogin');
-Route::post('/mstlokasi/tambah', 'MASTER\lokasiController@tambah')->middleware('CheckLogin');
-Route::post('/mstlokasi/cek_dpd', 'MASTER\lokasiController@cek_dpd')->middleware('CheckLogin');
-Route::post('/mstlokasi/delete_dpd', 'MASTER\lokasiController@delete_dpd')->middleware('CheckLogin');
-Route::post('/mstlokasi/save_dpd', 'MASTER\lokasiController@save_dpd')->middleware('CheckLogin');
 
-/*BACK OFFICE - REORDER PB GO*/
-Route::get('/boreorderpbgo/index', 'BACKOFFICE\ReorderPBGOController@index')->middleware('CheckLogin');
-Route::post('/boreorderpbgo/proses_go', 'BACKOFFICE\ReorderPBGOController@proses_go')->middleware('CheckLogin');
-Route::get('/boreorderpbgo/cetak_tolakan', 'BACKOFFICE\ReorderPBGOController@cetak_tolakan')->middleware('CheckLogin');
 
-/*BACK OFFICE - CETAK TOLAKAN PB*/
-Route::get('/bocetaktolakanpb/index', 'BACKOFFICE\CetakTolakanPBController@index')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/cek_divisi', 'BACKOFFICE\CetakTolakanPBController@cek_divisi')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/cek_departement', 'BACKOFFICE\CetakTolakanPBController@cek_departement')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/cek_kategori', 'BACKOFFICE\CetakTolakanPBController@cek_kategori')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/div_cek_plu', 'BACKOFFICE\CetakTolakanPBController@div_cek_plu')->middleware('CheckLogin');
-Route::get('/bocetaktolakanpb/print_by_div', 'BACKOFFICE\CetakTolakanPBController@print_by_div')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/search_supplier', 'BACKOFFICE\CetakTolakanPBController@search_supplier')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/sup_search_plu', 'BACKOFFICE\CetakTolakanPBController@sup_search_plu')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/cek_supplier', 'BACKOFFICE\CetakTolakanPBController@cek_supplier')->middleware('CheckLogin');
-Route::post('/bocetaktolakanpb/sup_cek_plu', 'BACKOFFICE\CetakTolakanPBController@sup_cek_plu')->middleware('CheckLogin');
-Route::get('/bocetaktolakanpb/print_by_sup', 'BACKOFFICE\CetakTolakanPBController@print_by_sup')->middleware('CheckLogin');
 
-/*BACK OFFICE - CETAK TOLAKAN PB*/
-Route::get('/bo/transaksi/penyesuaian/input/index', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@index')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/lov_plu_search', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@lov_plu_search')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/plu_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@plu_select')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/doc_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_select')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/doc_new', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_new')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/doc_save', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_save')->middleware('CheckLogin');
-Route::post('/bo/transaksi/penyesuaian/input/doc_delete', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_delete')->middleware('CheckLogin');
 
 Route::middleware(['CheckLogin'])->group(function () {
+    Route::prefix('/master')->group(function(){
+        /*MASTER LOKASI*/
+        Route::prefix('/lokasi')->group(function(){
+            Route::get('/', 'MASTER\lokasiController@index');
+            Route::post('/lov_rak_search', 'MASTER\lokasiController@lov_rak_search');
+            Route::post('/lov_rak_select', 'MASTER\lokasiController@lov_rak_select');
+            Route::post('/lov_plu_search', 'MASTER\lokasiController@lov_plu_search');
+            Route::post('/lov_plu_select', 'MASTER\lokasiController@lov_plu_select');
+            Route::post('/noid_enter', 'MASTER\lokasiController@noid_enter');
+            Route::post('/delete_plu', 'MASTER\lokasiController@delete_plu');
+            Route::post('/delete_lokasi', 'MASTER\lokasiController@delete_lokasi');
+            Route::post('/cek_plu', 'MASTER\lokasiController@cek_plu');
+            Route::post('/tambah', 'MASTER\lokasiController@tambah');
+            Route::post('/cek_dpd', 'MASTER\lokasiController@cek_dpd');
+            Route::post('/delete_dpd', 'MASTER\lokasiController@delete_dpd');
+            Route::post('/save_dpd', 'MASTER\lokasiController@save_dpd');
+        });
+    });
+
     Route::prefix('/bo')->group(function () {
+        Route::prefix('/pb')->group(function(){
+            /*BACK OFFICE - REORDER PB GO*/
+            Route::prefix('reorder-pb-go')->group(function(){
+                Route::get('/', 'BACKOFFICE\ReorderPBGOController@index');
+                Route::post('/proses_go', 'BACKOFFICE\ReorderPBGOController@proses_go');
+                Route::get('/cetak_tolakan', 'BACKOFFICE\ReorderPBGOController@cetak_tolakan');
+            });
+
+            /*BACK OFFICE - CETAK TOLAKAN PB*/
+            Route::prefix('/cetak-tolakan-pb')->group(function(){
+                Route::get('/', 'BACKOFFICE\CetakTolakanPBController@index');
+                Route::post('/cek_divisi', 'BACKOFFICE\CetakTolakanPBController@cek_divisi');
+                Route::post('/cek_departement', 'BACKOFFICE\CetakTolakanPBController@cek_departement');
+                Route::post('/cek_kategori', 'BACKOFFICE\CetakTolakanPBController@cek_kategori');
+                Route::post('/div_cek_plu', 'BACKOFFICE\CetakTolakanPBController@div_cek_plu');
+                Route::get('/print_by_div', 'BACKOFFICE\CetakTolakanPBController@print_by_div');
+                Route::post('/search_supplier', 'BACKOFFICE\CetakTolakanPBController@search_supplier');
+                Route::post('/sup_search_plu', 'BACKOFFICE\CetakTolakanPBController@sup_search_plu');
+                Route::post('/cek_supplier', 'BACKOFFICE\CetakTolakanPBController@cek_supplier');
+                Route::post('/sup_cek_plu', 'BACKOFFICE\CetakTolakanPBController@sup_cek_plu');
+                Route::get('/print_by_sup', 'BACKOFFICE\CetakTolakanPBController@print_by_sup');
+            });
+        });
+
         Route::prefix('/transaksi')->group(function () {
             Route::prefix('/penyesuaian')->group(function () {
+                Route::prefix('/input')->group(function(){
+                    Route::get('/','BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@index');
+                    Route::post('/lov_plu_search', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@lov_plu_search');
+                    Route::post('/plu_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@plu_select');
+                    Route::post('/doc_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_select');
+                    Route::post('/doc_new', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_new');
+                    Route::post('/doc_save', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_save');
+                    Route::post('/doc_delete', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_delete');
+                });
+
                 Route::prefix('cetak')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@index');
                     Route::post('/get-data', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@getData');
@@ -644,12 +659,16 @@ Route::post('/bo/transaksi/penerimaan/inquery/viewbtp',                     'BAC
 Route::post('/bo/transaksi/penerimaan/inquery/viewdata',                    'BACKOFFICE\TRANSAKSI\PENERIMAAN\inqueryController@viewData')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/inquery/viewdetailplu',               'BACKOFFICE\TRANSAKSI\PENERIMAAN\inqueryController@viewDetailPlu')->middleware('CheckLogin');
 
-
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-PEMBATALAN BPB
 Route::get('/bo/transaksi/penerimaan/pembatalan/index',                     'BACKOFFICE\TRANSAKSI\PENERIMAAN\pembatalanController@index')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/pembatalan/viewbtp',                  'BACKOFFICE\TRANSAKSI\PENERIMAAN\pembatalanController@viewBTB')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/pembatalan/viewdata',                 'BACKOFFICE\TRANSAKSI\PENERIMAAN\pembatalanController@viewData')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/pembatalan/batalbpb',                 'BACKOFFICE\TRANSAKSI\PENERIMAAN\pembatalanController@batalBPB')->middleware('CheckLogin');
+
+
+//BACKOFFICE-TRANSAKSI-PENERIMAAN-CETAK BPB
+Route::get('/bo/transaksi/penerimaan/printBPB/index',                       'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
+
 
 
 /******** Ryan ********/
@@ -689,3 +708,4 @@ Route::post('transaksi/repacking/getPlu',           'BACKOFFICE\TRANSAKSI\REPACK
 Route::post('transaksi/repacking/choosePlu',        'BACKOFFICE\TRANSAKSI\REPACKING\repackController@choosePlu')->middleware('CheckLogin');
 Route::post('transaksi/repacking/saveData',         'BACKOFFICE\TRANSAKSI\REPACKING\repackController@saveData')->middleware('CheckLogin');
 Route::post('transaksi/repacking/print',            'BACKOFFICE\TRANSAKSI\REPACKING\repackController@print')->middleware('CheckLogin');
+Route::get('transaksi/repacking/printdoc/{doc}',    'BACKOFFICE\TRANSAKSI\REPACKING\repackController@printDocument')->middleware('CheckLogin');

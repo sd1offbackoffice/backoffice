@@ -724,7 +724,7 @@
             }
             else{
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/cek_divisi') }}',
+                    url: '{{ url()->current().'/cek_divisi' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -784,7 +784,7 @@
             }
             else{
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/cek_departement') }}',
+                    url: '{{ url()->current().'/cek_departement' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -849,7 +849,7 @@
                 kat2 = $('#div_kategori2').val();
 
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/cek_kategori') }}',
+                    url: '{{ url()->current().'/cek_kategori' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1036,7 +1036,7 @@
                 kat2 = $('#div_kategori2').val();
 
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/div_cek_plu') }}',
+                    url: '{{ url()->current().'/div_cek_plu' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1095,7 +1095,7 @@
                 pil = nvl($('#div_pilihan').val(),'3');
 
 
-                url = '{{ url('/bocetaktolakanpb') }}'+'/print_by_div?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
+                url = '{{ url()->current() }}/print_by_div?tgl1='+tgl1+'&tgl2='+tgl2+'&div1='+div1+'&div2='+div2+'&dep1='+dep1+'&dep2='+dep2+'&kat1='+kat1+'&kat2='+kat2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
 
                 window.open(url);
             }
@@ -1110,7 +1110,7 @@
         $('#i_lov_supplier').on('keypress',function(e){
             if(e.which == 13){
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/search_supplier') }}',
+                    url: '{{ url()->current().'/search_supplier' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1147,7 +1147,7 @@
         $('#sup_i_lov_plu').on('keypress',function(e){
             if(e.which == 13){
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/sup_search_plu') }}',
+                    url: '{{ url()->current().'/sup_search_plu' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1239,7 +1239,7 @@
                 sup2 = $('#sup_supplier2').val();
 
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/cek_supplier') }}',
+                    url: '{{ url()->current().'/cek_supplier' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1326,7 +1326,7 @@
                 sup2 = $('#sup_supplier2').val();
 
                 $.ajax({
-                    url: '{{ url('bocetaktolakanpb/sup_cek_plu') }}',
+                    url: '{{ url()->current().'/sup_cek_plu' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1381,7 +1381,7 @@
                 pil = nvl($('#sup_pilihan').val(),'3');
 
 
-                url = '{{ url('/bocetaktolakanpb') }}'+'/print_by_sup?tgl1='+tgl1+'&tgl2='+tgl2+'&sup1='+sup1+'&sup2='+sup2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
+                url = '{{ url()->current() }}'+'/print_by_sup?tgl1='+tgl1+'&tgl2='+tgl2+'&sup1='+sup1+'&sup2='+sup2+'&plu1='+plu1+'&plu2='+plu2+'&pil='+pil;
 
                 window.open(url);
             }

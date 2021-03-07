@@ -264,14 +264,27 @@
                 type: 'post',
                 data: {
                     noDoc:$('#noBTB').val(),
-                    typeTrn:typeTrn
+                    typeTrn:typeTrn,
+                    supplier : $('#namaSupplier').val()
                 }, beforeSend : () => {
-                    // $('#modal-loader').modal('show');
-                    // tableInquery.clear();
+                    $('#modal-loader').modal('show');
                 },
                 success: function (result) {
-                    console.log(result);
-                    alert(result)
+                    $('#modal-loader').modal('hide');
+                    tableInquery.clear().draw();
+                    $('#noBTB').val('');
+                    $('#namaSupplier').val('');
+                    $('#grantTotal').val('');
+
+                    if (result.kode == 1){
+                        swal('Success', result.msg, 'success');
+                    } else {
+                        swal('Warning', result.msg, 'warning');
+                    }
+
+                    $.getJSON("https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=3671", function (result) {
+                        console.log(result)
+                    })
 
                 }, error: function (err) {
                     $('#modal-loader').modal('hide');

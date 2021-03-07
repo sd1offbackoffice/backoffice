@@ -96,7 +96,7 @@ $datetime->setTimezone($timezone);
             @endphp
         @endforeach
         <tr>
-            <td class="border-top left" colspan="5">SUBTOTAL TANGGAL {{ $d->msth_tgldoc }}</td>
+            <td class="border-top left" colspan="5">SUBTOTAL TANGGAL {{ $temp }}</td>
             <td class="border-top right">{{ number_format(round($subtotal), 0, '.', ',') }}</td>
             <td class="border-top right">{{ number_format(round($subppn), 0, '.', ',') }}</td>
             <td class="border-top" colspan="2"></td>

@@ -221,71 +221,7 @@
 
     });
 
-    $.ajax({
-        dataType: 'JSON',
-        type: 'POST',
-        url: 'https://hrindomaret.com/api/covidform/insert',
-        data: {
-        nama: "DENNI AFREDO SURYONO HARTANU",
-        nik: "2015133629",
-        nohp: "089653485351",
-        namaatasan: "ANDY JAYA",
-        nikatasan: "2007004011",
-        nohpatasan: "087878300086",
-        param1: "TIDAK",
-        ketparam1: "",
-        param2: "TIDAK",
-        ketparam2: "",
-        param3: "TIDAK",
-        ketparam3: "",
-        param4: "TIDAK",
-        param41: "TIDAK",
-        param42: "",
-        param43: "",
-        param44: "",
-        param45: "",
-        param46: "",
-        param47: "",
-        param471:"",
-        param472:"",
-        param48: "",
-        param51: "TIDAK",
-        param52: "TIDAK",
-        param53: "TIDAK",
-        param54: "TIDAK",
-        param55: "TIDAK",
-        param56: "TIDAK",
-        param57: "TIDAK",
-        param58: "TIDAK",
-        param59: "TIDAK",
-        param510: "TIDAK",
-        param511: "TIDAK",
-        param512: "TIDAK",
-        param513: "TIDAK",
-        param514: "TIDAK",
-        param515: "TIDAK",
-        ketparam515: "",
-        param516: "TIDAK",
-        param517: "TIDAK",
-        param6: "TIDAK",
-        param7: "",
-        param711: "",
-        param712: "",
-        param72: "",
-        param73: "",
-        param8: "",
-        ketparam8: "",
-        },
-        beforeSend: function () {
-            console.log('assestment hehe');
-        },
-        success: function (response) {
-            console.log(response);
-        },
-        error: function (response) {
-            console.log(response);
-        }
-    });
+
 
 
 </script>
