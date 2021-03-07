@@ -49,7 +49,7 @@ class CetakRegisterController extends Controller
             case 'F2' : return $this->regbtlbapb($tgl1, $tgl2);break;
             case 'L' : return $this->regterima($register, $tgl1, $tgl2);break;
             case 'B2' : return $this->regbtltrm($jenis, $tgl1, $tgl2);break;
-            case 'K2' : break;
+            case 'K2' : return $this->regbtlnpb($tgl1, $tgl2);
             case 'X1' : break;
             case 'I' : break;
             case 'I2' : break;
@@ -808,15 +808,15 @@ ORDER BY MSTH_NODOC");
         return $dompdf->stream('Register Pembatalan BAPB'.$tgl1.' - '.$tgl2.'.pdf');
     }
 
-    function regbtltrm($tgl1, $tgl2, $jenis){
+    function regbtltrm($jenis, $tgl1, $tgl2){
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_tgldoc, mstd_nodoc, mstd_tgldoc, mstd_cterm, jtempo,
-        status, supplier,prs_namaperusahaan, prs_namacabang,
+        $data = DB::select("select to_char(mstd_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc, 'dd/mm/yyyy') mstd_tgldoc, mstd_cterm, to_char(jtempo, 'dd/mm/yyyy') jtempo,
+        status, supplier,
         sum(gross) gross, sum(potongan) potongan, sum(ppn) ppn,
         sum(bm) bm, sum(btl) btl, sum(total) total, sum(gross_bkp) grossbkp,
         sum(gross_btkp) grossbtkp, sum(pot_bkp) potbkp, sum(pot_btkp) potbtkp,
@@ -857,9 +857,8 @@ ORDER BY MSTH_NODOC");
             mstd_gross gross, mstd_discrph potongan, mstd_ppnrph ppn,
             mstd_ppnbmrph bm, mstd_ppnbtlrph btl,
             mstd_gross - mstd_discrph + mstd_ppnrph  + mstd_ppnbmrph + mstd_ppnbtlrph total,
-            sup_kodesupplier||'-'||sup_namasupplier supplier,
-            prs_namaperusahaan, prs_namacabang
-            from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_perusahaan
+            sup_kodesupplier||'-'||sup_namasupplier supplier
+            from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier
             where msth_kodeigr = '".$_SESSION['kdigr']."'
             and msth_typetrn = '".$jenis."'
             and nvl(msth_recordid,'9') = '1'
@@ -868,16 +867,93 @@ ORDER BY MSTH_NODOC");
             and mstd_kodeigr = msth_kodeigr
             and mstd_typetrn = msth_typetrn
             and sup_kodesupplier(+) = msth_kodesupplier
-            and sup_kodeigr(+) = msth_kodeigr
-            and prs_kodeigr = msth_kodeigr)
+            and sup_kodeigr(+) = msth_kodeigr)
         group by msth_tgldoc, mstd_nodoc, mstd_tgldoc, mstd_cterm, jtempo,
-                status, supplier, prs_namaperusahaan, prs_namacabang");
+                status, supplier
+        order by mstd_nodoc asc");
 
-        dd($data);
+//        dd($data);
+
+        $pkp = new \stdClass();
+        $pkp->gross = 0;
+        $pkp->potongan = 0;
+        $pkp->ppn = 0;
+        $pkp->ppnbm = 0;
+        $pkp->botol = 0;
+        $pkp->total = 0;
+
+        $npkp = new \stdClass();
+        $npkp->gross = 0;
+        $npkp->potongan = 0;
+        $npkp->ppn = 0;
+        $npkp->ppnbm = 0;
+        $npkp->botol = 0;
+        $npkp->total = 0;
+
+        $pembelian  = new \stdClass();
+        $pembelian->gross = 0;
+        $pembelian->potongan = 0;
+        $pembelian->ppn = 0;
+        $pembelian->ppnbm = 0;
+        $pembelian->botol = 0;
+        $pembelian->total = 0;
+
+        $lain = new \stdClass();
+        $lain->gross = 0;
+        $lain->potongan = 0;
+        $lain->ppn = 0;
+        $lain->ppnbm = 0;
+        $lain->botol = 0;
+        $lain->total = 0;
+
+        $total = new \stdClass();
+        $total->gross = 0;
+        $total->potongan = 0;
+        $total->ppn = 0;
+        $total->ppnbm = 0;
+        $total->botol = 0;
+        $total->total = 0;
+
+        foreach($data as $d){
+            $pkp->gross += $d->grossbkp;
+            $pkp->potongan += $d->potbkp;
+            $pkp->ppn += $d->ppnbkp;
+            $pkp->ppnbm += $d->bmbkp;
+            $pkp->botol += $d->btlbkp;
+            $pkp->total += $d->totalbkp;
+
+            $npkp->gross += $d->grossbtkp;
+            $npkp->potongan += $d->potbtkp;
+            $npkp->ppn += $d->ppnbtkp;
+            $npkp->ppnbm += $d->bmbtkp;
+            $npkp->botol += $d->btlbtkp;
+            $npkp->total += $d->totalbtkp;
+
+            $pembelian->gross += $d->beligross;
+            $pembelian->potongan += $d->belipot;
+            $pembelian->ppn += $d->belippn;
+            $pembelian->ppnbm += $d->belibm;
+            $pembelian->botol += $d->belibtl;
+            $pembelian->total += $d->belitotal;
+
+            $lain->gross += $d->laingross;
+            $lain->potongan += $d->lainpot;
+            $lain->ppn += $d->lainppn;
+            $lain->ppnbm += $d->lainbm;
+            $lain->botol += $d->lainbtl;
+            $lain->total += $d->laintotal;
+        }
+
+        $total->gross = $pkp->gross + $npkp->gross;
+        $total->potongan = $pkp->potongan + $npkp->potongan;
+        $total->ppn = $pkp->ppn + $npkp->ppn;
+        $total->ppnbm = $pkp->ppnbm + $npkp->ppnbm;
+        $total->botol = $pkp->botol + $npkp->botol;
+        $total->total = $pkp->total + $npkp->total;
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlbapb-pdf',compact(['perusahaan','data','tgl1','tgl2']));
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtltrm-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -889,7 +965,106 @@ ORDER BY MSTH_NODOC");
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Register Pembatalan BAPB'.$tgl1.' - '.$tgl2.'.pdf');
+        return $dompdf->stream('Register Bukti Pembatalan Penerimaan Barang'.$tgl1.' - '.$tgl2.'.pdf');
+    }
+
+    function regbtlnpb($tgl1, $tgl2){
+        $t1 = $this->formatDate($tgl1);
+        $t2 = $this->formatDate($tgl2);
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,supplier, mstd_docno2, to_char(mstd_date2, 'dd/mm/yyyy') mstd_date2, msth_nopo, msth_tglpo,mstd_tgldoc,status, prs_namaperusahaan, prs_namacabang, sup_pkp,
+        SUM(mstd_gross) mstd_gross, SUM(mstd_ppnrph) mstd_ppnrph, SUM(mstd_discrph) mstd_discrph
+        from (select msth_nodoc, msth_tgldoc, msth_kodesupplier||'-'||sup_namasupplier SUPPLIER,
+                case when mstd_docno2 is null then '' else prs_kodemto||'.0'||mstd_docno2 end  mstd_docno2, mstd_date2, mstd_gross, mstd_ppnrph,   mstd_discrph, mstd_tgldoc, msth_nopo, msth_tglpo,
+                case when nvl(mstd_recordid,'9') = '1' then 'BATAL' else '' end status,
+                prs_namaperusahaan, prs_namacabang, nvl(sup_pkp,'N') sup_pkp
+                from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_perusahaan
+                where msth_kodeigr='".$_SESSION['kdigr']."'
+                and msth_typetrn='K'
+                and NVL(msth_recordid,'0') = '1'
+                and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
+                and mstd_nodoc=msth_nodoc
+                and mstd_kodeigr=msth_kodeigr
+                and sup_kodesupplier = msth_kodesupplier
+                and sup_kodeigr=msth_kodeigr
+                and prs_kodeigr=msth_kodeigr)
+        group by msth_nodoc, msth_tgldoc,supplier, mstd_docno2, mstd_date2,msth_nopo, msth_tglpo,
+        mstd_tgldoc,status, prs_namaperusahaan, prs_namacabang, sup_pkp
+        order by msth_nodoc");
+
+
+//        dd($data);
+
+        $pkp = new \stdClass();
+        $pkp->gross = 0;
+        $pkp->potongan = 0;
+        $pkp->ppn = 0;
+        $pkp->total = 0;
+
+        $npkp = new \stdClass();
+        $npkp->gross = 0;
+        $npkp->potongan = 0;
+        $npkp->ppn = 0;
+        $npkp->total = 0;
+
+        $pembelian  = new \stdClass();
+        $pembelian->gross = 0;
+        $pembelian->potongan = 0;
+        $pembelian->ppn = 0;
+        $pembelian->total = 0;
+
+        $lain = new \stdClass();
+        $lain->gross = 0;
+        $lain->potongan = 0;
+        $lain->ppn = 0;
+        $lain->total = 0;
+
+        $total = new \stdClass();
+        $total->gross = 0;
+        $total->potongan = 0;
+        $total->ppn = 0;
+        $total->total = 0;
+
+        foreach($data as $d){
+            if($d->sup_pkp == 'Y'){
+                $pkp->gross += $d->mstd_gross;
+                $pkp->potongan += $d->mstd_discrph;
+                $pkp->ppn += $d->mstd_ppnrph;
+                $pkp->total += $d->mstd_gross + $d->mstd_ppnrph - $d->mstd_discrph;
+            }
+            else{
+                $npkp->gross += $d->mstd_gross;
+                $npkp->potongan += $d->mstd_discrph;
+                $npkp->ppn += $d->mstd_ppnrph;
+                $npkp->total += $d->mstd_gross + $d->mstd_ppnrph - $d->mstd_discrph;
+            }
+        }
+
+        $total->gross = $pkp->gross + $npkp->gross;
+        $total->potongan = $pkp->potongan + $npkp->potongan;
+        $total->ppn = $pkp->ppn + $npkp->ppn;
+        $total->total = $pkp->total + $npkp->total;
+
+        $pembelian = $total;
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlnpb-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Register Pembatalan Pengeluaran Barang'.$tgl1.' - '.$tgl2.'.pdf');
     }
 
     function formatDate($date){
