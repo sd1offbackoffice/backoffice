@@ -54,7 +54,7 @@
                                     <label class="col-sm-3 text-right col-form-label">Cabang</label>
                                     <div class="col-sm-9">
                                         <select id="cabang" class="form-control">
-                                            <option value="" selected>SEMUA CABANG</option>
+{{--                                            <option value="" selected>SEMUA CABANG</option>--}}
                                             @foreach($cabang as $c)
                                                 <option value="{{ $c->cab_kodecabang }}">{{ $c->cab_kodecabang }} - {{ $c->cab_namacabang }}</option>
                                             @endforeach
@@ -129,7 +129,7 @@
         });
 
         $('#register').on('change',function(){
-            if($(this).val() == 'O'){
+            if($(this).val() == 'O' || $(this).val() == 'I' || $(this).val() == 'I2' || $(this).val() == 'O2'){
                 $('#field_cabang').show();
             }
             else $('#field_cabang').hide();
@@ -152,7 +152,7 @@
                     dangerMode: true
                 }).then((ok) => {
                     if(ok){
-                        if($.inArray($('#register').val(), ['K','X']) > -1){
+                        if($.inArray($('#register').val(), ['K','X','X1']) > -1){
                             swal({
                                 title: 'Pilih ukuran cetakan',
                                 icon: 'warning',
@@ -170,7 +170,7 @@
                                 dangerMode: true
                             }).then((ukuran) => {
                                 if(ukuran){
-                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&ukuran=${ukuran}`,'_blank');
+                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&ukuran=${ukuran}${cab}`,'_blank');
                                 }
                             });
                         }
@@ -192,7 +192,7 @@
                                 dangerMode: true
                             }).then((jenis) => {
                                 if(jenis){
-                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&jenis=${jenis}`,'_blank');
+                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&jenis=${jenis}${cab}`,'_blank');
                                 }
                             });
                         }

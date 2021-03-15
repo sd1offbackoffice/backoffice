@@ -281,11 +281,6 @@
                     } else {
                         swal('Warning', result.msg, 'warning');
                     }
-
-                    $.getJSON("https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=3671", function (result) {
-                        console.log(result)
-                    })
-
                 }, error: function (err) {
                     $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0,100));

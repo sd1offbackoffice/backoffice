@@ -402,6 +402,7 @@ class repackController extends Controller
 
         $flagdoc = DB::table('tbTr_BackOffice')
             ->selectRaw("trbo_flagdoc")
+            ->selectRaw("trbo_nonota")
             ->where("trbo_kodeigr",'=',$kodeigr)
             ->where("trbo_nodoc",'=',$noDoc)
             ->orderBy('TRBO_SEQNO')
@@ -412,22 +413,24 @@ class repackController extends Controller
         }else{
             $RePrint = 'Re-Print';
         }
+        $nodocPrint = $flagdoc->trbo_nonota;
+        dd($nodocPrint);
 
-        $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1, 
+        $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
               ( MSTD_GROSS + nvl(MSTD_PPNRPH,0) + nvl(MSTD_PPNBMRPH,0) + nvl(MSTD_PPNBTLRPH,0) ) AS TOTAL,
               FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS,
-              CASE WHEN MSTD_FLAGDISC1 = 'P' THEN '### BARANG BELUM DIOLAH ###' ELSE '### BARANG SUDAH DIOLAH ###' END AS JUDUL, 
+              CASE WHEN MSTD_FLAGDISC1 = 'P' THEN '### BARANG BELUM DIOLAH ###' ELSE '### BARANG SUDAH DIOLAH ###' END AS JUDUL,
               PRD_DESKRIPSIPANJANG,PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_ALAMAT1, PRS_NAMAWILAYAH, PRS_NPWP, PRS_TELEPON
 FROM TBTR_MSTRAN_H,  TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-WHERE MSTH_KODEIGR = '$kodeigr' 
-               AND MSTH_NODOC IN '$noDoc' AND MSTH_TYPETRN = 'P'
+WHERE MSTH_KODEIGR = '$kodeigr'
+               AND MSTH_NODOC IN '$nodocPrint' AND MSTH_TYPETRN = 'P'
                AND MSTD_KODEIGR = MSTH_KODEIGR  AND MSTD_NODOC = MSTH_NODOC
                AND PRD_KODEIGR = MSTH_KODEIGR AND PRD_PRDCD = MSTD_PRDCD
                AND PRS_KODEIGR = MSTH_KODEIGR
 ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 ");
-        dd($datas);
+        //dd($datas);
 
                 //-------------------------PRINT-----------------------------
         $pdf = PDF::loadview('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
@@ -474,7 +477,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 ->orderBy('TRBO_SEQNO')
                 ->get();
 
-            if($datas[0]->trbo_flagdoc == '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
+            if($datas[0]->trbo_flagdoc != '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
                 $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr',
@@ -485,6 +488,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             TRUE); END;");
                 oci_bind_by_name($query, ':ret', $v_nodoc, 32);
                 oci_execute($query);
+
 
                 $nodocprint = $v_nodoc;
 
@@ -1228,6 +1232,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                     }
                 }
                 //--** update data tbTr_BackOffice
+                dd($v_nodoc);
                 DB::table("tbtr_backoffice")
                     ->where('trbo_nodoc','=',$nomorTrn)
                     ->where('trbo_typetrn','=','P')

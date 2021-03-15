@@ -196,8 +196,8 @@ $datetime->setTimezone($timezone);
         size: 595pt 442pt;
         @else
         size: 595pt 842pt;
-    @endif
-}
+        @endif
+    }
     header {
         position: fixed;
         top: 0cm;

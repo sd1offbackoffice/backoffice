@@ -198,7 +198,7 @@
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/inquery/index")}}">Inquery BPB</a></li>
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/pembatalan/index")}}">Pembatalan BPB</a></li>
-                                                <li><a href="{{url("/bo/transaksi/penerimaan/printBPB/index")}}">Cetak BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/printbpb/index")}}">Cetak BPB</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -220,6 +220,8 @@
                                        aria-expanded="false">Laporan-Laporan</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="{{url("/bo/laporan/daftar-pembelian")}}">Laporan Daftar Pembelian</a></li>
+                                        <li><a href="{{url("/bo/laporan/daftar-retur-pembelian")}}">Laporan Daftar Retur Pembelian</a></li>
+                                        <li><a href="{{url("/bo/laporan/daftar-pemusnahan-barang")}}">Laporan Daftar Pemusnahan Barang</a></li>
                                         <li><a href="{{url("/bo/laporan/penyesuaian")}}">Laporan Penyesuaian Persediaan</a></li>
                                         <li><a href="{{url("/bo/laporan/pengiriman")}}">Laporan Daftar Pengiriman Antar Cabang</a></li>
                                         <li><a href="{{url("/bo/laporan/penerimaan")}}">Laporan Daftar Penerimaan Antar Cabang</a></li>
@@ -246,6 +248,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="{{url("/bo/cetak-register")}}">Cetak Register</a></li>
+                                <li><a href="{{url("/bo/pb-gudang-pusat")}}">PB Gudang Pusat</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">

@@ -35,25 +35,25 @@ class CetakRegisterController extends Controller
         $jenis = $request->jenis;
 
         switch ($register){
-            case 'B' : return $this->regterima($register, $tgl1, $tgl2);break;
-            case 'K' : return $this->regkeluar($ukuran, $register, $tgl1, $tgl2);break;
-            case 'O' : return $this->regsj($cabang, $tgl1, $tgl2);break;
-            case 'P' : return $this->regpack($tgl1, $tgl2);break;
-            case 'Z1' : return $this->regdbr($register, $tgl1, $tgl2);break;
-            case 'Z2' : return $this->regdbr($register, $tgl1, $tgl2);break;
-            case 'Z3' : return $this->regdbr($register, $tgl1, $tgl2);break;
-            case 'X' : return $this->regnpp($ukuran, $tgl1, $tgl2);break;
-            case 'F' : return $this->regbamusnah($tgl1, $tgl2);break;
-            case 'H' : return $this->regnbh($tgl1, $tgl2);break;
-            case 'H1' : return $this->regbtlnbh($tgl1, $tgl2);break;
-            case 'F2' : return $this->regbtlbapb($tgl1, $tgl2);break;
-            case 'L' : return $this->regterima($register, $tgl1, $tgl2);break;
-            case 'B2' : return $this->regbtltrm($jenis, $tgl1, $tgl2);break;
+            case 'B' : return $this->regterima($register, $tgl1, $tgl2);
+            case 'K' : return $this->regkeluar($ukuran, $register, $tgl1, $tgl2);
+            case 'O' : return $this->regsj($cabang, $tgl1, $tgl2);
+            case 'P' : return $this->regpack($tgl1, $tgl2);
+            case 'Z1' : return $this->regdbr($register, $tgl1, $tgl2);
+            case 'Z2' : return $this->regdbr($register, $tgl1, $tgl2);
+            case 'Z3' : return $this->regdbr($register, $tgl1, $tgl2);
+            case 'X' : return $this->regnpp($ukuran, $tgl1, $tgl2);
+            case 'F' : return $this->regbamusnah($tgl1, $tgl2);
+            case 'H' : return $this->regnbh($tgl1, $tgl2);
+            case 'H1' : return $this->regbtlnbh($tgl1, $tgl2);
+            case 'F2' : return $this->regbtlbapb($tgl1, $tgl2);
+            case 'L' : return $this->regterima($register, $tgl1, $tgl2);
+            case 'B2' : return $this->regbtltrm($jenis, $tgl1, $tgl2);
             case 'K2' : return $this->regbtlnpb($tgl1, $tgl2);
-            case 'X1' : break;
-            case 'I' : break;
-            case 'I2' : break;
-            case 'O2' : break;
+            case 'X1' : return $this->regbtlmpp($ukuran, $tgl1, $tgl2);
+            case 'I' : return $this->regtrfcab($cabang, $tgl1, $tgl2);
+            case 'I2' : return $this->regtrfcabbtl($cabang, $tgl1, $tgl2);
+            case 'O2' : return $this->regbtlsj($cabang, $tgl1, $tgl2);
         }
     }
 
@@ -712,7 +712,7 @@ ORDER BY MSTH_NODOC");
         return $dompdf->stream($filename.$tgl1.' - '.$tgl2.'.pdf');
     }
 
-    function regbtlnbh($tgl1, $tgl2){
+    public function regbtlnbh($tgl1, $tgl2){
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
@@ -764,7 +764,7 @@ ORDER BY MSTH_NODOC");
         return $dompdf->stream($filename.$tgl1.' - '.$tgl2.'.pdf');
     }
 
-    function regbtlbapb($tgl1, $tgl2){
+    public function regbtlbapb($tgl1, $tgl2){
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
@@ -808,7 +808,7 @@ ORDER BY MSTH_NODOC");
         return $dompdf->stream('Register Pembatalan BAPB'.$tgl1.' - '.$tgl2.'.pdf');
     }
 
-    function regbtltrm($jenis, $tgl1, $tgl2){
+    public function regbtltrm($jenis, $tgl1, $tgl2){
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
@@ -968,7 +968,7 @@ ORDER BY MSTH_NODOC");
         return $dompdf->stream('Register Bukti Pembatalan Penerimaan Barang'.$tgl1.' - '.$tgl2.'.pdf');
     }
 
-    function regbtlnpb($tgl1, $tgl2){
+    public function regbtlnpb($tgl1, $tgl2){
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
@@ -1065,6 +1065,245 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf;
 
         return $dompdf->stream('Register Pembatalan Pengeluaran Barang'.$tgl1.' - '.$tgl2.'.pdf');
+    }
+
+    public function regbtlmpp($ukuran, $tgl1, $tgl2){
+        $t1 = $this->formatDate($tgl1);
+        $t2 = $this->formatDate($tgl2);
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
+                    status, msth_nopo, to_char(msth_tglpo, 'dd/mm/yyyy') msth_tglpo,
+                    mstd_tgldoc, mstd_flagdisc1,mstd_ppnrph,
+                    sbrg, keterangan, mstd_flagdisc1,
+                    sum(total) total
+                    from
+                    (
+                        select msth_nodoc, msth_tgldoc,
+                        case when msth_recordid = 1 then
+                            'BATAL'
+                        else
+                            ''
+                        end status,msth_nopo, msth_tglpo, mstd_tgldoc,
+                         msth_invno, mstd_flagdisc1, nvl(mstd_ppnrph,0) mstd_ppnrph,
+                         case when mstd_flagdisc2 = '1' then
+                                 'BAIK'
+                             when mstd_flagdisc2 = '2' then
+                                 'RETUR'
+                         else
+                                 'RUSAK'
+                         end SBRG,
+                         case when mstd_flagdisc1= '1' then
+                                 'SELISIH STOK OPNAME'
+                             when mstd_flagdisc1 = '2' then
+                                 'TERTUKAR JENIS'
+                         else
+                                 'GANTI PLU'
+                         end KETERANGAN,
+                        nvl(mstd_gross,0) total
+                        from tbtr_mstran_h, tbtr_mstran_d
+                        where msth_typetrn ='X'
+                        and msth_recordid = '1'
+                        and msth_kodeigr='".$_SESSION['kdigr']."'
+                        and mstd_nodoc=msth_nodoc
+                        and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
+                    )
+                    group by msth_nodoc, msth_tgldoc,status,msth_invno, msth_nopo, msth_tglpo,
+                     mstd_flagdisc1,mstd_ppnrph, sbrg, keterangan, mstd_tgldoc
+                    order by msth_nodoc");
+
+//        dd($data);
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlmpp-pdf',compact(['perusahaan','data','tgl1','tgl2','ukuran']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Register Memo Penyesuaian Persediaa '.$tgl1.' - '.$tgl2.'.pdf');
+    }
+
+    public function regtrfcab($cabang, $tgl1, $tgl2){
+        $t1 = $this->formatDate($tgl1);
+        $t2 = $this->formatDate($tgl2);
+
+        $title = 'Register Transfer Antar Cabang';
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
+                status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
+                mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph,prs_namaperusahaan, prs_namacabang,
+                title, sum(total) total
+                from
+                (
+                        select msth_nodoc, msth_tgldoc,
+                        case when msth_recordid = 1 then
+                            'BATAL'
+                        else
+                            ''
+                        end status, msth_nopo msth_noref3, msth_tglpo msth_tgref3, mstd_tgldoc,
+                         prs_namaperusahaan, prs_namacabang, msth_invno,  mstd_loc2,
+                         mstd_flagdisc1, nvl(mstd_ppnrph,0) mstd_ppnrph,
+                         case when mstd_flagdisc1 = 'B' and mstd_flagdisc1 = 'T' then
+                                 '** REGISTER DAFTAR BARANG BAIK KE RETUR **'
+                             when mstd_flagdisc1 = 'B' and mstd_flagdisc1 = 'R' then
+                                 '** REGISTER DAFTAR BARANG BAIK KE RUSAK **'
+                         else
+                                  '** REGISTER BUKTI PERUBAHAN STATUS **'
+                         end title,
+                        nvl(mstd_gross,0) total
+                        from tbtr_mstran_h, tbtr_mstran_d,tbmaster_perusahaan
+                        where msth_typetrn ='I'
+                        and msth_kodeigr= '".$_SESSION['kdigr']."'
+                        and mstd_nodoc=msth_nodoc
+                        and prs_kodeigr=msth_kodeigr
+                       and nvl(mstd_loc2,'999')  = nvl('".$cabang."',mstd_loc2)
+                        and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
+                )
+                group by msth_nodoc, msth_tgldoc,status,msth_invno, msth_noref3, msth_tgref3, mstd_loc2,
+                     mstd_flagdisc1,mstd_ppnrph,prs_namaperusahaan, prs_namacabang, title, mstd_tgldoc
+                ORDER BY MSTH_TGLDOC, MSTH_NODOC");
+
+//        dd($data);
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream($title.' '.$tgl1.' - '.$tgl2.'.pdf');
+    }
+
+    public function regtrfcabbtl($cabang, $tgl1, $tgl2){
+        $t1 = $this->formatDate($tgl1);
+        $t2 = $this->formatDate($tgl2);
+
+        $title = 'Register Pembatalan Transfer Antar Cabang';
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3, mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph, title, sum(total) total
+        from
+        (
+                select msth_nodoc, msth_tgldoc,
+                case when msth_recordid = 1 then
+                    'BATAL'
+                else
+                    ''
+                end status, msth_nopo msth_noref3, msth_tglpo msth_tgref3, mstd_tgldoc,
+                 msth_invno,  mstd_loc2,
+                 mstd_flagdisc1, nvl(mstd_ppnrph,0) mstd_ppnrph,
+                 case when mstd_flagdisc1 = 'B' and mstd_flagdisc1 = 'T' then
+                         '** REGISTER DAFTAR BARANG BAIK KE RETUR **'
+                     when mstd_flagdisc1 = 'B' and mstd_flagdisc1 = 'R' then
+                         '** REGISTER DAFTAR BARANG BAIK KE RUSAK **'
+                 else
+                          '** REGISTER BUKTI PERUBAHAN STATUS **'
+                 end title,
+                nvl(mstd_gross,0) total
+                from tbtr_mstran_h, tbtr_mstran_d
+                where msth_typetrn ='I'
+                and nvl(mstd_recordid,'9')='1'
+                and msth_kodeigr= '".$_SESSION['kdigr']."'
+                and mstd_nodoc=msth_nodoc
+               and nvl(mstd_loc2,'999') = nvl('".$cabang."',mstd_loc2)
+               and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
+        )
+        group by msth_nodoc, msth_tgldoc,status,msth_invno, msth_noref3, msth_tgref3, mstd_loc2,
+             mstd_flagdisc1,mstd_ppnrph,title, mstd_tgldoc
+        ORDER BY MSTH_TGLDOC, MSTH_NODOC");
+
+//        dd($data);
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream($title.' '.$tgl1.' - '.$tgl2.'.pdf');
+    }
+
+    public function regbtlsj($cabang, $tgl1, $tgl2){
+        $t1 = $this->formatDate($tgl1);
+        $t2 = $this->formatDate($tgl2);
+
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
+        mstd_tgldoc,msth_loc2, mstd_flagdisc1,mstd_ppnrph,
+        sum(total) total
+        from
+        (
+            select msth_nodoc, msth_tgldoc, msth_loc2,
+            case when msth_recordid = '1' then
+                'BATAL'
+            else
+                ''
+            end status,msth_noref3, msth_tgref3, mstd_tgldoc,
+             msth_invno, mstd_date3,
+             mstd_flagdisc1, nvl(mstd_ppnrph,0) mstd_ppnrph,
+            nvl(mstd_gross,0) total
+            from tbtr_mstran_h, tbtr_mstran_d
+            where msth_typetrn ='O'
+            and msth_kodeigr='".$_SESSION['kdigr']."'
+            and mstd_nodoc=msth_nodoc
+            and (msth_loc2 ='".$cabang."'  or nvl('".$cabang."',' ')=' ')
+            and nvl(msth_recordid,'0')='1'
+          and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
+        )
+        group by msth_nodoc, msth_tgldoc,status,msth_invno, mstd_date3,msth_noref3, msth_tgref3,msth_loc2,
+         mstd_flagdisc1,mstd_ppnrph,mstd_tgldoc
+         order by msth_nodoc");
+
+//        dd($data);
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlsj-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Register Pembatalan Surat Jalan '.$tgl1.' - '.$tgl2.'.pdf');
     }
 
     function formatDate($date){

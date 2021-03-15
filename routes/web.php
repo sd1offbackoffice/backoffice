@@ -391,6 +391,25 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak','BACKOFFICE\LAPORAN\DaftarPembelianController@cetak');
             });
 
+            Route::prefix('/daftar-retur-pembelian')->group(function(){
+                Route::get('/','BACKOFFICE\LAPORAN\DaftarReturPembelianController@index');
+                Route::get('/get-data-lov-div','BACKOFFICE\LAPORAN\DaftarReturPembelianController@getDataLovDiv');
+                Route::get('/get-data-lov-dep','BACKOFFICE\LAPORAN\DaftarReturPembelianController@getDataLovDep');
+                Route::get('/get-data-lov-kat','BACKOFFICE\LAPORAN\DaftarReturPembelianController@getDataLovKat');
+                Route::get('/get-data-lov-mtr','BACKOFFICE\LAPORAN\DaftarReturPembelianController@getDataLovMtr');
+                Route::get('/get-data-lov-sup','BACKOFFICE\LAPORAN\DaftarReturPembelianController@getDataLovSup');
+                Route::get('/cetak','BACKOFFICE\LAPORAN\DaftarReturPembelianController@cetak');
+            });
+
+            Route::prefix('/daftar-pemusnahan-barang')->group(function(){
+                Route::get('/','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@index');
+                Route::get('/get-data-lov-div','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@getDataLovDiv');
+                Route::get('/get-data-lov-dep','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@getDataLovDep');
+                Route::get('/get-data-lov-kat','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@getDataLovKat');
+                Route::get('/get-data-lov-mtr','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@getDataLovMtr');
+                Route::get('/get-data-lov-sup','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@getDataLovSup');
+                Route::get('/cetak','BACKOFFICE\LAPORAN\DaftarPemusnahanBarangController@cetak');
+            });
 
             Route::prefix('/penyesuaian')->group(function(){
                 Route::get('/','BACKOFFICE\LAPORAN\PenyesuaianController@index');
@@ -466,6 +485,14 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/cetak-register')->group(function(){
             Route::get('/','BACKOFFICE\CETAKREGISTER\CetakRegisterController@index');
             Route::get('/print','BACKOFFICE\CETAKREGISTER\CetakRegisterController@print');
+        });
+
+        Route::prefix('/pb-gudang-pusat')->group(function(){
+            Route::get('/','BACKOFFICE\PBGudangPusatController@index');
+            Route::get('/get-lov-prdcd','BACKOFFICE\PBGudangPusatController@getLovPrdcd');
+            Route::get('/get-lov-divisi','BACKOFFICE\PBGudangPusatController@getLovDivisi');
+            Route::get('/get-lov-departement','BACKOFFICE\PBGudangPusatController@getLovDepartement');
+            Route::get('/get-lov-kategori','BACKOFFICE\PBGudangPusatController@getLovKategori');
         });
     });
 });
@@ -667,7 +694,10 @@ Route::post('/bo/transaksi/penerimaan/pembatalan/batalbpb',                 'BAC
 
 
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-CETAK BPB
-Route::get('/bo/transaksi/penerimaan/printBPB/index',                       'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
+Route::get('/bo/transaksi/penerimaan/printbpb/index',                       'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/printbpb/viewdata',                   'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewData')->middleware('CheckLogin');
+Route::post('/bo/transaksi/penerimaan/printbpb/cetakdata',                  'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@cetakData')->middleware('CheckLogin');
+Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{report}/{noDoc}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
 
 
 
