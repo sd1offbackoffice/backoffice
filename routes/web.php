@@ -493,6 +493,42 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-divisi','BACKOFFICE\PBGudangPusatController@getLovDivisi');
             Route::get('/get-lov-departement','BACKOFFICE\PBGudangPusatController@getLovDepartement');
             Route::get('/get-lov-kategori','BACKOFFICE\PBGudangPusatController@getLovKategori');
+            Route::post('/proses','BACKOFFICE\PBGudangPusatController@proses');
+        });
+
+        Route::prefix('/scan-barcode-igr')->group(function(){
+            Route::get('/','BACKOFFICE\ScanBarcodeIgrController@index');
+            Route::get('/detail','BACKOFFICE\ScanBarcodeIgrController@detail');
+        });
+
+        Route::prefix('/input-pertemanan')->group(function(){
+            Route::get('/','BACKOFFICE\InputPertemananController@index');
+            Route::get('/get-lov-prdcd','BACKOFFICE\InputPertemananController@getLovPrdcd');
+            Route::get('/get-data','BACKOFFICE\InputPertemananController@getData');
+            Route::post('/delete-plano','BACKOFFICE\InputPertemananController@deletePlano');
+            Route::get('/get-last-number','BACKOFFICE\InputPertemananController@getLastNumber');
+            Route::get('/get-lov-kode-rak','BACKOFFICE\InputPertemananController@getLovKodeRak');
+            Route::post('/add-plano','BACKOFFICE\InputPertemananController@addPlano');
+            Route::post('/swap-plano','BACKOFFICE\InputPertemananController@swapPlano');
+        });
+
+        Route::prefix('/kertas-kerja-status')->group(function(){
+            Route::get('/','BACKOFFICE\KertasKerjaStatusController@index');
+            Route::get('/get-lov-kode-rak','BACKOFFICE\KertasKerjaStatusController@getLovKodeRak');
+            Route::get('/print','BACKOFFICE\KertasKerjaStatusController@print');
+        });
+
+        Route::prefix('/monitoring-stok-pareto')->group(function(){
+            Route::get('/','BACKOFFICE\MonitoringStokParetoController@index');
+            Route::get('/get-lov-monitoring','BACKOFFICE\MonitoringStokParetoController@getLovMonitoring');
+            Route::get('/print-kkh','BACKOFFICE\MonitoringStokParetoController@printKKH');
+            Route::get('/print-montok','BACKOFFICE\MonitoringStokParetoController@printMontok');
+        });
+    });
+
+    Route::prefix('/btas')->group(function(){
+        Route::prefix('/sjas')->group(function(){
+            Route::get('/','BTAS\SJASController@index');
         });
     });
 });
@@ -697,7 +733,7 @@ Route::post('/bo/transaksi/penerimaan/pembatalan/batalbpb',                 'BAC
 Route::get('/bo/transaksi/penerimaan/printbpb/index',                       'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/printbpb/viewdata',                   'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewData')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/printbpb/cetakdata',                  'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@cetakData')->middleware('CheckLogin');
-Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{report}/{noDoc}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
+Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{reprint}/{report}/{noDoc}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
 
 
 
@@ -729,13 +765,20 @@ Route::get('restore/index', 'BACKOFFICE\restoreController@index')->middleware('C
 Route::post('restore/restorenow', 'BACKOFFICE\restoreController@restoreNow')->middleware('CheckLogin');
 
 //BACKOFFICE-REPACKING-REPACKING
-Route::get('transaksi/repacking/index',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@index')->middleware('CheckLogin');
-Route::post('transaksi/repacking/getNewNmrTrn',     'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getNewNmrTrn')->middleware('CheckLogin');
-Route::post('transaksi/repacking/chooseTrn',        'BACKOFFICE\TRANSAKSI\REPACKING\repackController@chooseTrn')->middleware('CheckLogin');
-Route::post('transaksi/repacking/getNmrTrn',        'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getNmrTrn')->middleware('CheckLogin');
-Route::post('transaksi/repacking/deleteTrn',        'BACKOFFICE\TRANSAKSI\REPACKING\repackController@deleteTrn')->middleware('CheckLogin');
-Route::post('transaksi/repacking/getPlu',           'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getPlu')->middleware('CheckLogin');
-Route::post('transaksi/repacking/choosePlu',        'BACKOFFICE\TRANSAKSI\REPACKING\repackController@choosePlu')->middleware('CheckLogin');
-Route::post('transaksi/repacking/saveData',         'BACKOFFICE\TRANSAKSI\REPACKING\repackController@saveData')->middleware('CheckLogin');
-Route::post('transaksi/repacking/print',            'BACKOFFICE\TRANSAKSI\REPACKING\repackController@print')->middleware('CheckLogin');
-Route::get('transaksi/repacking/printdoc/{doc}',    'BACKOFFICE\TRANSAKSI\REPACKING\repackController@printDocument')->middleware('CheckLogin');
+Route::get('transaksi/repacking/index',                  'BACKOFFICE\TRANSAKSI\REPACKING\repackController@index')->middleware('CheckLogin');
+Route::post('transaksi/repacking/getNewNmrTrn',          'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getNewNmrTrn')->middleware('CheckLogin');
+Route::post('transaksi/repacking/chooseTrn',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@chooseTrn')->middleware('CheckLogin');
+Route::post('transaksi/repacking/getNmrTrn',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getNmrTrn')->middleware('CheckLogin');
+Route::post('transaksi/repacking/deleteTrn',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@deleteTrn')->middleware('CheckLogin');
+Route::post('transaksi/repacking/getPlu',                'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getPlu')->middleware('CheckLogin');
+Route::post('transaksi/repacking/choosePlu',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@choosePlu')->middleware('CheckLogin');
+Route::post('transaksi/repacking/saveData',              'BACKOFFICE\TRANSAKSI\REPACKING\repackController@saveData')->middleware('CheckLogin');
+Route::post('transaksi/repacking/print',                 'BACKOFFICE\TRANSAKSI\REPACKING\repackController@print')->middleware('CheckLogin');
+Route::get('transaksi/repacking/printdoc/{doc}',         'BACKOFFICE\TRANSAKSI\REPACKING\repackController@printDocument')->middleware('CheckLogin');
+Route::get('transaksi/repacking/printdockecil/{doc}',    'BACKOFFICE\TRANSAKSI\REPACKING\repackController@printDocumentKecil')->middleware('CheckLogin');
+
+//BACKOFFICE-REPACKING-LAPREPACKING
+Route::get('transaksi/laprepacking/index',                          'BACKOFFICE\TRANSAKSI\REPACKING\LapRepackController@index')->middleware('CheckLogin');
+Route::post('transaksi/laprepacking/checkdata',                     'BACKOFFICE\TRANSAKSI\REPACKING\LapRepackController@CheckData')->middleware('CheckLogin');
+Route::get('transaksi/laprepacking/printdoc/{date1}/{date2}',       'BACKOFFICE\TRANSAKSI\REPACKING\LapRepackController@printDocument')->middleware('CheckLogin');
+

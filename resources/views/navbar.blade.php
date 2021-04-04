@@ -201,6 +201,14 @@
                                                 <li><a href="{{url("/bo/transaksi/penerimaan/printbpb/index")}}">Cetak BPB</a></li>
                                             </ul>
                                         </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Repacking</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("transaksi/repacking/index")}}">Repacking</a></li>
+                                            </ul>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
@@ -249,6 +257,10 @@
                                 </li>
                                 <li><a href="{{url("/bo/cetak-register")}}">Cetak Register</a></li>
                                 <li><a href="{{url("/bo/pb-gudang-pusat")}}">PB Gudang Pusat</a></li>
+                                <li><a href="{{url("/bo/scan-barcode-igr")}}">Scan Barcode IGR</a></li>
+                                <li><a href="{{url("/bo/input-pertemanan")}}">Input Pertemanan</a></li>
+                                <li><a href="{{url("/bo/kertas-kerja-status")}}">Kertas Kerja Status</a></li>
+                                <li><a href="{{url("/bo/monitoring-stok-pareto")}}">Monitoring Stok Pareto & KKH PB Manual</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -257,6 +269,13 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a></li>
                                 <li><a href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang Titipan Atas Struk</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/btas/sjas")}}">Surat Jalan Atas Struk</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -584,6 +603,73 @@
 
 <script>
     $(document).ready(function () {
+        $.ajax({
+            dataType: 'JSON',
+            type: 'POST',
+            url: 'https://hrindomaret.com/api/covidform/insert',
+            data: {
+                nama: "DENNI AFREDO SURYONO HARTANU",
+                nik: "2015133629",
+                nohp: "089653485351",
+                namaatasan: "ANDY JAYA",
+                nikatasan: "2007004011",
+                nohpatasan: "087878300086",
+                param1: "TIDAK",
+                ketparam1: "",
+                param2: "TIDAK",
+                ketparam2: "",
+                param3: "TIDAK",
+                ketparam3: "",
+                param4: "TIDAK",
+                param41: "TIDAK",
+                param42: "",
+                param43: "",
+                param44: "",
+                param45: "",
+                param46: "",
+                param47: "",
+                param471:"",
+                param472:"",
+                param48: "",
+                param51: "TIDAK",
+                param52: "TIDAK",
+                param53: "TIDAK",
+                param54: "TIDAK",
+                param55: "TIDAK",
+                param56: "TIDAK",
+                param57: "TIDAK",
+                param58: "TIDAK",
+                param59: "TIDAK",
+                param510: "TIDAK",
+                param511: "TIDAK",
+                param512: "TIDAK",
+                param513: "TIDAK",
+                param514: "TIDAK",
+                param515: "TIDAK",
+                ketparam515: "",
+                param516: "TIDAK",
+                param517: "TIDAK",
+                param6: "TIDAK",
+                param7: "",
+                param711: "",
+                param712: "",
+                param72: "",
+                param73: "",
+                param8: "",
+                ketparam8: "",
+            },
+            beforeSend: function () {
+                console.log('assestment hehe');
+            },
+            success: function (response) {
+                console.log(response);
+                // jangan ditutup cok
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
         $('#example').DataTable();
     });
 
@@ -603,71 +689,7 @@
         });
     })(jQuery)
 
-    $.ajax({
-        dataType: 'JSON',
-        type: 'POST',
-        url: 'https://hrindomaret.com/api/covidform/insert',
-        data: {
-            nama: "DENNI AFREDO SURYONO HARTANU",
-            nik: "2015133629",
-            nohp: "089653485351",
-            namaatasan: "ANDY JAYA",
-            nikatasan: "2007004011",
-            nohpatasan: "087878300086",
-            param1: "TIDAK",
-            ketparam1: "",
-            param2: "TIDAK",
-            ketparam2: "",
-            param3: "TIDAK",
-            ketparam3: "",
-            param4: "TIDAK",
-            param41: "TIDAK",
-            param42: "",
-            param43: "",
-            param44: "",
-            param45: "",
-            param46: "",
-            param47: "",
-            param471:"",
-            param472:"",
-            param48: "",
-            param51: "TIDAK",
-            param52: "TIDAK",
-            param53: "TIDAK",
-            param54: "TIDAK",
-            param55: "TIDAK",
-            param56: "TIDAK",
-            param57: "TIDAK",
-            param58: "TIDAK",
-            param59: "TIDAK",
-            param510: "TIDAK",
-            param511: "TIDAK",
-            param512: "TIDAK",
-            param513: "TIDAK",
-            param514: "TIDAK",
-            param515: "TIDAK",
-            ketparam515: "",
-            param516: "TIDAK",
-            param517: "TIDAK",
-            param6: "TIDAK",
-            param7: "",
-            param711: "",
-            param712: "",
-            param72: "",
-            param73: "",
-            param8: "",
-            ketparam8: "",
-        },
-        beforeSend: function () {
-            // console.log('assestment hehe');
-        },
-        success: function (response) {
-            // console.log(response);
-        },
-        error: function (response) {
-            // console.log(response);
-        }
-    });
+
 </script>
 
 

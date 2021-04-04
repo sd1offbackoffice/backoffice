@@ -1,3 +1,4 @@
+
 // Untuk CSRF token Ajax
 // Created By : JR(18/02/2020) | Modify By :
 function ajaxSetup(){

@@ -22,7 +22,7 @@
                                     <input type="text" class="form-control" id="tanggalTrn" placeholder="dd/mm/yyyy">
                                 </div>
                                 <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="model" style="border: 0px; font-weight: bold; width: auto">
+                                    <input type="text" disabled class="form-control" id="model" style="border: 0px;background-color: inherit; font-weight: bold; width: auto">
                                 </div>
                             </div>
                             <div class="form-group row mb-0">
@@ -294,7 +294,7 @@
         let keterangan;
         let rubahPlu;
         let group_option;
-        let trbo_flagdoc;
+        let trbo_flagdoc = '';
         let noDocPrint;
         let noUrut;
         let deskripsiPanjang = [];
@@ -837,6 +837,7 @@
                     nomorTrn:nomorTrn,
                     tanggalTrn:date,
                     keterangan:keterangan,
+                    statusPrint:trbo_flagdoc,
                     trbo_flagdisc3:trbo_flagdisc3,
                     trbo_flagdisc2:trbo_flagdisc2,
                     noreff:noReff,
@@ -848,7 +849,10 @@
                         text: 'Data telah berhasil disimpan!',
                         icon: 'success'
                     });
-                    clearForm();
+                    if(trbo_flagdoc == ''){
+                        trbo_flagdoc = '0';
+                    }
+                    //clearForm();
                 }, error: function () {
                     alert('error');
                 }
@@ -1102,6 +1106,7 @@
 
             trbo_averagecost = [];
             deskripsiPanjang = [];
+            trbo_flagdoc = '';
 
             //dropdownKecil();
         }
@@ -1163,6 +1168,7 @@
                                     $('#model').val(model);
                                     noReff = result.noReff;
                                     $('#modal-loader').modal('hide')
+                                    trbo_flagdoc = '';
                                 }, error: function () {
                                     alert('error');
                                     //$('#modal-loader').modal('hide');
@@ -1583,6 +1589,10 @@
                 if (isConfirm) {
                     let nomorTrn = $('#nomorTrn').val();
                     let keterangan = $('#keterangan').val();
+                    // >> Sepertinya ga pakai karena status print nya di flagdoc hanya sudah print atau belum, yaitu * atau 0
+                    // if(trbo_flagdoc == '0'){
+                    //     trbo_flagdoc = '1';
+                    // }
                     saveData();
                     if(true){
                         ajaxSetup();
@@ -1598,9 +1608,9 @@
                                 if($('#jenisKertas').val() == 'Biasa'){
                                     window.open('/BackOffice/public/transaksi/repacking/printdoc/'+nomorTrn+'/','_blank');
                                 }else if($('#jenisKertas').val() == 'Kecil'){
-
+                                    window.open('/BackOffice/public/transaksi/repacking/printdockecil/'+nomorTrn+'/','_blank');
                                 }
-                                //clearForm();
+                                clearForm();
                             }, error: function () {
                                 alert('error');
                             }

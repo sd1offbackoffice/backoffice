@@ -250,7 +250,7 @@
 
                     if (result.kode == 1){
                         documentTemp = document;
-                        window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+result.data+'/'+documentTemp);
+                        window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+result.data+'/'+documentTemp);
                     }
                 }, error: function (err) {
                     $('#modal-loader').modal('hide');

@@ -223,28 +223,27 @@ class repackController extends Controller
 
             $nomorTrn = $request->nomorTrn;
             $today  = date('Y-m-d H:i:s');
-            $tanggalTrn = date("Y-d-m", strtotime($request->tanggalTrn));
+            $tanggalTrn = date("Y-m-d", strtotime($request->tanggalTrn));
             $keterangan = $request->keterangan;
             $trbo_flagdisc3 = $request->trbo_flagdisc3; //ini perubahan Plu, nilainya Y atau kosong
             $trbo_flagdisc2 = $request->trbo_flagdisc2; // ini group_option pre-packing(P) atau re-packing(R)
             $noReff = $request->noReff;
             //$tglReff = date("Y-d-m", strtotime($request->tglReff));
-            //$trbo_flagdoc = $request->statusPrint; //belum tau ambil dari mana, seharusnya lihat data model untuk tau inputnya, kalau masih belum di print berarti koreksi, input kosong, kalau sudah di print kasih simbol *, dan kalau sudah print ga bisa di update
+            //$flagdoc = $request->statusPrint; //belum tau ambil dari mana, seharusnya lihat data model untuk tau inputnya, kalau masih belum di print berarti koreksi, input kosong, kalau sudah di print kasih simbol *, dan kalau sudah print ga bisa di update
             $datas = $request->datas;
-
-
 
             $check = DB::table('tbTr_BackOffice')
                 ->selectRaw("*")
                 ->where('TRBO_NODOC','=',$nomorTrn)
                 ->where('TRBO_TYPETRN','=','P')
-                ->where('ST_KODEIGR','=',$kodeigr)
+                ->where('TRBO_KODEIGR','=',$kodeigr)
                 ->first();
 
             if($check){
                 //update data
                 $crDate = $check->trbo_create_dt;
                 $creator = $check->trbo_create_by;
+                $flagdoc = $check->trbo_flagdoc;
                 DB::table('tbTr_BackOffice')
                     ->where('TRBO_NODOC','=',$nomorTrn)
                     ->where('TRBO_TYPETRN','=','P')
@@ -257,6 +256,7 @@ class repackController extends Controller
                     }else{
                         $noReff2 = $nomorTrn;
                     }
+                    //
                     DB::table('tbTr_BackOffice')
                         ->where('TRBO_NODOC','=',$nomorTrn)
                         ->where('TRBO_TYPETRN','=','P')
@@ -265,13 +265,13 @@ class repackController extends Controller
                         ->insert(['TRBO_KODEIGR' => $kodeigr, 'TRBO_TYPETRN' => 'P','TRBO_NODOC' => $nomorTrn, 'TRBO_TGLDOC' => $tanggalTrn, 'TRBO_NOREFF' => $noReff2,
                             'TRBO_TGLREFF' => $tanggalTrn, 'TRBO_SEQNO' => $i, 'TRBO_PRDCD' => $temp['plu'], 'TRBO_QTY' => $temp['qty'], 'TRBO_HRGSATUAN' => $temp['hrgsatuan'],
                             'TRBO_FLAGDISC1' => $temp['flagdisc1'], 'TRBO_FLAGDISC2' => $trbo_flagdisc2,'TRBO_FLAGDISC3' => $trbo_flagdisc3, 'TRBO_GROSS' => $temp['gross'], 'TRBO_PPNRPH' => $temp['ppn'],
-                            'TRBO_AVERAGECOST' => $temp['averagecost'], 'TRBO_KETERANGAN' => $keterangan,'TRBO_FLAGDOC' => '0', 'TRBO_CREATE_BY' => $creator, 'TRBO_CREATE_DT' => $crDate, 'TRBO_STOKQTY' => $temp['stokqty'],
+                            'TRBO_AVERAGECOST' => $temp['averagecost'], 'TRBO_KETERANGAN' => $keterangan,'TRBO_FLAGDOC' => $flagdoc, 'TRBO_CREATE_BY' => $creator, 'TRBO_CREATE_DT' => $crDate, 'TRBO_STOKQTY' => $temp['stokqty'],
                             'TRBO_MODIFY_BY' => $userid, 'TRBO_MODIFY_DT' => $today]);
                 }
             }else{
                 //create new save data
                 $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-                $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3),'.'),3),3,'0',STR_PAD_LEFT);
+                $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3),'.')+1,3),3,'0',STR_PAD_LEFT);
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PCK',
 									                       'Nomor Packing',
 				                                 '$ip'||'PC',
@@ -305,6 +305,7 @@ class repackController extends Controller
             }
             DB::commit();
         }catch(\Exception $e){
+            //dd($e);
         }
     }
 
@@ -327,7 +328,7 @@ class repackController extends Controller
                 ->selectRaw("trbo_flagdoc")
                 ->selectRaw("trbo_flagdisc1")
                 ->selectRaw("trbo_prdcd")
-                ->selectRaw("trbo_kodesupplier")
+                //->selectRaw("trbo_kodesupplier") //di program sebelumnya tidak menemukan sumber trbo_kodesupplier
                 ->where("trbo_kodeigr",'=',$kodeigr)
                 ->where("trbo_nodoc",'=',$nomorTrn)
                 ->get();
@@ -354,35 +355,36 @@ class repackController extends Controller
 //                    $jualprd = $rec[0]->prd_hrgjual;
 //                }
 //            }
-            $frac = [];
-            $jualPRD = [];
-            if($datas[0]->trbo_flagdoc == '0'){
-                for ($i = 0; $i < sizeof($datas); $i++){
-                    $plu = $datas[$i]->trbo_prdcd;
-                    $rec = DB::SELECT("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
-                    $frac[$i] = $rec[0]->prd_frac;
-                    $jualPRD[$i] = $rec[0]->prd_hrgjual;
-                }
-                for ($i = 0; $i < sizeof($datas); $i++) {
-                    $plu = $datas[$i]->trbo_prdcd;
-                    if($datas[$i]->trbo_flagdisc1 == 'R'){
-                        DB::table("TBTR_BACKOFFICE")
-                            ->where("TRBO_NODOC",'=',$nomorTrn)
-                            ->where("TRBO_KODEIGR",'=',$kodeigr)
-                            ->where("TRBO_PRDCD",'=',$plu)
-                            ->where("TRBO_FLAGDISC1",'=','R')
-                            ->update(['TRBO_FLAGDOC' => '1', 'TRBO_MODIFY_BY' => $userid, 'TRBO_MODIFY_DT' => $today]);
-                    }else{
-                        DB::table("TBTR_BACKOFFICE")
-                            ->where("TRBO_NODOC",'=',$nomorTrn)
-                            ->where("TRBO_KODEIGR",'=',$kodeigr)
-                            ->where("TRBO_PRDCD",'=',$plu)
-                            ->where("TRBO_FLAGDISC1",'=','P')
-                            ->update(['TRBO_FLAGDOC' => '1']);
-                    }
-                }
-
-            }
+            //-------------->>> Sepertinya yang bawah ini ga pakai, karena sepertinya status flagdoc yang benar hanya ada 0 atau *, 0 berarti belum di print, * berarti sudah di print
+//            $frac = [];
+//            $jualPRD = [];
+//            if($datas[0]->trbo_flagdoc == '0'){
+//                for ($i = 0; $i < sizeof($datas); $i++){
+//                    $plu = $datas[$i]->trbo_prdcd;
+//                    $rec = DB::SELECT("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
+//                    $frac[$i] = $rec[0]->prd_frac;
+//                    $jualPRD[$i] = $rec[0]->prd_hrgjual;
+//                }
+//                for ($i = 0; $i < sizeof($datas); $i++) {
+//                    $plu = $datas[$i]->trbo_prdcd;
+//                    if($datas[$i]->trbo_flagdisc1 == 'R'){
+//                        DB::table("TBTR_BACKOFFICE")
+//                            ->where("TRBO_NODOC",'=',$nomorTrn)
+//                            ->where("TRBO_KODEIGR",'=',$kodeigr)
+//                            ->where("TRBO_PRDCD",'=',$plu)
+//                            ->where("TRBO_FLAGDISC1",'=','R')
+//                            ->update(['TRBO_FLAGDOC' => '1', 'TRBO_MODIFY_BY' => $userid, 'TRBO_MODIFY_DT' => $today]);
+//                    }else{
+//                        DB::table("TBTR_BACKOFFICE")
+//                            ->where("TRBO_NODOC",'=',$nomorTrn)
+//                            ->where("TRBO_KODEIGR",'=',$kodeigr)
+//                            ->where("TRBO_PRDCD",'=',$plu)
+//                            ->where("TRBO_FLAGDISC1",'=','P')
+//                            ->update(['TRBO_FLAGDOC' => '1']);
+//                    }
+//                }
+//
+//            }
 
             self::simpan($request);
             DB::commit();
@@ -414,7 +416,6 @@ class repackController extends Controller
             $RePrint = 'Re-Print';
         }
         $nodocPrint = $flagdoc->trbo_nonota;
-        dd($nodocPrint);
 
         $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
@@ -441,6 +442,54 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
         return $pdf->stream('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan');
+
+    }
+    public function printDocumentKecil(Request $request){
+        $noDoc      = $request->doc;
+        $kodeigr = $_SESSION['kdigr'];
+
+        $today  = date('Y-m-d');
+
+        $flagdoc = DB::table('tbTr_BackOffice')
+            ->selectRaw("trbo_flagdoc")
+            ->selectRaw("trbo_nonota")
+            ->where("trbo_kodeigr",'=',$kodeigr)
+            ->where("trbo_nodoc",'=',$noDoc)
+            ->orderBy('TRBO_SEQNO')
+            ->first();
+
+        if($flagdoc->trbo_flagdoc == '0'){
+            $RePrint = '';
+        }else{
+            $RePrint = 'Re-Print';
+        }
+        $nodocPrint = $flagdoc->trbo_nonota;
+
+        $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
+              MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
+              ( MSTD_GROSS + nvl(MSTD_PPNRPH,0) + nvl(MSTD_PPNBMRPH,0) + nvl(MSTD_PPNBTLRPH,0) ) AS TOTAL,
+              FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS,
+              CASE WHEN MSTD_FLAGDISC1 = 'P' THEN '### BARANG BELUM DIOLAH ###' ELSE '### BARANG SUDAH DIOLAH ###' END AS JUDUL,
+              PRD_DESKRIPSIPANJANG,PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_ALAMAT1, PRS_NAMAWILAYAH, PRS_NPWP, PRS_TELEPON
+FROM TBTR_MSTRAN_H,  TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+WHERE MSTH_KODEIGR = '$kodeigr'
+               AND MSTH_NODOC IN '$nodocPrint' AND MSTH_TYPETRN = 'P'
+               AND MSTD_KODEIGR = MSTH_KODEIGR  AND MSTD_NODOC = MSTH_NODOC
+               AND PRD_KODEIGR = MSTH_KODEIGR AND PRD_PRDCD = MSTD_PRDCD
+               AND PRS_KODEIGR = MSTH_KODEIGR
+ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
+");
+        //dd($datas);
+
+        //-------------------------PRINT-----------------------------
+        $pdf = PDF::loadview('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan-kecil', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan-kecil');
 
     }
 
@@ -477,7 +526,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 ->orderBy('TRBO_SEQNO')
                 ->get();
 
-            if($datas[0]->trbo_flagdoc != '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
+            if($datas[0]->trbo_flagdoc == '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
                 $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr',
@@ -613,6 +662,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         }else{
                             $acoststk2 = $acoststk * $frac;
                         }
+                        //dd($datas[$i]->trbo_kodesupplier);
                         DB::table("tbtr_mstran_d")
                             ->insert(['mstd_kodeigr'=>$kodeigr,
                                 'mstd_recordid'=>null,
@@ -632,7 +682,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 'mstd_date3'=>null,
                                 'mstd_nott'=>'',
                                 'mstd_tgltt'=>null,
-                                'mstd_kodesupplier'=>$datas[$i]->trbo_kodesupplier,
+                                'mstd_kodesupplier'=>null, // $datas[$i]->trbo_kodesupplier <- harusnya ini nilainya, tapi tidak ada data
                                 'mstd_pkp'=>'',
                                 'mstd_cterm'=>0,
                                 'mstd_seqno'=>$datas[$i]->trbo_seqno,
@@ -689,8 +739,10 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                     //--->>>> Insert Data pada tbMaster_Stock <<<<---
                         $plu = $datas[$i]->trbo_prdcd;
                         $qty = $datas[$i]->trbo_qty;
+                        //$v_lok = '';
+                        //$v_message = '';
                         $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-                        $query = oci_parse($connect, "BEGIN sp_igr_update_stock('$kodeigr',
+                        $query = oci_parse($connect, "BEGIN sp_igr_update_stock2('$kodeigr',
                                     '01',
                                     '$plu',
                                     '',
@@ -830,7 +882,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 'mstd_date3'=>null,
                                 'mstd_nott'=>'',
                                 'mstd_tgltt'=>null,
-                                'mstd_kodesupplier'=>$datas[$i]->trbo_kodesupplier,
+                                'mstd_kodesupplier'=>null, // $datas[$i]->trbo_kodesupplier <- harusnya ini nilainya, tapi tidak ada data
                                 'mstd_pkp'=>'',
                                 'mstd_cterm'=>0,
                                 'mstd_seqno'=>$datas[$i]->trbo_seqno,
@@ -885,15 +937,18 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 'mstd_modify_by'=>null,
                                 'mstd_modify_dt'=>null]);
                         //--->>>> Insert Data pada tbMaster_Prodmast <<<<---
+                        $plu = SUBSTR(($datas[$i]->trbo_prdcd), 1, 6);
                         DB::table("tbmaster_prodmast")
                             ->where('prd_kodeigr','=',$kodeigr)
-                            ->whereRaw("SUBSTR(prd_prdcd, 1, 6) = SUBSTR(:trbo_prdcd, 1, 6)")
+                            ->whereRaw("SUBSTR(prd_prdcd, 1, 6) = $plu")
                             ->update(['prd_avgcost'=>$acostx2,'prd_lastcost'=>$lcostx2]);
                         //--->>>> Insert Data pada tbMaster_Stock <<<<---
                         $plu = $datas[$i]->trbo_prdcd;
                         $qty = $datas[$i]->trbo_qty;
+                        //$v_lok = '';
+                        //$v_message = '';
                         $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-                        $query = oci_parse($connect, "BEGIN sp_igr_update_stock('$kodeigr',
+                        $query = oci_parse($connect, "BEGIN sp_igr_update_stock2('$kodeigr',
                                     '01',
                                     '$plu',
                                     '',
@@ -1232,7 +1287,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                     }
                 }
                 //--** update data tbTr_BackOffice
-                dd($v_nodoc);
+//ini masih dalam if trbo_flagdoc = 0, jadinya nonota nya kosong, dan tak bisa di print
                 DB::table("tbtr_backoffice")
                     ->where('trbo_nodoc','=',$nomorTrn)
                     ->where('trbo_typetrn','=','P')
@@ -1244,7 +1299,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
             //dd("Jangan commit dulu cuy");
             DB::commit();
         }catch(\Exception $e){
-
+            dd($e);
         }
     }
 }

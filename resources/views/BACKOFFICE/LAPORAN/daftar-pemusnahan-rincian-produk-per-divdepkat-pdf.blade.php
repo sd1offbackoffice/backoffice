@@ -192,7 +192,7 @@ $datetime->setTimezone($timezone);
 
     tbody {
         display: table-row-group;
-        vertical-align: tengah;
+        vertical-align: middle;
         border-color: inherit;
     }
 

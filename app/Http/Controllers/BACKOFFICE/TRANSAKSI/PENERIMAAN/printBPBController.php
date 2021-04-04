@@ -134,9 +134,9 @@ class printBPBController extends Controller
             }
         } else {
             if ($size == 2){
-//                IGR_BO_CTBTBNOTA_FULL.jsp
+                return "IGR_BO_CTBTBNOTA_FULL";
             } else {
-//                IGR_BO_CTBTBNOTA.jsp
+                return "IGR_BO_CTBTBNOTA";
             }
         }
 
@@ -149,9 +149,11 @@ class printBPBController extends Controller
     public function viewReport(Request $request){
         $report = $request->report;
         $noDoc  = $request->noDoc;
+        $reprint = $request->reprint;
         $splitDoc = explode(',', $noDoc);
         $kodeigr= $_SESSION['kdigr'];
         $document = '';
+        $re_print = ($reprint == 1) ? '(REPRINT)' :' ';
 
         foreach ($splitDoc as $data){
             $document = $document."'".$data."',";
@@ -228,6 +230,68 @@ class printBPBController extends Controller
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listbtb');
+        } elseif ($report == 'IGR_BO_CTBTBNOTA'){
+            $datas = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+                                        prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
+                                        sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
+                                        sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
+                                        mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
+                                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
+                                        nvl(mstd_rphdisc1,0) as disc1,
+                                        (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
+                                        nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
+                                        case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                                        from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                                        where msth_kodeigr='$kodeigr'
+                                        and prs_kodeigr=msth_kodeigr
+                                        and sup_kodesupplier(+)=msth_kodesupplier
+                                        and sup_kodeigr(+)=msth_kodeigr
+                                        and mstd_nodoc=msth_nodoc
+                                        and mstd_kodeigr=msth_kodeigr
+                                        and prd_kodeigr=msth_kodeigr
+                                        and prd_prdcd = mstd_prdcd
+                                        AND trbo_nonota(+) = mstd_nodoc
+                                        AND trbo_kodeigr(+) = mstd_kodeigr
+                                        and trbo_prdcd(+) = mstd_prdcd
+                                        and msth_nodoc in ($document)
+                                        order by msth_nodoc");
+
+            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print])->setPaper('a5', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota');
+        } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL'){
+            $datas = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+                                        prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
+                                        sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
+                                        sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
+                                        mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
+                                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
+                                        nvl(mstd_rphdisc1,0) as disc1,
+                                        (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
+                                        nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
+                                        case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                                        from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                                        where msth_kodeigr='$kodeigr'
+                                        and prs_kodeigr=msth_kodeigr
+                                        and sup_kodesupplier(+)=msth_kodesupplier
+                                        and sup_kodeigr(+)=msth_kodeigr
+                                        and mstd_nodoc=msth_nodoc
+                                        and mstd_kodeigr=msth_kodeigr
+                                        and prd_kodeigr=msth_kodeigr
+                                        and prd_prdcd = mstd_prdcd
+                                        AND trbo_nonota(+) = mstd_nodoc
+                                        AND trbo_kodeigr(+) = mstd_kodeigr
+                                        and trbo_prdcd(+) = mstd_prdcd
+                                        and msth_nodoc in ($document)
+                                        order by msth_nodoc");
+
+            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print])->setPaper('a4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota_full');
         }
 
         dd($report);
