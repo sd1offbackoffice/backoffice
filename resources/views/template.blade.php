@@ -126,7 +126,7 @@
                                 </thead>
                                 <tbody id="body-table-header" style="height: 250px;">
                                 @for($i = 0 ; $i< 10 ; $i++)
-                                    <tr ">
+                                    <tr>
                                     <td>
                                         <button class="btn btn-block btn-sm btn-danger btn-delete-row-header"><i
                                                 class="icon fas fa-times"></i></button>
@@ -249,7 +249,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <table class="table  table table-striped table-bordered" id="tableModalTemplate">
+                                <table class="table table-striped table-bordered" id="tableModalTemplate">
                                     <thead class="theadDataTables">
                                     <tr>
                                         <th>Kodeigr</th>

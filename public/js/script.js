@@ -122,7 +122,7 @@ function checkDate(date){
 // Created By : JR (05/01/2021) | Modify By :
 
 function alertError(title, text) {
-    swal(title, text.substr(0,48), 'error')
+    swal(title, text.substr(0,100), 'error')
 }
 
 // Fungsi untuk mengecek float

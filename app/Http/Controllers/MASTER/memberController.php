@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
+use Yajra\DataTables\DataTables;
 
 class memberController extends Controller
 {
@@ -25,7 +26,8 @@ class memberController extends Controller
             ->get();
 
         $kodepos = DB::table('tbmaster_kodepos')
-            ->select('*')->limit(100)
+            ->select('*')
+            ->limit(100)
             ->get();
 
         $fasilitasperbankan = DB::table('tbmaster_fasilitasperbankan')
@@ -53,6 +55,26 @@ class memberController extends Controller
 
         return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos','jenismember','jenisoutlet','group','produkmember']));
     }
+
+    public function getLovMember(){
+        $member = DB::table('tbmaster_customer')
+            ->select('*')
+            ->orderBy('cus_namamember')
+//            ->limit(20)
+            ->get();
+
+        return Datatables::of($member)->make(true);
+    }
+
+    public function getLovKodepos(){
+        $kodepos = DB::table('tbmaster_kodepos')
+            ->select('*')
+//            ->limit(100)
+            ->get();
+
+        return Datatables::of($kodepos)->make(true);
+    }
+
 
     public function lov_member_select(Request $request){
         $member = DB::table('tbmaster_customer')

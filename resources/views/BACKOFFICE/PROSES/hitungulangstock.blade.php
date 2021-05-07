@@ -11,7 +11,7 @@
                             <div class="col-sm-7">
                                 <form class="form">
                                     <div class="form-group row mb-1">
-                                        <label class="col-sm-2 col-form-label text-sm-right">Periode</label>
+                                        <label class="col-sm-2 col-form-label text-sm-right">Periode </label>
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control daterange-periode" id="periode1">
                                         </div>

@@ -15,19 +15,19 @@
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-1 col-form-label text-right pl-0 pr-0">Customer</label>
                                     <div class="col-sm-3 buttonInside">
-                                        <input type="text" class="form-control text-left" id="prdcd">
-                                        <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovPrdcd()">
+                                        <input type="text" class="form-control text-left" id="cus_kode" disabled>
+                                        <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovCustomer()">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control text-left" id="desk" disabled>
+                                        <input type="text" class="form-control text-left" id="cus_nama" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-1 text-right col-form-label  text-right pl-0 pr-0">STRUK</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control text-left" id="desk" disabled>
+                                        <input type="text" class="form-control text-left" id="tglstruk" disabled>
                                     </div>
                                     <div class="col-sm-1"></div>
                                     <label for="prdcd" class="col-sm-2 text-left col-form-label pl-0 pr-0">[Tgl Struk]</label>
@@ -37,30 +37,30 @@
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-1 text-right col-form-label  text-right pl-0"></label>
                                     <div class="col-sm-1 pr-0">
-                                        <input type="text" class="form-control text-left" id="desk" disabled>
+                                        <input type="text" class="form-control text-left" id="station" disabled>
                                     </div>
                                     <div class="col-sm-1 pr-0">
-                                        <input type="text" class="form-control text-left" id="desk" disabled>
+                                        <input type="text" class="form-control text-left" id="kasir" disabled>
                                     </div>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control text-left" id="desk" disabled>
+                                        <input type="text" class="form-control text-left" id="transaksi" disabled>
                                     </div>
                                     <label for="prdcd" class="col-sm-3 text-left col-form-label pl-0 pr-0">[Station - Kasir - Transaksi]</label>
                                     <div class="col-sm"></div>
-                                    <button class="col-sm-1 btn btn-primary mr-1"><<</button>
-                                    <button class="col-sm-1 btn btn-primary ml-1">>></button>
+                                    <button class="col-sm-1 btn btn-primary mr-1" onclick="prev()"><<</button>
+                                    <button class="col-sm-1 btn btn-primary ml-1" onclick="next()">>></button>
                                 </div>
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-1 text-right col-form-label pl-0 pr-0">Surat Jalan</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control text-left" id="satuan" disabled>
+                                        <input type="text" class="form-control text-left" id="nosjas" disabled>
                                     </div>
                                     <label for="prdcd" class="col-sm-1 pr-0 text-right col-form-label">Tahapan</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control text-center" id="maxqty" disabled>
+                                        <input type="text" class="form-control text-center" id="tahapan" disabled>
                                     </div>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control text-center" id="maxqty" disabled>
+                                        <input type="text" class="form-control text-center" id="status" disabled>
                                     </div>
                                     <div class="col-sm"></div>
                                     <label for="prdcd" class="col-sm-2 text-center col-form-label pl-0 pr-0">[PROSES & CETAK]</label>
@@ -68,14 +68,14 @@
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-1 text-right col-form-label pl-0 pr-0"></label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control text-left" id="satuan" disabled>
+                                        <input type="text" class="form-control text-left" id="tglsjas" disabled>
                                     </div>
                                     <label for="prdcd" class="col-sm-1 pl-0 text-right col-form-label"></label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control text-center" id="maxqty" disabled>
+                                        <input type="text" class="form-control text-center" id="tgltitip" disabled>
                                     </div>
                                     <div class="col-sm"></div>
-                                    <button class="col-sm-2 btn btn-primary">SJAS OK</button>
+                                    <button class="col-sm-2 btn btn-primary" onclick="print()">SJAS OK</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -91,9 +91,9 @@
                                     <label for="prdcd" class="col-sm text-center col-form-label pl-0 pr-0">Qty Tahapan</label>
                                     <label for="prdcd" class="col-sm text-center col-form-label pl-0 pr-0">Qty Sisa</label>
                                 </div>
-                                <div class="scrollable-field mb-2" id="lokasi">
+                                <div class="scrollable-field mb-2" id="detail">
                                     @for($i=0;$i<10;$i++)
-                                        <div class="row form-group ml-1 mr-1">
+                                        <div class="row form-group m-1 mb-2">
                                             <div class="col-sm-1 pr-1 pl-1">
                                                 <input type="text" class="form-control text-center" disabled>
                                             </div>
@@ -121,10 +121,10 @@
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 text-right col-form-label pl-0 pr-0">Deskripsi</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control text-left" id="satuan" disabled>
+                                        <input type="text" class="form-control text-left" id="deskripsi" disabled>
                                     </div>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control text-left" id="satuan" disabled>
+                                        <input type="text" class="form-control text-left" id="unit" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -134,21 +134,28 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="m_prdcd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="m_customer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <br>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0 text-center" id="table_prdcd">
+                                <table class="table table-sm mb-0 text-center" id="table_customer">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>Satuan</th>
-                                        <th>PLU</th>
+                                        <th>Nama Member</th>
+                                        <th>Kode</th>
+                                        <th>Station</th>
+                                        <th>Kasir</th>
+                                        <th>No. Transaksi</th>
+                                        <th>Tgl Struk</th>
+                                        <th>Tgl Penitipan</th>
+                                        <th>No. SJAS</th>
+                                        <th>Tgl SJAS</th>
+                                        <th>Flag</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -257,37 +264,31 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="m_tukar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="m_autorisasi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal modal-dialog-centered" role="document">
             <div class="modal-content">
-                <br>
+                <div class="modal-header">
+                    <h4>Autorisasi MGR</h4>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-1 col-form-label text-right">Plano</label>
-                            <div class="col-sm-3">
-                                <select class="form-control" id="tukarA">
-                                    <option value="-">- Pilih plano -</option>
-                                </select>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label  text-right pl-0 pr-0">User</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control text-left text-uppercase" id="aut_user">
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-4 col-form-label text-center">dengan</label>
-                        </div>
-                        <div class="row form-group">
-                            <label for="prdcd" class="col-sm-1 col-form-label text-right">Plano</label>
-                            <div class="col-sm-3">
-                                <select class="form-control" id="tukarB">
-                                    <option value="-">- Pilih plano -</option>
-                                </select>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label  text-right pl-0 pr-0">Password</label>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control text-left text-uppercase" id="aut_pass">
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-sm"></div>
-                            <button class="btn btn-danger col-sm-2" onclick="$('#m_tukar').modal('hide')">BATAL</button>
-                            <div class="col-sm-1"></div>
-                            <button class="btn btn-success col-sm-2" onclick="tukarPlano()">TUKAR</button>
+                            <div class="col-sm-5"></div>
+                            <button class="btn btn-primary col-sm-2" onclick="authUser()">OK</button>
+                            <div class="col-sm-5"></div>
                         </div>
                     </div>
                 </div>
@@ -346,28 +347,37 @@
     </style>
 
     <script>
-        var isSubrak = true;
-        var plano = [];
+        var data = [];
+        var detail = [];
+        var currRow = 0;
+        var sjasok = 0;
 
         $(document).ready(function(){
-            $('#prdcd').focus();
+
         });
 
-        function showLovPrdcd(){
-            $('#m_prdcd').modal('show');
+        function showLovCustomer(){
+            $('#m_customer').modal('show');
 
-            if(!$.fn.DataTable.isDataTable('#table_prdcd')){
-                getPRDCD();
+            if(!$.fn.DataTable.isDataTable('#table_customer')){
+                getLovCustomer();
             }
         }
 
-        function getPRDCD(){
-            $('#table_prdcd').DataTable({
-                "ajax": '{{ url()->current().'/get-lov-prdcd' }}',
+        function getLovCustomer(){
+            $('#table_customer').DataTable({
+                "ajax": '{{ url()->current().'/get-lov-customer' }}',
                 "columns": [
-                    {data: 'desk', name: 'desk'},
-                    {data: 'satuan', name: 'satuan'},
-                    {data: 'plu', name: 'plu'}
+                    {data: 'cus_namamember'},
+                    {data: 'sjh_kodecustomer'},
+                    {data: 'stat'},
+                    {data: 'kasir'},
+                    {data: 'no'},
+                    {data: 'sjh_tglstruk'},
+                    {data: 'sjh_tglpenitipan'},
+                    {data: 'sjh_nosjas'},
+                    {data: 'sjh_tglsjas'},
+                    {data: 'sjh_flagselesai'},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -378,18 +388,22 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).find(':eq(0)').addClass('text-left');
-                    $(row).addClass('row-prdcd').css({'cursor': 'pointer'});
+                    $(row).addClass('row-customer').css({'cursor': 'pointer'});
                 },
                 "order" : [],
                 "initComplete": function(){
-                    // $('#btn_prdcd').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+                    $(document).on('click', '.row-customer', function (e) {
+                        $('#cus_kode').val($(this).find('td:eq(1)').html());
+                        $('#cus_nama').val($(this).find('td:eq(0)').html());
+                        $('#tglstruk').val($(this).find('td:eq(5)').html());
+                        $('#station').val($(this).find('td:eq(2)').html());
+                        $('#kasir').val($(this).find('td:eq(3)').html());
+                        $('#transaksi').val($(this).find('td:eq(4)').html());
+                        $('#nosjas').val($(this).find('td:eq(7)').html());
+                        $('#tglsjas').val($(this).find('td:eq(8)').html());
+                        $('#tgltitip').val($(this).find('td:eq(6)').html());
 
-                    $(document).on('click', '.row-prdcd', function (e) {
-                        $('#prdcd').val($(this).find('td:eq(2)').html());
-                        $('#desk').val($(this).find('td:eq(0)').html().replace(/&amp;/g, '&'));
-                        $('#satuan').val($(this).find('td:eq(1)').html());
-
-                        $('#m_prdcd').modal('hide');
+                        $('#m_customer').modal('hide');
 
                         getData();
                     });
@@ -397,15 +411,9 @@
             });
         }
 
-        $('#prdcd').on('keypress',function(event){
-            if(event.which == 13){
-                $('#prdcd').val(('0000000' + $('#prdcd').val()).substr(-7));
-
-                getData();
-            }
-        })
-
         function getData(){
+            sjasok = 0;
+
             $.ajax({
                 url: '{{ url()->current() }}/get-data',
                 type: 'GET',
@@ -413,7 +421,11 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 data: {
-                    prdcd: $('#prdcd').val()
+                    cus_kode: $('#cus_kode').val(),
+                    station: $('#station').val(),
+                    kasir: $('#kasir').val(),
+                    nostruk: $('#transaksi').val(),
+                    tglstruk: $('#tglstruk').val()
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -421,36 +433,28 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
-                    isSubrak = response.isSubrak;
+                    data = response.data;
+                    detail = response.detail;
 
-                    getLovKodeRak();
+                    $('#cus_nama').val(data.cus_nama);
+                    $('#tglstruk').val(data.tglstruk);
+                    $('#station').val(data.station);
+                    $('#kasir').val(data.kasir);
+                    $('#transaksi').val(data.no);
+                    $('#nosjas').val(data.nosj);
+                    $('#tglsjas').val(data.tglsj);
+                    $('#tahapan').val(data.tahap);
+                    $('#status').val(data.status);
+                    $('#tgltitip').val(data.tgltitip);
 
-                    $('#desk').val(response.plu.desk);
-                    $('#satuan').val(response.plu.satuan);
-                    $('#maxqty').val(response.maxqty);
-
-                    lokasi = response.lokasi;
-                    $('#lokasi').html('');
-                    for(i=0;i<lokasi.length;i++){
-                        fillLokasi(lokasi[i],i);
+                    $('#detail').html('');
+                    for(i=0;i<detail.length;i++){
+                        fillDetail(detail[i],i);
                     }
-                    for(i=0;i<4-lokasi.length;i++){
-                        generateLokasiDummy();
+                    for(i=detail.length;i<8;i++){
+                        generateDetailDummy();
                     }
-
-                    plano = response.plano;
-                    $('#plano').html('');
-                    for(i=0;i<plano.length;i++){
-                        fillPlano(plano[i],i);
-                    }
-                    for(i=0;i<4-plano.length;i++){
-                        generatePlanoDummy();
-                    }
-
-                    isSubrak ? $('.plano-subrak').show() : $('.plano-subrak').hide();
-
-                    fillTukarPlano('tukarA','tukarB',plano);
-                    fillTukarPlano('tukarB','tukarA',plano);
+                    $('#qtyambil-0').select();
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -459,201 +463,194 @@
                         text: error.responseJSON.message,
                         icon: 'error',
                     }).then(() => {
-                        $('#prdcd').select();
 
-                        $('#desk').val('');
-                        $('#satuan').val('');
-                        $('#maxqty').val('');
-
-                        $('#lokasi').html('');
-                        for(i=0;i<4;i++){
-                            generateLokasiDummy();
-                        }
-
-                        plano = [];
-                        $('#plano').html('');
-                        for(i=0;i<4;i++){
-                            generatePlanoDummy();
-                        }
-
-                        fillTukarPlano('tukarA','tukarB',plano);
-                        fillTukarPlano('tukarB','tukarA',plano);
                     });
                 }
             });
         }
 
-        function fillLokasi(data, row){
-            $('#lokasi').append(
-                `<div class="row form-group">
-                <div class="col-sm-2 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="rak${row}" value="${data.lks_koderak}" disabled>
-                </div>
-                <div class="col-sm-2 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="subrak{${row}" value="${data.lks_kodesubrak}" disabled>
-                </div>
-                <div class="col-sm-1 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="tipe${row}" value="${data.lks_tiperak}" disabled>
-                </div>
-                <div class="col-sm-2 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="shelving${row}" value="${data.lks_shelvingrak}" disabled>
-                </div>
-                <div class="col-sm-1 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="nourut${row}" value="${data.lks_nourut}" disabled>
-                </div>
-                <div class="col-sm-1 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="qty${row}" value="${data.lks_qty}" disabled>
-                </div>
-                <div class="col-sm-2 pr-1 pl-1">
-                    <input type="text" class="form-control text-center" id="expdate${row}" value="${data.lks_expdate}" disabled>
-                </div>
-            </div>`
+        function fillDetail(data, row){
+            $('#detail').append(
+                `<div class="row form-group m-1 mb-2">
+                    <div class="col-sm-1 pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.trjd_seqno }">
+                    </div>
+                    <div class="col-sm-2 pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.trjd_prdcd }">
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.trjd_quantity }">
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.qtyrefund }">
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.qtytitip }">
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" id="qtyambil-${row}" value="${ data.qtyambil }" onfocus="showInfo(${row})" onkeypress="editQty(event,${row})">
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" id="qtysisa-${row}" disabled value="${ data.qtysisa }">
+                    </div>
+                </div>`
             );
         }
 
-        function generateLokasiDummy(){
-            $('#lokasi').append(
-                `<div class="row form-group">
-                    <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled>
-                    </div>
-                    <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled>
-                    </div>
+        function generateDetailDummy(){
+            $('#detail').append(
+                `<div class="row form-group m-1 mb-2">
                     <div class="col-sm-1 pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
                     <div class="col-sm-2 pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
-                    <div class="col-sm-1 pr-1 pl-1">
+                    <div class="col-sm pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
-                    <div class="col-sm-1 pr-1 pl-1">
+                    <div class="col-sm pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
-                    <div class="col-sm-2 pr-1 pl-1">
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled>
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled>
+                    </div>
+                    <div class="col-sm pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
                 </div>`
             );
         }
 
-        function fillPlano(data, row){
-            $('#plano').append(
-                `<div class="row form-group" id="plano_${row}">
-                    <div class="col-sm-2">
-                        <button class="btn btn-danger" onclick="deletePlano('${row}','${data.pla_koderak}', '${data.pla_subrak}')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" id="pla_nourut${row}" value="${data.pla_nourut}" disabled>
-                    </div>
-                    <div class="col-sm-4 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" id="pla_koderak${row}" value="${data.pla_koderak}" disabled>
-                    </div>
-                    <div class="col-sm-4 pr-1 pl-1">
-                        <input type="text" class="form-control text-center plano-subrak" id="pla_subrak${row}" value="${nvl(data.pla_subrak, '')}" disabled>
-                    </div>
-                </div>`
-            );
+        function prev(){
+            if($('#tahapan').val() == '1'){
+                swal({
+                    title: 'Sudah pada tahapan awal!',
+                    icon: 'warning'
+                });
+            }
+            else{
+                $('#tahapan').val(parseInt($('#tahapan').val()) - 1);
+            }
         }
 
-        function generatePlanoDummy(){
-            $('#plano').append(
-                `<div class="row form-group">
-                    <div class="col-sm-2">
-                        <button class="btn btn-danger">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled>
-                    </div>
-                    <div class="col-sm-4 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled>
-                    </div>
-                    <div class="col-sm-4 pr-1 pl-1">
-                        <input type="text" class="form-control text-center plano-subrak" disabled>
-                    </div>
-                </div>`
-            );
-        }
-
-        function deletePlano(row, koderak, subrak){
-            swal({
-                title: `Yakin ingin menghapus data pada PLU ${$('#prdcd').val()} [ ${koderak} ${ isSubrak ? ' - '+subrak : ''}]`,
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true
-            }).then((ok) => {
-                if(ok){
-                    $.ajax({
-                        url: '{{ url()->current() }}/delete-plano',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        data: {
-                            prdcd: $('#prdcd').val(),
-                            koderak: koderak,
-                            subrak: subrak
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-
-                            swal({
-                                title: response.title,
-                                icon: 'success'
-                            }).then(() => {
-                                getData();
-                            })
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal({
-                                title: error.responseJSON.title,
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
-                        }
+        function next(){
+            if(data.flagselesai == 'Y'){
+                if(parseInt($('#tahapan').val()) + 1 > data.tahap){
+                    swal({
+                        title: 'Sudah di akhir data!',
+                        icon: 'warning'
                     });
                 }
-            });
+                else{
+                    $('#tahapan').val(parseInt($('#tahapan').val()) + 1);
+                }
+            }
+            else{
+                if(parseInt($('#tahapan').val()) + 1 > data.tahap){
+                    swal({
+                        title: 'Tahapan ' + $('#tahapan').val() + ' sudah terakhir!',
+                        icon: 'warning'
+                    });
+                }
+                else{
+                    $('#tahapan').val(parseInt($('#tahapan').val()) + 1);
+
+                    if($('#tahapan').val() == parseInt(data.tahap) + 1){
+
+                    }
+                }
+            }
         }
 
-        function showModalAdd(){
-            $('#m_add input').val('');
-
-            isSubrak ? $('#add_field_subrak').show() : $('#add_field_subrak').hide();
-
-
-            getLastNumber();
-            $('#m_add').modal('show');
-
-            $('#add_koderak').focus();
+        function showInfo(row){
+            $('#deskripsi').val(detail[row].prd_deskripsipanjang);
+            $('#unit').val(detail[row].unit);
         }
 
-        function getLastNumber(){
+        function editQty(e, row){
+            if(e.which == 13){
+                currRow = row;
+
+                if($('#qtyambil-'+row).val() > $('#qtysisa-'+row).val()){
+                    swal({
+                        title: 'Qty tidak boleh lebih besar dari sisa!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $('#qtyambil-'+row).val(0).select();
+                    });
+                }
+                else{
+                    $('#qtysisa-'+row).val(parseInt(detail[row].qtysisa) - parseInt($('#qtyambil-'+row).val()));
+
+                    if(data.flagoto == '1'){
+                        swal({
+                            title: 'Item sudah dititipkan lebih dari 2 hari, harus dibuatkan SJ semua!',
+                            icon: 'warning',
+                            buttons: {
+                                ok : 'ALL QTY',
+                                aut : 'Autorisasi MGR'
+                            }
+                        }).then((ok) => {
+                            if(ok == 'aut'){
+                                $('#aut_user').val('');
+                                $('#aut_pass').val('');
+                                $('#m_autorisasi').modal('show');
+                            }
+                            else{
+
+                            }
+                        });
+                    }
+                    else{
+                        $('#qtysisa-'+row).val(detail[row].qtysisa);
+                        $('#qtyambil-'+row).val(0).select();
+                    }
+                }
+            }
+        }
+
+        $('#m_autorisasi').on('shown.bs.modal', () => {$('#aut_user').select()});
+
+        $('#aut_user').on('keypress',(e) => e.which == 13 ? $('#aut_pass').select() : null);
+
+        $('#aut_pass').on('keypress',(e) => e.which == 13 ? authUser() : null);
+
+        function authUser(){
             $.ajax({
-                url: '{{ url()->current() }}/get-last-number',
+                url: '{{ url()->current() }}/auth-user',
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 data: {
-                    prdcd: $('#prdcd').val()
+                    username: $('#aut_user').val(),
+                    password: $('#aut_pass').val()
                 },
                 beforeSend: function () {
-                    $('#nourut_loading').show();
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    $('#nourut_loading').hide();
-                    $('#add_nourut').val(response);
+                    $('#modal-loader').modal('hide');
+
+                    if(response == 'false'){
+                        if(response == 'false'){
+                            alertError('Autorisasi untuk masa perpanjangan ditolak!','');
+                        }
+                    }
+                    else{
+                        if(sjasok == '1'){
+
+                        }
+                        else{
+                            $('#qtysisa-'+currRow).val(detail[currRow].qtysisa - $('#qtyambil-'+currRow).val());
+                        }
+
+                        $('#m_autorisasi').modal('hide');
+                    }
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -661,217 +658,64 @@
                         title: error.responseJSON.title,
                         text: error.responseJSON.message,
                         icon: 'error',
+                    }).then(() => {
+
                     });
                 }
             });
         }
 
-        function addPlano(){
-            swal({
-                title: 'Yakin ingin menambahkan data pertemanan untuk PLU '+$('#prdcd').val()+' ?',
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true
-            }).then((ok) => {
-                $.ajax({
-                    url: '{{ url()->current() }}/add-plano',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: {
-                        prdcd: $('#prdcd').val(),
-                        nourut: $('#add_nourut').val(),
-                        koderak: $('#add_koderak').val(),
-                        subrak: $('#add_subrak').val(),
-                        isSubrak: isSubrak
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
+        function print(){
+            $.ajax({
+                url: '{{ url()->current() }}/check-print',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nosj: $('#nosjas').val(),
+                    cus_kode: $('#cus_kode').val(),
+                    tahapan: $('#tahapan').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
 
+                    if(response == 'true'){
                         swal({
-                            title: response.title,
-                            icon: 'success'
-                        }).then(() => {
-                            $('#m_add').modal('hide');
-                            getData();
-                        });
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        });
-                    }
-                });
-            });
-        }
+                            title: 'Cetak Surat Jalan dengan model?',
+                            icon: 'warning',
+                            buttons: {
+                                all : 'Semua Item Struk',
+                                item : 'Hanya Item yang diambil',
+                                cancel : 'BATAL'
+                            }
+                        }).then((ok) => {
+                            if(ok){
+                                window.open(`{{ url()->current() }}/print?nosj=${$('#nosjas').val()}&tahap=${$('#tahapan').val()}&cus_kode=${$('#cus_kode').val()}&item=${ok.substr(0,1).toUpperCase()}&reprint=Y`,'_blank');
+                            }
+                            else{
 
-        function showLovRak(){
-            $(isSubrak ? '#m_subrak' : '#m_koderak').modal('show');
-        }
-
-        function getLovKodeRak(){
-            if(isSubrak){
-                if($.fn.DataTable.isDataTable('#table_subrak')){
-                    $('#table_subrak').DataTable().destroy();
-                    $("#table_subrak tbody [role='row']").remove();
-                }
-
-                $('#table_subrak').DataTable({
-                    "ajax": {
-                        url: '{{ url()->current().'/get-lov-kode-rak' }}',
-                        data: {
-                            prdcd: $('#prdcd').val(),
-                            isSubrak: isSubrak
-                        }
-                    },
-                    "columns": [
-                        {data: 'lks_koderak', name: 'lks_koderak'},
-                        {data: 'lks_kodesubrak', name: 'lks_kodesubrak'},
-                    ],
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                    "createdRow": function (row, data, dataIndex) {
-                        $(row).find(':eq(0)').addClass('text-left');
-                        $(row).addClass('row-subrak').css({'cursor': 'pointer'});
-                    },
-                    "order" : [],
-                    "initComplete": function(){
-                        $(document).on('click', '.row-subrak', function (e) {
-                            $('#add_koderak').val($(this).find('td:eq(0)').html());
-                            $('#add_subrak').val($(this).find('td:eq(1)').html());
-
-                            $('#m_subrak').modal('hide');
+                            }
                         });
                     }
-                });
-            }
-            else{
-                if($.fn.DataTable.isDataTable('#table_koderak')){
-                    $('#table_koderak').DataTable().destroy();
-                    $("#table_koderak tbody [role='row']").remove();
-                }
+                    else{
 
-                $('#table_koderak').DataTable({
-                    "ajax": {
-                        url: '{{ url()->current().'/get-lov-kode-rak' }}',
-                        data: {
-                            prdcd: $('#prdcd').val(),
-                            isSubrak: isSubrak
-                        }
-                    },
-                    "columns": [
-                        {data: 'lks_koderak', name: 'lks_koderak'},
-                    ],
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                    "createdRow": function (row, data, dataIndex) {
-                        $(row).find(':eq(0)').addClass('text-left');
-                        $(row).addClass('row-koderak').css({'cursor': 'pointer'});
-                    },
-                    "order" : [],
-                    "initComplete": function(){
-                        $(document).on('click', '.row-koderak', function (e) {
-                            $('#add_koderak').val($(this).find('td:eq(0)').html());
-
-                            $('#m_koderak').modal('hide');
-                        });
                     }
-                });
-            }
-        }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.title,
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
 
-        function showModalTukar(){
-            $('#m_tukar').modal('show');
-
-            $('#m_tukar select').val('-');
-        }
-
-        function fillTukarPlano(id1, id2){
-            $('#'+id1).html('-');
-
-            $('#'+id1).append(`<option value="-" disabled selected>- Pilih plano -</option>`);
-            for(i=0;i<plano.length;i++){
-                if($('#'+id2).val() != plano[i].pla_nourut){
-                    $('#'+id1).append(
-                        `<option value="${i}">${plano[i].pla_nourut} - ${plano[i].pla_koderak} ${ isSubrak ? '- '+plano[i].pla_subrak : '' }</option>`
-                    );
-                }
-            }
-        }
-
-        function tukarPlano(){
-            if(!$('#tukarA').val() || !$('#tukarB').val()){
-                swal({
-                    title: 'Data pertemanan yang dipilih belum lengkap!',
-                    icon: 'warning'
-                });
-            }
-            else if($('#tukarA').val() == $('#tukarB').val()){
-                swal({
-                    title: 'Data pertemanan yang dipilih sama!',
-                    icon: 'warning'
-                });
-            }
-            else{
-                swal({
-                    title: 'Yakin ingin menukar data pertemanan untuk PLU '+$('#prdcd').val()+' ?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    $.ajax({
-                        url: '{{ url()->current() }}/swap-plano',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        data: {
-                            prdcd: $('#prdcd').val(),
-                            plano1: plano[$('#tukarA').val()],
-                            plano2: plano[$('#tukarB').val()]
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-
-                            swal({
-                                title: response.title,
-                                icon: 'success'
-                            }).then(() => {
-                                $('#m_tukar').modal('hide');
-                                getData();
-                            });
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal({
-                                title: error.responseJSON.title,
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
-                        }
                     });
-                });
-            }
+                }
+            });
         }
     </script>
 @endsection

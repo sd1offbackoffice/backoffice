@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
+use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -59,21 +60,31 @@ class printBPBController extends Controller
         $type       = $request->type;
         $reprint    = $request->checked;
         $size       = $request->size;
+        $dummyvar   = 1;
+        $kodeigr    = $_SESSION['kdigr'];
+        $userid     = $_SESSION['usid'];
 
         $counter    = 0;
         $v_print    = 0;
         $temp       = [];
         $temp_lokasi = [];
 
+        $model  = new AllModel();
+        $conn   = $model->connectionProcedure();
+
         if ($type == 1){
             $temp = $document;
             $v_print = $reprint;
         } else {
             if ($reprint == 0){
-                $this->update_data();
-                $this->update_data2();
-
                 foreach ($document as $data){
+                    $updateData = $this->update_data($document[0],$kodeigr,$userid,$conn,$type,'');
+
+                    if($updateData['kode'] == 0){
+                        return response()->json($updateData);
+                    }
+                $updateData = $this->update_data2($kodeigr,$conn,$type);
+
                     $ct = DB::select("select nvl(count(1),0) as ct
 						            	from tbtr_backoffice, tbmaster_lokasi
 						            	where trbo_nodoc = '$data'
@@ -93,16 +104,17 @@ class printBPBController extends Controller
             $this->print_lokasi($temp_lokasi, $type, $v_print);
         }
 
+
         if ($temp){
-//            if ($type == 1 && $reprint == 0){
-//                DB::table('tbtr_backoffice')
-//                    ->whereIn('trbo_nodoc', $temp)
-//                    ->update(['trbo_flagdoc' => '1']);
-//            } elseif ($type == 2 && $reprint == 0){
-//                DB::table('tbtr_backoffice')
-//                    ->whereIn('trbo_nodoc', $temp)
-//                    ->update(['trbo_flagdoc' => '*', 'trbo_recordid' => 2]);
-//            }
+            if ($type == 1 && $reprint == 0){
+                DB::table('tbtr_backoffice')
+                    ->whereIn('trbo_nodoc', $temp)
+                    ->update(['trbo_flagdoc' => '1']);
+            } elseif ($type == 2 && $reprint == 0){
+                DB::table('tbtr_backoffice')
+                    ->whereIn('trbo_nodoc', $temp)
+                    ->update(['trbo_flagdoc' => '*', 'trbo_recordid' => 2]);
+            }
 
             $print_btb = $this->print_btb($temp,$type,$v_print,$size);
         }
@@ -116,12 +128,76 @@ class printBPBController extends Controller
         return response()->json(['kode' => 1 , 'message' => 'Create Report Success', 'data' => $print_btb]);
     }
 
-    public function update_data(){
+    public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $dummyvar){
+        if(!$dummyvar){
+            $checkDummyVar = DB::select(" SELECT TRBO_PRDCD,
+                                                     TRBO_TYPETRN,
+                                                     PRD_PRDCD,
+                                                     PRD_AVGCOST,
+                                                     PRD_LASTCOST
+                                                FROM TBTR_BACKOFFICE AA,
+                                                     TBMASTER_PRODMAST BB,
+                                                     TBMASTER_SUPPLIER CC,
+                                                     TBMASTER_STOCK DD,
+                                                     TBMASTER_LOKASI EE,
+                                                     TBTR_PO_D FF,
+                                                     TBTR_PO_H GG,
+                                                     tbmaster_stock_cab_anak hh
+                                               WHERE     AA.TRBO_NODOC = '$noDoc'
+                                                     AND (  NVL (TRBO_QTY, 0)
+                                                          + NVL (TRBO_QTYBONUS1, 0)
+                                                          + NVL (TRBO_QTYBONUS2, 0)) <> 0
+                                                     AND BB.PRD_PRDCD = AA.TRBO_PRDCD
+                                                     AND BB.PRD_KODEIGR = '$kodeigr'
+                                                     AND CC.SUP_KODESUPPLIER(+) = AA.TRBO_KODESUPPLIER
+                                                     AND CC.SUP_KODEIGR(+) = AA.TRBO_KODEIGR
+                                                     AND DD.ST_PRDCD(+) = AA.TRBO_PRDCD
+                                                     AND DD.ST_KODEIGR(+) = AA.TRBO_KODEIGR
+                                                     AND DD.ST_LOKASI(+) = '01'
+                                                     AND EE.LKS_PRDCD(+) = AA.TRBO_PRDCD
+                                                     AND EE.LKS_KODEIGR(+) = AA.TRBO_KODEIGR
+                                                     AND SUBSTR (EE.LKS_KODERAK(+), 1, 1) = 'A'
+                                                     AND FF.TPOD_PRDCD(+) = AA.TRBO_PRDCD
+                                                     AND FF.TPOD_KODEIGR(+) = AA.TRBO_KODEIGR
+                                                     AND FF.TPOD_NOPO(+) = AA.TRBO_NOPO
+                                                     AND GG.TPOH_KODEIGR(+) = '$kodeigr'
+                                                     AND GG.TPOH_NOPO(+) = AA.TRBO_NOPO
+                                                     AND NVL (GG.TPOH_RECORDID, '0') <> '1'
+                                                     AND HH.STA_PRDCD(+) = AA.TRBO_PRDCD
+                                                     AND HH.STA_KODEIGR(+) = AA.TRBO_KODEIGR
+                                                     AND HH.STA_LOKASI(+) = '01'
+                                            ORDER BY AA.TRBO_PRDCD");
 
+            foreach ($checkDummyVar as $data){
+                if (!$data->prd_lastcost){
+                    if ($data->prd_avgcost){
+                        return ['kode' => 0, 'message' => "PLU ".$data->prd_prdcd." Abg Cost <> 0, Lakukan Update PKM?" ];
+                    }
+                }
+            }
+
+            $dummyvar = 0;
+        }
+
+        $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata(:kodeigr, :userid, :tipe, :dummyvar, :result); END;");
+        oci_bind_by_name($exec, ':kodeigr',$kodeigr);
+        oci_bind_by_name($exec, ':userid',$userId);
+        oci_bind_by_name($exec, ':tipe', $type);
+        oci_bind_by_name($exec, ':dummyvar', $dummyvar);
+        oci_bind_by_name($exec, ':result', $result,1000);
+        oci_execute($exec);
+
+        return ['kode' => 1, 'message' => "Success" ];
     }
 
-    public function update_data2(){
+    public function update_data2($kodeigr, $conn, $type){
+        $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata2(:kodeigr, :tipe, :result); END;");
+        oci_bind_by_name($exec, ':kodeigr',$kodeigr);
+        oci_bind_by_name($exec, ':tipe', $type);
+        oci_bind_by_name($exec, ':result', $result,1000);
+        oci_execute($exec);
 
+        return ['kode' => 1, 'message' => "Success" ];
     }
 
     public function print_btb($temp, $type, $v_print, $size){
@@ -143,7 +219,18 @@ class printBPBController extends Controller
     }
 
     public function print_lokasi($temp_lokasi, $type, $v_print){
-//        IGR_BO_CTKTRMLOK.jsp
+
+        $datas = "1";
+
+        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi');
+
     }
 
     public function viewReport(Request $request){
@@ -292,6 +379,42 @@ class printBPBController extends Controller
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota_full');
+        } elseif ($report == 'lokasi'){
+            $datas = DB::select("SELECT trbo_prdcd,
+                                       SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
+                                       prd_unit || '/' || prd_frac kemasan,
+                                       lks_koderak,
+                                       lks_kodesubrak,
+                                       lks_tiperak,
+                                       lks_shelvingrak,
+                                       FLOOR (trbo_qty / prd_frac) qty,
+                                       lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak
+                                          keterangan,
+                                       MOD (trbo_qty, prd_frac) qtyk,
+                                       prs_namaperusahaan,
+                                       prs_namacabang,
+                                       prs_namawilayah
+                                  FROM tbtr_backoffice,
+                                       tbmaster_lokasi,
+                                       tbmaster_prodmast,
+                                       tbmaster_perusahaan
+                                 WHERE     prs_kodeigr = trbo_kodeigr
+                                       AND trbo_kodeigr = '22'
+                                       AND TRBO_NOREFF IN ('01400388')
+                                       AND lks_prdcd = trbo_prdcd
+                                       AND lks_kodeigr = trbo_kodeigr
+                                       --and substr(lks_koderak,1,1) = 'a'
+                                       AND prd_prdcd = trbo_prdcd
+                                       AND prd_kodeigr = trbo_kodeigr");
+
+            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi');
         }
 
         dd($report);

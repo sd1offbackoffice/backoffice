@@ -16,4 +16,214 @@ class SJASController extends Controller
     public function index(){
         return view('BTAS.sjas');
     }
+
+    public function getLovCustomer(){
+        $data = DB::select("SELECT SUBSTR(SJH_NOSTRUK,1,2) STAT, SUBSTR(SJH_NOSTRUK,3,3) KASIR, SUBSTR(SJH_NOSTRUK,6,5) NO, SJH_TGLSTRUK tglstruk, TO_CHAR(SJH_TGLSTRUK, 'DD/MM/YYYY') SJH_TGLSTRUK, SJH_KODECUSTOMER, TO_CHAR(SJH_TGLPENITIPAN, 'DD/MM/YYYY') SJH_TGLPENITIPAN, SJH_NOSJAS, TO_CHAR(SJH_TGLSJAS, 'DD/MM/YYYY') SJH_TGLSJAS, CUS_NAMAMEMBER, SJH_FLAGSELESAI
+        FROM TBTR_SJAS_H, TBMASTER_CUSTOMER
+        WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."'
+        AND CUS_KODEMEMBER = SJH_KODECUSTOMER
+        ORDER BY tglstruk, SJH_KODECUSTOMER, SJH_NOSTRUK");
+
+        return DataTables::of($data)->make(true);
+    }
+
+    public function getData(Request $request){
+        $temp = DB::table('tbmaster_customer')
+            ->select('cus_namamember')
+            ->where('cus_kodemember','=',$request->cus_kode)
+            ->first();
+
+        $data = new \stdClass();
+
+        if(!$temp){
+            return response()->json([
+                'title' => 'Data customer tidak ditemukan!',
+            ],500);
+        }
+        else $data->cus_nama = $temp->cus_namamember;
+
+        $temp = DB::table('tbtr_sjas_h')
+            ->selectRaw("SJH_NOSJAS, TO_CHAR(SJH_TGLSJAS,'DD/MM/YYYY') SJH_TGLSJAS,
+               SJH_FREKTAHAPAN, TO_CHAR(SJH_TGLSTRUK,'DD/MM/YYYY') SJH_TGLSTRUK,
+               SUBSTR (SJH_NOSTRUK, 1, 2) station, SUBSTR (SJH_NOSTRUK, 3, 3) kasir,
+               SUBSTR (SJH_NOSTRUK, 6, 5) no, SJH_FLAGSELESAI")
+            ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+            ->where('sjh_kodecustomer','=',$request->cus_kode)
+            ->whereRaw("sjh_nostruk = '".$request->station."'||'".$request->kasir."'||'".$request->nostruk."'")
+            ->whereRaw("to_char(sjh_tglstruk,'dd/mm/yyyy') = '".$request->tglstruk."'")
+            ->first();
+
+        if(!$temp){
+            return response()->json([
+                'title' => 'Tidak ada data yang dititipkan!',
+            ],500);
+        }
+        else{
+            $data->nosj = $temp->sjh_nosjas;
+            $data->tglsj = $temp->sjh_tglsjas;
+            $data->tahap = $temp->sjh_frektahapan;
+            $data->tglstruk = $temp->sjh_tglstruk;
+            $data->station = $temp->station;
+            $data->kasir = $temp->kasir;
+            $data->no = $temp->no;
+            $data->flagselesai = $temp->sjh_flagselesai;
+            $data->tgltitip = date_format(Carbon::now(), 'd/m/Y');
+        }
+
+        if($data->flagselesai == 'Y'){
+            $data->status = 'SELESAI';
+        }
+        else{
+            $data->status = '';
+            $data->tahap += 1;
+        }
+
+        if(Carbon::now()->subDays(2) <= Carbon::createFromFormat('d/m/Y',$data->tglstruk)){
+            $data->flagoto = '0';
+        }
+        else $data->flagoto = '1';
+
+        $detail = DB::SELECT("SELECT TRJD_SEQNO, TRJD_PRDCD, PRD_DESKRIPSIPANJANG,TRJD_QUANTITY, PRD_UNIT || '/' || PRD_FRAC unit
+            FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST
+            WHERE TRJD_KODEIGR = PRD_KODEIGR
+            AND TRJD_PRDCD = PRD_PRDCD
+            AND TRJD_KODEIGR = '".$_SESSION['kdigr']."'
+            AND TO_CHAR(TRJD_TRANSACTIONDATE,'dd/mm/yyyy') = '".$data->tglstruk."'
+            AND TRJD_CASHIERSTATION = '".$data->station."'
+            AND TRJD_CREATE_BY = '".$data->kasir."'
+            AND TRJD_TRANSACTIONNO = '".$data->no."'
+            AND TRJD_TRANSACTIONTYPE = 'S'
+            ORDER BY TRJD_SEQNO");
+
+        foreach($detail as $d){
+            $temp = DB::select("SELECT *
+                      FROM TBTR_JUALHEADER, TBTR_JUALDETAIL
+                     WHERE JH_TRANSACTIONTYPE = 'R'
+                            AND JH_REFERENCECASHIERSTATION = '".$data->station."'
+                            AND JH_REFERENCECASHIERID = '".$data->kasir."'
+                            AND TO_CHAR(JH_REFERENCEDATE,'dd/mm/yyyy') = '".$data->tglstruk."'
+                            AND JH_REFERENCENO = '".$data->no."'
+                            AND TRJD_TRANSACTIONNO = JH_TRANSACTIONNO
+                            AND TRUNC (TRJD_TRANSACTIONDATE) = TRUNC (JH_TRANSACTIONDATE)
+                            AND TRJD_CREATE_BY = JH_CASHIERID
+                            AND TRJD_CASHIERSTATION = JH_CASHIERSTATION
+                            AND TRJD_TRANSACTIONTYPE = 'R'
+                            AND TRJD_PRDCD = '".$d->trjd_prdcd."'");
+
+            if(count($temp) > 0){
+                $d->qtyrefund = $temp[0]->trjd_quantity;
+            }
+            else $d->qtyrefund = 0;
+
+            $d->qtytitip = $d->trjd_quantity - $d->qtyrefund;
+
+            $temp = DB::select("SELECT SUM(NVL (SJD_QTYSJAS, 0)) jml
+                      FROM TBTR_SJAS_D
+                     WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                       AND SJD_NOSJAS = '".$data->nosj."'
+                       AND SJD_KODECUSTOMER = '".$request->cus_kode."'
+                       AND SJD_PRDCD = '".$d->trjd_prdcd."'");
+
+            if(count($temp) > 0){
+                $d->qtyok = $temp[0]->jml;
+            }
+            else $d->qtyok = 0;
+
+            $d->qtysisa = $d->qtytitip - $d->qtyok;
+
+            if($data->tahap == 'x1'){
+                $temp = DB::select("SELECT NVL(SJD_QTYSJAS, 0) qty
+                          FROM TBTR_SJAS_D
+                         WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                           AND SJD_NOSJAS = '".$data->nosj."'
+                           AND SJD_KODECUSTOMER = '".$request->cus_kode."'
+                           AND SJD_PRDCD = '".$d->trjd_prdcd."'
+                           AND SJD_TAHAPAN = '".$data->tahap."'");
+
+                if(count($temp) > 0){
+                    $d->qtyambil = $temp[0]->qty;
+                }
+                else $d->qtyambil = $d->qtysisa;
+            }
+            else $d->qtyambil = $d->qtysisa;
+
+            $d->qtysisa -= $d->qtyambil;
+        }
+
+        return compact(['data','detail']);
+    }
+
+    public function authUser(Request $request){
+        $temp = DB::table('tbmaster_user')
+            ->where('userid','=',strtoupper($request->username))
+            ->where('userpassword','=',strtoupper($request->password))
+            ->where('userlevel','=','1')
+            ->first();
+
+        if(!$temp)
+            return 'false';
+        return 'true';
+    }
+
+    public function checkPrint(Request $request){
+        $temp = DB::table('tbtr_sjas_d')
+            ->where('sjd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('sjd_nosjas','=',$request->nosj)
+            ->where('sjd_kodecustomer','=',$request->cus_kode)
+            ->where('sjd_tahapan','=',$request->tahapan)
+            ->first();
+
+        if($temp){
+            return 'true';
+        }
+        else{
+            return 'false';
+        }
+    }
+
+    public function print(Request $request){
+        if($request->item == 'A')
+            $p_and = ' AND NVL(SJD_QTYSJAS,0) IS NOT NULL';
+        else $p_and = ' AND NVL(SJD_QTYSJAS,0) <> 0';
+
+        if($request->reprint == 'Y')
+            $reprint = 'RE-PRINT';
+        else $reprint = '';
+
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+
+        $data = DB::select("SELECT SJH_KODECUSTOMER, to_char(SJH_TGLSTRUK, 'dd/mm/yyyy') SJH_TGLSTRUK, SUBSTR(SJH_NOSTRUK,1,2) || '.' || SUBSTR(SJH_NOSTRUK,3,3) || '.' || SUBSTR(SJH_NOSTRUK,6,5) STRUK,
+        SJH_NOSJAS, to_char(SJH_TGLPENITIPAN,'dd/mm/yyyy') SJH_TGLPENITIPAN,
+        to_char(SJD_TGLTAHAPAN,'dd/mm/yyyy') SJD_TGLTAHAPAN, SUBSTR('00' || SJD_TAHAPAN ,LENGTH('00' || SJD_TAHAPAN ) - 1, 2) SJD_TAHAPAN, SJD_SEQNO, SJD_PRDCD, SJD_QTYSJAS,  SJD_QTYSTRUK,
+        CUS_NAMAMEMBER,
+        PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
+        'PRINT : ' || TO_CHAR(SYSDATE, 'DD-MM-YYYY hh:mm:ss') KET,
+        (sjd_qtystruk - sjd_qtysjas) qtysisa
+        FROM TBTR_SJAS_H, TBTR_SJAS_D, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
+        WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."' AND SJH_NOSJAS = '".$request->nosj."' AND SJH_KODECUSTOMER = '".$request->cus_kode."'
+        AND SJD_KODEIGR = SJH_KODEIGR AND SJD_NOSJAS = SJH_NOSJAS AND SJD_KODECUSTOMER = SJH_KODECUSTOMER
+        AND SJD_TAHAPAN = '".$request->tahap."'
+        AND CUS_KODEMEMBER = SJH_KODECUSTOMER
+        AND PRD_KODEIGR = SJD_KODEIGR AND PRD_PRDCD = SJD_PRDCD
+        ".$p_and."
+        ORDER BY SJD_SEQNO");
+
+//        dd($data);
+
+        $dompdf = new PDF();
+
+        $pdf = PDF::loadview('BTAS.sjas-pdf',compact(['perusahaan','data','reprint']));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Tanda Terima Barang JA.pdf');
+    }
 }

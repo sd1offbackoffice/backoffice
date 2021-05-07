@@ -6,16 +6,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\DataTables;
 
 
 class barcodeController extends Controller
 {
     public function index(){
+        return view('MASTER.barcode');
+    }
+
+    public function getBarcode(){
         $barcode = DB::table('TBMASTER_BARCODE')
             ->select('*')
-            ->limit(20)
+//            ->limit(20)
             ->get();
-        return view('MASTER.barcode')->with('barcode',$barcode);
+        return Datatables::of($barcode)->make(true);
     }
 
     public function search_barcode(Request $request){

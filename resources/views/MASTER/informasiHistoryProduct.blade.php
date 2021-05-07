@@ -1,32 +1,32 @@
 @extends('navbar')
-
+@section('title','MASTER | INFORMASI HISTORY PRODUCT')
 @section('content')
 
     <div class="container-fluid">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend align="middle" class="w-auto h5 ">KETIKAN PLU / DESKRIPSI /SCAN BARCODE BARANG</legend>
+                <fieldset class="card border-dark card-hdr cardForm">
+                    <legend class="w-auto ml-5"> Ketik PLU / Deskripsi / Scan Barcode Barang</legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
-                            <input type="text" class="col-sm-8 form-control" id="input" placeholder="..." value="">
-                            <button type="button" class="btn p-0 text-left" data-toggle="modal"
-                                    data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px">
-                            </button>
+                            <div class="col-sm-8 buttonInside">
+                                <input type="text" class="form-control" id="input" placeholder="..." value="">
+                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp">
+                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
         </div>
     </div>
-    <div id="test">
 
-    </div>
     <div class="container-fluid">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend align="middle" class="w-auto">Informasi & History Product</legend>
+                <fieldset class="card border-secondary card-hdr ">
+                    <legend class="w-auto ml-5">Informasi & History Product</legend>
                     <div class="card-body">
                         <input type="text" class="col-sm-3 form-control" id="cabang" disabled>
                         <hr>
@@ -53,7 +53,7 @@
                         <br>
                         <div class="row">
                             <table class="table table-sm  justify-content-md-center m-3" id="table-satuan">
-                                <thead class="thead-dark">
+                                <thead class="theadDataTables">
                                 <tr>
                                     <th width="3%" class="text-center small">SJ</th>
                                     <th width="7%" class="text-center small">Satuan / Frac</th>
@@ -116,7 +116,7 @@
                                 <div class="card-body p-0">
                                     <table class="table table-sm justify-content-md-center col-sm-12 p-0"
                                            id="table-trendsales">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr>
                                             <th class="text-center" colspan="3" scope="colgroup">TREND SALES</th>
                                         </tr>
@@ -291,7 +291,7 @@
                             <div class="col-sm-8">
                                 <div class="card-body p-0">
                                     <table class="table table-sm justify-content-md-center p-0" id="table-stock">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr>
                                             <th class="text-center" colspan="10" scope="colgroup">S T O K</th>
                                         </tr>
@@ -346,7 +346,7 @@
                                 </div>
                                 <div class="card-body  p-0">
                                     <table class="table table-sm justify-content-md-center p-0" id="table-stock">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr>
                                             <th class="text-center small"
                                                 style="border: 1px solid;border-bottom: 0px solid" colspan="1"
@@ -469,7 +469,7 @@
                         <div class="row justify-content-md-center">
                             <label class=" col-sm-2 justify-content-md-center p-0" for="" id="item"></label>
                             <table class="table col-sm-8 table-sm justify-content-md-center p-0" id="table-stock">
-                                <thead class="thead-dark">
+                                <thead class="theadDataTables">
                                 <tr>
                                     <th class="text-center" colspan="7" scope="colgroup">FLAG</th>
                                 </tr>
@@ -536,47 +536,44 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text"
-                               placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">List Prodmast</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col lov">
-                                <table class="table" id="table_lov">
-                                    <thead>
-                                    <tr>
-                                        <td>Deskripsi</td>
-                                        <td>PLU</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($produk as $p)
-                                        <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">
-                                            <td>{{ $p->prd_deskripsipanjang }}</td>
-                                            <td>{{ $p->prd_prdcd }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                   <div class="container">
+                       <div class="row">
+                           <div class="col">
+                               <table class="table  table table-striped table-bordered" id="modal_table_plu">
+                                   <thead class="theadDataTables">
+                                   <tr>
+                                       <th>Deskripsi</th>
+                                       <th>PLU</th>
+                                   </tr>
+                                   </thead>
+                                   <tbody>
+                                   @foreach($produk as $p)
+                                       <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">
+                                           <td>{{ $p->prd_deskripsipanjang }}</td>
+                                           <td>{{ $p->prd_prdcd }}</td>
+                                       </tr>
+                                   @endforeach
+                                   </tbody>
+                               </table>
+                           </div>
+                       </div>
+                   </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+
                 </div>
             </div>
         </div>
@@ -585,7 +582,7 @@
     {{--MODAL DETAIL SALES--}}
     <div class="modal fade" id="m-detailsales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Rekap Trend Sales</h5>
@@ -596,7 +593,7 @@
                         <div class="col">
                             <table class="table table-sm justify-content-md-center p-0 col-sm-12"
                                    id="table-detailsales">
-                                <thead class="thead-dark">
+                                <thead class="theadDataTables">
                                 <tr>
                                     <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid"
                                         colspan="1" scope="colgroup"></th>
@@ -705,7 +702,7 @@
                     {{--</div>--}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -714,7 +711,7 @@
     {{--MODAL Penerimaan--}}
     <div class="modal fade" id="m-penerimaan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Penerimaan</h5>
@@ -729,7 +726,7 @@
                             <div class="tableFixedHeader">
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12"
                                        id="table-penerimaan">
-                                    <thead class="thead-dark">
+                                    <thead class="theadDataTables">
                                     <tr>
                                         <th width="30%" class="text-center small">Supplier</th>
                                         <th width="7%" class="text-center small">Qty BPB</th>
@@ -779,7 +776,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -788,7 +785,7 @@
     {{--MODAL PB--}}
     <div class="modal fade" id="m-pb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>PB</h5>
@@ -799,7 +796,7 @@
                             <div class="">
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12 fixed_header"
                                        id="table-pb">
-                                    <thead class="thead-dark">
+                                    <thead class="theadDataTables">
                                     <tr>
                                         <th class="text-center"
                                             style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid"
@@ -857,7 +854,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -866,7 +863,7 @@
     {{--MODAL SO--}}
     <div class="modal fade" id="m-so" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 800px;">
                     <div class="row">
@@ -880,7 +877,7 @@
                             <div class="row">
                                 <div class="col">
                                     <table class="table table-sm justify-content-md-center col-sm-12 " id="table-so">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr>
                                             <th width="10%" class="text-center small">Qty SO</th>
                                             <th width="10%" class="text-center small">Qty LPP</th>
@@ -925,7 +922,7 @@
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm justify-content-md-center col-sm-12"
                                                id="table-detailadj">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr>
                                                 <th width="10%" class="text-center small">Seq</th>
                                                 <th width="20%" class="text-center small">Qty Adj</th>
@@ -962,7 +959,7 @@
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm justify-content-md-center col-sm-12 "
                                                id="table-soic">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr>
                                                 <th width="10%" class="text-center small">Tgl SO</th>
                                                 <th width="10%" class="text-center small">Kode SO</th>
@@ -997,7 +994,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="btn-cetak-soic">Cetak</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -1006,7 +1003,7 @@
     {{--MODAL Harga Beli--}}
     <div class="modal fade" id="m-hargabeli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" style="max-width: 90%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 90%" role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 1000px;">
                     <fieldset class="card border-secondary col-sm-12">
@@ -1159,7 +1156,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btn-hb-prev"><<< PREV</button>
                     <button type="button" class="btn btn-secondary" id="btn-hb-next">NEXT >>></button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -1168,7 +1165,7 @@
     {{--MODAL Stock Carton--}}
     <div class="modal fade" id="m-stockcarton" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal" role="document">
             <div class="modal-content" style="max-height: 70%;">
                 <div class="modal-header">
                     <h5>Stock Carton</h5>
@@ -1177,7 +1174,7 @@
                     <input type="text" class="form-control text-center" id="title-stock-carton" disabled>
                     <div class="row">
                         <table class="table table-sm justify-content-md-center m-2" id="table-stockcarton">
-                            <thead class="thead-dark">
+                            <thead class="theadDataTables">
                             <tr>
                                 <th class="text-center small">Status Barang</th>
                                 <th class="text-center small">Carton</th>
@@ -1201,55 +1198,15 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{--LOADING--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-
-        label {
-            color: #232443;
-            /*color: #8A8A8A;*/
-            font-weight: bold;
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
         .my-custom-scrollbar {
             position: relative;
             height: 300px;
@@ -1259,12 +1216,6 @@
 
         .table-wrapper-scroll-y {
             display: block;
-        }
-
-        .row_lov:hover {
-            cursor: pointer;
-            background-color: grey;
-            color: white;
         }
     </style>
 
@@ -1276,11 +1227,11 @@
 
             var e = $.Event("keypress");
             e.keyCode = 13;
-            // $('#input').val('1208840');//1358840//1344890//0079630
-            // $('#input').trigger(e);
-            // $('#m-pb').modal();
+
+            $('#modal_table_plu').DataTable()
 
         });
+
         cetakso = {};
         cetak = {};
         hbke = 0;
@@ -1779,7 +1730,6 @@
 
                     },
                     complete:
-
                         function () {
                             if ($('#m_pluHelp').is(':visible')) {
                                 $('#search_lov').val('');
@@ -1789,8 +1739,7 @@
                             $('#modal-loader').modal('hide');
                         }
                 }
-            )
-            ;
+            );
         }
 
         var trlov = $('#table_lov tbody').html();

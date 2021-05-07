@@ -1,12 +1,12 @@
 @extends('navbar')
+@section('title','MASTER | MASTER APPROVAL')
 @section('content')
 
 
-    <div class="container">
+    <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-sm-10">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Approval</legend>
+            <div class="col-sm-12">
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row justify-content-md-center">
                             <label for="i_storemanager" class="col-sm-3 col-form-label text-right">Store Manager</label>
@@ -34,33 +34,14 @@
                         </div>
                         <br>
                         <div class="row text-right justify-content-md-center">
-                            <div class="col-sm-7"></div>
-                            <button class="btn btn-primary col-sm-1" id="btn-save" onclick="saveData()">SAVE</button>
+                            <div class="col-sm-6"></div>
+                            <button class="btn btn-primary col-sm-2" id="btn-save" onclick="saveData()">SAVE</button>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
-
-    <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-    </style>
 
     <script>
         function saveData() {
@@ -95,6 +76,9 @@
                             icon: "warning"
                         });
                     }
+                }, error: function (err) {
+                    console.log(err.responseJSON.message.substr(0,150));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             });
         }

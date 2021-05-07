@@ -1,12 +1,12 @@
 @extends('navbar')
+@section('title','MASTER | MASTER PERUSAHAAN')
 @section('content')
 
 
-    <div class="container mt-3">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Perusahaan</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row" id="layar-1">
@@ -218,83 +218,25 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-                </fieldset>
-                <br>
-                <div class="form-group row">
-                    <label for="i_layar" class="col-sm-2 col-form-label"  id="lbl-layar">Layar 1/2</label>
-                    <div class="col-sm-10">
-                        <div class="float-right">
-                            {{--<button class="btn btn-primary" id="btn-rekam1">Rekam</button>--}}
-                            {{--<button class="btn btn-primary" id="btn-rekam2">Rekam</button>--}}
-                            <button class="btn btn-primary" id="btn-pindah">Pindah Layar</button>
+                        <div class="form-group row mt-3">
+                            <label for="i_layar" class="col-sm-2 col-form-label"  id="lbl-layar">Layar 1/2</label>
+                            <div class="col-sm-10">
+                                <div class="float-right">
+                                    {{--<button class="btn btn-primary" id="btn-rekam1">Rekam</button>--}}
+                                    {{--<button class="btn btn-primary" id="btn-rekam2">Rekam</button>--}}
+                                    <button class="btn btn-primary" id="btn-pindah">Pindah Layar</button>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="m_kodecabangHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table">
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr><tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr><tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
             </div>
         </div>
     </div>
 
 
-    <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            /*color: #8A8A8A;*/
-            font-weight: bold;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-    </style>
+
 
     <script>
 

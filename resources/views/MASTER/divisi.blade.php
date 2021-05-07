@@ -1,12 +1,12 @@
 @extends('navbar')
+@section('title','MASTER | MASTER DIVISI')
 @section('content')
 
 
-    <div class="container mt-3">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Divisi</legend>
+                <div class="card border-secondary">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row text-right">
                             <div class="col-sm-12">
@@ -46,52 +46,27 @@
                                         <input type="email" class="form-control" id="i_singkatannamadivisi">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary" id="btn-prev" onclick="divisi_detail('prev')">PREV</button>
+                                        <button class="btn btn-primary" id="btn-next" onclick="divisi_detail('next')">NEXT</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </fieldset>
-                <br>
-                <div class="form-group row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-secondary" id="btn-prev" onclick="divisi_detail('prev')">PREV</button>
-                        <button class="btn btn-secondary" id="btn-next" onclick="divisi_detail('next')">NEXT</button>
-                    </div>
                 </div>
+                <br>
+{{--                <div class="form-group row">--}}
+{{--                    <div class="col-sm-12">--}}
+{{--                        <button class="btn btn-primary" id="btn-prev" onclick="divisi_detail('prev')">PREV</button>--}}
+{{--                        <button class="btn btn-primary" id="btn-next" onclick="divisi_detail('next')">NEXT</button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
             </div>
         </div>
     </div>
 
-
-
-
-    <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            font-weight: bold;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .row_divisi:hover{
-            cursor: pointer;
-            background-color: grey;
-        }
-
-
-    </style>
 
     <script>
         $(':input').prop('readonly',true);

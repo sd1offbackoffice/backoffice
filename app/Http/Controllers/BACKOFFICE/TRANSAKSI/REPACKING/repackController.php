@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\DataTables;
 
 class repackController extends Controller
 {
@@ -113,6 +114,20 @@ class repackController extends Controller
 
     }
 
+    public function ModalNmrTrn(Request $request){
+
+        $datas = DB::table('tbTr_BackOffice')
+            ->selectRaw('distinct TRBO_NODOC as TRBO_NODOC')
+            ->selectRaw('TRBO_TGLDOC')
+            ->selectRaw("CASE WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA ELSE 'Belum Cetak Nota' END NOTA")
+            ->where('TRBO_TYPETRN','=','P')
+            ->orderByDesc('TRBO_NODOC')
+            ->limit(100)
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
     public function getNmrTrn(Request $request){
         $search = $request->val;
 
@@ -121,10 +136,8 @@ class repackController extends Controller
             ->selectRaw('TRBO_TGLDOC')
             ->selectRaw("CASE WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA ELSE 'Belum Cetak Nota' END NOTA")
             ->where('TRBO_TYPETRN','=','P')
-            ->where('TRBO_NODOC','LIKE', '%'.$search.'%')
-            ->orderByDesc('TRBO_NODOC')
-            ->limit(100)
-            ->get();
+            ->where('TRBO_NODOC','=', $search)
+            ->first();
 
         return response()->json($datas);
     }

@@ -1,12 +1,11 @@
 @extends('navbar')
+@section('title','MASTER | MASTER KATEGORI TOKO')
 @section('content')
 
-
-    <div class="container">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Kategori Toko</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="form-group row">
                             <label for="i_class_kodeigr" class="col-sm-3 col-form-label text-right">CLASS KODEIGR &nbsp;</label>
@@ -29,58 +28,23 @@
                             <label for="i_keterangan" class="col-sm-3 col-form-label text-right">Keterangan</label>
                             <input style="text-transform: uppercase;" type="text" class="col-sm-5 form-control" id="i_keterangan" placeholder="...">
                         </div>
-                    </div>
-                </fieldset>
-                <br>
-                <div class="form-group row">
-                    <div class="col-sm-12">
-                        <button class="btn btn-secondary" id="btn-previous">PREV</button>
-                        <button class="btn btn-secondary" id="btn-next">NEXT</button>
-                        <div class="float-right">
-                            <button class="btn btn-success" id="btn-new" onclick="new_record()">NEW</button>
-                            <button class="btn btn-primary" id="btn-save" onclick="save_record()">SAVE</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12">
-                                <label for="">LOADING...</label>
+
+                        <div class="form-group row mt-3">
+                            <div class="col-sm-3">
+                                <button class="btn btn-outline-primary" id="btn-previous">PREV</button>
+                                <button class="btn btn-outline-primary" id="btn-next">NEXT</button>
                             </div>
+                            <div class="col-sm-2 offset-sm-5"><button class="btn btn-primary btn-block" id="btn-new" onclick="new_record()">NEW</button></div>
+                            <div class="col-sm-2"><button class="btn btn-primary btn-block" id="btn-save" onclick="save_record()">SAVE</button></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            /*color: #8A8A8A;*/
-            font-weight: bold;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
         .custom-checkbox{
             width: 24px;
             margin-top: 6px!important;
@@ -123,6 +87,7 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function(response){
+                    $('#modal-loader').modal('hide');
                     $('#i_kodekategoritoko').prop( "disabled", true );
                     count_data = response.length;
                     clear_value();
@@ -135,9 +100,10 @@
                         }
                     }
 
-                },
-                complete: function(){
+                }, error: function(err){
                     $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             });
         }
@@ -213,6 +179,7 @@
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (response) {
+                        $('#modal-loader').modal('hide');
                         if (response == 'save') {
                             swal({
                                 title: "Data Berhasil Tersimpan!",
@@ -236,9 +203,10 @@
                             newr=0;
                         }
                         get_kategoritoko();
-                    },
-                    complete: function(){
+                    }, error: function(err){
                         $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0,100));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 });
             }

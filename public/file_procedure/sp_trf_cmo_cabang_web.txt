@@ -1,0 +1,165 @@
+CREATE OR REPLACE PROCEDURE sp_trf_cmo_cabang_web (
+   p_file     IN     VARCHAR2,
+   p_sukses      OUT VARCHAR2,
+   p_result      OUT VARCHAR2)
+IS
+   f            UTL_FILE.file_type;
+   v_line       VARCHAR2 (30000);
+   line         NUMBER;
+   pathcmo      VARCHAR2 (200);
+
+   TYPE cmocabang IS TABLE OF TBTEMP_CMO_CABANG%ROWTYPE;
+
+   cmocabang1   cmocabang;
+BEGIN
+   p_result := '';
+
+   SELECT db_harian_folder INTO pathcmo FROM igr_setup_db;
+
+   DELETE FROM TEMP_CMO_CABANG;
+
+   INSERT INTO temp_CMO_CABANG
+      SELECT * FROM TBTEMP_CMO_CABANG;
+
+   DELETE FROM TBTEMP_CMO_CABANG;
+
+   host_command (
+      p_command   =>    '/bin/mv '
+                     || pathcmo
+                     || p_file
+                     || ' '
+                     || pathcmo
+                     || SUBSTR (p_file, -20, 17)
+                     || '.ZIP');
+
+   unzip (pathcmo || SUBSTR (p_file, 1, LENGTH (p_file) - 3) || '.ZIP',
+          pathcmo,
+          'PRG');
+
+   host_command (
+      p_command   =>    '/bin/rm '
+                     || pathcmo
+                     || SUBSTR (p_file, 1, LENGTH (p_file) - 3)
+                     || '.ZIP');
+
+   cmocabang1 := cmocabang ();
+
+   f :=
+      UTL_FILE.fopen ('TRF_MCG',
+                      SUBSTR (p_file, 1, LENGTH (p_file) - 3) || '.CSV',
+                      'R');
+   cmocabang1.EXTEND (1);
+
+   IF UTL_FILE.is_open (f)
+   THEN
+      line := 1;
+
+      LOOP
+         BEGIN
+            UTL_FILE.get_line (f, v_line, 30000);
+
+            IF v_line IS NULL
+            THEN
+               EXIT;
+            END IF;
+
+            IF line = 1
+            THEN
+               NULL;
+            ELSE
+               v_line := ' ' || v_line;
+
+               cmocabang1 (line - 1).CMC_DC :=
+                  TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                       '[^|]+',
+                                       1,
+                                       1));
+
+               cmocabang1 (line - 1).CMC_INDUK :=
+                  TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                       '[^|]+',
+                                       1,
+                                       2));
+
+               cmocabang1 (line - 1).CMC_ANAK :=
+                  TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                       '[^|]+',
+                                       1,
+                                       3));
+
+               cmocabang1 (line - 1).CMC_NAMAANAK :=
+                  REPLACE (
+                     REPLACE (
+                        TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                             '[^|]+',
+                                             1,
+                                             4)),
+                        CHR (13),
+                        ''),
+                     CHR (10),
+                     '');
+
+               cmocabang1.EXTEND (1);
+            END IF;
+
+            line := line + 1;
+         EXCEPTION
+            WHEN NO_DATA_FOUND
+            THEN
+               EXIT;
+         END;
+      END LOOP;
+
+      UTL_FILE.fclose (f);
+
+      FORALL i IN 1 .. line - 1
+         INSERT INTO TBTEMP_CMO_CABANG (CMC_DC,
+                                        CMC_INDUK,
+                                        CMC_ANAK,
+                                        CMC_NAMAANAK)
+              VALUES (cmocabang1 (i).CMC_DC,
+                      cmocabang1 (i).CMC_INDUK,
+                      cmocabang1 (i).CMC_ANAK,
+                      cmocabang1 (i).CMC_NAMAANAK);
+
+      MERGE INTO tbmaster_cabang
+           USING (SELECT * FROM TBTEMP_CMO_CABANG)
+              ON (cmc_induk = cab_kodecabang)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            cab_kodecabang_anak = CMC_ANAK,
+            cab_namacabang_anak = CMC_NAMAANAK;
+
+      UPDATE tbmaster_cabang
+         SET cab_kodewilayah_anak = cab_kodewilayah,
+             cab_singkatancabang_anak = cab_singkatancabang
+       WHERE cab_kodecabang = cab_kodeigr;
+   END IF;
+
+   host_command (p_command => '/bin/mkdir /u01/lhost/trf_mcg/CMO/');
+
+   host_command (
+      p_command   =>    '/bin/mv /u01/lhost/trf_mcg/'
+                     || SUBSTR (p_file, 1, LENGTH (p_file) - 4)
+                     || '.csv'
+                     || ' /u01/lhost/trf_mcg/CMO/'
+                     || SUBSTR (p_file, 1, LENGTH (p_file) - 4)
+                     || '.csv');
+
+   host_command (p_command => '/bin/rm ' || pathcmo || p_file);
+
+   p_sukses := '1';
+   COMMIT;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      DBMS_OUTPUT.put_line ('TRF_CMO_CAB : ERROR = ' || SQLERRM);
+      p_sukses := '0';
+      p_result := p_result || 'TRF_CMO_CAB : ERROR = ' || SQLERRM;
+END;
+/
+
+ALTER PROCEDURE sp_trf_cmo_cabang_web COMPILE;
+/

@@ -1,12 +1,12 @@
 @extends('navbar')
+@section('title','MASTER | MASTER KUBIKASI PLANO')
 @section('content')
 
 
-    <div class="container">
+    <div class="container mt-4">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Kubikasi Plano</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row cek">
                             <div class="col-sm-7 p-0">
@@ -15,28 +15,36 @@
                                     <div class="card-body">
                                         <div class="row ">
                                             <label for="i_koderak" class="col-sm-4 col-form-label text-right">KODE RAK :</label>
-                                            <input type="text" class="col-sm-4 form-control" id="i_koderak" placeholder="..." value="" >
-                                            <div class="col-sm-1 m-0">
-                                                <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_koderak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            <div class="col-sm-4 buttonInside">
+                                                <input type="text" class="form-control" id="i_koderak" placeholder="..." value="" >
+                                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_koderak">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
                                             <div class="col-sm-1">
-                                                <button class="btn btn-success" id="btn-clear" onclick="clear_data()">CLEAR</button>
+                                                <button class="btn btn-primary" id="btn-clear" onclick="clear_data()">CLEAR</button>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <label for="i_subrak" class="col-sm-4 col-form-label text-right">SUB RAK :</label>
-                                            <input type="text" class="col-sm-4 form-control" id="i_subrak" placeholder="..." value="" >
-                                            <div class="col-sm-1 m-0">
-                                                <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_subrak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            <div class="col-sm-4 buttonInside">
+                                                <input type="text" class="form-control" id="i_subrak" placeholder="..." value="" >
+                                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_subrak">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <label for="i_shelving" class="col-sm-4 col-form-label text-right">SHELVING :</label>
-                                            <input type="text" class="col-sm-4 form-control" id="i_shelving" placeholder="..." value="" >
-                                            <div class="col-sm-1 m-0">
-                                                <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_shelving"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                            <div class="col-sm-4 buttonInside">
+                                                <input type="text" class="form-control" id="i_shelving" placeholder="..." value="" >
+                                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_shelving">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <label for="i_kosongsemua" class="col-sm-3 col-form-label text-right" ><small>* kosong = semua</small></label>
+                                            <div class="col-sm-3">
+                                                <label for="i_kosongsemua" class="col-form-label text-right" ><small>* kosong = semua</small></label>
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -45,10 +53,17 @@
                                 <legend  class="w-auto ml-3 h5 "><u>Simulasi BPB</u></legend>
                                 <div class="row ">
                                     <label for="i_plu" class="col-sm-4 col-form-label text-right" >PLU :</label>
-                                    <input type="text" class="col-sm-6 form-control" id="i_plu" onclick="validate()" placeholder="..." value="" disabled>
-                                    <div class="col-sm-1 m-0">
-                                        <button type="button" id="btn-plu" class="btn p-0" data-toggle="modal" data-target="#m_pluHelp" disabled><img src="{{asset('image/icon/help.png')}}" width="30px" ></button>
+                                    <div class="col-sm-6 buttonInside" style="margin-left: -15px">
+                                        <input type="text" class="form-control" id="i_plu" onclick="validate()" placeholder="..." value="" disabled>
+                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp" disabled>
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                        </button>
                                     </div>
+
+{{--                                    <input type="text" class="col-sm-6 form-control" id="i_plu" onclick="validate()" placeholder="..." value="" disabled>--}}
+{{--                                    <div class="col-sm-1 m-0">--}}
+{{--                                        <button type="button" id="btn-plu" class="btn p-0" data-toggle="modal" data-target="#m_pluHelp" disabled><img src="{{asset('image/icon/help.png')}}" width="30px" ></button>--}}
+{{--                                    </div>--}}
                                 </div>
                                 <div class="row">
                                     <label for="i_deskripsi" class="col-sm-4 col-form-label text-right">DESKRIPSI :</label>
@@ -75,7 +90,7 @@
                                     <legend  class="w-auto ml-3 h5 ">KUBIKASI</legend>
                                     <div class="card-body p-1 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm table-striped table-bordered display compact" id="table_kubikasi">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr class="thNormal text-center">
                                                 <th class="text-center small">Koderak</th>
                                                 <th class="text-center small">Sub Rak</th>
@@ -97,28 +112,32 @@
                             </div>
                             <br>
                             <label for="ket_save"></label>
-                            <div class="col-sm-12 ">
-                                    <button class="btn btn-primary float-right mt-1" id="btn-save">SAVE</button>
+                            <div class="col-sm-2 offset-sm-10">
+                                    <button class="btn btn-primary btn-block mt-3" id="btn-save">SAVE</button>
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal LOV kode rak -->
     <div class="modal fade" id="m_koderak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Rak</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" style="height: 650px">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-sm" id="table_lovkoderak">
-                                    <thead class="thead-dark" width="1000px">
+                                    <thead class="theadDataTables" width="1000px">
                                         <tr>
                                             <th>Kode Rak</th>
                                         </tr>
@@ -135,22 +154,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
 
     <!-- Modal LOV sub rak -->
     <div class="modal fade" id="m_subrak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Sub Rak</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" style="height: 650px">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-sm" id="table_lovsubrak">
-                                    <thead class="thead-dark" width="1000px">
+                                    <thead class="theadDataTables" width="1000px">
                                     <tr>
                                         <th width="75%">Kode Rak</th>
                                         <th width="25%">Sub Rak</th>
@@ -163,22 +187,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
 
     <!-- Modal LOV shelving -->
     <div class="modal fade" id="m_shelving" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Shelving</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" style="height: 650px">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-sm" id="table_lovshelving">
-                                    <thead class="thead-dark" width="1000px">
+                                    <thead class="theadDataTables" width="1000px">
                                     <tr>
                                         <th>Kode Rak</th>
                                         <th>Sub Rak</th>
@@ -192,27 +221,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
+
     <!-- Modal PLU-->
     <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Master Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table" id="table_lov">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
                                         <td>Deskripsi</td>
                                         <td>PLU</td>
@@ -232,73 +261,18 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-{{--LOADER--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            /*color: #8A8A8A;*/
-            font-weight: bold;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
         .my-custom-scrollbar {
             position: relative;
             height: 517px;
             overflow-x: hidden;
             overflow-y: scroll;
-        }
-        .table-wrapper-scroll-y {
-            display: block;
-        }
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
-        }
-        .row_lov_subrak:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
-        }
-        .row_lov_shelving:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
         }
         .red{
             background-color: #ff000094 !important;
@@ -358,6 +332,10 @@
                             '</tr>'
                             );
                     }
+                }, error: function(err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');
@@ -389,6 +367,10 @@
                             '</tr>'
                         );
                     }
+                }, error: function(err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');
@@ -499,6 +481,10 @@
                                 }).then((createData) => {
                                 });
                             }
+                        }, error: function(err){
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         },
                         complete: function(){
                             $('#modal-loader').modal('hide');
@@ -569,9 +555,10 @@
                         );
                     }
                     null_check();
-                },
-                error: function(response){
-                    console.log(response);
+                },error: function(err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');
@@ -719,7 +706,12 @@
                                 trlov += html;
                                 $('#table_lov').append(html);
                             }
-                        }
+                        },
+                        error: function(err){
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
+                        },
                     });
                 }
                 else{
@@ -887,6 +879,10 @@
                         icon: response.status
                     }).then((createData) => {
                     });
+                }, error: function(err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');

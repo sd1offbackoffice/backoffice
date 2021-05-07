@@ -1,15 +1,15 @@
 @extends('navbar')
+@section('title','MASTER | MASTER HARGA BELI')
 @section('content')
-    <head>
-        <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
-    </head>
+{{--    <head>--}}
+{{--        <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
+{{--    </head>--}}
 
 
-    <div class="container col-sm-7 pr-5 pl-5">
-        <div class="row">
-            <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Harga Beli</legend>
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm pt-0">
                         <form>
                             <div class="row text-right">
@@ -18,10 +18,13 @@
                                         <legend  class="w-auto ml-5 text-left"><small>Header Harga Beli</small></legend>
                                         <div class="form-group row mb-0">
                                             <label for="i_plu" class="col-sm-2 col-form-label">PLU</label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 buttonInside">
                                                 <input type="text" class="form-control" id="i_plu">
+                                                <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp">
+                                                    <img src="{{asset('image/icon/help.png')}}" width="30px">
+                                                </button>
                                             </div>
-                                            <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+
                                             <div class="col-sm-7 pr-0">
                                                 <input type="text" class="form-control" id="i_deskripsipanjang">
                                             </div>
@@ -240,7 +243,7 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label">DISC 3</label>
-                                            <div class="col-sm-1 pr-0 number>
+                                            <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc3">
                                             </div>
                                             <label for="i_disc3" class="col-form-label text-right">%</label>
@@ -521,42 +524,33 @@
                             </div>
                         </form>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
 
-
     <!-- Modal -->
     <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Master Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm" id="table_lov">
-                                    <thead>
+                                <table class="table table-sm table-striped table-bordered" id="table_plu">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Deskripsi</td>
-                                        <td>PLU</td>
+                                        <th>Deskripsi</th>
+                                        <th>PLU</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($produk as $p)
-                                        <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">
-                                            <td>{{ $p->prd_deskripsipanjang }}</td>
-                                            <td>{{ $p->prd_prdcd }}</td>
-                                        </tr>
-                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -571,36 +565,6 @@
 
 
     <style>
-        body {
-            background-color: #edece9;
-            /*overflow: hidden;*/
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            font-weight: bold;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
-        }
-
-        .search_lov{
-            /*text-transform: uppercase;*/
-        }
-
         .number input{
             text-align: right;
         }
@@ -609,6 +573,34 @@
     </style>
 
     <script>
+        $(document).ready(function () {
+            $('#table_plu').DataTable({
+                "ajax": '{{ url('msthargabeli/getprodmast') }}',
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
+        });
+
+        $(document).on('click', '.modalRow', function () {
+            let plu = $(this).find('td')[1]['innerHTML']
+
+            lov_select(plu);
+        } );
 
         var trlov = $('#table_lov tbody').html();
 

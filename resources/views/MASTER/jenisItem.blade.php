@@ -1,25 +1,27 @@
 @extends('navbar')
+@section('title','MASTER | MASTER JENIS ITEM')
 @section('content')
 
-
-    <div class="container">
-        <div class="row justify-content-sm-center">
-            <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Jenis Item</legend>
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <fieldset class="card border-secondary">
                             <legend  class="w-auto ml-3 h5 ">Input Jenis Rak Untuk PLU Planogram</legend>
                             <div class="card-body">
                                 <div class="row ">
-                                        <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
-                                        {{--<div class="col-sm-1 row">--}}
-                                            <input type="text"  class="col-sm-1 form-control" id="i_pluplanogram" placeholder="..." value="">
-                                        {{--</div>--}}
-                                        <input type="text" class="col-sm-5 form-control" disabled id="i_deskripsi" >
-                                        <button type="button" class="btn p-0 text-left" data-toggle="modal" data-target="#m_pluHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                        <div class="col-sm-1"></div>
-                                        <button class="btn btn-primary col-sm-1" id="btn-save" onclick="save()">SAVE</button>
+                                    <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
+                                    <div class="col-sm-2 buttonInside" style="margin-left: -15px">
+                                        <input type="text"  class="form-control" id="i_pluplanogram" placeholder="..." value="">
+                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_pluHelp">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                        </button>
+                                    </div>
+                                    <input type="text" class="col-sm-5 form-control" disabled id="i_deskripsi" >
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary btn-block" id="btn-save" onclick="save()">SAVE</button>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <label for="i_unitfrac" class="col-sm-3 col-form-label text-right">Unit/Frac</label>
@@ -46,7 +48,7 @@
                                     <legend  class="w-auto ml-3 h5 ">Trend Sales</legend>
                                     <div class="card-body pt-0 pb-0">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-barcode">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr class="row justify-content-md-center">
                                                 <th class="col-sm-2"></th>
                                                 <th class="col-sm-4 text-center small">QTY</th>
@@ -196,7 +198,7 @@
                                     <legend  class="w-auto ml-3 h5">Daftar PO Yang Masih Aktif</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-po">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr class="row justify-content-md-center">
                                                 <th class="col-sm-5 text-center small">Nomor PO</th>
                                                 <th class="col-sm-5 text-center small">Tanggal PO</th>
@@ -225,7 +227,7 @@
                                     <legend  class="w-auto ml-3 h5">Daftar Lokasi PLU</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-lokasi-plu">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr class="row justify-content-md-center">
                                                 <th class="col-sm-4 text-center small">Lokasi PLU</th>
                                                 <th class="col-sm-2 text-center small">Jenis</th>
@@ -264,7 +266,7 @@
                                     <legend  class="w-auto ml-3 h5 ">Stock</legend>
                                     <div class="card-body p-1">
                                         <table class="table border-bottom  justify-content-md-center p-0" id="table-stock">
-                                            <thead class="thead-dark">
+                                            <thead class="theadDataTables">
                                             <tr class="justify-content-md-center">
                                                 <th class="text-center small">LOKASI</th>
                                                 <th class="text-center small">AWAL</th>
@@ -318,7 +320,7 @@
                                     <div class="col-sm-1">
                                     </div>
                                     <table class="table border-bottom col-sm-6 justify-content-md-center" id="table-barcode">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr class="justify-content-md-center">
                                             <th class="text-center">AVERAGE SALES</th>
                                         </tr>
@@ -338,40 +340,39 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Master Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col lov">
-                                <table class="table" id="table_lov">
-                                    <thead>
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalPlu">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Deskripsi</td>
-                                        <td>PLU</td>
+                                        <th>Deskripsi</th>
+                                        <th>PLU</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($produk as $p)
-                                        <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">
-                                            <td>{{ $p->prd_deskripsipanjang }}</td>
-                                            <td>{{ $p->prd_prdcd }}</td>
-                                        </tr>
-                                    @endforeach
+{{--                                    @foreach($produk as $p)--}}
+{{--                                        <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">--}}
+{{--                                            <td>{{ $p->prd_deskripsipanjang }}</td>--}}
+{{--                                            <td>{{ $p->prd_prdcd }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
                                     </tbody>
                                 </table>
                             </div>
@@ -379,8 +380,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -390,14 +389,17 @@
         <div class="modal-dialog modal-dialog-scrollable modal-xl " role="document" >
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>TABEL PENERIMAAN</h4>
+                    <h5 class="modal-title">Table Penerimaan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" style="height: 650px">
                     <div class="container">
                         <div class="row">
                             <div class="col">
                                 <table class="table table-sm table-striped table-bordered display compact" id="table_penerimaan">
-                                    <thead class="thead-dark">
+                                    <thead class="theadDataTables">
                                     <tr class="thNormal text-center">
                                         <th width="20%">Supplier</th>
                                         <th width="10%">Qty BPB</th>
@@ -447,73 +449,47 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            /*color: #8A8A8A;*/
-            font-weight: bold;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-        .my-custom-scrollbar {
-            position: relative;
-            height: 517px;
-            overflow-x: hidden;
-            overflow-y: scroll;
-        }
-        .table-wrapper-scroll-y {
-            display: block;
-        }
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
-        }
-    </style>
 
     <script>
         $(document).ready(function () {
+            $('#tableModalPlu').DataTable({
+                "ajax": '{{ url('mstjenisitem/getprodmast') }}',
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
             // $('#table_penerimaan').DataTable({
             //     "lengthChange": false,
             //     "pageLength": 15,
             //     "order": [[ 5, "asc" ]]
             // });
         });
+
+
+        $(document).on('click', '.modalRow', function () {
+            let plu = $(this).find('td')[1]['innerHTML']
+
+            lov_select(plu)
+        } );
+
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
         $('#i_pluplanogram').keypress(function(e) {
             if (e.keyCode == 13) {
@@ -544,6 +520,7 @@
             }
             $('#i_pluplanogram').val(plu);
         }
+
         function get_data(value) {
             $.ajax({
                 url: '/BackOffice/public/api/mstjenisitem/lov_select',
@@ -555,6 +532,7 @@
                 },
                 success: function(response){
                     console.log(response);
+                    $('#modal-loader').modal('hide');
                     $('#i_pluplanogram').val(value);
                     $('#i_deskripsi').val(response['produk']['prd_deskripsipanjang']);
                     $('#i_unitfrac').val(response['produk']['prd_unit']+'/'+response['produk']['prd_frac']);
@@ -634,13 +612,17 @@
                     null_check();
                     }
                 },
+                error : function (err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                },
                 complete: function(){
                     if($('#m_pluHelp').is(':visible')){
                         $('#search_lov').val('');
                         $('#table_lov .row_lov').remove();
                         $('#table_lov').append(trlov);
                     }
-                    $('#modal-loader').modal('hide');
                 }
             });
         }
@@ -672,6 +654,9 @@
                                 trlov += html;
                                 $('#table_lov').append(html);
                             }
+                        }, error : function (err){
+                            console.log(err.responseJSON.message.substr(0,150));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     });
                 }
@@ -705,6 +690,9 @@
                             icon: response['status']
                         }).then((createData) => {
                         });
+                    }, error : function (err){
+                        console.log(err.responseJSON.message.substr(0,150));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 });
 

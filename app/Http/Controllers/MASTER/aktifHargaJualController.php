@@ -6,24 +6,18 @@ use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class aktifHargaJualController extends Controller
 {
     public function index(){
-        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')->orderBy('prd_prdcd')->limit(100)->get()->toArray();
-
-        return view('MASTER.aktifHargaJual', compact('prodmast'));
+        return view('MASTER.aktifHargaJual');
     }
 
-    public function getProdmast(Request $request){
-        $search     = strtoupper($request->search);
-        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
-            ->where('prd_deskripsipanjang','LIKE', '%'.$search.'%')
-            ->orWhere('prd_prdcd','LIKE', '%'.$search.'%')
-            ->orderBy('prd_prdcd')
-            ->get()->toArray();
+    public function getProdmast(){
+        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')->orderBy('prd_prdcd')->get()->toArray();
 
-        return response()->json($prodmast);
+        return Datatables::of($prodmast)->make(true);
     }
 
     public function getDetailPlu(Request $request){

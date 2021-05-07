@@ -1,12 +1,12 @@
 @extends('navbar')
+@section('title','MASTER | MASTER LOKASI')
 @section('content')
 
 
-    <div class="container-fluid mt-3 ml-0 mr-0">
+    <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-sm-12 pl-5 pr-5">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Lokasi</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <label for="lks_koderak" class="col-sm-1 col-form-label">KODE RAK</label>
@@ -257,7 +257,7 @@
                         </div>
 
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -265,6 +265,12 @@
     <div class="modal fade" id=m_input_noid tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Entry Master DPD</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <fieldset class="card border-secondary">
@@ -328,25 +334,25 @@
     </div>
 
     <div class="modal fade" id="m_lov_rak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="i_lov_rak" class="form-control search_lov" type="text" placeholder="Inputkan Rak" aria-label="Search">
-                        <div class="invalid-feedback"></div>
-                    </div>
+                    <h5 class="modal-title">Master Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm mb-0" id="table_lov_rak">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>RAK</td>
-                                        <td>SUB RAK</td>
-                                        <td>TIPE</td>
-                                        <td>SHELV</td>
+                                        <th>RAK</th>
+                                        <th>SUB RAK</th>
+                                        <th>TIPE</th>
+                                        <th>SHELV</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -364,39 +370,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="i_lov_plu" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Data Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm" id="table_lov_plu">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
                                         <td>PLU</td>
                                         <td>Deskripsi</td>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($produk as $p)
-                                        <tr onclick="lov_plu_select('{{ $p->prd_prdcd }}')" class="row_lov">
-                                            <td>{{ $p->prd_prdcd }}</td>
-                                            <td>{{ $p->prd_deskripsipanjang }}</td>
-                                        </tr>
-                                    @endforeach
+{{--                                    @foreach($produk as $p)--}}
+{{--                                        <tr onclick="lov_plu_select('{{ $p->prd_prdcd }}')" class="row_lov">--}}
+{{--                                            <td>{{ $p->prd_prdcd }}</td>--}}
+{{--                                            <td>{{ $p->prd_deskripsipanjang }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
                                     </tbody>
                                 </table>
                             </div>
@@ -410,74 +415,12 @@
     </div>
 
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            font-weight: bold;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .number input{
-            text-align: right;
-        }
-
-        .no-border th{
-            border: none;
-        }
-
         .fix-height{
-            height: 200px;
+            height: 230px;
         }
 
         input{
             text-transform: uppercase;
-        }
-
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: #acacac;
-            color: white;
-        }
-
-
-        .buttonInside{
-            position:relative;
-        }
-        input{
-            height:25px;
-            width:100%;
-            padding-left:10px;
-            border-radius: 4px;
-            border:none;outline:none;
-        }
-        .btn-lov-plu{
-            position:absolute;
-            right: 4px;
-            top: 4px;
-            border:none;
-            height:30px;
-            width:30px;
-            border-radius:100%;
-            outline:none;
-            text-align:center;
-            font-weight:bold;
-
-        }
-        button:hover{
-            cursor:pointer;
         }
 
         .my-custom-scrollbar {
@@ -489,6 +432,65 @@
     </style>
 
     <script>
+
+        $(document).ready(function (){
+            {{--$('#table_lov_rak').DataTable({--}}
+            {{--    "ajax": '{{ url()->current().'/getlokasi' }}',--}}
+            {{--    "columns": [--}}
+            {{--        {data: 'lks_koderak', name: 'lks_koderak'},--}}
+            {{--        {data: 'lks_kodesubrak', name: 'lks_kodesubrak'},--}}
+            {{--        {data: 'lks_tiperak', name: 'lks_tiperak'},--}}
+            {{--        {data: 'lks_shelvingrak', name: 'lks_shelvingrak'},--}}
+
+            {{--    ],--}}
+            {{--    "paging": true,--}}
+            {{--    "lengthChange": true,--}}
+            {{--    "searching": true,--}}
+            {{--    "ordering": true,--}}
+            {{--    "info": true,--}}
+            {{--    "autoWidth": false,--}}
+            {{--    "responsive": true,--}}
+            {{--    "createdRow": function (row, data, dataIndex) {--}}
+            {{--        $(row).addClass('modalRow');--}}
+            {{--        $(row).attr('id', 'row_lov_rak_'+data[0])--}}
+            {{--    },--}}
+            {{--    "order": [],--}}
+            {{--    columnDefs : [--}}
+            {{--    ]--}}
+            {{--});--}}
+
+            $('#table_lov_rak').DataTable();
+
+            $('#table_lov_plu').DataTable({
+                "ajax": '{{ url()->current().'/getprodmast' }}',
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
+
+        });
+
+        $(document).on('click', '.modalRow', function () {
+            let plu = $(this).find('td')[0]['innerHTML'];
+
+            lov_plu_select(plu)
+        } );
+
+
         $('#table-s').hide();
         $('#table-s').removeClass('d-none');
         // $('#table-all').hide();
@@ -1255,6 +1257,10 @@
 
                         $('#dpd_noid').select();
                     });
+                },  error : function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,150));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             });
         }
@@ -1302,6 +1308,10 @@
 
                                 $('#dpd_noid').select();
                             });
+                        },  error : function (err) {
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,150));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     });
                 }
@@ -1361,6 +1371,10 @@
                                     title: response.message,
                                     icon: response.status,
                                 });
+                            },  error : function (err) {
+                                $('#modal-loader').modal('hide');
+                                console.log(err.responseJSON.message.substr(0,150));
+                                alertError(err.statusText, err.responseJSON.message);
                             }
                         });
                     }
@@ -1387,6 +1401,10 @@
                                     title: response.message,
                                     icon: response.status,
                                 });
+                            },  error : function (err) {
+                                $('#modal-loader').modal('hide');
+                                console.log(err.responseJSON.message.substr(0,150));
+                                alertError(err.statusText, err.responseJSON.message);
                             }
                         });
                     }
@@ -1822,6 +1840,10 @@
                             $('#table-tambah input').val('');
                             lov_rak_select('input');
                         })
+                    },  error : function (err) {
+                        $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0,150));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 });
             }

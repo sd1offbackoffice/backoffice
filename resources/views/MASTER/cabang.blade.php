@@ -1,19 +1,25 @@
 @extends('navbar')
+@section('title','MASTER | MASTER CABANG')
 @section('content')
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-sm-10">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">Master Cabang Form</legend>
+            <div class="col-sm-12">
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <form>
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="">Kode Cabang</label>
                                     <div class="row">
-                                        <input type="text" class="field field1 col-sm-3 form-control ml-3" id="i_kodeCabang" placeholder="..." field="1">
-                                        <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_kodecabangHelp"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
+                                        <div class="col-sm-5 buttonInside" >
+                                            <input type="text" class="field field1 form-control " id="i_kodeCabang" placeholder="..." field="1">
+                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_kodecabangHelp">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
+{{--                                        <input type="text" class="field field1 col-sm-3 form-control ml-3" id="i_kodeCabang" placeholder="..." field="1">--}}
+{{--                                        <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_kodecabangHelp"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
@@ -56,7 +62,6 @@
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label for="">Tgl. SK</label>
-                                    {{--<input type="text" class="field field10 form-control" id="i_tglSK" placeholder="..." field="10">--}}
                                     <input type="text" id="i_tglSK" class="field field10  form-control tanggal" field="10">
                                 </div>
                             </div>
@@ -73,15 +78,16 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-sm-4 offset-sm-8">
-                                    <button type="button" class="btn btnOKC" onclick="trfDataAnakCab()">Trf Data Anak Cabang</button>
-                                    <button type="button" class="field field13 btn btn-primary" onclick="editBranch()" field="13">Submit</button>
-                                    {{--<button type="button" class="field field13 btn btnSubmit" onclick="editBranch()" field="13">Submit</button>--}}
+                                <div class="form-group col-sm-3 offset-sm-6">
+                                    <button type="button" class="btn btnOKC btn-block btn-primary" onclick="trfDataAnakCab()">Trf Data Anak Cabang</button>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <button type="button" class="field field13 btn btn-primary btn-block" onclick="editBranch()" field="13">Submit</button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -94,24 +100,22 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th>Nama Cabang</th>
-                                            <th>Kode Cabang</th>
+                                <table class="table table-striped table-bordered" id="table_cabang">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Nama Cabang</th>
+                                        <th>Kode Cabang</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($getCabang as $data)
+                                        <tr onclick='chooseBranch("{{$data->cab_kodecabang}}")' class="row_lov">
+                                            <td>{{$data->cab_kodecabang}}</td>
+                                            <td>{{$data->cab_namacabang}}</td>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($getCabang as $data)
-                                            <tr onclick='chooseBranch("{{$data->cab_kodecabang}}")' class="modalRowBranch">
-                                                <td>{{$data->cab_kodecabang}}</td>
-                                                <td>{{$data->cab_namacabang}}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -123,41 +127,6 @@
     </div>
 
 
-    <style>
-            body {
-                background-color: #edece9;
-                /*background-color: #ECF2F4  !important;*/
-            }
-
-            label {
-                color: #232443;
-                /*color: #8A8A8A;*/
-                font-weight: bold;
-            }
-
-            .btnOKC{
-                border-color: #6c757d;
-            }
-
-            .btnSubmit {
-                background-color: #535353;
-                color: white;
-            }
-
-            .btnSubmit:hover{
-                background-color: #464545;
-                color: white;
-                border-color: #535353;
-            }
-
-            .modalRowBranch:hover{
-                cursor: pointer;
-                background-color: #acacac;
-            }
-
-        </style>
-
-
     <script>
         var globalVar = 0;
 
@@ -165,6 +134,8 @@
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy"
             });
+
+            $('#table_cabang').dataTable();
         });
 
         $(document).on('keypress', '.field', function (e) {
@@ -190,14 +161,20 @@
                 url: '/BackOffice/public/mstcabang/trfdataanakcab',
                 type: 'post',
                 data: {},
+                beforeSend : () => {
+                    $('#modal-loader').modal('show');
+                },
                 success: function (result) {
+                    $('#modal-loader').modal('hide');
                     if (result.kode === 1){
                         swal("SUKSES",result.msg, "success");
                     } else {
                         swal("Error",result.msg, "error");
                     }
-                }, error: function () {
-                    alert('error');
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -225,8 +202,10 @@
                 url: '/BackOffice/public/mstcabang/getdetailcabang',
                 type: 'post',
                 data:{kodeigr:kodeigr},
-                success: function (result) {
-                    // console.log(result)
+                beforeSend : function (){
+                    $('#modal-loader').modal('show');
+                }, success: function (result) {
+                    $('#modal-loader').modal('hide');
                     let data = result[0];
 
                     if (!data){
@@ -262,8 +241,10 @@
                         $('#i_namaAnakCabang').val(data.cab_namacabang_anak);
                         globalVar = 0;
                     }
-                }, error: function () {
-                    swal("Error","", "error");
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             });
         }
@@ -300,8 +281,10 @@
                             tgksk       : $('#i_tglSK').val(),
                             kodeanakcab : $('#i_kodeAnakCabang').val(),
                             namaanakcab : $('#i_namaAnakCabang').val(),
-                        },
-                        success: function (result) {
+                        }, beforeSend : function (){
+                            $('#modal-loader').modal('show');
+                        }, success: function (result) {
+                            $('#modal-loader').modal('hide');
                             swal({
                                 icon: 'success',
                                 title: result,
@@ -311,8 +294,10 @@
                             $('#i_kodeCabang').val('');
                             clearField();
                             $('#i_kodeCabang').focus();
-                        }, error: function () {
-                            swal("Error","", "error");
+                        }, error: function (err) {
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     })
                 } else {

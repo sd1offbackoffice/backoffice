@@ -5,15 +5,16 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <fieldset class="card">
-                    <legend class="w-auto ml-5">.:: [Header] ::.</legend>
+                <fieldset class="card border-dark">
+{{--                    <legend class="w-auto ml-5">.:: [Header] ::.</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <div class="col-sm-12">
                             <div class="form-group row mb-0">
                                 <label class="col-sm-1 col-form-label" for="nomorTrn">NOMOR TRN</label>
                                 <div class="col-sm-2 buttonInside">
-                                    <input type="text" class="form-control" id="nomorTrn">
-                                    <button onclick="getNmrTrn('')" id="btn-no-doc" type="button" class="btn btn-lov p-0">
+                                    <input onchange="getNmrTrn()" type="text" class="form-control" id="nomorTrn">
+                                    <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                                            data-target="#pilihNmr">
                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                     </button>
                                 </div>
@@ -69,6 +70,7 @@
                 </fieldset>
             </div>
         </div>
+    </div>
         <div class="container-fluid mt-4">
             <div class="row justify-content-center">
                 <div class="col-md-12">
@@ -271,7 +273,40 @@
             </div>
         </div>
 
+    {{--Modal--}}
+    <div class="modal fade" id="pilihNmr" tabindex="-1" role="dialog" aria-labelledby="pilihNmr" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Memilih Nomor Transaksi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableNmr">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>NO.LIST</th>
+                                        <th>TGL.LIST</th>
+                                        <th>NO.NOTA</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
     </div>
+
     <style>
         #jenisKertas:hover{
             cursor: pointer;
@@ -281,7 +316,6 @@
         }
     </style>
     <script>
-        let tempTrn;
         let tempPlu;
         let temporary;
 
@@ -303,6 +337,35 @@
         let totalGrossP = 0;
         let totalGrossR = 0;
 
+        $(document).ready(function () {
+            $('#tableNmr').DataTable({
+                "ajax": '{{ url('transaksi/repacking/modalnmrtrn') }}',
+                "columns": [
+                    {data: 'trbo_nodoc', name: 'trbo_nodoc'},
+                    {data: 'trbo_tgldoc', name: 'trbo_tgldoc'},
+                    {data: 'nota', name: 'nota'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowTrn');
+                },
+                "order": []
+            });
+        });
+
+        $(document).on('click', '.modalRowTrn', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().text();
+            chooseTrn(kode);
+            $('#pilihNmr').modal('hide');
+        });
 
         $('#tanggalTrn').datepicker({
             format: 'dd/mm/yyyy'
@@ -327,12 +390,6 @@
             }
 
         }
-
-        // $('input').on('focusin', function(){
-        //     console.log("Saving value " + $(this).val());
-        //     $(this).data('val', $(this).val());
-        // });
-
         function isY(evt){
             $('#perubahanPlu').keyup(function(){
                 $(this).val($(this).val().toUpperCase());
@@ -384,9 +441,6 @@
         function deleteRow(e) {
             deskripsiPanjang.splice((e.parentNode.parentNode.rowIndex)-2, 1);
             trbo_averagecost.splice((e.parentNode.parentNode.rowIndex)-2, 1);
-            //deskripsiPanjang[e.parentNode.parentNode.rowIndex] = '';
-            //trbo_averagecost[e.parentNode.parentNode.rowIndex] = 0;
-            //alert(e.parentNode.parentNode.rowIndex); cara mendapatkan row ketika onclick javascript
             $(e).parents("tr").remove();
             $('#deskripsi').val('');
 
@@ -425,73 +479,6 @@
             }
             $('.gross')[index].value = convertToRupiah( (ctnKuantum * unconvertToRupiah($('.hrg-satuan')[index].value)) + ((unconvertToRupiah($('.hrg-satuan')[index].value)/fraccounter)*pcsKuantum) );
         }
-
-        //Ini PRchecker v0.1
-        // function PRchecker(elem){
-        //     let trElement = elem.parentElement.parentElement;
-        //     let tr = document.getElementsByTagName('tr');
-        //     tr = Array.prototype.slice.call(tr);
-        //     let row = tr.indexOf(trElement)-2;
-        //
-        //     if($('#perubahanPlu').val() != 'Y'){
-        //         let index = null;
-        //         if($('.rVal').is(':checked')){
-        //             if($('.pr')[row].value == 'R'){
-        //                 for(i = 0; i < $('.pr').length; i++){
-        //                     if ($('.pr')[i].value == 'R' && i != row){
-        //                         swal({
-        //                             title:'Re-Packing',
-        //                             text: 'Sudah ada item re-packing, tidak bisa tambah data lagi',
-        //                             icon:'warning',
-        //                             timer: 2000,
-        //                             buttons: {
-        //                                 confirm: false,
-        //                             },
-        //                         });
-        //                         if ($('.plu')[row].value != ''){
-        //                             $('.pr')[row].value = 'P';
-        //                         }else{
-        //                             $('.pr')[row].value = '';
-        //                         }
-        //                         index = i;
-        //                         $('.pr')[row].focus();
-        //                         break
-        //                     }
-        //                 }if(index == null && $('.plu')[row].value != ''){
-        //                     rDinamis(row);
-        //                     totalGross();
-        //                 }
-        //             }else if($('.plu')[row].value != ''){
-        //                 choosePlu(($('.plu')[row].value),row); //ctn-kuantum dan pcs-kuantum kembali jadi 0
-        //             }
-        //
-        //         }else{
-        //             if($('.pr')[row].value == 'P'){
-        //                 for(i = 0; i < $('.pr').length; i++){
-        //                     if ($('.pr')[i].value == 'P' && i != row){
-        //                         swal({
-        //                             title:'Re-Packing',
-        //                             text: 'Sudah ada item pre-packing, tidak bisa tambah data lagi',
-        //                             icon:'warning',
-        //                             timer: 2000,
-        //                             buttons: {
-        //                                 confirm: false,
-        //                             },
-        //                         });
-        //                         if ($('.plu')[row].value != ''){
-        //                             $('.pr')[row].value = 'R';
-        //                         }else{
-        //                             $('.pr')[row].value = '';
-        //                         }
-        //                         $('.pr')[row].focus();
-        //                         break
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //
-        //     }
-        // }
 
         function PRchecker(elem){
             let row = elem.parentNode.parentNode.rowIndex-2;
@@ -1188,46 +1175,26 @@
             }
         });
 
-        function getNmrTrn(val) {
-            $('#searchModal').val('')
-            if(tempTrn == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/transaksi/repacking/getNmrTrn',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('NO.LIST');
-                        $('#modalThName2').text('TGL.LIST');
-                        $('#modalThName3').text('NO.NOTA');
-
-                        tempTrn = result;
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ result[i].trbo_nodoc+"') class='modalRow'><td>"+ result[i].trbo_nodoc +"</td> <td>"+ formatDate(result[i].trbo_tgldoc) +"</td> <td>"+ result[i].nota +"</td></tr>")
-                        }
-
-                        $('#idModal').val('TRN')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
+        function getNmrTrn() {
+            let val = $('#nomorTrn').val();
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/transaksi/repacking/getNmrTrn',
+                type: 'post',
+                data: {
+                    val:val
+                },
+                success: function (result) {
+                    if(result.trbo_nodoc){
+                        chooseTrn(result.trbo_nodoc);
+                    }else{
+                        swal('', "Nomor Tidak dikenali", 'warning');
+                        $('#nomorTrn').val('');
                     }
-                })
-            } else {
-                $('#modalThName1').text('NO.LIST');
-                $('#modalThName2').text('TGL.LIST');
-                $('#modalThName3').text('NO.NOTA');
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempTrn.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ tempTrn[i].trbo_nodoc+"') class='modalRow'><td>"+ tempTrn[i].trbo_nodoc +"</td> <td>"+ formatDate(tempTrn[i].trbo_tgldoc) +"</td> <td>"+ tempTrn[i].nota +"</td></tr>")
+                }, error: function () {
+                    alert('error');
                 }
-
-                $('#idModal').val('TRN')
-                $('#modalHelp').modal('show');
-            }
+            })
         }
 
         function chooseTrn(a){

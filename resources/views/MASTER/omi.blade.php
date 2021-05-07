@@ -1,11 +1,11 @@
 @extends('navbar')
+@section('title','MASTER | MASTER OMI')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-sm-12 col-md-11">
-                <fieldset class="card border-dark">
-                    <legend  class="w-auto ml-5">Master OMI</legend>
+            <div class="col-sm-12">
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row justify-content-center">
                             <div class="col-sm-12 col-md-5">
@@ -23,7 +23,6 @@
                                         </div>
                                         <div class="sol-sm-3">
                                             <button type="button" class="btn btn-primary pl-4 pr-4" onclick="getTokoOmi()">Submit</button>
-                                            {{--<button type="button" class="btn btn-success pl-4 pr-4" data-toggle="modal" data-target="#m_detailTokoOmi" onclick="getDetailOmi('MN03')">asd</button>--}}
                                         </div>
                                     </div>
                                 </form>
@@ -51,21 +50,6 @@
                                         <th>Sub CLO</th>
                                         <th>Sub Tipe</th>
                                         <th>Action</th>
-
-                                        {{--<th width="20px">Kode</th>--}}
-                                        {{--<th width="130px">Nama</th>--}}
-                                        {{--<th width="20px">Fee</th>--}}
-                                        {{--<th width="50px">Distribution Fee</th>--}}
-                                        {{--<th width="30px">Kode</th>--}}
-                                        {{--<th width="110px">Member</th>--}}
-                                        {{--<th width="40px">Tgl Go</th>--}}
-                                        {{--<th width="40px">Tgl Tutup</th>--}}
-                                        {{--<th width="20px">Flag <br>  VB</th>--}}
-                                        {{--<th width="20px">Flag <br>  Margin</th>--}}
-                                        {{--<th width="40px">Sub Pemanjangan</th>--}}
-                                        {{--<th width="20px">Sub CLO</th>--}}
-                                        {{--<th width="20px">Sub Tipe</th>--}}
-                                        {{--<th width="30px">Action</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyTableOmi"></tbody>
@@ -73,7 +57,7 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -312,8 +296,10 @@
                     </div> {{--Close for class "container"--}}
                 </div> {{--Close for class "modal-body"--}}
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger pl-4 pr-4" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary pl-4 pr-4" onclick="editTokoOmi()">Save</button>
+                    <div class="col-sm-3"><button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button></div>
+                    <div class="col-sm-3"><button type="button" class="btn btn-primary btn-block" onclick="editTokoOmi()">Save</button></div>
+{{--                    <button type="button" class="btn btn-danger pl-4 pr-4" data-dismiss="modal">Cancel</button>--}}
+{{--                    <button type="button" class="btn btn-primary pl-4 pr-4" onclick="editTokoOmi()">Save</button>--}}
                 </div>
             </div>
         </div>
@@ -376,8 +362,9 @@
                     swal('Success', result, 'success');
                     $('#m_detailTokoOmi').modal('hide');
                     getTokoOmi();
-                }, error: function () {
-                    swal("Error",'','error');
+                }, error: function (err) {
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -397,8 +384,9 @@
                             $('#namaCust').val(result[0].cus_namamember);
                         }
 
-                    }, error: function () {
-                        swal("Error","","error");
+                    }, error: function (err) {
+                        console.log(err.responseJSON.message.substr(0,100));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 })
             }
@@ -419,8 +407,9 @@
                             $('#namaCabang').val(result[0].cab_namacabang);
                         }
 
-                    }, error: function () {
-                        swal("Error","","error");
+                    }, error: function (err) {
+                        console.log(err.responseJSON.message.substr(0,100));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 })
             }
@@ -472,8 +461,9 @@
                     $('#tipeOmi').val(identity.tko_tipeomi);
                     $('#npwp').val(identity.cus_npwp);
                     $('#tanggalTax').val(identity.cus_tglpajak);
-                }, error: function () {
-                    alert('error');
+                }, error: function (err) {
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -503,12 +493,13 @@
                                 [result[i].tko_kodeomi, result[i].tko_namaomi, result[i].tko_flagdistfee, result[i].tko_persendistributionfee,
                                     result[i].tko_kodecustomer, result[i].cus_namamember, formatDate(result[i].tko_tglgo), formatDate(result[i].tko_tgltutup),
                                     result[i].tko_flagvb, result[i].tko_persenmargin, result[i].tko_flagsubsidipemanjangan, result[i].tko_flagcreditlimitomi,
-                                    result[i].tko_tipeomi, "<button class='btn btn-success btn-block text-center' data-toggle='modal' data-target='#m_detailTokoOmi' onclick='getDetailOmi(`"+ result[i].tko_kodeomi +"`)'>Edit</button>"
+                                    result[i].tko_tipeomi, "<button class='btn btn-primary btn-block text-center' data-toggle='modal' data-target='#m_detailTokoOmi' onclick='getDetailOmi(`"+ result[i].tko_kodeomi +"`)'>Edit</button>"
                                 ]).draw();
                         }
                     }
-                }, error: function () {
-                    console.log('error');
+                }, error: function (err) {
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }

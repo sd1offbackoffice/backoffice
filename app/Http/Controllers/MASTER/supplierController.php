@@ -11,6 +11,8 @@ class supplierController extends Controller
     //
 
     public function index(){
+        $kodeigr = $_SESSION['kdigr'];
+
         $firstsupplier = DB::table('tbmaster_supplier')
             ->select('sup_kodesupplier')
             ->where('sup_kodeigr','=','22')
@@ -19,9 +21,8 @@ class supplierController extends Controller
 
         $supplier = DB::table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier')
-            ->where('sup_kodeigr','=','22')
+            ->where('sup_kodeigr',$kodeigr)
             ->orderBy('sup_namasupplier')
-            ->limit(100)
             ->get();
 
         return view('MASTER.supplier')->with(compact(['firstsupplier','supplier']));

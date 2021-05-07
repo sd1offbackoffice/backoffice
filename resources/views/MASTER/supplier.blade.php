@@ -1,25 +1,23 @@
 @extends('navbar')
+@section('title','MASTER | MASTER SUPPLIER')
 @section('content')
-    {{--<head>--}}
-        {{--<script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
-    {{--</head>--}}
 
-
-    <div class="container mt-3">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Supplier</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
                                         <label for="i_kodesupplier" class="col-sm-2 col-form-label">Kode Supplier</label>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2 buttonInside">
                                             <input type="text" class="form-control" id="i_kodesupplier">
+                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_kodesupplierHelp">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
-                                        <button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodesupplierHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                         <label for="i_kodesupplierho" class="col-sm-2 col-form-label">Kode Supplier HO</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_kodesupplierho">
@@ -205,33 +203,30 @@
                             </div>
                         </form>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
 
-
     <!-- Modal -->
     <div class="modal fade" id="m_kodesupplierHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Data Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm" id="table_lov">
-                                    <thead>
+                                <table class="table table-sm" id="table_supplier">
+                                    <thead class="theadDataTables">
                                         <tr>
-                                            <td>Nama Supplier</td>
-                                            <td>Kode Supplier</td>
+                                            <th>Nama Supplier</th>
+                                            <th>Kode Supplier</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -255,31 +250,31 @@
 
 
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            font-weight: bold;
-        }
-        .cardForm {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
+        /*body {*/
+        /*    background-color: #edece9;*/
+        /*    !*background-color: #ECF2F4  !important;*!*/
+        /*}*/
+        /*label {*/
+        /*    color: #232443;*/
+        /*    font-weight: bold;*/
+        /*}*/
+        /*.cardForm {*/
+        /*    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+        /*}*/
 
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
+        /*input[type=number]::-webkit-inner-spin-button,*/
+        /*input[type=number]::-webkit-outer-spin-button,*/
+        /*input[type=date]::-webkit-inner-spin-button,*/
+        /*input[type=date]::-webkit-outer-spin-button{*/
+        /*    -webkit-appearance: none;*/
+        /*    margin: 0;*/
+        /*}*/
 
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
-        }
+        /*.row_lov:hover{*/
+        /*    cursor: pointer;*/
+        /*    background-color: grey;*/
+        /*    color: white;*/
+        /*}*/
 
 
     </style>
@@ -307,7 +302,7 @@
         // $(":input").prop('disabled','true');
 
         $(document).ready(function () {
-
+            $('#table_supplier').DataTable();
         })
 
         $('#m_kodesupplierHelp').on('shown.bs.modal', function () {
@@ -389,6 +384,10 @@
                             $('#i_updatedate').val(toDate(response.sup_modify_dt));
                     }
                 },
+                error: function (err) {
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                },
                 complete: function(){
                     if($('#modal-loader').is(':visible')){
                         $('#modal-loader').modal('toggle');
@@ -423,6 +422,9 @@
                                 html = '<tr class="row_lov" onclick=lov_select("' + response[i].sup_kodesupplier + '")><td>' + response[i].sup_namasupplier + '</td><td>' + response[i].sup_kodesupplier + '</td></tr>';
                                 $('#table_lov').append(html);
                             }
+                        }, error: function (err) {
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     });
                 }

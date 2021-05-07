@@ -6,32 +6,28 @@ use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class hariLiburController extends Controller
 {
     public function index(){
-        $harilibur = DB::table('TBMASTER_HARILIBUR')
-            ->select('lib_tgllibur', 'lib_keteranganlibur')
-//            ->whereYear('lib_tgllibur', date("Y", strtotime("now")))
-            ->orderBy('lib_tgllibur')
-            ->get();
-
-        return view('MASTER.harilibur')->with('harilibur',$harilibur);
+        return view('MASTER.harilibur');
     }
 
-    public function getData(){
+    public function getHariLibur(){
         $harilibur = DB::table('TBMASTER_HARILIBUR')
             ->select('lib_tgllibur', 'lib_keteranganlibur')
             ->whereYear('lib_tgllibur', date("Y", strtotime("now")))
             ->orderBy('lib_tgllibur')
             ->get();
 
-        return $harilibur;
+        return Datatables::of($harilibur)->make(true);
     }
 
     public function insert(Request $request)
     {
         $tgllibur   = $request->input('tgllibur');
+        $tgllibur   = date('Y-m-d', strtotime($tgllibur));
         $ketlibur   = strtoupper($request->input('ketlibur'));
         $model      = new AllModel();
         $kodeigr    = $_SESSION['kdigr'];
@@ -53,13 +49,12 @@ class hariLiburController extends Controller
             $msg = "Hari Libur Berhasil di Update !!";
         }
 
-        $data = $this->getData();
-
-        return response()->json(['kode' => 1, 'data' => $data, 'msg' => $msg]);
+        return response()->json(['kode' => 1, 'data' => '', 'msg' => $msg]);
     }
 
     public function delete(Request $request){
         $tgllibur   = $request->input('tgllibur');
+        $tgllibur   = date('Y-m-d', strtotime($tgllibur));
         $ketlibur   = strtoupper($request->input('ketlibur'));
 
         $cekData    = DB::table('tbmaster_harilibur')
@@ -74,8 +69,6 @@ class hariLiburController extends Controller
             $msg = "Hari Libur Berhasil di Hapus !!";
         }
 
-        $data = $this->getData();
-
-        return response()->json(['kode' => 1, 'data' => $data, 'msg' => $msg]);
+        return response()->json(['kode' => 1, 'data' => '', 'msg' => $msg]);
     }
 }

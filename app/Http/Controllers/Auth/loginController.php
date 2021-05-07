@@ -114,7 +114,7 @@ class loginController extends Controller
                     . SUBSTR($tgl, 11, 1)
                     . SUBSTR($tgl, 17, 1)
                     . SUBSTR($tgl, 1, 1);
-//                dd($truepass);
+                dd($truepass);
                 if ($request->password == $truepass) {
                     $flagedp = 1;
                     DB::table('tbmaster_computer')
@@ -224,6 +224,15 @@ class loginController extends Controller
                 }
             }
         }
+
+        $_SESSION['menu'] = DB::table('tbmaster_access_migrasi')
+            ->whereRaw("acc_url <> ' '")
+            ->orderBy('acc_group','asc')
+            ->orderBy('acc_subgroup1','asc')
+            ->orderBy('acc_subgroup2','asc')
+            ->orderBy('acc_subgroup3','asc')
+            ->orderBy('acc_name','asc')
+            ->get();
 
         return compact(['userstatus']);
     }

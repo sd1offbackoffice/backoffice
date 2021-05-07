@@ -1,45 +1,41 @@
 @extends('navbar')
+@section('title','MASTER | MASTER HARI LIBUR')
 @section('content')
 
-    <div class="container">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Hari Libur</legend>
+                <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
-                        <div class="tableFixedHeader">
-                            <table class="table table-sm table-hover table-bordered">
-                                <thead>
-                                <tr>
-                                    <th> TANGGAL</th>
-                                    <th >KETERANGAN</th>
-                                </tr>
-                                </thead>
-                                <tbody  id="tbodyHariLibur">
-                                @foreach($harilibur as $dataHariLibur)
-                                    <tr class="modalRow justify-content-md-center p-0 hariLiburRow" id="{{$dataHariLibur->lib_tgllibur}}" val="{{$dataHariLibur->lib_keteranganlibur}}" onclick='inputToField(this)'>
-                                        <td>{{ date('d-M-Y', strtotime($dataHariLibur->lib_tgllibur)) }}</td>
-                                        <td>{{$dataHariLibur->lib_keteranganlibur}}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="table table-sm table-hover table-bordered" id="tableHariLibur">
+                            <thead class="theadDataTables">
+                            <tr>
+                                <th> TANGGAL</th>
+                                <th >KETERANGAN</th>
+                            </tr>
+                            </thead>
+                            <tbody  id="tbodyHariLibur">
+                            </tbody>
+                        </table>
 
                         <div class="form-group row mb-0 mt-3">
                             <label for="i_tgl" class="col-sm-2 col-form-label text-right">TANGGAL</label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" id="i_tgl" placeholder="DD/MM/YYYY">
+                                <input type="text" class="form-control" id="i_tgl" placeholder="DD-MM-YYYY">
                             </div>
                             <label for="i_keterangan" class="col-sm-2 col-form-label text-right">KETERANGAN</label>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <input type="text" class="form-control" id="i_keterangan" placeholder="...">
                             </div>
-                            <button class="btn btn-primary pl-4 pr-4 mr-3" id="btn-save" onclick="saveHariLibur()">SAVE</button>
-                            <button class="btn btn-danger pl-4 pr-4" id="btn-delete" onclick="deleteHariLibur()">DELETE</button>
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary btn-block" id="btn-save" onclick="saveHariLibur()">SAVE</button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-danger btn-block" id="btn-delete" onclick="deleteHariLibur()">DELETE</button>
+                            </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -51,10 +47,51 @@
     </style>
 
     <script>
-        $('#i_tgl').datepicker({
-            "dateFormat" : "dd/mm/yy"
+        let tablehariLibur;
+
+        $(document).ready(function (){
+            $('#i_tgl').datepicker({
+                "dateFormat" : "dd-mm-yy"
+            });
+            tablehariLibur =  $('#tableHariLibur').DataTable();
+            getHariLibur();
         });
 
+        function getHariLibur(){
+            tablehariLibur.destroy();
+            tablehariLibur =  $('#tableHariLibur').DataTable({
+                "ajax": '{{ url('mstharilibur/getharilibur') }}',
+                "columns": [
+                    {data: 'lib_tgllibur'},
+                    {data: 'lib_keteranganlibur'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
+                    { targets : [0],
+                        render : function (data, type, row) {
+                            return formatDateCustom(data, 'dd-mm-yy');
+                        }
+                    }
+                ]
+            });
+        }
+
+        $(document).on('click', '.modalRow', function () {
+            let tgl = $(this).find('td')[0]['innerHTML']
+            let ket = $(this).find('td')[1]['innerHTML']
+
+            inputToField(tgl,ket)
+        } );
 
         function actionHariLibur(string) {
             let tgl = $('#i_tgl').val();
@@ -78,20 +115,8 @@
                     success: function (result) {
                         if (result.kode === 1) {
                             swal(result.msg,'','success');
+                            getHariLibur();
 
-                            $('.hariLiburRow').remove();
-                            for (let i =0 ; i < result.data.length; i++){
-                                const d = new Date(result.data[i].lib_tgllibur.substr(0,10))
-                                const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-                                const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
-                                const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
-
-                                let date = da+'-'+mo+'-'+ye;
-                                $('#tbodyHariLibur').append(" <tr class='modalRow justify-content-md-center p-0 hariLiburRow' id='"+ result.data[i].lib_tgllibur +"' val='"+ result.data[i].lib_keteranganlibur +"' onclick='inputToField(this)'>\n" +
-                                    "<td>"+ date +"</td>\n" +
-                                    "<td>"+ result.data[i].lib_keteranganlibur +"</td>\n" +
-                                    "</tr>")
-                            }
                         } else {
                             swal('ERROR', "Something's Error", 'error')
                         }
@@ -99,8 +124,10 @@
                         $('#i_tgl').val('');
                         $('#i_keterangan').val('');
                         $('#modal-loader').modal('hide');
-                    }, error: function (error) {
-                        console.log(error)
+                    }, error: function (err) {
+                        $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0,150));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 });
             }
@@ -123,11 +150,11 @@
                 });
         }
 
-        function inputToField(temp) {
-            let tgl =  temp['attributes'][1]['nodeValue']
-            let ket =  temp['attributes'][2]['nodeValue']
+        function inputToField(tgl, ket) {
+            // let tgl =  temp['attributes'][1]['nodeValue']
+            // let ket =  temp['attributes'][2]['nodeValue']
 
-            $('#i_tgl').val(tgl.substr(0,10));
+            $('#i_tgl').val(tgl);
             $('#i_keterangan').val(ket);
         }
     </script>

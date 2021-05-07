@@ -1,23 +1,29 @@
 @extends('navbar')
+@section('title','MASTER | MASTER MEMBER')
 @section('content')
 
 
-    <div class="container mt-3">
+    <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Member</legend>
+                <div class="card border-dark">
                     <div class="card-body">
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="form-group row mb-0">
                                     <label for="cus_kodemember" class="col-sm-2 col-form-label">Nomor Anggota</label>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control diisi" id="cus_kodemember">
+                                        <button id="btn-modal-member" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodememberHelp">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                        </button>
                                     </div>
-                                    <div class="col-sm-1 p-0">
-                                        <button type="button" id="btn-modal-member" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                    </div>
+{{--                                    <div class="col-sm-2">--}}
+{{--                                        <input type="text" class="form-control diisi" id="cus_kodemember">--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-1 p-0">--}}
+{{--                                        <button type="button" id="btn-modal-member" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodememberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                    </div>--}}
 
                                     <div class="col-sm-3 text-center">
                                         <div id="segment" class="segment rounded" style="display:none">
@@ -81,13 +87,20 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_alamatmember4" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember4">
+                                                <button id="btn-modal-ktp" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodeposHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button id="btn-modal-ktp" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                            </div>
-                                            <label for="i_kecamatanktp" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
+
+{{--                                            <div class="col-sm-3">--}}
+{{--                                                <input type="text" class="form-control diisi" id="cus_alamatmember4">--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button id="btn-modal-ktp" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
+                                            <label for="i_kecamatanktp" class="col-sm-3 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="i_kecamatanktp">
                                             </div>
@@ -110,13 +123,20 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_alamatmember8" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember8">
+                                                <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodeposHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button id="btn-modal-surat" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                            </div>
-                                            <label for="i_kecamatansurat" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
+
+{{--                                            <div class="col-sm-3">--}}
+{{--                                                <input type="text" class="form-control diisi" id="cus_alamatmember8">--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button id="btn-modal-surat" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
+                                            <label for="i_kecamatansurat" class="col-sm-3 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="i_kecamatansurat">
                                             </div>
@@ -153,25 +173,40 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jeniscustomer" class="col-sm-2 col-form-label">Jenis Customer</label>
-                                            <div class="col-sm-1 pr-0">
-                                                <input type="text" class="form-control" id="cus_jenismember">
+                                            <div class="col-sm-1 buttonInside">
+                                                <input type="text" class="form-control diisi" id="cus_jenismember">
+                                                <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_jenismemberHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
+
+
+{{--                                            <div class="col-sm-1 pr-0">--}}
+{{--                                                <input type="text" class="form-control" id="cus_jenismember">--}}
+{{--                                            </div>--}}
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenismemberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenismemberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
+                                            <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">Jenis Outlet</label>
+                                            <div class="col-sm-1 buttonInside">
+                                                <input type="text" class="form-control diisi" id="cus_kodeoutlet">
+                                                <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_jenisoutletHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <label for="i_jenisoutlet" class="col-sm-2 col-form-label">Jenis Outlet</label>
-                                            <div class="col-sm-1 pr-0">
-                                                <input type="text" class="form-control" id="cus_kodeoutlet">
-                                            </div>
+
+{{--                                            <div class="col-sm-1 pr-0">--}}
+{{--                                                <input type="text" class="form-control" id="cus_kodeoutlet">--}}
+{{--                                            </div>--}}
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jenisoutlet2">
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenisoutletHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                            </div>
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenisoutletHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_jarak" class="col-sm-2 col-form-label">Jarak</label>
@@ -234,13 +269,20 @@
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
                                             <label for="grp_group" class="col-sm-2 col-form-label">Group<span class="wajib">*</span></label>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 buttonInside">
                                                 <input type="text" class="form-control diisi" id="grp_group">
+                                                <button id="btn-modal-group" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_groupHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button id="btn-modal-group" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_groupHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                            </div>
-                                            <label for="grp_kategori" class="col-sm-3 col-form-label">Kategori</label>
+
+{{--                                            <div class="col-sm-2">--}}
+{{--                                                <input type="text" class="form-control diisi" id="grp_group">--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button id="btn-modal-group" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_groupHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
+                                            <label for="grp_kategori" class="col-sm-4 col-form-label">Kategori</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="grp_kategori">
                                             </div>
@@ -438,13 +480,20 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="crm_alamatusaha4" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi" id="crm_alamatusaha4">
+                                                <button id="btn-modal-usaha" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodeposHelp">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                             </div>
-                                            <div class="col-sm-1 p-0">
-                                                <button id="btn-modal-usaha" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                            </div>
-                                            <label for="pos_kecamatan" class="col-sm-2 col-form-label">Kecamatan<span class="wajib">*</span></label>
+
+{{--                                            <div class="col-sm-3">--}}
+{{--                                                <input type="text" class="form-control diisi" id="crm_alamatusaha4">--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col-sm-1 p-0">--}}
+{{--                                                <button id="btn-modal-usaha" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
+{{--                                            </div>--}}
+                                            <label for="pos_kecamatan" class="col-sm-3 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="pos_kecamatan">
                                             </div>
@@ -737,29 +786,26 @@
                                     <label for="i_harusdiisi" class="col-sm-3 text-right"><span class="wajib">*Harus diisi</span></label>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <div class="col-sm-2">
-
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <button id="btn-rekam" class="btn btn-primary" disabled>REKAM</button>
+                                    <div class="col-sm-2 offset-sm-2">
+                                        <button id="btn-rekam" class="btn btn-primary btn-block" disabled>REKAM</button>
                                     </div>
                                     <div class="col-sm-2 pl-0">
-                                        <button id="btn-aktif-nonaktif" class="btn btn-primary" disabled>AKTIF / NONAKTIF</button>
+                                        <button id="btn-aktif-nonaktif" class="btn btn-primary btn-block" disabled>AKTIF / NONAKTIF</button>
                                     </div>
-                                    <div class="col-sm-1 pl-0">
-                                        <button id="btn-hapus" class="btn btn-danger" disabled>HAPUS</button>
+                                    <div class="col-sm-2 pl-0">
+                                        <button id="btn-hapus" class="btn btn-danger btn-block" disabled>HAPUS</button>
                                     </div>
-                                    <div class="col-sm-1 pl-0">
-                                        <button id="btn-quisioner" class="btn btn-info" style="display:none">QUISIONER</button>
+                                    <div class="col-sm-2 pl-0">
+                                        <button id="btn-quisioner" class="btn btn-info btn-block" style="display:none">QUISIONER</button>
                                     </div>
-                                    <div class="col-sm-5">
-                                        <button id="btn-export-crm" class="btn btn-success" disabled>EXPORT KE CRM</button>
+                                    <div class="col-sm-2">
+                                        <button id="btn-export-crm" class="btn btn-success btn-block" disabled>EXPORT KE CRM</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -767,34 +813,32 @@
 
     <!-- Modal -->
     <div class="modal fade" id="m_kodememberHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov_member" class="form-control search_lov" type="text" placeholder="Inputkan Nama / Kode Member" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 4 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Master Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm mb-0" id="table_lov_member">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Nama Member</td>
-                                        <td>Kode Member</td>
+                                        <th>Nama Member</th>
+                                        <th>Kode Member</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($member as $m)
-                                        <tr onclick="lov_member_select('{{ $m->cus_kodemember }}',true)" class="row_lov">
-                                            <td>{{ $m->cus_namamember }}</td>
-                                            <td>{{ $m->cus_kodemember }}</td>
-                                        </tr>
-                                    @endforeach
+{{--                                    @foreach($member as $m)--}}
+{{--                                        <tr onclick="lov_member_select('{{ $m->cus_kodemember }}',true)" class="row_lov">--}}
+{{--                                            <td>{{ $m->cus_namamember }}</td>--}}
+{{--                                            <td>{{ $m->cus_kodemember }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
                                     </tbody>
                                 </table>
                             </div>
@@ -808,40 +852,38 @@
     </div>
 
     <div class="modal fade" id="m_kodeposHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov_kodepos" class="form-control search_lov" type="text" placeholder="Cari Nama Kelurahan" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 4 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">Master Kode POS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm mb-0" id="table_lov_kodepos">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Kelurahan</td>
-                                        <td>Kecamatan</td>
-                                        <td>Kota</td>
-                                        <td>Provinsi</td>
-                                        <td>Kode Pos</td>
+                                        <th>Kelurahan</th>
+                                        <th>Kecamatan</th>
+                                        <th>Kota</th>
+                                        <th>Provinsi</th>
+                                        <th>Kode Pos</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($kodepos as $k)
-                                        <tr onclick="lov_kodepos_select('{{ $k->pos_kode }}','{{ $k->pos_kecamatan }}','{{ $k->pos_kelurahan }}','{{ $k->pos_kabupaten }}')" class="row_lov">
-                                            <td>{{ $k->pos_kelurahan }}</td>
-                                            <td>{{ $k->pos_kecamatan }}</td>
-                                            <td>{{ $k->pos_kabupaten }}</td>
-                                            <td>{{ $k->pos_propinsi }}</td>
-                                            <td>{{ $k->pos_kode }}</td>
-                                        </tr>
-                                    @endforeach
+{{--                                    @foreach($kodepos as $k)--}}
+{{--                                        <tr onclick="lov_kodepos_select('{{ $k->pos_kode }}','{{ $k->pos_kecamatan }}','{{ $k->pos_kelurahan }}','{{ $k->pos_kabupaten }}')" class="row_lov">--}}
+{{--                                            <td>{{ $k->pos_kelurahan }}</td>--}}
+{{--                                            <td>{{ $k->pos_kecamatan }}</td>--}}
+{{--                                            <td>{{ $k->pos_kabupaten }}</td>--}}
+{{--                                            <td>{{ $k->pos_propinsi }}</td>--}}
+{{--                                            <td>{{ $k->pos_kode }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
                                     </tbody>
                                 </table>
                             </div>
@@ -855,17 +897,23 @@
     </div>
 
     <div class="modal fade" id="m_jenismemberHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Jenis Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm mb-0" id="table_lov_jenismember">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Keterangan</td>
-                                        <td>Kode</td>
+                                        <th>Keterangan</th>
+                                        <th>Kode</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -888,17 +936,23 @@
     </div>
 
     <div class="modal fade" id="m_jenisoutletHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Jenis Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-sm mb-0" id="table_lov_jenisoutlet">
-                                    <thead>
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Kode</td>
-                                        <td>Nama</td>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -921,20 +975,20 @@
     </div>
 
     <div class="modal fade" id="m_groupHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov_jenisoutlet">
-                                    <thead>
+                                <table class="table table-sm mb-0" id="table_lov_group">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Group</td>
-                                        <td>Subgroup</td>
-                                        <td>Kategori</td>
-                                        <td>Subkategori</td>
-                                        <td>ID Group</td>
+                                        <th>Group</th>
+                                        <th>Subgroup</th>
+                                        <th>Kategori</th>
+                                        <th>Subkategori</th>
+                                        <th>ID Group</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -960,7 +1014,7 @@
     </div>
 
     <div class="modal fade" id="m_quisioner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="container">
@@ -1039,7 +1093,7 @@
     </div>
 
     <div class="modal fade" id="m_aktifnonaktif" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="container">
@@ -1073,50 +1127,14 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <style>
-        body {
-            background-color: #edece9;
-            /*background-color: #ECF2F4  !important;*/
-        }
-        label {
-            color: #232443;
-            font-weight: bold;
-        }
-        .card-form {
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
-            color: white;
-        }
+        /*.row_lov:hover{*/
+        /*    cursor: pointer;*/
+        /*    background-color: grey;*/
+        /*    color: white;*/
+        /*}*/
 
         .my-custom-scrollbar-hobby {
             position: relative;
@@ -1189,7 +1207,7 @@
             font-weight: bold !important;
             color: red !important;
         }
-        
+
         .table-wrapper{
             overflow-y: scroll;
         }
@@ -1197,6 +1215,80 @@
     </style>
 
     <script>
+
+        $(document).ready(function () {
+            getLovMember();
+            getLovKodepos();
+            $('#table_lov_jenismember').DataTable();
+            $('#table_lov_jenisoutlet').DataTable();
+            $('#table_lov_group').DataTable();
+        });
+
+        function getLovMember(){
+            $('#table_lov_member').DataTable({
+                "ajax": '{{ url('mstmember/getlovmember') }}',
+                "columns": [
+                    {data: 'cus_namamember', name: 'cus_namamember', width : '60%'},
+                    {data: 'cus_kodemember', name: 'cus_kodemember', width : '40%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('lov_member_select row_lov');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
+        }
+
+        $(document).on('click', '.lov_member_select', function () {
+            let member = $(this).find('td')[1]['innerHTML']
+
+            lov_member_select(member, true)
+        } );
+
+        function getLovKodepos(){
+            $('#table_lov_kodepos').DataTable({
+                "ajax": '{{ url('mstmember/getlovkodepos') }}',
+                "columns": [
+                    {data: 'pos_kelurahan', name: 'pos_kelurahan'},
+                    {data: 'pos_kecamatan', name: 'pos_kecamatan'},
+                    {data: 'pos_kabupaten', name: 'pos_kabupaten'},
+                    {data: 'pos_propinsi', name: 'pos_propinsi'},
+                    {data: 'pos_kode', name: 'pos_kode'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('lov_kodepos_select row_lov');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
+        }
+
+        $(document).on('click', '.lov_kodepos_select', function () {
+            let member = $(this).find('td')[1]['innerHTML']
+
+            let pos_kode = $(this).find('td')[4]['innerHTML'];
+            let pos_kecamatan = $(this).find('td')[1]['innerHTML'];
+            let pos_kelurahan = $(this).find('td')[0]['innerHTML'];
+            let pos_kabupaten = $(this).find('td')[2]['innerHTML'];
+
+            lov_kodepos_select(pos_kode,pos_kecamatan,pos_kelurahan,pos_kabupaten);
+        } );
 
         // lov_member_select('1',false);
 
@@ -2370,9 +2462,12 @@
                     if(load) {
                         $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: false});
                     }
+                    $('#m_kodememberHelp').modal('hide');
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function(response){
+                    $('#modal-loader').modal('hide');
+
                     if(response == 'not-found'){
                         swal({
                             title: "Data Member Tidak Ditemukan!",
@@ -2639,6 +2734,10 @@
                             $('#q_'+quisioner[i].fpm_kodeprdcd).find('.beli-lain').val(belilain);
                         }
                     }
+                }, error : function (err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     if(load){
@@ -2664,6 +2763,7 @@
                 data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
                 beforeSend: function(){
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#m_kodeposHelp').modal('hide');
                 },
                 success: function (response) {
                     if(response == 'not-found'){
@@ -2708,6 +2808,11 @@
 
                         insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
                     }
+                },
+                error : function (err){
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 },
                 complete: function(){
                     $('#modal-loader').modal('hide');

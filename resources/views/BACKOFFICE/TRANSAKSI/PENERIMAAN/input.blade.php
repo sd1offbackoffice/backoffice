@@ -1765,8 +1765,8 @@
 
                 }, error : (err) => {
                     $('#modal-loader').modal('hide');
-                    console.log(err.responseJSON.message.substr(0,100));
                     alertError(err.statusText, err.responseJSON.message);
+                    console.log(err.responseJSON.message.substr(0,100));
                 }
             });
         }

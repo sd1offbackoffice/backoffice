@@ -7,18 +7,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
+use Yajra\DataTables\DataTables;
 
 
 class jenisItemController extends Controller
 {
     public function index(){
-        $produk = DB::table('tbmaster_prodmast')
+        return view('MASTER.jenisItem');
+    }
+
+    public function getProdmast(){
+        $prodmast   = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_deskripsipanjang')
-            ->limit(1000)
             ->get();
-        return view('MASTER.jenisItem')->with('produk',$produk);
+
+        return Datatables::of($prodmast)->make(true);
     }
 
     public function lov_search(Request $request){

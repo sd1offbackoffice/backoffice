@@ -1,0 +1,356 @@
+CREATE OR REPLACE PROCEDURE sp_aktifkan_harga_peritem (
+   v_kodeigr     IN     VARCHAR2,
+   v_prdcd       IN     VARCHAR2,
+   v_jtim        IN     VARCHAR2,
+   v_create_by   IN     VARCHAR2,
+   v_result         OUT VARCHAR2)
+IS
+   v_filename    VARCHAR2 (50) := 'UPDATE.txt';
+   ARR           NUMBER;
+   V_NUM         NUMBER;
+   TEMP          NUMBER;
+   CEKPLU        NUMBER;
+   TEMPJUDUL     VARCHAR2 (200);
+   JUDUL         VARCHAR2 (200);
+   ISI           VARCHAR2 (200);
+   lAWAL         BOOLEAN;
+   lNEW          BOOLEAN;
+   HRGJUAL       NUMBER;
+   PTAG          VARCHAR2 (1);
+   PLUTIM        VARCHAR2 (7);
+   UNITPRD       VARCHAR2 (3);
+   PRICEPRD      NUMBER;
+   DESPRD        VARCHAR2 (200);
+   lDEL          BOOLEAN;
+   HRGJUALADA    NUMBER;
+
+   TYPE ISI_TXT IS VARRAY (100) OF VARCHAR2 (100);
+
+   SUB_ISI_TXT   ISI_TXT;
+
+   l_file_loc   bfile;
+
+   out_file      UTL_FILE.file_type;
+   l_conn        UTL_TCP.connection;
+
+BEGIN
+    EXECUTE IMMEDIATE
+      'create or replace directory LREMOTE as ''/u01/lhost/LREMOTE/''';
+
+    EXECUTE IMMEDIATE
+      'create or replace directory ISHIDA as ''/u01/lhost/LREMOTE/ISHIDA/''';
+
+    EXECUTE IMMEDIATE
+      'create or replace directory BIZERBA as ''/u01/lhost/LREMOTE/BIZERBA/''';
+
+    TEMPJUDUL := 'Plu_No,SalesMode,LabelFormat,BestBefore,UnitPrice,PosCode,Font1,Desc1';
+    ISI := '';
+
+
+   BEGIN
+      SELECT NVL (COUNT (1), 0)
+        INTO TEMP
+        FROM TBMASTER_PRODMAST
+       WHERE PRD_KODEIGR = v_kodeigr AND PRD_PRDCD = v_prdcd;
+
+      IF TEMP = 0
+      THEN
+         v_result := 'Data Tidak Ada !!';
+      ELSE
+         HRGJUALADA := 0;
+
+         SELECT PRD_HRGJUAL3
+           INTO HRGJUALADA
+           FROM TBMASTER_PRODMAST
+          WHERE PRD_KODEIGR = v_KODEIGR AND PRD_PRDCD = v_prdcd;
+
+
+         IF HRGJUALADA = 0
+         THEN
+            v_result := 'Tidak Ada Perubahan Harga !!';
+            v_result := 'Tidak Ada Perubahan Harga!!';
+         ELSE
+            UPDATE tbMASTER_PRODMAST
+               SET PRD_HRGJUAL2 = PRD_HRGJUAL,
+                   PRD_HRGJUAL = PRD_HRGJUAL3,
+                   PRD_TGLHRGJUAL2 = PRD_TGLHRGJUAL,
+                   PRD_TGLHRGJUAL = PRD_TGLHRGJUAL3
+             WHERE PRD_PRDCD = v_PRDCD AND PRD_KODEIGR = v_KODEIGR;
+
+            INSERT INTO TBTR_UPDATE_PLU_MD (UPD_KODEIGR,
+                                            UPD_PRDCD,
+                                            UPD_HARGA,
+                                            UPD_CREATE_BY,
+                                            UPD_CREATE_DT)
+                 VALUES (v_KODEIGR,
+                         v_PRDCD,
+                         HRGJUALADA,
+                         v_create_by,
+                         SYSDATE);
+
+            SELECT NVL (COUNT (1), 0)
+              INTO TEMP
+              FROM TBMASTER_HARGAJUAL
+             WHERE HGJ_PRDCD = v_PRDCD AND HGJ_KODEIGR = v_KODEIGR;
+
+            IF TEMP <> 0
+            THEN
+               lAWAL := TRUE;
+
+               FOR REC
+                  IN (  SELECT *
+                          FROM tbMASTER_HARGAJUAL
+                         WHERE HGJ_PRDCD = v_PRDCD AND HGJ_KODEIGR = v_KODEIGR
+                      ORDER BY HGJ_PRDCD, HGJ_TGLBERLAKU)
+               LOOP
+                  IF lAWAL = FALSE
+                  THEN
+                     IF REC.HGJ_TGLBERLAKU > SYSDATE
+                     THEN
+                        EXIT;
+                     END IF;
+                  END IF;
+
+                  lAWAL := FALSE;
+
+                  IF REC.HGJ_HRGJUAL IS NOT NULL
+                  THEN
+                     UPDATE tbMASTER_PRODMAST
+                        SET PRD_HRGJUAL3 = REC.HGJ_HRGJUAL,
+                            PRD_TGLHRGJUAL3 = REC.HGJ_TGLBERLAKU,
+                            PRD_MODIFY_DT = SYSDATE,
+                            PRD_MODIFY_BY = v_create_by
+                      WHERE PRD_PRDCD = v_PRDCD AND PRD_KODEIGR = v_KODEIGR;
+
+                     DELETE FROM tbMASTER_HARGAJUAL
+                           WHERE     HGJ_PRDCD = REC.HGJ_PRDCD
+                                 AND HGJ_KODEIGR = REC.HGJ_KODEIGR
+                                 AND HGJ_TGLBERLAKU = REC.HGJ_TGLBERLAKU;
+                  END IF;
+               END LOOP;
+            ELSE
+               UPDATE tbMASTER_PRODMAST
+                  SET PRD_HRGJUAL3 = 0,
+                      PRD_TGLHRGJUAL3 = NULL,
+                      PRD_MODIFY_DT = SYSDATE,
+                      PRD_MODIFY_BY = v_create_by
+                WHERE PRD_PRDCD = v_PRDCD AND PRD_KODEIGR = v_KODEIGR;
+            END IF;
+
+--            COMMIT;
+
+-- -------------------------- CETAK FILE TXT
+
+            --Untuk cek kodePLU lalu memasukan data ke variabel
+              SELECT NVL (COUNT (1), 0)
+                INTO CEKPLU
+                FROM TBMASTER_PRODMAST
+               WHERE     PRD_KODEIGR = v_kodeigr
+                     AND PRD_PRDCD = SUBSTR (v_PRDCD, 1, 6) || '1';
+
+              IF (CEKPLU <> 0)
+              THEN
+                 SELECT PRD_KODETAG,
+                        PRD_UNIT,
+                        PRD_HRGJUAL,
+                        PRD_DESKRIPSIPENDEK
+                   INTO PTAG,
+                        UNITPRD,
+                        PRICEPRD,
+                        DESPRD
+                   FROM TBMASTER_PRODMAST
+                  WHERE     PRD_KODEIGR = v_kodeigr
+                        AND PRD_PRDCD = SUBSTR (v_PRDCD, 1, 6) || '1';
+              ELSE
+                 PTAG := '';
+                 UNITPRD := '';
+                 PRICEPRD := 0;
+                 DESPRD := '';
+              END IF;
+
+            SELECT PRD_HRGJUAL
+              INTO HRGJUAL
+              FROM TBMASTER_PRODMAST
+             WHERE PRD_PRDCD = v_PRDCD AND PRD_KODEIGR = v_KODEIGR;
+
+            SELECT NVL (COUNT (1), 0)
+              INTO TEMP
+              FROM TBMASTER_CETAKLABEL
+             WHERE     CTL_PRDCD = SUBSTR (v_prdcd, 1, 6) || '0'
+                   AND CTL_KODEIGR = v_KODEIGR;
+
+            IF TEMP = 0
+            THEN
+               INSERT INTO tbMASTER_CETAKLABEL (CTL_KODEIGR,
+                                                CTL_PRDCD,
+                                                CTL_FLAGCETAK,
+                                                CTL_TGLAKHIRPROMOSI,
+                                                CTL_HRGJUAL)
+                    VALUES (v_kODEIGR,
+                            v_PRDCD,
+                            ' ',
+                            SYSDATE,
+                            HRGJUAL);
+            ELSE
+               UPDATE tbMASTER_CETAKLABEL
+                  SET CTL_FLAGCETAK = ' ',
+                      CTL_TGLAKHIRPROMOSI = SYSDATE,
+                      CTL_HRGJUAL = HRGJUAL
+                WHERE     CTL_PRDCD = SUBSTR (v_prdcd, 1, 6) || '0'
+                      AND CTL_KODEIGR = v_kodeigr;
+            END IF;
+
+            --      VALIDASI SUBSRING
+            IF SUBSTR (v_prdcd, 7, 1) = '1' THEN
+                SELECT NVL (COUNT (1), 0) INTO TEMP FROM TBTABEL_PLUTIMBANGAN
+                    WHERE SUBSTR (TMB_PRDCD, 1, 6) = SUBSTR (v_prdcd, 1, 6)
+                    AND TMB_KODEIGR = v_kodeigr;
+
+                l_file_loc := bfilename('LREMOTE', v_filename);
+
+                IF dbms_lob.fileexists(l_file_loc) = '1' THEN
+                    lNEW := FALSE;
+                ELSE
+                    lNEW := TRUE;
+                END IF;
+
+                IF TEMP <> 0 THEN
+                    IF v_jtim <> '3' THEN
+                        JUDUL := '';
+
+                        IF lNEW = TRUE THEN
+                            IF v_jtim <> '2' THEN
+                                JUDUL := TEMPJUDUL;
+                            END IF;
+                        END IF;
+
+                        IF CEKPLU <> 0 THEN
+                            IF PTAG NOT IN ('N', 'X') THEN
+                                IF v_jtim <> '2' THEN
+                                    IF UNITPRD = 'KG' THEN
+                                        ISI := SUBSTR(V_PRDCD,1,6) || '0,0,0,0,' || ROUND(PRICEPRD) || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                    ELSE
+                                        ISI := SUBSTR(V_PRDCD,1,6) || '0,1,0,0,' || ROUND(PRICEPRD) || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                    END IF;
+
+                                ELSE
+                                    IF UNITPRD = 'KG' THEN
+                                        ISI := SUBSTR(V_PRDCD,1,6) || '0,0,0,0,' || TO_CHAR(PRICEPRD,'999g999g999g999') || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                    ELSE
+                                        ISI := SUBSTR(V_PRDCD,1,6) || '0' || ',1,0,0,' || TO_CHAR(PRICEPRD,'999g999g999g999') || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                    END IF;
+                                END IF;
+                            END IF;
+                        END IF;
+
+                        --INPUT DATA KE FILE
+                        out_file := UTL_FILE.fopen ('LREMOTE', v_filename, 'a', 32767);
+                        v_num := 1;
+
+                        IF lNEW = TRUE THEN
+                            UTL_FILE.put_line (out_file, JUDUL || CHR (13) || CHR (10));
+                            UTL_FILE.put_line (out_file, ISI || CHR (13) || CHR (10));
+                        ELSE
+                            UTL_FILE.put_line (out_file, ISI || CHR (13) || CHR (10));
+                        END IF;
+
+                        UTL_FILE.fclose (out_file);
+
+                    ELSE --JIKA JTIM = 3
+                        l_file_loc := bfilename('ISHIDA', v_filename);
+
+                        IF dbms_lob.fileexists(l_file_loc) = '1' THEN
+                            lNEW := FALSE;
+                        ELSE
+                            lNEW := TRUE;
+                        END IF;
+
+                        IF lNEW = TRUE THEN
+                            IF v_jtim <> '2' THEN
+                                JUDUL := TEMPJUDUL;
+                            END IF;
+                        END IF;
+
+                        IF CEKPLU <> 0 THEN
+                            IF NVL(PTAG,' ') NOT IN ('N' , 'X') THEN
+                                IF UNITPRD = 'KG' THEN
+                                    ISI := SUBSTR(V_PRDCD,1,6) || '0,0,0,0,' || ROUND(PRICEPRD) || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                ELSE
+                                    ISI := SUBSTR(V_PRDCD,1,6) || '0' || ',1,0,0,' || ROUND(PRICEPRD) || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                END IF;
+                            END IF;
+                        END IF;
+
+                        --INPUT DATA KE FILE
+                        out_file    := UTL_FILE.fopen ('ISHIDA', v_filename, 'a', 32767);
+                        v_num       := 1;
+
+                        IF lNEW = TRUE THEN
+                            UTL_FILE.put_line (out_file,  JUDUL || CHR (13) || CHR (10));
+                            UTL_FILE.put_line (out_file, ISI || CHR (13) || CHR (10));
+                        ELSE
+                            UTL_FILE.put_line (out_file, ISI || CHR (13) || CHR (10));
+                        END IF;
+
+                        UTL_FILE.fclose (out_file);
+
+                        IF CEKPLU <> 0 THEN
+                            IF NVL(PTAG,' ') NOT IN ('N' , 'X') THEN
+                                IF UNITPRD = 'KG' THEN
+                                    ISI := SUBSTR(V_PRDCD,1,6) || '0,0,0,0,' || TO_CHAR(PRICEPRD,'999g999g999g999') || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                ELSE
+                                    ISI := SUBSTR(V_PRDCD,1,6) || '0' || ',1,0,0,' || TO_CHAR(PRICEPRD,'999g999g999g999') || ',"' || SUBSTR(V_PRDCD,1,6) || '1",1,"' || DESPRD || '"';
+                                END IF;
+                            END IF;
+                        END IF;
+
+                        l_file_loc := bfilename('BIZERBA', v_filename);
+
+                        IF dbms_lob.fileexists(l_file_loc) = '1' THEN
+                            lNEW := FALSE;
+                        ELSE
+                            lNEW := TRUE;
+                        END IF;
+
+                        --INPUT DATA KE FILE
+                        out_file    := UTL_FILE.fopen ('BIZERBA', v_filename, 'a', 32767);
+                        v_num       := 1;
+
+                        IF lNEW = TRUE THEN
+                            UTL_FILE.put_line (out_file,  JUDUL || CHR (13) || CHR (10));
+                            UTL_FILE.put_line (out_file, ISI || CHR (13) || CHR (10));
+                        ELSE
+                            UTL_FILE.put_line (out_file, ISI || CHR(13) || CHR(10));
+                        END IF;
+
+                        UTL_FILE.fclose (out_file);
+                    END IF;
+
+                    SELECT NVL(COUNT(1),0) INTO TEMP FROM TBTABEL_PLUTIMBANGAN
+                           WHERE SUBSTR(TMB_PRDCD,1,6) = SUBSTR(V_PRDCD,1,6) AND TMB_KODEIGR = V_KODEIGR;
+
+                    IF TEMP <> 0 THEN
+                        UPDATE TBTABEL_PLUTIMBANGAN SET TMB_MODIFY_DT = SYSDATE, TMB_MODIFY_BY = v_create_by
+                            WHERE SUBSTR(TMB_PRDCD,1,6) = SUBSTR(V_PRDCD,1,6) AND TMB_KODEIGR = V_KODEIGR;
+                    END IF;
+                END IF;
+
+                COMMIT;
+            END IF;
+
+            v_result := 'Harga Jual Baru Telah Diaktifkan !!';
+         END IF;
+      END IF;
+
+
+--      COMMIT;
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         v_result := SQLERRM;
+   END;
+END;
+/
+
+ALTER PROCEDURE sp_aktifkan_harga_peritem COMPILE;
+/

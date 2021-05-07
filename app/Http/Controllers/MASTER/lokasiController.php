@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
+use Yajra\DataTables\DataTables;
 
 class lokasiController extends Controller
 {
@@ -16,7 +17,7 @@ class lokasiController extends Controller
             ->where('lks_kodeigr','22')
             ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
             ->distinct()
-            ->limit(100)
+            ->limit(1000)
             ->get();
 
         $produk = DB::connection('simsmg')->table('tbmaster_prodmast')
@@ -27,6 +28,28 @@ class lokasiController extends Controller
             ->get();
 
         return view('MASTER.lokasi')->with(compact(['lokasi','produk']));
+    }
+
+    public function getLokasi(){ //Untuk datatables
+        $lokasi = DB::connection('simsmg')->table('tbmaster_lokasi')
+            ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
+            ->where('lks_kodeigr','22')
+            ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
+            ->distinct()
+            ->limit(100)
+            ->get();
+
+        return Datatables::of($lokasi)->make(true);
+    }
+
+    public function getProdmast(){ //Untuk datatables
+        $produk = DB::connection('simsmg')->table('tbmaster_prodmast')
+            ->selectRaw('prd_deskripsipanjang,prd_prdcd')
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+            ->orderBy('prd_deskripsipanjang')
+            ->get();
+
+        return Datatables::of($produk)->make(true);
     }
 
     public function lov_rak_search(Request $request){

@@ -1,81 +1,83 @@
 @extends('navbar')
+@section('title','MASTER | AKTIFKAN HARGA JUAL PER ITEM')
 @section('content')
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-sm-10">
-                <fieldset class="card border-dark">
-                    <legend  class="w-auto ml-5">Aktifkan Harga Jual</legend>
-                    <div class="card-body cardForm">
-                        <form class="form">
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Kode Plu</label>
-                                <input type="text" id="kodePlu" class="form-control col-sm-2 mx-sm-1" onchange="getDetailPlu(this.value)">
-                                <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_prodmast"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
-                                <input type="text" id="namaPlu" class="form-control col-sm-5 mx-sm-1" disabled>
-                            </div>
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Divisi</label>
-                                <input type="text" id="kodeDivisi" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="namaDivisi" class="form-control col-sm-4 mx-sm-1" disabled>
-                            </div>
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Departement</label>
-                                <input type="text" id="kodeDepartement" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="namaDepartement" class="form-control col-sm-4 mx-sm-1" disabled>
-                            </div>
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Kategori Barang</label>
-                                <input type="text" id="kodeKategori" class="form-control col-sm-1 mx-sm-1" disabled>
-                                <input type="text" id="namaKategori" class="form-control col-sm-4 mx-sm-1" disabled>
-                            </div>
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Harga Jual Lama</label>
-                                <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-1 text-right" disabled>
-                            </div>
-                            <div class="form-group row mb-0">
-                                <label class="col-sm-4 col-form-label text-md-right">Harga Jual Baru</label>
-                                <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-1 text-right" disabled>
-                            </div>
+            <div class="col-sm-12">
+               <div class="card border-dark">
+                   <div class="card-body cardForm">
+                       <form class="form">
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Kode Plu</label>
+{{--                               <input type="text" id="kodePlu" class="form-control col-sm-2 mx-sm-1" onchange="getDetailPlu(this.value)">--}}
+{{--                               <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_prodmast"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
 
-                            <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right btnAktifkanHrg" onclick="aktifkanHarga()">Aktifkan</button>
-                        </form>
-                    </div>
-                </fieldset>
+                               <div class="col-sm-2 buttonInside">
+                                   <input type="text" id="kodePlu" class="form-control" onchange="getDetailPlu(this.value)">
+                                   <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_prodmast">
+                                       <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                   </button>
+                               </div>
+
+                               <input type="text" id="namaPlu" class="form-control col-sm-5 mx-sm-1" disabled>
+                           </div>
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Divisi</label>
+                               <input type="text" id="kodeDivisi" class="form-control col-sm-1 mx-sm-3" disabled>
+                               <input type="text" id="namaDivisi" class="form-control col-sm-4 mx-sm-1" disabled>
+                           </div>
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Departement</label>
+                               <input type="text" id="kodeDepartement" class="form-control col-sm-1 mx-sm-3" disabled>
+                               <input type="text" id="namaDepartement" class="form-control col-sm-4 mx-sm-1" disabled>
+                           </div>
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Kategori Barang</label>
+                               <input type="text" id="kodeKategori" class="form-control col-sm-1 mx-sm-3" disabled>
+                               <input type="text" id="namaKategori" class="form-control col-sm-4 mx-sm-1" disabled>
+                           </div>
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Harga Jual Lama</label>
+                               <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-3 text-right" disabled>
+                           </div>
+                           <div class="form-group row mb-0">
+                               <label class="col-sm-4 col-form-label text-md-right">Harga Jual Baru</label>
+                               <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-3 text-right" disabled>
+                           </div>
+
+                           <div class="col-sm-2 text-center offset-sm-10">
+                               <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 btn-block btnAktifkanHrg" onclick="aktifkanHarga()">Aktifkan</button>
+                           </div>
+                       </form>
+                   </div>
+               </div>
             </div>
         </div>
     </div>
 
     {{--Modal HELP--}}
     <div class="modal fade" id="m_prodmast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchProdmast" class="form-control search_lov" type="text" placeholder="Inputkan Nama / Kode Barang" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">List Prodmast</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov">
-                                    <thead>
+                                <table class="table table-sm mb-0" id="tableModalProdmast">
+                                    <thead class="theadDataTables">
                                     <tr>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalProdmast">
-                                    @foreach($prodmast as $data)
-                                        <tr onclick="getDetailPlu('{{ $data->prd_prdcd }}')" class="row_lov">
-                                            <td>{{ $data->prd_prdcd }}</td>
-                                            <td>{{ $data->prd_deskripsipanjang }}</td>
-                                        </tr>
-                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -85,16 +87,39 @@
             </div>
         </div>
     </div>
-    <style>
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: #acacac;
-            color: white;
-        }
 
-    </style>
 
     <script>
+        $(document).ready(function (){
+            $('#tableModalProdmast').DataTable({
+                "ajax": '{{ url('mstaktifhrgjual/getprodmast') }}',
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
+                ]
+            });
+
+        });
+
+        $(document).on('click', '.modalRow', function () {
+            let plu = $(this).find('td')[0]['innerHTML']
+
+            getDetailPlu(plu)
+        } );
+
         $('#kodePlu').keypress(function (e) {
             if (e.which === 13){
                 $('.btnAktifkanHrg').focus()
@@ -123,39 +148,14 @@
                         swal('SUCCESS', result, 'success')
                         console.log(result)
                         clearField()
-                    }, error : function (error) {
+                    }, error : function (err) {
                         $('#modal-loader').modal('hide');
-                        console.log(error)
-                        swal("Error",'','error');
+                        console.log(err.responseJSON.message.substr(0,150));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 })
             }
         }
-
-
-        $('#searchProdmast').keypress(function (e) {
-            if (e.which === 13) {
-                if ($(this).val().length < 3) {
-                    $('.invalid-feedback').show();
-                } else {
-                    $('.invalid-feedback').hide();
-                    $('#tbodyModalProdmast .row_lov').remove();
-                    ajaxSetup();
-                    $.ajax({
-                        url: '/BackOffice/public/mstaktifhrgjual/getprodmast',
-                        type: 'post',
-                        data:({search:$(this).val()}),
-                        success: function (result) {
-                            for(i =0; i < result.length; i++) {
-                                $('#tbodyModalProdmast').append("<tr onclick=getDetailPlu('"+ result[i].prd_prdcd +"') class='row_lov'> <td>"+ result[i].prd_prdcd +"</td><td>"+ result[i].prd_deskripsipanjang +"</td></tr>")
-                            }
-                        }, error : function () {
-                            swal("Error",'','error');
-                        }
-                    })
-                }
-            }
-        });
 
         function getDetailPlu(plu) {
             if (plu.length > 7){
@@ -171,7 +171,10 @@
                     url: '/BackOffice/public/mstaktifhrgjual/getdetailplu',
                     type: 'post',
                     data:({plu:plu}),
-                    success: function (result) {
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    }, success: function (result) {
+                        $('#modal-loader').modal('hide');
                         if (result.length === 0){
                             swal('Warning', 'Data PLU Tidak Ada', 'warning')
                             clearField()
@@ -191,8 +194,10 @@
                             $('#hargaBaru').val(data.prd_hrgjual3)
                             $('.btnAktifkanHrg').focus()
                         }
-                    }, error : function () {
-                        swal("Error",'','error');
+                    }, error : function (err) {
+                        $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0,100));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 })
             }

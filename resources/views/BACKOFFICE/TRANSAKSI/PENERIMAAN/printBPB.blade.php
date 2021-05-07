@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PENERIMAAN | PEMBATALAN BPB')
+@section('title','PENERIMAAN | CETAK BPB')
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -116,8 +116,8 @@
         let documentTemp;
 
         $(document).ready(function () {
-            // startAlert();
-            typeTrn = 'B'
+            startAlert();
+            // typeTrn = 'B'
             btnCetak.attr('disabled', true);
             // tablePrintBPB = $('#tablePrintBPB').DataTable()
         });
@@ -251,6 +251,7 @@
                     if (result.kode == 1){
                         documentTemp = document;
                         window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+result.data+'/'+documentTemp);
+                        // window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+'lokasi'+'/'+documentTemp);
                     }
                 }, error: function (err) {
                     $('#modal-loader').modal('hide');

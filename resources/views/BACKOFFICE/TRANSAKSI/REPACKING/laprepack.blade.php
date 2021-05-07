@@ -1,12 +1,12 @@
 @extends('navbar')
-{{--@section('title','Restore')--}}
+@section('title','LAPORAN REPACKING')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
-                <fieldset class="card">
-                    <legend class="w-auto ml-5">Cetak Laporan Repacking</legend>
+                <fieldset class="card border-dark">
+{{--                    <legend class="w-auto ml-5">Cetak Laporan Repacking</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="col-sm-12">
