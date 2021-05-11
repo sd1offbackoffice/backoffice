@@ -124,7 +124,8 @@
                                             </td>
                                             <td class="buttonInside" style="width: 150px;">
                                                 <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu" value="">
-                                                <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')">
+                                                <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
+                                                        data-target="#pilihPlu">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </td>
@@ -307,6 +308,40 @@
         </div>
     </div>
 
+    {{--Modal PLU--}}
+    <div class="modal fade" id="pilihPlu" tabindex="-1" role="dialog" aria-labelledby="pilihPlu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Memilih Nomor Plu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tablePlu">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Dskripsi</th>
+                                        <th>PLU</th>
+                                        <th>Satuan</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         #jenisKertas:hover{
             cursor: pointer;
@@ -316,7 +351,7 @@
         }
     </style>
     <script>
-        let tempPlu;
+        let rowNum;
         let temporary;
 
         let saveBool = true;
@@ -358,6 +393,26 @@
                 },
                 "order": []
             });
+            $('#tablePlu').DataTable({
+                "ajax": '{{ url('transaksi/repacking/modalplu') }}',
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'satuan', name: 'satuan'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowPlu');
+                },
+                "order": []
+            });
         });
 
         $(document).on('click', '.modalRowTrn', function () {
@@ -366,6 +421,21 @@
             chooseTrn(kode);
             $('#pilihNmr').modal('hide');
         });
+
+        $(document).on('click', '.modalRowPlu', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().next().text();
+            if($('.pr')[rowNum].value === '' || $('.pr')[rowNum].value == null){
+                swal('', "Isi kolom P/R dahulu !!", 'warning');
+            }else{
+                choosePlu(kode,rowNum);
+            }
+            $('#pilihPlu').modal('hide');
+        });
+
+        function TheRowNum(val){
+            rowNum = val.parentNode.parentNode.rowIndex-2;
+        }
 
         $('#tanggalTrn').datepicker({
             format: 'dd/mm/yyyy'
@@ -1038,24 +1108,6 @@
             }
         });
 
-        // $('.plu').change(function () {
-        //
-        //     let row = $(this).attr('no');
-        //     let val = convertPlu($(this).val());
-        //     if($('.plu')[row].value != ''){
-        //         if($('.pr')[row].value === '' || $('.pr')[row].value == null){
-        //             $('.plu')[row].value = '';
-        //             swal('', "Isi kolom P/R dahulu !!", 'warning');
-        //             return false;
-        //         }else{
-        //             choosePlu(val,row);
-        //             qtyCounter();
-        //             totalPPN();
-        //         }
-        //     }
-        //
-        // });
-
         function clearForm(){
             $('#hapusDoc').attr('disabled','disabled');
             $('#model').val('');
@@ -1098,32 +1150,6 @@
             //dropdownKecil();
         }
 
-        function searchNmrTrn(val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/getNmrTrn',
-                type: 'post',
-                data: {
-                    val:val
-                },
-                success: function (result) {
-                    $('#modalThName1').text('NO.LIST');
-                    $('#modalThName2').text('TGL.LIST');
-                    $('#modalThName3').text('NO.NOTA');
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ result[i].trbo_nodoc+"') class='modalRow'><td>"+ result[i].trbo_nodoc +"</td> <td>"+ formatDate(result[i].trbo_tgldoc) +"</td> <td>"+ result[i].nota +"</td></tr>")
-                    }
-
-                    $('#idModal').val('TRN')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
         $('#nomorTrn').keypress(function (e) {
             if (e.which === 13) {
                 let val = this.value;
@@ -1158,13 +1184,9 @@
                                     trbo_flagdoc = '';
                                 }, error: function () {
                                     alert('error');
-                                    //$('#modal-loader').modal('hide');
+                                    $('#modal-loader').modal('hide');
                                 }
                             })
-                            // $('.baris').remove();
-                            // for (i = 0; i< 8; i++) {
-                            //     $('#tbody').append(tempTable(i));
-                            // }
                         } else {
                             $('#nomorTrn').val('');
                         }
@@ -1190,6 +1212,7 @@
                     }else{
                         swal('', "Nomor Tidak dikenali", 'warning');
                         $('#nomorTrn').val('');
+                        $('#model').val('');
                     }
                 }, error: function () {
                     alert('error');
@@ -1311,82 +1334,6 @@
             })
         }
 
-        function getPlu(no, val) {
-            $('#searchModal').val('');
-            let index = no.parentNode.parentNode.rowIndex-2;
-
-            if($('.pr')[index].value === '' || $('.pr')[index].value == null){
-                swal('', "Isi kolom P/R dahulu !!", 'warning');
-                return false;
-            }
-            $('#idRow').val(index);
-
-            if (tempPlu == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/transaksi/repacking/getPlu',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('Deskripsi');
-                        $('#modalThName2').text('PLU');
-                        $('#modalThName3').text('Satuan');
-
-                        tempPlu = result;
-
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td> <td>"+ result[i].satuan +"</td></tr>")
-                        }
-
-                        $('#idModal').val('PLU')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            }
-            else {
-                $('#modalThName1').text('Deskripsi');
-                $('#modalThName2').text('PLU');
-                $('#modalThName3').text('Satuan');
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempPlu.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ tempPlu[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ tempPlu[i].prd_deskripsipanjang +"</td> <td>"+ tempPlu[i].prd_prdcd +"</td> <td>"+ tempPlu[i].satuan +"</td></tr>")
-                }
-
-                $('#idModal').val('PLU')
-                $('#modalHelp').modal('show');
-            }
-        }
-
-        function searchPlu(index, val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/getPlu',
-                type: 'post',
-                data: { val:val },
-                success: function (result) {
-                    $('#modalThName1').text('Deskripsi');
-                    $('#modalThName2').text('PLU');
-                    $('#modalThName3').text('Satuan');
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td> <td>"+ result[i].satuan +"</td></tr>")
-                    }
-
-                    $('#idModal').val('PLU')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
         function validate_rec(index){
             let temp  = $('.plu');
             let counter = 1;
@@ -1423,22 +1370,23 @@
 
                     if (result.kode === 1){
                         data = result.data;
-                        if(data.trbo_stokqty === null || data.trbo_stokqty == 0 || data.trbo_stokqty == ''){
-                            swal('', "Tidak ada stok!", 'warning');
-                            $('.plu')[index].value = '';
-                            $('.deskripsi')[index].value = '';
-                            deskripsiPanjang[index] = '';
-                            $('.satuan')[index].value = '';
-                            $('.tag')[index].value = '';
-                            $('.ctn-stock')[index].value = '';
-                            $('.pcs-stock')[index].value = '';
-                            $('.ctn-kuantum')[index].value = '';
-                            $('.pcs-kuantum')[index].value = '';
-                            $('.hrg-satuan')[index].value = '';
-                            $('.gross')[index].value = '';
-                            $('.ppn')[index].value = '';
-                        }
-                        else if(!validate_rec(index)){
+                        // if(data.trbo_stokqty === null || data.trbo_stokqty == 0 || data.trbo_stokqty == ''){
+                        //     swal('', "Tidak ada stok!", 'warning');
+                        //     $('.plu')[index].value = '';
+                        //     $('.deskripsi')[index].value = '';
+                        //     deskripsiPanjang[index] = '';
+                        //     $('.satuan')[index].value = '';
+                        //     $('.tag')[index].value = '';
+                        //     $('.ctn-stock')[index].value = '';
+                        //     $('.pcs-stock')[index].value = '';
+                        //     $('.ctn-kuantum')[index].value = '';
+                        //     $('.pcs-kuantum')[index].value = '';
+                        //     $('.hrg-satuan')[index].value = '';
+                        //     $('.gross')[index].value = '';
+                        //     $('.ppn')[index].value = '';
+                        // }
+                        // else
+                            if(!validate_rec(index)){
                             swal('', "Kode produk ".concat(kode," sudah ada"), 'warning');
                             $('.plu')[index].value = '';
                             qtyCounter();
@@ -1600,9 +1548,10 @@
                                                 </td>
                                                 <td class="buttonInside" style="width: 150px;">
                                                     <input onfocus="penampungPlu(this)" onchange="penangkapPlu(this)" type="text" class="form-control plu"  value="">
-                                                    <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')">
-                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                    </button>
+                                                    <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
+                                                        data-target="#pilihPlu">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
                                                 </td>
                                                 <td>
                                                 <input disabled class="form-control deskripsi" value=""

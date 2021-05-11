@@ -135,19 +135,19 @@ class TransferPLUController extends Controller
 //                --**cetak lap**--
                 if (!isset($V_RESULT_PLU)) {
 //                    $F = 'CETAK LAP';
-//                    $this->CETAK_LAP($N_REQ_ID);
+                    $this->CETAK_LAP($N_REQ_ID);
 
                     $F = 'CETAK LAP2';
-//                    $this->CETAK_LAP2($N_REQ_ID);
+                    $this->CETAK_LAP2($N_REQ_ID);
 
                     $F = 'CETAK BCX DOBEL';
-//                    $this->CETAK_BCX_DOBEL($N_REQ_ID);
+                    $this->CETAK_BCX_DOBEL($N_REQ_ID);
 
                     $F = 'CETAK PLU BANYAK BARCODE';
-//                    $this->CETAK_PLU_BANYAK_BARCODE();
+                    $this->CETAK_PLU_BANYAK_BARCODE();
 
                     $F = 'CETAK DIMENSI NOL';
-//                    $this->CETAK_DIMENSI_NOL();
+                    $this->CETAK_DIMENSI_NOL();
                 }
 
 //            -------->>>>>>>> TRANSFER HARGA BELI <<<<<<<<--------

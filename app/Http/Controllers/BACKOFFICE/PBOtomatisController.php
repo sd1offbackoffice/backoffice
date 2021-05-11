@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use App\AllModel;
+use Yajra\DataTables\DataTables;
 use function foo\func;
 use PDF;
 use Illuminate\Http\Request;
@@ -12,48 +13,23 @@ use Illuminate\Support\Facades\DB;
 class PBOtomatisController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE.PBOtomatis', compact('supplier', 'mtrsup', 'departemen'));
-    }
-
-    public function getDataModal(){
-        $supplier   = DB::table('TBMASTER_SUPPLIER')->select('SUP_NAMASUPPLIER', 'SUP_KODESUPPLIER')->orderBy('sup_namasupplier')->limit(100)->get();
         $mtrsup     = DB::table('TBTR_MONITORINGSUPPLIER')->select('MSU_KODEMONITORING', 'MSU_NAMAMONITORING')->orderBy('MSU_KODEMONITORING')->groupBy(['MSU_KODEMONITORING', 'MSU_NAMAMONITORING'])->get();
         $departemen = DB::table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')->orderBy('DEP_KODEDEPARTEMENT')->get();
 
-        return response()->json(['supplier' => $supplier, 'mtrsup' => $mtrsup, 'departemen' => $departemen]);
+        return view('BACKOFFICE.PBOtomatis', compact('supplier', 'mtrsup', 'departemen'));
     }
 
-    public function getSupplier(Request $request){
-        $search = strtoupper($request->search);
+    public function getDataModalSupplier(Request  $request) {
+        $search = $request->value;
 
-        $supplier   = DB::table('TBMASTER_SUPPLIER')->select('SUP_NAMASUPPLIER', 'SUP_KODESUPPLIER')
-            ->where('SUP_NAMASUPPLIER','LIKE', '%'.$search.'%')
-            ->orWhere('SUP_KODESUPPLIER','LIKE', '%'.$search.'%')
-            ->orderBy('sup_namasupplier')->get()->toArray();
+        $supplier = DB::table('TBMASTER_SUPPLIER')
+            ->select('SUP_NAMASUPPLIER', 'SUP_KODESUPPLIER')
+            ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
+            ->orWhere('sup_namasupplier','LIKE', '%'.$search.'%')
+            ->orderBy('sup_namasupplier')
+            ->limit(100)->get();
 
-        return response()->json($supplier);
-    }
-
-    public function getMtrSupplier(Request $request){
-        $search = strtoupper($request->search);
-
-        $mtrsup     = DB::table('TBTR_MONITORINGSUPPLIER')->select('MSU_KODEMONITORING', 'MSU_NAMAMONITORING')
-            ->where('MSU_KODEMONITORING','LIKE', '%'.$search.'%')
-            ->orWhere('MSU_NAMAMONITORING','LIKE', '%'.$search.'%')
-            ->orderBy('MSU_KODEMONITORING')->groupBy(['MSU_KODEMONITORING', 'MSU_NAMAMONITORING'])->get()->toArray();
-
-        return response()->json($mtrsup);
-    }
-
-    public function getDepartemen(Request $request){
-        $search = strtoupper($request->search);
-
-        $departemen = DB::table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')
-            ->where('DEP_KODEDEPARTEMENT','LIKE', '%'.$search.'%')
-            ->orWhere('DEP_NAMADEPARTEMENT','LIKE', '%'.$search.'%')
-            ->orderBy('DEP_KODEDEPARTEMENT')->get()->toArray();
-
-        return response()->json($departemen);
+        return Datatables::of($supplier)->make(true);
     }
 
     public function getKategori(Request $request){
@@ -66,24 +42,9 @@ class PBOtomatisController extends Controller
             ->orderBy('KAT_KODEKATEGORI')
             ->get()->toArray();
 
-        return response()->json($kategori);
+        return Datatables::of($kategori)->make(true);
     }
 
-    public function searchKategori(Request $request){
-        $dep1   = $request->dept1;
-        $dep2   = $request->dept2;
-        $search = strtoupper($request->search);
-
-        $kategori = DB::table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
-            ->whereBetween('KAT_KODEDEPARTEMENT',[$dep1,$dep2])
-            ->where('KAT_KODEKATEGORI','LIKE', '%'.$search.'%')
-            ->orWhere('KAT_NAMAKATEGORI','LIKE', '%'.$search.'%')
-            ->orderBy('KAT_KODEDEPARTEMENT')
-            ->orderBy('KAT_KODEKATEGORI')
-            ->get()->toArray();
-
-        return response()->json($kategori);
-    }
 
     public function prosesData(Request $request){
         $sup1   = $request->sup1;

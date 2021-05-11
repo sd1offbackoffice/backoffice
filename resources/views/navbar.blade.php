@@ -210,6 +210,7 @@
                                                    aria-expanded="false">Repacking</a>
                                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                     <li><a href="{{url("transaksi/repacking/index")}}">Repacking</a></li>
+                                                    <li><a href="{{url("transaksi/laprepacking/index")}}">Laporan Repacking</a></li>
                                                 </ul>
                                             </li>
                                         </ul>
@@ -251,6 +252,15 @@
                                             <li><a href="{{url("/bo/transfer/plu")}}">Transfer PLU</a></li>
                                             <li><a href="{{url("/bo/transfer/po")}}">Transfer PO</a></li>
                                             <li><a href="{{url("/bo/transfer/pb-ke-md")}}">Transfer PB ke MD</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                           data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">LPP</a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a href="{{url("/bo/lpp/proses-lpp")}}">Proses LPP</a></li>
+                                            <li><a href="{{url("/bo/lpp/register-lpp")}}">Cetak Register LPP</a></li>
                                         </ul>
                                     </li>
                                     <li class="dropdown">
@@ -338,7 +348,7 @@
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a href="{{url("/admuser/index")}}">User</a></li>
-                                    <li><a href="{{url("/administration/access")}}">Access</a></li>
+                                    <li><a href="{{url("/administration/access")}}">Access Menu</a></li>
                                 </ul>
                             </li>
                         @else
@@ -351,6 +361,9 @@
                             @foreach($_SESSION['menu'] as $m)
                                 @if($tempgroup != $m->acc_group)
                                     @if($tempgroup != '')
+                                        </ul></li>
+                                    @endif
+                                    @if($tempsubgroup3 != '' && $tempsubgroup3 != 'x')
                                         </ul></li>
                                     @endif
                                     @if($tempsubgroup2 != '' && $tempsubgroup2 != 'x')
@@ -377,6 +390,9 @@
         </ul></li>
         @if($tempsubgroup2 != $m->acc_subgroup2 && $tempsubgroup2 != '')
             </ul></li>
+            @if($tempsubgroup3 != $m->acc_subgroup3 && $tempsubgroup3 != '')
+                </ul></li>
+            @endif
         @endif
     @endif
 
@@ -414,6 +430,10 @@
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
     @endif
 @else
+                @if($tempsubgroup3 != '' && $tempsubgroup3 != 'x')
+                    @php $tempsubgroup3 = 'x'; @endphp
+                    </ul></li>
+                    @endif
                 @if($tempsubgroup2 != '' && $tempsubgroup2 != 'x')
                     @php $tempsubgroup2 = 'x'; @endphp
                     </ul></li>

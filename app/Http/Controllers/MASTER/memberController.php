@@ -60,7 +60,7 @@ class memberController extends Controller
         $member = DB::table('tbmaster_customer')
             ->select('*')
             ->orderBy('cus_namamember')
-//            ->limit(20)
+            ->limit(200)
             ->get();
 
         return Datatables::of($member)->make(true);

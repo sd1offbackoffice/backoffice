@@ -252,8 +252,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalTemplate">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kodeigr</th>
-                                        <th>Nama Cabang</th>
+                                        <th>PLU</th>
+                                        <th>Nama Produk</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalHelp"></tbody>
@@ -270,25 +270,10 @@
 
 
     <script>
+        // let tableModal;
+
         $(document).ready(function () {
-            $('#tableModalTemplate').DataTable({
-                "ajax": '{{ url('template/datamodal') }}',
-                "columns": [
-                    {data: 'cab_kodecabang', name: 'cab_kodeigr'},
-                    {data: 'cab_namacabang', name: 'cab_namacabang'},
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('modalRow');
-                },
-                "order": []
-            });
+            getModalData('');
 
             $('#tableTemplate').DataTable({
                 "ajax": '{{ url('template/datamodal') }}',
@@ -308,8 +293,44 @@
                 "order": []
             });
 
-            swal('Warning', 'Bila ada yang ingin ditanyakan, chat di grup!', 'warning');
+            // swal('Warning', 'Bila ada yang ingin ditanyakan, chat di grup!', 'warning');
         })
+
+        function getModalData(value){
+            let tableModal =  $('#tableModalTemplate').DataTable({
+                "ajax": {
+                    'url' : '{{ url('template/searchdatamodal') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": []
+            });
+
+            $('#tableModalTemplate_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getModalData(val);
+                }
+            })
+        }
+
 
         //    Function untuk onclick pada data modal
         $(document).on('click', '.modalRow', function () {

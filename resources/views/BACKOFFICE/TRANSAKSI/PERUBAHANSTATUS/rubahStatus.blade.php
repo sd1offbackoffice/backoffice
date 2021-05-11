@@ -7,13 +7,20 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <fieldset class="card">
-                    <legend class="w-auto ml-5">Header Perubahan Status Barang</legend>
+                <fieldset class="card border-dark">
+{{--                    <legend class="w-auto ml-5">Header Perubahan Status Barang</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
+                                        <div class="col-sm-2 buttonInside">
+                                            <input onchange="getNmrTrn()" type="text" class="form-control" id="nomorTrn">
+                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                                                    data-target="#pilihNmr">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
                                         <label for="i_nomordokumen" class="col-sm-4 col-form-label">Nomor Dokumen</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_nomordokumen" placeholder="TXT_NODOC">

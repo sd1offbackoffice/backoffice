@@ -31,6 +31,7 @@ Route::get('/logout', 'Auth\loginController@logout')->middleware('CheckLogin');
 /******** Template ********/
 Route::get('/template/index',   'TemplateController@index')->middleware('CheckLogin');
 Route::get('/template/datamodal',   'TemplateController@dataModal')->middleware('CheckLogin');
+Route::get('/template/searchdatamodal',   'TemplateController@searchDataModal')->middleware('CheckLogin');
 
 
 /******** Arie ********/
@@ -221,6 +222,16 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/print_by_sup', 'BACKOFFICE\CetakTolakanPBController@print_by_sup');
             });
         });
+        Route::prefix('/lpp')->group(function(){
+            Route::prefix('/proses-lpp')->group(function(){
+                Route::get('/','BACKOFFICE\LPP\ProsesLPPController@index');
+                Route::post('/proses','BACKOFFICE\LPP\ProsesLPPController@proses');
+            });
+            Route::prefix('/register-lpp')->group(function(){
+                Route::get('/','BACKOFFICE\LPP\RegisterLPPController@index');
+                Route::post('/proses','BACKOFFICE\LPP\RegisterLPPController@proses');
+            });
+        });
 
         Route::prefix('/transaksi')->group(function () {
             Route::prefix('/penyesuaian')->group(function () {
@@ -385,6 +396,8 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/proses-copystock','BACKOFFICE\PROSES\MonthEndController@prosesCopyStock');
                 Route::post('/proses-hitung-stok2','BACKOFFICE\PROSES\MonthEndController@prosesHitungStock2');
             });
+
+
         });
 
         Route::prefix('/laporan')->group(function(){
@@ -597,12 +610,19 @@ Route::middleware(['CheckLogin'])->group(function () {
     });
 
     Route::prefix('administration')->group(function(){
+        Route::prefix('/menu')->group(function(){
+            Route::get('/','ADMINISTRATION\MenuController@index');
+            Route::get('/get-data','ADMINISTRATION\MenuController@getData');
+            Route::post('/add','ADMINISTRATION\MenuController@add');
+            Route::post('/edit','ADMINISTRATION\MenuController@edit');
+            Route::post('/delete','ADMINISTRATION\MenuController@delete');
+        });
+
         Route::prefix('/access')->group(function(){
             Route::get('/','ADMINISTRATION\AccessController@index');
+            Route::get('/get-lov-user','ADMINISTRATION\AccessController@getLovUser');
             Route::get('/get-data','ADMINISTRATION\AccessController@getData');
-            Route::post('/add','ADMINISTRATION\AccessController@add');
-            Route::post('/edit','ADMINISTRATION\AccessController@edit');
-            Route::post('/delete','ADMINISTRATION\AccessController@delete');
+            Route::get('/save','ADMINISTRATION\AccessController@save');
         });
     });
 });
@@ -717,15 +737,11 @@ Route::get('/boutilitypbigr/test', function () {
 //BACKOFFICE_PB_OTOMATIS
 //Route::get('/bopbotomatis/index',                                             'BACKOFFICE\PBOtomatisController@cetakReport')->middleware('CheckLogin');
 Route::get('/bopbotomatis/index', 'BACKOFFICE\PBOtomatisController@index')->middleware('CheckLogin');
-Route::post('/bopbotomatis/getdatamodal', 'BACKOFFICE\PBOtomatisController@getDataModal')->middleware('CheckLogin');
-Route::post('/bopbotomatis/getsupplier', 'BACKOFFICE\PBOtomatisController@getSupplier')->middleware('CheckLogin');
-Route::post('/bopbotomatis/getmtrsup', 'BACKOFFICE\PBOtomatisController@getMtrSupplier')->middleware('CheckLogin');
-Route::post('/bopbotomatis/getdepartemen', 'BACKOFFICE\PBOtomatisController@getDepartemen')->middleware('CheckLogin');
-Route::post('/bopbotomatis/getkategori', 'BACKOFFICE\PBOtomatisController@getKategori')->middleware('CheckLogin');
-Route::post('/bopbotomatis/searchkategori', 'BACKOFFICE\PBOtomatisController@searchKategori')->middleware('CheckLogin');
+Route::get('/bopbotomatis/getdatamodalsupplier', 'BACKOFFICE\PBOtomatisController@getDataModalSupplier')->middleware('CheckLogin');
+Route::get('/bopbotomatis/getkategori', 'BACKOFFICE\PBOtomatisController@getKategori')->middleware('CheckLogin');
 Route::post('/bopbotomatis/prosesdata', 'BACKOFFICE\PBOtomatisController@prosesData')->middleware('CheckLogin');
 Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}/{sup2}', 'BACKOFFICE\PBOtomatisController@cetakReport');
-//Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}',      'BACKOFFICE\PBOtomatisController@cetakReport');
+
 
 //BACKOFFICE_CETAK_PB
 Route::get('/bocetakpb/index', 'BACKOFFICE\cetakPBController@index')->middleware('CheckLogin');
@@ -843,11 +859,11 @@ Route::post('/bo/transaksi/perubahanstatus/rubahStatus/checkrak', 'BACKOFFICE\TR
 Route::get('/bo/transaksi/perubahanstatus/rubahStatus/printdoc/{doc}', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\rubahStatusController@printDocument')->middleware('CheckLogin');
 Route::get('/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/{doc}', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\rubahStatusController@printDocumentRak')->middleware('CheckLogin');
 
-//BACKOFFICE-RESTORE (BELUM DINAVBAR)
+//BACKOFFICE-RESTORE (BELUM DINAVBAR) (Sepertinya Restore Data Month End Sudah ada)
 Route::get('restore/index', 'BACKOFFICE\restoreController@index')->middleware('CheckLogin');
 Route::post('restore/restorenow', 'BACKOFFICE\restoreController@restoreNow')->middleware('CheckLogin');
 
-//BACKOFFICE-REPACKING-REPACKING
+//BACKOFFICE-REPACKING-REPACKING ==
 Route::get('transaksi/repacking/index',                  'BACKOFFICE\TRANSAKSI\REPACKING\repackController@index')->middleware('CheckLogin');
 Route::post('transaksi/repacking/getNewNmrTrn',          'BACKOFFICE\TRANSAKSI\REPACKING\repackController@getNewNmrTrn')->middleware('CheckLogin');
 Route::post('transaksi/repacking/chooseTrn',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@chooseTrn')->middleware('CheckLogin');
@@ -861,6 +877,7 @@ Route::get('transaksi/repacking/printdoc/{doc}',         'BACKOFFICE\TRANSAKSI\R
 Route::get('transaksi/repacking/printdockecil/{doc}',    'BACKOFFICE\TRANSAKSI\REPACKING\repackController@printDocumentKecil')->middleware('CheckLogin');
 
 Route::get('transaksi/repacking/modalnmrtrn',             'BACKOFFICE\TRANSAKSI\REPACKING\repackController@ModalNmrTrn')->middleware('CheckLogin');
+Route::get('transaksi/repacking/modalplu',                'BACKOFFICE\TRANSAKSI\REPACKING\repackController@ModalPlu')->middleware('CheckLogin');
 
 //BACKOFFICE-REPACKING-LAPREPACKING (BELUM DINAVBAR) -
 Route::get('transaksi/laprepacking/index',                          'BACKOFFICE\TRANSAKSI\REPACKING\LapRepackController@index')->middleware('CheckLogin');

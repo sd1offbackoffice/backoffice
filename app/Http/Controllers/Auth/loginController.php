@@ -226,12 +226,15 @@ class loginController extends Controller
         }
 
         $_SESSION['menu'] = DB::table('tbmaster_access_migrasi')
-            ->whereRaw("acc_url <> ' '")
-            ->orderBy('acc_group','asc')
-            ->orderBy('acc_subgroup1','asc')
-            ->orderBy('acc_subgroup2','asc')
-            ->orderBy('acc_subgroup3','asc')
-            ->orderBy('acc_name','asc')
+            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+            ->selectRaw("acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+            ->where('uac_userid','=',$_SESSION['usid'])
+            ->orderBy('acc_id')
+            ->orderBy('acc_group')
+            ->orderBy('acc_subgroup1')
+            ->orderBy('acc_subgroup2')
+            ->orderBy('acc_subgroup3')
+            ->orderBy('acc_name')
             ->get();
 
         return compact(['userstatus']);

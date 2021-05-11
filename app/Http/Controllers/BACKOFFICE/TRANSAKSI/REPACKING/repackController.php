@@ -183,6 +183,30 @@ class repackController extends Controller
         return response()->json($datas);
     }
 
+    public function ModalPlu(){
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::table('TBMASTER_PRODMAST')
+            ->selectRaw('PRD_DESKRIPSIPANJANG')
+            ->selectRaw('PRD_PRDCD')
+            ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
+
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
+
+            ->LeftJoin('TBMASTER_STOCK',function($join){
+                $join->on('PRD_PRDCD','ST_PRDCD');
+                $join->on('PRD_KODEIGR','PRD_KODEIGR');
+            })
+            ->where('ST_LOKASI','=','01')
+
+            ->where('prd_kodeigr', '=', $kodeigr)
+            ->orderBy('prd_deskripsipanjang')
+            ->limit(100)->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
     public function choosePlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
         $kode = $request->kode;

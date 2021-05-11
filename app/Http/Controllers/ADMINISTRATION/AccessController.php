@@ -14,128 +14,81 @@ use Yajra\DataTables\DataTables;
 class AccessController extends Controller
 {
     public function index(){
-//        $data = DB::table('tbmaster_access_migrasi')
-//            ->orderBy('acc_group')
-//            ->orderBy('acc_name')
-//            ->get();
-//
-//        $array = json_decode(json_encode($data), true);
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_access_migrasi')
-//            ->delete();
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_access_migrasi')
-//            ->insert($array);
+        $group = DB::table('tbmaster_access_migrasi')
+            ->selectRaw('acc_group, count(1) total')
+            ->orderBy('acc_group')
+            ->groupBy('acc_group')
+            ->get();
 
-        return view('ADMINISTRATION.access');
+        $menu = DB::table('tbmaster_access_migrasi')
+            ->orderBy('acc_id')
+            ->orderBy('acc_group')
+            ->orderBy('acc_subgroup1')
+            ->orderBy('acc_subgroup2')
+            ->orderBy('acc_subgroup3')
+            ->orderBy('acc_name')
+            ->get();
+
+        return view('ADMINISTRATION.access')->with(compact(['group','menu']));
     }
 
-    public function getData(){
-        $data = DB::table('tbmaster_access_migrasi')
-            ->orderBy('acc_group')
-            ->orderBy('acc_name')
+    public function getLovUser(){
+        $data = DB::table('tbmaster_user')
+            ->whereRaw("recordid is null")
+            ->orderBy('userid')
             ->get();
 
         return DataTables::of($data)->make(true);
     }
 
-    public function add(Request $request){
-        $temp = DB::table('tbmaster_access_migrasi')
-            ->where('acc_group','=',$request->group)
-            ->where('acc_subgroup1','=',$request->subgroup1)
-            ->where('acc_subgroup2','=',$request->subgroup2)
-            ->where('acc_subgroup3','=',$request->subgroup3)
-            ->where('acc_name','=',$request->name)
+    public function getData(Request $request){
+        $temp = DB::table('tbmaster_user')
+            ->where('userid','=',$request->userid)
             ->first();
 
         if(!$temp){
-            DB::table('tbmaster_access_migrasi')
-                ->insert([
-                    'acc_group' => $request->group,
-                    'acc_subgroup1' => $request->subgroup1,
-                    'acc_subgroup2' => $request->subgroup2,
-                    'acc_subgroup3' => $request->subgroup3,
-                    'acc_name' => $request->name,
-                    'acc_level' => $request->level,
-                    'acc_url' => $request->url
-                ]);
-
             return response()->json([
-                'title' => 'Data berhasil ditambahkan!'
-            ], 200);
+                'title' => 'Data user tidak ditemukan!'
+            ], 500);
         }
         else{
-            return response()->json([
-                'title' => 'Data sudah ada!'
-            ], 500);
+            $data = DB::table('tbmaster_useraccess_migrasi')
+                ->select('uac_acc_id')
+                ->where('uac_userid','=',$request->userid)
+                ->get();
+
+            return $data;
         }
     }
 
-    public function edit(Request $request){
-        $temp = DB::table('tbmaster_access_migrasi')
-            ->where('acc_group','=',$request->oldgroup)
-            ->where('acc_subgroup1','=',$request->oldsubgroup1)
-            ->where('acc_subgroup2','=',$request->oldsubgroup2)
-            ->where('acc_subgroup3','=',$request->oldsubgroup3)
-            ->where('acc_name','=',$request->oldname)
+    public function save(Request $request){
+        $temp = DB::table('tbmaster_user')
+            ->where('userid','=',$request->userid)
             ->first();
 
-        if($temp){
-            DB::table('tbmaster_access_migrasi')
-                ->where('acc_group','=',$request->oldgroup)
-                ->where('acc_subgroup1','=',$request->oldsubgroup1)
-                ->where('acc_subgroup2','=',$request->oldsubgroup2)
-                ->where('acc_subgroup3','=',$request->oldsubgroup3)
-                ->where('acc_name','=',$request->oldname)
-                ->update([
-                    'acc_group' => $request->group,
-                    'acc_subgroup1' => $request->subgroup1,
-                    'acc_subgroup2' => $request->subgroup2,
-                    'acc_subgroup3' => $request->subgroup3,
-                    'acc_name' => $request->name,
-                    'acc_level' => $request->level,
-                    'acc_url' => $request->url
-                ]);
-
+        if(!$temp){
             return response()->json([
-                'title' => 'Data berhasil diubah!'
-            ], 200);
-        }
-        else{
-            return response()->json([
-                'title' => 'Data tidak ditemukan!'
+                'title' => 'Data user tidak ditemukan!'
             ], 500);
         }
-    }
-
-    public function delete(Request $request){
-        $temp = DB::table('tbmaster_access_migrasi')
-            ->where('acc_group','=',$request->group)
-            ->where('acc_subgroup1','=',$request->subgroup1)
-            ->where('acc_subgroup2','=',$request->subgroup2)
-            ->where('acc_subgroup3','=',$request->subgroup3)
-            ->where('acc_name','=',$request->name)
-            ->first();
-
-        if($temp){
-            DB::table('tbmaster_access_migrasi')
-                ->where('acc_group','=',$request->group)
-                ->where('acc_subgroup1','=',$request->subgroup1)
-                ->where('acc_subgroup2','=',$request->subgroup2)
-                ->where('acc_subgroup3','=',$request->subgroup3)
-                ->where('acc_name','=',$request->name)
+        else{
+            DB::table('tbmaster_useraccess_migrasi')
+                ->where('uac_userid','=',$request->userid)
                 ->delete();
 
+            foreach($request->menu as $m){
+                DB::table('tbmaster_useraccess_migrasi')
+                    ->insert([
+                        'uac_userid' => $request->userid,
+                        'uac_acc_id' => $m,
+                        'uac_create_by' => $_SESSION['usid'],
+                        'uac_create_dt' => DB::RAW("SYSDATE")
+                    ]);
+            }
+
             return response()->json([
-                'title' => 'Data berhasil dihapus!'
+                'title' => 'Data berhasil disimpan!'
             ], 200);
-        }
-        else{
-            return response()->json([
-                'title' => 'Data tidak ditemukan!'
-            ], 500);
         }
     }
 }
