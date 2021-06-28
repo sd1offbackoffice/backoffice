@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\DataTables;
 
 class barangRusakController extends Controller
 {
@@ -14,7 +15,7 @@ class barangRusakController extends Controller
     }
 
     public function getNmrTrn(Request $request){
-        $search = $request->val;
+        $search = $request->value;
 
         $datas = DB::table('tbtr_BarangRusak')
             ->selectRaw('distinct RSK_NODOC as RSK_NODOC')
@@ -23,26 +24,24 @@ class barangRusakController extends Controller
             ->selectRaw("Case When RSK_RECORDID='2'  OR RSK_RECORDID='9' Then 'Sudah Cetak Nota' Else 'Belum Cetak Nota' End  Nota")
             ->where('rsk_nodoc','LIKE', '%'.$search.'%')
             ->orderByDesc('rsk_nodoc')
-//            ->orderByDesc('rsk_create_dt')
             ->limit(100)
             ->get();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
 
     public function getPlu(Request $request){
-        $search = $request->val;
+        $search = $request->value;
 
         $datas = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
-//            ->where('prd_prdcd', '1188110')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
             ->whereRaw("(prd_deskripsipanjang LIKE '%". $search."%' or prd_prdcd LIKE '%". $search."%')")
             ->orderBy('prd_deskripsipanjang')
             ->limit(100)->get();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
 
     public function getNewNmrTrn(){
@@ -97,8 +96,8 @@ class barangRusakController extends Controller
                 SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_avgCOST,ST_avgCOST,
                         NVL(ST_PRDCD,'XXXXXXX') ST_PRDCD,Nvl(ST_SALDOAKHIR,0) ST_SALDOAKHIR, prd_kodeigr as hrgsatuan
                 FROM TBMASTER_PRODMAST a
-                LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '03' 
-                where  PRD_PRDCD = '$kode'    
+                LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '03'
+                where  PRD_PRDCD = '$kode'
             ");
 
             if (!$cursor){
@@ -195,7 +194,7 @@ class barangRusakController extends Controller
                 SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_avgCOST,ST_avgCOST,
                         NVL(ST_PRDCD,'XXXXXXX') ST_PRDCD,Nvl(ST_SALDOAKHIR,0) ST_SALDOAKHIR, prd_kodeigr as hrgsatuan
                 FROM TBMASTER_PRODMAST a
-                LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '03' 
+                LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '03'
                 where  st_lokasi = '03' AND st_saldoakhir>0
             ");
 

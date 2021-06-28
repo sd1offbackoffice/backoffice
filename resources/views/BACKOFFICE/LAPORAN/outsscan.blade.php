@@ -10,7 +10,7 @@
                     <div class="card-body shadow-lg cardForm">
                         <form><br>
                             <div class="col-sm-12">
-                                <label class="col-sm-4 text-right font-weight-normal">Periode s/d</label>
+                                <label class="col-sm-4 col-form-label text-right font-weight-normal">Periode s/d</label>
                                 <input type="text" id="datepicker">
                             </div>
                                 <button class="btn btn-success" style="float: right" type="button" onclick="Cetak()">C E T A K</button>

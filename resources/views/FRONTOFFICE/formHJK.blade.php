@@ -144,8 +144,17 @@
         let indexNo;
 
         $(document).ready(function () {
-            $('#tableModalTemplate').DataTable({
-                "ajax": '{{ url('frontoffice/formHJK/datamodal') }}',
+            loadPlu('');
+        });
+
+        function loadPlu(value){
+            let tableModal = $('#tableModalTemplate').DataTable({
+                "ajax": {
+                    'url' : '{{ url('frontoffice/formHJK/datamodal') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_prdcd', name: 'prd_prdcd'},
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
@@ -164,7 +173,16 @@
                 },
                 "order": []
             });
-        });
+
+            $('#tableModalTemplate_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    loadPlu(val);
+                }
+            })
+        }
 
         $(document).on('click', '.modalRow', function () {
             var currentButton = $(this);

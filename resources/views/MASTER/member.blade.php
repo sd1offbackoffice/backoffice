@@ -3,9 +3,9 @@
 @section('content')
 
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-sm-12">
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-sm-9">
                 <div class="card border-dark">
                     <div class="card-body">
                         <div class="row text-right">
@@ -69,7 +69,7 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div id="p_identitas" class="container tab-pane active pl-0 pr-0 fix-height">
+                        <div id="p_identitas" class="container-fluid tab-pane active pl-0 pr-0 fix-height">
                             <div class="card-body ">
                                 <div class="row text-right">
                                     <div class="col-sm-12">
@@ -168,28 +168,21 @@
                                             </div>
                                             <label for="cus_tgllahir" class="col-sm-3 col-form-label">Tgl. Lahir<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control diisi" id="cus_tgllahir" disabled>
+                                                <input type="text" class="form-control diisi" id="cus_tgllahir" placeholder="dd/mm/yyyy" disabled>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jeniscustomer" class="col-sm-2 col-form-label">Jenis Customer</label>
                                             <div class="col-sm-1 buttonInside">
-                                                <input type="text" class="form-control diisi" id="cus_jenismember">
+                                                <input type="text" class="form-control" id="cus_jenismember">
                                                 <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_jenismemberHelp">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </div>
-
-
-{{--                                            <div class="col-sm-1 pr-0">--}}
-{{--                                                <input type="text" class="form-control" id="cus_jenismember">--}}
-{{--                                            </div>--}}
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
                                             </div>
-{{--                                            <div class="col-sm-1 p-0">--}}
-{{--                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenismemberHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
-{{--                                            </div>--}}
+
                                             <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">Jenis Outlet</label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_kodeoutlet">
@@ -197,21 +190,25 @@
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </div>
-
-{{--                                            <div class="col-sm-1 pr-0">--}}
-{{--                                                <input type="text" class="form-control" id="cus_kodeoutlet">--}}
-{{--                                            </div>--}}
                                             <div class="col-sm-2 pl-0">
                                                 <input type="text" class="form-control" id="i_jenisoutlet2">
                                             </div>
-{{--                                            <div class="col-sm-1 p-0">--}}
-{{--                                                <button type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_jenisoutletHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
-{{--                                            </div>--}}
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_jarak" class="col-sm-2 col-form-label">Jarak</label>
                                             <div class="col-sm-2">
                                                 <input type="number" min="0" class="form-control" id="cus_jarak">
+                                            </div>
+
+                                            <label for="i_suboutlet" class="col-sm-2 offset-sm-2 col-form-label">Sub Outlet</label>
+                                            <div class="col-sm-1 buttonInside">
+                                                <input type="text" class="form-control " id="cus_kodesuboutlet">
+                                                <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"  onclick="view_sub_outlet()">
+                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-2 pl-0">
+                                                <input type="text" class="form-control" id="i_suboutlet2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
@@ -383,7 +380,7 @@
                                         <div class="form-group row mb-0">
                                             <label for="crm_tgllhrpasangan" class="col-sm-2 col-form-label">Tgl. Lahir Pasangan</label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control" id="crm_tgllhrpasangan" readonly>
+                                                <input type="text" class="form-control" id="crm_tgllhrpasangan" placeholder="dd/mm/yyyy">
                                             </div>
                                             <label for="crm_jmlanak" class="col-sm-3 col-form-label">Jumlah Anak</label>
                                             <div class="col-sm-1">
@@ -586,7 +583,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label">Jenis Kendaraan</label>
+                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label"></label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
                                                     <input type="checkbox" class="custom-control-input" id="cb_jeniskendaraanMobil">
@@ -802,6 +799,17 @@
                                         <button id="btn-export-crm" class="btn btn-success btn-block" disabled>EXPORT KE CRM</button>
                                     </div>
                                 </div>
+                                <div class="form-group row mb-0">
+                                    <div class="col-sm-3 offset-sm-5 mt-2">
+                                        <button id="btn-download-mktho" class="btn btn-primary btn-block" disabled>DOWNLOAD CUSTOMER DR MKTHO</button>
+                                    </div>
+                                    <div class="col-sm-2 mt-2">
+                                        <button id="btn-check-registrasi" class="btn btn-primary btn-block" disabled>CEK TGL REGISTRASI</button>
+                                    </div>
+                                    <div class="col-sm-2 mt-2">
+                                        <p>Last edited <span id="lastEdited">26-02-2021</span></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -939,7 +947,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Jenis Member</h5>
+                    <h5 class="modal-title">Master Jenis Outlet</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -974,9 +982,54 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_suboutletHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Jenis Outlet</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0" id="table_lov_suboutlet">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody_table_lov_suboutlet">
+{{--                                    @foreach($jenisoutlet as $jo)--}}
+{{--                                        <tr onclick="lov_jenisoutlet_select('{{ $jo->out_kodeoutlet }}','{{ $jo->out_namaoutlet }}')" class="row_lov">--}}
+{{--                                            <td>{{ $jo->out_kodeoutlet }}</td>--}}
+{{--                                            <td>{{ $jo->out_namaoutlet }}</td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="m_groupHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
@@ -1118,6 +1171,7 @@
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm-4"></div>
+                            <button id="btn-hapus-ok" class="btn col-sm-4 btn-info">OK</button>
                             <button id="btn-aktifnonaktif-ok" class="btn col-sm-4 btn-info">OK</button>
                             <div class="col-sm-4"></div>
                         </div>
@@ -1217,16 +1271,23 @@
     <script>
 
         $(document).ready(function () {
-            getLovMember();
-            getLovKodepos();
+            getLovKodepos('');
+            getLovMember('');
             $('#table_lov_jenismember').DataTable();
             $('#table_lov_jenisoutlet').DataTable();
             $('#table_lov_group').DataTable();
+            lov_member_select(890079,false);
         });
 
-        function getLovMember(){
-            $('#table_lov_member').DataTable({
-                "ajax": '{{ url('mstmember/getlovmember') }}',
+        // Function for LOV
+        function getLovMember(value){
+            let tableModalMember = $('#table_lov_member').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstmember/getlovmember') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'cus_namamember', name: 'cus_namamember', width : '60%'},
                     {data: 'cus_kodemember', name: 'cus_kodemember', width : '40%'},
@@ -1245,6 +1306,15 @@
                 columnDefs : [
                 ]
             });
+
+            $('#table_lov_member_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalMember.destroy();
+                    getLovMember(val);
+                }
+            })
         }
 
         $(document).on('click', '.lov_member_select', function () {
@@ -1253,9 +1323,20 @@
             lov_member_select(member, true)
         } );
 
-        function getLovKodepos(){
-            $('#table_lov_kodepos').DataTable({
-                "ajax": '{{ url('mstmember/getlovkodepos') }}',
+        $('#btn-modal-member').on('click', function () {
+            setTimeout(function() {
+                    $('#table_lov_member_filter label input').focus();
+                }, 1000);
+        })
+
+        function getLovKodepos(value){
+            let tableModalKodepos = $('#table_lov_kodepos').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstmember/getlovkodepos') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'pos_kelurahan', name: 'pos_kelurahan'},
                     {data: 'pos_kecamatan', name: 'pos_kecamatan'},
@@ -1277,6 +1358,15 @@
                 columnDefs : [
                 ]
             });
+
+            $('#table_lov_kodepos_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalKodepos.destroy();
+                    getLovKodepos(val);
+                }
+            })
         }
 
         $(document).on('click', '.lov_kodepos_select', function () {
@@ -1290,7 +1380,8 @@
             lov_kodepos_select(pos_kode,pos_kecamatan,pos_kelurahan,pos_kabupaten);
         } );
 
-        // lov_member_select('1',false);
+        //-- End Function for LOV
+
 
         month = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
         trlovmember = $('#table_lov_member tbody').html();
@@ -1307,7 +1398,6 @@
         member = '';
         idgroupkat = '';
 
-        lov_member_select(1,false);
 
 
         $('#i_pendidikanX').hide();
@@ -1793,7 +1883,7 @@
         });
 
         $('#crm_email').on('keydown',function(event){
-            if(event.which == 13 && this.value.length > 0){
+            if(event.which == 13){ //&& this.value.length > 0){
                 $('#crm_agama').focus();
             }
         });
@@ -1829,7 +1919,7 @@
         $('#crm_tgllhrpasangan').on('keydown',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
-                    found = cek_format_tanggal(this.value);
+                    found = checkDate(this.value);
 
                     if(!found){
                         swal({
@@ -2418,6 +2508,55 @@
             });
         }
 
+        function view_sub_outlet(){
+            $.ajax({
+                url: '/BackOffice/public/mstmember/lov_sub_outlet',
+                type: 'post',
+                data: {
+                    "_token":"{{ csrf_token() }}",
+                    outlet : $('#cus_kodeoutlet').val()
+                },
+                beforeSend : () => {
+                    // $('#modal-loader').modal('show');
+                },
+                success: function (result) {
+                    $('#tbody_table_lov_suboutlet').children().remove();
+
+                    if(result){
+                        for(let i =0 ; i < result.length ; i++ ){
+                            $('#tbody_table_lov_suboutlet').append(`<tr class="row_lov row_lov_suboutlet">
+                                                                         <td>${result[i].sub_kodesuboutlet}</td>
+                                                                        <td>${result[i].sub_namasuboutlet}</td>
+                                                                    </tr>`)
+                        }
+                    } else {
+                        $('#tbody_table_lov_suboutlet').append(`<tr class="row_lov ">
+                                                                         <td>--</td>
+                                                                        <td>--</td>
+                                                                    </tr>`)
+                    }
+
+                    $('#m_suboutletHelp').modal('show')
+                    console.log(result);
+
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            })
+        }
+
+        $(document).on('click', '.row_lov_suboutlet', function (){
+            let kode = $(this).find('td')[0]['innerHTML']
+            let nama = $(this).find('td')[1]['innerHTML']
+
+            $('#cus_kodesuboutlet').val(kode);
+            $('#i_suboutlet2').val(nama);
+
+            $('#m_suboutletHelp').modal('hide');
+        })
+
         function cek_field_wajib(){
             ok = true;
             $('.diisi').each(function(){
@@ -2489,6 +2628,7 @@
                         usaha = response['usaha'];
                         jenismember = response['jenismember'];
                         outlet = response['outlet'];
+                        suboutlet = response['suboutlet'];
                         group = response['group'];
                         npwp = response['npwp'];
 
@@ -2528,7 +2668,7 @@
                         else $('#btn-quisioner').hide();
 
                         //######################################################### panel identitas 1 ######################################################################
-                        $('#cus_noktp').val(member.cus_noktp);
+                        $('#cus_noktp').val(parseInt(member.cus_noktp));
                         $('#cus_alamatmember1').val(member.cus_alamatmember1);
                         $('#cus_alamatmember4').val(member.cus_alamatmember4);
 
@@ -2553,6 +2693,13 @@
                         $('#i_jeniscustomer2').val(jenismember.jm_keterangan);
                         $('#cus_kodeoutlet').val(outlet.out_kodeoutlet);
                         $('#i_jenisoutlet2').val(outlet.out_namaoutlet);
+                        if(suboutlet){
+                            $('#cus_kodesuboutlet').val(suboutlet.sub_kodesuboutlet);
+                            $('#i_suboutlet2').val(suboutlet.sub_namasuboutlet);
+                        } else {
+                            $('#cus_kodesuboutlet').val('');
+                            $('#i_suboutlet2').val('');
+                        }
                         $('#cus_jarak').val(member.cus_jarak);
                         $('#cus_flagpkp').val(member.cus_flagpkp);
                         $('#cus_npwp').val(member.cus_npwp);
@@ -2941,7 +3088,8 @@
         }
 
         $('#btn-rekam').on('click',function(){
-            ok = cek_field_wajib();
+            // ok = cek_field_wajib();
+            ok = true;
 
             if(ok) {
                 swal({
@@ -3020,8 +3168,9 @@
                         else data.customercrm['crm_jenisbangunan'] = 'N';
                         data.keycustomercrm.push('crm_jenisbangunan');
 
-                        if ($('#i_statusbangunanM').is(':checked')) {
+                        if ($('#cb_statusbangunanM').is(':checked')) {
                             data.customercrm['crm_statusbangunan'] = 'M';
+                            console.log("ini M");
                         }
                         else data.customercrm['crm_statusbangunan'] = 'S';
                         data.keycustomercrm.push('crm_statusbangunan');
@@ -3131,6 +3280,10 @@
                 }).then((createData) => {
                     if (createData) {
                         $('#m_aktifnonaktif').modal('toggle');
+                        $('#btn-aktifnonaktif-ok').show();
+                        $('#btn-aktifnonaktif-ok').attr('disabled', false);
+                        $('#btn-hapus-ok').hide();
+                        $('#btn-hapus-ok').attr('disabled', true);
                     }
                 });
             }
@@ -3284,74 +3437,135 @@
                     dangerMode: true
                 }).then((createData) => {
                     if(createData){
-                        swal({
-                            title: "Inputkan password untuk melanjutkan",
-                            text: "ADMIN (user saat ini)",
-                            buttons: true,
-                            dangerMode: true,
-                            content: {
-                                element: "input",
-                                attributes: {
-                                    placeholder: "Inputkan password",
-                                    type: "password",
-                                },
-                            }
-                        }).then((password) => {
-                            if (password) {
-                                $.ajax({
-                                    url: '/BackOffice/public/mstmember/check_password',
-                                    type: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    data: {username: 'VBU', password: password},
-                                    beforeSend: function(){
-                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                                    },
-                                    success: function (response) {
-                                        if(response == 'ok'){
-                                            $.ajax({
-                                                url: '/BackOffice/public/mstmember/hapus_member',
-                                                type: 'POST',
-                                                headers: {
-                                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                },
-                                                data: {kodemember: member.cus_kodemember},
-                                                success: function (response) {
-                                                    $('#modal-loader').modal('hide');
-                                                    if (response.status == 'success') {
-                                                        swal({
-                                                            title: response['message'],
-                                                            icon: "success"
-                                                        }).then((createData) => {
-                                                            initial();
-                                                        });
-
-                                                    }
-                                                    else {
-                                                        swal({
-                                                            title: response.message,
-                                                            icon: "error"
-                                                        });
-
-                                                    }
-                                                }
-                                            });
-                                        }
-                                        else{
-                                            $('#modal-loader').modal('hide');
-                                            swal({
-                                                title: "Password salah!",
-                                                icon: "error"
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-                        });
+                        $('#m_aktifnonaktif').modal('toggle');
+                        $('#btn-aktifnonaktif-ok').hide();
+                        $('#btn-aktifnonaktif-ok').attr('disabled', true);
+                        $('#btn-hapus-ok').show();
+                        $('#btn-hapus-ok').attr('disabled', false);
+                        // swal({
+                        //     title: " ",
+                        //     text: " ",
+                        //     buttons: true,
+                        //     dangerMode: true,
+                        //     content: {
+                        //         element: "input",
+                        //         attributes: {
+                        //             placeholder: "Inputkan user",
+                        //             type: "text",
+                        //         },
+                        //         element: "input",
+                        //         attributes: {
+                        //             placeholder: "Inputkan password",
+                        //             type: "password",
+                        //         },
+                        //     }
+                        // }).then((password) => {
+                        //     if (password) {
+                        //         $.ajax({
+                        //             url: '/BackOffice/public/mstmember/check_password',
+                        //             type: 'POST',
+                        //             headers: {
+                        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        //             },
+                        //             data: {username: 'VBU', password: password},
+                        //             beforeSend: function(){
+                        //                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        //             },
+                        //             success: function (response) {
+                        //                 if(response == 'ok'){
+                        //                     $.ajax({
+                        //                         url: '/BackOffice/public/mstmember/hapus_member',
+                        //                         type: 'POST',
+                        //                         headers: {
+                        //                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        //                         },
+                        //                         data: {kodemember: member.cus_kodemember},
+                        //                         success: function (response) {
+                        //                             $('#modal-loader').modal('hide');
+                        //                             if (response.status == 'success') {
+                        //                                 swal({
+                        //                                     title: response['message'],
+                        //                                     icon: "success"
+                        //                                 }).then((createData) => {
+                        //                                     initial();
+                        //                                 });
+                        //
+                        //                             }
+                        //                             else {
+                        //                                 swal({
+                        //                                     title: response.message,
+                        //                                     icon: "error"
+                        //                                 });
+                        //
+                        //                             }
+                        //                         }
+                        //                     });
+                        //                 }
+                        //                 else{
+                        //                     $('#modal-loader').modal('hide');
+                        //                     swal({
+                        //                         title: "Password salah!",
+                        //                         icon: "error"
+                        //                     });
+                        //                 }
+                        //             }
+                        //         });
+                        //     }
+                        // });
                     }
                 });
             }
+        });
+
+        $('#btn-download-mktho').on('click',function(){
+            $.ajax({
+                url: '/BackOffice/public/mstmember/download_mktho',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {},
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide')
+                    if(response.kode == 1){
+                        swal(response.msg,'','success')
+                    } else {
+                        alertError('Warning', response.msg, 'warning');
+                    }
+                }, error : function (err){
+                    $('#modal-loader').modal('hide')
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            });
+        });
+
+        $('#btn-check-registrasi').on('click',function(){
+            $.ajax({
+                url: '/BackOffice/public/mstmember/check_registrasi',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }, data: {
+                    kodemember: $('#cus_kodemember').val()
+                }, beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                }, success: function (response) {
+                    $('#modal-loader').modal('hide')
+                    if (response.kode == 1) {
+                        swal(response.msg, '', 'success')
+                    } else {
+                        alertError('Warning', response.msg, 'warning');
+                    }
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide')
+                    console.log(err.responseJSON.message.substr(0, 100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            })
         });
 
         $('#i_username').on('keypress',function(event){
@@ -3362,7 +3576,11 @@
 
         $('#i_password').on('keypress',function(event){
             if(event.which == 13 && $(this).val().length > 0){
-                $('#btn-aktifnonaktif-ok').click();
+                if($('#btn-aktifnonaktif-ok').attr('disabled') == 'disabled'){
+                    $('#btn-hapus-ok').click();
+                } else {
+                    $('#btn-aktifnonaktif-ok').click();
+                }
             }
         })
 
@@ -3372,7 +3590,14 @@
             aktif_nonaktif(user, pass);
         })
 
+        $('#btn-hapus-ok').on('click',function(){
+            user = $('#i_username').val();
+            pass = $('#i_password').val();
+            hapus(user, pass);
+        })
+
         function aktif_nonaktif(user, pass){
+            console.log('aktif/non');
             $.ajax({
                 url: '/BackOffice/public/mstmember/check_password',
                 type: 'POST',
@@ -3412,6 +3637,73 @@
                                         title: "Gagal mengubah status member!",
                                         icon: "error"
                                     });
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        $('#modal-loader').modal('hide');
+                        console.log(response);
+                        if(response == 'userlevel'){
+                            swal({
+                                title: "Anda tidak berhak melakukan approval!",
+                                icon: "error"
+                            }).then(function(){
+                                $('#i_password').select();
+                            });
+                        }
+                        else{
+                            swal({
+                                title: "Username atau password salah!",
+                                icon: "error"
+                            }).then(function(){
+                                $('#i_password').select();
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function hapus(user,password){
+            console.log('hapus');
+            $.ajax({
+                url: '/BackOffice/public/mstmember/check_password',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {username: user, password: password},
+                beforeSend: function(){
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                    if(response == 'ok'){
+                        $.ajax({
+                            url: '/BackOffice/public/mstmember/hapus_member',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {kodemember: member.cus_kodemember},
+                            success: function (response) {
+                                $('#m_aktifnonaktif').modal('hide');
+                                $('#modal-loader').modal('hide');
+                                if (response.status == 'success') {
+                                    swal({
+                                        title: response['message'],
+                                        icon: "success"
+                                    }).then((createData) => {
+                                        initial();
+                                    });
+
+                                }
+                                else {
+                                    swal({
+                                        title: response.message,
+                                        icon: "error"
+                                    });
+
                                 }
                             }
                         });

@@ -16,11 +16,16 @@ class jenisItemController extends Controller
         return view('MASTER.jenisItem');
     }
 
-    public function getProdmast(){
+    public function getProdmast(Request  $request){
+        $search = $request->value;
+
         $prodmast   = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_deskripsipanjang')
+            ->limit(100)
             ->get();
 
         return Datatables::of($prodmast)->make(true);
@@ -84,10 +89,10 @@ class jenisItemController extends Controller
 
         $trendsales = DB::table('TBTR_SALESBULANAN')
             ->select('*')
-            ->where('sls_prdcd', '=', $request->value)
+            ->whereRaw("substr(sls_prdcd, 1, 6) = substr('".$request->value."',1,6)")
             ->first();
-        $trendsales = (array)$trendsales;
 
+        $trendsales = (array)$trendsales;
         $blnberjalan = DB::table('TBMASTER_PERUSAHAAN')
             ->select('PRS_BULANBERJALAN')
             ->first();
@@ -293,7 +298,7 @@ class jenisItemController extends Controller
                 ->where('PLN_PRDCD', '=', $request->prdcd)
                 ->count();
 
-            if ($this->ceknull(TEMP, 0) == 0 ) {
+            if ($this->ceknull($TEMP, 0) == 0 ) {
 
                 DB::table('TBMASTER_PLUPLANO')->insert(
                     ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]

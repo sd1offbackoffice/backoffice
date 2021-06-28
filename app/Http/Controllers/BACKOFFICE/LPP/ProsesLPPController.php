@@ -16,7 +16,7 @@ class ProsesLPPController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE.LPP.proseslpp');
+        return view('BACKOFFICE.LPP.proses-lpp');
     }
 
     public function proses(Request $request)

@@ -8,6 +8,8 @@
             <div class="col-sm-12">
                 <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
+
+                        <button class="btn btn-primary float-right mb-1" id="btn-clear">CLEAR</button>
                         <table class="table table-striped table-bordered" id="table-barcode">
                             <thead class="theadDataTables">
                             <tr class="">
@@ -34,8 +36,17 @@
 
     <script>
         $(document).ready(function (){
-            $('#table-barcode').DataTable({
-                "ajax": '{{ url('mstbarcode/getbarcode') }}',
+            getBarcode('');
+        });
+
+        function getBarcode(value){
+            let tableModal = $('#table-barcode').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstbarcode/getbarcode') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'brc_barcode', name: 'brc_barcode'},
                     {data: 'brc_prdcd', name: 'brc_prdcd'},
@@ -53,9 +64,22 @@
                 },
                 "order": []
             });
+
+            $('#table-barcode_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getBarcode(val);
+                }
+            })
+
+
+        }
+        $('#btn-clear').on('click', function (e){
+            $('#table-barcode').DataTable().destroy();
+            getBarcode('');
         })
-
-
     </script>
 
 @endsection

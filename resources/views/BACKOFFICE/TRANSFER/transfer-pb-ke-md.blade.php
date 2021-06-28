@@ -1,7 +1,5 @@
 @extends('navbar')
-
 @section('title','TRANSFER | PB KE MD')
-
 @section('content')
 
     <div class="container">

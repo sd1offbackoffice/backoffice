@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','TRANSAKSI | SORTIR BARANG')
 @section('content')
     {{--<head>--}}
     {{--<script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
@@ -7,34 +8,37 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <fieldset class="card">
-                    <legend class="w-auto ml-5">Header Dokumen Sortir Barang</legend>
+                <fieldset class="card border-dark">
+{{--                    <legend class="w-auto ml-5">Header Dokumen Sortir Barang</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
                                         <label for="i_nomordokumen" class="col-sm-4 col-form-label">Nomor Dokumen</label>
-                                        <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_nomordokumen" placeholder="V_NOSORTIR">
+                                        <div class="col-sm-5 buttonInside">
+                                            <input onchange="getNmrSRT()" type="text" class="form-control" id="i_nomordokumen">
+                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal"
+                                                    data-target="#nmrSrt">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
-                                        <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px;margin-right: auto"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                         <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
                                         <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tgl Dokumen</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_tgldokumen" placeholder="V_TGLSORTIR">
+                                            <input type="text" class="form-control" id="i_tgldokumen">
                                         </div>
                                         <div class="col-sm-1">
                                             {{--this div just for filling space--}}
                                         </div>
-                                        <input type="text" id="keterangan" class="form-control col-sm-2 text-right" placeholder="STATUS DOKUMEN" disabled>
+                                        <input hidden type="text" id="keterangan" class="form-control col-sm-2 text-right" placeholder="STATUS DOKUMEN" disabled>
                                         <label for="i_keterangan" class="col-sm-4 col-form-label">Keterangan</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_keterangan" placeholder="V_KET">
+                                            <input type="text" class="form-control" id="i_keterangan">
                                         </div>
                                         <label for="i_PLU" class="col-sm-4 col-form-label">PLU Di</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_PLU" placeholder="V_GUI" onkeypress="return pluDi(event)" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+                                            <input type="text" class="form-control" id="i_PLU" onkeypress="return pluDi(event)" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
                                         </div>
                                         <span class="col-sm-3 text-justify font-weight-bold col-form-label">  G - Gudang / T - Toko</span>
                                     </div>
@@ -47,10 +51,11 @@
                     <legend class="w-auto ml-5">Detail Dokumen Sortir Barang</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="col-sm-12">
-                            <div class="tableFixedHeader" style="border-bottom: 1px solid black">
-                                <table class="table table-striped table-bordered" id="table2">
-                                    <thead class="thead-dark">
-                                    <tr class="d-flex text-center">
+                            <div class="p-0 tableFixedHeader" style="border-bottom: 1px solid black">
+                                <table class="table table-sm table-striped table-bordered"
+                                       id="table-header">
+                                    <thead>
+                                    <tr class="table-sm text-center">
                                         <th style="width: 4%;">X</th>
                                         <th style="width: 8%">PLU</th>
                                         <th style="width: 32%">Deskripsi</th>
@@ -64,15 +69,16 @@
                                         <th style="width: 9%">Total Harga</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="tbody">
+                                    <tbody id="tbody" style="height: 250px;">
                                     @for($i = 0; $i< 8; $i++)
-                                        <tr class="d-flex baris">
+                                        <tr class="baris">
                                             <td style="width: 4%" class="text-center">
                                                 <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                             </td>
                                             <td class="buttonInside" style="width: 8%">
-                                                <input type="text" class="form-control plu" no="{{$i}}">
-                                                <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
+                                                <input onclick="TheRowNum(this)" onchange="getPlu(this)" type="text" class="form-control plu">
+                                                <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
+                                                        data-target="#pilihPlu">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
                                             </td>
@@ -88,11 +94,6 @@
                                         </tr>
                                     @endfor
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td><button id="addNewRow" class="btn btn-warning btn-block" onclick="addNewRow()">Tambah Baris Baru</button></td>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <div class="row mt-2">
@@ -107,7 +108,14 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-9">
-                                    <span class="text-capitalize font-weight-bold" style="float: right">nomor sortir barang yang sudah dibuat harus segera dibuatkan perubahan</span>
+                                    <span class="text-capitalize font-weight-bold" style="float: right">nomor sortir barang yang sudah dibuat harus segera dibuatkan perubahan</span><br>
+                                    <br><div class="d-flex flex-row-reverse">
+                                        <button id="tombolsave" class="btn btn-primary btn-block col-sm-3" onclick="saveNow()">Simpan Data</button>
+                                        <div class="col-sm-1">
+{{--                                        hanya pengisi ruang--}}
+                                        </div>
+                                        <button id="addNewRow" class="btn btn-primary btn-block col-sm-3" onclick="addNewRow()">Tambah Baris Baru</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -117,34 +125,63 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+    {{--Modal--}}
+    <div class="modal fade" id="nmrSrt" tabindex="-1" role="dialog" aria-labelledby="nmrSrt" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
-                    </div>
+                    <h5 class="modal-title">Memilih Nomor Sortir</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th id="modalThName1"></th>
-                                            <th id="modalThName2"></th>
-                                            <th id="modalThName3"></th>
-                                            <th id="modalThName4"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tbodyModalHelp"></tbody>
-                                    </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
-                                </div>
+                                <table class="table table-striped table-bordered" id="tableSrt">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>NO.SORTIR</th>
+                                        <th>TGL.SORTIR</th>
+                                        <th>KETERANGAN</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal PLU--}}
+    <div class="modal fade" id="pilihPlu" tabindex="-1" role="dialog" aria-labelledby="pilihPlu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Memilih Nomor Plu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tablePlu">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Dskripsi</th>
+                                        <th>PLU</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -164,68 +201,102 @@
         }
     </style>
     <script>
-        let tempSrt;
-        let tempPlu;
+        let rowNum;
 
-        // function checkNo(){
-        //     let checker = 0;
-        //     ajaxSetup();
-        //     $.ajax({
-        //         url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',
-        //         type: 'post',
-        //         data: {},
-        //         beforeSend: function () {
-        //             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-        //         },
-        //         success: function (result) {
-        //             if($('#i_nomordokumen').value != result){
-        //                 checker = checker + 1;
-        //                 //swal('Nomor Sortir Salah 1!','','warning');
-        //                 // $('#modal-loader').modal('hide');
-        //                 // $('#i_nomordokumen').val('');
-        //                 return false;
-        //             }
-        //             $.ajax({
-        //                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
-        //                 type: 'post',
-        //                 data: {
-        //                     val:$('#i_nomordokumen').value
-        //                 },
-        //                 success: function (result) {
-        //                     if(!result[0].srt_nosortir){
-        //                         checker = checker + 1;
-        //                         //swal('Nomor Sortir Salah 2!','','warning')
-        //                         //return false;
-        //                     }
-        //                 }, error: function () {
-        //                     alert('error');
-        //                 }
-        //             })
-        //
-        //             $('#modal-loader').modal('hide');
-        //             if(checker != 0){
-        //                 $('#i_nomordokumen').val('');
-        //             }else{
-        //                 $('#i_tgldokumen').val(formatDate('now'));
-        //                 $('#modal-loader').modal('hide');
-        //             }
-        //
-        //         }, error: function () {
-        //             alert('error');
-        //         }
-        //     })
-        //
-        // }
+        $(document).ready(function () {
+            srtLoad('');
+            pluLoad('');
+        });
 
-        function searchPlu2(val, row){
-            choosePlu(convertPlu(val),row)
+        function srtLoad(value){
+            let tableSrt = $('#tableSrt').DataTable({
+                "ajax": {
+                    'url' : '{{ url('/bo/transaksi/perubahanstatus/entrySortirBarang/modalsrt') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'srt_nosortir', name: 'srt_nosortir'},
+                    {data: 'srt_tglsortir', name: 'srt_tglsortir'},
+                    {data: 'srt_keterangan', name: 'srt_keterangan'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowSrt');
+                },
+                "order": []
+            });
+
+            $('#tableSrt_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableSrt.destroy();
+                    srtLoad(val);
+                }
+            })
         }
 
-        $('.plu').change(function () {
-            let row = $(this).attr('no');
-            let val = convertPlu($(this).val());
-            choosePlu(val,row)
+        function pluLoad(value){
+            let tablePlu = $('#tablePlu').DataTable({
+                "ajax": {
+                    'url' : '{{ url('/bo/transaksi/perubahanstatus/entrySortirBarang/modalplu') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowPlu');
+                },
+                "order": []
+            });
+
+            $('#tablePlu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tablePlu.destroy();
+                    pluLoad(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.modalRowSrt', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().text();
+            chooseSrt(kode);
+            $('#nmrSrt').modal('hide');
         });
+        $(document).on('click', '.modalRowPlu', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().next().text();
+            choosePlu(kode,rowNum);
+            $('#pilihPlu').modal('hide');
+        });
+
+        function TheRowNum(val){
+            rowNum = val.parentNode.parentNode.rowIndex-1;
+        }
 
         $("#i_tgldokumen").datepicker({
             "dateFormat" : "dd/mm/yy",
@@ -336,6 +407,65 @@
                 }
             }
             $('#totalQty').val(qty);
+        }
+
+        function saveNow(){
+            let tempPlu  = $('.plu');
+            let tempDate= $('#i_tgldokumen').val();
+            let noDoc   = $('#i_nomordokumen').val();
+            let keterangan    = $('#i_keterangan').val();
+            let pludi    = $('#i_PLU').val();
+            let date    = tempDate.substr(3,2) + '/'+ tempDate.substr(0,2)+ '/'+ tempDate.substr(6,4);
+            let datas   = [{'plu' : '', 'ctn' : '', 'pcs' : '', 'avgcost' : '', 'total' : ''}];
+            for (let i=0; i < tempPlu.length; i++){
+                var qty     = 0;
+                let temp    = $('.satuan')[i].value;
+                let tag    = $('.tag')[i].value;
+                let arr     = temp.split(" / ");
+                let unit    = arr[0];
+                let frac    = temp.substr(temp.indexOf('/')+1);
+                let ctn     = parseInt( $('.ctn')[i].value);
+                let pcs     = parseInt( $('.pcs')[i].value);
+
+                if ( tempPlu[i].value){
+                    qty  = (ctn * parseInt(frac) + pcs);
+
+                    datas.push({'plu': $('.plu')[i].value, 'unit' : unit , 'frac' : frac ,'ctn' : ctn, 'pcs' : pcs,'avgcost' : unconvertToRupiah($('.avgcost')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'tag' : tag})
+                }
+            }
+
+            ajaxSetup();
+            $.ajax({
+                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/savedata',
+                type: 'post',
+                data: {
+                    datas:datas,
+                    date:date,
+                    keterangan:keterangan,
+                    pludi:pludi,
+                    noDoc:noDoc
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    console.log(result.kode)
+                    if(result.kode == '1'){
+                        swal('Dokumen Berhasil disimpan','','success');
+                    } else if(result.kode == '2'){
+                        swal('', result.msg, 'warning');
+                    } else if(result.kode == '3'){
+                        swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!');
+                    }else {
+                        swal('ERROR', "Something's Error", 'error')
+                    }
+                    clearField();
+                    $('#modal-loader').modal('hide');
+                }, error: function (e) {
+                    console.log(e);
+                    alert('error');
+                }
+            })
         }
 
         function printDocument(){
@@ -454,9 +584,7 @@
                     }else {
                         swal('ERROR', "Something's Error", 'error')
                     }
-                    $('#modal-loader').modal('hide')
-                    $('#pilihan').val('M');
-                    //$('#saveData').attr("disabled", true)
+                    $('#modal-loader').modal('hide');
                     clearField();
                 }, error: function (e) {
                     console.log(e);
@@ -519,6 +647,7 @@
                             $('#keterangan').val(result[0].nota);
                             //$('#saveData').attr( 'disabled', true );
                             $('#addNewRow').attr( 'disabled', true );
+                            $('#tombolsave').attr( 'disabled', true );
                             //$('#deleteDoc').attr( 'disabled', true );
 
                             $('.baris').remove();
@@ -534,7 +663,7 @@
                                 if(result[i].srt_tag === null){
                                     result[i].srt_tag = "";
                                 }
-                                let temp =  ` <tr class="d-flex baris">
+                                let temp =  ` <tr class="baris">
                                                 <td style="width: 4%" class="text-center">
                                                     <button disabled class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -558,6 +687,7 @@
                             $('#keterangan').val('*KOREKSI*');
                             //$('#saveData').attr( 'disabled', false );
                             $('#addNewRow').attr( 'disabled', false);
+                            $('#tombolsave').attr( 'disabled', false);
                             //$('#deleteDoc').attr( 'disabled', false );
 
                             $('.baris').remove();
@@ -573,15 +703,15 @@
                                 if(result[i].srt_tag === null){
                                     result[i].srt_tag = "";
                                 }
-                                alert(result[i].srt_prdcd);
 
-                                let temp =  ` <tr class="d-flex baris"">
+                                let temp =  ` <tr class="baris"">
                                                 <td style="width: 4%" class="text-center">
                                                     <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 8%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
-                                                     <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ i +`">
+                                                     <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
+                                                        data-target="#pilihPlu">
                                                         <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>
@@ -589,8 +719,8 @@
                                                 <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
                                                 <td style="width: 6%"><input disabled type="text"  class="form-control tag text-right" value="`+ result[i].srt_tag +`"></td>
                                                 <td style="width: 9%"><input disabled type="text"  class="form-control avgcost" value="`+ convertToRupiah(result[i].srt_avgcost) +`"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`" id="`+ i +`" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="` + result[i].srt_qtykarton +`" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
+                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="` + result[i].srt_qtypcs +`" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateTotal(this.value, this.id)"></td>
                                                 <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`"></td>
                                                 <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`"></td>
                                                 <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].srt_ttlhrg) +`"></td>
@@ -612,9 +742,9 @@
             $('#modalHelp').modal('hide')
         }
 
-        function getNmrSRT(val) {
-            $('#searchModal').val('')
-            if(tempSrt == null){
+        function getNmrSRT() {
+            let val = $('#i_nomordokumen').val();
+            if(val!=''){
                 ajaxSetup();
                 $.ajax({
                     url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
@@ -623,79 +753,21 @@
                         val:val
                     },
                     success: function (result) {
-                        $('#modalThName1').text('NO.DOC');
-                        $('#modalThName2').text('TGL.DOC');
-                        $('#modalThName3').text('KETERANGAN');
-                        $('#modalThName4').text('PLU DI');
-
-                        tempSrt = result;
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            if(result[i].srt_keterangan == null){
-                                result[i].srt_keterangan = " ";
-                            }
-                            $('#tbodyModalHelp').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
+                        if(result.srt_nosortir){
+                            chooseSrt(result.srt_nosortir);
+                        }else{
+                            swal('', "Nomor Tidak dikenali", 'warning');
+                            $('#i_nosortir').val('');
+                            $('#keterangan').val('');
                         }
-
-                        $('#idModal').val('SRT')
-                        $('#modalHelp').modal('show');
                     }, error: function () {
                         alert('error');
                     }
                 })
-            } else {
-                $('#modalThName1').text('NO.DOC');
-                $('#modalThName2').text('TGL.DOC');
-                $('#modalThName3').text('KETERANGAN');
-                $('#modalThName4').text('PLU DI');
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempSrt.length; i++){
-                    if(tempSrt[i].srt_keterangan == null){
-                        tempSrt[i].srt_keterangan = " ";
-                    }
-                    $('#tbodyModalHelp').append("<tr onclick=chooseSrt('"+ tempSrt[i].srt_nosortir+"') class='modalRow'><td>"+ tempSrt[i].srt_nosortir +"</td> <td>"+ formatDate(tempSrt[i].srt_tglsortir) +"</td> <td>"+ tempSrt[i].srt_keterangan +"</td><td>"+ tempSrt[i].srt_gudangtoko +"</td></tr>")
-                }
-
-                $('#idModal').val('SRT')
-                $('#modalHelp').modal('show');
             }
-        }
-
-        function searchNmrSRT(val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
-                type: 'post',
-                data: {
-                    val:val
-                },
-                success: function (result) {
-                    $('#modalThName1').text('NO.DOC');
-                    $('#modalThName2').text('TGL.DOC');
-                    $('#modalThName3').text('KETERANGAN');
-                    $('#modalThName4').text('PLU DI');
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
-                    }
-
-                    $('#idModal').val('SRT')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
         }
 
         function choosePlu(kode,index) {
-            for (let i =0 ; i <$('.plu').length; i++){
-                if ($('.plu')[i]['attributes'][2]['value'] == index){
-                    index = i
-                }
-            }
-
             $('.plu')[index].value = kode;
             $('#modalHelp').modal('hide');
 
@@ -782,85 +854,19 @@
             })
         }
 
-        function getPlu(no, val) {
-            $('#searchModal').val('');
-            let index = no['attributes'][4]['nodeValue'];
-            $('#idRow').val(index);
-
-            if (tempPlu == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('Deskripsi');
-                        $('#modalThName2').text('PLU');
-                        $('#modalThName3').hide();
-
-                        tempPlu = result;
-
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
-                        }
-
-                        $('#idModal').val('PLU')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            }
-            else {
-                $('#modalThName1').text('Deskripsi');
-                $('#modalThName2').text('PLU');
-                $('#modalThName3').hide();
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempPlu.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ tempPlu[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ tempPlu[i].prd_deskripsipanjang +"</td> <td>"+ tempPlu[i].prd_prdcd +"</td></tr>")
-                }
-
-                $('#idModal').val('PLU')
-                $('#modalHelp').modal('show');
-            }
-        }
-
-        function searchPlu(index, val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getplu',
-                type: 'post',
-                data: { val:val },
-                success: function (result) {
-                    $('#modalThName1').text('Deskripsi');
-                    $('#modalThName2').text('PLU');
-                    $('#modalThName3').hide();
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
-                    }
-
-                    $('#idModal').val('PLU')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
+        function getPlu(w) {
+            choosePlu(w.value,rowNum);
         }
 
         function tempTable(index) {
-            var temptbl =  ` <tr class="d-flex baris">
+            var temptbl =  ` <tr class="baris">
                                                 <td style="width: 4%" class="text-center">
                                                     <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 8%">
-                                                    <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">
-                                                     <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="`+ index +`">
+                                                    <input onclick="TheRowNum(this)" onchange="getPlu(this)" type="text" class="form-control plu" value="">
+                                                     <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
+                                                        data-target="#pilihPlu">
                                                         <img src="../../../../../public/image/icon/help.png" width="30px">
                                                     </button>
                                                 </td>

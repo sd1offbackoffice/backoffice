@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | Monitoring Stok Pareto & KKH PB Manual')
+@section('title','BO | MONITORING STOK PARETO & KKH PB MANUAL')
 
 @section('content')
 

@@ -1,5 +1,5 @@
 @extends ('navbar')
-@section('title','SETTING PAGI HARI')
+@section('title','PROSES | SETTING PAGI HARI')
 @section ('content')
 
     <div class="container mt-3">

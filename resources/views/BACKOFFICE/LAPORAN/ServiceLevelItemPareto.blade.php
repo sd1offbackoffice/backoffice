@@ -5,8 +5,8 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
-                <fieldset class="card">
-                    <legend class="w-auto ml-5">Service Level Item Pareto</legend>
+                <fieldset class="card border-dark">
+{{--                    <legend class="w-auto ml-5">Service Level Item Pareto</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <br>
@@ -88,7 +88,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Modal title - Diganti sesuai kebutuhan</h5>
+                    <h5 class="modal-title">MONITORING</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

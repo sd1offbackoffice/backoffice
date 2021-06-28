@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Cetak Penyesuaian')
+@section('title','PENYESUAIAN | CETAK')
 
 @section('content')
 

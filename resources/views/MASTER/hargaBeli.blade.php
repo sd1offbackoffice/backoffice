@@ -20,7 +20,7 @@
                                             <label for="i_plu" class="col-sm-2 col-form-label">PLU</label>
                                             <div class="col-sm-2 buttonInside">
                                                 <input type="text" class="form-control" id="i_plu">
-                                                <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp">
+                                                <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp" id="btn-modal-plu">
                                                     <img src="{{asset('image/icon/help.png')}}" width="30px">
                                                 </button>
                                             </div>
@@ -131,7 +131,7 @@
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hgbhargabelippn">
                                             </div>
-                                            <label for="i_ppn" class="col-sm-3 pr-0 pl-0 col-form-label text-center">B - K - 0 - 4</label>
+                                            <label for="i_ppn" class="col-sm-3 pr-0 pl-0 col-form-label text-center">B - K  0 - 4</label>
                                             <label for="i_tglberlakubaru" class="col-sm-2 col-form-label">Tgl. Berlaku Baru</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakubaru">
@@ -384,74 +384,74 @@
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-1">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-1">
                                                         </div>
                                                         <label for="i_ketentuan1-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 1</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-1">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-1">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-1">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-1">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-2">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-2">
                                                         </div>
                                                         <label for="i_ketentuan1-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 2</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-2">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-2">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-2">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-2">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-3">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-3">
                                                         </div>
                                                         <label for="i_ketentuan1-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 3</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-3">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-3">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-3">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-3">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-4">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-4">
                                                         </div>
                                                         <label for="i_ketentuan1-4" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 4</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-4">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-4">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-4">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-4">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-5">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-5">
                                                         </div>
                                                         <label for="i_ketentuan1-5" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 5</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-5">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-5">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-5">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-5">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus1-6">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus1-6">
                                                         </div>
                                                         <label for="i_ketentuan1-6" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 6</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian1-6">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian1-6">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus1-6">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus1-6">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -482,38 +482,38 @@
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus2-1">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus2-1">
                                                         </div>
                                                         <label for="i_ketentuan2-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 1</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian2-1">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian2-1">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus2-1">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus2-1">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus2-2">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus2-2">
                                                         </div>
                                                         <label for="i_ketentuan2-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 2</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian2-2">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian2-2">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus2-2">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus2-2">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control" id="i_flagbonus2-3">
+                                                            <input type="text" class="form-control text-center" id="i_flagbonus2-3">
                                                         </div>
                                                         <label for="i_ketentuan2-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 3</label>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtypembelian2-3">
+                                                            <input type="text" class="form-control text-right" id="i_qtypembelian2-3">
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <input type="text" class="form-control" id="i_qtybonus2-3">
+                                                            <input type="text" class="form-control text-right" id="i_qtybonus2-3">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -574,8 +574,17 @@
 
     <script>
         $(document).ready(function () {
-            $('#table_plu').DataTable({
-                "ajax": '{{ url('msthargabeli/getprodmast') }}',
+            getModalData('');
+        });
+
+        function getModalData(value){
+            let tableModal = $('#table_plu').DataTable({
+                "ajax": {
+                    'url' : '{{ url('msthargabeli/getprodmast') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
                     {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
@@ -594,13 +603,37 @@
                 columnDefs : [
                 ]
             });
-        });
+
+            $('#table_plu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getModalData(val);
+                }
+            })
+        }
 
         $(document).on('click', '.modalRow', function () {
             let plu = $(this).find('td')[1]['innerHTML']
 
             lov_select(plu);
         } );
+
+        // Func untuk auto focus ke filter ketika modal terbuka
+        $('#btn-modal-plu').on('click', function () {
+            setTimeout(function() {
+                $('#table_plu_filter label input').focus();
+            }, 1000);
+        })
+
+        // Func ketika tekan tombol panah bawah
+        $(window).bind('keydown', function(event) {
+            if (event.which == 40){ // Down Arrow
+                $('#i_plu').val('');
+                $('#i_plu').focus();
+            }
+        });
 
         var trlov = $('#table_lov tbody').html();
 
@@ -712,16 +745,19 @@
                             $('#i_hgbhargabeli').val(convertToRupiah(hgbhargabeli));
                             ppn = parseFloat(hgb.hgb_ppn * prd.prd_isibeli);
                             $('#i_ppn').val(convertToRupiah(ppn));
-                            ppnbotol = parseFloat(hgb.hgb_ppnbotol)
-                            $('#i_botol').val(convertToRupiah(ppnbotol));
-                            ppnbm = parseFloat(hgb.hgb_ppnbm);
-                            $('#i_ppnbm').val(convertToRupiah(ppnbm));
+                            ppnbotol = (hgb.hgb_ppnbotol > 0) ? parseFloat(hgb.hgb_ppnbotol) : ' ';
+                            $('#i_botol').val(nvl(convertToRupiah(ppnbotol),''));
+                            ppnbm = (hgb.hgb_ppnbm > 0) ? parseFloat(hgb.hgb_ppnbm) : ' ';
+                            $('#i_ppnbm').val(nvl(convertToRupiah(ppnbm),''));
                             $('#i_hgbhargabelippn').val(convertToRupiah(hgbhargabeli + ppn + ppnbm));
 
                             hargaomi = parseFloat((hgbhargabeli + ppnbm + ppnbotol) / prd.prd_isibeli);
-                            $('#i_hargaomi').val(hargaomi);
+                            $('#i_hargaomi').val(nvl(hargaomi, ' '));
 
                             $('#i_totaldiscount').val(convertToRupiah(parseInt(hgb.hgb_rphdisc04) + parseInt(hgb.hgb_rphdisc05) + parseInt(hgb.hgb_rphdisc06)));
+                            if($('#i_totaldiscount').val() == 0 || $('#i_totaldiscount').val() == '0.00'){
+                                $('#i_totaldiscount').val(' ');
+                            }
 
                             if(hgb.hgb_tglmulaibonus01 != null){
                                 $('#i_bonus1a').val(formatDate(hgb.hgb_tglmulaibonus01));
@@ -796,58 +832,60 @@
                                 $('#i_tglberlakudisc6b').val(formatDate(hgb.hgb_tglakhirdisc06));
                             }
 
-                            if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null){
-                                $('#i_flagbonus1-1').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai1bonus01 != null){
+                            // if(hgb.hgb_qtymulai1bonus01 != 0 && hgb.hgb_qtymulai1bonus01 != null){ // Dikomen karena untuk menampilkan 0 ketika tidak ada databya. JR - 26-06-2021
+                                $('#i_flagbonus1-1').val((hgb.hgb_qtymulai1bonus01 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian1-1').val(hgb.hgb_qtymulai1bonus01);
                                 $('#i_qtybonus1-1').val(hgb.hgb_qty1bonus01);
                             }
 
-                            if(hgb.hgb_qtymulai2bonus01 != 0 && hgb.hgb_qtymulai2bonus01 != null){
-                                $('#i_flagbonus1-2').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai2bonus01 != null){
+                                $('#i_flagbonus1-2').val((hgb.hgb_qtymulai2bonus01 > 0) ? hgb.hgb_jenisbonus : '');
+                                // $('#i_flagbonus1-2').val(hgb.hgb_jenisbonus);
                                 $('#i_qtypembelian1-2').val(hgb.hgb_qtymulai2bonus01);
                                 $('#i_qtybonus1-2').val(hgb.hgb_qty2bonus01);
                             }
 
-                            if(hgb.hgb_qtymulai3bonus01 != 0 && hgb.hgb_qtymulai3bonus01 != null){
-                                $('#i_flagbonus1-3').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai3bonus01 != null){
+                                $('#i_flagbonus1-3').val((hgb.hgb_qtymulai3bonus01 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian1-3').val(hgb.hgb_qtymulai3bonus01);
                                 $('#i_qtybonus1-3').val(hgb.hgb_qty3bonus01);
                             }
-                            if(hgb.hgb_qtymulai4bonus01 != 0 && hgb.hgb_qtymulai4bonus01 != null){
-                                $('#i_flagbonus1-4').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai4bonus01 != null){
+                                $('#i_flagbonus1-4').val((hgb.hgb_qtymulai4bonus01 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian1-4').val(hgb.hgb_qtymulai4bonus01);
                                 $('#i_qtybonus1-4').val(hgb.hgb_qty4bonus01);
                             }
 
-                            if(hgb.hgb_qtymulai5bonus01 != 0 && hgb.hgb_qtymulai5bonus01 != null){
-                                $('#i_flagbonus1-5').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai5bonus01 != null){
+                                $('#i_flagbonus1-5').val((hgb.hgb_qtymulai5bonus01 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian1-5').val(hgb.hgb_qtymulai5bonus01);
                                 $('#i_qtybonus1-5').val(hgb.hgb_qty5bonus01);
                             }
 
-                            if(hgb.hgb_qtymulai6bonus01 != 0 && hgb.hgb_qtymulai6bonus01 != null){
-                                $('#i_flagbonus1-6').val(hgb.hgb_jenisbonus);
+                            if(hgb.hgb_qtymulai6bonus01 != null){
+                                $('#i_flagbonus1-6').val((hgb.hgb_qtymulai6bonus01 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian1-6').val(hgb.hgb_qtymulai6bonus01);
                                 $('#i_qtybonus1-6').val(hgb.hgb_qty6bonus01);
                             }
 
-                            if(hgb.hgb_qtymulai1bonus02 != 0 && hgb.hgb_qtymulai1bonus02 != null){
-                                $('#i_flagbonus2-1').val(hgb.hgb_jenisbonus);
+                            // if(hgb.hgb_qtymulai1bonus02 != null){
+                                $('#i_flagbonus2-1').val((hgb.hgb_qtymulai1bonus02 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian2-1').val(hgb.hgb_qtymulai1bonus02);
                                 $('#i_qtybonus2-1').val(hgb.hgb_qty1bonus02);
-                            }
+                            // }
 
-                            if(hgb.hgb_qtymulai2bonus02 != 0 && hgb.hgb_qtymulai2bonus02 != null){
-                                $('#i_flagbonus2-2').val(hgb.hgb_jenisbonus);
+                            // if(hgb.hgb_qtymulai2bonus02 != null){
+                                $('#i_flagbonus2-2').val((hgb.hgb_qtymulai2bonus02 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian2-2').val(hgb.hgb_qtymulai2bonus02);
                                 $('#i_qtybonus2-2').val(hgb.hgb_qty2bonus02);
-                            }
+                            // }
 
-                            if(hgb.hgb_qtymulai3bonus02 != 0 && hgb.hgb_qtymulai3bonus02 != null){
-                                $('#i_flagbonus2-3').val(hgb.hgb_jenisbonus);
+                            // if(hgb.hgb_qtymulai3bonus02 != null){
+                                $('#i_flagbonus2-3').val((hgb.hgb_qtymulai3bonus02 > 0) ? hgb.hgb_jenisbonus : '');
                                 $('#i_qtypembelian2-3').val(hgb.hgb_qtymulai3bonus02);
                                 $('#i_qtybonus2-3').val(hgb.hgb_qty3bonus02);
-                            }
+                            // }
 
 
                             now = new Date();
@@ -948,11 +986,11 @@
                                         }
                                     }
                                 }
-
-                                if($('#i_hargaomibaru').val() == 0){
-                                    $('#i_hargaomibaru').val('');
-                                }
                             }
+                        }
+
+                        if($('#i_hargaomibaru').val() == 0 || $('#i_hargaomibaru').val() == '0.00'){
+                            $('#i_hargaomibaru').val(' ');
                         }
 
                         if(hgn != null){

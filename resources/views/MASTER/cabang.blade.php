@@ -67,22 +67,22 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-3">
-                                    <label for="">Kode Anak Cabang</label>
+                                    <label for="">Kode Cabang Anak</label>
                                     <div class="row">
                                         <input type="text" class="field field11 col-sm-3 form-control ml-3" id="i_kodeAnakCabang" placeholder="..." field="11">
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <label for="">Nama Anak Cabang</label>
+                                    <label for="">Nama Cabang Anak</label>
                                     <input type="text" class="field field12 form-control" id="i_namaAnakCabang" placeholder="..." field="12">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-3 offset-sm-6">
-                                    <button type="button" class="btn btnOKC btn-block btn-primary" onclick="trfDataAnakCab()">Trf Data Anak Cabang</button>
+                                    <button type="button" class="btn btnOKC btn-block btn-primary" onclick="trfDataAnakCab()">Trf Data Cabang Anak</button>
                                 </div>
                                 <div class="form-group col-sm-3">
-                                    <button type="button" class="field field13 btn btn-primary btn-block" onclick="editBranch()" field="13">Submit</button>
+                                    <button type="button" class="field field13 btn btn-primary btn-block" onclick="editBranch()" field="13">Edit</button>
                                 </div>
                             </div>
                         </form>
@@ -96,6 +96,12 @@
     <div class="modal fade" id="m_kodecabangHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Data Cabang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body ">
                     <div class="container">
                         <div class="row">
@@ -103,15 +109,15 @@
                                 <table class="table table-striped table-bordered" id="table_cabang">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Cabang</th>
-                                        <th>Kode Cabang</th>
+                                        <th>Cabang</th>
+                                        <th>Kode</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($getCabang as $data)
                                         <tr onclick='chooseBranch("{{$data->cab_kodecabang}}")' class="row_lov">
-                                            <td>{{$data->cab_kodecabang}}</td>
                                             <td>{{$data->cab_namacabang}}</td>
+                                            <td>{{$data->cab_kodecabang}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -136,6 +142,15 @@
             });
 
             $('#table_cabang').dataTable();
+            chooseBranch('01');
+        });
+
+        $(document).on('focus', 'input', function (e) {
+            if ($(this).attr('id') == 'i_kodeCabang'){
+                $('.field13').text('Edit')
+            } else {
+                $('.field13').text('Simpan')
+            }
         });
 
         $(document).on('keypress', '.field', function (e) {
@@ -150,8 +165,17 @@
         $(document).on('keypress', '#i_kodeCabang', function (e) {
             if(e.which == 13) {
                 e.preventDefault();
-                let kodeigr = $('#i_kodeCabang').val(); console.log(kodeigr)
+                let kodeigr = $('#i_kodeCabang').val();
                 let proses = chooseBranch(kodeigr);
+            }
+        });
+
+        $(window).bind('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                if(String.fromCharCode(event.which).toLowerCase() === 's'){
+                    event.preventDefault();
+                   editBranch()
+                }
             }
         });
 
@@ -250,6 +274,14 @@
         }
 
         function editBranch() {
+            let btnText = $('.field13').text();
+
+            if (btnText == 'Edit'){
+                $('#i_namaCabang').focus();
+                return false;
+            }
+
+
             if (globalVar === 1){
                 var title = "Create Data?"
             } else {

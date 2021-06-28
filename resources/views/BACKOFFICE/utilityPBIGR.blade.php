@@ -1,11 +1,11 @@
 @extends('navbar')
+@section('title','PB | UTILITY PB IGR')
 @section('content')
 
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-sm-10">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">Variabel Penghitung Nilai PB IGR</legend>
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row">
                            <div class="col-sm-12">
@@ -35,7 +35,7 @@
                            </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>

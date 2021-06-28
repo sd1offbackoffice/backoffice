@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','TRANSAKSI | RUBAH STATUS')
 @section('content')
     {{--<head>--}}
     {{--<script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
@@ -14,48 +15,47 @@
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
+                                        <label for="i_nomordokumen" class="col-sm-4 col-form-label">Nomor Dokumen</label>
                                         <div class="col-sm-2 buttonInside">
-                                            <input onchange="getNmrTrn()" type="text" class="form-control" id="nomorTrn">
+                                            <input onchange="getNmrRSN()" type="text" class="form-control" id="i_nomordokumen">
                                             <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
-                                                    data-target="#pilihNmr">
+                                                    data-target="#rsnData">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label for="i_nomordokumen" class="col-sm-4 col-form-label">Nomor Dokumen</label>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="i_nomordokumen" placeholder="TXT_NODOC">
-                                        </div>
-                                        <div class="col-sm-4 text-left" style="margin-left: -34px">
-                                            <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrRSN('')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
+                                        <div class="col-sm-4 text-left">
                                             <input type="checkbox" id="qtyplanogram" value="planogram"><label>&nbsp;&nbsp;Potong Qty Planogram</label>
                                         </div>
                                         <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
                                         <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tanggal Dokumen</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_tgldokumen" placeholder="TXT_TGLDOC">
+                                            <input type="text" class="form-control" id="i_tgldokumen">
                                         </div>
                                         <div class="col-sm-1" style="margin-right: -34px">
                                             {{--this div just for filling space--}}
                                         </div>
-                                        <input type="text" id="keterangan" class="form-control col-sm-2 text-right" disabled PLACEHOLDER="STATUS DOKUMEN">
+                                        <input type="text" id="keterangan" class="form-control col-sm-2 text-right" disabled hidden>
                                         <label for="i_keterangan" class="col-sm-4 col-form-label">Keterangan</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_keterangan" placeholder="TXT_KETERANGAN">
+                                            <input type="text" class="form-control" id="i_keterangan">
                                         </div>
                                         <label for="nosortir" class="col-sm-4 col-form-label">Nomor Sortir</label>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="i_nosortir" placeholder="TXT_NOSORTIR">
+                                        <div class="col-sm-2 buttonInside">
+                                            <input onchange="getNmrSRT()" type="text" class="form-control" id="i_nosortir">
+                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                                                    data-target="#srtData">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
-                                        <button class="btn sm-1" type="button" data-toggle="modal" onclick="getNmrSRT('')" style="margin-left: -20px"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="i_gudang" placeholder="TXT_GUDANG" disabled>
+                                            <input type="text" class="form-control" id="i_gudang"  disabled>
                                         </div>
                                         <div class="col-sm-3">
                                             {{--this div just for filling space--}}
                                         </div>
                                         <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tanggal Sortir</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_tglsortir" placeholder="TXT_TGLSORTIR" disabled>
+                                            <input type="text" class="form-control" id="i_tglsortir" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -67,10 +67,11 @@
                     <legend class="w-auto ml-5">Detail Perubahan Status Barang</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="col-sm-12">
-                            <div class="tableFixedHeader" style="border-bottom: 1px solid black">
-                                <table class="table table-striped table-bordered">
-                                    <thead class="thead-dark">
-                                        <tr class="d-flex align-items-center text-center">
+                            <div class="p-0 tableFixedHeader" style="height: 250px;">
+                                <table class="table table-sm table-striped table-bordered"
+                                       id="table-header">
+                                    <thead>
+                                        <tr class="table-sm text-center">
                                             <th style="width: 8%"><br>PLU</th>
                                             <th style="width: 42%"><br>Deskripsi</th>
                                             <th style="width: 8%"><br>Satuan</th>
@@ -82,20 +83,20 @@
                                             <th style="width: 9%"><br>NILAI</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbody">
+                                    <tbody id="tbody" style="height: 250px;">
                                     @for($i = 0; $i< 8; $i++)
-                                        <tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 8%">
+                                        <tr class="baris">
+                                            <td>
                                                 <input disabled="" type="text" class="form-control plu" no="{{$i}}">
                                             </td>
-                                            <td style="width: 42%"><input disabled type="text" class="form-control deskripsi"></td>
-                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pt text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control rttg text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control price"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right"></td>
+                                            <td><input disabled type="text" class="form-control deskripsi"></td>
+                                            <td><input disabled type="text" class="form-control satuan"></td>
+                                            <td><input type="text" class="form-control pt text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text" class="form-control rttg text-right" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text" class="form-control ctn text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                            <td><input type="text" class="form-control pcs text-right" id="{{$i}}" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                            <td><input disabled type="text" class="form-control price"></td>
+                                            <td><input disabled type="text" class="form-control total text-right"></td>
                                         </tr>
                                     @endfor
                                     </tbody>
@@ -122,33 +123,32 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+    {{--Modal RSN--}}
+    <div class="modal fade" id="rsnData" tabindex="-1" role="dialog" aria-labelledby="rsnData" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
-                    </div>
+                    <h5 class="modal-title">Pilih Nomor Rubah Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th id="modalThName1"></th>
-                                            <th id="modalThName2"></th>
-                                            <th id="modalThName3"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tbodyModalHelp"></tbody>
-                                    </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
-                                </div>
+                                <table class="table table-striped table-bordered" id="rsnTable">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>NO PO</th>
+                                        <th>TGL PO</th>
+                                        <th>KETERANGAN</th>
+                                        <th>NO FAKTUR</th>
+                                        <th>TGL FAKTUR</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -159,34 +159,30 @@
         </div>
     </div>
 
-    <!-- Modal SRT-->
-    <div class="modal fade" id="modalHelpSRT" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+    {{--Modal SRT--}}
+    <div class="modal fade" id="srtData" tabindex="-1" role="dialog" aria-labelledby="srtData" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModalSRT" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
-                    </div>
+                    <h5 class="modal-title">Pilih Nomor Sortir Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body ">
+                <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th id="modalThNameSRT1"></th>
-                                            <th id="modalThNameSRT2"></th>
-                                            <th id="modalThNameSRT3"></th>
-                                            <th id="modalThNameSRT4"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tbodyModalHelpSRT"></tbody>
-                                    </table>
-                                    <p class="text-hide" id="idModalSRT"></p>
-                                    <p class="text-hide" id="idRowSRT"></p>
-                                </div>
+                                <table class="table table-striped table-bordered" id="srtTable">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>NO SORTIR</th>
+                                        <th>TGL SORTIR</th>
+                                        <th>KETERANGAN</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -206,8 +202,100 @@
         }
     </style>
     <script>
-        let tempRsn;
-        let tempSrt;
+        $(document).ready(function () {
+            rsnLoad('');
+            srtLoad('');
+        })
+
+        function rsnLoad(value){
+            let rsnTable = $('#rsnTable').DataTable({
+                "ajax": {
+                    'url' : '{{ url('/bo/transaksi/perubahanstatus/rubahStatus/modalrsn') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'msth_nopo', name: 'msth_nopo'},
+                    {data: 'msth_tglpo', name: 'msth_tglpo'},
+                    {data: 'msth_keterangan_header', name: 'msth_keterangan_header'},
+                    {data: 'msth_nofaktur', name: 'msth_nofaktur'},
+                    {data: 'msth_tglfaktur', name: 'msth_tglfaktur'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowRsn');
+                },
+                "order": []
+            });
+
+            $('#rsnTable_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    rsnTable.destroy();
+                    rsnLoad(val);
+                }
+            })
+        }
+
+        function srtLoad(value){
+            let srtTable = $('#srtTable').DataTable({
+                "ajax": {
+                    'url' : '{{ url('/bo/transaksi/perubahanstatus/rubahStatus/modalsrt') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'srt_nosortir', name: 'srt_nosortir'},
+                    {data: 'srt_tglsortir', name: 'srt_tglsortir'},
+                    {data: 'srt_keterangan', name: 'srt_keterangan'}
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowSrt');
+                },
+                "order": []
+            });
+
+            $('#srtTable_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    srtTable.destroy();
+                    srtLoad(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.modalRowRsn', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().text();
+            chooseRsn(kode);
+            $('#rsnData').modal('hide');
+        });
+        $(document).on('click', '.modalRowSrt', function () {
+            var currentButton = $(this);
+            let kode = currentButton.children().first().text();
+            chooseSrt(kode);
+            $('#srtData').modal('hide');
+        });
+
         function isNumberKey(evt){
             var charCode = (evt.which) ? evt.which : evt.keyCode
             if (charCode > 31 && (charCode < 48 || charCode > 57))
@@ -259,19 +347,19 @@
         }
 
         function tempTable(index) {
-            var temptbl =  ` <tr class="d-flex baris">
-                                                <td class="buttonInside" style="width: 8%">
+            var temptbl =  ` <tr class="baris">
+                                                <td>
                                                     <input disabled type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">
 
                                                 </td>
-                                                <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value=""></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control satuan" value=""></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control pt text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                                <td style="width: 6%"><input disabled type="text" class="form-control rttg text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
-                                                <td style="width: 6%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value=""></td>
-                                                <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value=""></td>
+                                                <td><input disabled type="text"  class="form-control deskripsi" value=""></td>
+                                                <td><input disabled type="text" class="form-control satuan" value=""></td>
+                                                <td><input disabled type="text" class="form-control pt text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                                <td><input disabled type="text" class="form-control rttg text-right" value="" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                                <td><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                                <td><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)"></td>
+                                                <td><input disabled type="text" class="form-control price text-right" value=""></td>
+                                                <td><input disabled type="text" class="form-control total text-right" value=""></td>
                                             </tr>`
 
             return temptbl;
@@ -339,33 +427,11 @@
             }
         })
 
-        $('#searchModal').keypress(function (e) {
-            if (e.which === 13) {
-                let idModal = $('#idModal').val();
-                let idRow   = $('#idRow').val();
-                let val = $('#searchModal').val().toUpperCase();
-                if(idModal === 'RSN'){
-                    searchNmrRSN(val)
-                } else {
-                    searchPlu(idRow,val)
-                }
+        function getNmrRSN() {
+            let val = $('#i_nomordokumen').val();
+            if(val == ''){
+                return false;
             }
-        })
-
-        $('#searchModalSRT').keypress(function (e) {
-            if (e.which === 13) {
-                let idModalSRT = $('#idModalSRT').val();
-                let idRowSRT   = $('#idRowSRT').val();
-                let val = $('#searchModalSRT').val().toUpperCase();
-                if(idModalSRT === 'SRT'){
-                    searchNmrSRT(val)
-                } else {
-                    searchPlu(idRowSRT,val)
-                }
-            }
-        })
-
-        function searchNmrRSN(val) {
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrrsn',
@@ -373,76 +439,29 @@
                 data: {
                     val:val
                 },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function (result) {
-                    $('#modalThName1').text('NO.DOC');
-                    $('#modalThName2').text('TGL.DOC');
-                    $('#modalThName3').text('KETERANGAN');
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        if(result[i].msth_keterangan_header == null){
-                            result[i].msth_keterangan_header = "";
-                        }
-                        $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ result[i].msth_nopo+"') class='modalRow'><td>"+ result[i].msth_nopo +"</td> <td>"+ formatDate(result[i].msth_tglpo) +"</td> <td>"+ result[i].msth_keterangan_header +"</td></tr>")
+                    $('#modal-loader').modal('hide');
+                    if(result.msth_nopo){
+                        chooseRsn(result.msth_nopo);
+                    }else{
+                        swal('', "Nomor Tidak dikenali", 'warning');
+                        $('#nomorRsn').val('');
+                        $('#keterangan').val('');
                     }
-
-                    $('#idModal').val('RSN')
-                    $('#modalHelp').modal('show');
                 }, error: function () {
                     alert('error');
                 }
             })
         }
 
-        function getNmrRSN(val) {
-            $('#searchModal').val('')
-            if(tempRsn == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrrsn',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('NO.DOC');
-                        $('#modalThName2').text('TGL.DOC');
-                        $('#modalThName3').text('KETERANGAN');
-
-                        tempRsn = result;
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            if(result[i].msth_keterangan_header == null){
-                                result[i].msth_keterangan_header = "";
-                            }
-                            $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ result[i].msth_nopo+"') class='modalRow'><td>"+ result[i].msth_nopo +"</td> <td>"+ formatDate(result[i].msth_tglpo) +"</td> <td>"+ result[i].msth_keterangan_header +"</td></tr>")
-                        }
-
-                        $('#idModal').val('RSN')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            } else {
-                $('#modalThName1').text('NO.DOC');
-                $('#modalThName2').text('TGL.DOC');
-                $('#modalThName3').text('KETERANGAN');
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempRsn.length; i++){
-                    if(tempRsn[i].msth_keterangan_header == null){
-                        tempRsn[i].msth_keterangan_header = " ";
-                    }
-                    $('#tbodyModalHelp').append("<tr onclick=chooseRsn('"+ tempRsn[i].msth_nopo+"') class='modalRow'><td>"+ tempRsn[i].msth_nopo +"</td> <td>"+ formatDate(tempRsn[i].msth_tglpo) +"</td> <td>"+ tempRsn[i].msth_keterangan_header +"</td></tr>")
-                }
-
-                $('#idModal').val('RSN')
-                $('#modalHelp').modal('show');
+        function getNmrSRT() {
+            let val = $('#i_nosortir').val();
+            if(val == ''){
+                return false;
             }
-        }
-
-        function searchNmrSRT(val) {
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrsrt',
@@ -450,73 +469,21 @@
                 data: {
                     val:val
                 },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
                 success: function (result) {
-                    $('#modalThName1').text('NO.DOC');
-                    $('#modalThName2').text('TGL.DOC');
-                    $('#modalThName3').text('KETERANGAN');
-                    $('#modalThName4').text('PLU DI');
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
+                    $('#modal-loader').modal('hide');
+                    if(result.srt_nosortir){
+                        chooseSrt(result.srt_nosortir);
+                    }else{
+                        swal('', "Nomor Tidak dikenali", 'warning');
+                        $('#nomorSrt').val('');
                     }
-
-                    $('#idModalSRT').val('SRT')
-                    $('#modalHelpSRT').modal('show');
                 }, error: function () {
                     alert('error');
                 }
             })
-        }
-
-        function getNmrSRT(val) {
-            $('#searchModalSRT').val('')
-            if(tempSrt == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrsrt',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThNameSRT1').text('NO.DOC');
-                        $('#modalThNameSRT2').text('TGL.DOC');
-                        $('#modalThNameSRT3').text('KETERANGAN');
-                        $('#modalThNameSRT4').text('PLU DI');
-
-                        tempSrt = result;
-                        $('.modalRowSRT').remove();
-                        for (i = 0; i< result.length; i++){
-                            if(result[i].srt_keterangan == null){
-                                result[i].srt_keterangan = " ";
-                            }
-                            $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ result[i].srt_nosortir+"') class='modalRow'><td>"+ result[i].srt_nosortir +"</td> <td>"+ formatDate(result[i].srt_tglsortir) +"</td> <td>"+ result[i].srt_keterangan +"</td><td>"+ result[i].srt_gudangtoko +"</td></tr>")
-                        }
-
-                        $('#idModalSRT').val('SRT')
-                        $('#modalHelpSRT').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            } else {
-                $('#modalThNameSRT1').text('NO.DOC');
-                $('#modalThNameSRT2').text('TGL.DOC');
-                $('#modalThNameSRT3').text('KETERANGAN');
-                $('#modalThNameSRT4').text('PLU DI');
-
-                $('.modalRowSRT').remove();
-                for (i = 0; i< tempSrt.length; i++){
-                    if(tempSrt[i].srt_keterangan == null){
-                        tempSrt[i].srt_keterangan = " ";
-                    }
-                    $('#tbodyModalHelpSRT').append("<tr onclick=chooseSrt('"+ tempSrt[i].srt_nosortir+"') class='modalRow'><td>"+ tempSrt[i].srt_nosortir +"</td> <td>"+ formatDate(tempSrt[i].srt_tglsortir) +"</td> <td>"+ tempSrt[i].srt_keterangan +"</td><td>"+ tempSrt[i].srt_gudangtoko +"</td></tr>")
-                }
-
-                $('#idModalSRT').val('SRT')
-                $('#modalHelpSRT').modal('show');
-            }
         }
 
         function chooseRsn(kode) {
@@ -615,33 +582,33 @@
                                     temppcs = parseInt(result[i].srt_qtypcs);
                                 }
                                 if($('#keterangan').val() === "Data Sudah Dicetak"){
-                                    let temp =  ` <tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 8%">
+                                    let temp =  ` <tr class="baris">
+                                            <td>
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
-                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                            <td style="width: 6%"><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input disabled type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
-                                            <td style="width: 6%"><input disabled type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input disabled type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td><input disabled type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
+                                            <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
                                     $('#tbody').append(temp);
                                 }else{
-                                    let temp =  ` <tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 8%">
+                                    let temp =  ` <tr class="baris">
+                                            <td>
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
-                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
+                                            <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
                                     $('#tbody').append(temp);
                                 }
@@ -697,18 +664,18 @@
                             if(result[i].srt_qtypcs != null){
                                 temppcs = parseInt(result[i].srt_qtypcs);
                             }
-                            let temp =  ` <tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 8%">
+                            let temp =  ` <tr class="baris">
+                                            <td>
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
-                                            <td style="width: 42%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td style="width: 8%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
-                                            <td style="width: 6%"><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td style="width: 9%"><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
+                                            <td><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
+                                            <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
 
                             $('#tbody').append(temp);

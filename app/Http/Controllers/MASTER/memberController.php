@@ -56,25 +56,44 @@ class memberController extends Controller
         return view('MASTER.member')->with(compact(['member','hobby','fasilitasperbankan','kodepos','jenismember','jenisoutlet','group','produkmember']));
     }
 
-    public function getLovMember(){
+    public function getLovMember(Request  $request){
+        $search = $request->value;
+
         $member = DB::table('tbmaster_customer')
-            ->select('*')
+            ->select('cus_kodemember', 'cus_namamember')
+            ->where('cus_kodemember','LIKE', '%'.$search.'%')
+            ->orWhere('cus_namamember','LIKE', '%'.$search.'%')
             ->orderBy('cus_namamember')
-            ->limit(200)
+            ->limit(100)
             ->get();
 
         return Datatables::of($member)->make(true);
     }
 
-    public function getLovKodepos(){
+    public function getLovKodepos(Request $request){
+        $search = $request->value;
+
         $kodepos = DB::table('tbmaster_kodepos')
             ->select('*')
-//            ->limit(100)
+            ->where('pos_propinsi', 'like', '%'.$search.'%')
+            ->orWhere('pos_kabupaten','LIKE', '%'.$search.'%')
+            ->orWhere('pos_kecamatan','LIKE', '%'.$search.'%')
+            ->orWhere('pos_kelurahan','LIKE', '%'.$search.'%')
+            ->limit(100)
             ->get();
 
         return Datatables::of($kodepos)->make(true);
     }
 
+    public function lov_suboutlet(Request $request){
+        $data = DB::table('tbmaster_suboutlet')
+            ->select('*')
+            ->where('sub_kodeoutlet','=',$request->outlet)
+            ->orderBy('sub_kodesuboutlet')
+            ->get();
+
+        return response()->json($data);
+    }
 
     public function lov_member_select(Request $request){
         $member = DB::table('tbmaster_customer')
@@ -248,6 +267,11 @@ class memberController extends Controller
             ->where('out_kodeoutlet','=',$member->cus_kodeoutlet)
             ->first();
 
+        $suboutlet = DB::table('tbmaster_suboutlet')
+            ->select('*')
+            ->where('sub_kodesuboutlet','=',$member->cus_kodesuboutlet)
+            ->first();
+
         $bank = DB::table('tbmaster_customerfasilitasbank')
             ->select('*')
             ->where('cub_kodemember','=',$request->value)
@@ -280,7 +304,7 @@ class memberController extends Controller
 
 //        dd(compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp','quisioner']));
 
-        return compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp','quisioner']);
+        return compact(['member','ktp','surat','usaha','jenismember','outlet','suboutlet','group','bank','hobbymember','creditlimit','npwp','quisioner']);
     }
 
     public function lov_kodepos_select(Request $request){
@@ -374,6 +398,7 @@ class memberController extends Controller
         $insertHobby = false;
         $update_credit = false;
         $update_bank = false;
+        $userId = $_SESSION['usid'];
 
         $update_cus = [];
         $update_crm = [];
@@ -381,7 +406,7 @@ class memberController extends Controller
         $update_customerfasilitasbank = [];
 
         $kodemember = $request->customer['cus_kodemember'];
-        $kodeigr = '22';
+        $kodeigr = $_SESSION['kdigr'];
 
         $checkcus = DB::table('tbmaster_customer')
             ->where('cus_kodemember',$kodemember)
@@ -393,7 +418,7 @@ class memberController extends Controller
                     $update_cus[$request->keycustomer[$i]] = DB::RAW("to_date('" . $request->customer[$request->keycustomer[$i]] . "','dd/mm/yyyy')");
                 else $update_cus[$request->keycustomer[$i]] = $request->customer[$request->keycustomer[$i]];
             }
-            $update_cus['cus_modify_by'] = 'LEO';
+            $update_cus['cus_modify_by'] = $_SESSION['usid'];
             $update_cus['cus_modify_dt'] = DB::raw('SYSDATE');
 
             for($i=0;$i<sizeof($request->customercrm);$i++){
@@ -401,7 +426,7 @@ class memberController extends Controller
                     $update_crm[$request->keycustomercrm[$i]] = DB::RAW("to_date('".$request->customercrm[$request->keycustomercrm[$i]]."','dd/mm/yyyy')");
                 else $update_crm[$request->keycustomercrm[$i]] = $request->customercrm[$request->keycustomercrm[$i]];
             }
-            $update_crm['crm_modify_by'] = 'LEO';
+            $update_crm['crm_modify_by'] = $_SESSION['usid'];
             $update_crm['crm_modify_dt'] = DB::raw('SYSDATE');
 
             if($request->hobby != null){
@@ -441,7 +466,7 @@ class memberController extends Controller
                         ->where('lmt_kodemember',$kodemember)
                         ->update([
                             'lmt_nilai' => $request->customer['cus_creditlimit'],
-                            'lmt_modify_by' => 'LEO',
+                            'lmt_modify_by' => $userId,
                             'lmt_modify_dt' => DB::raw('SYSDATE')
                         ]);
                 }
@@ -451,7 +476,7 @@ class memberController extends Controller
                             'lmt_kodeigr' => $kodeigr,
                             'lmt_kodemember' => $kodemember,
                             'lmt_nilai' => $request->customer['cus_creditlimit'],
-                            'lmt_create_by' => 'LEO',
+                            'lmt_create_by' => $userId,
                             'lmt_create_dt' => DB::raw('SYSDATE')
                         ]);
                 }
@@ -467,12 +492,12 @@ class memberController extends Controller
 
                 if(!empty($request->bank)){
                     if(sizeof($request->bank) == 1){
-                        $update_customerfasilitasbank = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[0], 'cub_create_by' => 'LEO', 'cub_create_dt' => DB::RAW('SYSDATE')];
+                        $update_customerfasilitasbank = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[0], 'cub_create_by' => $userId, 'cub_create_dt' => DB::RAW('SYSDATE')];
 
                     }
                     else{
                         for($i=0;$i<sizeof($request->bank);$i++){
-                            $update_customerfasilitasbank[$i] = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[$i], 'cub_modify_by' => 'LEO', 'cub_modify_dt' => DB::RAW('SYSDATE')];
+                            $update_customerfasilitasbank[$i] = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[$i], 'cub_modify_by' => $userId, 'cub_modify_dt' => DB::RAW('SYSDATE')];
                         }
                     }
                 }
@@ -492,6 +517,15 @@ class memberController extends Controller
                 }
                 else{
                     $update_bank = true;
+                }
+
+                $group = DB::table('tbtabel_groupkategori')->select('*')
+                    ->where('grp_idgroupkat', $request->customercrm['crm_idgroupkat'])
+                    ->first();
+
+                if ($group){
+                    DB::table('tbmaster_customercrm')->where('crm_kodemember', $kodemember)->where('crm_kodeigr', $kodeigr)
+                        ->update(['crm_group' => $group->grp_group, 'crm_subgroup' => $group->grp_subgroup, 'crm_kategori' => $group->grp_kategori, 'crm_subkategori' => $group->grp_subkategori]);
                 }
 
                 $status = 'success';
@@ -780,5 +814,53 @@ class memberController extends Controller
         }
 
         return compact(['status','message']);
+    }
+
+    public function download_mktho(Request $request){
+        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+
+        $exec = oci_parse($connection, "BEGIN  sp_download_customer_mktho_web(:sukses,:errm); END;"); //Diganti karna proc yg asli pakai boolean
+        oci_bind_by_name($exec, ':sukses',$sukses,100);
+        oci_bind_by_name($exec, ':errm', $errm,1000);
+        oci_execute($exec);
+
+        if (!$sukses){
+            return response()->json(['kode' => 0, 'msg' => "Download Data Gagal", 'data' => '']);
+        }
+
+        return response()->json(['kode' => 1, "msg" => "Download Data Berhasil", 'data' =>'']);
+    }
+
+    public function check_registrasi(Request $request){
+        $kodeMember = $request->kodemember;
+        date_default_timezone_set('Asia/Jakarta');
+        $date   = date('Y-m-d H:i:s');
+
+        try{
+            $temp = DB::table('tbmaster_customer')
+                ->where('cus_kodemember', $kodeMember)
+                ->whereNotIn('cus_namamember', ['NEW'])
+                ->whereNotNull('cus_tglregistrasi')
+                ->get();
+
+            $tglmulai = DB::table('tbmaster_customer')
+                ->select('cus_tglmulai')
+                ->where('cus_kodemember', $kodeMember)
+                ->first();
+
+            $tglmulai = (!$tglmulai->cus_tglmulai) ? $date : $tglmulai->cus_tglmulai;
+
+            if ($temp){
+                return response()->json(['kode' => 1, "msg" => "Tgl registrasi sudah terisi", 'data' =>'']);
+            } else {
+                DB::table('tbmaster_customer')
+                    ->where('cus_kodemember', $kodeMember)
+                    ->update(['cus_tglregistrasi' => $tglmulai]);
+            }
+
+            return response()->json(['kode' => 1, 'msg' => "Tgl registrasi berhasil diisi", 'data' =>'']);
+        }catch (\Exception $e){
+            return response()->json(['kode' => 0, 'msg' => "Gagal update : ".$e->getMessage() , 'data' =>'']);
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MASTER;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class omiController extends Controller
 {
@@ -23,10 +24,11 @@ class omiController extends Controller
             ->orderBy('a.tko_kodeomi')
             ->get()->toArray();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
+//        return response()->json($datas);
     }
 
-    public function editTokoOmi(Request $request){
+    public function detailTokoOmi(Request $request){
         $kodeOmi    = $request->kodeOmi;
 
         $identity   = DB::table('tbmaster_tokoigr a')
@@ -37,9 +39,13 @@ class omiController extends Controller
             ->orderBy('a.tko_kodeomi')
             ->get()->toArray();
 
-        $detail     = DB::table('tbmaster_customer')->where('cus_kodemember', $identity[0]->tko_kodecustomer)->get()->toArray();
+        if ($identity){
+            $detail     = DB::table('tbmaster_customer')->where('cus_kodemember', $identity[0]->tko_kodecustomer)->get()->toArray();
 
-        return response()->json(['identity' => $identity, 'detail' => $detail]);
+            return response()->json(['kode' => 1,'identity' => $identity, 'detail' => $detail]);
+        } else {
+            return response()->json(['kode' => 0]);
+        }
     }
 
     public function getBranchName(Request $request){
@@ -88,6 +94,132 @@ class omiController extends Controller
 
         return response()->json('SUCCESS UPDATE');
 
+    }
+
+    public function tambahTokoOmi(Request $request){
+        $kodeSBU=$request->kodeSBU;
+        $namaSBU='';
+        $kodeOmi=$request->kodeOmi;
+        $namaOmi=strtoupper($request->namaOmi);
+        $kodeCabang=$request->kodeIgr;
+        $flagFee=$request->flagFee;
+        $flagVb=$request->flagVb;
+        $flagKph=$request->flagKph;
+        $kodeCust=$request->kodeCust;
+        $tglGo=$request->tglGo;
+        $tglTutup=$request->tglTutup;
+        $user       = $_SESSION['usid'];
+        $kodeigr    = $_SESSION['kdigr'];
+        date_default_timezone_set('Asia/Jakarta');
+        $date   = date('Y-m-d H:i:s');
+
+        if ($kodeSBU == 'O') $namaSBU = 'OMI';
+        elseif ($kodeSBU == 'M') $namaSBU = 'MRO';
+        elseif ($kodeSBU == 'K') $namaSBU = 'CHARMANT';
+        elseif ($kodeSBU == 'C') $namaSBU = 'IDM CONV';
+        elseif ($kodeSBU == 'I') $namaSBU = 'INDOMARET';
+
+        DB::table('tbmaster_tokoigr')->insert(['TKO_KODEIGR' => $kodeigr, 'TKO_KODESBU' => $kodeSBU, 'TKO_NAMASBU' => $namaSBU, 'TKO_KODEOMI' => $kodeOmi, 'tko_namaomi' => $namaOmi,
+                'TKO_KODECABANG' => $kodeCabang, 'tko_flagdistfee' => $flagFee, 'tko_flagkph' => $flagKph,
+                'tko_flagvb' => $flagVb, 'tko_kodecustomer' => $kodeCust, 'tko_tglgo' => $tglGo,
+                'tko_tgltutup' => $tglTutup, 'tko_create_by' => $user, 'tko_create_dt' => $date]);
+
+        return response()->json('Data berhasil ditambahkan');
+    }
+
+    public function confirmEdit(Request $request){
+        $confirmUser    = $request->confirmUser;
+        $confirmPass    = $request->confirmPass;
+        $updateMKTHO    = $request->updateMKTHO;
+        $kodeomiEditExpand  = $request->kodeomiEditExpand;
+        $columnEditExpand   = $request->columnEditExpand;
+        $valueEditExpand    = $request->valueEditExpand;
+        $kodeSBU    = $request->kodeSBU;
+
+        $password   = DB::select("select LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),5,2)+1,2,0) ||
+                                                LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),3,2)+2,2,0) ||
+                                                LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),1,2)+1,2,0) as password
+                                                from dual");
+        $password   = $password[0]->password;
+        $user       = $_SESSION['usid'];
+        date_default_timezone_set('Asia/Jakarta');
+        $date   = date('Y-m-d H:i:s');
+        $kodeigr    = $_SESSION['kdigr'];
+
+        if ($confirmUser != "OM123" || $confirmPass != $password){
+            return response()->json(['kode' => 0, 'msg' => "Anda Tidak Berhak Untuk Mengedit !!'", 'data' => '']);
+        }
+
+        if($columnEditExpand == 'tko_flagdistfee'){
+            DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                ->update(['tko_flagdistfee' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+        }
+        elseif($columnEditExpand == "tko_persendistributionfee"){
+            if($kodeSBU != 'I'){
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)
+                    ->update(['tko_persendistributionfee' => $valueEditExpand.'.00', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+
+                if ($updateMKTHO == 'Y'){
+                    // ---------------- DIKOMEN SUPAYA GK GANGGU PRODUCTION
+//                    DB::select("	UPDATE tbmaster_tokoigr@igrmktho
+//                                        SET tko_persendistributionfee = '$$valueEditExpand',
+//                                        tko_MODIFY_BY = '$user', tko_MODIFY_DT = '$date'
+//                                        WHERE tko_kodesbu = '$kodeSBU'
+//                                            and tko_kodeomi = '$kodeomiEditExpand' and tko_kodeigr = '$kodeigr'");
+//
+//                    $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+//                    $exec = oci_parse($connection, "BEGIN  sp_upd_df_omi_web(:kodeomi,:kodeigr,:sukses,:errm); END;"); //Diganti karna proc yg asli pakai boolean
+//                    oci_bind_by_name($exec, ':kodeomi',$kodeomiEditExpand,100);
+//                    oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
+//                    oci_bind_by_name($exec, ':sukses',$sukses,100);
+//                    oci_bind_by_name($exec, ':errm', $errm,1000);
+//                    oci_execute($exec);
+//
+//                    if (!$sukses){
+//                        return response()->json(['kode' => 0, 'msg' => $errm, 'data' => '']);
+//                    }
+                }
+            } else {
+                 return response()->json(['kode' => 0, 'msg' => " Indomaret Tidak Ada Nilai Fee nya !!'", 'data' => '']);
+            }
+        }
+        elseif($columnEditExpand == "tko_persenmargin"){
+            if($kodeSBU != 'O'){
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_persenMargin' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            } else {
+                return response()->json(['kode' => 0, 'msg' => " OMI Tidak Ada Nilai Margin nya !!'", 'data' => '']);
+            }
+        }
+        elseif($columnEditExpand == "tko_flagsubsidipemanjangan"){
+            if($valueEditExpand == 'T'){
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_flagsubsidiPemanjangan' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            } else {
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_flagsubsidiPemanjangan' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            }
+        }
+        elseif($columnEditExpand == "tko_flagcreditlimitomi"){
+            if($valueEditExpand == 'T'){
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_flagCreditLimitOMI' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            } else {
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_flagCreditLimitOMI' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            }
+        }
+        elseif($columnEditExpand == "tko_tipeomi"){
+            if($valueEditExpand == 'T'){
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_tipeOMI' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            } else {
+                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                    ->update(['tko_tipeOMI' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
+            }
+        }
+
+        return response()->json(['kode' => 1, 'msg' => "Perubahan berhasil di simpan !!'", 'data' => '']);
     }
 
 }

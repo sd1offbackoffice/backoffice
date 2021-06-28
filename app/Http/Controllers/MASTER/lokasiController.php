@@ -12,28 +12,26 @@ use Yajra\DataTables\DataTables;
 class lokasiController extends Controller
 {
     public function index(){
-        $lokasi = DB::connection('simsmg')->table('tbmaster_lokasi')
-            ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
-            ->where('lks_kodeigr','22')
-            ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
-            ->distinct()
-            ->limit(1000)
-            ->get();
-
-        $produk = DB::connection('simsmg')->table('tbmaster_prodmast')
-            ->selectRaw('prd_deskripsipanjang,prd_prdcd')
-            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
-            ->orderBy('prd_deskripsipanjang')
-            ->limit(100)
-            ->get();
-
-        return view('MASTER.lokasi')->with(compact(['lokasi','produk']));
+        return view('MASTER.lokasi');
     }
 
-    public function getLokasi(){ //Untuk datatables
+    public function getLokasi(Request $request){ //Untuk datatables Rak
+        $search = $request->value;
         $lokasi = DB::connection('simsmg')->table('tbmaster_lokasi')
             ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
+
+            ->where('lks_koderak','LIKE', '%'.$search.'%')
             ->where('lks_kodeigr','22')
+
+            ->orWhere('lks_kodesubrak','LIKE', '%'.$search.'%')
+            ->where('lks_kodeigr','22')
+
+            ->orWhere('lks_tiperak','LIKE', '%'.$search.'%')
+            ->where('lks_kodeigr','22')
+
+            ->orWhere('lks_shelvingrak','LIKE', '%'.$search.'%')
+            ->where('lks_kodeigr','22')
+
             ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
             ->distinct()
             ->limit(100)
@@ -41,6 +39,29 @@ class lokasiController extends Controller
 
         return Datatables::of($lokasi)->make(true);
     }
+
+    public function getPlu(Request $request){ //Untuk datatables PLU
+        $search = $request->value;
+        $datas = DB::connection('simsmg')->table('TBMASTER_PRODMAST')
+            ->selectRaw('PRD_DESKRIPSIPANJANG,PRD_PRDCD')
+
+            ->where('PRD_PRDCD','LIKE', '%'.$search.'%')
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+
+            ->orWhere('PRD_DESKRIPSIPANJANG','LIKE', '%'.$search.'%')
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+
+            ->orderBy('PRD_DESKRIPSIPANJANG')
+            ->limit(100)
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+
+
+
+
 
     public function getProdmast(){ //Untuk datatables
         $produk = DB::connection('simsmg')->table('tbmaster_prodmast')
@@ -404,10 +425,16 @@ class lokasiController extends Controller
     }
 
     public function delete_plu(Request $request){
+        //dd($request->data['lks_koderak']);
         try{
             DB::connection('simsmg')->beginTransaction();
             DB::connection('simsmg')->table('tbmaster_lokasi')
-                ->where($request->data)
+                //->where($request->data)
+                ->where('LKS_KODERAK','=',$request->data['lks_koderak'])
+                ->where('LKS_KODESUBRAK','=',$request->data['lks_kodesubrak'])
+                ->where('LKS_TIPERAK','=',$request->data['lks_tiperak'])
+                ->where('LKS_SHELVINGRAK','=',$request->data['lks_shelvingrak'])
+                ->where('LKS_NOURUT','=',$request->data['lks_nourut'])
                 ->update([
                     'lks_prdcd' => null,
                     'lks_depanbelakang' => null,

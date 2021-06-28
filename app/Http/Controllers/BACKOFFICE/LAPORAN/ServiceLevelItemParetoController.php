@@ -30,7 +30,6 @@ class ServiceLevelItemParetoController extends Controller
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
             ->selectRaw('MPL_NAMAMONITORING')
             ->orderByDesc('MPL_KODEMONITORING')
-            ->limit(100)
             ->get();
 
         return Datatables::of($datas)->make(true);

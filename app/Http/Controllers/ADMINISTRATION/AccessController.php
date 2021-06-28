@@ -91,4 +91,12 @@ class AccessController extends Controller
             ], 200);
         }
     }
+
+    public function clone(){
+//        $data = DB::table('tbmaster_useraccess_migrasi')->get();
+//
+//        DB::connection('igrsmg')
+//            ->table('tbmaster_useraccess_migrasi')
+//            ->insert(json_decode(json_encode($data), true));
+    }
 }

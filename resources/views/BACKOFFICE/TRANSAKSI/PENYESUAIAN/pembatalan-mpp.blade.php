@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Pembatalan MPP')
+@section('title','PENYESUAIAN | PEMBATALAN MPP')
 
 @section('content')
 

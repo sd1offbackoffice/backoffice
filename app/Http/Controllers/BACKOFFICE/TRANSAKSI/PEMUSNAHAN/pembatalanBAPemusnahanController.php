@@ -6,21 +6,27 @@ use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class pembatalanBAPemusnahanController extends Controller
 {
     public function index(){
-        $noDoc = DB::table('tbtr_mstran_d')->whereNull(['mstd_recordid'])->whereRaw("mstd_nodoc like '8%'")->orderByDesc('mstd_nodoc')->distinct()->limit(100)->get(['mstd_nodoc', 'mstd_tgldoc'])->toArray();
-
-        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.pembatalanBAPemusnahan', compact('noDoc'));
+        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.pembatalanBAPemusnahan');
     }
 
-    public function searchDocument(Request $request){
-        $search = $request->search;
+    public function getDocument(Request $request){
+        $search = $request->value;
 
-        $noDoc= DB::table('tbtr_mstran_d')->whereNull(['mstd_recordid'])->whereRaw("mstd_nodoc like '8%$search%'")->orderByDesc('mstd_nodoc')->distinct()->limit(100)->get(['mstd_nodoc', 'mstd_tgldoc'])->toArray();
+        $datas = DB::table('tbtr_mstran_d')
+            ->where('mstd_nodoc','LIKE', '%'.$search.'%')
+            ->whereNull(['mstd_recordid'])
+            ->whereRaw("mstd_nodoc like '8%'")
+            ->orderByDesc('mstd_nodoc')
+            ->distinct()
+            ->limit(100)
+            ->get(['mstd_nodoc', 'mstd_tgldoc'])->toArray();
 
-        return response()->json($noDoc);
+        return Datatables::of($datas)->make(true);
     }
 
     public function getDetailDocument(Request $request){

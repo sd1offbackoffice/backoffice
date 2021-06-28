@@ -1,0 +1,217 @@
+CREATE OR REPLACE PROCEDURE sp_download_customer_mktho_web (
+   p_sukses   OUT VARCHAR2,
+   p_errtxt   OUT VARCHAR2)
+IS
+   v_kodeigr   VARCHAR2 (2);
+   v_dt        DATE;
+   v_dt2       DATE;
+   v_result    VARCHAR2 (32000);
+BEGIN
+   --v_dt := TRUNC (SYSDATE - 1);
+   --v_dt2 := TRUNC (SYSDATE - 3);
+
+   SELECT prs_kodeigr INTO v_kodeigr FROM tbmaster_perusahaan;
+
+   MERGE INTO tbmaster_customer t
+        USING (SELECT *
+                 FROM tbmaster_customer@igrmktho
+                WHERE     cus_kodeigr = v_kodeigr
+                      AND (   TRUNC (cus_create_dt) = TRUNC (SYSDATE)
+                           OR TRUNC (cus_modify_dt) = TRUNC (SYSDATE))) s
+           ON (    t.cus_kodemember = s.cus_kodemember
+               AND t.cus_kodeigr = s.cus_kodeigr)
+   WHEN NOT MATCHED
+   THEN
+      INSERT     (t.CUS_KODEIGR,
+                  t.CUS_RECORDID,
+                  t.CUS_KODEMEMBER,
+                  t.CUS_NAMAMEMBER,
+                  t.CUS_ALAMATMEMBER1,
+                  t.CUS_ALAMATMEMBER2,
+                  t.CUS_ALAMATMEMBER3,
+                  t.CUS_ALAMATMEMBER4,
+                  t.CUS_TLPMEMBER,
+                  t.CUS_ALAMATMEMBER5,
+                  t.CUS_ALAMATMEMBER6,
+                  t.CUS_ALAMATMEMBER7,
+                  t.CUS_ALAMATMEMBER8,
+                  t.CUS_JENISMEMBER,
+                  t.CUS_FLAGMEMBERKHUSUS,
+                  t.CUS_JARAK,
+                  t.CUS_CFK,
+                  t.CUS_KODEOUTLET,
+                  t.CUS_KODESUBOUTLET,
+                  t.CUS_KODEAREA,
+                  t.CUS_TGLMULAI,
+                  t.CUS_TGLREGISTRASI,
+                  t.CUS_NPWP,
+                  t.CUS_FLAGPKP,
+                  t.CUS_CREDITLIMIT,
+                  t.CUS_TOP,
+                  t.CUS_KETERANGAN,
+                  t.CUS_TGLPAJAK,
+                  t.CUS_NOSALESMAN,
+                  t.CUS_FLAGGANTIKARTU,
+                  t.CUS_NOKARTUMEMBER,
+                  t.CUS_FLAGKREDIT,
+                  t.CUS_FLAGBLOCKINGPENGIRIMAN,
+                  t.CUS_FLAGBEBASIURAN,
+                  t.CUS_TGLLAHIR,
+                  t.CUS_COSTCENTER,
+                  t.CUS_NOACCOUNT,
+                  t.CUS_ALAMATEMAIL,
+                  t.CUS_HPMEMBER,
+                  t.CUS_FLAGINSTITUSIPEMERINTAH,
+                  t.CUS_CREATE_BY,
+                  t.CUS_CREATE_DT,
+                  t.CUS_MODIFY_BY,
+                  t.CUS_MODIFY_DT,
+                  t.CUS_GETPOINT,
+                  t.CUS_FLAGKIRIMSMS,
+                  t.CUS_FLAG_UPTODATE,
+                  t.CUS_NONAKTIF_DT,
+                  t.CUS_FLAG_INA,
+                  t.CUS_TGLMULAI_VA,
+                  t.CUS_NOACC_VA,
+                  t.CUS_NOKTP,
+                  t.CUS_FLAG_VERIFIKASI,
+                  t.CUS_FLAG_MYPOIN,
+                  t.CUS_FLAG_ISAKU,
+                  t.CUS_MYPOIN_DT,
+                  t.CUS_ISAKU_DT)
+          VALUES (s.CUS_KODEIGR,
+                  s.CUS_RECORDID,
+                  s.CUS_KODEMEMBER,
+                  s.CUS_NAMAMEMBER,
+                  s.CUS_ALAMATMEMBER1,
+                  s.CUS_ALAMATMEMBER2,
+                  s.CUS_ALAMATMEMBER3,
+                  s.CUS_ALAMATMEMBER4,
+                  s.CUS_TLPMEMBER,
+                  s.CUS_ALAMATMEMBER5,
+                  s.CUS_ALAMATMEMBER6,
+                  s.CUS_ALAMATMEMBER7,
+                  s.CUS_ALAMATMEMBER8,
+                  s.CUS_JENISMEMBER,
+                  s.CUS_FLAGMEMBERKHUSUS,
+                  s.CUS_JARAK,
+                  s.CUS_CFK,
+                  s.CUS_KODEOUTLET,
+                  s.CUS_KODESUBOUTLET,
+                  s.CUS_KODEAREA,
+                  s.CUS_TGLMULAI,
+                  s.CUS_TGLREGISTRASI,
+                  s.CUS_NPWP,
+                  s.CUS_FLAGPKP,
+                  s.CUS_CREDITLIMIT,
+                  s.CUS_TOP,
+                  s.CUS_KETERANGAN,
+                  s.CUS_TGLPAJAK,
+                  s.CUS_NOSALESMAN,
+                  s.CUS_FLAGGANTIKARTU,
+                  s.CUS_NOKARTUMEMBER,
+                  s.CUS_FLAGKREDIT,
+                  s.CUS_FLAGBLOCKINGPENGIRIMAN,
+                  s.CUS_FLAGBEBASIURAN,
+                  s.CUS_TGLLAHIR,
+                  s.CUS_COSTCENTER,
+                  s.CUS_NOACCOUNT,
+                  s.CUS_ALAMATEMAIL,
+                  s.CUS_HPMEMBER,
+                  s.CUS_FLAGINSTITUSIPEMERINTAH,
+                  s.CUS_CREATE_BY,
+                  s.CUS_CREATE_DT,
+                  s.CUS_MODIFY_BY,
+                  s.CUS_MODIFY_DT,
+                  s.CUS_GETPOINT,
+                  s.CUS_FLAGKIRIMSMS,
+                  s.CUS_FLAG_UPTODATE,
+                  s.CUS_NONAKTIF_DT,
+                  s.CUS_FLAG_INA,
+                  s.CUS_TGLMULAI_VA,
+                  s.CUS_NOACC_VA,
+                  s.CUS_NOKTP,
+                  s.CUS_FLAG_VERIFIKASI,
+                  s.CUS_FLAG_MYPOIN,
+                  s.CUS_FLAG_ISAKU,
+                  s.CUS_MYPOIN_DT,
+                  s.CUS_ISAKU_DT)
+   WHEN MATCHED
+   THEN
+      UPDATE SET
+         t.CUS_RECORDID = s.CUS_RECORDID,
+         t.CUS_NAMAMEMBER = s.CUS_NAMAMEMBER,
+         t.CUS_ALAMATMEMBER1 = s.CUS_ALAMATMEMBER1,
+         t.CUS_ALAMATMEMBER2 = s.CUS_ALAMATMEMBER2,
+         t.CUS_ALAMATMEMBER3 = s.CUS_ALAMATMEMBER3,
+         t.CUS_ALAMATMEMBER4 = s.CUS_ALAMATMEMBER4,
+         t.CUS_TLPMEMBER = s.CUS_TLPMEMBER,
+         t.CUS_ALAMATMEMBER5 = s.CUS_ALAMATMEMBER5,
+         t.CUS_ALAMATMEMBER6 = s.CUS_ALAMATMEMBER6,
+         t.CUS_ALAMATMEMBER7 = s.CUS_ALAMATMEMBER7,
+         t.CUS_ALAMATMEMBER8 = s.CUS_ALAMATMEMBER8,
+         t.CUS_JENISMEMBER = s.CUS_JENISMEMBER,
+         t.CUS_FLAGMEMBERKHUSUS = s.CUS_FLAGMEMBERKHUSUS,
+         t.CUS_JARAK = s.CUS_JARAK,
+         t.CUS_CFK = s.CUS_CFK,
+         t.CUS_KODEOUTLET = s.CUS_KODEOUTLET,
+         t.CUS_KODESUBOUTLET = s.CUS_KODESUBOUTLET,
+         t.CUS_KODEAREA = s.CUS_KODEAREA,
+         t.CUS_TGLMULAI = s.CUS_TGLMULAI,
+         t.CUS_TGLREGISTRASI = s.CUS_TGLREGISTRASI,
+         t.CUS_NPWP = s.CUS_NPWP,
+         t.CUS_FLAGPKP = s.CUS_FLAGPKP,
+         t.CUS_CREDITLIMIT = s.CUS_CREDITLIMIT,
+         t.CUS_TOP = s.CUS_TOP,
+         t.CUS_KETERANGAN = s.CUS_KETERANGAN,
+         t.CUS_TGLPAJAK = s.CUS_TGLPAJAK,
+         t.CUS_NOSALESMAN = s.CUS_NOSALESMAN,
+         t.CUS_FLAGGANTIKARTU = s.CUS_FLAGGANTIKARTU,
+         t.CUS_NOKARTUMEMBER = s.CUS_NOKARTUMEMBER,
+         t.CUS_FLAGKREDIT = s.CUS_FLAGKREDIT,
+         t.CUS_FLAGBLOCKINGPENGIRIMAN = s.CUS_FLAGBLOCKINGPENGIRIMAN,
+         t.CUS_FLAGBEBASIURAN = s.CUS_FLAGBEBASIURAN,
+         t.CUS_TGLLAHIR = s.CUS_TGLLAHIR,
+         t.CUS_COSTCENTER = s.CUS_COSTCENTER,
+         t.CUS_NOACCOUNT = s.CUS_NOACCOUNT,
+         t.CUS_ALAMATEMAIL = s.CUS_ALAMATEMAIL,
+         t.CUS_HPMEMBER = s.CUS_HPMEMBER,
+         t.CUS_FLAGINSTITUSIPEMERINTAH = s.CUS_FLAGINSTITUSIPEMERINTAH,
+         t.CUS_CREATE_BY = s.CUS_CREATE_BY,
+         t.CUS_CREATE_DT = s.CUS_CREATE_DT,
+         t.CUS_MODIFY_BY = s.CUS_MODIFY_BY,
+         t.CUS_MODIFY_DT = s.CUS_MODIFY_DT,
+         t.CUS_GETPOINT = s.CUS_GETPOINT,
+         t.CUS_FLAGKIRIMSMS = s.CUS_FLAGKIRIMSMS,
+         t.CUS_FLAG_UPTODATE = s.CUS_FLAG_UPTODATE,
+         t.CUS_NONAKTIF_DT = s.CUS_NONAKTIF_DT,
+         t.CUS_FLAG_INA = s.CUS_FLAG_INA,
+         t.CUS_TGLMULAI_VA = s.CUS_TGLMULAI_VA,
+         t.CUS_NOACC_VA = s.CUS_NOACC_VA,
+         t.CUS_NOKTP = s.CUS_NOKTP,
+         t.CUS_FLAG_VERIFIKASI = s.CUS_FLAG_VERIFIKASI,
+         t.CUS_FLAG_MYPOIN = s.CUS_FLAG_MYPOIN,
+         t.CUS_FLAG_ISAKU = s.CUS_FLAG_ISAKU,
+         t.CUS_MYPOIN_DT = s.CUS_MYPOIN_DT,
+         t.CUS_ISAKU_DT = s.CUS_ISAKU_DT
+              WHERE TRUNC (NVL (t.CUS_MODIFY_DT, t.CUS_CREATE_DT)) <>
+                       TRUNC (SYSDATE);
+
+   p_sukses := '1';
+
+   COMMIT;
+
+   v_result := 'SYNC CUSTOMER DATA SUCCESS';
+   p_errtxt := 'OK';
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      v_result := 'SYNC CUSTOMER Failed, error: ' || SQLERRM;
+      p_sukses := '0';
+      p_errtxt := v_result;
+END;
+/
+
+ALTER PROCEDURE sp_download_customer_mktho_web COMPILE;
+/

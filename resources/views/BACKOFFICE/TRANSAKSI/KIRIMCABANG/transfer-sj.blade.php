@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','KIRIM CABANG | TRANSFER SJ')
+@section('title','PENGIRIMAN KE CABANG | TRANSFER SJ')
 
 @section('content')
 

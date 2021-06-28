@@ -24,8 +24,13 @@
                                 <input type="text" class="form-control" id="i_tgl" placeholder="DD-MM-YYYY">
                             </div>
                             <label for="i_keterangan" class="col-sm-2 col-form-label text-right">KETERANGAN</label>
-                            <div class="col-sm-2">
+                            <div class="col-sm-6">
                                 <input type="text" class="form-control" id="i_keterangan" placeholder="...">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0 mt-3 justify-content-center">
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary btn-block" id="btn-save" onclick="clearField()">INSERT</button>
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-primary btn-block" id="btn-save" onclick="saveHariLibur()">SAVE</button>
@@ -84,6 +89,8 @@
                     }
                 ]
             });
+
+            $('#tableHariLibur_filter input').focus()
         }
 
         $(document).on('click', '.modalRow', function () {
@@ -92,6 +99,12 @@
 
             inputToField(tgl,ket)
         } );
+
+        function clearField(){
+            $('#i_tgl').focus();
+            $('#i_tgl').val('');
+            $('#i_keterangan').val('');
+        }
 
         function actionHariLibur(string) {
             let tgl = $('#i_tgl').val();

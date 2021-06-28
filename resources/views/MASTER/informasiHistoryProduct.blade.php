@@ -2,7 +2,7 @@
 @section('title','MASTER | INFORMASI HISTORY PRODUCT')
 @section('content')
 
-    <div class="container-fluid">
+    <div class="container-fluid page1">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
@@ -11,7 +11,8 @@
                         <div class="row justify-content-md-center">
                             <div class="col-sm-8 buttonInside">
                                 <input type="text" class="form-control" id="input" placeholder="..." value="">
-                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp">
+                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                                        data-target="#m_plu">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
@@ -22,7 +23,7 @@
         </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid page2">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary card-hdr ">
@@ -530,6 +531,8 @@
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak">Cetak
                             </button>
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-keluar">Keluar
+                            </button>
                         </div>
                     </div>
                 </fieldset>
@@ -538,9 +541,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="m_pluHelp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
+    <div class="modal fade" id="m_plu" tabindex="-1" role="dialog" aria-labelledby="m_template" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">List Prodmast</h5>
@@ -549,31 +551,23 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                   <div class="container">
-                       <div class="row">
-                           <div class="col">
-                               <table class="table  table table-striped table-bordered" id="modal_table_plu">
-                                   <thead class="theadDataTables">
-                                   <tr>
-                                       <th>Deskripsi</th>
-                                       <th>PLU</th>
-                                   </tr>
-                                   </thead>
-                                   <tbody>
-                                   @foreach($produk as $p)
-                                       <tr onclick="lov_select('{{ $p->prd_prdcd }}')" class="row_lov">
-                                           <td>{{ $p->prd_deskripsipanjang }}</td>
-                                           <td>{{ $p->prd_prdcd }}</td>
-                                       </tr>
-                                   @endforeach
-                                   </tbody>
-                               </table>
-                           </div>
-                       </div>
-                   </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalPLU">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>PLU</th>
+                                        <th>Nama Produk</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-
                 </div>
             </div>
         </div>
@@ -711,7 +705,8 @@
     {{--MODAL Penerimaan--}}
     <div class="modal fade" id="m-penerimaan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%"
+             role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Penerimaan</h5>
@@ -785,7 +780,8 @@
     {{--MODAL PB--}}
     <div class="modal fade" id="m-pb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%"
+             role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>PB</h5>
@@ -863,7 +859,8 @@
     {{--MODAL SO--}}
     <div class="modal fade" id="m-so" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%"
+             role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 800px;">
                     <div class="row">
@@ -1003,7 +1000,8 @@
     {{--MODAL Harga Beli--}}
     <div class="modal fade" id="m-hargabeli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 90%" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 90%"
+             role="document">
             <div class="modal-content">
                 <div class="modal-body" style="height: 1000px;">
                     <fieldset class="card border-secondary col-sm-12">
@@ -1224,12 +1222,55 @@
             $('#item').hide();
             $('#input').focus();
             $('#btn-hb-prev').prop('disabled', true);
+            $('.page2').hide();
+            getModalDataPLU('');
 
             var e = $.Event("keypress");
             e.keyCode = 13;
 
-            $('#modal_table_plu').DataTable()
+        });
 
+        function getModalDataPLU(value) {
+            let tableModal = $('#tableModalPLU').DataTable({
+                "ajax": {
+                    'url': '{{ url('mstinformasihistoryproduct/lov_search') }}',
+                    "data": {
+                        'value': value
+                    },
+                },
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                columnDefs: [],
+                "order": []
+            });
+
+            $('#tableModalPLU_filter input').off().on('keypress', function (e) {
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getModalDataPLU(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.modalRow', function () {
+            var currentButton = $(this);
+            let plu = currentButton.children().first().text();
+            get_data(plu);
+            $('#m_plu').modal('hide');
         });
 
         cetakso = {};
@@ -1238,35 +1279,6 @@
         data_hb = '';
         total_data_hb = 0;
         month = ['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGU', 'SEP', 'OKT', 'NOV', 'DES'];
-        $('#search_lov').keypress(function (e) {
-            if (e.which == 13) {
-                if (this.value.length == 0) {
-                    $('#table_lov .row_lov').remove();
-                    $('#table_lov').append(trlov);
-                    $('.invalid-feedback').hide();
-                }
-                else if (this.value.length >= 3) {
-                    $('.invalid-feedback').hide();
-                    $.ajax({
-                        url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_search',
-                        type: 'POST',
-                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
-                        success: function (response) {
-                            $('#table_lov .row_lov').remove();
-                            html = "";
-                            for (i = 0; i < response.length; i++) {
-                                html = '<tr class="row_lov" onclick=lov_select("' + response[i].prd_prdcd + '")><td>' + response[i].prd_deskripsipanjang + '</td><td>' + response[i].prd_prdcd + '</td></tr>';
-                                trlov += html;
-                                $('#table_lov').append(html);
-                            }
-                        }
-                    });
-                }
-                else {
-                    $('.invalid-feedback').show();
-                }
-            }
-        });
 
         $('#input').keypress(function (e) {
             if (e.keyCode == 13) {
@@ -1276,10 +1288,14 @@
                 }
                 $(this).val(plu);
                 get_data(plu);
+                $('#input').val('');
+
             }
         });
 
         function get_data(value) {
+            $('.page1').hide();
+            $('.page2').show();
             $.ajax({
                     url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_select',
                     type: 'POST',
@@ -1297,8 +1313,7 @@
                                 icon: 'info'
                             }).then((createData) => {
                             });
-                        }
-                        else {
+                        } else {
                             notif(response.message, -1, response.message.length);
 
                             $('.baris').remove();
@@ -1323,7 +1338,7 @@
                                     '                                        <input type="text" class="form-control" value="' + response.sj[i].sj_barcode + '" disabled>\n' +
                                     '                                    </td>\n' +
                                     '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_hgjual) + '" disabled>\n' +
+                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response.sj[i].sj_hgjual) + '" disabled>\n' +
                                     '                                    </td>\n' +
                                     '                                    <td class="p-0">\n' +
                                     '                                        <input type="text" class="form-control text-right" value="' + format_currency(response.sj[i].sj_lcost) + '" disabled>\n' +
@@ -1352,9 +1367,9 @@
                                     '                                </tr>');
                             }
                             for (i = 0; i < 12; i++) {
-                                j=i+1;
-                                if(j<10){
-                                    j="0"+j;
+                                j = i + 1;
+                                if (j < 10) {
+                                    j = "0" + j;
                                 }
                                 if ((response['FMPBLNA'] - 1) == i) {
 
@@ -1364,24 +1379,23 @@
                                         '       ' + month[i] + '\n' +
                                         '   </td>\n' +
                                         '   <td class="p-0">\n' +
-                                        '       <input type="text" class="bg-warning form-control text-right" value="' + format_currency(response['trendsales']['sls_qty_'+j]) + '" readonly >\n' +
+                                        '       <input type="text" class="bg-warning form-control text-right" value="' + response['trendsales']['sls_qty_' + j] + '" readonly >\n' +
                                         '   </td>\n' +
                                         '   <td class="p-0">\n' +
-                                        '       <input type="text" class="bg-warning form-control text-right" value="' + format_currency(response['trendsales']['sls_qty_'+j]) + '" disabled >\n' +
+                                        '       <input type="text" class="bg-warning form-control text-right" value="' + format_currency(response['trendsales']['sls_rph_' + j]) + '" disabled >\n' +
                                         '   </td>\n' +
                                         '</tr>');
-                                }
-                                else {
+                                } else {
                                     $('#table-trendsales').append('' +
                                         '<tr class="baris">\n' +
                                         '   <td class="p-0 text-center">\n' +
                                         '       ' + month[i] + '\n' +
                                         '   </td>\n' +
                                         '   <td class="p-0">\n' +
-                                        '       <input type="text" class=" form-control text-right" value="' + format_currency(response['trendsales']['sls_qty_'+j]) + '" disabled >\n' +
+                                        '       <input type="text" class=" form-control text-right" value="' + response['trendsales']['sls_qty_' + j] + '" disabled >\n' +
                                         '   </td>\n' +
                                         '   <td class="p-0">\n' +
-                                        '       <input type="text" class=" form-control text-right" value="' + format_currency(response['trendsales']['sls_qty_'+j]) + '" disabled >\n' +
+                                        '       <input type="text" class=" form-control text-right" value="' + format_currency(response['trendsales']['sls_rph_' + j]) + '" disabled >\n' +
                                         '   </td>\n' +
                                         '</tr>');
                                 }
@@ -1619,8 +1633,7 @@
                             data_hb = response['hargabeli'];
                             if (total_data_hb == 1) {
                                 $('#btn-hb-next').prop('disabled', true);
-                            }
-                            else {
+                            } else {
                                 $('#btn-hb-next').removeAttr('disabled');
                             }
                             $('#hb-supp-terakhir').val(response['hargabeli'][0].hb_supplier);
@@ -1744,10 +1757,6 @@
 
         var trlov = $('#table_lov tbody').html();
 
-        function lov_select(value) {
-            get_data(value);
-        }
-
         function notif(value, arr, leng) {
             arr = arr + 1;
             if (arr < leng) {
@@ -1766,11 +1775,9 @@
 
             if (hbke == total_data_hb - 1) {
                 $('#btn-hb-next').prop('disabled', true);
-            }
-            else if (hbke == 0) {
+            } else if (hbke == 0) {
                 $('#btn-hb-prev').prop('disabled', true);
-            }
-            else {
+            } else {
                 $('#btn-hb-prev').removeAttr('disabled');
                 $('#btn-hb-next').removeAttr('disabled');
             }
@@ -1781,18 +1788,20 @@
             data_hargabeli(hbke);
             if (hbke == total_data_hb - 1) {
                 $('#btn-hb-next').prop('disabled', true);
-            }
-            else if (hbke == 0) {
+            } else if (hbke == 0) {
                 $('#btn-hb-prev').prop('disabled', true);
-            }
-            else {
+            } else {
                 $('#btn-hb-prev').removeAttr('disabled');
                 $('#btn-hb-next').removeAttr('disabled');
             }
         });
 
+        $('#btn-keluar').on('click', function () {
+            $('.page1').show();
+            $('.page2').hide();
+        });
+
         function data_hargabeli(value) {
-            console.log(data_hb);
             $('#hb-supp').val(data_hb[value].hb_supplier);
             $('#hb-pkp').val(data_hb[value].hb_pkp);
             $('#hb-jenis-harga').val(data_hb[value].hb_jnshg);
@@ -1927,6 +1936,40 @@
                 }
             });
         }
+
+        $(window).bind('keydown', function (event) {
+            plu = $('#plu').val();
+            if (plu != '') {
+                if (event.which == 34) { // Page Down
+                    $.ajax({
+                        url: '/BackOffice/public/mstinformasihistoryproduct/getNextPLU',
+                        type: 'GET',
+                        data: {plu: plu},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            get_data(response);
+                        }
+                    });
+                    event.preventDefault();
+                } else if (event.which == 33) { // Page Up
+                    $.ajax({
+                        url: '/BackOffice/public/mstinformasihistoryproduct/getPrevPLU',
+                        type: 'GET',
+                        data: {plu: plu},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            get_data(response);
+                        }
+                    });
+                    event.preventDefault();
+                }
+            }
+
+        });
     </script>
 
 @endsection

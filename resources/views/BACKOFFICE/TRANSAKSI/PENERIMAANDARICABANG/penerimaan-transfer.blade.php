@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','PENERIMAAN CABANG | PENERIMAAN / TRANSFER')
+@section('title','PENERIMAAN DARI CABANG | PENERIMAAN / TRANSFER')
 
 @section('content')
 

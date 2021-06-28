@@ -35,11 +35,6 @@
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
-
-{{--                                    <input type="text" id="i_supp1" class="form-control col-sm-1 mx-sm-1 field field1" field="1">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getSupplier('i_supp1')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
-{{--                                    <input type="text" id="i_supp2" class="form-control col-sm-1 mx-sm-1 field field2" field="2">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getSupplier('i_supp2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                 </div>
                                 <div class="form-group row mb-0">
                                     <label class="col-sm-4 col-form-label text-md-right">Monitoring Supplier</label>
@@ -48,14 +43,6 @@
                                         <option value="{{$data->msu_kodemonitoring}}">{{$data->msu_kodemonitoring}} - {{$data->msu_namamonitoring}}</option>
                                         @endforeach
                                     </select>
-
-{{--                                    <div class="col-sm-2 buttonInside">--}}
-{{--                                        <input type="text" id="i_mtrSup1" class="form-control field field3" field="3">--}}
-{{--                                        <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getMtrSup('i_mtrSup1')">--}}
-{{--                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">--}}
-{{--                                        </button>--}}
-{{--                                    </div>--}}
-
 {{--                                    <input type="text" id="i_mtrSup1" class="form-control col-sm-1 mx-sm-1 field field3" field="3">--}}
 {{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getMtrSup('i_mtrSup1')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
 {{--                                    <input type="text" id="i_mtrSup2" class="form-control col-sm-4 ml-3" disabled>--}}
@@ -76,11 +63,6 @@
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
-
-{{--                                    <input type="text" id="i_dept1" class="form-control col-sm-1 mx-sm-1 field field4" field="4">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getDepartemen('i_dept1')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
-{{--                                    <input type="text" id="i_dept2" class="form-control col-sm-1 mx-sm-1 field field5" field="5">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal"onclick="getDepartemen('i_dept2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                 </div>
                                 <div class="form-group row mb-0">
                                     <label class="col-sm-4 col-form-label text-md-right">Kode Kategori</label>
@@ -97,11 +79,6 @@
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
-
-{{--                                    <input type="text" id="i_kat1" class="form-control col-sm-1 mx-sm-1 field field6" field="6">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getKategori('i_kat1')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
-{{--                                    <input type="text" id="i_kat2" class="form-control col-sm-1 mx-sm-1 field field7" field="7">--}}
-{{--                                    <button class="btn ml-2" type="button" data-toggle="modal" onclick="getKategori('i_kat2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                 </div>
                                 <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right field field8" onclick="proses()" field="8">PROSES</button>
                             </form>
@@ -369,7 +346,6 @@
         });
 
         function showModalSupplier(field) {
-            alert(field)
             $('#idField').text(field);
             $('#modalSupplierHelp').modal('show');
         }
@@ -434,11 +410,10 @@
         }
 
         function chooseRow(field,data) {
-            alert([field,data])
-            // $('#'+ field+'').val(data);
-            // $('#modalSupplierHelp').modal('hide');
-            // $('#modalDepartemenHelp').modal('hide');
-            // $('#modalKategoriHelp').modal('hide');
+            $('#'+ field+'').val(data);
+            $('#modalSupplierHelp').modal('hide');
+            $('#modalDepartemenHelp').modal('hide');
+            $('#modalKategoriHelp').modal('hide');
         }
 
 
@@ -451,4 +426,7 @@
             $('#i_dept1').val('');
             $('#i_dept2').val('');
             $('#i_kat1').val('');
-            $('#i_kat2').val('
+            $('#i_kat2').val('');
+        }
+    </script>
+@endsection

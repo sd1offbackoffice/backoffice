@@ -15,10 +15,14 @@ class barcodeController extends Controller
         return view('MASTER.barcode');
     }
 
-    public function getBarcode(){
+    public function getBarcode(Request $request){
+        $search = $request->value;
+
         $barcode = DB::table('TBMASTER_BARCODE')
             ->select('*')
-//            ->limit(20)
+            ->where('BRC_BARCODE','LIKE', '%'.$search.'%')
+            ->orWhere('BRC_PRDCD','LIKE', '%'.$search.'%')
+            ->limit(100)
             ->get();
         return Datatables::of($barcode)->make(true);
     }

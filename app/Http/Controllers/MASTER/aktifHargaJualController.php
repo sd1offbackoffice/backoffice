@@ -14,8 +14,14 @@ class aktifHargaJualController extends Controller
         return view('MASTER.aktifHargaJual');
     }
 
-    public function getProdmast(){
-        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')->orderBy('prd_prdcd')->get()->toArray();
+    public function getProdmast(Request  $request){
+        $search = $request->value;
+
+        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->orderBy('prd_prdcd')
+            ->limit(100)->get();
 
         return Datatables::of($prodmast)->make(true);
     }

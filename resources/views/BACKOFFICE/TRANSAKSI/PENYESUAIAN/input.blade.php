@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Input Penyesuaian')
+@section('title','PENYESUAIAN | INPUT')
 
 @section('content')
     {{--<head>--}}

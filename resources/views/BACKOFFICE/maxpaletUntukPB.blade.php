@@ -1,11 +1,11 @@
 @extends('navbar')
+@section('title','PB | ITEM MAXPALET PB')
 @section('content')
 
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-sm-10">
-                <fieldset class="card border-dark">
-                    <legend  class="w-auto ml-5">Inputan PLU PB Untuk Kondisi Maxpalet</legend>
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row justify-content-center">
                             <div class="col-sm-12">
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>

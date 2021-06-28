@@ -1,24 +1,27 @@
 @extends('navbar')
-@section('title','Berita Acara Pemusnahan')
+@section('title','PEMUSNAHAN | BERITA ACARA PEMUSNAHAN')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">IGR BO BA PEMUSNAHAN</legend>
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row">
                             <div class="col-sm-6">
                                 <form>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-4 col-form-label text-md-right">No. Dokumen</label>
-                                        <input type="text" id="noDoc" class="form-control col-sm-5 mx-sm-1">
-                                        <button class="btn ml-2" type="button" data-toggle="modal" onclick="getNoDoc('')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
+                                        <div class="col-sm-5 buttonInside">
+                                            <input type="text" id="noDoc" class="form-control">
+                                            <button class="btn btn-lov p-0" type="button" data-toggle="modal" data-target="#modalHelpDocument" >
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-4 col-form-label text-md-right">Tanggal Dokumen</label>
-                                        <input type="text" id="tglDoc" class="form-control col-sm-5 mx-sm-1">
+                                        <input type="text" id="tglDoc" class="form-control col-sm-5 mx-sm-3">
                                     </div>
                                 </form>
                             </div>
@@ -26,12 +29,16 @@
                                 <form>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-4 col-form-label text-md-right">No. PBBR</label>
-                                        <input type="text" id="noPBBR" class="form-control col-sm-5 mx-sm-1">
-                                        <button class="btn ml-2" type="button" data-toggle="modal" id="buttonPBBR" onclick="getNoPBBR('')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
+                                        <div class="col-sm-5 buttonInside">
+                                            <input type="text" id="noPBBR" class="form-control">
+                                            <button class="btn btn-lov p-0" type="button" data-toggle="modal" data-target="#modalHelpPBBR"  id="buttonPBBR">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-4 col-form-label text-md-right">Tanggal PBBR</label>
-                                        <input type="text" id="tglPBBR" class="form-control col-sm-5 mx-sm-1" disabled>
+                                        <input type="text" id="tglPBBR" class="form-control col-sm-5 mx-sm-3" disabled>
                                     </div>
                                     <div class="form-group row mb-3 mt-2">
                                         <input type="text" id="keterangan" class="form-control col-sm-6 text-right" style="margin-left: 50%"  disabled>
@@ -41,7 +48,7 @@
                             <div class="col-sm-12">
                                 <div class="tableFixedHeader" style="border-bottom: 1px solid black">
                                     <table class="table table-striped table-bordered" id="table2">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr class="d-flex text-center">
                                             <th style="width: 150px">PLU</th>
                                             <th style="width: 400px">Deskripsi</th>
@@ -99,38 +106,72 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+    <!-- Modal Dokumen-->
+    <div class="modal fade" id="modalHelpDocument" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
-                    </div>
+                    <h5 class="modal-title">Master Document</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body ">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th id="modalThName1"></th>
-                                            <th id="modalThName2"></th>
-                                            <th id="modalThName3"></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tbodyModalHelp"></tbody>
-                                    </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
-                                </div>
+                                <table class="table table-sm" id="tableModalDocument">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>No. Dokumen</th>
+                                        <th>No. Referensi</th>
+                                        <th>Tgl Refrensi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                                <p class="text-hide" id="idModal"></p>
+                                <p class="text-hide" id="idRow"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal PBBR-->
+    <div class="modal fade" id="modalHelpPBBR" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daftar barang Rusak</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-sm" id="tableModalPBBR">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>No. Dokumen</th>
+                                        <th>Tgl. Dokumen</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                                <p class="text-hide" id="idModal"></p>
+                                <p class="text-hide" id="idRow"></p>
                             </div>
                         </div>
                     </div>
@@ -156,168 +197,118 @@
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
 
-        $("#tglDoc").datepicker({
-            "dateFormat" : "dd/mm/yy",
+
+        $(document).ready(function (){
+            $("#tglDoc").datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
+            $('#tglDoc').val(today);
+            getDataModalDocument('')
+            getDataModalPBBR('')
+            $('#noDoc').focus();
+        })
+
+        function  getDataModalDocument(val) {
+            let tableModalDocument = $('#tableModalDocument').DataTable({
+                "ajax": {
+                    'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnodoc') }}',
+                    "data" : {
+                        'value': val
+                    },
+                },
+                "columns": [
+                    {data: 'brsk_nodoc', name: 'brsk_nodoc'},
+                    {data: 'brsk_noref', name: 'brsk_noref'},
+                    {data: 'brsk_tglref', name: 'brsk_tglref'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row_lov row_lov_document');
+                },
+                columnDefs : [
+                    { targets : [2],
+                        render : function (data, type, row) {
+                            return formatDate(data)
+                        }
+                    }
+                ],
+                "order": []
+            });
+
+            $('#tableModalDocument_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase(); console.log(val);
+
+                    tableModalDocument.destroy();
+                    getDataModalDocument(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.row_lov_document', function () {
+            var currentButton = $(this);
+            let document = currentButton.children().first().text();
+
+            chooseDoc(document)
         });
 
-        $('#tglDoc').val(today)
+        function  getDataModalPBBR(val) {
+            let tableModalDocument = $('#tableModalPBBR').DataTable({
+                "ajax": {
+                    'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnopbbr') }}',
+                    "data" : {
+                        'value': val
+                    },
+                },
+                "columns": [
+                    {data: 'rsk_nodoc', name: 'rsk_nodoc'},
+                    {data: 'rsk_tgldoc', name: 'rsk_tgldoc'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row_lov row_lov_pbbr');
+                },
+                columnDefs : [
+                    { targets : [1],
+                        render : function (data, type, row) {
+                            return formatDate(data)
+                        }
+                    }
+                ],
+                "order": []
+            });
+
+            $('#tableModalPBBR_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase(); console.log(val);
+
+                    tableModalDocument.destroy();
+                    getDataModalDocument(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.row_lov_pbbr', function () {
+            var currentButton = $(this);
+            let pbbr = currentButton.children().first().text();
+
+            choosePBBR(pbbr)
+        });
 
         /****************************************************/
-        function getNoDoc(val) {
-            $('#searchModal').val('');
-            if(tempDoc == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/getnodoc',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        console.log(result)
-                        $('#modalThName1').text('No Dokumen');
-                        $('#modalThName2').text('No Referensi');
-                        $('#modalThName3').text('Tgl Referensi');
-                        $('#modalThName3').show();
 
-                        tempDoc = result;
-
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseDoc('"+ result[i].brsk_nodoc+"') class='modalRow'><td>"+ result[i].brsk_nodoc +"</td> <td>"+ result[i].brsk_noref +"</td> <td>"+  formatDate(result[i].brsk_tglref) +"</td></tr>")
-                        }
-
-                        $('#idModal').val('DOC')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            } else {
-                $('#modalThName1').text('NO.DOC');
-                $('#modalThName2').text('TGL.DOC');
-                $('#modalThName3').text('NOTA');
-                $('#modalThName3').show();
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempDoc.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=chooseDoc('"+ tempDoc[i].brsk_nodoc+"') class='modalRow'><td>"+ tempDoc[i].brsk_nodoc +"</td> <td>"+ tempDoc[i].brsk_noref +"</td> <td>"+  formatDate(tempDoc[i].brsk_tglref) +"</td></tr>")
-                }
-
-                $('#idModal').val('DOC')
-                $('#modalHelp').modal('show');
-            }
-
-        }
-
-        function searchNoDoc(val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/getnodoc',
-                type: 'post',
-                data: {
-                    val:val
-                },
-                success: function (result) {
-                    $('#modalThName1').text('No Dokumen');
-                    $('#modalThName2').text('No Referensi');
-                    $('#modalThName3').text('Tgl Referensi');
-                    $('#modalThName3').show();
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseDoc('"+ result[i].brsk_nodoc+"') class='modalRow'><td>"+ result[i].brsk_nodoc +"</td> <td>"+ result[i].brsk_noref +"</td> <td>"+  formatDate(result[i].brsk_tglref) +"</td></tr>")
-                    }
-
-                    $('#idModal').val('DOC')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
-        function getNoPBBR(val) {
-            $('#searchModal').val('');
-            if(tempPBBR == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/getnopbbr',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('No Dokumen');
-                        $('#modalThName2').text('Tanggal');
-                        $('#modalThName3').hide();
-
-                        tempPBBR = result;
-
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=choosePBBR('"+ result[i].rsk_nodoc+"') class='modalRow'><td>"+ result[i].rsk_nodoc +"</td> <td>"+  formatDate(result[i].rsk_tgldoc) +"</td></tr>")
-                        }
-
-                        $('#idModal').val('PBBR')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            } else {
-                $('#modalThName1').text('No Dokumen');
-                $('#modalThName2').text('Tanggal');
-                $('#modalThName3').hide();
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempPBBR.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=choosePBBR('"+ tempPBBR[i].rsk_nodoc+"') class='modalRow'><td>"+ tempPBBR[i].rsk_nodoc +"</td> <td>"+  formatDate(tempPBBR[i].rsk_tgldoc) +"</td></tr>")
-                }
-
-                $('#idModal').val('PBBR')
-                $('#modalHelp').modal('show');
-            }
-
-        }
-
-        function searchNoPBBR(val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/getnopbbr',
-                type: 'post',
-                data: {
-                    val:val
-                },
-                success: function (result) {
-                    $('#modalThName1').text('No Dokumen');
-                    $('#modalThName2').text('Tanggal');
-                    $('#modalThName3').hide();
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=choosePBBR('"+ result[i].rsk_nodoc+"') class='modalRow'><td>"+ result[i].rsk_nodoc +"</td> <td>"+  formatDate(result[i].rsk_tgldoc) +"</td></tr>")
-                    }
-
-                    $('#idModal').val('PBBR')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
-        $('#searchModal').keypress(function (e) {
-            if (e.which === 13) {
-                let idModal = $('#idModal').val();
-                let val = $('#searchModal').val().toUpperCase();
-                if(idModal === 'DOC'){
-                    searchNoDoc(val)
-                } else {
-                    searchNoPBBR(val)
-                }
-            }
-        })
 
         function chooseDoc(val) {
             let tempNilai = 0;
@@ -330,11 +321,11 @@
                     val:val
                 },
                 beforeSend: function () {
+                    $('#modalHelpDocument').modal('hide');
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    $('#modalHelp').modal('hide');
 
                     if (result.kode == '1') {
                         $('#noPBBR').attr('disabled', true);
@@ -381,8 +372,10 @@
                         $('.qtyReal').attr('disabled', true)
                     }
 
-                }, error: function () {
-                    alert('error');
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -399,11 +392,10 @@
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modalHelpPBBR').modal('hide');
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    $('#modalHelp').modal('hide');
-                    console.log(result)
 
                     if(result.kode == 0){
                         swal(result.msg,'','warning');
@@ -481,9 +473,11 @@
                                     for (i = 0; i< 9; i++) {
                                         $('#tbody').append(tempTable());
                                     }
-                                }, error: function () {
-                                    alert('error');
-                                    $('#modal-loader').modal('hide')
+                                    $('#noPBBR').focus();
+                                }, error: function (err) {
+                                    $('#modal-loader').modal('hide');
+                                    console.log(err.responseJSON.message.substr(0,100));
+                                    alertError(err.statusText, err.responseJSON.message);
                                 }
                             })
                         } else {
@@ -503,6 +497,7 @@
 
                 if(!val){
                     swal('No Referensi Tidak Boleh Kosong !', '', 'warning')
+                    $('#noPBBR').focus();
                 } else {
                     choosePBBR(val);
                 }
@@ -582,8 +577,10 @@
                             swal('ERROR', "Something's Error", 'error')
                         }
                         clearField()
-                    }, error: function () {
-                        swal('ERROR', "Something's Error", 'error')
+                    }, error: function (err) {
+                        $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0,100));
+                        alertError(err.statusText, err.responseJSON.message);
                     }
                 })
             }

@@ -2,22 +2,26 @@
 @section('title','MASTER | MASTER BARANG')
 @section('content')
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row text-right">
-                            <div class="col-sm-12">
+                            <div class="col-sm-11">
                                 <div class="form-group row mb-3">
+{{--                                    semua button nya ku hide saja ya, mau nya pakai shorcut keyboard saja kan? tenang buttonnya masih kepakai kok--}}
                                     <div class="col-sm-3 text-center offset-sm-2">
-                                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_plu">MASTER BARANG</button>
+                                        <span class="font-weight-bold">ALT + 1 : HELP MASTER BARANG</span>
+                                        <button hidden id="plunormal" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_plu">MASTER BARANG</button>
                                     </div>
                                     <div class="col-sm-3 text-center">
-                                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_idm">MASTER BARANG IDM</button>
+                                        <span class="font-weight-bold">ALT + 2 : HELP MASTER BARANG IDM</span>
+                                        <button hidden id="pluidm" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_idm">MASTER BARANG IDM</button>
                                     </div>
                                     <div class="col-sm-3 text-center">
-                                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_omi">MASTER BARANG OMI</button>
+                                        <span class="font-weight-bold">ALT + 3 : HELP MASTER BARANG OMI</span>
+                                        <button hidden id="pluomi" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_omi">MASTER BARANG OMI</button>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
@@ -59,7 +63,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="b_nmbrg" class="col-sm-2 col-form-label">Nama Barang 1.</label>
+                                    <label class="col-sm-2 col-form-label" style="margin-left: -25px; margin-bottom: -50px">Nama Barang</label>
+                                </div>
+                                <div class="form-group row mb-0">
+                                    <label for="b_nmbrg" class="col-sm-2 col-form-label">1.</label>
                                     <div class="col-sm-5">
                                         <input type="text" class="form-control" id="b_nmbrg" disabled>
                                     </div>
@@ -76,20 +83,29 @@
                                 </div>
 
                                     <!-- Nav tabs -->
-                                    <ul class="nav nav-tabs custom-color mt-1" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="btn-b_deskripsi" data-toggle="tab" href="#b_deskripsi">Deskripsi</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="btn-b_harga" data-toggle="tab" href="#b_harga">Harga</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="btn-b_dimensi" data-toggle="tab" href="#b_dimensi">Dimensi</a>
-                                        </li>
-                                    </ul>
+                                <div class="row">
+                                    <div class="col-sm-1">
+{{--                                        filler saja--}}
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <ul class="nav nav-tabs custom-color mt-3" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="btn-b_deskripsi" data-toggle="tab" href="#b_deskripsi">Deskripsi</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="btn-b_harga" data-toggle="tab" href="#b_harga">Harga</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="btn-b_dimensi" data-toggle="tab" href="#b_dimensi">Dimensi</a>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                    <div class="tab-content" style="border-bottom: 1px solid black">
-                                        <div id="b_deskripsi" class="container tab-pane active pl-0 pr-0 fix-height" style="height: 480px">
+                                </div>
+
+
+                                    <div class="tab-content overflow-auto" style="border-bottom: 1px solid black; height: 500px;">
+                                        <div id="b_deskripsi" class="container tab-pane active pl-0 pr-0">
                                             <div class="card-body">
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
@@ -160,34 +176,40 @@
                                                             <input type="text" class="form-control" id="d_satju" disabled>
                                                         </div>
                                                         <div class="col-sm-1">
-                                                            <input type="text" class="form-control" id="d_satju2" disabled  style="width: 80px">
+                                                            <input type="text" class="form-control" id="d_satju2" disabled>
                                                         </div>
                                                             <label for="d_satbe" class="col-sm-2 col-form-label">Satuan Beli</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_satbe" disabled>
                                                             </div>
                                                         <div class="col-sm-1">
-                                                            <input type="text" class="form-control" id="d_satbe2" disabled  style="width: 80px">
+                                                            <input type="text" class="form-control" id="d_satbe2" disabled>
                                                         </div>
                                                             <label for="d_satstok" class="col-sm-2 col-form-label">Satuan Stok</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_satstok" disabled>
                                                             </div>
                                                             <div class="col-sm-1">
-                                                                <input type="text" class="form-control" id="d_satstok2" disabled  style="width: 80px">
+                                                                <input type="text" class="form-control" id="d_satstok2" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="d_qtymin" class="col-sm-2 col-form-label">Qty Min Order</label>
-                                                            <div class="col-sm-1">
-                                                                <input type="text" class="form-control" id="d_qtymin" disabled  style="width: 80px">
+                                                            <div class="col-sm-2" style="margin-left: 15px;margin-right: -16px">
+                                                                <div class="row">
+                                                                    <input type="text" class="form-control col-sm-7" id="d_qtymin" disabled  style="width: 80px">
+                                                                    <label class="col-sm-5 col-form-label">(PCS)</label>
+                                                                </div>
                                                             </div>
-                                                            <label class="ml-3 mt-1 mb-0" style="margin-right: -16px">(PCS)</label>
-                                                            <label for="d_kondisi" class="col-sm-3 col-form-label" style="margin-left: -40px">Kondisi</label>
+
+                                                            <label for="d_kondisi" class="col-sm-2 col-form-label">Kondisi</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kondisi" disabled>
                                                             </div>
-                                                            <label for="d_flaggdg" class="col-sm-3 col-form-label">Flag Gudang Pusat</label>
+                                                            <div class="col-sm-1">
+{{--                                                                filler doang--}}
+                                                            </div>
+                                                            <label for="d_flaggdg" class="col-sm-2 col-form-label">Flag Gudang Pusat</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_flaggdg" disabled>
                                                             </div>
@@ -239,7 +261,7 @@
                                             </div>
                                         </div>
 
-                                        <div id="b_harga" class="container tab-pane fade pl-0 pr-0 fix-height" style="height: 480px">
+                                        <div id="b_harga" class="container tab-pane fade pl-0 pr-0">
                                             <div class="card-body">
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
@@ -257,10 +279,13 @@
                                                         </div>
                                                         <div class="form-group row mb-3">
                                                             <label for="h_stdmrg" class="col-sm-3 col-form-label">STD Margin</label>
-                                                            <div class="col-sm-1">
-                                                                <input type="text" class="form-control text-right" id="h_stdmrg" disabled style="width: 80px">
+                                                            <div class="col-sm-2" style="margin-left: 15px;">
+                                                                <div class="row">
+                                                                    <input type="text" class="col-sm-7 form-control text-right" id="h_stdmrg" disabled>
+                                                                    <label class="col-sm-5 col-form-label">(%)</label>
+                                                                </div>
                                                             </div>
-                                                            <label class="ml-3 mt-2">(%)</label>
+
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="h_hrgjual" class="col-sm-3 col-form-label">Harga Jual</label>
@@ -270,10 +295,12 @@
                                                         </div>
                                                         <div class="form-group row mb-3">
                                                             <label for="h_marginaktual" class="col-sm-3 col-form-label">Margin Aktual</label>
-                                                            <div class="col-sm-1">
-                                                                <input type="text" class="form-control text-right" id="h_marginaktual" disabled style="width: 80px">
+                                                            <div class="col-sm-2" style="margin-left: 15px; margin-right: -64px">
+                                                                <div class="row">
+                                                                    <input type="text" class="col-sm-7 form-control text-right" id="h_marginaktual" disabled>
+                                                                    <label class="col-sm-5 col-form-label">(%)</label>
+                                                                </div>
                                                             </div>
-                                                            <label class="ml-3 mt-2">(%)</label>
                                                             <label for="h_tglaktif" class="col-sm-3 col-form-label" style="margin-left: 47px">Tgl Aktif</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="h_tglaktif" disabled>
@@ -287,10 +314,12 @@
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="h_marginaktual2" class="col-sm-3 col-form-label">Margin Aktual</label>
-                                                            <div class="col-sm-1">
-                                                                <input type="text" class="form-control text-right" id="h_marginaktual2" disabled style="width: 80px">
+                                                            <div class="col-sm-2" style="margin-left: 15px;">
+                                                                <div class="row">
+                                                                    <input type="text" class="col-sm-7 form-control text-right" id="h_marginaktual2" disabled>
+                                                                    <label class="col-sm-5 col-form-label">(%)</label>
+                                                                </div>
                                                             </div>
-                                                            <label class="ml-3 mt-2 mb-0">(%)</label>
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="h_tglberlaku" class="col-sm-3 col-form-label">Tgl Berlaku</label>
@@ -307,7 +336,7 @@
                                             </div>
                                         </div>
 
-                                        <div id="b_dimensi" class="container tab-pane fade pl-0 pr-0 fix-height" style="height: 480px">
+                                        <div id="b_dimensi" class="container tab-pane fade pl-0 pr-0">
                                             <div class="card-body">
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
@@ -382,14 +411,12 @@
                                         <div class="col-sm-12">
                                             <div class="form-group row mb-0">
                                                 <label for="b_updateakhir" class="col-sm-2 col-form-label">Update Akhir</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" id="b_updateakhir" disabled>
-                                                </div>
-                                                <input type="text" class="form-control mr-3" id="b_updateakhir2" disabled="" style="width: 70px">
+                                                <input type="text" class="form-control col-sm-3 mr-2" id="b_updateakhir" disabled>
+                                                <input type="text" class="form-control col-sm-1" id="b_updateakhir2" disabled>
                                                 {{--<div class="col-sm-1 ml-0">--}}
                                                     {{--<input type="text" class="form-control" id="b_updateakhir2" disabled="" style="width: 70px">--}}
                                                 {{--</div>--}}
-                                                <label for="b_tglpromo" class="col-sm-3 col-form-label" style="margin-right: 2px">Tanggal Promo</label>
+                                                <label for="b_tglpromo" class="col-sm-3 col-form-label" style="margin-left: -8px">Tanggal Promo</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" class="form-control" id="b_tglpromo" disabled>
                                                 </div>
@@ -422,7 +449,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Master Barang</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button id="closeNormal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -456,7 +483,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Master Barang IDM</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button id="closeIdm" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -497,7 +524,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Master Barang OMI</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button id="closeOmi" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -510,7 +537,7 @@
                                     <tr class="font">
                                         <td>Deskripsi</td>
                                         <td>PLU IGR</td>
-                                        <td>PLU IDM</td>
+                                        <td>PLU OMI</td>
                                         <td>Tag</td>
                                         <td>Renceng</td>
                                         <td>Minor</td>
@@ -548,17 +575,24 @@
 
 
     <script>
+        let tableModalBarang;
+        let startPage = true;
 
         $(document).ready(function(){
-            getDataMasterBarang();
-            getDataMasterBarangIdm();
-            getDataMasterBarangOmi();
-
+            getDataMasterBarang('');
+            getDataMasterBarangIdm('');
+            getDataMasterBarangOmi('');
         });
 
-        function getDataMasterBarang(){
-            $('#table_master_barang').DataTable({
-                "ajax": '{{ url('mstbarang/getmasterbarang') }}',
+        function getDataMasterBarang(value){
+            tableModalBarang = $('#table_master_barang').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstbarang/getmasterbarang') }}',
+                    'async':false, // menambah async false agar bisa sinkron dan menggunakan if untuk menampilkan data row pertama, sebaiknya async, kalau bukan karena untuk nampilin data pertama, hapus aja async nya
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang',  width: "50%" },
                     {data: 'prd_prdcd',  width: "10%" },
@@ -577,11 +611,31 @@
                 },
                 "order": [],
             });
+
+            $('#table_master_barang_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalBarang.destroy();
+                    getDataMasterBarang(val);
+                }
+            })
+
+            if(startPage){
+                let hold = tableModalBarang.row( 0 ).data()['prd_prdcd'];
+                show(hold);
+                startPage = false;
+            }
         }
 
-        function getDataMasterBarangIdm(){
-            $('#table_master_barang_idm').DataTable({
-                "ajax": '{{ url('mstbarang/getmasterbarangidm') }}',
+        function getDataMasterBarangIdm(value){
+            let tableModalBarangIdm = $('#table_master_barang_idm').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstbarang/getmasterbarangidm') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang'},
                     {data: 'prc_pluigr'},
@@ -607,15 +661,29 @@
                 },
                 "order": [],
             });
+
+            $('#table_master_barang_idm_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalBarangIdm.destroy();
+                    getDataMasterBarangIdm(val);
+                }
+            })
         }
 
-        function getDataMasterBarangOmi(){
-            $('#table_master_barang_omi').DataTable({
-                "ajax": '{{ url('mstbarang/getmasterbarangomi') }}',
+        function getDataMasterBarangOmi(value){
+            let tableModalBarangOmi =  $('#table_master_barang_omi').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstbarang/getmasterbarangomi') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang'},
                     {data: 'prc_pluigr'},
-                    {data: 'prc_pluidm'},
+                    {data: 'prc_pluomi'},
                     {data: 'prc_kodetag'},
                     {data: 'prc_satuanrenceng'},
                     {data: 'prc_minorder'},
@@ -636,6 +704,15 @@
                 },
                 "order": [],
             });
+
+            $('#table_master_barang_omi_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalBarangOmi.destroy();
+                    getDataMasterBarangOmi(val);
+                }
+            })
         }
 
         $(document).on('click', '.row_lov', function () {
@@ -758,6 +835,25 @@
                 return val
             }
         }
+        //fungsi tombol shorcut alt
+        $(window).bind('keydown', function(event) {
+            //alert(event.keyCode);//49=tombol 1, 50=tombol 2, 51 = tombol 3
+            if(event.altKey || event.metaKey){
+                if(event.which === 49){
+                    $('#closeIdm').click();
+                    $('#closeOmi').click();
+                    $('#plunormal').click();
+                }else if(event.which === 50){
+                    $('#closeNormal').click();
+                    $('#closeOmi').click();
+                    $('#pluidm').click();
+                }else if(event.which === 51){
+                    $('#closeNormal').click();
+                    $('#closeIdm').click();
+                    $('#pluomi').click();
+                }
+            }
+        });
     </script>
 
 @endsection

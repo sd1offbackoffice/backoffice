@@ -91,8 +91,39 @@
 
     <script>
         $(document).ready(function (){
-            $('#tableModalProdmast').DataTable({
-                "ajax": '{{ url('mstaktifhrgjual/getprodmast') }}',
+            {{--$('#tableModalProdmast').DataTable({--}}
+            {{--    "ajax": '{{ url('mstaktifhrgjual/getprodmast') }}',--}}
+            {{--    "columns": [--}}
+            {{--        {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},--}}
+            {{--        {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},--}}
+            {{--    ],--}}
+            {{--    "paging": true,--}}
+            {{--    "lengthChange": true,--}}
+            {{--    "searching": true,--}}
+            {{--    "ordering": true,--}}
+            {{--    "info": true,--}}
+            {{--    "autoWidth": false,--}}
+            {{--    "responsive": true,--}}
+            {{--    "createdRow": function (row, data, dataIndex) {--}}
+            {{--        $(row).addClass('modalRow');--}}
+            {{--    },--}}
+            {{--    "order": [],--}}
+            {{--    columnDefs : [--}}
+            {{--    ]--}}
+            {{--});--}}
+
+
+            getDataProdmast('');
+        });
+
+        function getDataProdmast(value){
+            let tableModal =  $('#tableModalProdmast').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstaktifhrgjual/getprodmast') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
@@ -107,12 +138,18 @@
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('modalRow');
                 },
-                "order": [],
-                columnDefs : [
-                ]
+                "order": []
             });
 
-        });
+            $('#tableModalProdmast_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getDataProdmast(val);
+                }
+            })
+        }
 
         $(document).on('click', '.modalRow', function () {
             let plu = $(this).find('td')[0]['innerHTML']
@@ -172,6 +209,7 @@
                     type: 'post',
                     data:({plu:plu}),
                     beforeSend: function () {
+                        $('#m_prodmast').modal('hide');
                         $('#modal-loader').modal('show');
                     }, success: function (result) {
                         $('#modal-loader').modal('hide');
@@ -180,7 +218,6 @@
                             clearField()
                         } else {
                             let data = result[0];
-                            $('#m_prodmast').modal('hide');
                             clearField();
                             $('#kodePlu').val(data.prd_prdcd)
                             $('#namaPlu').val(data.prd_deskripsipanjang)
@@ -191,7 +228,7 @@
                             $('#kodeKategori').val(data.prd_kodekategoribarang)
                             $('#namaKategori').val(data.kat_namakategori)
                             $('#hargaLama').val(convertToRupiah2(data.prd_hrgjual))
-                            $('#hargaBaru').val(data.prd_hrgjual3)
+                            $('#hargaBaru').val(convertToRupiah2(data.prd_hrgjual3))
                             $('.btnAktifkanHrg').focus()
                         }
                     }, error : function (err) {

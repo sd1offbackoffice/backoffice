@@ -1,28 +1,32 @@
 @extends('navbar')
-@section('title','Barang Rusak')
+@section('title','PEMUSNAHAN | BARANG RUSAK')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">IGR BO PEMUSNAHAN</legend>
+            <div class="col-sm-7">
+                <card class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row">
                             <div class="col-sm-12">
                                 <form>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-2 col-form-label text-md-right">Nomor TRN</label>
-                                        <input type="text" id="nmrtrn" class="form-control col-sm-2 mx-sm-1">
-                                        <button class="btn ml-2" type="button" data-toggle="modal" onclick="getNmrTRN('')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
+
+                                        <div class="col-sm-2 buttonInside">
+                                            <input type="text" id="nmrtrn" class="form-control">
+                                            <button class="btn btn-lov p-0" type="button" data-toggle="modal" data-target="#modalHelpDocument">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-2 col-form-label text-md-right">Tanggal</label>
-                                        <input type="text" id="tgltrn" class="form-control col-sm-2 mx-sm-1">
+                                        <input type="text" id="tgltrn" class="form-control col-sm-2 mx-sm-3">
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-2 col-form-label text-md-right">Pilihan</label>
-                                        <select class="form-control col-sm-3 mx-sm-1" id="pilihan">
+                                        <select class="form-control col-sm-3 mx-sm-3" id="pilihan">
                                             <option value="M" selected>Manual</option>
                                             <option value="A" >Semua Barang Rusak di Lpp</option>
                                         </select>
@@ -35,7 +39,7 @@
                             <div class="col-sm-12">
                                 <div class="tableFixedHeader" style="border-bottom: 1px solid black">
                                     <table class="table table-striped table-bordered" id="table2">
-                                        <thead class="thead-dark">
+                                        <thead class="theadDataTables">
                                         <tr class="d-flex text-center">
                                             <th style="width: 80px">X</th>
                                             <th style="width: 150px">PLU</th>
@@ -78,7 +82,7 @@
                                             <input type="text" class="form-control" id="deskripsiPanjang" disabled>
                                         </div>
                                         <div class="col-sm-2">
-                                            <span style=""><button id="addNewRow" class="btn btn-warning  btn-block" onclick="addNewRow()" >Tambah Baris Baru</button></span>
+                                            <span style=""><button id="addNewRow" class="btn btn-primary  btn-block" onclick="addNewRow()" >Tambah Baris Baru</button></span>
                                         </div>
                                     </div>
 
@@ -113,37 +117,69 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </card>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
+    <!-- Modal Document-->
+    <div class="modal fade" id="modalHelpDocument" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="..." aria-label="Search">
+                    <h5 class="modal-title">Master Document</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-sm" id="tableModalDocument">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>NO. DOC</th>
+                                        <th>TGL. DOC</th>
+                                        <th>NOTA</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal PLU -->
+    <div class="modal fade" id="modalHelpPlu" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Prodmast</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body ">
                     <div class="container">
                         <div class="row">
                             <div class="col">
                                 <div class="tableFixedHeader">
-                                    <table class="table table-sm">
+                                    <table class="table table-sm" id="tableModalPlu">
                                         <thead>
                                         <tr>
-                                            <th id="modalThName1"></th>
-                                            <th id="modalThName2"></th>
-                                            <th id="modalThName3"></th>
+                                            <th>DESKRIPSI</th>
+                                            <th>PLU</th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbodyModalHelp"></tbody>
                                     </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
                                 </div>
                             </div>
                         </div>
@@ -154,6 +190,8 @@
             </div>
         </div>
     </div>
+
+    <p class="text-hide" id="idRow"></p>
 
     <style>
         tbody td {
@@ -173,167 +211,114 @@
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
 
-        $("#tgltrn").datepicker({
-            "dateFormat" : "dd/mm/yy",
+        $(document).ready(function (){
+            $("#tgltrn").datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
+            $('#tgltrn').val(today);
+            getDataModalDocument('')
+            getDataModalPlu('')
+        })
+
+        function  getDataModalDocument(val) {
+            let tableModalDocument = $('#tableModalDocument').DataTable({
+                "ajax": {
+                    'url' : '{{ url('bo/transaksi/pemusnahan/brgrusak/getnmrtrn') }}',
+                    "data" : {
+                        'value': val
+                    },
+                },
+                "columns": [
+                    {data: 'rsk_nodoc', name: 'rsk_nodoc'},
+                    {data: 'rsk_tgldoc', name: 'rsk_tgldoc'},
+                    {data: 'nota', name: 'nota'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row_lov row_lov_document');
+                },
+                columnDefs : [
+                    { targets : [1],
+                        render : function (data, type, row) {
+                            return formatDate(data)
+                        }
+                    }
+                ],
+                "order": []
+            });
+
+            $('#tableModalDocument_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase(); console.log(val);
+
+                    tableModalDocument.destroy();
+                    getDataModalDocument(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.row_lov_document', function () {
+            var currentButton = $(this);
+            let document = currentButton.children().first().text();
+
+            chooseTrn(document)
         });
 
-        $('#tgltrn').val(today)
-
-        function  getNmrTRN(val) {
-            $('#searchModal').val('')
-            if(tempTrn == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getnmrtrn',
-                    type: 'post',
-                    data: {
-                        val:val
+        function  getDataModalPlu(val) {
+            let tableModalPlu= $('#tableModalPlu').DataTable({
+                "ajax": {
+                    'url' : '{{ url('bo/transaksi/pemusnahan/brgrusak/getplu') }}',
+                    "data" : {
+                        'value': val
                     },
-                    success: function (result) {
-                        $('#modalThName1').text('NO.DOC');
-                        $('#modalThName2').text('TGL.DOC');
-                        $('#modalThName3').text('NOTA');
-                        $('#modalThName3').show();
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row_lov row_lov_plu');
+                },
+                columnDefs : [],
+                "order": []
+            });
 
-                        tempTrn = result;
+            $('#tableModalPlu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
 
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ result[i].rsk_nodoc+"') class='modalRow'><td>"+ result[i].rsk_nodoc +"</td> <td>"+ formatDate(result[i].rsk_tgldoc) +"</td> <td>"+ result[i].nota +"</td></tr>")
-                        }
-
-                        $('#idModal').val('TRN')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            } else {
-                $('#modalThName1').text('NO.DOC');
-                $('#modalThName2').text('TGL.DOC');
-                $('#modalThName3').text('NOTA');
-                $('#modalThName3').show();
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempTrn.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ tempTrn[i].rsk_nodoc+"') class='modalRow'><td>"+ tempTrn[i].rsk_nodoc +"</td> <td>"+ formatDate(tempTrn[i].rsk_tgldoc) +"</td> <td>"+ tempTrn[i].nota +"</td></tr>")
+                    tableModalPlu.destroy();
+                    getDataModalPlu(val);
                 }
-
-                $('#idModal').val('TRN')
-                $('#modalHelp').modal('show');
-            }
+            })
         }
+
+        $(document).on('click', '.row_lov_plu', function () {
+            var currentButton = $(this);
+            let prodmast = currentButton.children().next().text();
+            let index =     $('#idRow').val();
+
+            choosePlu(prodmast,index)
+        });
 
         function getPlu(no, val) {
-            $('#searchModal').val('')
-            let index = no['attributes'][4]['nodeValue']
+            let index = no['attributes'][4]['nodeValue'];
             $('#idRow').val(index);
-
-            if (tempPlu == null){
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getplu',
-                    type: 'post',
-                    data: {
-                        val:val
-                    },
-                    success: function (result) {
-                        $('#modalThName1').text('Deskripsi');
-                        $('#modalThName2').text('PLU');
-                        $('#modalThName3').hide();
-
-                        tempPlu = result;
-
-                        $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
-                            $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
-                        }
-
-                        $('#idModal').val('PLU')
-                        $('#modalHelp').modal('show');
-                    }, error: function () {
-                        alert('error');
-                    }
-                })
-            }
-            else {
-                $('#modalThName1').text('Deskripsi');
-                $('#modalThName2').text('PLU');
-                $('#modalThName3').hide();
-
-                $('.modalRow').remove();
-                for (i = 0; i< tempPlu.length; i++){
-                    $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ tempPlu[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ tempPlu[i].prd_deskripsipanjang +"</td> <td>"+ tempPlu[i].prd_prdcd +"</td></tr>")
-                }
-
-                $('#idModal').val('PLU')
-                $('#modalHelp').modal('show');
-            }
+            $('#modalHelpPlu').modal('show');
         }
-
-        function searchNmrTRN(val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getnmrtrn',
-                type: 'post',
-                data: {
-                    val:val
-                },
-                success: function (result) {
-                    $('#modalThName1').text('NO.DOC');
-                    $('#modalThName2').text('TGL.DOC');
-                    $('#modalThName3').text('NOTA');
-                    $('#modalThName3').show();
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=chooseTrn('"+ result[i].rsk_nodoc+"') class='modalRow'><td>"+ result[i].rsk_nodoc +"</td> <td>"+ formatDate(result[i].rsk_tgldoc) +"</td> <td>"+ result[i].nota +"</td></tr>")
-                    }
-
-                    $('#idModal').val('TRN')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
-        function searchPlu(index, val) {
-            ajaxSetup();
-            $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getplu',
-                type: 'post',
-                data: { val:val },
-                success: function (result) {
-                    $('#modalThName1').text('Deskripsi');
-                    $('#modalThName2').text('PLU');
-                    $('#modalThName3').hide();
-
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        $('#tbodyModalHelp').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td> <td>"+ result[i].prd_prdcd +"</td></tr>")
-                    }
-
-                    $('#idModal').val('PLU')
-                    $('#modalHelp').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            })
-        }
-
-        $('#searchModal').keypress(function (e) {
-            if (e.which === 13) {
-                let idModal = $('#idModal').val();
-                let idRow   = $('#idRow').val();
-                let val = $('#searchModal').val().toUpperCase();
-                if(idModal === 'TRN'){
-                    searchNmrTRN(val)
-                } else {
-                    searchPlu(idRow,val)
-                }
-            }
-        })
 
         $('#nmrtrn').keypress(function (e) {
             if (e.which === 13) {
@@ -526,12 +511,13 @@
                         }
                     }
                     $('#modal-loader').modal('hide')
-                }, error: function () {
-                    alert('error');
-                    $('#modal-loader').modal('hide')
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
-            $('#modalHelp').modal('hide')
+            $('#modalHelpDocument').modal('hide')
         }
 
         function choosePlu(kode,index) {
@@ -542,7 +528,7 @@
             }
 
             $('.plu')[index].value = kode;
-            $('#modalHelp').modal('hide');
+            $('#modalHelpPlu').modal('hide');
 
             let type        = $('#pilihan').val();
             let temp        = 0;
@@ -604,9 +590,10 @@
                     } else {
                         swal('Error', 'Somethings error', 'error')
                     }
-                }, error: function (error) {
-                    $('#modal-loader').modal('hide')
-                    console.log(error)
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -754,8 +741,10 @@
                    $('#pilihan').val('M');
                    $('#saveData').attr("disabled", true)
                     clearField();
-                }, error: function () {
-                    alert('error');
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
 
@@ -783,9 +772,10 @@
                             $('#modal-loader').modal('hide');
                             swal('Success', 'Dokumen Berhasil dihapus', 'success');
                             clearField();
-                        }, error: function () {
-                            alert('error');
-                            $('#modal-loader').modal('hide')
+                        }, error: function (err) {
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     })
                 } else {
@@ -862,8 +852,6 @@
 
             return temptbl;
         }
-
-
 
         function addNewRow() {
             let temp = $('#tbody').find('tr').length;

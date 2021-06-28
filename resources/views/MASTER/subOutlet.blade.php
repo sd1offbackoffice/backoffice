@@ -9,7 +9,7 @@
                     <div class="card-body cardForm">
                         <div class="row justify-content-center">
                             <div class="col-sm-12 col-md-6">
-                                <table class="table table-sm table-bordered shadow-sm fixed_header">
+                                <table class="table table-sm table-bordered shadow-sm fixed_header" id="tableOutlet">
                                     <thead class="theadDataTables">
                                     <tr>
                                         <th class="text-center">Kode</th>
@@ -45,40 +45,6 @@
         </div>
     </div>
 
-    <style>
-        /*.tbodyTableSubOutlet:hover {*/
-        /*    cursor: pointer;*/
-        /*    background-color: grey;*/
-        /*}*/
-
-        /*.fixed_header tbody{*/
-        /*    display:block;*/
-        /*    overflow:auto;*/
-        /*    height:300px;*/
-        /*    !*width:100%;*!*/
-        /*}*/
-
-        /*.fixed_header thead {*/
-        /*    background: black;*/
-        /*    color:#fff;*/
-        /*}*/
-
-        /*.fixed_header th, .fixed_header td {*/
-        /*    padding: 5px;*/
-        /*    text-align: left;*/
-        /*    width: 100px;*/
-        /*}*/
-
-        /*.fixed_header .thForNamaOutlet , .fixed_header .tdForNamaOutlet  {*/
-        /*    padding: 5px;*/
-        /*    text-align: left;*/
-        /*    width: 84%;*/
-        /*}*/
-
-        /*.fixed_header thead tr{*/
-        /*    display:block;*/
-        /*}*/
-    </style>
 
     <script>
         $('.tbodyTableSubOutlet').on('click', function () {
@@ -86,12 +52,18 @@
             $(this).addClass("table-primary");
             let outlet = $(this).attr('id');
 
+            viewSubOutlet(outlet)
+        })
+
+        function viewSubOutlet(outlet){
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/mstsuboutlet/getsuboutlet',
                 type: 'post',
                 data:{outlet:outlet},
-                success: function (result) {
+                beforeSend : function (){
+                    $('#tbodyTableGetSubOutlet').html("");
+                }, success: function (result) {
                     $('#tbodyTableGetSubOutlet').html("");
                     if (result.length > 0) {
                         for (i=0 ; i < result.length; i++){
@@ -112,7 +84,41 @@
                     alertError(err.statusText, err.responseJSON.message);
                 }
             });
-        })
+        }
+
+
+        // Untuk tombol Up Arrow dan Down Arrow
+        // * Data table dimulai dari index ke 0, tapi index tr  dimulai dari 1, karena index tr 0 adalah thead. Jadi data index ke 0 ada di tr ke 1 dst. Oleh karna itu ada +1 untuk dibagian tr active
+        $(window).bind('keydown', function(event) {
+            if (event.which == 40){ // Down Arrow
+                let indexActiveOutlet = $('.table-primary').children().first().text();
+                if (!indexActiveOutlet) {
+                    viewSubOutlet(0)
+                    $('#tableOutlet tr:eq(1)').addClass("table-primary")
+                } else {
+                    $('.tbodyTableSubOutlet').removeClass("table-primary");
+                    let nextActiveOutlet = parseInt(indexActiveOutlet) + 1
+                    $(`#tableOutlet tr:eq(${nextActiveOutlet + 1})`).addClass("table-primary")
+                    viewSubOutlet(nextActiveOutlet)
+                }
+            }
+             else if (event.which == 38){ // Up Arrow
+                let indexActiveOutlet = $('.table-primary').children().first().text();
+                if (!indexActiveOutlet) {
+                    viewSubOutlet(0)
+                    $('#tableOutlet tr:eq(1)').addClass("table-primary")
+                } else if(indexActiveOutlet == 0){
+                    $('.tbodyTableSubOutlet').removeClass("table-primary");
+                    viewSubOutlet(6)
+                    $('#tableOutlet tr:eq(7)').addClass("table-primary")
+                } else {
+                    $('.tbodyTableSubOutlet').removeClass("table-primary");
+                    let nextActiveOutlet = parseInt(indexActiveOutlet) - 1;
+                    viewSubOutlet(nextActiveOutlet)
+                    $(`#tableOutlet tr:eq(${nextActiveOutlet + 1})`).addClass("table-primary")
+                }
+            }
+        });
     </script>
 
 

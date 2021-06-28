@@ -48,8 +48,23 @@
 </div>
 <title>{{$prs->prs_namacabang}}</title>
 <div class="limiter">
+    <div class="container-fluid mt-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <div class="card">
+                    <div class="card-body border-dark shadow-sm">
+                        <h4 class="text-dark">Rekomendasi 'Setting' Layar Untuk Menghasilkan Interface yang maximal</h4>
+                        <p>* Untuk ukuran layar 1920px * 1080px dapat menggunakan browser di ukuran 80%</p>
+                        <p>* Untuk ukuran layar 1360px * 768x dapat menggunakan browser di ukuran 67%</p>
+                        <br>
+                        <p>* Pada bagian "Scale and Layout' di 'Display Settings' dapat memilih ukuran 100% atau 125%  </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-login100">
-        <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
+        <div class="wrap-login100 p-l-85 p-r-85 p-t-40 p-b-40">
             {{--<form class="login100-form validate-form flex-sb flex-w">--}}
             <span class="login100-form-title p-b-32 text-center">
 						Login BACKOFFICE
@@ -96,6 +111,7 @@
                 </button>
             </div>
             {{--</form>--}}
+
         </div>
     </div>
 </div>
@@ -172,7 +188,7 @@
                     }
                     else if (response['userstatus'] == 'ADM') {
                         swal({
-                            text: 'Login sebagai Admin',
+                            text: 'Login sebagai Admin sukses!',
                             icon: 'info'
                         }).then((value) => {
                                 clear();
@@ -181,7 +197,7 @@
                     }
                     else if (response['userstatus'] != 'ADM') {
                         swal({
-                            text: 'Login sebagai User',
+                            text: 'Login Sukses!',
                             icon: 'info'
                         }).then((createData) => {
                                 clear();

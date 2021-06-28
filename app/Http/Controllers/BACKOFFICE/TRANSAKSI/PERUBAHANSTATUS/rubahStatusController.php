@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\DataTables;
 
 class rubahStatusController extends Controller
 {
@@ -51,22 +52,63 @@ class rubahStatusController extends Controller
             ->selectRaw('distinct msth_nopo as msth_nopo')
             ->selectRaw('msth_tglpo')
             ->selectRaw('msth_keterangan_header')
-            ->leftJoin('tbtr_sortir_barang', function($join){
-                $join->on('srt_nosortir', 'msth_nofaktur');
-                $join->on('srt_tglsortir', 'msth_tgldoc');
-            })
+//            ->leftJoin('tbtr_sortir_barang', function($join){
+//                $join->on('srt_nosortir', 'msth_nofaktur');
+//                $join->on('srt_tglsortir', 'msth_tgldoc');
+//            })
+            ->where('msth_nopo','=', $search)
+            ->where('msth_typetrn','=', 'Z')
+            ->where('msth_kodeigr','=', $kodeigr)
+//            ->where('SRT_TYPE','=','S')
+            ->orderByDesc('msth_nopo')
+//            ->orderByDesc('rsk_create_dt')
+//            ->limit(100)
+            ->first();
+
+        return response()->json($datas);
+    }
+    public function ModalRsn(Request $request){
+        $kodeigr= $_SESSION['kdigr'];
+        $search = $request->value;
+
+        $datas = DB::table('tbtr_mstran_h')
+            ->selectRaw('distinct msth_nopo as msth_nopo')
+            ->selectRaw('msth_tglpo')
+            ->selectRaw('msth_keterangan_header')
+            ->selectRaw('msth_nofaktur')
+            ->selectRaw('msth_tglfaktur')
+
             ->where('msth_nopo','LIKE', '%'.$search.'%')
             ->where('msth_typetrn','=', 'Z')
             ->where('msth_kodeigr','=', $kodeigr)
-            ->where('SRT_TYPE','=','S')
+
+            ->orWhere('msth_tglpo','LIKE', '%'.$search.'%')
+            ->where('msth_typetrn','=', 'Z')
+            ->where('msth_kodeigr','=', $kodeigr)
+
+            ->orWhere('msth_keterangan_header','LIKE', '%'.$search.'%')
+            ->where('msth_typetrn','=', 'Z')
+            ->where('msth_kodeigr','=', $kodeigr)
+
+            ->orWhere('msth_nofaktur','LIKE', '%'.$search.'%')
+            ->where('msth_typetrn','=', 'Z')
+            ->where('msth_kodeigr','=', $kodeigr)
+
+            ->orWhere('msth_tglfaktur','LIKE', '%'.$search.'%')
+            ->where('msth_typetrn','=', 'Z')
+            ->where('msth_kodeigr','=', $kodeigr)
+
+
             ->orderByDesc('msth_nopo')
 //            ->orderByDesc('rsk_create_dt')
             ->limit(100)
             ->get();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
+
     public function getNmrSrt(Request $request){
+        $kodeigr= $_SESSION['kdigr'];
         $search = $request->val;
 
         $datas = DB::table('TBTR_SORTIR_BARANG')
@@ -75,13 +117,44 @@ class rubahStatusController extends Controller
             ->selectRaw('SRT_KETERANGAN')
             ->selectRaw('SRT_GUDANGTOKO')
             ->where('SRT_NOSORTIR','LIKE', '%'.$search.'%')
+//            ->where('SRT_TYPE','=','S')
+            ->where('SRT_KODEIGR','=',$kodeigr)
+            ->where('SRT_NOSORTIR','<>',null)
+            ->first();
+
+        return response()->json($datas);
+    }
+
+    public function ModalSrt(Request $request){
+        $kodeigr= $_SESSION['kdigr'];
+        $search = $request->value;
+
+        $datas = DB::table('TBTR_SORTIR_BARANG')
+            ->selectRaw('distinct SRT_NOSORTIR as SRT_NOSORTIR')
+            ->selectRaw('SRT_TGLSORTIR')
+            ->selectRaw('SRT_KETERANGAN')
+
+            ->where('SRT_NOSORTIR','LIKE', '%'.$search.'%')
             ->where('SRT_TYPE','=','S')
+            ->where('SRT_KODEIGR','=',$kodeigr)
+            ->where('SRT_NOSORTIR','<>',null)
+
+            ->orWhere('SRT_TGLSORTIR','LIKE', '%'.$search.'%')
+            ->where('SRT_TYPE','=','S')
+            ->where('SRT_KODEIGR','=',$kodeigr)
+            ->where('SRT_NOSORTIR','<>',null)
+
+            ->orWhere('SRT_KETERANGAN','LIKE', '%'.$search.'%')
+            ->where('SRT_TYPE','=','S')
+            ->where('SRT_KODEIGR','=',$kodeigr)
+            ->where('SRT_NOSORTIR','<>',null)
+
+            ->orderByDesc('SRT_TGLSORTIR')
             ->orderByDesc('SRT_NOSORTIR')
-//            ->orderByDesc('rsk_create_dt')
             ->limit(100)
             ->get();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
 
     public function chooseRsn(Request $request){
@@ -855,28 +928,28 @@ class rubahStatusController extends Controller
 
         $today  = date('Y-m-d');
 
-        $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_NOFAKTUR, MSTH_KETERANGAN_HEADER, 
+        $datas = DB::select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_NOFAKTUR, MSTH_KETERANGAN_HEADER,
                                         MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_FLAGDISC4,
                                         FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS, (MSTD_GROSS) AS total ,
                                         HGB_KODESUPPLIER, SUP_NAMASUPPLIER, PRD_DESKRIPSIPANJANG,
                                         PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_ALAMAT1, PRS_NAMAWILAYAH, PRS_NPWP, PRS_TELEPON,
-                                        CASE WHEN MSTD_FLAGDISC4 = 'A' THEN 
+                                        CASE WHEN MSTD_FLAGDISC4 = 'A' THEN
                                             CASE WHEN '$P_FLAG' = '1' THEN 'DAFTAR BARANG RETUR'
                                             ELSE 'DAFTAR BARANG RETUR ( BATAL )'
                                             END
                                         ELSE
-                                            CASE WHEN MSTD_FLAGDISC4 = 'B' THEN 
+                                            CASE WHEN MSTD_FLAGDISC4 = 'B' THEN
                                               CASE WHEN '$P_FLAG' = '1' THEN 'NOTA BARANG RUSAK'
                                               ELSE 'NOTA BARANG RUSAK ( BATAL )'
                                               END
                                             ELSE
-                                                CASE WHEN MSTD_FLAGDISC4 = 'C' THEN 
+                                                CASE WHEN MSTD_FLAGDISC4 = 'C' THEN
                                                   CASE WHEN '$P_FLAG' = '1' THEN 'BUKTI PERUBAHAN STATUS'
                                                   ELSE 'BUKTI PERUBAHAN STATUS ( BATAL )'
                                                   END
                                                END
                                             END
-                                        END AS JUDUL, 
+                                        END AS JUDUL,
                                         CASE WHEN MSTD_FLAGDISC4 = 'A' THEN 'No. NB-Retur'
                                         ELSE
                                             CASE WHEN MSTD_FLAGDISC4 = 'B' THEN 'No. NB-Rusak'
@@ -887,18 +960,18 @@ class rubahStatusController extends Controller
                                             END
                                         END AS LABEL
                                     from TBTR_MSTRAN_H,  TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN, TBMASTER_HARGABELI, TBMASTER_SUPPLIER
-                                    where MSTH_KODEIGR = '$kodeigr' 
+                                    where MSTH_KODEIGR = '$kodeigr'
                                             AND MSTH_NOPO = '$noDoc'
-                                            AND MSTD_KODEIGR = MSTH_KODEIGR 
-                                            AND MSTD_NOPO = MSTH_NOPO 
+                                            AND MSTD_KODEIGR = MSTH_KODEIGR
+                                            AND MSTD_NOPO = MSTH_NOPO
                                             AND MSTD_NODOC = MSTH_NODOC
-                                            AND PRD_KODEIGR = MSTH_KODEIGR 
+                                            AND PRD_KODEIGR = MSTH_KODEIGR
                                             AND PRD_PRDCD = MSTD_PRDCD
                                             AND PRS_KODEIGR = MSTH_KODEIGR
-                                            AND HGB_TIPE = '2' 
-                                            AND HGB_PRDCD = MSTD_PRDCD 
+                                            AND HGB_TIPE = '2'
+                                            AND HGB_PRDCD = MSTD_PRDCD
                                             AND HGB_KODEIGR = MSTH_KODEIGR
-                                            AND SUP_KODESUPPLIER = HGB_KODESUPPLIER 
+                                            AND SUP_KODESUPPLIER = HGB_KODESUPPLIER
                                             AND SUP_KODEIGR = MSTH_KODEIGR
                                     order by MSTH_NODOC
 ");
@@ -938,7 +1011,7 @@ class rubahStatusController extends Controller
 
         $today  = date('Y-m-d');
 
-        $datas = DB::select("SELECT RAK.*, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH 
+        $datas = DB::select("SELECT RAK.*, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH
                                 FROM TBHISTORY_RUBAHSTATUS_RAK RAK, TBMASTER_PERUSAHAAN
                                 WHERE KODEIGR = '$kodeigr' AND NODOC = '$noDoc'
                                 AND PRS_KODEIGR = KODEIGR

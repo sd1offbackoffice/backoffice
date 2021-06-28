@@ -42,6 +42,7 @@ class formHJKController extends Controller
 
     public function dataModal(Request $request){
         $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
 
         $datas = DB::table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_PRDCD')
@@ -49,7 +50,12 @@ class formHJKController extends Controller
             ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
             ->selectRaw('PRD_HRGJUAL')
 
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->where('prd_kodeigr', '=', $kodeigr)
+
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->where('prd_kodeigr', '=', $kodeigr)
+
             ->orderBy('prd_deskripsipanjang')
             ->limit(100)->get()->toArray();
 

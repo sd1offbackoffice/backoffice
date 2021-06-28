@@ -373,8 +373,18 @@
         let totalGrossR = 0;
 
         $(document).ready(function () {
-            $('#tableNmr').DataTable({
-                "ajax": '{{ url('transaksi/repacking/modalnmrtrn') }}',
+            loadNmr('');
+            loadPlu('');
+        });
+
+        function loadNmr(value){
+            let tableNmr = $('#tableNmr').DataTable({
+                "ajax": {
+                    'url' : '{{ url('transaksi/repacking/modalnmrtrn') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'trbo_nodoc', name: 'trbo_nodoc'},
                     {data: 'trbo_tgldoc', name: 'trbo_tgldoc'},
@@ -393,8 +403,25 @@
                 },
                 "order": []
             });
-            $('#tablePlu').DataTable({
-                "ajax": '{{ url('transaksi/repacking/modalplu') }}',
+
+            $('#tableNmr_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableNmr.destroy();
+                    loadNmr(val);
+                }
+            })
+        }
+
+        function loadPlu(value){
+            let tablePlu = $('#tablePlu').DataTable({
+                "ajax": {
+                    'url' : '{{ url('transaksi/repacking/modalplu') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
                     {data: 'prd_prdcd', name: 'prd_prdcd'},
@@ -413,7 +440,16 @@
                 },
                 "order": []
             });
-        });
+
+            $('#tablePlu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tablePlu.destroy();
+                    loadPlu(val);
+                }
+            })
+        }
 
         $(document).on('click', '.modalRowTrn', function () {
             var currentButton = $(this);

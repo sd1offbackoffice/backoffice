@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','TRANSFER | TRASNFER PLU')
 @section('content')
 
     <div class="container-fluid mt-4">

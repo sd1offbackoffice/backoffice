@@ -114,7 +114,6 @@ class loginController extends Controller
                     . SUBSTR($tgl, 11, 1)
                     . SUBSTR($tgl, 17, 1)
                     . SUBSTR($tgl, 1, 1);
-                dd($truepass);
                 if ($request->password == $truepass) {
                     $flagedp = 1;
                     DB::table('tbmaster_computer')
@@ -229,7 +228,7 @@ class loginController extends Controller
             ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
             ->selectRaw("acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
             ->where('uac_userid','=',$_SESSION['usid'])
-            ->orderBy('acc_id')
+//            ->orderBy('acc_id')
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')

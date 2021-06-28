@@ -41,11 +41,18 @@ class csiController extends Controller
     public function getModal(Request $request)
     {
         $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
 
         $datas = DB::table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
+
+            ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
             ->where('sup_kodeigr','=',$kodeigr)
+
+            ->orWhere('sup_namasupplier','LIKE', '%'.$search.'%')
+            ->where('sup_kodeigr','=',$kodeigr)
+
             ->orderBy('sup_namasupplier')
             ->limit(100)
             ->get();

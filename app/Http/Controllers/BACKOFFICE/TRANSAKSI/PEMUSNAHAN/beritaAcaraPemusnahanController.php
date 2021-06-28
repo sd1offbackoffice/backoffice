@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\DataTables;
 
 class beritaAcaraPemusnahanController extends Controller
 {
@@ -14,7 +15,7 @@ class beritaAcaraPemusnahanController extends Controller
     }
 
     public function getNoDocument(Request $request){
-        $search = $request->val;
+        $search = $request->value;
 
         $datas = DB::table('tbtr_bpb_barangrusak')
             ->selectRaw("DISTINCT brsk_nodoc, brsk_noref, brsk_tgldoc, brsk_tglref")
@@ -24,11 +25,11 @@ class beritaAcaraPemusnahanController extends Controller
             ->limit(100)
             ->get();
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
 
     public function getNoPBBR(Request $request){
-        $search = strtoupper($request->val);
+        $search = strtoupper($request->value);
 
         $datas  = DB::select("SELECT DISTINCT rsk_nodoc, rsk_tgldoc, rsk_create_dt
            FROM tbtr_barangrusak, tbtr_bpb_barangrusak
@@ -38,7 +39,7 @@ class beritaAcaraPemusnahanController extends Controller
             AND rsk_nodoc like '%$search%'
         ORDER BY rsk_create_dt DESC, rsk_nodoc DESC");
 
-        return response()->json($datas);
+        return Datatables::of($datas)->make(true);
     }
 
     public function chooseNoDocument(Request $request){

@@ -11,36 +11,28 @@ use phpDocumentor\Reflection\Types\Integer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
+use Yajra\DataTables\DataTables;
 
 class informasiHistoryProductController extends Controller
 {
     public function index()
     {
-        $produk = DB::table('tbmaster_prodmast')
-            ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'), '=', '0')
-            ->orderBy('prd_deskripsipanjang')
-            ->limit(1000)
-            ->get();
-        return view('MASTER.informasiHistoryProduct')->with('produk', $produk);
+
+        return view('MASTER.informasiHistoryProduct');
     }
 
     public function lov_search(Request $request)
     {
-        if (is_numeric($request->value)) {
-            $result = DB::table('tbmaster_prodmast')
-                ->select('prd_prdcd', 'prd_deskripsipanjang')
-                ->where('prd_prdcd', 'like', '%' . $request->value . '%')
-                ->orderBy('prd_deskripsipanjang')
-                ->get();
-        } else {
-            $result = DB::table('tbmaster_prodmast')
-                ->select('prd_prdcd', 'prd_deskripsipanjang')
-                ->where('prd_deskripsipanjang', 'like', '%' . $request->value . '%')
-                ->orderBy('prd_deskripsipanjang')
-                ->get();
-        }
-        return $result;
+        $search = $request->value;
+
+        $data = DB::table('tbmaster_prodmast')
+            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
+            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
+            ->orderBy('prd_prdcd')
+            ->limit(100)
+            ->get();
+
+        return Datatables::of($data)->make(true);
     }
 
     public function lov_select(Request $request)
@@ -115,7 +107,7 @@ class informasiHistoryProductController extends Controller
         $message = array();
         $lCek = 1;
         $cprdcd = $request->value;
-        if (ord(substr($cprdcd, 1, 1)) < 48 OR ord(substr($cprdcd, 1, 1)) > 57) {
+        if (ord(substr($cprdcd, 1, 1)) < 48 or ord(substr($cprdcd, 1, 1)) > 57) {
             $lCek = 2;
         } else if (strlen(trim($cprdcd)) > 7) {
             $lCek = 3;
@@ -302,11 +294,11 @@ class informasiHistoryProductController extends Controller
             . $produk->kat_namakategori;
 
 
-        if (is_null($produk->cab_namacabang) AND is_null($produk->prd_kategoritoko)) {
+        if (is_null($produk->cab_namacabang) and is_null($produk->prd_kategoritoko)) {
             array_push($message, 'PLU tsb sdh tidak aktif di Cabang ini,; kalau masih ada di rak harap ditarik');
         }
         if (!is_null($produk->prmd_prdcd)) {
-            if (Carbon::now() >= $produk->prm_tglmulai AND Carbon::now() <= $produk->prm_tglakhir) {
+            if (Carbon::now() >= $produk->prm_tglmulai and Carbon::now() <= $produk->prm_tglakhir) {
                 $tglpromo = Carbon::now() . ' s/d ' . $produk->prm_tglakhir;
             }
 
@@ -390,27 +382,27 @@ class informasiHistoryProductController extends Controller
             $join->on('PRD_PRDCD', '=', 'PRMD_PRDCD')->On('PRD_KODEIGR', '=', 'PRMD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
             $join->On(DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
-        })->SelectRaw('PRD_PRDCD, 
-                                PRD_MINJUAL MINJ, 
+        })->SelectRaw('PRD_PRDCD,
+                                PRD_MINJUAL MINJ,
                                 PRD_FLAGBKP1 PKP,
-                                NVL (PRD_FLAGBKP2, \'xx\') PKP2, 
-                                PRD_HRGJUAL PRICE_A, 
+                                NVL (PRD_FLAGBKP2, \'xx\') PKP2,
+                                PRD_HRGJUAL PRICE_A,
                                 PRD_KODETAG PTAG,
-                                NVL (PRD_LASTCOST, 0) 
-                                PRD_LCOST, 
-                                PRD_UNIT UNIT, 
+                                NVL (PRD_LASTCOST, 0)
+                                PRD_LCOST,
+                                PRD_UNIT UNIT,
                                 PRD_FRAC FRAC,
-                                PRD_BARCODE BARC, 
-                                NVL (PRMD_PRDCD, \'xxx\') PRMD_PRDCD, 
+                                PRD_BARCODE BARC,
+                                NVL (PRMD_PRDCD, \'xxx\') PRMD_PRDCD,
                                 PRMD_HRGJUAL FMJUAL,
-                                PRMD_POTONGANPERSEN FMPOTP, 
-                                PRMD_POTONGANRPH FMPOTR, 
+                                PRMD_POTONGANPERSEN FMPOTP,
+                                PRMD_POTONGANRPH FMPOTR,
                                 PRD_FLAGBARANGORDERTOKO,
-                                NVL (ST_AVGCOST, 0) ST_LCOST, 
-                                NVL(ST_LASTCOST, 0) ST_LASTCOST, 
+                                NVL (ST_AVGCOST, 0) ST_LCOST,
+                                NVL(ST_LASTCOST, 0) ST_LASTCOST,
                                 MAX (PRMD_TGLAWAL) FMFRTG,
                                 MAX (PRMD_TGLAKHIR) FMTOTG,
-                                PRMD_JAMAWAL FMFRHR, 
+                                PRMD_JAMAWAL FMFRHR,
                                 PRMD_JAMAKHIR FMTOHR ')
             ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\'' . $request->value . '\', 1, 6)')
             ->groupBy(DB::raw('PRD_PRDCD,
@@ -430,7 +422,7 @@ class informasiHistoryProductController extends Controller
                          PRMD_POTONGANRPH,
                          ST_AVGCOST,
                          ST_LASTCOST,
-                         PRMD_JAMAWAL, 
+                         PRMD_JAMAWAL,
                          PRMD_JAMAKHIR'))
             ->orderBy('PRD_PRDCD')
             ->get();
@@ -442,10 +434,10 @@ class informasiHistoryProductController extends Controller
 //                $tglrtg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmfrtg, 0, 10) . self::ceknull($sj[$i]->fmfrhr . "", '00:00:00')));
 //                $tglotg = date('d/m/Y H:i:S', strtotime(substr($sj[$i]->fmtotg, 0, 10) . self::ceknull($sj[$i]->fmtohr . "", '23:59:59')));
 //                $tglnow = date('d/m/Y H:i:S');
-                $tglrtg =$sj[$i]->fmfrtg;
-                $tglotg =$sj[$i]->fmtotg;
-                $tglnow =Carbon::now();
-                if ($tglnow >= $tglrtg AND $tglnow <= $tglotg) {
+                $tglrtg = $sj[$i]->fmfrtg;
+                $tglotg = $sj[$i]->fmtotg;
+                $tglnow = Carbon::now();
+                if ($tglnow >= $tglrtg and $tglnow <= $tglotg) {
                     $cpromo = true;
                     if ($sj[$i]->pkp == 'Y' and !in_array($sj[$i]->pkp, ['P', 'W', 'G'])) {
                         if ($sj[$i]->fmjual != 0) {
@@ -558,7 +550,7 @@ class informasiHistoryProductController extends Controller
         $X = 0;
         $X1 = 0;
 
-        $FMPBLNA= (int)$blnberjalan->prs_bulanberjalan;
+        $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
 
         if ($FMPBLNA - 1 < 1) {
             $N = 12;
@@ -1012,14 +1004,14 @@ class informasiHistoryProductController extends Controller
                                     tpod_prdcd,
                                     tpod_nopo,
                                     tpoh_tglpo,
-                                    NVL (tpod_qtypb, 0) tpod_qtypb, 
+                                    NVL (tpod_qtypb, 0) tpod_qtypb,
                                     tpoh_tglpo + tpoh_jwpb jwpb,
-                                    pbh_keteranganpb, 
-                                    pbh_nopb, 
-                                    pbh_tglpb, 
+                                    pbh_keteranganpb,
+                                    pbh_nopb,
+                                    pbh_tglpb,
                                     NVL (pbh_qtypb, 0) pbh_qtypb,
-                                    pbd_nopo, 
-                                    pbd_prdcd, 
+                                    pbd_nopo,
+                                    pbd_prdcd,
                                     pbd_qtypb')
             ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->orderBy('PBH_TGLPB')
@@ -1068,7 +1060,7 @@ class informasiHistoryProductController extends Controller
                 }
             }
             $step = 8;
-            if (Self::ceknull($pb[$i]->tpod_nopo, '') != '' AND Self::ceknull($pb[$i]->tpoh_tglpo, '') == '') {
+            if (Self::ceknull($pb[$i]->tpod_nopo, '') != '' and Self::ceknull($pb[$i]->tpoh_tglpo, '') == '') {
                 $step = 9;
                 $pb_ketbpb = 'PO Mati/Kdlwarsa';
             }
@@ -1101,11 +1093,11 @@ class informasiHistoryProductController extends Controller
         $pb2 = DB::table('tbtr_pb_d')
             ->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
             ->selectRaw('DISTINCT pbh_keteranganpb,
-                                     pbh_nopb, 
-                                     pbh_tglpb, 
-                                     NVL (pbh_qtypb, 0) pbh_qtypb,                       
-                                     pbd_nopo, 
-                                     pbd_prdcd, 
+                                     pbh_nopb,
+                                     pbh_tglpb,
+                                     NVL (pbh_qtypb, 0) pbh_qtypb,
+                                     pbd_nopo,
+                                     pbd_prdcd,
                                      pbd_qtypb')
             ->whereRaw('substr(pbd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->orderBy('PBH_TGLPB')
@@ -1153,11 +1145,11 @@ class informasiHistoryProductController extends Controller
         $step = 17;
         $po = DB::table('tbtr_po_d')
             ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
-            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid, 
-                                tpod_prdcd, 
-                                tpod_nopo, 
+            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
+                                tpod_prdcd,
+                                tpod_nopo,
                                 tpoH_tglpo,
-                                NVL (tpod_qtypb, 0) tpod_qtypb, 
+                                NVL (tpod_qtypb, 0) tpod_qtypb,
                                 tpoh_tglpo + tpoh_jwpb jwpb')
             ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->orderBy('TPOH_TGLPO')
@@ -1194,7 +1186,7 @@ class informasiHistoryProductController extends Controller
                     }
                 }
 
-                if (Self::ceknull($po[$i]->tpod_nopo, '') != '' AND Self::ceknull($po[$i]->tpoh_tglpo, '') == '') {
+                if (Self::ceknull($po[$i]->tpod_nopo, '') != '' and Self::ceknull($po[$i]->tpoh_tglpo, '') == '') {
                     $step = 23;
                     $pb_ketbpb = 'PO Mati/Kdlwarsa';
                 }
@@ -1209,7 +1201,7 @@ class informasiHistoryProductController extends Controller
                     $pb_ketbpb = 'PO Alokasi/Mati';
                 }
                 $step = 27;
-                if (Self::ceknull($pb_nopo, '') == '' AND Self::ceknull($pb_tglpo, '') == '') {
+                if (Self::ceknull($pb_nopo, '') == '' and Self::ceknull($pb_tglpo, '') == '') {
                     $step = 28;
                     $pb_ketbpb = 'PO Mati/Kdlwarsa';
                 }
@@ -1261,7 +1253,7 @@ class informasiHistoryProductController extends Controller
             ->selectRaw('SOP_QTYSO,
                         SOP_QTYLPP,
                         NVL (B.QTY_ADJ, 0) QTY_ADJ,
-                        SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0) SELISIH, 
+                        SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0) SELISIH,
                         SOP_NEWAVGCOST,
                         CASE
                            WHEN PRD_UNIT = \'KG\'
@@ -1371,7 +1363,7 @@ class informasiHistoryProductController extends Controller
             $hb_flagbandrol = $hargabeli[$i]->prd_flagbandrol;
             $harga1 = Self::ceknull($hargabeli[$i]->fmbeli, 0) + Self::ceknull($hargabeli[$i]->fmppnb, 0) + Self::ceknull($hargabeli[$i]->fmnbtl, 0);
 
-            if (($hargabeli[$i]->fmd1tm <= Carbon::now() AND $hargabeli[$i]->fmd1ta >= Carbon::now() AND $hargabeli[$i]->fmd1tm != Carbon::now()) OR $hargabeli[$i]->fmd1tm = Carbon::now()) {
+            if (($hargabeli[$i]->fmd1tm <= Carbon::now() and $hargabeli[$i]->fmd1ta >= Carbon::now() and $hargabeli[$i]->fmd1tm != Carbon::now()) or $hargabeli[$i]->fmd1tm = Carbon::now()) {
                 if ($hargabeli[$i]->fmdirs == 'K') {
                     $harga1 = $harga1 - $hargabeli[$i]->fmdirr;
                 } else {
@@ -1379,7 +1371,7 @@ class informasiHistoryProductController extends Controller
                 }
             }
 
-            if ($hargabeli[$i]->fmditm <= Carbon::now() AND $hargabeli[$i]->fmdita >= Carbon::now() AND $hargabeli[$i]->fmditm != Carbon::now()) {
+            if ($hargabeli[$i]->fmditm <= Carbon::now() and $hargabeli[$i]->fmdita >= Carbon::now() and $hargabeli[$i]->fmditm != Carbon::now()) {
                 if ($hargabeli[$i]->fmdirs == 'K') {
                     $harga1 = $harga1 - $hargabeli[$i]->fmditr;
                 } else {
@@ -1388,8 +1380,8 @@ class informasiHistoryProductController extends Controller
             }
 
             if ($hargabeli[$i]->hgb_tglmulaidisc02ii <= Carbon::now()
-                AND $hargabeli[$i]->hgb_tglakhirdisc02ii >= Carbon::now()
-                AND $hargabeli[$i]->hgb_tglmulaidisc02ii != Carbon::now()) {
+                and $hargabeli[$i]->hgb_tglakhirdisc02ii >= Carbon::now()
+                and $hargabeli[$i]->hgb_tglmulaidisc02ii != Carbon::now()) {
                 if ($hargabeli[$i]->fmdirs == 'K') {
                     $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02ii;
                 } else {
@@ -1398,8 +1390,8 @@ class informasiHistoryProductController extends Controller
             }
 
             if ($hargabeli[$i]->hgb_tglmulaidisc02iii <= Carbon::now()
-                AND $hargabeli[$i]->hgb_tglakhirdisc02iii >= Carbon::now()
-                AND $hargabeli[$i]->hgb_tglmulaidisc02iii != Carbon::now()) {
+                and $hargabeli[$i]->hgb_tglakhirdisc02iii >= Carbon::now()
+                and $hargabeli[$i]->hgb_tglmulaidisc02iii != Carbon::now()) {
                 if ($hargabeli[$i]->fmdirs == 'K') {
                     $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02iii;
                 } else {
@@ -1408,9 +1400,9 @@ class informasiHistoryProductController extends Controller
             }
 
             if ($hargabeli[$i]->fmbntm <= Carbon::now()
-                AND $hargabeli[$i]->fmbnta >= Carbon::now()
-                AND $hargabeli[$i]->fmbnta != Carbon::now()
-                AND $hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1 != 0
+                and $hargabeli[$i]->fmbnta >= Carbon::now()
+                and $hargabeli[$i]->fmbnta != Carbon::now()
+                and $hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1 != 0
             ) {
                 if ($hargabeli[$i]->fmfbns == 'K') {
                     $harga1 = (($harga1 * $hargabeli[$i]->fmqbl1) / ($hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1));
@@ -1566,14 +1558,14 @@ class informasiHistoryProductController extends Controller
             ->join('tbmaster_stock', function ($join) {
                 $join->On(DB::raw('substr(st_prdcd, 1, 6)'), '=', DB::raw('substr(prd_prdcd, 1, 6)'));
             })
-            ->selectRaw('prd_frac frac, 
-                                    st_lokasi, 
+            ->selectRaw('prd_frac frac,
+                                    st_lokasi,
                                     CASE
                                        WHEN  \'' . $flagreset . '\' <> \'Y\' THEN
                                             (st_saldoakhir - st_selisih_so)
                                         ELSE
                                             st_saldoakhir
-                                    END st_saldoakhir, 
+                                    END st_saldoakhir,
                                     st_selisih_soic')
             ->where('prd_prdcd', '=', $request->value)
             ->get();
@@ -1649,12 +1641,12 @@ class informasiHistoryProductController extends Controller
         $stockcarton['STC_CT3'] = $qb_rus;
         $stockcarton['STC_PCS3'] = $qc_rus;
 
-        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES','FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'detailsales', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'message']);
+        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'detailsales', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'message']);
     }
 
     public function ceknull($value, $ret)
     {
-        if ($value == "" OR $value == null OR $value == "null") {
+        if ($value == "" or $value == null or $value == "null") {
             return $ret;
         }
         return $value;
@@ -1813,4 +1805,59 @@ class informasiHistoryProductController extends Controller
 
     }
 
+    public function getNextPLU(Request $request)
+    {
+        $currentPLU = $request->plu;
+        $max_plu = DB::table('tbmaster_prodmast')
+            ->count();
+
+        $currentRow = DB::select("SELECT COL
+                                  FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
+                                          FROM (SELECT   PRD_PRDCD
+                                                    FROM TBMASTER_PRODMAST
+                                                    WHERE PRD_PRDCD LIKE '%0'
+                                                ORDER BY PRD_DESKRIPSIPANJANG, PRD_PRDCD))
+                                 WHERE PLU = substr('" . $currentPLU . "',1,6) || '0'")[0]->col;
+        $nextRow = intval($currentRow) + 1;
+        if ($nextRow != $max_plu) {
+            $nextPLU = DB::select("SELECT plu
+            FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
+              FROM (SELECT   PRD_PRDCD
+                        FROM TBMASTER_PRODMAST
+                    WHERE PRD_PRDCD LIKE '%0'
+                    ORDER BY PRD_DESKRIPSIPANJANG, PRD_PRDCD))
+                    WHERE col= " . $nextRow)[0]->plu;
+            return $nextPLU;
+        } else {
+            return $currentPLU;
+        }
+    }
+
+    public function getPrevPLU(Request $request)
+    {
+        $currentPLU = $request->plu;
+
+        $currentRow = DB::select("SELECT COL
+                                  FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
+                                          FROM (SELECT   PRD_PRDCD
+                                                    FROM TBMASTER_PRODMAST
+                                                    WHERE PRD_PRDCD LIKE '%0'
+                                                ORDER BY PRD_DESKRIPSIPANJANG, PRD_PRDCD))
+                                 WHERE PLU = substr('" . $currentPLU . "',1,6) || '0'")[0]->col;
+        $nextRow = intval($currentRow) - 1;
+        if (intval($currentRow) - 1 != 1) {
+
+            $nextPLU = DB::select("SELECT plu
+      FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
+              FROM (SELECT   PRD_PRDCD
+                        FROM TBMASTER_PRODMAST
+                    WHERE PRD_PRDCD LIKE '%0'
+                    ORDER BY PRD_DESKRIPSIPANJANG, PRD_PRDCD))
+                    WHERE col= " . $nextRow)[0]->plu;
+            return $nextPLU;
+        } else {
+            return $currentPLU;
+        }
+
+    }
 }

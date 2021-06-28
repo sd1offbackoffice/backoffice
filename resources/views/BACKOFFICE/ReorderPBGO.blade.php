@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','PB | REORDER PB GO')
 @section('content')
 
 

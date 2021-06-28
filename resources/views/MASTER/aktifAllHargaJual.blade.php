@@ -25,14 +25,14 @@
                            </tr>
                            </thead>
                            <tbdoy>
-                               @foreach($getData as $data)
-                                   <tr>
-                                       <td>{{$data->prd_prdcd}}</td>
-                                       <td>{{$data->prd_deskripsipanjang}}</td>
-                                       <td class="text-right">{{$data->prd_hrgjual}}</td>
-                                       <td class="text-right">{{$data->prd_hrgjual3}}</td>
-                                   </tr>
-                               @endforeach
+{{--                               @foreach($getData as $data)--}}
+{{--                                   <tr>--}}
+{{--                                       <td>{{$data->prd_prdcd}}</td>--}}
+{{--                                       <td>{{$data->prd_deskripsipanjang}}</td>--}}
+{{--                                       <td class="text-right">{{$data->prd_hrgjual}}</td>--}}
+{{--                                       <td class="text-right">{{$data->prd_hrgjual3}}</td>--}}
+{{--                                   </tr>--}}
+{{--                               @endforeach--}}
                            </tbdoy>
                        </table>
                    </div>
@@ -43,19 +43,49 @@
 
 
     <script>
+        let tableData = $('#tableAktifkanAll').DataTable();
         $(document).ready(function () {
-            $('#tableAktifkanAll').DataTable({
-                "lengthChange": false,
-                "ordering" : false,
-                scrollY : 460,
+            // $('#tableAktifkanAll').DataTable({
+            //     "lengthChange": false,
+            //     "ordering" : false,
+            //     scrollY : 460,
+            //     "columns": [
+            //         { "width": "10%" },
+            //         null,
+            //         { "width": "15%" },
+            //         { "width": "15%" }
+            //     ]
+            // });
+            getData();
+        });
+
+        function getData(){
+            tableData.destroy();
+            tableData =  $('#tableAktifkanAll').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstaktifallhrgjual/getdata') }}',
+                },
                 "columns": [
-                    { "width": "10%" },
-                    null,
-                    { "width": "15%" },
-                    { "width": "15%" }
+                    {data: 'prd_prdcd', name: 'prd_prdcd', width : '10%'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '60%'},
+                    {data: 'prd_hrgjual', name: 'prd_hrgjual', width : '15%'},
+                    {data: 'prd_hrgjual3', name: 'prd_hrgjual3', width : '15%'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": [],
+                columnDefs : [
                 ]
             });
-        });
+        }
 
         function aktifkanAllItem() {
             ajaxSetup();
@@ -68,7 +98,8 @@
                 success: function (result) {
                     $('#modal-loader').modal('hide');
                     swal('SUCCESS', result, 'success')
-                    location.reload();
+                    getData();
+                    // setTimeout(function(){location.reload()}, 2000);
                 }, error : function (err) {
                     $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0,100));

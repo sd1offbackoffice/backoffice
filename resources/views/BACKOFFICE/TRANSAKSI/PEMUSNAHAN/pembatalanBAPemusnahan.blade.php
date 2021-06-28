@@ -1,30 +1,31 @@
 @extends('navbar')
-@section('title','Pembatalan BA Pemusnahan')
+@section('title','PEMUSNAHAN | PEMBATALAN BA PEMUSNAHAN')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">IGR BO BAPBBATAL</legend>
+            <div class="col-md-8">
+                <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row">
                             <div class="col-sm-12">
                                 <form>
                                     <div class="form-group row mb-0">
                                         <label class="col-sm-2 col-form-label text-md-right">Nomor BAPB</label>
-                                        <input type="text" id="noDoc" class="form-control col-sm-2 mx-sm-1">
-                                        <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_noDoc"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>
-                                    </div>
-                                    <div class="form-group row mb-0">
-                                        <button class="btn btn-danger col-sm-2 offset-sm-9" onclick="deleteDoc()" type="button">Hapus BAPB</button>
+                                        <div class="col-sm-2 buttonInside">
+                                            <input type="text" id="noDoc" class="form-control">
+                                            <button class="btn btn-lov p-0" type="button" data-toggle="modal" data-target="#modalHelpDocument" >
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
+                                        <button class="btn btn-danger col-sm-2 " onclick="deleteDoc()" type="button">Hapus BAPB</button>
                                     </div>
                                 </form>
                             </div>
                             <div class="col-sm-12 mt-3">
                                 <hr>
                                 <table class="table table-striped table-bordered" id="tableDetail" style="width:100%">
-                                    <thead class="">
+                                    <thead class="theadDataTables">
                                     <tr class="text-center">
                                         <th rowspan="2" style="width: 50px">PLU</th>
                                         <th rowspan="2" style="width: 800px">Nama Barang</th>
@@ -44,44 +45,35 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="m_noDoc" tabindex="-1" role="dialog" aria-labelledby="m_noDoc" aria-hidden="true">
+    <div class="modal fade" id="modalHelpDocument" tabindex="-1" role="dialog" aria-labelledby="m_noDoc" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="searchModal" class="form-control search_lov" type="text" placeholder="Find No Doc" aria-label="Search">
-                    </div>
+                    <h5 class="modal-title">Pembatalan BAPB</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body ">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="tableFixedHeader">
-                                    <table class="table table-sm">
-                                        <thead>
-                                        <tr>
-                                            <th>No Dokumen</th>
-                                            <th>Tanggal</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="tbodyModalHelp">
-                                        @foreach($noDoc as $data)
-                                        <tr class="modalRow" onclick="chooseDoc({{$data->mstd_nodoc}})">
-                                            <td>{{$data->mstd_nodoc}}</td>
-                                            <td>{{date('d-M-y', strtotime($data->mstd_tgldoc))}}</td>
-                                        </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                    <p class="text-hide" id="idModal"></p>
-                                    <p class="text-hide" id="idRow"></p>
-                                </div>
+                                <table class="table table-sm" id="tableModalDocument">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>No Dokumen</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -114,34 +106,56 @@
                    {className: "text-right"},
                ],
            });
+            getDataModalDocument('');
         });
 
-        $('#searchModal').keypress(function (e) {
-            if (e.which === 13) {
-                let search = $('#searchModal').val();
-
-                ajaxSetup();
-                $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/bapbatal/searchdoc',
-                    type: 'post',
-                    data: {search:search},
-                    // beforeSend: function () {
-                    //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    // },
-                    success: function (result) {
-                        console.log(result)
-                        $('.modalRow').remove();
-                        if (result){
-                            for (i = 0; i< result.length; i++){
-                                $('#tbodyModalHelp').append("<tr onclick=chooseDoc('"+ result[i].mstd_nodoc +"') class='modalRow'><td>"+ result[i].mstd_nodoc +"</td> <td>"+ formatDateCustom(result[i].mstd_tgldoc, 'd-M-y') +"</td></tr>")
-                            }
+        function  getDataModalDocument(val) {
+            let tableModalDocument = $('#tableModalDocument').DataTable({
+                "ajax": {
+                    'url' : '{{ url('bo/transaksi/pemusnahan/bapbatal/getnodoc') }}',
+                    "data" : {
+                        'value': val
+                    },
+                },
+                "columns": [
+                    {data: 'mstd_nodoc', name: 'mstd_nodoc'},
+                    {data: 'mstd_tgldoc', name: 'mstd_tgldoc'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row_lov row_lov_document');
+                },
+                columnDefs : [
+                    { targets : [1],
+                        render : function (data, type, row) {
+                            return formatDate(data)
                         }
-                    }, error: function (error) {
-                        swal('Error', '', 'error');
-                        console.log(error)
                     }
-                })
-            }
+                ],
+                "order": []
+            });
+
+            $('#tableModalDocument_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModalDocument.destroy();
+                    getDataModalDocument(val);
+                }
+            })
+        }
+
+        $(document).on('click', '.row_lov_document', function () {
+            var currentButton = $(this);
+            let document = currentButton.children().first().text();
+
+            chooseDoc(document)
         });
 
         $('#noDoc').keypress(function (e) {
@@ -160,7 +174,7 @@
                 type: 'post',
                 data: {noDoc:noDoc},
                 beforeSend: function (){
-                    $('#m_noDoc').modal('hide');
+                    $('#modalHelpDocument').modal('hide');
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
@@ -169,7 +183,6 @@
 
                     if (result.kode === 1){
                         $('#noDoc').val(noDoc);
-                        console.log(result.data[0])
 
                         for (i = 0; i< result.data.length; i++){
                             tableDetail.row.add(

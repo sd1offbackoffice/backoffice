@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','Month End')
+@section('title','PROSES | MONTH END')
 @section('content')
     <div class="container-fluid mt-0">
         <div class="row justify-content-center">

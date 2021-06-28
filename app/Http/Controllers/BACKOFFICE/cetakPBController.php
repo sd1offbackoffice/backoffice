@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Yajra\DataTables\DataTables;
 
 class cetakPBController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE.cetakPB');
+        $divisi     = DB::table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')->orderBy('div_kodedivisi')->limit(100)->get();
+        return view('BACKOFFICE.cetakPB', compact('divisi'));
     }
 
     public function getDocument(Request $request){
@@ -23,7 +25,9 @@ class cetakPBController extends Controller
             ->whereBetween('pbh_tglpb', [$tgl1,$tgl2])
             ->orderBy('pbh_nopb')->get();
 
-        return response()->json($document);
+
+        return Datatables::of($document)->make(true);
+//        return response()->json($document);
     }
 
     public function searchDocument(Request $request){
@@ -66,7 +70,8 @@ class cetakPBController extends Controller
             ->whereBetween('dep_kodedivisi', [$div1,$div2])
             ->orderBy('DEP_KODEDEPARTEMENT')->get();
 
-        return response()->json($departemen);
+        return Datatables::of($departemen)->make(true);
+//        return response()->json($departemen);
     }
 
     public function searchDepartement(Request $request){
@@ -94,7 +99,7 @@ class cetakPBController extends Controller
             ->orderBy('KAT_KODEKATEGORI')
             ->get()->toArray();
 
-        return response()->json($kategori);
+        return Datatables::of($kategori)->make(true);
     }
 
     public function searchKategori(Request $request){

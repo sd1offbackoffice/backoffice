@@ -13,11 +13,15 @@ class hargaBeliController extends Controller
         return view('MASTER.hargaBeli');
     }
 
-    public function getProdmast(){
+    public function getProdmast(Request $request){
+        $search = $request->value;
         $prodmast   = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_deskripsipanjang')
+            ->limit(100)
             ->get();
 
         return Datatables::of($prodmast)->make(true);

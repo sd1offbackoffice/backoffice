@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','PB | KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR')
 @section('content')
 
 

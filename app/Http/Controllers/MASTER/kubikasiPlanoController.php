@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\Types\Integer;
 class kubikasiPlanoController extends Controller
 {
     public function index(){
+        Self::fill_kublikasi();
         $koderak =  DB::table('tbmaster_lokasi')
             ->select('lks_koderak')
             ->whereIn('lks_jenisrak', ['S'])
@@ -19,6 +20,7 @@ class kubikasiPlanoController extends Controller
             ->orderByRaw('REPLACE(lks_koderak,\'R\',\'E\')')
             ->distinct()
             ->get();
+
         $produk = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
@@ -217,4 +219,18 @@ class kubikasiPlanoController extends Controller
         return compact(['message','status']);
     }
 
+    public function fill_kublikasi(){
+        DB::insert("INSERT INTO TBMASTER_KUBIKASIPLANO
+        (KBP_KODERAK, KBP_KODESUBRAK, KBP_SHELVINGRAK, KBP_VOLUMESHELL, KBP_ALLOWANCE, KBP_CREATE_BY, KBP_CREATE_DT)
+        SELECT LKS_KODERAK, LKS_KODESUBRAK, LKS_SHELVINGRAK, 0, 0, '". $_SESSION['usid'] ."', SYSDATE
+          FROM (SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK, LKS_SHELVINGRAK
+                           FROM TBMASTER_LOKASI
+                          WHERE LKS_KODERAK LIKE '%C'
+        AND LKS_JENISRAK = 'S'
+        AND NOT EXISTS (
+            SELECT 1 FROM TBMASTER_KUBIKASIPLANO
+            WHERE KBP_KODERAK = LKS_KODERAK
+        AND KBP_KODESUBRAK = LKS_KODESUBRAK
+        AND KBP_SHELVINGRAK = LKS_SHELVINGRAK))");
+    }
 }

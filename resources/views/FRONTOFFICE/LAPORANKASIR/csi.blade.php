@@ -94,24 +94,44 @@
             id = val.id;
         }
 
-        $('#tableModalTemplate').DataTable({
-            "ajax": '{{ url('frontoffice/laporankasir/csi/getmodal') }}',
-            "columns": [
-                {data: 'sup_kodesupplier', name: 'sup_kodesupplier'},
-                {data: 'sup_namasupplier', name: 'sup_namasupplier'},
-            ],
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "createdRow": function (row, data, dataIndex) {
-                $(row).addClass('modalRow');
-            },
-            "order": []
+        $(document).ready(function () {
+            getModalData('');
         });
+
+        function getModalData(value){
+            let tableModal = $('#tableModalTemplate').DataTable({
+                "ajax": {
+                    'url' : '{{ url('frontoffice/laporankasir/csi/getmodal') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'sup_kodesupplier', name: 'sup_kodesupplier'},
+                    {data: 'sup_namasupplier', name: 'sup_namasupplier'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "order": []
+            });
+
+            $('#tableModalTemplate_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getModalData(val);
+                }
+            })
+        }
 
         $(document).on('click', '.modalRow', function () {
             var currentButton = $(this);

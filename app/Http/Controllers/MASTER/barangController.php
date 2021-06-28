@@ -13,43 +13,60 @@ class barangController extends Controller
         return view('MASTER.barang');
     }
 
-    public function getMasterBarang(){
+    public function getMasterBarang(Request  $request){
+        $search = $request->value;
+
         $plu = DB::table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang','prd_plusupplier','prd_deskripsipendek')
             ->where(DB::RAW('substr(prd_prdcd,7,1)'),'=','0')
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')
+            ->limit(100)
             ->get();
 
         return Datatables::of($plu)->make(true);
     }
 
-    public function getMasterBarangIDM(){
+    public function getMasterBarangIDM(Request $request){
+        $search = $request->value;
         $pluIdm = DB::table('tbmaster_prodmast')
             ->join('tbmaster_prodcrm','prc_pluigr', '=','prd_prdcd')
             ->select('prd_prdcd','prc_pluigr' ,'prc_pluidm', 'prd_deskripsipanjang',
                 'prc_kodetag','PRC_HRGJUAL','prc_satuanrenceng',
                 'prc_minorder','prc_minorderomi','prc_maxorderomi',
                 'prc_datek','prc_pricek')
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->where('prc_group','=','I')
             ->whereNotNull('prc_pluidm')
-            ->orderBy('prc_pluigr')
-//            ->limit(100)
+            ->orderBy('prd_prdcd')
+            ->limit(100)
             ->get();
 
         return Datatables::of($pluIdm)->make(true);
     }
 
-    public function getMasterBarangOmi(){
+    public function getMasterBarangOmi(Request  $request){
+        $search = $request->value;
+
         $pluOmi = DB::table('tbmaster_prodmast')
             ->join('tbmaster_prodcrm','prc_pluigr', '=','prd_prdcd')
             ->select('prd_prdcd','prc_pluigr' ,'prc_pluidm', 'prd_deskripsipanjang',
                 'prc_kodetag','PRC_HRGJUAL','prc_satuanrenceng',
                 'prc_minorder','prc_minorderomi','prc_maxorderomi',
-                'prc_datek','prc_pricek')
+                'prc_datek','prc_pricek', 'prc_pluomi') //adding prc_pluomi
+
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->where('prc_group','=','O')
             ->whereNotNull('prc_pluomi')
+
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->where('prc_group','=','O')
+            ->whereNotNull('prc_pluomi')
+
             ->orderBy('prc_pluigr')
-//            ->limit(100)
+            ->limit(100)
             ->get();
 
         return Datatables::of($pluOmi)->make(true);

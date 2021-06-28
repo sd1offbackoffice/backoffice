@@ -14,7 +14,7 @@
                                     <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
                                     <div class="col-sm-2 buttonInside" style="margin-left: -15px">
                                         <input type="text"  class="form-control" id="i_pluplanogram" placeholder="..." value="">
-                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_pluHelp">
+                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_pluHelp" onclick="focusSearch()">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
@@ -48,8 +48,8 @@
                                     <legend  class="w-auto ml-3 h5 ">Trend Sales</legend>
                                     <div class="card-body pt-0 pb-0">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-barcode">
-                                            <thead class="theadDataTables">
-                                            <tr class="row justify-content-md-center">
+                                            <thead>
+                                            <tr class="row theadDataTables">
                                                 <th class="col-sm-2"></th>
                                                 <th class="col-sm-4 text-center small">QTY</th>
                                                 <th class="col-sm-6 text-center small">RUPIAH</th>
@@ -198,8 +198,8 @@
                                     <legend  class="w-auto ml-3 h5">Daftar PO Yang Masih Aktif</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-po">
-                                            <thead class="theadDataTables">
-                                            <tr class="row justify-content-md-center">
+                                            <thead>
+                                            <tr class="row justify-content-md-center theadDataTables">
                                                 <th class="col-sm-5 text-center small">Nomor PO</th>
                                                 <th class="col-sm-5 text-center small">Tanggal PO</th>
                                                 <th class="col-sm-2 text-center small">Qty PO</th>
@@ -227,8 +227,8 @@
                                     <legend  class="w-auto ml-3 h5">Daftar Lokasi PLU</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-lokasi-plu">
-                                            <thead class="theadDataTables">
-                                            <tr class="row justify-content-md-center">
+                                            <thead>
+                                            <tr class="row justify-content-md-center theadDataTables">
                                                 <th class="col-sm-4 text-center small">Lokasi PLU</th>
                                                 <th class="col-sm-2 text-center small">Jenis</th>
                                                 <th class="col-sm-2 text-center small">Qty</th>
@@ -350,7 +350,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang</h5>
+                    <h5 class="modal-title">Master PLU</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -453,11 +453,19 @@
             </div>
         </div>
     </div>
-
     <script>
         $(document).ready(function () {
-            $('#tableModalPlu').DataTable({
-                "ajax": '{{ url('mstjenisitem/getprodmast') }}',
+            getModalData('');
+        });
+
+        function getModalData(value){
+            let tableModal = $('#tableModalPlu').DataTable({
+                "ajax": {
+                    'url' : '{{ url('mstjenisitem/getprodmast') }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
                 "columns": [
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang', width : '80%'},
                     {data: 'prd_prdcd', name: 'prd_prdcd', width : '20%'},
@@ -476,13 +484,25 @@
                 columnDefs : [
                 ]
             });
-            // $('#table_penerimaan').DataTable({
-            //     "lengthChange": false,
-            //     "pageLength": 15,
-            //     "order": [[ 5, "asc" ]]
-            // });
-        });
 
+            $('#tableModalPlu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tableModal.destroy();
+                    getModalData(val);
+                }
+            })
+        }
+
+        function focusSearch(){
+            $('#tableModalPlu_filter input').select();
+            setTimeout(
+                function()
+                {
+                    $('#tableModalPlu_filter label input').focus();
+                }, 200);
+        }
 
         $(document).on('click', '.modalRow', function () {
             let plu = $(this).find('td')[1]['innerHTML']
@@ -570,47 +590,48 @@
                         $('#table-lokasi-plu').append('<tr class="row baris justify-content-md-center p-0"><td class="col-sm-4 p-0 text-center" ><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_koderak+'.'+response['lokasi'][i].lks_kodesubrak+'.'+response['lokasi'][i].lks_tiperak+'.'+response['lokasi'][i].lks_shelvingrak+'.'+response['lokasi'][i].lks_nourut+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_jenisrak+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_qty+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxplano+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxdisplay+'"></td></tr>');
                     }
                     $('#lokasi').val(response['prodstock'].st);
-                    $('#awal').val(response['prodstock'].st_saldoawal);
-                    $('#terima').val(response['prodstock'].st_trfin);
-                    $('#keluar').val(response['prodstock'].st_trfout);
-                    $('#sales').val(response['prodstock'].st_sales);
-                    $('#retur').val(response['prodstock'].st_retur);
-                    $('#adj').val(response['prodstock'].st_adj);
-                    $('#instrst').val(response['prodstock'].st_intransit);
-                    $('#akhir').val(response['prodstock'].st_saldoakhir);
+                    $('#awal').val(convertToRupiah2(response['prodstock'].st_saldoawal));
+                    $('#terima').val(convertToRupiah2(response['prodstock'].st_trfin));
+                    $('#keluar').val(convertToRupiah2(response['prodstock'].st_trfout));
+                    $('#sales').val(convertToRupiah2(response['prodstock'].st_sales));
+                    $('#retur').val(convertToRupiah2(response['prodstock'].st_retur));
+                    $('#adj').val(convertToRupiah2(response['prodstock'].st_adj));
+                    $('#instrst').val(convertToRupiah2(response['prodstock'].st_intransit));
+                    $('#akhir').val(convertToRupiah2(response['prodstock'].st_saldoakhir));
                     $('#avgsales').val(format_currency(response['AVGSALES']));
 
 
                     for (var i = 0; i < response['supplier'].length ; i++ ){
                     $('#table_penerimaan').append('<tr class="baris"><td class="p-0">\n' +
-                        '<input type="text" class="form-control" value="'+response['supplier'][i].sup_namasupplier+'" disabled>\n' +
+                        '<textarea class="form-control" cols="10" rows="2" wrap="hard" disabled>'+response['supplier'][i].sup_namasupplier+'</textarea>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+(response['supplier'][i].trm_qtybns)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+response['supplier'][i].trm_bonus+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+response['supplier'][i].trm_bonus2+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
+                        '    <input type="text" class="form-control p-1" value="'+response['supplier'][i].trm_dokumen+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+formatDate(response['supplier'][i].trm_tanggal)+'" disabled>\n' +
+                        '    <input type="text" class="form-control p-1" value="'+formatDate(response['supplier'][i].trm_tanggal)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
+                        '    <input type="text" class="form-control p-1" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
                         '</td><tr>');
                     null_check();
                     }
+                    $('#i_jenisrak').select();
                 },
                 error : function (err){
                     $('#modal-loader').modal('hide');
@@ -689,6 +710,7 @@
                             title: response['message'],
                             icon: response['status']
                         }).then((createData) => {
+                            window.location.reload();
                         });
                     }, error : function (err){
                         console.log(err.responseJSON.message.substr(0,150));

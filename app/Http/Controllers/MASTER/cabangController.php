@@ -15,7 +15,7 @@ class cabangController extends Controller
     }
 
     public function index(){
-        $getCabang  = DB::table('tbmaster_cabang')->whereNotIn('cab_kodecabang', ['30'])->orderBy('cab_kodecabang')->get();
+        $getCabang  = DB::table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
 
         return view('MASTER.cabang', compact('getCabang'));
     }

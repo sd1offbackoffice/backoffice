@@ -115,12 +115,19 @@ class repackController extends Controller
     }
 
     public function ModalNmrTrn(Request $request){
+        $search = $request->value;
 
         $datas = DB::table('tbTr_BackOffice')
             ->selectRaw('distinct TRBO_NODOC as TRBO_NODOC')
             ->selectRaw('TRBO_TGLDOC')
             ->selectRaw("CASE WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA ELSE 'Belum Cetak Nota' END NOTA")
+
+            ->where('TRBO_NODOC','LIKE', '%'.$search.'%')
             ->where('TRBO_TYPETRN','=','P')
+
+            ->orWhere('TRBO_TGLDOC','LIKE', '%'.$search.'%')
+            ->where('TRBO_TYPETRN','=','P')
+
             ->orderByDesc('TRBO_NODOC')
             ->limit(100)
             ->get();
@@ -183,24 +190,33 @@ class repackController extends Controller
         return response()->json($datas);
     }
 
-    public function ModalPlu(){
+    public function ModalPlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
 
         $datas = DB::table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_DESKRIPSIPANJANG')
             ->selectRaw('PRD_PRDCD')
             ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
 
-            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
-            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
+
 
             ->LeftJoin('TBMASTER_STOCK',function($join){
                 $join->on('PRD_PRDCD','ST_PRDCD');
                 $join->on('PRD_KODEIGR','PRD_KODEIGR');
             })
+            ->where('prd_prdcd','LIKE', '%'.$search.'%')
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
             ->where('ST_LOKASI','=','01')
-
             ->where('prd_kodeigr', '=', $kodeigr)
+
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
+            ->where('ST_LOKASI','=','01')
+            ->where('prd_kodeigr', '=', $kodeigr)
+
             ->orderBy('prd_deskripsipanjang')
             ->limit(100)->get();
 

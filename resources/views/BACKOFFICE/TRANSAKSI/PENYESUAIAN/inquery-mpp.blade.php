@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Inquery MPP')
+@section('title','PENYESUAIAN | INQUERY MPP')
 
 @section('content')
 

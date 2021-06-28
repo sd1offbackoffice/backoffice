@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title','PB | CETAK TOLAKAN PB')
 @section('content')
 
 

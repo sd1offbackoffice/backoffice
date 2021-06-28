@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','Perubahan PLU')
+@section('title','PENYESUAIAN | PERUBAHAN PLU')
 
 @section('content')
 

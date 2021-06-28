@@ -232,6 +232,16 @@
             </div>
         </div>
 
+        <div class="row justify-content-center mt-4">
+            <div class="col-sm-12">
+                <div class="card border-dark">
+                    <div class="card-body cardForm">
+                        <p>10. Overide tombol "ctrl + s" </p>
+                        <p>Silakan dicoba dengan menekan tombol "ctrl+s", dan liat code dibagian script</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -318,6 +328,8 @@
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('modalRow');
                 },
+                columnDefs : [
+                ],
                 "order": []
             });
 
@@ -331,7 +343,6 @@
             })
         }
 
-
         //    Function untuk onclick pada data modal
         $(document).on('click', '.modalRow', function () {
             var currentButton = $(this);
@@ -342,6 +353,17 @@
             console.log(kodeigr);
             console.log(namacabang);
 
+        });
+
+        // Function untuk overide tombol keyboard
+        $(window).bind('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                if(String.fromCharCode(event.which).toLowerCase() === 's'){
+                    // Lakukan yang anda mau disini
+                    alert("Ini tombol save")
+                    event.preventDefault();
+                }
+            }
         });
 
         function modalLoader() {

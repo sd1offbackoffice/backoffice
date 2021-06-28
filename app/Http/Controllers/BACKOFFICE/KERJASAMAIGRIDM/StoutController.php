@@ -29,7 +29,6 @@ class StoutController extends Controller
             ->selectRaw('div_namadivisi')
             ->selectRaw('div_singkatannamadivisi')
             ->orderBy('div_kodedivisi')
-            ->limit(100)
             ->get();
 
         return response()->json($datas);
@@ -47,7 +46,6 @@ class StoutController extends Controller
             ->whereRaw("dep_kodedivisi between '$div1' and '$div2'")
             ->orderBy('dep_kodedepartement')
             ->orderBy('dep_kodedivisi')
-            ->limit(100)
             ->get();
 
         return response()->json($datas);
@@ -65,7 +63,6 @@ class StoutController extends Controller
             ->whereRaw("kat_kodedepartement between '$dept1' and '$dept2'")
             ->orderBy('kat_kodekategori')
             ->orderBy('kat_kodedepartement')
-            ->limit(100)
             ->get();
 
         return response()->json($datas);
