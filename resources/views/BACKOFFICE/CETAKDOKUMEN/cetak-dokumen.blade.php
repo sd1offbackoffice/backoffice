@@ -26,21 +26,25 @@
                                     <label class="col-sm-3 text-right col-form-label">Jenis Dokumen</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="dokumen">
-                                            <option value="pengeluaran">PENGELUARAN</option>
-                                            <option value="barang hilang">BARANG HILANG</option>
+                                            <option value="K">PENGELUARAN</option>
+                                            <option value="H">BARANG HILANG</option>
                                         </select>
+                                    </div>
+                                    <div class="col-sm-4 form-check notareturfp">
+                                        <input type="checkbox" class="form-check-input" id="cetaknotareturfp">
+                                        <label for="reprint"> CETAK NOTA RETUR FP</label><br>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="laporan">
-                                            <option value="list">LIST</option>
-                                            <option value="nota">NOTA</option>
+                                            <option value="L">LIST</option>
+                                            <option value="N">NOTA</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="reprint" >
+                                        <input type="checkbox" class="form-check-input" id="reprint">
                                         <label for="reprint"> RE-PRINT</label><br>
                                     </div>
                                 </div>
@@ -48,41 +52,29 @@
                                     <label class="col-sm-3 text-right col-form-label">Jenis Kertas</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="kertas">
-                                            <option value="biasa">BIASA</option>
-                                            <option value="kecil">KECIL</option>
+                                            <option value="B">BIASA</option>
+                                            <option value="K">KECIL</option>
                                         </select>
                                     </div>
                                 </div>
                                 <fieldset class="card border-secondary">
                                     <legend class="w-auto ml-3">[ DAFTAR DOKUMEN ]</legend>
-                                    <table class="table table-responsive col-md-12">
-                                        <thead style="border-top: double; border-bottom: double;">
+                                    <div class="tableFixedHeader col-sm-12 text-center">
+                                        <table class="table table-sm" id="tableDocument">
+                                            <thead>
                                             <tr>
-                                                <th align="center" >NOMOR DOKUMEN</th>
-                                                <th align="center" >TANGGAL</th>
-                                                <th align="center" ></th>
+                                                <th id="nomor">NOMOR DOKUMEN</th>
+                                                <th>TANGGAL</th>
+                                                <th></th>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                        @for($i=1;$i<=10;$i++)
-                                            <tr>
-                                                <th align="center" >abc</th>
-                                                <th align="center" >abc</th>
-                                                <th align="center" >
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="check{{$i}}">
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        @endfor
-                                        </tbody>
-                                        <tfoot>
-                                        <div class="col-sm-6 form-check ml-3">
-                                            <input type="checkbox" class="form-check-input" id="check10" >
-                                            <label for="check10"> Check 10 Dokumen Pertama</label><br>
-                                        </div>
-                                        </tfoot>
-                                    </table>
+                                            </thead>
+                                            <tbody id="tbodyModalHelp"></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-sm-12 form-check ml-3">
+                                        <input type="checkbox" class="form-check-input" id="check10lbl">
+                                        <label for="check10lbl"> Check 10 Dokumen Pertama</label><br>
+                                    </div>
                                 </fieldset>
 
                                 <div class="row form-group mt-3 mb-0">
@@ -110,10 +102,12 @@
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
         }
+
         label {
             color: #232443;
             font-weight: bold;
         }
+
         .cardForm {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
@@ -121,12 +115,12 @@
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button,
         input[type=date]::-webkit-inner-spin-button,
-        input[type=date]::-webkit-outer-spin-button{
+        input[type=date]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        .row_lov:hover{
+        .row_lov:hover {
             cursor: pointer;
             background-color: #acacac;
             color: white;
@@ -142,7 +136,7 @@
             display: block;
         }
 
-        .clicked, .row-detail:hover{
+        .clicked, .row-detail:hover {
             background-color: grey !important;
             color: white;
         }
@@ -150,87 +144,121 @@
     </style>
 
     <script>
-        $(document).ready(function(){
+        nomor = '';
+        $(document).ready(function () {
             $('.tanggal').datepicker({
-                "dateFormat" : "dd/mm/yy",
+                "dateFormat": "dd/mm/yy",
             });
             $('.tanggal').datepicker('setDate', new Date());
+            $('.notareturfp').hide();
+        });
+        $('#tableDocument').DataTable();
+        $('#dokumen').on('change', function () {
+            cekTanggal();
+            cekMenu();
+            showData();
         });
 
-        $('#register').on('change',function(){
-            if($(this).val() == 'O' || $(this).val() == 'I' || $(this).val() == 'I2' || $(this).val() == 'O2'){
-                $('#field_cabang').show();
-            }
-            else $('#field_cabang').hide();
+        $('#dokumen,#laporan,#jenisKertas,#reprint').on('change', function () {
+            cekTanggal();
+            cekMenu();
+            showData();
         });
 
-        function print(){
-            cab = $('#field_cabang').is(':visible') ? '&cabang=' + $('#cabang').val() : '';
-
-            if(!$('#register').val() || !$('#tgl1').val() || !$('#tgl2').val()){
-                swal({
-                    title: 'Inputan belum lengkap!',
-                    icon: 'warning'
-                });
+        function cekMenu() {
+            if ($('#dokumen').val() == 'K' && $('#laporan').val() == 'N') {
+                nomor = 'NOMOR REFERENSI'
+                $('.notareturfp').show();
+            } else {
+                nomor = 'NOMOR DOKUMEN';
+                $('.notareturfp').hide();
             }
-            else{
-                swal({
-                    title: 'Ingin mencetak register tanggal ' + $('#tgl1').val() + ' s/d ' + $('#tgl2').val() + '?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    if(ok){
-                        if($.inArray($('#register').val(), ['K','X','X1']) > -1){
-                            swal({
-                                title: 'Pilih ukuran cetakan',
-                                icon: 'warning',
-                                buttons: {
-                                    cancel: 'Cancel',
-                                    besar: {
-                                        text: 'Besar',
-                                        value: 'besar'
-                                    },
-                                    kecil: {
-                                        text: 'Kecil',
-                                        value: 'kecil'
-                                    }
-                                },
-                                dangerMode: true
-                            }).then((ukuran) => {
-                                if(ukuran){
-                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&ukuran=${ukuran}${cab}`,'_blank');
-                                }
-                            });
-                        }
-                        else if($('#register').val() == 'B2'){
-                            swal({
-                                title: 'Pilih Jenis Penerimaan',
-                                icon: 'warning',
-                                buttons: {
-                                    cancel: 'Cancel',
-                                    pembelian: {
-                                        text: 'Pembelian',
-                                        value: 'B'
-                                    },
-                                    lain: {
-                                        text: 'Lain-lain',
-                                        value: 'L'
-                                    }
-                                },
-                                dangerMode: true
-                            }).then((jenis) => {
-                                if(jenis){
-                                    window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}&jenis=${jenis}${cab}`,'_blank');
-                                }
-                            });
-                        }
-                        else{
-                            window.open(`{{ url()->current() }}/print?register=${$('#register').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}${cab}`,'_blank');
+            $('#nomor').html(nomor);
+        }
+
+        function cekTanggal() {
+            tgl1 = $.datepicker.parseDate('dd/mm/yy', $('#tgl1').val());
+            ;
+            tgl2 = $.datepicker.parseDate('dd/mm/yy', $('#tgl2').val());
+            ;
+            if ($('#reprint:checked').val() == 'on') {
+                if (tgl1 == '' || tgl2 == '') {
+                    swal({
+                        title: 'Inputan belum lengkap!',
+                        icon: 'warning'
+                    });
+                }
+                if (new Date(tgl1) > new Date(tgl2)) {
+                    swal({
+                        title: 'Tanggal Tidak Benar!',
+                        icon: 'warning'
+                    });
+                }
+            }
+        }
+
+        function showData() {
+            $('#tableDocument').DataTable().destroy();
+            $('#tableDocument').DataTable({
+                "ajax": {
+                    'url': '{{ url('bo/cetak-dokumen/showData') }}',
+                    "data": {
+                        'doc': $('#dokumen').val(),
+                        'tipe': $('#laporan').val(),
+                        'reprint': $('#reprint:checked').val(),// on/off
+                        'tgl1': $('#tgl1').val(),
+                        'tgl2': $('#tgl2').val()
+                    },
+                },
+                "columns": [
+                    {data: 'nodoc', name: 'nodoc'},
+                    {data: 'tgldoc', name: 'tgldoc'},
+                    {data: 'checkbox', name: 'checkbox'}
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    // $(row).addClass('row_lov row_lov_document');
+                },
+                columnDefs: [
+                    {
+                        targets: [2],
+                        render: function (data, type, row) {
+                            return formatDate(data)
                         }
                     }
-                });
-            }
+                ],
+                "order": []
+            });
+            // ajaxSetup();
+            // $.ajax({
+            //     url: '/BackOffice/public/bo/cetak-dokumen/showData',
+            //     type: 'post',
+            //     data: {
+            //         doc  : $('#dokumen').val(),
+            //         tipe    : $('#laporan').val(),
+            //         reprint    : $('#reprint:checked').val() ,// on/off
+            //         tgl1    : $('#tgl1').val(),
+            //         tgl2    : $('#tgl2').val()
+            //     },
+            //     beforeSend: function () {
+            //         $('#modal-loader').modal('show');
+            //     },
+            //     success: function (result) {
+            //         // for (i = 0; i< result.length; i++){
+            //         //     $('#tableBody').append("<tr><td>"+ result[i].nodoc +"</td><td>"+ result[i].tgldoc.substring(0,10) +"</td><td><div class='form-check'><input class='form-check-input' type='checkbox' value='' id='check"+i+"'></div></td></tr>");
+            //         // }
+            //
+            //         $('#modal-loader').modal('hide');
+            //     }, error: function () {
+            //         alert('error');
+            //     }
+            // })
         }
     </script>
 

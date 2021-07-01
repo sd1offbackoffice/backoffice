@@ -24,7 +24,8 @@ Route::get('/testnewnav', function () {
 });
 
 Route::get('/login', 'Auth\loginController@index');
-Route::get('/logout', 'Auth\loginController@logout')->middleware('CheckLogin');
+Route::get('/logout', 'Auth\loginController@logout');
+Route::get('/logout-access', 'Auth\loginController@logoutAccess');
 
 
 
@@ -558,7 +559,7 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
         Route::prefix('/cetak-dokumen')->group(function(){
             Route::get('/','BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@index');
-            Route::get('/print','BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@print');
+            Route::get('/showData','BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@showData');
         });
 
         Route::prefix('/pb-gudang-pusat')->group(function(){
@@ -1062,6 +1063,15 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/transfer','TABEL\PluTimbanganController@Transfer');
             Route::get('/print','TABEL\PluTimbanganController@Print');
             Route::get('/debug','TABEL\PluTimbanganController@Debug');
+        });
+    });
+
+    Route::prefix('/frontoffice')->group(function(){
+        Route::prefix('/laporankasir')->group(function(){
+            Route::prefix('/penjualan')->group(function(){
+                Route::get('/','FRONTOFFICE\LAPORANKASIR\penjualanController@index');
+                Route::get('/getdiv','FRONTOFFICE\LAPORANKASIR\penjualanController@getDiv');
+            });
         });
     });
 });

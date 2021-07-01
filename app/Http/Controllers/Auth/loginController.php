@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\ADMINISTRATION\AccessController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,9 @@ class loginController extends Controller
         if (isset($_SESSION['usid']) && $_SESSION['usid'] != '') {
             return redirect('/');
         }
+
+//        dd($_SESSION['message']);
+//        $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
         $prs = DB::table('TBMASTER_PERUSAHAAN')
             ->select('PRS_NamaCabang')
             ->first();
@@ -224,29 +228,59 @@ class loginController extends Controller
             }
         }
 
-        $_SESSION['menu'] = DB::table('tbmaster_access_migrasi')
-            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
-            ->selectRaw("acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-            ->where('uac_userid','=',$_SESSION['usid'])
-//            ->orderBy('acc_id')
-            ->orderBy('acc_group')
-            ->orderBy('acc_subgroup1')
-            ->orderBy('acc_subgroup2')
-            ->orderBy('acc_subgroup3')
-            ->orderBy('acc_name')
-            ->get();
+        $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
 
         return compact(['userstatus']);
     }
 
     public function logout()
     {
-        $ipx = $_SESSION['ip'];
-        DB::table('TBMASTER_COMPUTER')
-            ->where('ip', $ipx)
-            ->update(['useraktif' => '']);
+        session_start();
+
+
+        if(isset($_SESSION['ip'])){
+            $ipx = $_SESSION['ip'];
+            DB::table('TBMASTER_COMPUTER')
+                ->where('ip', $ipx)
+                ->update(['useraktif' => '']);
+        }
+
         session_destroy();
-        return redirect('/');
+
+//        session_start();
+//        $_SESSION['message'] = $message;
+//
+//        dd($message);
+
+        return redirect('/login');
+    }
+
+    public function logoutAccess()
+    {
+
+        session_start();
+
+        $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+        if(isset($_SESSION['ip'])){
+            $ipx = $_SESSION['ip'];
+            DB::table('TBMASTER_COMPUTER')
+                ->where('ip', $ipx)
+                ->update(['useraktif' => '']);
+        }
+        session_destroy();
+
+//        session_start();
+//        $_SESSION['message'] = $message;
+//
+//        dd($message);
+
+        $prs = DB::table('TBMASTER_PERUSAHAAN')
+            ->select('PRS_NamaCabang')
+            ->first();
+
+        $msg = 'Terdapat perubahan akses menu, silahkan login kembali!';
+
+        return view('login')->with(compact(['prs','msg']));
     }
 
     public function insertip(Request $request)

@@ -21,7 +21,6 @@ class AccessController extends Controller
             ->get();
 
         $menu = DB::table('tbmaster_access_migrasi')
-            ->orderBy('acc_id')
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')
@@ -53,11 +52,30 @@ class AccessController extends Controller
         }
         else{
             $data = DB::table('tbmaster_useraccess_migrasi')
-                ->select('uac_acc_id')
+                ->join('tbmaster_access_migrasi','uac_acc_id','=','acc_id')
+                ->select('uac_acc_id','acc_group')
                 ->where('uac_userid','=',$request->userid)
                 ->get();
 
-            return $data;
+            $group = DB::table('tbmaster_access_migrasi')
+                ->selectRaw('acc_group, count(1) total')
+                ->orderBy('acc_group')
+                ->groupBy('acc_group')
+                ->get();
+
+            $checkedAll = [];
+
+            for($i=0;$i<count($group);$i++){
+                $total = 0;
+                foreach($data as $d){
+                    if($group[$i]->acc_group === $d->acc_group)
+                        $total++;
+                }
+                if($group[$i]->total == $total)
+                    $checkedAll[] = str_replace(' ','_',$group[$i]->acc_group);
+            }
+
+            return compact(['data','checkedAll']);
         }
     }
 
@@ -76,14 +94,16 @@ class AccessController extends Controller
                 ->where('uac_userid','=',$request->userid)
                 ->delete();
 
-            foreach($request->menu as $m){
-                DB::table('tbmaster_useraccess_migrasi')
-                    ->insert([
-                        'uac_userid' => $request->userid,
-                        'uac_acc_id' => $m,
-                        'uac_create_by' => $_SESSION['usid'],
-                        'uac_create_dt' => DB::RAW("SYSDATE")
-                    ]);
+            if($request->menu){
+                foreach($request->menu as $m){
+                    DB::table('tbmaster_useraccess_migrasi')
+                        ->insert([
+                            'uac_userid' => $request->userid,
+                            'uac_acc_id' => $m,
+                            'uac_create_by' => $_SESSION['usid'],
+                            'uac_create_dt' => DB::RAW("SYSDATE")
+                        ]);
+                }
             }
 
             return response()->json([
@@ -98,5 +118,19 @@ class AccessController extends Controller
 //        DB::connection('igrsmg')
 //            ->table('tbmaster_useraccess_migrasi')
 //            ->insert(json_decode(json_encode($data), true));
+    }
+
+    public static function getListMenu($usid){
+        return DB::table('tbmaster_access_migrasi')
+            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+            ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+            ->where('uac_userid','=',$usid)
+//            ->orderBy('acc_id')
+            ->orderBy('acc_group')
+            ->orderBy('acc_subgroup1')
+            ->orderBy('acc_subgroup2')
+            ->orderBy('acc_subgroup3')
+            ->orderBy('acc_name')
+            ->get();
     }
 }

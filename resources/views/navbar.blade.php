@@ -65,420 +65,433 @@
                     </button>
                     <li class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto">
-                            @if($_SESSION['usid'] != 'LAW')
+                    @if($_SESSION['usid'] != 'LAW')
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a href="{{url("/mstaktifallhrgjual/index")}}">Aktifkan Harga Jual All
+                                            Item</a></li>
+                                    <li><a href="{{url("/mstaktifhrgjual/index")}}">Aktifkan Harga Jual Per
+                                            Item</a></li>
+                                    <li><a href="{{url("/mstapproval/index")}}">Master Approval</a></li>
+                                    <li><a href="{{url("/mstbarang/index")}}">Master Barang</a></li>
+                                    <li><a href="{{url("/mstbarcode/index")}}">Master Barcode</a></li>
+                                    <li><a href="{{url("/mstcabang/index")}}">Master Cabang</a></li>
+                                    <li><a href="{{url("/mstdepartement/index")}}">Master Departement</a></li>
+                                    <li><a href="{{url("/mstdivisi/index")}}">Master Divisi</a></li>
+                                    <li><a href="{{url("/msthargabeli/index")}}">Master Harga Beli</a></li>
+                                    <li><a href="{{url("/mstharilibur/index")}}">Master Hari Libur</a></li>
+                                    <li><a href="{{url("/mstjenisitem/index")}}">Master Jenis Item</a></li>
+                                    <li><a href="{{url("/mstkategoribarang/index")}}">Master Kategori Barang</a>
+                                    </li>
+                                    <li><a href="{{url("/mstkategoritoko/index")}}">Master Kategori Toko</a>
+                                    </li>
+                                    <li><a href="{{url("/mstkubikasiplano/index")}}">Master Kubikasi Plano</a>
+                                    </li>
+                                    <li><a href="{{url("/master/lokasi")}}">Master Lokasi</a></li>
+                                    <li><a href="{{url("/mstmember/index")}}">Master Member</a></li>
+                                    <li><a href="{{url("/mstomi/index")}}">Master OMI</a></li>
+                                    <li><a href="{{url("/mstoutlet/index")}}">Master Outlet</a></li>
+                                    <li><a href="{{url("/mstperusahaan/index")}}">Master Perusahaan</a></li>
+                                    <li><a href="{{url("/mstsuboutlet/index")}}">Master Sub Outlet</a></li>
+                                    <li><a href="{{url("/mstsupplier/index")}}">Master Supplier</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Back Office</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li class="dropdown">
                                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">PB</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                            <li><a href="{{url("/mstaktifallhrgjual/index")}}">Aktifkan Harga Jual All
-                                                    Item</a></li>
-                                            <li><a href="{{url("/mstaktifhrgjual/index")}}">Aktifkan Harga Jual Per
-                                                    Item</a></li>
-                                            <li><a href="{{url("/mstapproval/index")}}">Master Approval</a></li>
-                                            <li><a href="{{url("/mstbarang/index")}}">Master Barang</a></li>
-                                            <li><a href="{{url("/mstbarcode/index")}}">Master Barcode</a></li>
-                                            <li><a href="{{url("/mstcabang/index")}}">Master Cabang</a></li>
-                                            <li><a href="{{url("/mstdepartement/index")}}">Master Departement</a></li>
-                                            <li><a href="{{url("/mstdivisi/index")}}">Master Divisi</a></li>
-                                            <li><a href="{{url("/msthargabeli/index")}}">Master Harga Beli</a></li>
-                                            <li><a href="{{url("/mstharilibur/index")}}">Master Hari Libur</a></li>
-                                            <li><a href="{{url("/mstjenisitem/index")}}">Master Jenis Item</a></li>
-                                            <li><a href="{{url("/mstkategoribarang/index")}}">Master Kategori Barang</a>
-                                            </li>
-                                            <li><a href="{{url("/mstkategoritoko/index")}}">Master Kategori Toko</a>
-                                            </li>
-                                            <li><a href="{{url("/mstkubikasiplano/index")}}">Master Kubikasi Plano</a>
-                                            </li>
-                                            <li><a href="{{url("/master/lokasi")}}">Master Lokasi</a></li>
-                                            <li><a href="{{url("/mstmember/index")}}">Master Member</a></li>
-                                            <li><a href="{{url("/mstomi/index")}}">Master OMI</a></li>
-                                            <li><a href="{{url("/mstoutlet/index")}}">Master Outlet</a></li>
-                                            <li><a href="{{url("/mstperusahaan/index")}}">Master Perusahaan</a></li>
-                                            <li><a href="{{url("/mstsuboutlet/index")}}">Master Sub Outlet</a></li>
-                                            <li><a href="{{url("/mstsupplier/index")}}">Master Supplier</a></li>
+                                        <li><a href="{{url("/bocetakpb/index")}}">Cetak PB</a></li>
+                                        <li><a href="{{url("/bo/pb/cetak-tolakan-pb")}}">Cetak Tolakan PB</a></li>
+                                        <li><a href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a></li>
+                                        <li><a href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
+                                                IGR</a></li>
+                                        <li><a href="{{url("/bopbotomatis/index")}}">PB Otomatis</a></li>
+                                        <li><a href="{{url("/bopbmanual/index")}}">PB Manual</a></li>
+                                        <li><a href="{{url("/bo/pb/reorder-pb-go")}}">Reorder PB GO</a></li>
+                                        <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
+                                                IGR</a></li>
+                                        <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
                                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Back Office</a>
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Transaksi</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li class="dropdown">
                                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                                data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">PB</a>
+                                               aria-expanded="false">Pemusnahan</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bocetakpb/index")}}">Cetak PB</a></li>
-                                                <li><a href="{{url("/bo/pb/cetak-tolakan-pb")}}">Cetak Tolakan PB</a></li>
-                                                <li><a href="{{url("/bomaxpalet/index")}}">Item Maxpalet Untuk PB</a></li>
-                                                <li><a href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
-                                                        IGR</a></li>
-                                                <li><a href="{{url("/bopbotomatis/index")}}">PB Otomatis</a></li>
-                                                <li><a href="{{url("/bopbmanual/index")}}">PB Manual</a></li>
-                                                <li><a href="{{url("/bo/pb/reorder-pb-go")}}">Reorder PB GO</a></li>
-                                                <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
-                                                        IGR</a></li>
-                                                <li><a href="{{url("/boutilitypbigr/index")}}">Utility PB IGR</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Barang
+                                                        Rusak</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/pemusnahan/bapemusnahan/index")}}">Berita
+                                                        Acara Pemusnahan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan
+                                                        BA Pemusnahan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pemusnahan/inquerybapb/index")}}">Inquery
+                                                        BA Pemusnahan</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">
                                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                                data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Transaksi</a>
+                                               aria-expanded="false">Barang Hilang</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Pemusnahan</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li><a href="{{url("/bo/transaksi/pemusnahan/brgrusak/index")}}">Barang
-                                                                Rusak</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/pemusnahan/bapemusnahan/index")}}">Berita
-                                                                Acara Pemusnahan</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan
-                                                                BA Pemusnahan</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/pemusnahan/inquerybapb/index")}}">Inquery
-                                                                BA Pemusnahan</a></li>
-                                                    </ul>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/brghilang/input/index")}}">Input</a>
                                                 </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Barang Hilang</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/brghilang/input/index")}}">Input</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/brghilang/pembatalannbh/index")}}">Pembatalan
-                                                                NBH</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/brghilang/inquerynbh/index")}}">Inquery
-                                                                NBH</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Penyesuaian</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li><a href="{{url("/bo/transaksi/penyesuaian/input")}}">Input</a>
-                                                        </li>
-                                                        <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a>
-                                                        </li>
-                                                        <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery
-                                                                MPP</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/penyesuaian/pembatalanmpp")}}">Pembatalan
-                                                                MPP</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/penyesuaian/perubahanplu")}}">Perubahan
-                                                                PLU</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Pengeluaran</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li><a href="{{url("/bo/transaksi/pengeluaran/input")}}">Input</a>
-                                                        </li>
-                                                        <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery
-                                                                NPB</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/pengeluaran/pembatalan")}}">Pembatalan
-                                                                NPB</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/pengeluaran/inqueryrtrsup")}}">Inquery
-                                                                Retur Barang Per Supplier</a></li>
-                                                        {{--<li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>--}}
-                                                        {{--<li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>--}}
-                                                        {{--<li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>--}}
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Pengiriman ke Cabang</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/input")}}">Input</a>
-                                                        </li>
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/cetak")}}">Cetak Surat
-                                                                Jalan</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/batal")}}">Batal Surat
-                                                                Jalan</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/inquery")}}">Inquery
-                                                                Surat Jalan</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/sj-packlist")}}">Transaksi
-                                                                SJ Packlist</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/kirimcabang/cetak-sj-packlist")}}">Cetak
-                                                                SJ Packlist</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/kirimcabang/transfer-sj")}}">Transfer
-                                                                Surat Jalan</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Penerimaan dari Cabang</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/penerimaandaricabang/penerimaan-transfer")}}">Penerimaan
-                                                                / Transfer Antar Cabang</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/penerimaandaricabang/cetak-transfer")}}">Cetak
-                                                                Transfer Antar Cabang</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/penerimaandaricabang/inquery-transfer")}}">Inquery
-                                                                Transfer Antar Cabang</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/penerimaandaricabang/batal-transfer")}}">Batal
-                                                                Transfer Antar Cabang</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Penerimaan</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a>
-                                                        </li>
-                                                        <li><a href="{{url("/bo/transaksi/penerimaan/inquery/index")}}">Inquery
-                                                                BPB</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/penerimaan/pembatalan/index")}}">Pembatalan
-                                                                BPB</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/penerimaan/printbpb/index")}}">Cetak
-                                                                BPB</a></li>
-                                                        <li><a href="{{url("/bo/transaksi/penerimaan/cetakbpb/index")}}">Cetak
-                                                                Laporan BPB</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Perubahan Status</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/perubahanstatus/entrySortirBarang/index")}}">Entry
-                                                                Sortir Barang</a></li>
-                                                        <li>
-                                                            <a href="{{url("/bo/transaksi/perubahanstatus/rubahStatus/index")}}">Entry
-                                                                Perubahan Status</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                                       data-toggle="dropdown" aria-haspopup="true"
-                                                       aria-expanded="false">Repacking</a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                        <li><a href="{{url("transaksi/repacking/index")}}">Repacking</a>
-                                                        </li>
-                                                        <li><a href="{{url("transaksi/laprepacking/index")}}">Laporan
-                                                                Repacking</a></li>
-                                                    </ul>
-                                                </li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/brghilang/pembatalannbh/index")}}">Pembatalan
+                                                        NBH</a></li>
+                                                <li><a href="{{url("/bo/transaksi/brghilang/inquerynbh/index")}}">Inquery
+                                                        NBH</a></li>
                                             </ul>
                                         </li>
                                         <li class="dropdown">
                                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                                data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Proses</a>
+                                               aria-expanded="false">Penyesuaian</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/proses/konversi")}}">Konversi Item Perishable
-                                                        Olahan</a></li>
-                                                <li><a href="{{url("/bo/proses/settingpagihari/index")}}">Setting Pagi
-                                                        Hari</a></li>
-                                                <li><a href="{{url("/bo/proses/hitungulangstock")}}">Hitung Ulang Stock</a>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/input")}}">Input</a>
                                                 </li>
-                                                <li><a href="{{url("/bo/proses/monthend")}}">Month End</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Laporan-Laporan</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/laporan/daftar-pembelian")}}">Laporan Daftar
-                                                        Pembelian</a></li>
-                                                <li><a href="{{url("/bo/laporan/daftar-retur-pembelian")}}">Laporan Daftar
-                                                        Retur Pembelian</a></li>
-                                                <li><a href="{{url("/bo/laporan/daftar-pemusnahan-barang")}}">Laporan Daftar
-                                                        Pemusnahan Barang</a></li>
-                                                <li><a href="{{url("/bo/laporan/penyesuaian")}}">Laporan Penyesuaian
-                                                        Persediaan</a></li>
-                                                <li><a href="{{url("/bo/laporan/pengiriman")}}">Laporan Daftar Pengiriman
-                                                        Antar Cabang</a></li>
-                                                <li><a href="{{url("/bo/laporan/penerimaan")}}">Laporan Daftar Penerimaan
-                                                        Antar Cabang</a></li>
-                                                <li><a href="{{url("/bo/laporan/laporanservicelevel/index")}}">Laporan
-                                                        Service Level PO Thd BPB</a></li>
-                                                <li><a href="{{url("/laporan/outsscan/index")}}">Laporan Outstanding
-                                                        Scanning IDM / OMI</a></li>
-                                                <li><a href="{{url("/laporan/kunjunganbkl/index")}}">Laporan Bulanan
-                                                        Kedatangan Supplier BKL</a></li>
-                                                <li><a href="{{url("/laporan/saleshbv/index")}}">Laporan Transfer Satuan
-                                                        Produk Hot Beverages</a></li>
-                                                <li><a href="{{url("/laporan/servicelevelitempareto/index")}}">Laporan
-                                                        Service Level Item Pareto</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Transfer</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/transfer/plu")}}">Transfer PLU</a></li>
-                                                <li><a href="{{url("/bo/transfer/po")}}">Transfer PO</a></li>
-                                                <li><a href="{{url("/bo/transfer/pb-ke-md")}}">Transfer PB ke MD</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">LPP</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/lpp/proses-lpp")}}">Proses LPP</a></li>
-                                                <li><a href="{{url("/bo/lpp/register-lpp")}}">Cetak Register LPP</a></li>
-                                                <li><a href="{{url("/bo/lpp/register-ba-idm")}}">Register BA IDM</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Menu PKM Toko</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/bo/pkm/kertas-kerja")}}">Proses Kertas Kerja PKM</a>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/cetak")}}">Cetak</a>
                                                 </li>
-                                                <li><a href="{{url("/bo/pkm/entry-inquery")}}">Entry & Inquery Kertas Kerja
-                                                        PKM</a></li>
-                                                <li><a href="{{url("/bo/pkm/monitoring")}}">Entry & Inquery Monitoring PLU
-                                                        Baru</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/inquerympp")}}">Inquery
+                                                        MPP</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/pembatalanmpp")}}">Pembatalan
+                                                        MPP</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penyesuaian/perubahanplu")}}">Perubahan
+                                                        PLU</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{{url("/bo/cetak-dokumen")}}">Cetak Dokumen</a></li>
-                                        <li><a href="{{url("/bo/cetak-register")}}">Cetak Register</a></li>
-                                        <li><a href="{{url("/bo/pb-gudang-pusat")}}">PB Gudang Pusat</a></li>
-                                        <li><a href="{{url("/mstinformasihistoryproduct/index")}}">Informasi dan History
-                                                Product</a></li>
-                                        <li><a href="{{url("/bo/scan-barcode-igr")}}">Scan Barcode IGR</a></li>
-                                        <li><a href="{{url("/bo/input-pertemanan")}}">Input Pertemanan</a></li>
-                                        <li><a href="{{url("/bo/kertas-kerja-status")}}">Kertas Kerja Status</a></li>
-                                        <li><a href="{{url("/bo/monitoring-stok-pareto")}}">Monitoring Stok Pareto & KKH PB
-                                                Manual</a></li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Pengeluaran</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/input")}}">Input</a>
+                                                </li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inquery")}}">Inquery
+                                                        NPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/pembatalan")}}">Pembatalan
+                                                        NPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/pengeluaran/inqueryrtrsup")}}">Inquery
+                                                        Retur Barang Per Supplier</a></li>
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/sj-packlist")}}">Transaksi SJ Packlist</a></li>--}}
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/cetak-sj-packlist")}}">Cetak SJ Packlist</a></li>--}}
+                                                {{--<li><a href="{{url("/bo/transaksi/pengeluaran/transfer-sj")}}">Transfer Surat Jalan</a></li>--}}
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Pengiriman ke Cabang</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/input")}}">Input</a>
+                                                </li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/cetak")}}">Cetak Surat
+                                                        Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/batal")}}">Batal Surat
+                                                        Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/inquery")}}">Inquery
+                                                        Surat Jalan</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/sj-packlist")}}">Transaksi
+                                                        SJ Packlist</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/kirimcabang/cetak-sj-packlist")}}">Cetak
+                                                        SJ Packlist</a></li>
+                                                <li><a href="{{url("/bo/transaksi/kirimcabang/transfer-sj")}}">Transfer
+                                                        Surat Jalan</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Penerimaan dari Cabang</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/penerimaandaricabang/penerimaan-transfer")}}">Penerimaan
+                                                        / Transfer Antar Cabang</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/penerimaandaricabang/cetak-transfer")}}">Cetak
+                                                        Transfer Antar Cabang</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/penerimaandaricabang/inquery-transfer")}}">Inquery
+                                                        Transfer Antar Cabang</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/penerimaandaricabang/batal-transfer")}}">Batal
+                                                        Transfer Antar Cabang</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Penerimaan</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/penerimaan/input/index")}}">Input</a>
+                                                </li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/inquery/index")}}">Inquery
+                                                        BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/pembatalan/index")}}">Pembatalan
+                                                        BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/printbpb/index")}}">Cetak
+                                                        BPB</a></li>
+                                                <li><a href="{{url("/bo/transaksi/penerimaan/cetakbpb/index")}}">Cetak
+                                                        Laporan BPB</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Perubahan Status</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/perubahanstatus/entrySortirBarang/index")}}">Entry
+                                                        Sortir Barang</a></li>
+                                                <li>
+                                                    <a href="{{url("/bo/transaksi/perubahanstatus/rubahStatus/index")}}">Entry
+                                                        Perubahan Status</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                               data-toggle="dropdown" aria-haspopup="true"
+                                               aria-expanded="false">Repacking</a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a href="{{url("transaksi/repacking/index")}}">Repacking</a>
+                                                </li>
+                                                <li><a href="{{url("transaksi/laprepacking/index")}}">Laporan
+                                                        Repacking</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Proses</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/proses/konversi")}}">Konversi Item Perishable
+                                                Olahan</a></li>
+                                        <li><a href="{{url("/bo/proses/settingpagihari/index")}}">Setting Pagi
+                                                Hari</a></li>
+                                        <li><a href="{{url("/bo/proses/hitungulangstock")}}">Hitung Ulang Stock</a>
+                                        </li>
+                                        <li><a href="{{url("/bo/proses/monthend")}}">Month End</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Laporan-Laporan</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/laporan/daftar-pembelian")}}">Laporan Daftar
+                                                Pembelian</a></li>
+                                        <li><a href="{{url("/bo/laporan/daftar-retur-pembelian")}}">Laporan Daftar
+                                                Retur Pembelian</a></li>
+                                        <li><a href="{{url("/bo/laporan/daftar-pemusnahan-barang")}}">Laporan Daftar
+                                                Pemusnahan Barang</a></li>
+                                        <li><a href="{{url("/bo/laporan/penyesuaian")}}">Laporan Penyesuaian
+                                                Persediaan</a></li>
+                                        <li><a href="{{url("/bo/laporan/pengiriman")}}">Laporan Daftar Pengiriman
+                                                Antar Cabang</a></li>
+                                        <li><a href="{{url("/bo/laporan/penerimaan")}}">Laporan Daftar Penerimaan
+                                                Antar Cabang</a></li>
+                                        <li><a href="{{url("/bo/laporan/laporanservicelevel/index")}}">Laporan
+                                                Service Level PO Thd BPB</a></li>
+                                        <li><a href="{{url("/laporan/outsscan/index")}}">Laporan Outstanding
+                                                Scanning IDM / OMI</a></li>
+                                        <li><a href="{{url("/laporan/kunjunganbkl/index")}}">Laporan Bulanan
+                                                Kedatangan Supplier BKL</a></li>
+                                        <li><a href="{{url("/laporan/saleshbv/index")}}">Laporan Transfer Satuan
+                                                Produk Hot Beverages</a></li>
+                                        <li><a href="{{url("/laporan/servicelevelitempareto/index")}}">Laporan
+                                                Service Level Item Pareto</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Transfer</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/transfer/plu")}}">Transfer PLU</a></li>
+                                        <li><a href="{{url("/bo/transfer/po")}}">Transfer PO</a></li>
+                                        <li><a href="{{url("/bo/transfer/pb-ke-md")}}">Transfer PB ke MD</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">LPP</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/lpp/proses-lpp")}}">Proses LPP</a></li>
+                                        <li><a href="{{url("/bo/lpp/register-lpp")}}">Cetak Register LPP</a></li>
+                                        <li><a href="{{url("/bo/lpp/register-ba-idm")}}">Register BA IDM</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Menu PKM Toko</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/bo/pkm/kertas-kerja")}}">Proses Kertas Kerja PKM</a>
+                                        </li>
+                                        <li><a href="{{url("/bo/pkm/entry-inquery")}}">Entry & Inquery Kertas Kerja
+                                                PKM</a></li>
+                                        <li><a href="{{url("/bo/pkm/monitoring")}}">Entry & Inquery Monitoring PLU
+                                                Baru</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{{url("/bo/cetak-dokumen")}}">Cetak Dokumen</a></li>
+                                <li><a href="{{url("/bo/cetak-register")}}">Cetak Register</a></li>
+                                <li><a href="{{url("/bo/pb-gudang-pusat")}}">PB Gudang Pusat</a></li>
+                                <li><a href="{{url("/mstinformasihistoryproduct/index")}}">Informasi dan History
+                                        Product</a></li>
+                                <li><a href="{{url("/bo/scan-barcode-igr")}}">Scan Barcode IGR</a></li>
+                                <li><a href="{{url("/bo/input-pertemanan")}}">Input Pertemanan</a></li>
+                                <li><a href="{{url("/bo/kertas-kerja-status")}}">Kertas Kerja Status</a></li>
+                                <li><a href="{{url("/bo/monitoring-stok-pareto")}}">Monitoring Stok Pareto & KKH PB
+                                        Manual</a></li>
 
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Kerjasama IGR IDM</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/kerjasamaigridm/lapbedatag/index")}}">Laporan Perbedaan
-                                                        Tag</a></li>
-                                                <li><a href="{{url("/kerjasamaigridm/stout/index")}}">Stock Out</a></li>
-                                            </ul>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Kerjasama IGR IDM</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/kerjasamaigridm/lapbedatag/index")}}">Laporan Perbedaan
+                                                Tag</a></li>
+                                        <li><a href="{{url("/kerjasamaigridm/stout/index")}}">Stock Out</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Inquiry</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a></li>
+                                <li><a href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang Titipan Atas
+                                Struk</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/btas/titip")}}">Proses Penitipan Barang</a></li>
+                                <li><a href="{{url("/btas/sjas")}}">Surat Jalan Atas Struk</a></li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Monitoring</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="{{url("/btas/monitoring/percus/index")}}">Per Customer</a></li>
+                                        <li><a href="{{url("/btas/monitoring/peritem/index")}}">Per Item Barang</a>
                                         </li>
                                     </ul>
                                 </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tabel</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/tabel/plunoncharge")}}">PLU Kena Charge Credit Card</a></li>
+                                <li><a href="{{url("/tabel/plunonrefund")}}">PLU Tidak Bisa Refund</a></li>
+                                <li><a href="{{url("/tabel/plunonpromo")}}">PLU Tidak Ikut Promo</a></li>
+                                <li><a href="{{url("/tabel/plutimbangan")}}">PLU Timbangan</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Front Office</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/frontoffice/promosihokecab/index")}}">Download Data Promosi
+                                        HO</a></li>
                                 <li class="dropdown">
                                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Inquiry</a>
+                                       data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">Laporan Kasir</a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a></li>
-                                        <li><a href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a></li>
+                                        <li><a href="{{url("/frontoffice/laporankasir/csi/index")}}">Laporan
+                                                Cashback / Supplier / Item</a></li>
+                                        <li><a href="{{url("/frontoffice/laporankasir/cei/index")}}">Laporan
+                                                Cashback / Event / Item</a></li>
+                                        <li><a href="{{url("/frontoffice/laporankasir/penjualan/")}}">Laporan
+                                                Penjual</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang Titipan Atas
-                                        Struk</a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a href="{{url("/btas/titip")}}">Proses Penitipan Barang</a></li>
-                                        <li><a href="{{url("/btas/sjas")}}">Surat Jalan Atas Struk</a></li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Monitoring</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/btas/monitoring/percus/index")}}">Per Customer</a></li>
-                                                <li><a href="{{url("/btas/monitoring/peritem/index")}}">Per Item Barang</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                <li><a href="{{url("/frontoffice/formHJK/index")}}">Form Harga Jual Khusus</a></li>
+                                <li><a href="{{url("/frontoffice/amp/index")}}">Approval Member Platinum</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/admuser/index")}}">User</a></li>
+                                <li><a href="{{url("/administration/access")}}">Access Menu</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="{{url("template/index")}}">Template</a></li>
+
+                        <li class="dropdown" style="position: relative; right:0px;">
+                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">{{$_SESSION['usid']}}</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a href="{{url("/logout")}}">Logout</a>
                                 </li>
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tabel</a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a href="{{url("/tabel/plunoncharge")}}">PLU Kena Charge Credit Card</a></li>
-                                        <li><a href="{{url("/tabel/plunonrefund")}}">PLU Tidak Bisa Refund</a></li>
-                                        <li><a href="{{url("/tabel/plunonpromo")}}">PLU Tidak Ikut Promo</a></li>
-                                        <li><a href="{{url("/tabel/plutimbangan")}}">PLU Timbangan</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Front Office</a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a href="{{url("/frontoffice/promosihokecab/index")}}">Download Data Promosi
-                                                HO</a></li>
-                                        <li class="dropdown">
-                                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                               data-toggle="dropdown" aria-haspopup="true"
-                                               aria-expanded="false">Laporan Kasir</a>
-                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <li><a href="{{url("/frontoffice/laporankasir/csi/index")}}">Laporan
-                                                        Cashback / Supplier / Item</a></li>
-                                                <li><a href="{{url("/frontoffice/laporankasir/cei/index")}}">Laporan
-                                                        Cashback / Event / Item</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="{{url("/frontoffice/formHJK/index")}}">Form Harga Jual Khusus</a></li>
-                                        <li><a href="{{url("/frontoffice/amp/index")}}">Approval Member Platinum</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a href="{{url("/admuser/index")}}">User</a></li>
-                                        <li><a href="{{url("/administration/access")}}">Access Menu</a></li>
-                                    </ul>
-                                </li>
-                            @else
-                                @php
-                                    $tempgroup = '';
-                                    $tempsubgroup1 = '';
-                                    $tempsubgroup2 = '';
-                                    $tempsubgroup3 = '';
-                                @endphp
-                                @foreach($_SESSION['menu'] as $m)
-                                    @if($tempgroup != $m->acc_group)
-                                        @if($tempgroup != '')
-                        </ul>
-                    </li>
-                    @endif
-                    @if($tempsubgroup3 != '' && $tempsubgroup3 != 'x')
-                    </ul></li>
-                    @endif
-                    @if($tempsubgroup2 != '' && $tempsubgroup2 != 'x')
-                    </ul></li>
-                    @endif
-                    @if($tempsubgroup1 != '' && $tempsubgroup1 != 'x')
-                    </ul></li>
-                    @endif
-                    @php
-                        $tempsubgroup1 = '';
-                        $tempsubgroup2 = '';
-                        $tempsubgroup3 = '';
-                        $tempgroup = $m->acc_group;
-                    @endphp
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_group }}</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            </ul>
+                        </li>
+                    @else
+                        @php
+                            $tempgroup = '';
+                            $tempsubgroup1 = '';
+                            $tempsubgroup2 = '';
+                            $tempsubgroup3 = '';
+                        @endphp
+                        @foreach($_SESSION['menu'] as $m)
+                        @if($tempgroup != $m->acc_group)
+                            @if($tempgroup != '')
+                            </ul>
+                        </li>
                             @endif
+                            @if($tempsubgroup3 != '' && $tempsubgroup3 != 'x')
+                            </ul></li>
+                            @endif
+                            @if($tempsubgroup2 != '' && $tempsubgroup2 != 'x')
+                            </ul></li>
+                            @endif
+                            @if($tempsubgroup1 != '' && $tempsubgroup1 != 'x')
+                            </ul></li>
+                            @endif
+                            @php
+                                $tempsubgroup1 = '';
+                                $tempsubgroup2 = '';
+                                $tempsubgroup3 = '';
+                                $tempgroup = $m->acc_group;
+                            @endphp
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_group }}</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @endif
 
-                            @if($m->acc_subgroup1 != null || $m->acc_subgroup2 != null || $m->acc_subgroup3 != null)
-                                @if($tempsubgroup1 != $m->acc_subgroup1 && $tempsubgroup1 != '')
-                        </ul>
-                    </li>
+                        @if($m->acc_subgroup1 != null || $m->acc_subgroup2 != null || $m->acc_subgroup3 != null)
+                            @if($tempsubgroup1 != $m->acc_subgroup1 && $tempsubgroup1 != '')
+                            </ul>
+                        </li>
                     @if($tempsubgroup2 != $m->acc_subgroup2 && $tempsubgroup2 != '')
                     </ul></li>
                     @if($tempsubgroup3 != $m->acc_subgroup3 && $tempsubgroup3 != '')
@@ -539,10 +552,10 @@
                     @endif
                     <li><a href="{{url($m->acc_url)}}">{{ $m->acc_name }}</a></li>
                     @endforeach
-                        </ul>
+                        @if(count($_SESSION['menu']) > 0)
+                    </ul>
                     </li>
                     @endif
-
                     <li><a href="{{url("template/index")}}">Template</a></li>
 
                     <li class="dropdown" style="position: relative; right:0px;">
@@ -554,6 +567,9 @@
                             </li>
                         </ul>
                     </li>
+                    </ul>
+                    </li>
+                    @endif
             </nav>
             </div>
         </div>
@@ -873,6 +889,8 @@
             return false;
         });
     })(jQuery)
+
+
 
 
 </script>

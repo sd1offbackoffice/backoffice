@@ -69,6 +69,7 @@
             <span class="login100-form-title p-b-32 text-center">
 						Login BACKOFFICE
 
+
 					</span>
 
             <span class="txt1 p-b-11">
@@ -129,6 +130,18 @@
         }, 100);
 
         $('#username').focus();
+
+        @isset($msg)
+        console.log('{{$msg}}');
+        if('{{ $msg }}' != ''){
+            swal({
+                title: '{{ $msg }}',
+                icon: 'warning'
+            }).then(() => {
+                location.replace('{{ url('/') }}');
+            });
+        }
+        @endisset
     });
 
     $('#username').keypress(function (e) {

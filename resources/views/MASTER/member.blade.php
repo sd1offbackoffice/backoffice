@@ -78,6 +78,7 @@
                                             <div class="col-sm-4">
                                                 <input type="number" class="form-control diisi" id="cus_noktp">
                                             </div>
+                                            <span class="text-danger" id="message-error">* Nomor KTP harus 16 digit</span>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_alamatmember1" class="col-sm-2 col-form-label">Alamat KTP<span class="wajib">*</span></label>
@@ -1270,6 +1271,8 @@
 
     <script>
 
+        let flagForFocus = false;
+
         $(document).ready(function () {
             getLovKodepos('');
             getLovMember('');
@@ -1483,6 +1486,15 @@
             }
         });
 
+        $('#cus_noktp').on('keyup',function(event){
+            let ktp = $('#cus_noktp').val().length;
+            if (ktp < 16 || ktp > 16){
+                $('#message-error').show();
+            } else {
+                $('#message-error').hide();
+            }
+        })
+
         $('#cus_alamatmember1').on('keypress',function(event){
             if(event.which == 13){
                 if(this.value.length > 0){
@@ -1624,6 +1636,12 @@
         });
 
         $('#cus_jarak').on('keypress',function(event){
+            if(event.which == 13){
+                $('#cus_kodesuboutlet').select();
+            }
+        });
+
+        $('#cus_kodesuboutlet').on('keypress',function(event){
             if(event.which == 13){
                 $('#cus_flagpkp').select();
             }
@@ -2004,6 +2022,20 @@
             }
         });
 
+        $('#cb_internetY').on('change',function(){
+            if($('#cb_internetY').is(':checked')){
+                $('#cb_internetT').prop('checked',false);
+            }
+        });
+
+        $('#cb_internetT').on('change',function(){
+            if($('#cb_internetT').is(':checked')){
+                $('#cb_internetY').prop('checked',false);
+            }
+        });
+
+        /////////////////
+
         $('#crm_tipehp').on('keydown',function(event){
             if(event.which == 13){
                 $('#crm_namabank').select();
@@ -2047,6 +2079,7 @@
         $('#i_koordinat').on('keydown',function(event){
             if(event.which == 13){
                 $('#btn-p_identitas3').click();
+                $('#crm_alamatusaha4').select();
             }
         });
 
@@ -2559,6 +2592,17 @@
 
         function cek_field_wajib(){
             ok = true;
+
+            let ktp = $('#cus_noktp').val().length;
+            if (ktp < 16 || ktp > 16){
+                $('#message-error').show();
+                $('#cus_noktp').focus();
+                $('#cus_noktp').addClass('kosong');
+                return  false;
+            } else {
+                $('#message-error').hide();
+            }
+
             $('.diisi').each(function(){
                 if($(this).val() != null && $(this).val().length > 0){
                     $(this).removeClass('kosong');
@@ -2771,6 +2815,7 @@
                         }
                         else $('#c_metodekirimX').hide();
                         $('#i_koordinat').val(member.crm_koordinat);
+                        $('#i_koordinat').attr('disabled', true);
 
                         //#########################################################panel identitas 3######################################################################
                         $('#crm_alamatusaha1').val(member.crm_alamatusaha1);
@@ -2898,6 +2943,12 @@
                     }
                     $('#modal-loader').modal('hide');
                     $('#cus_namamember').select();
+
+                    if(flagForFocus == false) {
+                        flagForFocus = true;
+                        $('#cus_kodemember').select();
+                    }
+
                 }
             });
         }
@@ -3088,8 +3139,8 @@
         }
 
         $('#btn-rekam').on('click',function(){
-            // ok = cek_field_wajib();
-            ok = true;
+            ok = cek_field_wajib();
+            // ok = true;
 
             if(ok) {
                 swal({
@@ -3246,6 +3297,7 @@
             else{
                 swal({
                     title: 'Data  yang diinputkan belum lengkap!',
+                    text: ' ',
                     icon: "warning",
                     timer: 750,
                     buttons: false,
@@ -3314,7 +3366,7 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
                             if (response.status == 'success') {
                                 swal({
                                     title: response['message'],
@@ -3331,6 +3383,10 @@
                                 });
 
                             }
+                        }, error: function (err) {
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
                     });
                 }

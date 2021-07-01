@@ -276,9 +276,18 @@
 
                     $('.cb-menu').prop('checked',false);
 
-                    for(i=0;i<response.length;i++){
-                        $('#'+response[i].uac_acc_id).prop('checked',true);
+                    for(i=0;i<response.data.length;i++){
+                        $('#'+response.data[i].uac_acc_id).prop('checked',true);
                     }
+
+                    for(i=0;i<response.checkedAll.length;i++){
+                        $('#ALL_'+response.checkedAll[i]).prop('checked',true);
+                    }
+
+                    swal({
+                        title: 'User '+ $('#userid').val().toUpperCase() +' memiliki akses terhadap '+ response.data.length +' menu!',
+                        icon: 'warning'
+                    });
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
