@@ -865,7 +865,13 @@
                                 $('.lks_prdcd').each(function(){
                                     $(this).prop('disabled',false);
                                 });
-                                $('.btn-delete').prop('disabled',false); //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
+
+                                //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
+                                if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
+                                    $('.btn-delete').prop('disabled',true);
+                                    console.log('z');
+                                }
+                                else $('.btn-delete').prop('disabled',false);
 
                             }
                             else{

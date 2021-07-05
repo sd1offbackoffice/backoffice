@@ -1279,7 +1279,7 @@
             $('#table_lov_jenismember').DataTable();
             $('#table_lov_jenisoutlet').DataTable();
             $('#table_lov_group').DataTable();
-            lov_member_select(890079,false);
+            lov_member_select(898361,false);
         });
 
         // Function for LOV
@@ -1382,6 +1382,31 @@
 
             lov_kodepos_select(pos_kode,pos_kecamatan,pos_kelurahan,pos_kabupaten);
         } );
+
+        // Function untuk auto focus ke search input ketika modal terbuka
+        $('#m_kodeposHelp').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#table_lov_kodepos_filter label input').focus();
+            }, 1000);
+        })
+
+        $('#m_jenismemberHelp').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#table_lov_jenismember_filter label input').focus();
+            }, 1000);
+        })
+
+        $('#m_jenisoutletHelp').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#table_lov_jenisoutlet_filter label input').focus();
+            }, 1000);
+        })
+
+        $('#m_groupHelp').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#table_lov_group_filter label input').focus();
+            }, 1000);
+        })
 
         //-- End Function for LOV
 
@@ -2523,6 +2548,8 @@
             $('#crm_alamatusaha2').prop('disabled',true);
             $('#i_jeniscustomer2').prop('disabled',true);
             $('#i_jenisoutlet2').prop('disabled',true);
+            $('#cus_kodesuboutlet').prop('disabled',true);
+            $('#i_suboutlet2').prop('disabled',true);
             $('#grp_subgroup').prop('disabled',true);
             $('#grp_kategori').prop('disabled',true);
             $('#grp_subkategori').prop('disabled',true);
@@ -2555,7 +2582,7 @@
                 success: function (result) {
                     $('#tbody_table_lov_suboutlet').children().remove();
 
-                    if(result){
+                    if(result.length > 0){
                         for(let i =0 ; i < result.length ; i++ ){
                             $('#tbody_table_lov_suboutlet').append(`<tr class="row_lov row_lov_suboutlet">
                                                                          <td>${result[i].sub_kodesuboutlet}</td>
@@ -2563,7 +2590,7 @@
                                                                     </tr>`)
                         }
                     } else {
-                        $('#tbody_table_lov_suboutlet').append(`<tr class="row_lov ">
+                        $('#tbody_table_lov_suboutlet').append(`<tr class="text-center">
                                                                          <td>--</td>
                                                                         <td>--</td>
                                                                     </tr>`)
@@ -2593,6 +2620,7 @@
         function cek_field_wajib(){
             ok = true;
 
+            //Validasi KTP
             let ktp = $('#cus_noktp').val().length;
             if (ktp < 16 || ktp > 16){
                 $('#message-error').show();
@@ -2602,6 +2630,7 @@
             } else {
                 $('#message-error').hide();
             }
+
 
             $('.diisi').each(function(){
                 if($(this).val() != null && $(this).val().length > 0){
@@ -3078,6 +3107,8 @@
         function lov_jenisoutlet_select(kode, nama){
             $('#cus_kodeoutlet').val(kode);
             $('#i_jenisoutlet2').val(nama);
+            $('#cus_kodesuboutlet').val('');
+            $('#i_suboutlet2').val('');
 
             if($('#m_jenisoutletHelp').is(':visible')){
                 $('#m_jenisoutletHelp').modal('toggle');
@@ -3140,7 +3171,22 @@
 
         $('#btn-rekam').on('click',function(){
             ok = cek_field_wajib();
-            // ok = true;
+
+            // Validasi Suboutlet
+            let outlet = $('#cus_kodeoutlet').val();
+            if (outlet == 2 || outlet == 3 || outlet == 4 || outlet == 5) {
+                let suboutlet = $('#cus_kodesuboutlet').val();
+                if (!suboutlet){
+                    swal({
+                        title : "Sub Outlet Tidak Boleh Kosong !!!",
+                        text : '',
+                        icon : 'warning',
+                        timer : 1000
+                    })
+                    $('#cus_kodesuboutlet').focus()
+                    return  false;
+                }
+            }
 
             if(ok) {
                 swal({
@@ -3366,6 +3412,7 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
+                            console.log(response);
                             $('#modal-loader').modal('hide');
                             if (response.status == 'success') {
                                 swal({

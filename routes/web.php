@@ -26,6 +26,7 @@ Route::get('/testnewnav', function () {
 Route::get('/login', 'Auth\loginController@index');
 Route::get('/logout', 'Auth\loginController@logout');
 Route::get('/logout-access', 'Auth\loginController@logoutAccess');
+Route::get('/unauthorized', 'Auth\loginController@unauthorized');
 
 
 
@@ -44,29 +45,29 @@ Route::get('/mst/test', 'MASTER\barcodeController@testdenni')->middleware('Check
 
 /******** Denni ********/
 //MST_PERUSAHAAN
-Route::get('/mstperusahaan/index', 'MASTER\perusahaanController@index')->middleware('CheckLogin');
+Route::get('/mstperusahaan/', 'MASTER\perusahaanController@index')->middleware('CheckLogin');
 Route::post('/mstperusahaan/update', 'MASTER\perusahaanController@update')->middleware('CheckLogin');
 //MST_BARCODE
-Route::get('/mstbarcode/index', 'MASTER\barcodeController@index')->middleware('CheckLogin');
+Route::get('/mstbarcode/', 'MASTER\barcodeController@index')->middleware('CheckLogin');
 Route::get('/mstbarcode/getbarcode', 'MASTER\barcodeController@getBarcode')->middleware('CheckLogin');
 //MST_KATEGORITOKO
-Route::get('/mstkategoritoko/index', 'MASTER\kategoritokoController@index')->middleware('CheckLogin');
+Route::get('/mstkategoritoko', 'MASTER\kategoritokoController@index')->middleware('CheckLogin');
 //MST_APPROVAL
-Route::get('/mstapproval/index', 'MASTER\approvalController@index')->middleware('CheckLogin');
+Route::get('/mstapproval', 'MASTER\approvalController@index')->middleware('CheckLogin');
 //MST_JENISITEM
-Route::get('/mstjenisitem/index', 'MASTER\jenisItemController@index')->middleware('CheckLogin');
+Route::get('/mstjenisitem', 'MASTER\jenisItemController@index')->middleware('CheckLogin');
 Route::get('/mstjenisitem/getprodmast', 'MASTER\jenisItemController@getProdmast')->middleware('CheckLogin');
 //MST_KUBIKASIPLANO
-Route::get('/mstkubikasiplano/index', 'MASTER\kubikasiPlanoController@index')->middleware('CheckLogin');
+Route::get('/mstkubikasiplano', 'MASTER\kubikasiPlanoController@index')->middleware('CheckLogin');
 //IGR_BO_INQUERY (INFORMASI DAN HISTORY PRODUK)
-Route::get('/mstinformasihistoryproduct/index', 'MASTER\informasiHistoryProductController@index')->middleware('CheckLogin');
+Route::get('/mstinformasihistoryproduct', 'MASTER\informasiHistoryProductController@index')->middleware('CheckLogin');
 Route::get('/mstinformasihistoryproduct/lov_search', 'MASTER\informasiHistoryProductController@lov_search')->middleware('CheckLogin');
 Route::get('/mstinformasihistoryproduct/getNextPLU', 'MASTER\informasiHistoryProductController@getNextPLU')->middleware('CheckLogin');
 Route::get('/mstinformasihistoryproduct/getPrevPLU', 'MASTER\informasiHistoryProductController@getPrevPLU')->middleware('CheckLogin');
 //ADMINISTRATION (USER)
-Route::get('/admuser/index', 'ADMINISTRATION\userController@index')->middleware('CheckLogin');
+Route::get('/admuser', 'ADMINISTRATION\userController@index')->middleware('CheckLogin');
 //PB MANUAL
-Route::get('/bopbmanual/index', 'BACKOFFICE\PBManualController@index')->middleware('CheckLogin');
+Route::get('/bopbmanual', 'BACKOFFICE\PBManualController@index')->middleware('CheckLogin');
 //Pengeluaran
 Route::middleware(['CheckLogin'])->group(function () {
     Route::prefix('/bo')->group(function () {
@@ -144,28 +145,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
 });
 /******** Leo ********/
-/*MASTER SUPPLIER*/
-Route::get('/mstsupplier/index', 'MASTER\supplierController@index')->middleware('CheckLogin');
-Route::get('/mstsupplier/lov', 'MASTER\supplierController@lov')->middleware('CheckLogin');
-Route::get('/mstsupplier/lov_select', 'MASTER\supplierController@lov_select')->middleware('CheckLogin');
-Route::get('/mstsupplier/lov_search', 'MASTER\supplierController@lov_search')->middleware('CheckLogin');
 
-/*MASTER DEPARTEMENT*/
-Route::get('/mstdepartement/index', 'MASTER\departementController@index')->middleware('CheckLogin');
-Route::get('/mstdepartement/divisi_select', 'MASTER\departementController@divisi_select')->middleware('CheckLogin');
-
-/*MASTER DIVISI*/
-Route::get('/mstdivisi/index', 'MASTER\divisiController@index')->middleware('CheckLogin');
-
-/*MASTER KATEGORI BARANG*/
-Route::get('/mstkategoribarang/index', 'MASTER\kategoriBarangController@index')->middleware('CheckLogin');
-Route::get('/mstkategoribarang/departement_select', 'MASTER\kategoriBarangController@departement_select')->middleware('CheckLogin');
-
-/*MASTER HARGA BELI*/
-Route::get('/msthargabeli/index', 'MASTER\hargaBeliController@index')->middleware('CheckLogin');
-Route::get('/msthargabeli/getprodmast', 'MASTER\hargaBeliController@getProdmast')->middleware('CheckLogin');
-Route::get('/msthargabeli/lov_search', 'MASTER\hargaBeliController@lov_search')->middleware('CheckLogin');
-Route::get('/msthargabeli/lov_select', 'MASTER\hargaBeliController@lov_select')->middleware('CheckLogin');
 
 /*MASTER MEMBER*/
 Route::get('/mstmember/index', 'MASTER\memberController@index')->middleware('CheckLogin')->middleware('CheckLogin');
@@ -186,20 +166,6 @@ Route::post('/mstmember/export_crm', 'MASTER\memberController@export_crm')->midd
 Route::post('/mstmember/save_quisioner', 'MASTER\memberController@save_quisioner')->middleware('CheckLogin');
 Route::post('/mstmember/hapus_member', 'MASTER\memberController@hapus_member')->middleware('CheckLogin');
 
-/*BACK OFFICE - UPLOAD DAN MONITORING KKEI TOKO IGR*/
-Route::get('/bokirimkkei/index', 'BACKOFFICE\KirimKKEIController@index')->middleware('CheckLogin');
-Route::post('/bokirimkkei/upload', 'BACKOFFICE\KirimKKEIController@upload')->middleware('CheckLogin');
-Route::post('/bokirimkkei/refresh', 'BACKOFFICE\KirimKKEIController@refresh')->middleware('CheckLogin');
-
-/*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
-Route::get('/bokkei/index', 'BACKOFFICE\KKEIController@index')->middleware('CheckLogin');
-Route::post('/bokkei/get_detail_produk', 'BACKOFFICE\KKEIController@get_detail_produk')->middleware('CheckLogin');
-Route::post('/bokkei/get_detail_kkei', 'BACKOFFICE\KKEIController@get_detail_kkei')->middleware('CheckLogin');
-Route::post('/bokkei/save', 'BACKOFFICE\KKEIController@save')->middleware('CheckLogin');
-Route::post('/bokkei/laporan', 'BACKOFFICE\KKEIController@laporan')->middleware('CheckLogin');
-Route::get('/bokkei/laporan', 'BACKOFFICE\KKEIController@laporan_view')->middleware('CheckLogin');
-
-Route::get('/bokkei/test', 'BACKOFFICE\KKEIController@test');
 
 
 
@@ -250,10 +216,62 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/delete_dpd', 'MASTER\lokasiController@delete_dpd');
             Route::post('/save_dpd', 'MASTER\lokasiController@save_dpd');
         });
+
+        /*MASTER SUPPLIER*/
+        Route::prefix('/supplier')->group(function(){
+            Route::get('/', 'MASTER\supplierController@index');
+            Route::get('/lov', 'MASTER\supplierController@lov');
+            Route::get('/lov_select', 'MASTER\supplierController@lov_select');
+            Route::get('/lov_search', 'MASTER\supplierController@lov_search');
+        });
+
+        /*MASTER DEPARTEMENT*/
+        Route::prefix('/departement')->group(function(){
+            Route::get('/', 'MASTER\departementController@index');
+            Route::get('/divisi_select', 'MASTER\departementController@divisi_select');
+        });
+
+        /*MASTER DIVISI*/
+        Route::prefix('/divisi')->group(function(){
+            Route::get('/', 'MASTER\divisiController@index');
+        });
+
+        /*MASTER KATEGORI BARANG*/
+        Route::prefix('/kategoribarang')->group(function(){
+            Route::get('/', 'MASTER\kategoriBarangController@index');
+            Route::get('/departement_select', 'MASTER\kategoriBarangController@departement_select');
+        });
+
+        /*MASTER HARGA BELI*/
+        Route::prefix('/hargabeli')->group(function(){
+            Route::get('/', 'MASTER\hargaBeliController@index');
+            Route::get('/getprodmast', 'MASTER\hargaBeliController@getProdmast');
+            Route::get('/lov_search', 'MASTER\hargaBeliController@lov_search');
+            Route::get('/lov_select', 'MASTER\hargaBeliController@lov_select');
+        });
     });
 
     Route::prefix('/bo')->group(function () {
         Route::prefix('/pb')->group(function(){
+            /*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
+            Route::prefix('/kkei')->group(function(){
+                Route::get('/', 'BACKOFFICE\KKEIController@index');
+                Route::post('/get_detail_produk', 'BACKOFFICE\KKEIController@get_detail_produk');
+                Route::post('/get_detail_kkei', 'BACKOFFICE\KKEIController@get_detail_kkei');
+                Route::post('/save', 'BACKOFFICE\KKEIController@save');
+                Route::post('/laporan', 'BACKOFFICE\KKEIController@laporan');
+                Route::get('/laporan', 'BACKOFFICE\KKEIController@laporan_view');
+
+                Route::get('/test', 'BACKOFFICE\KKEIController@test');
+            });
+
+            /*BACK OFFICE - UPLOAD DAN MONITORING KKEI TOKO IGR*/
+            Route::prefix('/kirimkkei')->group(function(){
+                Route::get('/', 'BACKOFFICE\KirimKKEIController@index');
+                Route::post('/upload', 'BACKOFFICE\KirimKKEIController@upload');
+                Route::post('/refresh', 'BACKOFFICE\KirimKKEIController@refresh');
+            });
+
             /*BACK OFFICE - REORDER PB GO*/
             Route::prefix('reorder-pb-go')->group(function(){
                 Route::get('/', 'BACKOFFICE\ReorderPBGOController@index');
@@ -281,7 +299,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::prefix('/penyesuaian')->group(function () {
                 Route::prefix('/input')->group(function(){
                     Route::get('/','BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@index');
-                    Route::post('/lov_plu_search', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@lov_plu_search');
+                    Route::get('/lov_plu_search', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@lov_plu_search');
                     Route::post('/plu_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@plu_select');
                     Route::post('/doc_select', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_select');
                     Route::post('/doc_new', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_new');
@@ -1066,11 +1084,15 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
     });
 
+    //FORNTOFFICE - LAPORAN KASIR - LAPORAN PENJUALAN
     Route::prefix('/frontoffice')->group(function(){
         Route::prefix('/laporankasir')->group(function(){
             Route::prefix('/penjualan')->group(function(){
                 Route::get('/','FRONTOFFICE\LAPORANKASIR\penjualanController@index');
                 Route::get('/getdiv','FRONTOFFICE\LAPORANKASIR\penjualanController@getDiv');
+                Route::get('/getdept','FRONTOFFICE\LAPORANKASIR\penjualanController@getDept');
+                Route::get('/printdocument','FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentT');
+                Route::get('/printdocumeny','FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentY');
             });
         });
     });

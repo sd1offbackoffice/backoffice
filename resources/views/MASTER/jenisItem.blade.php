@@ -456,6 +456,7 @@
     <script>
         $(document).ready(function () {
             getModalData('');
+            $('#i_pluplanogram').select();
         });
 
         function getModalData(value){
@@ -532,6 +533,12 @@
 
             }
         });
+        $('#i_jenisrak').keypress(function(e) {
+            if (e.keyCode == 13) {
+                $('#btn-save').focus();
+            }
+        });
+
         function convert_plu() {
             var plu = $('#i_pluplanogram').val();
             console.log(plu.length);
@@ -557,30 +564,30 @@
                     $('#i_deskripsi').val(response['produk']['prd_deskripsipanjang']);
                     $('#i_unitfrac').val(response['produk']['prd_unit']+'/'+response['produk']['prd_frac']);
                     $('#i_maxpalet').val(response['palet']['mpt_maxqty']);
-                    $('#sls_qty_01').val(format_currency(response['trendsales']['sls_qty_01']));
-                    $('#sls_qty_02').val(format_currency(response['trendsales']['sls_qty_02']));
-                    $('#sls_qty_03').val(format_currency(response['trendsales']['sls_qty_03']));
-                    $('#sls_qty_04').val(format_currency(response['trendsales']['sls_qty_04']));
-                    $('#sls_qty_05').val(format_currency(response['trendsales']['sls_qty_05']));
-                    $('#sls_qty_06').val(format_currency(response['trendsales']['sls_qty_06']));
-                    $('#sls_qty_07').val(format_currency(response['trendsales']['sls_qty_07']));
-                    $('#sls_qty_08').val(format_currency(response['trendsales']['sls_qty_08']));
-                    $('#sls_qty_09').val(format_currency(response['trendsales']['sls_qty_09']));
-                    $('#sls_qty_10').val(format_currency(response['trendsales']['sls_qty_10']));
-                    $('#sls_qty_11').val(format_currency(response['trendsales']['sls_qty_11']));
-                    $('#sls_qty_12').val(format_currency(response['trendsales']['sls_qty_12']));
-                    $('#sls_rph_01').val(format_currency(response['trendsales']['sls_rph_01']));
-                    $('#sls_rph_02').val(format_currency(response['trendsales']['sls_rph_02']));
-                    $('#sls_rph_03').val(format_currency(response['trendsales']['sls_rph_03']));
-                    $('#sls_rph_04').val(format_currency(response['trendsales']['sls_rph_04']));
-                    $('#sls_rph_05').val(format_currency(response['trendsales']['sls_rph_05']));
-                    $('#sls_rph_06').val(format_currency(response['trendsales']['sls_rph_06']));
-                    $('#sls_rph_07').val(format_currency(response['trendsales']['sls_rph_07']));
-                    $('#sls_rph_08').val(format_currency(response['trendsales']['sls_rph_08']));
-                    $('#sls_rph_09').val(format_currency(response['trendsales']['sls_rph_09']));
-                    $('#sls_rph_10').val(format_currency(response['trendsales']['sls_rph_10']));
-                    $('#sls_rph_11').val(format_currency(response['trendsales']['sls_rph_11']));
-                    $('#sls_rph_12').val(format_currency(response['trendsales']['sls_rph_12']));
+                    $('#sls_qty_01').val(convertToRupiah(response['trendsales']['sls_qty_01']));
+                    $('#sls_qty_02').val(convertToRupiah(response['trendsales']['sls_qty_02']));
+                    $('#sls_qty_03').val(convertToRupiah(response['trendsales']['sls_qty_03']));
+                    $('#sls_qty_04').val(convertToRupiah(response['trendsales']['sls_qty_04']));
+                    $('#sls_qty_05').val(convertToRupiah(response['trendsales']['sls_qty_05']));
+                    $('#sls_qty_06').val(convertToRupiah(response['trendsales']['sls_qty_06']));
+                    $('#sls_qty_07').val(convertToRupiah(response['trendsales']['sls_qty_07']));
+                    $('#sls_qty_08').val(convertToRupiah(response['trendsales']['sls_qty_08']));
+                    $('#sls_qty_09').val(convertToRupiah(response['trendsales']['sls_qty_09']));
+                    $('#sls_qty_10').val(convertToRupiah(response['trendsales']['sls_qty_10']));
+                    $('#sls_qty_11').val(convertToRupiah(response['trendsales']['sls_qty_11']));
+                    $('#sls_qty_12').val(convertToRupiah(response['trendsales']['sls_qty_12']));
+                    $('#sls_rph_01').val(convertToRupiah(response['trendsales']['sls_rph_01']));
+                    $('#sls_rph_02').val(convertToRupiah(response['trendsales']['sls_rph_02']));
+                    $('#sls_rph_03').val(convertToRupiah(response['trendsales']['sls_rph_03']));
+                    $('#sls_rph_04').val(convertToRupiah(response['trendsales']['sls_rph_04']));
+                    $('#sls_rph_05').val(convertToRupiah(response['trendsales']['sls_rph_05']));
+                    $('#sls_rph_06').val(convertToRupiah(response['trendsales']['sls_rph_06']));
+                    $('#sls_rph_07').val(convertToRupiah(response['trendsales']['sls_rph_07']));
+                    $('#sls_rph_08').val(convertToRupiah(response['trendsales']['sls_rph_08']));
+                    $('#sls_rph_09').val(convertToRupiah(response['trendsales']['sls_rph_09']));
+                    $('#sls_rph_10').val(convertToRupiah(response['trendsales']['sls_rph_10']));
+                    $('#sls_rph_11').val(convertToRupiah(response['trendsales']['sls_rph_11']));
+                    $('#sls_rph_12').val(convertToRupiah(response['trendsales']['sls_rph_12']));
 
                     $('.baris').remove();
                     for (var i = 0; i < response['po'].length ; i++ ){
@@ -590,15 +597,15 @@
                         $('#table-lokasi-plu').append('<tr class="row baris justify-content-md-center p-0"><td class="col-sm-4 p-0 text-center" ><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_koderak+'.'+response['lokasi'][i].lks_kodesubrak+'.'+response['lokasi'][i].lks_tiperak+'.'+response['lokasi'][i].lks_shelvingrak+'.'+response['lokasi'][i].lks_nourut+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_jenisrak+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_qty+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxplano+'"></td><td class="col-sm-2 p-0"><input type="text" class="form-control" disabled value="'+response['lokasi'][i].lks_maxdisplay+'"></td></tr>');
                     }
                     $('#lokasi').val(response['prodstock'].st);
-                    $('#awal').val(convertToRupiah2(response['prodstock'].st_saldoawal));
-                    $('#terima').val(convertToRupiah2(response['prodstock'].st_trfin));
-                    $('#keluar').val(convertToRupiah2(response['prodstock'].st_trfout));
-                    $('#sales').val(convertToRupiah2(response['prodstock'].st_sales));
-                    $('#retur').val(convertToRupiah2(response['prodstock'].st_retur));
-                    $('#adj').val(convertToRupiah2(response['prodstock'].st_adj));
-                    $('#instrst').val(convertToRupiah2(response['prodstock'].st_intransit));
-                    $('#akhir').val(convertToRupiah2(response['prodstock'].st_saldoakhir));
-                    $('#avgsales').val(format_currency(response['AVGSALES']));
+                    $('#awal').val(convertToRupiah(response['prodstock'].st_saldoawal));
+                    $('#terima').val(convertToRupiah(response['prodstock'].st_trfin));
+                    $('#keluar').val(convertToRupiah(response['prodstock'].st_trfout));
+                    $('#sales').val(convertToRupiah(response['prodstock'].st_sales));
+                    $('#retur').val(convertToRupiah(response['prodstock'].st_retur));
+                    $('#adj').val(convertToRupiah(response['prodstock'].st_adj));
+                    $('#instrst').val(convertToRupiah(response['prodstock'].st_intransit));
+                    $('#akhir').val(convertToRupiah(response['prodstock'].st_saldoakhir));
+                    $('#avgsales').val(convertToRupiah(response['AVGSALES']));
 
 
                     for (var i = 0; i < response['supplier'].length ; i++ ){
@@ -624,10 +631,10 @@
                         '    <input type="text" class="form-control p-1" value="'+response['supplier'][i].trm_top+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right p-1" value="'+format_currency(response['supplier'][i].trm_hpp)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+convertToRupiah(response['supplier'][i].trm_hpp)+'" disabled>\n' +
                         '</td>\n' +
                         '<td class="p-0">\n' +
-                        '    <input type="text" class="form-control text-right p-1" value="'+format_currency(response['supplier'][i].trm_acost)+'" disabled>\n' +
+                        '    <input type="text" class="form-control text-right p-1" value="'+convertToRupiah(response['supplier'][i].trm_acost)+'" disabled>\n' +
                         '</td><tr>');
                     null_check();
                     }
@@ -720,7 +727,7 @@
 
             }
         }
-        function format_currency(value) {
+        function convertToRupiah(value) {
             var val = (value/1).toFixed(2).replace('.', ',');
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }

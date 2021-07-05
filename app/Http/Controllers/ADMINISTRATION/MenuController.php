@@ -14,6 +14,7 @@ use Yajra\DataTables\DataTables;
 class MenuController extends Controller
 {
     public function index(){
+
 //        $data = DB::table('tbmaster_access_migrasi')
 //            ->orderBy('acc_group')
 //            ->orderBy('acc_subgroup1')

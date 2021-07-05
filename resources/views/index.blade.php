@@ -2,8 +2,8 @@
 @section('title','IAS')
 
 @section('content')
-    <link href={{asset('flappy/css/reset.css')}} rel="stylesheet">
-    <link href={{asset('flappy/css/main.css')}} rel="stylesheet">
+{{--    <link href={{asset('flappy/css/reset.css')}} rel="stylesheet">--}}
+{{--    <link href={{asset('flappy/css/main.css')}} rel="stylesheet">--}}
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -51,42 +51,55 @@
     </div>
 
 
-    <br>
-    <br>
-    <br>
-    <div class="container-fluid">
-        <div id="gamecontainer">
-            <div id="gamescreen">
-                <div id="sky" class="animated">
-                    <div id="flyarea">
-                        <div id="ceiling" class="animated"></div>
-                        <!-- This is the flying and pipe area container -->
-                        <div id="player" class="bird animated"></div>
-                        <div id="bigscore"></div>
-                        <div id="splash"></div>
-                        <div id="scoreboard">
-                            <div id="medal"></div>
-                            <div id="currentscore"></div>
-                            <div id="highscore"></div>
-                            <div id="replay"><img src="assets/replay.png" alt="replay"></div>
-                        </div>
-
-                        <!-- Pipes go here! -->
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card border-dark">
+                    <div class="card-body cardForm">
+                        <h5 class="mb-4">PERUBAHAN DARI IAS LAMA KE IAS WEB</h5>
+                        <p>Fungsi pindah kolom dengan tombol enter. diubah menggunakan tombol tab</p>
+                        <p>Ketika membuka modal LOV, kursor akan otomatis ke kolom search, dan ketika sudah searching dengan menekan tombol enter, dapat menggunakan tombol tab 2x untuk kembali ke kolom search</p>
+                        <p>Ketika membuka modal LOV, tidak dapat menggunakan arrow keyboard</p>
+                        <p>Format tanggal yaitu : DD/MM/YYYY (contoh : 20/05/2021, 01/05/2021)</p>
+                        <p>Format rupiah yaitu : 20,000 atau 20,000.00</p>
                     </div>
-                </div>
-                <div id="land" class="animated">
-                    <div id="debug"></div>
                 </div>
             </div>
         </div>
     </div>
+{{--    <div class="container-fluid">--}}
+{{--        <div id="gamecontainer">--}}
+{{--            <div id="gamescreen">--}}
+{{--                <div id="sky" class="animated">--}}
+{{--                    <div id="flyarea">--}}
+{{--                        <div id="ceiling" class="animated"></div>--}}
+{{--                        <!-- This is the flying and pipe area container -->--}}
+{{--                        <div id="player" class="bird animated"></div>--}}
+{{--                        <div id="bigscore"></div>--}}
+{{--                        <div id="splash"></div>--}}
+{{--                        <div id="scoreboard">--}}
+{{--                            <div id="medal"></div>--}}
+{{--                            <div id="currentscore"></div>--}}
+{{--                            <div id="highscore"></div>--}}
+{{--                            <div id="replay"><img src="assets/replay.png" alt="replay"></div>--}}
+{{--                        </div>--}}
+
+{{--                        <!-- Pipes go here! -->--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div id="land" class="animated">--}}
+{{--                    <div id="debug"></div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
 
 
     <script>
 
     </script>
-    <script src={{asset('flappy/js/jquery.min.js')}}></script>
+{{--    <script src={{asset('flappy/js/jquery.min.js')}}></script>--}}
 {{--    <script src={{asset('flappy/js/jquery.transit.min.js')}}></script>--}}
 {{--    <script src={{asset('flappy/js/buzz.min.js')}}></script>--}}
 {{--    <script src={{asset('flappy/js/main.js')}}></script>--}}

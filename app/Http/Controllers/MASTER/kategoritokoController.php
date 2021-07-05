@@ -11,7 +11,8 @@ use Illuminate\Validation\Rules\NotIn;
 class kategoritokoController extends Controller
 {
     public function index(){
-        $result = DB::TABLE('tbmaster_cabang')->SELECT("*")->WHERE('cab_kodecabang','!=',30)->ORDERBY('cab_namacabang')->Get();
+        $result = DB::TABLE('tbmaster_cabang')->SELECT("*")->ORDERBY('cab_kodecabang')->Get();
+//        ->WHERE('cab_kodecabang','!=',30)->
         return view('MASTER.kategoritoko')->with('result',$result);
     }
 

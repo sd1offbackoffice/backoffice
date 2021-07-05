@@ -72,18 +72,22 @@ class omiController extends Controller
         $flagVb=$request->flagVb;
         $flagKph=$request->flagKph;
         $kodeCust=$request->kodeCust;
-        $tglGo=$request->tglGo;
-        $tglTutup=$request->tglTutup;
+//        $tglGo=$request->tglGo;
+//        $tglTutup=$request->tglTutup;
+        $tglGo      = ($request->tglGo) ? DB::raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
+        $tglTutup   = ($request->tglTutup) ?DB::raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
         $statusToko=$request->statusToko;
         $jamBuka=$request->jamBuka;
         $jamTutup=$request->jamTutup;
-        $tglUpdate=$request->tglUpdate;
+        $tglUpdate= ($request->tglUpdate) ?DB::raw( "to_date('$request->tglUpdate', 'DD/MM/YYYY')") : '';;
         $flagPB=$request->flagPB;
         $hari=$request->hari;
         $jadwalKirim = str_replace('_', ' ', $hari);
         $user   = $_SESSION['usid'];
         date_default_timezone_set('Asia/Jakarta');
         $date   = date('Y-m-d H:i:s');
+
+//        dd($request->tglTutup);
 
         DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeOmi)
             ->update(['tko_namaomi' => $namaOmi, 'tko_kodeigr' => $kodeIgr, 'tko_flagdistfee' => $flagFee, 'tko_flagkph' => $flagKph,
@@ -97,21 +101,24 @@ class omiController extends Controller
     }
 
     public function tambahTokoOmi(Request $request){
-        $kodeSBU=$request->kodeSBU;
-        $namaSBU='';
-        $kodeOmi=$request->kodeOmi;
-        $namaOmi=strtoupper($request->namaOmi);
-        $kodeCabang=$request->kodeIgr;
-        $flagFee=$request->flagFee;
-        $flagVb=$request->flagVb;
-        $flagKph=$request->flagKph;
-        $kodeCust=$request->kodeCust;
-        $tglGo=$request->tglGo;
-        $tglTutup=$request->tglTutup;
+        $kodeSBU    =$request->kodeSBU;
+        $namaSBU    ='';
+        $kodeOmi    =$request->kodeOmi;
+        $namaOmi    =strtoupper($request->namaOmi);
+        $kodeCabang =$request->kodeIgr;
+        $flagFee    =$request->flagFee;
+        $flagVb     =$request->flagVb;
+        $flagKph    =$request->flagKph;
+        $kodeCust   =$request->kodeCust;
+//        $tglGo      = ($request->tglGo) ? date('Y/m/d', strtotime($request->tglGo)) : '';
+        $tglGo      = ($request->tglGo) ? DB::raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
+        $tglTutup   = ($request->tglTutup) ?DB::raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
         $user       = $_SESSION['usid'];
         $kodeigr    = $_SESSION['kdigr'];
         date_default_timezone_set('Asia/Jakarta');
         $date   = date('Y-m-d H:i:s');
+
+//        dd($tglGo);
 
         if ($kodeSBU == 'O') $namaSBU = 'OMI';
         elseif ($kodeSBU == 'M') $namaSBU = 'MRO';

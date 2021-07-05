@@ -8,16 +8,13 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">Inquery MPP</legend>
                     <fieldset class="card border-secondary m-2">
                         <div class="card-body">
                             <div class="row form-group">
                                 <label for="tanggal" class="col-sm-2 text-right col-form-label">No MPP :</label>
-                                <div class="col-sm-2">
-                                    <input maxlength="10" type="text" class="form-control" id="nompp" disabled>
-                                </div>
-                                <div class="col-sm-1">
-                                    <button class="btn btn-primary rounded-circle" id="btn_lov" data-toggle="modal" data-target="#m_lov" disabled>
+                                <div class="col-sm-3 buttonInside">
+                                    <input type="text" class="form-control text-left" id="nompp" disabled>
+                                    <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov" disabled>
                                         <i class="fas fa-question"></i>
                                     </button>
                                 </div>
@@ -41,24 +38,22 @@
                     </fieldset>
                     <fieldset class="card border-secondary m-2">
                         <div class="card-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
-                                <table id="table_data" class="table table-sm table-bordered mb-3 text-left">
-                                    <thead class="text-center">
-                                    <tr>
-                                        <th><i class="fas fa-info"></i> </th>
-                                        <th>Kode</th>
-                                        <th>Nama Barang</th>
-                                        <th>Kemasan</th>
-                                        <th>Kuantum</th>
-                                        <th>HPP</th>
-                                        <th>Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                            <table id="table_data" class="table table-sm table-bordered mb-3 text-left">
+                                <thead class="theadDataTables text-center">
+                                <tr>
+                                    <th><i class="fas fa-info"></i> </th>
+                                    <th>Kode</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kemasan</th>
+                                    <th>Kuantum</th>
+                                    <th>HPP</th>
+                                    <th>Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                             <div class="row form-group mt-3 mb-0">
                                 <label for="" class="col-sm-2 text-right col-form-label">Total Item</label>
                                 <div class="col-sm-2">
@@ -78,7 +73,7 @@
 
     <div class="modal fade" id="m_lov" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <br>
                 <div class="modal-body">
@@ -104,7 +99,7 @@
     </div>
 
     <div class="modal fade" id="m_detail" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Detail</h4>
@@ -246,14 +241,28 @@
 
         #table_data td{
             vertical-align: middle;
+            white-space: nowrap;
         }
-
     </style>
 
     <script>
         var nompp;
+        var detail = [];
 
         $(document).ready(function(){
+            $('#table_data').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                },
+                "order": []
+            });
+
             $('#table_lov').DataTable({
                 "ajax": '{{ url('/bo/transaksi/penyesuaian/inquerympp/get-data-lov') }}',
                 "columns": [
@@ -299,29 +308,48 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
-                    $('#table_data tbody tr').remove();
+                    detail = response.detail;
+
+                    if ($.fn.DataTable.isDataTable('#table_data')) {
+                        $('#table_data').DataTable().destroy();
+                        $("#table_data tbody [role='row']").remove();
+                    }
+
                     total = 0;
 
-                    $('#noref').val(response[0].msth_noref3);
-                    $('#tglref').val(response[0].msth_tgref3);
+                    $('#noref').val(response.data[0].msth_noref3);
+                    $('#tglref').val(response.data[0].msth_tgref3);
 
-                    for(i=0;i<response.length;i++){
+                    for(i=0;i<response.data.length;i++){
                         html = `<tr>
-                                    <td><button class="btn btn-primary" onclick="getDetail('${response[i].mstd_prdcd}')"><i class="fas fa-info"></i></button></td>
-                                    <td>${response[i].mstd_prdcd}</td>
-                                    <td>${response[i].prd_deskripsipanjang}</td>
-                                    <td>${response[i].prd_unit}</td>
-                                    <td class="text-right">${response[i].mstd_qty}</td>
-                                    <td class="text-right">${convertToRupiah(response[i].mstd_hrgsatuan)}</td>
-                                    <td class="text-right">${convertToRupiah2(response[i].mstd_gross)}</td>
+                                    <td class="text-center"><button class="btn btn-primary" onclick="getDetail('${i}')"><i class="fas fa-info"></i></button></td>
+                                    <td>${response.data[i].mstd_prdcd}</td>
+                                    <td>${response.data[i].prd_deskripsipanjang.length > 55 ? response.data[i].prd_deskripsipanjang.substr(0,55) +  '...' : response.data[i].prd_deskripsipanjang}</td>
+                                    <td>${response.data[i].prd_unit}</td>
+                                    <td class="text-left">${response.data[i].mstd_qty}</td>
+                                    <td class="text-right">${convertToRupiah(response.data[i].mstd_hrgsatuan)}</td>
+                                    <td class="text-right">${convertToRupiah2(response.data[i].mstd_gross)}</td>
                                 </tr>`;
 
-                        total += parseFloat(response[i].mstd_gross);
+                        total += parseFloat(response.data[i].mstd_gross);
 
                         $('#table_data tbody').append(html);
                     }
 
-                    $('#totalitem').val(response.length);
+                    $('#table_data').DataTable({
+                        "paging": true,
+                        "lengthChange": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": true,
+                        "createdRow": function (row, data, dataIndex) {
+                        },
+                        "order": []
+                    });
+
+                    $('#totalitem').val(response.data.length);
                     $('#total').val(convertToRupiah2(total));
                 },
                 error: function (error) {
@@ -342,55 +370,74 @@
             });
         }
 
-        function getDetail(prdcd){
-            $.ajax({
-                type: "GET",
-                url: "{{ url('/bo/transaksi/penyesuaian/inquerympp/get-detail') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    nompp: nompp,
-                    prdcd: prdcd
-                },
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                },
-                success: function (response) {
-                    $('#modal-loader').modal('hide');
+        function getDetail(row){
+            data = detail[row];
 
-                    data = response[0];
+            $('#d_prdcd').val(data.barang);
+            $('#d_kemasan').val(data.kemasan);
+            $('#d_tag').val(data.tag);
+            $('#d_bandrol').val(data.bandrol);
+            $('#d_bkp').val(data.bkp);
+            $('#d_lcost').val(convertToRupiah(data.lastcost));
+            $('#d_acost').val(convertToRupiah(data.avgcost));
+            $('#d_persediaan1').val(data.persediaan);
+            $('#d_persediaan2').val(data.persediaan2);
+            $('#d_hargasatuan').val(convertToRupiah(data.hrgsat));
+            $('#d_kuantum1').val(data.qty);
+            $('#d_kuantum2').val(data.unit);
+            $('#d_kuantum3').val(data.qtyk);
+            $('#d_kuantum4').val('Rp ' + convertToRupiah(data.gross));
+            $('#d_keterangan').val(data.ket);
 
-                    $('#d_prdcd').val(data.barang);
-                    $('#d_kemasan').val(data.kemasan);
-                    $('#d_tag').val(data.tag);
-                    $('#d_bandrol').val(data.bandrol);
-                    $('#d_bkp').val(data.bkp);
-                    $('#d_lcost').val(convertToRupiah(data.lastcost));
-                    $('#d_acost').val(convertToRupiah(data.avgcost));
-                    $('#d_persediaan1').val(data.persediaan);
-                    $('#d_persediaan2').val(data.persediaan2);
-                    $('#d_hargasatuan').val(convertToRupiah(data.hrgsat));
-                    $('#d_kuantum1').val(data.qty);
-                    $('#d_kuantum2').val(data.unit);
-                    $('#d_kuantum3').val(data.qtyk);
-                    $('#d_kuantum4').val('Rp ' + convertToRupiah(data.gross));
-                    $('#d_keterangan').val(data.ket);
+            $('#m_detail').modal('show');
+            {{--$.ajax({--}}
+            {{--    type: "GET",--}}
+            {{--    url: "{{ url('/bo/transaksi/penyesuaian/inquerympp/get-detail') }}",--}}
+            {{--    headers: {--}}
+            {{--        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+            {{--    },--}}
+            {{--    data: {--}}
+            {{--        nompp: nompp,--}}
+            {{--        prdcd: prdcd--}}
+            {{--    },--}}
+            {{--    beforeSend: function () {--}}
+            {{--        $('#modal-loader').modal('show');--}}
+            {{--    },--}}
+            {{--    success: function (response) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
 
-                    $('#m_detail').modal('show');
-                },
-                error: function (error) {
-                    $('#modal-loader').modal('hide');
-                    // handle error
-                    swal({
-                        title: error.responseJSON.exception,
-                        text: error.responseJSON.message,
-                        icon: 'error'
-                    }).then(() => {
-                        $('#m_detail input').val('');
-                    });
-                }
-            });
+            {{--        data = response[0];--}}
+
+            {{--        $('#d_prdcd').val(data.barang);--}}
+            {{--        $('#d_kemasan').val(data.kemasan);--}}
+            {{--        $('#d_tag').val(data.tag);--}}
+            {{--        $('#d_bandrol').val(data.bandrol);--}}
+            {{--        $('#d_bkp').val(data.bkp);--}}
+            {{--        $('#d_lcost').val(convertToRupiah(data.lastcost));--}}
+            {{--        $('#d_acost').val(convertToRupiah(data.avgcost));--}}
+            {{--        $('#d_persediaan1').val(data.persediaan);--}}
+            {{--        $('#d_persediaan2').val(data.persediaan2);--}}
+            {{--        $('#d_hargasatuan').val(convertToRupiah(data.hrgsat));--}}
+            {{--        $('#d_kuantum1').val(data.qty);--}}
+            {{--        $('#d_kuantum2').val(data.unit);--}}
+            {{--        $('#d_kuantum3').val(data.qtyk);--}}
+            {{--        $('#d_kuantum4').val('Rp ' + convertToRupiah(data.gross));--}}
+            {{--        $('#d_keterangan').val(data.ket);--}}
+
+            {{--        $('#m_detail').modal('show');--}}
+            {{--    },--}}
+            {{--    error: function (error) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
+            {{--        // handle error--}}
+            {{--        swal({--}}
+            {{--            title: error.responseJSON.exception,--}}
+            {{--            text: error.responseJSON.message,--}}
+            {{--            icon: 'error'--}}
+            {{--        }).then(() => {--}}
+            {{--            $('#m_detail input').val('');--}}
+            {{--        });--}}
+            {{--    }--}}
+            {{--});--}}
         }
     </script>
 

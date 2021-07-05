@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">PENYESUAIAN - INPUT</legend>
+{{--                    <legend  class="w-auto ml-5">PENYESUAIAN - INPUT</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <div class="row text-right">
                                 <div class="col-sm-12">
@@ -20,8 +20,8 @@
                                         <label for="no_penyesuaian" class="col-sm-2 col-form-label">No. Penyesuaian</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="no_penyesuaian">
-                                            <button id="btn-no-doc" type="button" class="btn btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_penyesuaian">
-                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            <button id="btn-no-doc" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_penyesuaian">
+                                                <i class="fas fa-question"></i>
                                             </button>
                                         </div>
                                         <label for="tgl_penyesuaian" class="col-sm-2 col-form-label">Tgl. Penyesuaian</label>
@@ -33,8 +33,8 @@
                                         <label for="no_referensi" class="col-sm-2 col-form-label">No. Referensi</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input type="text" class="form-control" id="no_referensi">
-                                            <button id="btn-no-reff" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_penyesuaian">
-                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            <button id="btn-no-reff" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_penyesuaian">
+                                                <i class="fas fa-question"></i>
                                             </button>
                                         </div>
                                         {{--<button type="button" class="btn p-0" data-toggle="modal" data-target="#m_kodesupplierHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
@@ -72,8 +72,8 @@
                                                             <label for="plu" class="col-sm-2 col-form-label">PLU</label>
                                                             <div class="col-sm-3 buttonInside">
                                                                 <input maxlength="10" type="text" class="form-control" id="plu">
-                                                                <button type="button" class="btn btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu">
-                                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                                <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu">
+                                                                    <i class="fas fa-question"></i>
                                                                 </button>
                                                             </div>
                                                             <div class="col-sm-6">
@@ -172,9 +172,12 @@
                                                             </div>
                                                         </div>
                                                         <hr color="black">
+                                                        <div class="form-group row">
+                                                            <button id="btn-save" class="col-sm-3 btn btn-success ml-3" onclick="simpan()">REKAM</button>
+                                                            <button id="btn-print" class="col-sm-3 btn btn-danger ml-2" onclick="hapus()">HAPUS</button>
+                                                        </div>
                                                         <div class="col-sm-5 mb-1 text-right">
-                                                            <button id="btn-save" class="col-sm-3 btn btn-success" onclick="simpan()">REKAM</button>
-                                                            <button id="btn-print" class="col-sm-3 btn btn-danger" onclick="hapus()">HAPUS</button>
+
                                                         </div>
                                                         {{--<hr color="black">--}}
                                                         {{--<div class="text-left">--}}
@@ -192,28 +195,26 @@
         </div>
     </div>
 
-
     <!-- Modal -->
     <div class="modal fade" id="m_lov_penyesuaian" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan No. Penyesuaian" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
-                </div>
+{{--                <div class="modal-header">--}}
+{{--                    <div class="form-row col-sm">--}}
+{{--                        <input id="search_lov" class="form-control search_lov" type="text" placeholder="Inputkan No. Penyesuaian" aria-label="Search">--}}
+{{--                        <div class="invalid-feedback">--}}
+{{--                            Inputkan minimal 3 karakter--}}
+{{--                        </div>--}}
+{{--                </div>--}}
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm" id="table_lov">
-                                    <thead>
+                                <table class="table table-striped table-bordered" id="table_lov">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>No. Penyesuaian</td>
-                                        <td>Tanggal</td>
+                                        <th>No. Penyesuaian</th>
+                                        <th>Tanggal</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -234,25 +235,20 @@
     </div>
 
     <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="form-row col-sm">
-                        <input id="i_lov_plu" class="form-control search_lov" type="text" placeholder="Inputkan Deskripsi / PLU Produk" aria-label="Search">
-                        <div class="invalid-feedback">
-                            Inputkan minimal 3 karakter
-                        </div>
-                    </div>
+                    <h5 class="modal-title">LOV PLU</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm" id="table_lov_plu">
-                                    <thead>
+                                <table class="table table-striped table-bordered" id="table_lov_plu">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <td>Deskripsi</td>
-                                        <td>PLU</td>
+                                        <th>Deskripsi</th>
+                                        <th>PLU</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -314,6 +310,42 @@
         no = 'doc';
         jenisdoc = '';
 
+        $(document).ready(function(){
+            $('#table_lov_plu').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                },
+                "order": []
+            });
+
+            $('#table_lov_plu_filter input').off().on('keypress', function (e){
+                if (e.which === 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getModalData(val);
+                }
+            });
+
+            $('#table_lov').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                },
+                "order": []
+            });
+        });
+
         $('#tgl_penyesuaian').datepicker({
             "dateFormat" : "dd/mm/yy"
         });
@@ -344,52 +376,125 @@
         });
 
         $('#m_lov_plu').on('shown.bs.modal',function(){
-            $('#i_lov_plu').val('');
-            $('#i_lov_plu').select();
+            $('#table_lov_plu_filter input').val('');
+            $('#table_lov_plu_filter input').select();
         });
 
-        $('#i_lov_plu').on('keypress',function(e){
-            if(e.which == 13){
-                if($(this).val() == ''){
-                    $('#table_lov_plu .row_lov').remove();
-                    $('#table_lov_plu').append(trlov);
-                }
-                else{
-                    if($.isNumeric($(this).val())){
-                        search = convertPlu($(this).val());
-                    }
-                    else{
-                        search = $(this).val().toUpperCase();
-                    }
-                    $.ajax({
-                        url: '{{url('/bo/transaksi/penyesuaian/input/lov_plu_search')}}',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {plu: search, lokasi: $('#tipe_barang').val()},
-                        beforeSend: function(){
-                            $('#modal-loader').modal('toggle');
-                        },
-                        success: function (response) {
-                            $('#table_lov_plu .row_lov').remove();
-                            html = "";
-
-                            for (i = 0; i < response.length; i++) {
-                                html =  '<tr class="row_lov" onclick=plu_select("' + response[i].prd_prdcd + '")>' +
-                                    '<td>' + response[i].prd_deskripsipanjang + '</td>' +
-                                    '<td>' + response[i].prd_prdcd + '</td></tr>';
-
-                                $('#table_lov_plu').append(html);
-                            }
-                            $('#modal-loader').modal('toggle');
-
-                            $('#i_lov_plu').select();
-                        }
-                    });
-                }
+        function getModalData(value){
+            if ($.fn.DataTable.isDataTable('#table_lov_plu')) {
+                $('#table_lov_plu').DataTable().destroy();
+                $("#table_lov_plu tbody [role='row']").remove();
             }
-        });
+
+            if($.isNumeric(value)){
+                search = convertPlu(value);
+            }
+            else{
+                search = value.toUpperCase();
+            }
+
+            $('#table_lov_plu').DataTable({
+                "ajax": {
+                    'url' : '{{url('/bo/transaksi/penyesuaian/input/lov_plu_search')}}',
+                    'headers': {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    "data" : {
+                        'plu' : search,
+                        'lokasi': $('#tipe_barang').val()
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                },
+                "initComplete" : function(){
+                    $('#table_lov_plu_filter input').val(value);
+                }
+            });
+
+            $('#table_lov_plu_filter input').val(value);
+
+            $('#table_lov_plu_filter input').off().on('keypress', function (e){
+                if (e.which === 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getModalData(val);
+                }
+            });
+        }
+
+        {{--$('#i_lov_plu').on('keypress',function(e){--}}
+        {{--    if(e.which == 13){--}}
+        {{--        if($(this).val() == ''){--}}
+        {{--            $('#table_lov_plu .row_lov').remove();--}}
+        {{--            $('#table_lov_plu').append(trlov);--}}
+        {{--        }--}}
+        {{--        else{--}}
+        //             if($.isNumeric($(this).val())){
+        //                 search = convertPlu($(this).val());
+        //             }
+        //             else{
+        //                 search = $(this).val().toUpperCase();
+        //             }
+        {{--            $.ajax({--}}
+        {{--                url: '{{url('/bo/transaksi/penyesuaian/input/lov_plu_search')}}',--}}
+        {{--                type: 'POST',--}}
+        //                 headers: {
+        //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                 },
+        {{--                data: {plu: search, lokasi: $('#tipe_barang').val()},--}}
+        {{--                beforeSend: function(){--}}
+        {{--                    $('#modal-loader').modal('show');--}}
+        {{--                },--}}
+        {{--                success: function (response) {--}}
+        {{--                    // $('#table_lov_plu .row_lov').remove();--}}
+        {{--                    html = "";--}}
+
+        {{--                    if ($.fn.DataTable.isDataTable('#table_lov_plu')) {--}}
+        {{--                        $('#table_lov_plu').DataTable().destroy();--}}
+        {{--                        $("#table_lov_plu tbody [role='row']").remove();--}}
+        {{--                    }--}}
+
+        {{--                    for (i = 0; i < response.length; i++) {--}}
+        {{--                        html =  '<tr class="row_lov" onclick=plu_select("' + response[i].prd_prdcd + '")>' +--}}
+        {{--                            '<td>' + response[i].prd_deskripsipanjang + '</td>' +--}}
+        {{--                            '<td>' + response[i].prd_prdcd + '</td></tr>';--}}
+
+        {{--                        $('#table_lov_plu').append(html);--}}
+        {{--                    }--}}
+
+        {{--                    $('#table_lov_plu').DataTable({--}}
+        {{--                        "paging": true,--}}
+        {{--                        "lengthChange": true,--}}
+        {{--                        "searching": true,--}}
+        {{--                        "ordering": true,--}}
+        {{--                        "info": true,--}}
+        {{--                        "autoWidth": true,--}}
+        {{--                        "responsive": true,--}}
+        {{--                        "createdRow": function (row, data, dataIndex) {--}}
+        {{--                        },--}}
+        {{--                        "order": []--}}
+        {{--                    });--}}
+
+        {{--                    $('#modal-loader').modal('hide');--}}
+
+        {{--                    $('#i_lov_plu').select();--}}
+        {{--                }--}}
+        {{--            });--}}
+        {{--        }--}}
+        {{--    }--}}
+        {{--});--}}
 
         $('#plu').on('keypress',function(e){
             if(e.which == 13){

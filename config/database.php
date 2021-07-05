@@ -361,7 +361,7 @@ return [
         //KONEKSI KE PUSAT
         'igrcrm' => [
             'driver' => 'oracle',
-            'host' => '192.168.10.42',
+            'host' => '172.20.22.93',
             'port' => '1521',
             'database' => 'IGRCRM',
             'username' => 'IGRCRM',

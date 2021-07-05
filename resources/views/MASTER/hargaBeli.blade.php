@@ -580,7 +580,7 @@
         function getModalData(value){
             let tableModal = $('#table_plu').DataTable({
                 "ajax": {
-                    'url' : '{{ url('msthargabeli/getprodmast') }}',
+                    'url' : '{{ url('master/hargabeli/getprodmast') }}',
                     "data" : {
                         'value' : value
                     },
@@ -682,7 +682,7 @@
 
         function lov_select(value){
             $.ajax({
-                url: '/BackOffice/public/msthargabeli/lov_select',
+                url: '/BackOffice/public/master/hargabeli/lov_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -1021,7 +1021,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/msthargabeli/lov_search',
+                        url: '/BackOffice/public/master/hargabeli/lov_search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){

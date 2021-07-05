@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','PENYESUAIAN | PERUBAHAN PLU')
+@section('title','PENYESUAIAN | PROSES PERGANTIAN PLU (STOCK KOSONG)')
 
 @section('content')
 
@@ -8,15 +8,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">Perubahan PLU</legend>
                     <div class="card-body">
                         <div class="row form-group">
                             <label for="tanggal" class="col-sm-2 text-right col-form-label">PLU LAMA</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control" id="plulama" disabled>
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov" onclick="tipe = 'lama'" disabled>
+                            <div class="col-sm-3 buttonInside">
+                                <input type="text" class="form-control text-left" id="plulama" disabled>
+                                <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov"onclick="tipe = 'lama'" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -35,11 +32,9 @@
                         </div>
                         <div class="row form-group">
                             <label for="tanggal" class="col-sm-2 text-right col-form-label">PLU BARU</label>
-                            <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control" id="plubaru" disabled>
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-primary rounded-circle btn_lov" data-toggle="modal" data-target="#m_lov" onclick="tipe = 'baru'" disabled>
+                            <div class="col-sm-3 buttonInside">
+                                <input type="text" class="form-control text-left" id="plubaru" disabled>
+                                <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov"onclick="tipe = 'baru'" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -70,18 +65,20 @@
 
     <div class="modal fade" id="m_lov" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
-                <br>
+                <div class="modal-header">
+                    <h4 class="modal-title">LOV PLU</h4>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov">
-                                    <thead>
+                                <table class="table table-sm table-bordered mb-0" id="table_lov">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <th>No MPP</th>
-                                        <th>Tanggal</th>
+                                        <th>PLU</th>
+                                        <th>Deskripsi</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table_lov_body">
@@ -164,7 +161,7 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('row-lov').css({'cursor': 'pointer'});
-                    $('.btn_lov').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
+                    $('.btn-lov').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
 
                 },
                 "order" : []

@@ -8,55 +8,51 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">Cetak Penyesuaian</legend>
-                    <fieldset class="card border-secondary m-4">
-                        <div class="card-body">
-                            <div class="row form-group">
-                                <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
-                                <div class="col-sm-2">
-                                    <input maxlength="10" type="text" class="form-control tanggal" id="tanggal1" onchange="getData()">
-                                </div>
-                                <label class="pt-1">s/d</label>
-                                <div class="col-sm-2">
-                                    <input maxlength="10" type="text" class="form-control tanggal" id="tanggal2" onchange="getData()">
-                                </div>
-                                <div class="col-sm-3"></div>
-                                <div class="col-sm">
-                                    <button class="btn btn-success" onclick="cetak()">Cetak Penyesuaian</button>
-                                </div>
+{{--                    <legend  class="w-auto ml-3">Cetak Penyesuaian</legend>--}}
+                    <div class="card-body pb-0">
+                        <div class="row form-group">
+                            <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
+                            <div class="col-sm-2">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="tanggal1" onchange="getData()">
                             </div>
-                            <div class="row form-group">
-                                <label for="" class="col-sm-2 text-right col-form-label">Jenis Laporan :</label>
-                                <div class="col-sm-2">
-                                    <select class="form-control" id="jenis" onchange="getData()">
-                                        <option value="1">LIST</option>
-                                        <option value="0">NOTA</option>
-                                    </select>
-                                </div>
-                                <div class="custom-control custom-checkbox col-sm-2 mt-2">
-                                    <input type="checkbox" class="custom-control-input" id="cb_reprint" onchange="getData()">
-                                    <label for="cb_reprint" class="custom-control-label">Re-Print</label>
-                                </div>
+                            <label class="pt-1">s/d</label>
+                            <div class="col-sm-2">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="tanggal2" onchange="getData()">
+                            </div>
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm">
+                                <button class="btn btn-success" onclick="cetak()">Cetak Penyesuaian</button>
                             </div>
                         </div>
-                    </fieldset>
-                    <fieldset class="card border-secondary m-4">
+                        <div class="row form-group">
+                            <label for="" class="col-sm-2 text-right col-form-label">Jenis Laporan :</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="jenis" onchange="getData()">
+                                    <option value="1">LIST</option>
+                                    <option value="0">NOTA</option>
+                                </select>
+                            </div>
+                            <div class="custom-control custom-checkbox col-sm-2 mt-2">
+                                <input type="checkbox" class="custom-control-input" id="cb_reprint" onchange="getData()">
+                                <label for="cb_reprint" class="custom-control-label">Re-Print</label>
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset class="card border-secondary mx-2 mb-2">
                         <legend class="w-auto ml-3">Daftar Penyesuaian</legend>
                         <div class="card-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">
-                                <table id="table_daftar" class="table table-sm table-bordered mb-3 text-center">
-                                    <thead>
-                                        <tr>
-                                            <th width="50%">Nomor Penyesuaian</th>
-                                            <th width="35%">Tanggal</th>
-                                            <th width="15%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                            <table id="table_daftar" class="table table-sm table-striped table-bordered mb-3 text-center">
+                                <thead class="theadDataTables">
+                                <tr>
+                                    <th width="50%">Nomor Penyesuaian</th>
+                                    <th width="35%">Tanggal</th>
+                                    <th width="15%"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                             <div class="row form-group mt-3 mb-0">
                                 <div class="custom-control custom-checkbox col-sm-2 ml-3">
                                     <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">
@@ -118,6 +114,20 @@
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy",
             });
+
+            $('#table_daftar').DataTable({
+                "scrollX" : false,
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                },
+                "order": []
+            });
         });
 
         function getData(){
@@ -145,8 +155,14 @@
                     success: function (response) {
                         $('#modal-loader').modal('hide');
 
-                        $('#table_daftar tbody tr').remove();
+                        // $('#table_daftar tbody tr').remove();
                         listNomor = [];
+
+                        if ($.fn.DataTable.isDataTable('#table_daftar')) {
+                            $('#table_daftar').DataTable().destroy();
+                            $("#table_daftar tbody [role='row']").remove();
+                        }
+
                         for(i=0;i<response.length;i++){
                             listNomor.push(response[i].no);
 
@@ -159,6 +175,20 @@
                                 `</td></tr>`;
                             $('#table_daftar tbody').append(tr);
                         }
+
+                        $('#table_daftar').DataTable({
+                            "scrollX" : false,
+                            "paging": true,
+                            "lengthChange": true,
+                            "searching": true,
+                            "ordering": true,
+                            "info": true,
+                            "autoWidth": true,
+                            "responsive": true,
+                            "createdRow": function (row, data, dataIndex) {
+                            },
+                            "order": []
+                        });
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');

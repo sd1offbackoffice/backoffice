@@ -203,11 +203,12 @@
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Flag Distant Fee</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagFee">
+                                                            <option value=""></option>
                                                             <option value="Y">Y</option>
-                                                            <option value="N">N</option>
                                                         </select>
                                                         <label class="col-sm-2 col-form-label text-md-right">Flag VB</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagVb">
+                                                            <option value=""></option>
                                                             <option value="Y">Y</option>
                                                             <option value="N">N</option>
                                                         </select>
@@ -225,12 +226,12 @@
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Tgl Go</label>
                                                         {{--<input type="date" id="tglGo" class="form-control col-sm-3 mx-sm-1">--}}
-                                                        <input type="text" id="tglGo" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
+                                                        <input type="text" id="tglGo" class="form-control col-sm-3 mx-sm-1 tanggal" placeholder="DD/MM/YYYY">
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <label class="col-sm-4 col-form-label text-md-right">Tgl Tutup</label>
                                                         {{--<input type="date" id="tglTutup" class="form-control col-sm-3 mx-sm-1">--}}
-                                                        <input type="text" id="tglTutup" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
+                                                        <input type="text" id="tglTutup" class="form-control col-sm-3 mx-sm-1 tanggal" placeholder="DD/MM/YYYY">
                                                     </div>
                                                 </form>
                                             </div>
@@ -411,6 +412,7 @@
         let kodeomiEditExpand;
 
         $(document).ready(function () {
+            $('#m_detailTokoOmi').modal('show')
             $('.flagKph').hide();
             // $('#m_detailTokoOmi').modal('show');
             $('.tanggal').datepicker({
@@ -419,7 +421,51 @@
             getTokoOmi()
         });
 
+        $('#m_detailTokoOmi').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#kodeOmi').focus();
+            }, 1000);
+        })
+
         function editTokoOmi() {
+            if(!$('#kodeOmi').val()) {
+                swal({
+                    title : "Kode OMI Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeOmi').focus();
+                return false;
+            } else if(!$('#namaOmi').val()) {
+                swal({
+                    title : "Nama OMI Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#namaOmi').focus();
+                return false;
+            } else if(!$('#namaCabang').val()) {
+                swal({
+                    title : "Kode IGR Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeIgr').focus();
+                return false;
+            } else if(!$('#namaCust').val()) {
+                swal({
+                    title : "Kode Member Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeCust').focus();
+                return false;
+            }
+
             let hari="";
             for(i=1; i<8; i++){
                 if ($('#hari'+i).is(":checked")){
@@ -462,7 +508,44 @@
         }
 
         function tambahTokoOmi(){
-            alert("tambah")
+            if(!$('#kodeOmi').val()) {
+                swal({
+                    title : "Kode OMI Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeOmi').focus();
+                return false;
+            } else if(!$('#namaOmi').val()) {
+                swal({
+                    title : "Nama OMI Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#namaOmi').focus();
+                return false;
+            } else if(!$('#namaCabang').val()) {
+                swal({
+                    title : "Kode IGR Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeIgr').focus();
+                return false;
+            } else if(!$('#namaCust').val()) {
+                swal({
+                    title : "Kode Member Tidak Boleh Kosong !!!",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeCust').focus();
+                return false;
+            }
+
             $.ajax({
                 url: '/BackOffice/public/mstomi/tambahtokoomi',
                 type: 'post',
@@ -491,7 +574,14 @@
 
         function getCustomerName(member) {
             if(!member){
-                swal("Error","Kode Member Tidak boleh Kosong", "error");
+                swal({
+                    title : "Kode Member Tidak boleh Kosong",
+                    text : '',
+                    icon : 'warning',
+                    timer : 1000
+                })
+                $('#kodeCust').focus();
+                $('#namaCust').val('');
             } else {
                 $.ajax({
                     url: '/BackOffice/public/mstomi/getcustomername',
@@ -499,7 +589,15 @@
                     data: {member:member},
                     success: function (result) {
                         if (result.length ===0){
-                            swal("Error","Kode Member Tidak Terdaftar !!!", "error");
+                            swal({
+                                title : "Kode Member Tidak Terdaftar",
+                                text : '',
+                                icon : 'info',
+                                timer : 1000
+                            })
+                            $('#namaCust').val('');
+                            $('#kodeCust').focus();
+
                         } else {
                             $('#namaCust').val(result[0].cus_namamember);
                         }
@@ -522,7 +620,14 @@
                     data: {kodeIgr: kodeIgr},
                     success: function (result) {
                         if (result.length ===0){
-                            swal("Error","Kode Indogrosir Tidak Terdaftar !!!", "error");
+                            swal({
+                                title : "Kode Indogrosir Tidak Terdaftar",
+                                text : '',
+                                icon : 'info',
+                                timer : 1000
+                            })
+                            $('#kodeIgr').focus();
+                            $('#namaCabang').val('');
                         } else {
                             $('#namaCabang').val(result[0].cab_namacabang);
                         }
@@ -576,12 +681,14 @@
                 columnDefs : [
                     { targets : [5],
                         render : function (data, type, row) {
-                            return formatDateCustom(data, 'dd-mm-y');
+                            return formatDate(data);
+                            // return data
                         }
                     },  { targets : [6],
                         render : function (data, type, row) {
                             if (data) {
-                                return formatDateCustom(data, 'dd-M-yy');
+                                return formatDate(data);
+                                // return data
                             } else {
                                 return data
                             }
@@ -640,8 +747,10 @@
                     $('#flagKph').val(identity.tko_flagkph);
                     $('#kodeCust').val(identity.tko_kodecustomer);
                     $('#namaCust').val(identity.cus_namamember);
-                    $('#tglGo').val(formatDateCustom(formatDateForInputType(identity.tko_tglgo),'dd-mm-y'));
-                    $('#tglTutup').val(formatDateCustom(formatDateForInputType(identity.tko_tgltutup),'dd-M-yy'));
+                    // $('#tglGo').val(formatDateCustom(formatDateForInputType(identity.tko_tglgo),'dd-mm-y'));
+                    $('#tglGo').val(formatDate(identity.tko_tglgo));
+                    // $('#tglTutup').val((identity.tko_tgltutup) ? formatDateCustom(formatDateForInputType(identity.tko_tgltutup),'dd-M-yy') : '');
+                    $('#tglTutup').val(formatDate(identity.tko_tgltutup));
 
                     $('#kodeDetailCust').val(detail.cus_kodemember);
                     $('#namaDetailCust').val(detail.cus_namamember);
@@ -654,7 +763,8 @@
                     $('#statusToko').val(identity.tko_statustoko);
                     $('#jamBuka').val(identity.tko_jambukatoko);
                     $('#jamTutup').val(identity.tko_jamtutuptoko);
-                    $('#tglUpdate').val(formatDateCustom(formatDateForInputType(identity.tko_tglberlakujadwal),'dd-mm-y'));
+                    $('#tglUpdate').val(formatDate(identity.tko_tglberlakujadwal));
+                    // $('#tglUpdate').val((identity.tko_tglberlakujadwal) ? formatDateCustom(formatDateForInputType(identity.tko_tglberlakujadwal),'dd-mm-y') : '');
                     $('#flagPB').val(identity.tko_flageditpb);
 
                     if(identity.tko_jadwalkirimbrg){

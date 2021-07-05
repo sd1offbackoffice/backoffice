@@ -65,7 +65,7 @@
                                             <tr>
                                                 <th id="nomor">NOMOR DOKUMEN</th>
                                                 <th>TANGGAL</th>
-                                                <th></th>
+                                                <th><i class="fas fa-check"></i></th>
                                             </tr>
                                             </thead>
                                             <tbody id="tbodyModalHelp"></tbody>
@@ -79,13 +79,13 @@
 
                                 <div class="row form-group mt-3 mb-0">
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success" onclick="print()">CSV eFaktur</button>
+                                        <button class="col btn btn-success" onclick="cetakEFaktur()">CSV eFaktur</button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success" onclick="print()">CETAK</button>
+                                        <button class="col btn btn-success" onclick="cetak()">CETAK</button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-primary" onclick="print()">BATAL</button>
+                                        <button class="col btn btn-primary" onclick="">BATAL</button>
                                     </div>
                                 </div>
                             </div>
@@ -165,6 +165,21 @@
             showData();
         });
 
+        $('#check10lbl').on('change', function () {
+            var bool = true;
+            if($(this).prop('checked')== true) {
+                bool = true;
+            }
+            else{
+                bool = false;
+            }
+            $("#tableDocument").find(".cekbox").each(function (index) {
+                if (index < 10) {
+                    $(this).prop('checked', bool);
+                }
+            });
+        });
+
         function cekMenu() {
             if ($('#dokumen').val() == 'K' && $('#laporan').val() == 'N') {
                 nomor = 'NOMOR REFERENSI'
@@ -204,7 +219,7 @@
                     'url': '{{ url('bo/cetak-dokumen/showData') }}',
                     "data": {
                         'doc': $('#dokumen').val(),
-                        'tipe': $('#laporan').val(),
+                        'lap': $('#laporan').val(),
                         'reprint': $('#reprint:checked').val(),// on/off
                         'tgl1': $('#tgl1').val(),
                         'tgl2': $('#tgl2').val()
@@ -213,7 +228,6 @@
                 "columns": [
                     {data: 'nodoc', name: 'nodoc'},
                     {data: 'tgldoc', name: 'tgldoc'},
-                    {data: 'checkbox', name: 'checkbox'}
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -227,38 +241,28 @@
                 },
                 columnDefs: [
                     {
-                        targets: [2],
+                        targets: [1],
                         render: function (data, type, row) {
                             return formatDate(data)
+                        }
+                    },
+                    {
+                        targets: [2],
+                        render: function (data, type, row) {
+                            return '<input class="cekbox" name="cekbox[]" type="checkbox" id="'+data+'" value="'+data+'"/>';
                         }
                     }
                 ],
                 "order": []
             });
-            // ajaxSetup();
-            // $.ajax({
-            //     url: '/BackOffice/public/bo/cetak-dokumen/showData',
-            //     type: 'post',
-            //     data: {
-            //         doc  : $('#dokumen').val(),
-            //         tipe    : $('#laporan').val(),
-            //         reprint    : $('#reprint:checked').val() ,// on/off
-            //         tgl1    : $('#tgl1').val(),
-            //         tgl2    : $('#tgl2').val()
-            //     },
-            //     beforeSend: function () {
-            //         $('#modal-loader').modal('show');
-            //     },
-            //     success: function (result) {
-            //         // for (i = 0; i< result.length; i++){
-            //         //     $('#tableBody').append("<tr><td>"+ result[i].nodoc +"</td><td>"+ result[i].tgldoc.substring(0,10) +"</td><td><div class='form-check'><input class='form-check-input' type='checkbox' value='' id='check"+i+"'></div></td></tr>");
-            //         // }
-            //
-            //         $('#modal-loader').modal('hide');
-            //     }, error: function () {
-            //         alert('error');
-            //     }
-            // })
+
+        }
+
+        function cetakEFaktur(){
+            nodoc = [];
+            tgldoc = [];
+            console.log($("input[name='cekbox']").val());
+            {{--window.open(`{{ url()->current() }}/cetakEFaktur?doc=${$('#documen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&nodoc=${nodoc}&tgldoc=${tgldoc}`, '_blank');--}}
         }
     </script>
 

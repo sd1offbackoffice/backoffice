@@ -65,7 +65,7 @@
                     </button>
                     <li class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto">
-                    @if($_SESSION['usid'] != 'LAW')
+                    @if($_SESSION['usid'] == 'XXX')
                         <li class="dropdown">
                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
@@ -428,7 +428,7 @@
                                         <li><a href="{{url("/frontoffice/laporankasir/cei/index")}}">Laporan
                                                 Cashback / Event / Item</a></li>
                                         <li><a href="{{url("/frontoffice/laporankasir/penjualan/")}}">Laporan
-                                                Penjual</a></li>
+                                                Penjualan</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{{url("/frontoffice/formHJK/index")}}">Form Harga Jual Khusus</a></li>

@@ -99,7 +99,7 @@
             for(let i=0;i<counter;i++){
                 kodeDepartemen = $('#row_departement_'+i).find(':nth-child(1)').text()
                 $.when($.ajax({
-                    url: '/BackOffice/public/mstkategoribarang/departement_select',
+                    url: '/BackOffice/public/master/kategoribarang/departement_select',
                     type:'GET',
                     data:{"_token":"{{ csrf_token() }}", value: kodeDepartemen},
                     success: function(response){
@@ -127,7 +127,7 @@
 
             // ini untuk load satu persatu
             {{--$.ajax({--}}
-            {{--    url: '/BackOffice/public/mstkategoribarang/departement_select',--}}
+            {{--    url: '/BackOffice/public/master/kategoribarang/departement_select',--}}
             {{--    type:'GET',--}}
             {{--    data:{"_token":"{{ csrf_token() }}", value: value},--}}
             {{--    success: function(response){--}}

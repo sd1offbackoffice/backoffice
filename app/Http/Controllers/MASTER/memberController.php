@@ -563,60 +563,70 @@ class memberController extends Controller
             $message = 'Member tidak sesuai dengan cabang anda!';
         }
         else {
-            sleep(3); // Dikoemen dlu karena langsung merubah table production igrcrm
-//            try {
-//                DB::beginTransaction();
+//            sleep(3); // Dikoemen dlu karena langsung merubah table production igrcrm
+            try {
+                DB::beginTransaction();
 //                $checkcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                    ->where('cus_kodemember', $kodemember)
-//                    ->first();
-//                if ($checkcus) {
+                $checkcus = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                    ->where('cus_kodemember', $kodemember)
+                    ->first();
+                if ($checkcus) {
 //                    DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                        ->where('cus_kodemember', $kodemember)
-//                        ->delete();
-//                }
-//
+                    DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                        ->where('cus_kodemember', $kodemember)
+                        ->delete();
+                }
+
 //                $checkcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                    ->where('crm_kodemember', $kodemember)
-//                    ->first();
-//                if ($checkcrm) {
+                $checkcrm = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                    ->where('crm_kodemember', $kodemember)
+                    ->get()->toArray();
+
+//                dd($checkcrm);
+                if ($checkcrm) {
 //                    DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                        ->where('crm_kodemember', $kodemember)
-//                        ->delete();
-//                }
-//
-//                $exportcus = DB::table('tbmaster_customer')
-//                    ->where('cus_kodemember', $kodemember)
-//                    ->first();
-//
-//                if ($exportcus) {
-//                    $arrexportcus = (array)$exportcus;
+                    DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                        ->where('crm_kodemember', $kodemember)
+                        ->delete();
+                }
+
+                $exportcus = DB::table('tbmaster_customer')
+                    ->where('cus_kodemember', $kodemember)
+                    ->first();
+
+                if ($exportcus) {
+                    $arrexportcus = (array)$exportcus;
 //                    $resultcus = DB::table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-//                        ->insert($arrexportcus);
-//                }
-//
-//                $exportcrm = DB::table('tbmaster_customercrm')
-//                    ->where('crm_kodemember', $kodemember)
-//                    ->first();
-//
-//                if ($exportcrm) {
-//                    $arrexportcrm = (array)$exportcrm;
+                    $resultcus = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                        ->insert($arrexportcus);
+                }
+
+                $exportcrm = DB::table('tbmaster_customercrm')
+                    ->where('crm_kodemember', $kodemember)
+                    ->first();
+
+                if ($exportcrm) {
+                    $arrexportcrm = (array)$exportcrm;
 //                    $resultcrm = DB::table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-//                        ->insert($arrexportcrm);
-//                }
-//
-//                if ($resultcus && $resultcrm) {
-//                    $status = 'success';
-//                    $message = 'Berhasil export ke CRM!';
-//                    DB::commit();
-//                } else {
-//                    $status = 'failed';
-//                    $message = 'Gagal export ke CRM!';
-//
-//                }
-//            }
-//            catch (QueryException $e) {
-//                DB::rollBack();
-//            }
+                    $resultcrm = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                        ->insert($arrexportcrm);
+                }
+
+                if ($resultcus && $resultcrm) {
+                    $status = 'success';
+                    $message = 'Berhasil export ke CRM!';
+                    DB::commit();
+                } else {
+                    $status = 'failed';
+                    $message = 'Gagal export ke CRM!';
+
+                }
+            }
+            catch (QueryException $e) {
+                DB::rollBack();
+                $status = 'failed';
+                $message = $e->getMessage();
+            }
         }
 
         return compact(['status','message']);

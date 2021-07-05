@@ -259,6 +259,8 @@
         })
 
         function getData(){
+            $('input').prop('checked',false);
+
             $.ajax({
                 url: '{{ url()->current() }}/get-data',
                 type: 'GET',
@@ -274,14 +276,14 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
-                    $('.cb-menu').prop('checked',false);
+                    if(response.data.length > 0){
+                        for(i=0;i<response.data.length;i++){
+                            $('#'+response.data[i].uac_acc_id).prop('checked',true);
+                        }
 
-                    for(i=0;i<response.data.length;i++){
-                        $('#'+response.data[i].uac_acc_id).prop('checked',true);
-                    }
-
-                    for(i=0;i<response.checkedAll.length;i++){
-                        $('#ALL_'+response.checkedAll[i]).prop('checked',true);
+                        for(i=0;i<response.checkedAll.length;i++){
+                            $('#ALL_'+response.checkedAll[i]).prop('checked',true);
+                        }
                     }
 
                     swal({

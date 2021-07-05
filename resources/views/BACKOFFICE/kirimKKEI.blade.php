@@ -196,7 +196,7 @@
             });
 
             $.ajax({
-                url: '/BackOffice/public/bokirimkkei/upload',
+                url: '/BackOffice/public/bo/pb/kirimkkei/upload',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -229,7 +229,7 @@
 
         function refresh() {
             $.ajax({
-                url: '/BackOffice/public/bokirimkkei/refresh',
+                url: '/BackOffice/public/bo/pb/kirimkkei/refresh',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

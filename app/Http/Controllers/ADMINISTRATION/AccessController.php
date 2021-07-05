@@ -113,11 +113,24 @@ class AccessController extends Controller
     }
 
     public function clone(){
-//        $data = DB::table('tbmaster_useraccess_migrasi')->get();
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_useraccess_migrasi')
-//            ->insert(json_decode(json_encode($data), true));
+        $menu = DB::table('tbmaster_access_migrasi')->get();
+        $access = DB::table('tbmaster_useraccess_migrasi')->get();
+
+        DB::connection('igrsmg')
+            ->table('tbmaster_access_migrasi')
+            ->delete();
+
+        DB::connection('igrsmg')
+            ->table('tbmaster_useraccess_migrasi')
+            ->delete();
+
+        DB::connection('igrsmg')
+            ->table('tbmaster_access_migrasi')
+            ->insert(json_decode(json_encode($menu), true));
+
+        DB::connection('igrsmg')
+            ->table('tbmaster_useraccess_migrasi')
+            ->insert(json_decode(json_encode($access), true));
     }
 
     public static function getListMenu($usid){
@@ -132,5 +145,25 @@ class AccessController extends Controller
             ->orderBy('acc_subgroup3')
             ->orderBy('acc_name')
             ->get();
+    }
+    public static function isAccessible($url){
+        if($url == '/')
+            return true;
+
+        foreach($_SESSION['menu'] as $m){
+            if($m->acc_url == substr($url,0,strlen($m->acc_url))){
+                return true;
+            }
+        }
+
+        return false;
+
+//        $data = DB::table('tbmaster_access_migrasi')
+//            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+//            ->where('uac_userid','=',$_SESSION['usid'])
+//            ->where('acc_url','=',$url)
+//            ->first();
+//
+//        return $data ? true : false;
     }
 }

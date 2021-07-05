@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENYESUAIAN;
 
+use App\Http\Controllers\ADMINISTRATION\AccessController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
+use Yajra\DataTables\DataTables;
 
 class InputPenyesuaianController extends Controller
 {
@@ -53,7 +55,7 @@ class InputPenyesuaianController extends Controller
 
         if(is_numeric($search)){
             $produk = DB::table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
-                ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
+                ->select('prd_deskripsipanjang','prd_prdcd')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
                 ->where('prd_kodeigr',$_SESSION['kdigr'])
@@ -64,7 +66,7 @@ class InputPenyesuaianController extends Controller
         }
         else{
             $produk = DB::table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
-                ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
+                ->select('prd_deskripsipanjang','prd_prdcd')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
                 ->where('prd_kodeigr',$_SESSION['kdigr'])
@@ -74,7 +76,7 @@ class InputPenyesuaianController extends Controller
                 ->get();
         }
 
-        return response()->json($produk);
+        return DataTables::of($produk)->make(true);
     }
 
     public function plu_select(Request $request){

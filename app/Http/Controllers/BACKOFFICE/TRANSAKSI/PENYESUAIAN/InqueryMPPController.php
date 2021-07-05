@@ -43,27 +43,61 @@ class InqueryMPPController extends Controller
             ->orderBy('mstd_prdcd')
             ->get();
 
-        return $data;
+        $detail = [];
+
+        foreach($data as $d){
+            $prdcd = $d->mstd_prdcd;
+
+            $detail[] = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
+										prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost,
+										st_avgcost * case when prd_unit ='KG' then 1 else prd_frac end avgcost,
+										mstd_hrgsatuan hrgsat, TRUNC(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
+										mstd_gross gross, mstd_discrph discrph, mstd_ppnrph ppnrph, mstd_keterangan ket,
+											CASE
+								  		WHEN PRD_UNIT = 'PCS'
+								  		THEN NVL(ST_SaldoAkhir,0)
+											ELSE  trunc(NVL(ST_SaldoAkhir,0) / NVL(PRD_FRAC,0))
+											END as Persediaan,
+										CASE
+								  		WHEN PRD_UNIT = 'PCS'
+								  		THEN 0
+											ELSE MOD(NVL(ST_SaldoAkhir,0), PRD_FRAC)
+										END as Persediaan2,
+											mstd_seqno
+								from tbtr_mstran_d, tbmaster_prodmast, tbmaster_stock
+								where mstd_nodoc = '".$nompp."'
+								    and mstd_prdcd ='".$prdcd."'
+								    and mstd_kodeigr='".$_SESSION['kdigr']."'
+										and mstd_typetrn = 'X'
+										and prd_prdcd=mstd_prdcd
+										and prd_kodeigr=mstd_kodeigr
+										and st_kodeigr(+)=prd_kodeigr
+										and st_prdcd(+)=prd_prdcd
+										and st_lokasi(+)='01'
+								Order By mstd_seqno")[0];
+        }
+
+        return compact(['data','detail']);
     }
 
     public function getDetail(Request $request){
         $nompp = $request->nompp;
         $prdcd = $request->prdcd;
 
-        $data = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan, 
-										prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost, 
+        $data = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
+										prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost,
 										st_avgcost * case when prd_unit ='KG' then 1 else prd_frac end avgcost,
 										mstd_hrgsatuan hrgsat, TRUNC(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
 										mstd_gross gross, mstd_discrph discrph, mstd_ppnrph ppnrph, mstd_keterangan ket,
-											CASE 
-								  		WHEN PRD_UNIT = 'PCS' 
-								  		THEN NVL(ST_SaldoAkhir,0) 
-											ELSE  trunc(NVL(ST_SaldoAkhir,0) / NVL(PRD_FRAC,0)) 
+											CASE
+								  		WHEN PRD_UNIT = 'PCS'
+								  		THEN NVL(ST_SaldoAkhir,0)
+											ELSE  trunc(NVL(ST_SaldoAkhir,0) / NVL(PRD_FRAC,0))
 											END as Persediaan,
-										CASE 
-								  		WHEN PRD_UNIT = 'PCS' 
+										CASE
+								  		WHEN PRD_UNIT = 'PCS'
 								  		THEN 0
-											ELSE MOD(NVL(ST_SaldoAkhir,0), PRD_FRAC) 
+											ELSE MOD(NVL(ST_SaldoAkhir,0), PRD_FRAC)
 										END as Persediaan2,
 											mstd_seqno
 								from tbtr_mstran_d, tbmaster_prodmast, tbmaster_stock

@@ -14,10 +14,13 @@ class CheckLogin
 {
     public function handle($request, Closure $next)
     {
-//        dd($_SESSION['usid']);
         if (isset($_SESSION['usid']) && $_SESSION['usid']!='') {
 
             $isChanged = false;
+
+            if(!AccessController::isAccessible(\Request::getPathInfo()) && $_SESSION['usid'] == 'LAW'){
+                return redirect('/unauthorized');
+            }
 
             $menu = AccessController::getListMenu($_SESSION['usid']);
 

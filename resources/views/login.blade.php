@@ -188,6 +188,8 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
+                    $('#modal-loader').modal('hide');
+
                     if (response['message']) {
                         swal({
                             title:  response['status'],
@@ -204,23 +206,25 @@
                             text: 'Login sebagai Admin sukses!',
                             icon: 'info'
                         }).then((value) => {
+                            if(value) {
                                 clear();
                                 window.location.replace("{{url("/")}}");
+                            }
                         });
                     }
                     else if (response['userstatus'] != 'ADM') {
                         swal({
                             text: 'Login Sukses!',
                             icon: 'info'
-                        }).then((createData) => {
+                        }).then((value) => {
+                            if(value) {
                                 clear();
                                 window.location.replace("{{url("/")}}");
+                            }
                         });
                     }
-                },
-                complete: function () {
-                    $('#modal-loader').modal('hide');
                 }
+
             });
         }
     });
@@ -235,16 +239,11 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                        swal({
+                    $('#modal-loader').modal('hide');
+                    swal({
                             text: response['message'],
                             icon: response['status'],
-                        }).then((value) => {
-                            if (value) {
-                            }
                         });
-                },
-                complete: function () {
-                    $('#modal-loader').modal('hide');
                 }
             });
 

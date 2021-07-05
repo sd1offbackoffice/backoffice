@@ -49,172 +49,101 @@ class penjualanController extends Controller
         return Datatables::of($datas)->make(true);
     }
 
-    public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
-        $dateA = $request->dateA;
-        $dateB = $request->dateB;
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        $event1 = $request->event1;
-        $event2 = $request->event2;
-        if($event1 == "nodata"){
-            $event1 = '';
-        }
-        if($event2 == "nodata"){
-            $event2 = '';
-        }
-        $and_even = "";
-        if($event1 != '' && $event2 != ''){
-            $and_even = " and dtl.kd_promosi between '".$event1."' and '".$event2."'";
-        }
-        $cursor = DB::select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
-         A.CBH_TGLAKHIR, SUM(A.qtyref) qtyref, SUM(A.qtysls) qtysls, SUM(A.nilref) nilref,
-         SUM(A.nilsls) nilsls, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER, SUP_NAMASUPPLIER,
-         PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
-  FROM (SELECT  '1111111' PLU, CBH_KODEPROMOSI, CBH_NAMAPROMOSI, CBH_KODEPERJANJIAN,
-                 CBH_TGLAWAL, CBH_TGLAKHIR,
-	 CASE WHEN H.TIPE = 'R' THEN
-         	       H.KELIPATAN
-	 END QTYREF,
-	 CASE WHEN H.TIPE = 'S' THEN
-                       H.KELIPATAN
-                 END QTYSLS,
-        	 CASE WHEN H.TIPE = 'R' THEN
-                       H.CASHBACK
-	 END NILREF,
-        	 CASE WHEN H.TIPE = 'S' THEN
-                       H.CASHBACK
-                 END NILSLS
-            FROM M_PROMOSI_H H, TBTR_CASHBACK_HDR HDR
-           WHERE H.KD_IGR = '$kodeigr'
-	 AND trunc(H.TGL_TRANS) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	 AND H.KD_PROMOSI = HDR.CBH_KODEPROMOSI
-	 AND CBH_JENISPROMOSI IN ('1', '2', '6')
-        UNION ALL
-            SELECT SUBSTR(DTL.KD_PLU,1,6)||'1' PLU,
-	 CBH_KODEPROMOSI, CBH_NAMAPROMOSI, CBH_KODEPERJANJIAN, CBH_TGLAWAL, CBH_TGLAKHIR,
-        	 CASE WHEN HDR.TIPE = 'R'  AND DTL.CASHBACK < 0 THEN
-         	       DTL.KELIPATAN
-       	 END QTYREF,
-         	 CASE WHEN HDR.TIPE = 'S' AND DTL.CASHBACK > 0 THEN
-                       DTL.KELIPATAN
-	 END QTYSLS,
-        	 CASE WHEN HDR.TIPE = 'R' AND DTL.CASHBACK < 0 THEN
-               	       DTL.CASHBACK
-	 END NILREF,
-        	 CASE WHEN HDR.TIPE = 'S' AND DTL.CASHBACK > 0 THEN
-                       DTL.CASHBACK
-                 END NILSLS
-            FROM M_PROMOSI_H HDR, M_PROMOSI_D DTL, TBTR_CASHBACK_HDR
-           WHERE HDR.KD_IGR = '$kodeigr'
-                 AND trunc(HDR.TGL_TRANS) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	 AND HDR.KD_PROMOSI = DTL.KD_PROMOSI
-                 AND HDR.PROMOSI_ID = DTL.PROMOSI_ID
-                 AND HDR.TRANS_NO = DTL.TRANS_NO
-                 AND HDR.KD_PROMOSI = CBH_KODEPROMOSI
-                 AND CBH_JENISPROMOSI NOT IN ('1', '2', '6')
-        ) A, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN
- WHERE a.plu = prd_prdcd(+)
-     AND PRD_KODESUPPLIER = SUP_KODESUPPLIER(+)
-     AND PRS_KODEIGR = '$kodeigr'
-GROUP BY A.plu, prd_deskripsipanjang, sup_kodesupplier,
-         sup_namasupplier, A.CBH_KODEPROMOSI, A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN,
-         A.CBH_TGLAWAL, A.CBH_TGLAKHIR, PRS_NAMAPERUSAHAAN,
-         PRS_NAMACABANG, PRS_NAMAWILAYAH
-ORDER BY A.CBH_KODEPROMOSI, A.PLU");
-        if(!$cursor){
-            return response()->json(['kode' => 0]);
-        }else{
-            return response()->json(['kode' => 1]);
-        }
+    public function getDept(Request $request){
+        //$search1 = $request->data1;
+        //$search2 = $request->data2;
+
+        $datas   = DB::table('tbmaster_departement')
+            ->selectRaw("dep_kodedepartement, dep_namadepartement, dep_kodedivisi")
+            //->whereRaw("dep_kodedivisi between ".$search1." and ".$search2)
+            ->orderBy('dep_kodedepartement')
+            ->get();
+
+        return Datatables::of($datas)->make(true);
     }
-    public function printDocument(Request $request){
+
+    public function printDocumentT(Request $request){
         $kodeigr = $_SESSION['kdigr'];
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        $event1 = $request->event1;
-        $event2 = $request->event2;
-        if($event1 == "nodata"){
-            $event1 = '';
+        $qty = $request->qty;
+        $dept1 = $request->dept1;
+        $dept2 = $request->dept2;
+        $div1 = $request->div1;
+        $div2 = $request->div2;
+
+        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+       fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
+       SUM(fdnamt + fdfnam) nGross,
+       SUM(fdntax + fdftax) nTax,
+       SUM(fdnnet + fdfnet) nNet,
+       SUM(fdnhpp + fdfhpp) nHpp,
+       SUM(fdmrgn + fdfmgn) nMargin,
+       SUM(fdjqty + fdfqty) ktQty
+FROM TBMASTER_PERUSAHAAN, /*TBMASTER_PRODMAST,*/ TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
+(    SELECT sls_kodeigr kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_flagbkp fdfbkp,
+           SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI+sls_QtyIDM) fdfqty,
+           SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp, SUM(sls_MarginNOMI) fdmrgn,
+           SUM(sls_NilaiOMI+sls_NilaiIDM) fdfnam,
+           SUM(sls_TaxOMI+sls_TaxIDM) fdftax,
+           SUM(sls_NetOMI+sls_NetIDM) fdfnet,
+           SUM(sls_HppOMI+sls_HppIDM) fdfhpp,
+           SUM(sls_MarginOMI+sls_MarginOMI) fdfmgn,
+           NVL(cexp,'F') cexp
+    FROM TBTR_SUMSALES,
+      (    SELECT sls_prdcd prdcd, 'T' cexp
+        FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+        WHERE sls_prdcd = exp_prdcd
+          AND trjd_recordid IS NULL
+          AND trjd_prdcd = sls_prdcd
+          AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+          AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+          AND trjd_cus_kodemember = cus_kodemember (+)
+           AND cus_jenismember = 'E'
+        )
+    WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+      AND sls_prdcd = prdcd(+)
+    GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
+    ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
+)
+WHERE prs_kodeigr = '$kodeigr'
+  AND kodeigr = prs_kodeigr
+  --AND fdkplu = prd_prdcd
+  AND fdkdiv = div_kodedivisi (+)
+  AND fdkdep = dep_kodedepartement (+)
+  AND fdkdiv = dep_kodedivisi (+)
+  AND fdkdep = kat_kodedepartement (+)
+  AND fdkatb = kat_kodekategori (+)
+  AND ( ( fdkdep BETWEEN '$dept1' AND '$dept2' ) AND ( fdkdiv BETWEEN '$div1' AND '$div2' ) )
+GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
+ORDER BY fdkdiv, fdkdep, fdkatb");
+
+        $cf_nmargin = [];
+        for($i=0;$i<sizeof($datas);$i++){
+            if(($datas[$i]->nnet) != 0){
+                $cf_nmargin[$i] = round(($datas[$i]->nmargin)*100/($datas[$i]->nnet), 2);
+            }else{
+                if(($datas[$i]->nmargin) != 0){
+                    $cf_nmargin[$i]=100;
+                }else{
+                    $cf_nmargin[$i]=0;
+                }
+            }
         }
-        if($event2 == "nodata"){
-            $event2 = '';
-        }
-        $and_even = "";
-        if($event1 != '' && $event2 != ''){
-            $and_even = " and dtl.kd_promosi between '".$event1."' and '".$event2."'";
-        }
-        $datas = DB::select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
-         A.CBH_TGLAKHIR, SUM(A.qtyref) qtyref, SUM(A.qtysls) qtysls, SUM(A.nilref) nilref,
-         SUM(A.nilsls) nilsls, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER, SUP_NAMASUPPLIER,
-         PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
-  FROM (SELECT  '1111111' PLU, CBH_KODEPROMOSI, CBH_NAMAPROMOSI, CBH_KODEPERJANJIAN,
-                 CBH_TGLAWAL, CBH_TGLAKHIR,
-	 CASE WHEN H.TIPE = 'R' THEN
-         	       H.KELIPATAN
-	 END QTYREF,
-	 CASE WHEN H.TIPE = 'S' THEN
-                       H.KELIPATAN
-                 END QTYSLS,
-        	 CASE WHEN H.TIPE = 'R' THEN
-                       H.CASHBACK
-	 END NILREF,
-        	 CASE WHEN H.TIPE = 'S' THEN
-                       H.CASHBACK
-                 END NILSLS
-            FROM M_PROMOSI_H H, TBTR_CASHBACK_HDR HDR
-           WHERE H.KD_IGR = '$kodeigr'
-	 AND trunc(H.TGL_TRANS) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	 AND H.KD_PROMOSI = HDR.CBH_KODEPROMOSI
-	 AND CBH_JENISPROMOSI IN ('1', '2', '6')
-        UNION ALL
-            SELECT SUBSTR(DTL.KD_PLU,1,6)||'1' PLU,
-	 CBH_KODEPROMOSI, CBH_NAMAPROMOSI, CBH_KODEPERJANJIAN, CBH_TGLAWAL, CBH_TGLAKHIR,
-        	 CASE WHEN HDR.TIPE = 'R'  AND DTL.CASHBACK < 0 THEN
-         	       DTL.KELIPATAN
-       	 END QTYREF,
-         	 CASE WHEN HDR.TIPE = 'S' AND DTL.CASHBACK > 0 THEN
-                       DTL.KELIPATAN
-	 END QTYSLS,
-        	 CASE WHEN HDR.TIPE = 'R' AND DTL.CASHBACK < 0 THEN
-               	       DTL.CASHBACK
-	 END NILREF,
-        	 CASE WHEN HDR.TIPE = 'S' AND DTL.CASHBACK > 0 THEN
-                       DTL.CASHBACK
-                 END NILSLS
-            FROM M_PROMOSI_H HDR, M_PROMOSI_D DTL, TBTR_CASHBACK_HDR
-           WHERE HDR.KD_IGR = '$kodeigr'
-                 AND trunc(HDR.TGL_TRANS) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	 AND HDR.KD_PROMOSI = DTL.KD_PROMOSI
-                 AND HDR.PROMOSI_ID = DTL.PROMOSI_ID
-                 AND HDR.TRANS_NO = DTL.TRANS_NO
-                 AND HDR.KD_PROMOSI = CBH_KODEPROMOSI
-                 AND CBH_JENISPROMOSI NOT IN ('1', '2', '6')
-        ) A, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN
- WHERE a.plu = prd_prdcd(+)
-     AND PRD_KODESUPPLIER = SUP_KODESUPPLIER(+)
-     AND PRS_KODEIGR = '$kodeigr'
-GROUP BY A.plu, prd_deskripsipanjang, sup_kodesupplier,
-         sup_namasupplier, A.CBH_KODEPROMOSI, A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN,
-         A.CBH_TGLAWAL, A.CBH_TGLAKHIR, PRS_NAMAPERUSAHAAN,
-         PRS_NAMACABANG, PRS_NAMAWILAYAH
-ORDER BY A.CBH_KODEPROMOSI, A.PLU");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-//        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\csi-pdf',
-//            ['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
-//        $pdf->setPaper('A4', 'potrait');
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf ->get_canvas();
-//        $canvas->page_text(514, 24, "PAGE {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-//
-//        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
+        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time, 'qty' => $qty, 'cf_nmargin' => $cf_nmargin]);
+        $pdf->setPaper('A4', 'potrait');
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        return view('FRONTOFFICE\LAPORANKASIR\cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(514, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf');
     }
 }
