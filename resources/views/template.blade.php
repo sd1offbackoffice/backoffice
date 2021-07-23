@@ -82,6 +82,8 @@
                         <p>3. Penggunaan Modal. Bentuk dan ukuran modal disesuaikan dengan kebutuhan tetapi table
                             didalam modal menggunakan datatables dan modal mencul di tengah layar menggunakan class
                             'modal-dialog-centered</p>
+                        <p>Setelah modal terbuka, cursor auto focus ke searching</p>
+                        <p>Apabila data LOV banyak (lebih dari 1000) maka metode datablesnya diubah </p>
                         <button class="btn btn-primary ml-2" type="button" data-toggle="modal"
                                 data-target="#m_template"> Button Modal
                         </button>
@@ -242,6 +244,33 @@
                 </div>
             </div>
         </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-sm-12">
+                <div class="card border-dark">
+                    <div class="card-body cardForm">
+                        <p>11. Format Tanggal dan Rupiah</p>
+                        <p>Format tanggal yaitu : DD/MM/YYYY (contoh : 20/05/2021, 01/05/2021)</p>
+                        <p>Format rupiah yaitu : 20,000 atau 20,000.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-sm-12">
+                <div class="card border-dark">
+                    <div class="card-body cardForm">
+                        <p>12. Format Routing</p>
+                        <p>Format route menu disamakan dengan API, contoh :<br>
+                            -Route menu member  : <b>/master/member</b><br>
+                            -Route API get data : <b>/master/member</b>/get-data<br>
+                            Jika ada perubahan route / penambahan route menu baru :<br>
+                            1. Tambah / ubah data di menu <b>Administration > Access Menu</b> (login menggunakan user ADM pass adminsmg ), <b>tidak perlu mengubah di file navbar</b><br>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -306,6 +335,8 @@
             // swal('Warning', 'Bila ada yang ingin ditanyakan, chat di grup!', 'warning');
         })
 
+
+        // Datatables modal dengan searching yg langusng konek ke DB
         function getModalData(value){
             let tableModal =  $('#tableModalTemplate').DataTable({
                 "ajax": {
@@ -354,6 +385,13 @@
             console.log(namacabang);
 
         });
+
+        // Function untuk auto focus ke searching ketika modal terbuka
+        $('#m_template').on('shown.bs.modal', function (){
+            setTimeout(function() {
+                $('#tableModalTemplate_filter label input').focus();
+            }, 1000);
+        })
 
         // Function untuk overide tombol keyboard
         $(window).bind('keydown', function(event) {

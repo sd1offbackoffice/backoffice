@@ -10,11 +10,11 @@
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <label for="lks_koderak" class="col-sm-1 col-form-label">KODE RAK</label>
-                            <div class="col-sm-1">
+                            <div class="col-sm-1 buttonInside">
                                 <input maxlength="10" type="text" class="form-control" id="lks_koderak">
-                            </div>
-                            <div class="col-sm-1 p-0">
-                                <button type="button" id="btn-lov" class="btn p-0 float-left" data-toggle="modal" data-target="#m_lov_rak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                <button id="btn-lov" type="button" class="btn btn-lov btn-primary p-0" data-toggle="modal" data-target="#m_lov_rak">
+                                    <i class="fas fa-question"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="row">
@@ -89,7 +89,7 @@
                                             <td width="6%">
                                                 <div class="buttonInside">
                                                     <input type="text" class="form-control lks_prdcd" maxlength="7">
-                                                    <button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                                    <button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>
                                                 </div>
                                             </td>
                                             <td width="3%"><input disabled type="text" class="form-control"></td>
@@ -171,7 +171,7 @@
                         </ul>
 
                         <div class="tab-content">
-                            <div id="p_tambah" class="container-fluid tab-pane active pl-0 pr-0" style="height: 30vh">
+                            <div id="p_tambah" class="container-fluid tab-pane active pl-0 pr-0">
                                 <div class="card-body ">
                                     <div class="row text-right">
                                         <div class="col-sm-12 overflow-auto">
@@ -207,7 +207,7 @@
                                                         <td>
                                                             <div class="buttonInside">
                                                                 <input type="text" class="form-control t_lks_prdcd" maxlength="7">
-                                                                <button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                                                <button style="display: none" type="button" class="btn btn-lov-plu p-0 btn-lov" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                                             </div>
                                                         </td>
                                                         <td><input type="text" class="form-control lks_jenisrak"></td>
@@ -226,15 +226,15 @@
                                                         <td><input type="text" class="form-control lks_minpct"></td>
                                                         <td><input type="text" class="form-control lks_maxplano"></td>
                                                     </tr>
-                                                    <tr class="d-flex">
-                                                        <td width="9%"></td>
-                                                        <td width="92%">
-                                                            <div class="custom-control custom-checkbox text-left cb_delete">
-                                                                <input type="checkbox" class="custom-control-input" id="cb_delete">
-                                                                <label class="custom-control-label" for="cb_delete">DELETE PLU</label>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+{{--                                                    <tr class="d-flex">--}}
+{{--                                                        <td width="9%"></td>--}}
+{{--                                                        <td width="92%">--}}
+{{--                                                            <div class="custom-control custom-checkbox text-left cb_delete">--}}
+{{--                                                                <input type="checkbox" class="custom-control-input" id="cb_delete">--}}
+{{--                                                                <label class="custom-control-label" for="cb_delete">DELETE PLU</label>--}}
+{{--                                                            </div>--}}
+{{--                                                        </td>--}}
+{{--                                                    </tr>--}}
                                                 </tbody>
                                             </table>
 {{--                                            tambahan tabel untuk koderak S--}}
@@ -306,7 +306,7 @@
                                         <input maxlength="10" type="text" class="form-control" id="dpd_koderak">
                                     </div>
                                     <div class="col-sm-1 p-0">
-                                        <button type="button" id="btn-lov" class="btn p-0 float-left" data-toggle="modal" data-target="#m_lov_rak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
+                                        <button type="button" id="btn-lov" class="btn p-0 float-left btn-lov" data-toggle="modal" data-target="#m_lov_rak"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -698,7 +698,7 @@
                                         '<td>' +
                                         '<div class="buttonInside">' +
                                         '<input readonly type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
+                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
                                         '</div>' +
                                         '</td>' +
                                         '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
@@ -755,7 +755,7 @@
                                         '<td>' +
                                         '<div class="buttonInside">' +
                                         '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-lov-plu p-0" data-toggle="modal" data-target="#m_lov_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>' +
+                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
                                         '</div>' +
                                         '</td>' +
                                         '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
@@ -869,7 +869,6 @@
                                 //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
                                 if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
                                     $('.btn-delete').prop('disabled',true);
-                                    console.log('z');
                                 }
                                 else $('.btn-delete').prop('disabled',false);
 
@@ -935,6 +934,8 @@
         $('input').parent().find('button').each(function(){
             $(this).hide();
         });
+
+        $('#btn-lov').show();
 
         $('input').on('keypress',function(){
             $(this).val($(this).val().toUpperCase());
@@ -1386,22 +1387,22 @@
         }
 
         function deleteRow(row){
-            if(parseInt($('#row_'+row).find('.lks_qty').val()) > 0){
-                swal({
-                    title: 'Masih ada Quantity untuk PLU '+$('#row_'+row).find('.lks_prdcd').val(),
-                    icon: 'error'
-                })
-            }
-            else{
-                swal({
-                    title: 'Ingin menghapus data?',
-                    icon: 'warning',
-                    buttons: {
-                        plu: "Hapus PLU",
-                        lokasi: "Hapus Lokasi",
-                        cancel: "Cancel",
-                    },
-                }).then(function(click){
+            swal({
+                title: 'Ingin menghapus data?',
+                icon: 'warning',
+                buttons: {
+                    plu: "Hapus PLU",
+                    lokasi: "Hapus Lokasi",
+                    cancel: "Cancel",
+                },
+            }).then(function(click){
+                if(parseInt($('#row_'+row).find('.lks_qty').val()) > 0){
+                    swal({
+                        title: 'Masih ada Quantity untuk PLU '+$('#row_'+row).find('.lks_prdcd').val(),
+                        icon: 'error'
+                    })
+                }
+                else{
                     data = {};
                     data['lks_koderak'] = $('#lks_koderak').val();
                     data['lks_kodesubrak'] = $('#lks_kodesubrak').val();
@@ -1472,8 +1473,8 @@
                             }
                         });
                     }
-                });
-            }
+                }
+            });
         }
 
 

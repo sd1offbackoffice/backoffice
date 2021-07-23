@@ -1,0 +1,47 @@
+CREATE OR REPLACE PROCEDURE SP_TARIK_SEASONOMI_WEB (
+   p_sukses   OUT VARCHAR2,
+   p_errmsg   OUT VARCHAR2)
+IS
+   v_temp     NUMBER;
+   v_cabang   VARCHAR2 (2);
+BEGIN
+   SELECT prs_kodecabang INTO v_cabang FROM tbmaster_perusahaan;
+
+   SELECT NVL (COUNT (1), 0)
+     INTO v_temp
+     FROM TBMASTER_SEASONAL_OMI@igrmktho
+    WHERE seo_kodeigr = v_cabang;
+
+   IF NVL (v_temp, 0) <> 0
+   THEN
+      DELETE FROM tbmaster_seasonalomi
+            WHERE seo_kodeigr = v_cabang;
+
+      INSERT INTO tbmaster_seasonalomi (seo_kodeigr,
+                                        seo_kodeomi,
+                                        seo_periode,
+                                        seo_create_by,
+                                        seo_create_dt)
+         SELECT v_cabang,
+                seo_kodeomi,
+                seo_periode,
+                'JOB',
+                SYSDATE
+           FROM tbmaster_seasonal_omi@igrmktho
+          WHERE seo_kodeigr = v_cabang;
+
+      COMMIT;
+
+      p_sukses := 'TRUE';
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      p_sukses := 'FALSE';
+      p_errmsg := SQLERRM;
+      ROLLBACK;
+END;
+/
+
+ALTER PROCEDURE SP_TARIK_SEASONOMI_WEB COMPILE;
+/

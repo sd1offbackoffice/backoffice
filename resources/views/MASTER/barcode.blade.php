@@ -42,7 +42,7 @@
         function getBarcode(value){
             let tableModal = $('#table-barcode').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstbarcode/getbarcode') }}',
+                    'url' : '{{ url('master/barcode/getbarcode') }}',
                     "data" : {
                         'value' : value
                     },

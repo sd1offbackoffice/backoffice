@@ -394,8 +394,9 @@
 
 
         function searchUser(value) {
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/admuser/searchUser',
+                url: '/BackOffice/public/administration/user/searchUser',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
@@ -504,8 +505,9 @@
             }
 
             if (valid_password == true && status == 1) {
+                ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/api/admuser/saveUser',
+                    url: '/BackOffice/public/administration/user/saveUser',
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -600,8 +602,9 @@
 
         function getDataUserAkses() {
             aksesgroupselected = $("#acc-group").val();
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/admuser/userAccess',
+                url: '/BackOffice/public/administration/user/userAccess',
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -760,8 +763,9 @@
                 dangerMode: true,
             }).then((createData) => {
                 if (createData) {
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/admuser/updateUser',
+                        url: '/BackOffice/public/administration/user/updateUser',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -865,8 +869,9 @@
                 dangerMode: true,
             }).then((createData) => {
                 if (createData) {
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/admuser/saveAccess',
+                        url: '/BackOffice/public/administration/user/saveAccess',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -955,8 +960,9 @@
         });
 
         function searchIp(value) {
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/admuser/searchIp',
+                url: '/BackOffice/public/administration/user/searchIp',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
@@ -1031,8 +1037,9 @@
                 }
 
                 if (valid) {
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/admuser/saveIp',
+                        url: '/BackOffice/public/administration/user/saveIp',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -1116,8 +1123,9 @@
                     dangerMode: true,
                 }).then((createData) => {
                     if (createData) {
+                        ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/api/admuser/updateIp',
+                            url: '/BackOffice/public/administration/user/updateIp',
                             type: 'POST',
                             data: {
                                 "_token": "{{ csrf_token() }}",

@@ -1,20 +1,13 @@
-@extends('navbar')
-@section('title','403 | UNAUTHORIZED')
-@section('content')
-    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Frijole|Josefin+Sans:300,400,400i,600,700|Viga" rel="stylesheet">
+<title>Oops.. Anda tidak memiliki akses</title>
+
+<link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Frijole|Josefin+Sans:300,400,400i,600,700|Viga" rel="stylesheet">
 
 
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-         viewBox="0 0 306.8 404.9" style="enable-background:new 0 0 306.8 404.9;" xml:space="preserve">
-
-
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 306.8 404.9" style="enable-background:new 0 0 306.8 404.9;" xml:space="preserve">
 
   <g>
       <g class="st6">
-
-
-
-
           <g>
               <!--  bottom teeth shadow I  -->
               <path class="st7" d="M107,155.1h14.8c4.1-0.2,8.2-0.5,12.3-0.6c3.4-0.1,6.9,0.1,10.3-0.1c3.2-0.2,6.3-1,9.5-1.3
@@ -124,11 +117,7 @@
                            C76.8,214,76.5,213.7,76.2,213.2z"/>
       </g>
 
-
       <g>
-
-
-
           <!--  teeth   -->
           <g>
               <path class="st9" d="M97,158.1h14.8c4.1-0.2,8.2-0.5,12.3-0.6c3.4-0.1,6.9,0.1,10.3-0.1c3.2-0.2,6.3-1,9.5-1.3
@@ -183,10 +172,6 @@
                              C148.5,140.6,148.2,140.4,147.8,140.1z"/>
           </g>
 
-
-
-
-
           <!-- tongue  -->
           <g>
               <path class="st10 tongue" d="M175.4,109.7c-5.7,4.1-13.5,0.8-18.1-3.2c-8.6-7.3-17.6-13.5-29.7-13.2c-5.9,0.3-10,3.2-15.1,5.4
@@ -208,12 +193,6 @@
                                      c0.4,0.1,0.9,0.1,1.3,0.2c0.8,0.1,1.6,0.1,2.3,0.1c0.7,0,1.4,0,2,0c1.2,0,2.2-0.1,2.8-0.1
                                      C175.3,115.4,175.7,115.3,175.7,115.3z"/>
           </g>
-
-
-
-
-
-
 
           <g>
               <path class="st12" d="M166.7,169.3c-5,2.6-10,4.3-15.2,5.3c-7.1,1.4-14.3,1.8-21.5,1.5c-8.2-0.3-16.2-1.3-24.1-3.7
@@ -1416,8 +1395,9 @@
             </g>
 
             <text x="15" y="255" fill="#6BA184" font-family="Viga" font-size="25">
-                <tspan x="65" y="335" fill="#BF3E73" font-size="105">403</tspan>
-                <tspan x="63" y="365" fill="#6BA184" font-size="15">Anda tidak memiliki akses!</tspan>
+                <tspan x="65" y="305" fill="#BF3E73" font-size="105">403</tspan>
+                <tspan x="63" y="330" fill="#6BA184" font-size="15">Anda tidak memiliki akses!</tspan>
+                <a href="{{ url('/') }}"><tspan x="106" y="375" fill="#007bff" font-size="15">Back to home</tspan></a>
 
                 {{--            <tspan x="100" y="355" fill="#BF3E73" font-size="65">403</tspan>--}}
 {{--                <tspan x="66" y="375" fill="#0079C2" font-size="15"><a href="{{ url('/') }}">Kembali ke halaman awal!</a></tspan>--}}
@@ -1490,5 +1470,3 @@
         .st30{font-size:10.692px;}
         .st31{fill:#9799A2;}
     </style>
-
-@endsection

@@ -97,8 +97,9 @@
         }
 
         function get_kategoritoko() {
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/mstkategoritoko/getDataKtk',
+                url: '/BackOffice/public/master/kategoritoko/getDataKtk',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}"},
                 beforeSend: function () {
@@ -199,8 +200,9 @@
                     }
                 });
             } else {
+                ajaxSetup();
                 $.ajax({
-                    url: '{{url('api/mstkategoritoko/saveDataKtk')}}',
+                    url: '{{url('kategoritoko/saveDataKtk')}}',
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",

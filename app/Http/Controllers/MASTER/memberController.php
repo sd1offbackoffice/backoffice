@@ -87,7 +87,7 @@ class memberController extends Controller
 
     public function lov_suboutlet(Request $request){
         $data = DB::table('tbmaster_suboutlet')
-            ->select('*')
+            ->select('sub_kodesuboutlet','sub_namasuboutlet')
             ->where('sub_kodeoutlet','=',$request->outlet)
             ->orderBy('sub_kodesuboutlet')
             ->get();
@@ -267,6 +267,12 @@ class memberController extends Controller
             ->where('out_kodeoutlet','=',$member->cus_kodeoutlet)
             ->first();
 
+        $arrsuboutlet = $data = DB::table('tbmaster_suboutlet')
+            ->select('sub_kodesuboutlet','sub_namasuboutlet')
+            ->where('sub_kodeoutlet','=',$outlet->out_kodeoutlet)
+            ->orderBy('sub_kodesuboutlet')
+            ->get();
+
         $suboutlet = DB::table('tbmaster_suboutlet')
             ->select('*')
             ->where('sub_kodesuboutlet','=',$member->cus_kodesuboutlet)
@@ -304,7 +310,7 @@ class memberController extends Controller
 
 //        dd(compact(['member','ktp','surat','usaha','jenismember','outlet','group','bank','hobbymember','creditlimit','npwp','quisioner']));
 
-        return compact(['member','ktp','surat','usaha','jenismember','outlet','suboutlet','group','bank','hobbymember','creditlimit','npwp','quisioner']);
+        return compact(['member','ktp','surat','usaha','jenismember','outlet','arrsuboutlet','suboutlet','group','bank','hobbymember','creditlimit','npwp','quisioner']);
     }
 
     public function lov_kodepos_select(Request $request){
@@ -645,6 +651,10 @@ class memberController extends Controller
         try{
             DB::beginTransaction();
 
+            DB::table('tbtabel_flagprodukmember')
+                ->where('fpm_kodemember', $kodemember)
+                ->delete();
+
             if(sizeof($oldQuisioner)){
                 if(sizeof($oldQuisioner) == sizeof($request->arrdata)){
                     for($i=0;$i<sizeof($request->arrdata);$i++){
@@ -657,10 +667,13 @@ class memberController extends Controller
                             'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                             'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                             'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
-                            'fpm_modify_by' => 'LEO',
+                            'fpm_modify_by' => $_SESSION['usid'],
                             'fpm_modify_dt' => DB::RAW('sysdate')
                         );
                         $arrquisioner[] = $quisioner;
+
+                        $insert = DB::table('tbtabel_flagprodukmember')
+                            ->insert($quisioner);
                     }
                 }
                 else{
@@ -676,7 +689,7 @@ class memberController extends Controller
                                 'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                                 'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                                 'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
-                                'fpm_modify_by' => 'LEO',
+                                'fpm_modify_by' => $_SESSION['usid'],
                                 'fpm_modify_dt' => DB::RAW('sysdate')
                             );
                             if($j < sizeof($oldQuisioner) - 1)
@@ -690,19 +703,18 @@ class memberController extends Controller
                                 'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
                                 'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                                 'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                                'fpm_create_by' => 'LEO',
+                                'fpm_create_by' => $_SESSION['usid'],
                                 'fpm_create_dt' => DB::RAW('sysdate'),
                                 'fpm_modify_by' => '',
                                 'fpm_modify_dt' => ''
                             );
                         }
                         $arrquisioner[] = $quisioner;
+
+                        $insert = DB::table('tbtabel_flagprodukmember')
+                            ->insert($quisioner);
                     }
                 }
-
-                DB::table('tbtabel_flagprodukmember')
-                    ->where('fpm_kodemember', $kodemember)
-                    ->delete();
             }
             else{
                 for($i=0;$i<sizeof($request->arrdata);$i++){
@@ -713,23 +725,29 @@ class memberController extends Controller
                         'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
                         'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                         'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                        'fpm_create_by' => 'LEO',
+                        'fpm_create_by' => $_SESSION['usid'],
                         'fpm_create_dt' => DB::RAW('sysdate'),
                         'fpm_modify_by' => '',
                         'fpm_modify_dt' => ''
                     );
                     $arrquisioner[] = $quisioner;
+
+                    $insert = DB::table('tbtabel_flagprodukmember')
+                        ->insert($quisioner);
                 }
             }
 
-            $insert = DB::table('tbtabel_flagprodukmember')
-                ->insert($arrquisioner);
+//            dd($arrquisioner);
+
+//            $insert = DB::table('tbtabel_flagprodukmember')
+//                ->insert($arrquisioner);
 
             DB::commit();
             $status = 'success';
             $message = 'Berhasil menyimpan data quisioner!';
         }
         catch (QueryException $e){
+            dd($e->getMessage());
             DB::rollBack();
             $status = 'failed';
             $message = 'Gagal menyimpan data quisioner!';

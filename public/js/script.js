@@ -122,7 +122,7 @@ function checkDate(date){
 // Created By : JR (05/01/2021) | Modify By :
 
 function alertError(title, text) {
-    swal(title, text.substr(0,100), 'error')
+    swal(title, text.substr(0,200), 'error')
 }
 
 // Fungsi untuk mengecek float
@@ -158,4 +158,22 @@ function decodeHtml(str)
             '&#039;': "'"
         };
     return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {return map[m];});
+}
+
+// Fungsi untuk munculin swal dengan timer. Dibuat function supaya penulisan code lebih singkat, (tinggal panggil nama function)
+// Created By : JR (09/07/2021) | Modify By :
+function swalWithTime(title,text,icon,time){
+    swal({
+        icon: icon,
+        title: title,
+        text:text,
+        showConfirmButton: false,
+        timer: time
+    });
+}
+
+function errorHandlingforAjax(error){
+    $('#modal-loader').modal('hide');
+    console.log(error.responseJSON.message.substr(0,100));
+    swal(error.statusText, error.responseJSON.message.substr(0,200), 'error')
 }

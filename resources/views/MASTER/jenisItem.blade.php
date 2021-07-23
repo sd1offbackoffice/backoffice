@@ -14,7 +14,7 @@
                                     <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
                                     <div class="col-sm-2 buttonInside" style="margin-left: -15px">
                                         <input type="text"  class="form-control" id="i_pluplanogram" placeholder="..." value="">
-                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_pluHelp" onclick="focusSearch()">
+                                        <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_pluHelp">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
@@ -462,7 +462,7 @@
         function getModalData(value){
             let tableModal = $('#tableModalPlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstjenisitem/getprodmast') }}',
+                    'url' : '{{ url('/master/jenisitem/getprodmast') }}',
                     "data" : {
                         'value' : value
                     },
@@ -495,15 +495,13 @@
                 }
             })
         }
-
-        function focusSearch(){
-            $('#tableModalPlu_filter input').select();
+        $('#m_pluHelp').on('shown.bs.modal',function(e) {
             setTimeout(
                 function()
                 {
                     $('#tableModalPlu_filter label input').focus();
                 }, 200);
-        }
+        } );
 
         $(document).on('click', '.modalRow', function () {
             let plu = $(this).find('td')[1]['innerHTML']
@@ -550,7 +548,7 @@
 
         function get_data(value) {
             $.ajax({
-                url: '/BackOffice/public/api/mstjenisitem/lov_select',
+                url: '/BackOffice/public/master/jenisitem/lov_select',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -670,7 +668,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/api/mstjenisitem/lov_search',
+                        url: '/BackOffice/public/master/jenisitem/lov_search',
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {
@@ -708,7 +706,7 @@
                 var jenisrak = $('#i_jenisrak').val();
                 var prdcd = $('#i_pluplanogram').val();
                 $.ajax({
-                    url: '/BackOffice/public/api/mstjenisitem/savedata',
+                    url: '/BackOffice/public/master/jenisitem/savedata',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", prdcd:prdcd,jenisrak:jenisrak},
                     success: function (response) {
@@ -726,10 +724,6 @@
                 });
 
             }
-        }
-        function convertToRupiah(value) {
-            var val = (value/1).toFixed(2).replace('.', ',');
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         function null_check() {

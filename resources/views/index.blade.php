@@ -18,6 +18,12 @@
                                 PROCEDURE SP_TRF_CMO_CABANG_WEB</a></p>
                         <p><a href="{{url('file_procedure/sp_download_customer_mktho_web.txt')}}" target="_blank">MASTER - MEMBER ->
                                 PROCEDURE SP_DOWNLOAD_CUSTOMER_MKTHO_WEB</a></p>
+                        <p><a href="{{url('file_procedure/sp_hitung_mplusi_web.txt')}}" target="_blank">BACKOFFICE - PB - UTILITY PB IGR ->
+                                PROCEDURE SP_HITUNG_MPLUSI_WEB</a></p>
+                        <p><a href="{{url('file_procedure/sp_hitung_mpluso_web.txt')}}" target="_blank">BACKOFFICE - PB - UTILITY PB IGR ->
+                                PROCEDURE SP_HITUNG_MPLUSO_WEB</a></p>
+                        <p><a href="{{url('file_procedure/sp_tarik_seasonomi_web.txt')}}" target="_blank">BACKOFFICE - PB - UTILITY PB IGR ->
+                                PROCEDURE SP_TARIK_SEASONOMI_WEB</a></p>
                     </div>
                 </div>
             </div>

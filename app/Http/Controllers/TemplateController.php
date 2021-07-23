@@ -8,6 +8,11 @@ use Yajra\DataTables\DataTables;
 
 class TemplateController extends Controller
 {
+    public function __construct()
+    {
+        session_start();
+    }
+
     public function index(){
         return view('template');
     }

@@ -147,7 +147,7 @@
             $('#modal-NBH').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/showData',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/showData',
                 type: 'post',
                 data: {nonbh: nonbh},
                 beforeSend: function () {
@@ -187,7 +187,7 @@
                 let search = $('#searchModal').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/lovNBH',
+                    url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/lovNBH',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
@@ -223,7 +223,7 @@
                 if (confirm){
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/transaksi/brghilang/pembatalannbh/deleteData',
+                        url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/deleteData',
                         type: 'post',
                         data: {"_token": "{{ csrf_token() }}", nonbh: nonbh},
                         beforeSend: function () {

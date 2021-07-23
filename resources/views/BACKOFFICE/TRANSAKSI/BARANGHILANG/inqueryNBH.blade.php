@@ -274,7 +274,7 @@
                 let search = $('#searchModal').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/brghilang/inquerynbh/lov_NBH',
+                    url: '/BackOffice/public/bo/transaksi/barang-hilang/inquery-nbh/lov_NBH',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
@@ -297,7 +297,7 @@
             $('#modal-nonbh').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/inquerynbh/showDoc',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/inquery-nbh/showDoc',
                 type: 'post',
                 data: {nonbh: nonbh},
                 beforeSend: function () {
@@ -351,7 +351,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/inquerynbh/detail_Plu',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/inquery-nbh/detail_Plu',
                 type: 'post',
                 data: {plu:plu[0], nonbh:nonbh},
                 success: function (result) {

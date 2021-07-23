@@ -14,7 +14,7 @@
                         <div class="row form-group">
                             <label for="periode" class="col-sm-3 text-right col-form-label">Periode Proses</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="periode" onchange="check()">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="periode">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
@@ -37,21 +37,21 @@
                         <div class="row form-group">
                             <label for="sales1" class="col-sm-3 text-right col-form-label">Periode Sales 1</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales1" onchange="check()">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales1">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
                             <label for="sales2" class="col-sm-3 text-right col-form-label">Periode Sales 2</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales2" onchange="check()">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales2">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
                             <label for="sales3" class="col-sm-3 text-right col-form-label">Periode Sales 3</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales3" onchange="check()">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales3">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
@@ -296,7 +296,7 @@
                     {data: 'pkm_mindisplay'},
                     {data: 'pkm_minorder'},
                     {data: 'avgqty',render: function(data){
-                            return parseFloat(data).toFixed(3);
+                            return data ? parseFloat(data).toFixed(3) : '';
                         }
                     },
                     {data: 'bln1'},
@@ -305,7 +305,7 @@
                         }
                     },
                     {data: 'hari1',render: function(data){
-                            return '/' + data + ' hari';
+                            return '/' + (data ? data : '') + ' hari';
                         }
                     },
                     {data: 'bln2'},
@@ -314,7 +314,7 @@
                         }
                     },
                     {data: 'hari2',render: function(data){
-                            return '/' + data + ' hari';
+                            return '/' + (data ? data : '') + ' hari';
                         }
                     },
                     {data: 'bln3'},
@@ -323,7 +323,7 @@
                         }
                     },
                     {data: 'hari3',render: function(data){
-                            return '/' + data + ' hari';
+                            return '/' + (data ? data : '') + ' hari';
                         }
                     },
                     {data: 'pkm_mpkm',render: function(data){

@@ -9,7 +9,7 @@
 {{--                    <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>--}}
                     <div class="card-body shadow-lg cardForm">
 
-{{--                        ### MAIN MENU ###   --}}
+{{--                        ### MENU UTAMA ###   --}}
                             <br>
                         <div id="mainMenu">
                             <div class="row">
@@ -37,7 +37,7 @@
 {{--                        ### Menu 1 === Laporan Per Kategory ###--}}
                         <div id="menu1" class="card-body shadow-lg cardForm" hidden>
                             <fieldset class="card border-dark">
-                                <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>
+                                <legend class="w-auto ml-5">Laporan Penjualan (Per Kategory)</legend>
                                 <div class="row">
                                     <label class="col-sm-4 text-right col-form-label">Periode tanggal :</label>
                                     <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker1">
@@ -171,14 +171,60 @@
 {{--                        ### Menu 2 === Laporan Per Departemen ###--}}
                         <div id="menu2" class="card-body shadow-lg cardForm" hidden>
                             <fieldset class="card border-dark">
-                                <legend class="w-auto ml-5">Laporan Per Departemen</legend>
+                                <legend class="w-auto ml-5">Laporan Penjualan (Per Departement)</legend>
                                 <div class="row">
-                                    <label class="col-sm-4 text-right font-weight-normal col-form-label">Periode tanggal :</label>
-
+                                    <label class="col-sm-4 text-right col-form-label">Periode tanggal :</label>
+                                    <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker2">
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Khusus Export :</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="export" onkeypress="return isYTMenu2(event)" maxlength="1"> {{--kalau mau tanpa perlu klik enter tambahkan aja onchange="khususElektronik()"--}}
+                                    <label class="col-sm-2 text-left col-form-label">[Y]a/[T]idak</label>
+                                </div>
+                                <br>
+                                <div id="menu2Ext" hidden>
+                                    <div class="row">
+                                        <label class="col-sm-4 text-right col-form-label">Cetak untuk :</label>
+                                        <div class="dropdown col-sm-4">
+                                            <button class="btn btn-secondary dropdown-toggle col-sm-12" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <input readonly type="text" id="lstPrint" class="col-sm-11" value="">
+                                                <input hidden type="text" id="lstPrintHidden" class="col-sm-11" value="">
+                                            </button>
+                                            <div id="dropDownList" class="dropdown-menu col-sm-11" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" onclick="lstPrint(1)">INDOGROSIR ALL [IGR + (OMI/IDM)]</a>
+                                                <a class="dropdown-item" onclick="lstPrint(2)">INDOGROSIR [TANPA (OMI/IDM)]</a>
+                                                <a class="dropdown-item" onclick="lstPrint(3)">OMI/IDM PER TOKO</a>
+                                                <a class="dropdown-item" onclick="lstPrint(4)">OMI/IDM GABUNGAN ALL TOKO</a>
+                                                <a class="dropdown-item" onclick="lstPrint(5)">GABUNGAN ALL TOKO OMI KHUSUS</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" id="menu2Ext2" hidden>
+                                        <label class="col-sm-4 text-right col-form-label">SBU :</label>
+                                        <input class="col-sm-2 text-center form-control" type="text" id="sbu" onkeypress="return isOISMenu2(event)" maxlength="1">
+                                        <label class="col-sm-4 text-left col-form-label">[O=OMI/I=Indomaret/S=Semua]</label>
+                                    </div>
+                                    <div class="row" id="menu2Ext3" hidden>
+                                        <label class="col-sm-4 text-right col-form-label">Toko :</label>
+                                        <div class="col-sm-3 buttonInside">
+                                            <input id="menu2TokoInput" class="form-control" type="text">
+                                            <button id="menu2Toko" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                                                    data-target="#tokoModal">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
+                                        <label class="col-sm-4 text-left col-form-label">[kosong=semua]</label>
+                                        <br>
+                                        <div class="col-sm-4">{{--HANYA FILLER--}}</div>
+                                        <input id="dis_omi" class="col-sm-4 form-control" type="text" disabled>
+                                    </div>
+                                    <br>
                                 </div>
                                 <br>
                                 <div class="d-flex justify-content-end">
-                                    <button class="btn btn-primary btn-block col-sm-3" type="button" onclick="kembali()">BACK</button>
+                                    <button class="btn btn-primary col-sm-3" type="button" onclick="kembali()">BACK</button>
+                                    <button id="menu2Cetak" class="btn btn-success col-sm-3" type="button" onclick="cetakMenu2()">CETAK</button>
                                 </div>
                                 <br>
                             </fieldset>
@@ -187,14 +233,62 @@
 {{--                        ### Menu 3 === Rincian Produk Per Divisi ###--}}
                         <div id="menu3" class="card-body shadow-lg cardForm" hidden>
                             <fieldset class="card border-dark">
-                                <legend class="w-auto ml-5">Rincian Produk Per Divisi</legend>
+                                <legend class="w-auto ml-5">Rincian Penjualan (Produk Per Divisi)</legend>
                                 <div class="row">
-                                    <label class="col-sm-4 text-right font-weight-normal col-form-label">Periode tanggal :</label>
-
+                                    <label class="col-sm-4 text-right col-form-label">Periode tanggal :</label>
+                                    <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker3">
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Divisi :</label>
+                                    <div class="col-sm-3 buttonInside">
+                                        <input id="menu3divA" class="form-control" type="text">
+                                        <button id="menu3Adiv" type="button" class="btn btn-lov p-0">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px" data-toggle="modal"
+                                                 data-target="#divModal">
+                                        </button>
+                                    </div>
+                                    <input class="col-sm-4 text-center form-control" type="text" id="menu3divdisplay" disabled>
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Departemen :</label>
+                                    <div class="col-sm-3 buttonInside">
+                                        <input id="menu3deptA" class="form-control" type="text" onfocus="menu3DivNotEmpty()">
+                                        <button id="menu3Adept" type="button" class="btn btn-lov p-0" onclick="deptMenu3()">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                        </button>
+                                    </div>
+                                    <input class="col-sm-4 text-center form-control" type="text"id="menu3deptdisplay" disabled>
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Kategory :</label>
+                                    <div class="col-sm-3 buttonInside">
+                                        <input id="menu3katA" class="form-control" type="text" onfocus="menu3DeptNotEmpty()">
+                                        <button id="menu3Akat" type="button" class="btn btn-lov p-0" onclick="katMenu3()">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                        </button>
+                                    </div>
+                                    <input class="col-sm-4 text-center form-control" type="text"id="menu3katdisplay"  disabled>
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Margin % :</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="menu3Margin1">
+                                    <label class="col-sm-2 text-center col-form-label">s/d</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="menu3Margin2">
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Monitoring Prd :</label>
+                                    <div class="col-sm-4 buttonInside">
+                                        <input id="menu3monA" class="form-control" type="text">
+                                        <button id="menu3Amon" type="button" class="btn btn-lov p-0">
+                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px" data-toggle="modal"
+                                                 data-target="#monModal">
+                                        </button>
+                                    </div>
                                 </div>
                                 <br>
                                 <div class="d-flex justify-content-end">
                                     <button class="btn btn-primary btn-block col-sm-3" type="button" onclick="kembali()">BACK</button>
+                                    <button id="cetakMenu3" class="btn btn-success col-sm-3" type="button" onclick="cetakMenu3()">CETAK</button>
                                 </div>
                                 <br>
                             </fieldset>
@@ -273,7 +367,7 @@
     </div>
 
     {{--Modal Departemen--}}
-    <div class="modal fade" id="deptModal" tabindex="-1" role="dialog" aria-labelledby="divModal" aria-hidden="true">
+    <div class="modal fade" id="deptModal" tabindex="-1" role="dialog" aria-labelledby="katModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -310,6 +404,116 @@
         </div>
     </div>
 
+    {{--Modal Toko--}}
+    <div class="modal fade" id="tokoModal" tabindex="-1" role="dialog" aria-labelledby="tokoModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">SBU</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {{--UNTUK FILTER DATA--}}
+                <div hidden>
+                    <input type="text" id="jenisToko" name="jenisToko">
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalToko">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
+                                        <th>SBU</th>
+                                        <th>Kode Customer</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal Kategori--}}
+    <div class="modal fade" id="katModal" tabindex="-1" role="dialog" aria-labelledby="katModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {{--UNTUK FILTER DATA--}}
+                <div hidden>
+                    <input type="text" id="minKat" name="minKat">
+                    <input type="text" id="maxKat" name="maxKat">
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalKat">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Kode Kategori</th>
+                                        <th>Nama Kategori</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal Monitor--}}
+    <div class="modal fade" id="monModal" tabindex="-1" role="dialog" aria-labelledby="monModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalMon">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Kode Monitoring</th>
+                                        <th>Nama Monitoring</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         #dropDownList{
             border: 2px black solid;
@@ -328,16 +532,36 @@
         /*}*/
     </style>
     <script>
+        //-------------------- ### GLOBAL FUNCTION ### --------------------
         //DATA YANG DILOAD SEWAKTU HALAMAN BARU DIBUKA
         let cursor = ''; // Berfungsi untuk mendeteksi tombol mana yang memanggil modal
         let tableDiv; //untuk menampung data modaldiv (untuk read aja), agar isi data table nya bisa dipakai difungsi lain
         let tableDept; //untuk menampung data modaldept (untuk read aja), agar isi data table nya bisa dipakai difungsi lain
+        let tableToko; //untuk menampung data modaldept (untuk read aja), agar isi data table nya bisa dipakai difungsi lain
+        let tableKat; //untuk menampung data modalkat (untuk read aja), agar isi data table nya bisa dipakai difungsi lain
+        let tableMon; //untuk menampung data modalmon (untuk read aja), agar isi data table nya bisa dipakai difungsi lain
         $(document).ready(function () {
             getModalDiv(); //Mengisi divModal
-            getModalDept(); //Mengisi divModal
+            getModalDept(); //Mengisi deptModal
+            getModalToko(); //Mengisi tokoModal
+            getModalKat(); //Mengisi katModal
+
+            let date = $('#daterangepicker3').val();
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+            getModalMon(dateA, dateB); //Mengisi monModal
+
             // Event listener to the two range filtering inputs to redraw on input
             $('#min, #max').change( function() {
                 tableDept.draw();
+            } );
+            $('#jenisToko').change( function() {
+                tableToko.draw();
+            } );
+            $('#minKat, #maxKat').change( function() {
+                tableKat.draw();
             } );
         })
 
@@ -345,16 +569,52 @@
         //Custom Filtering untuk dept
         $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
-                let min = parseInt( $('#min').val(), 10 );
-                let max = parseInt( $('#max').val(), 10 );
-                let val = parseFloat( data[2] ) || 0; // use data for the val column, [22] maksudnya kolom ke 2, yaitu kode_div
 
-                if ( ( isNaN( min ) && isNaN( max ) ) ||
-                    ( isNaN( min ) && val <= max ) ||
-                    ( min <= val   && isNaN( max ) ) ||
-                    ( min <= val   && val <= max ) )
-                {
-                    return true;
+                if ( settings.nTable.id === 'tableModalDiv' ) {
+                    return true; //no filtering on modal div
+                }
+
+                if ( settings.nTable.id === 'tableModalDept' ) {
+                    let min = parseInt( $('#min').val(), 10 );
+                    let max = parseInt( $('#max').val(), 10 );
+                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    //filter on table modalDept
+                    if ( ( isNaN( min ) && isNaN( max ) ) ||
+                        ( isNaN( min ) && val <= max ) ||
+                        ( min <= val   && isNaN( max ) ) ||
+                        ( min <= val   && val <= max ) )
+                    {
+                        return true;
+                    }
+                }
+
+                if ( settings.nTable.id === 'tableModalToko' ) {
+                    let jenisToko = $('#jenisToko').val();
+                    let val = data[4]; // use data for the val column, [4] maksudnya kolom ke 4, yaitu tko_kodesbu
+                    //filter on tableToko
+                    if(jenisToko == val){
+                        return true;
+                    }else if(jenisToko == 'S'){ //Bila 'S' maka menampilkan seluruh row
+                        return true;
+                    }
+                }
+
+                if ( settings.nTable.id === 'tableModalKat' ) {
+                    let min = parseInt( $('#minKat').val(), 10 );
+                    let max = parseInt( $('#maxKat').val(), 10 );
+                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dept
+                    //filter on table modalDept
+                    if ( ( isNaN( min ) && isNaN( max ) ) ||
+                        ( isNaN( min ) && val <= max ) ||
+                        ( min <= val   && isNaN( max ) ) ||
+                        ( min <= val   && val <= max ) )
+                    {
+                        return true;
+                    }
+                }
+
+                if ( settings.nTable.id === 'tableModalMon' ) {
+                    return true; //no filtering on modal mon
                 }
                 return false;
             }
@@ -386,7 +646,7 @@
             });
         }
         function getModalDept(){
-            tableDept =  $('#tableModalDept').DataTable({ //langsung $('#tableModalDiv').DataTable({}) juga bisa, tapi pakai tableDiv untuk membaca isi di fungsi lain
+            tableDept =  $('#tableModalDept').DataTable({ //langsung $('#tableModalDept').DataTable({}) juga bisa, tapi pakai tableDept untuk membaca isi di fungsi lain
                 "ajax": {
                     'url' : '{{ url()->current().'/getdept' }}',
                 },
@@ -411,6 +671,89 @@
                 "order": []
             });
         }
+        function getModalToko(){
+            tableToko =  $('#tableModalToko').DataTable({ //langsung $('#tableModalToko').DataTable({}) juga bisa, tapi pakai tableToko untuk membaca isi di fungsi lain
+                "ajax": {
+                    'url' : '{{ url()->current().'/gettoko' }}',
+                },
+                "columns": [
+                    {data: 'tko_kodeomi', name: 'tko_kodeomi'},
+                    {data: 'tko_namaomi', name: 'tko_namaomi'},
+                    {data: 'tko_namasbu', name: 'tko_namasbu'},
+                    {data: 'tko_kodecustomer', name: 'tko_kodecustomer'},
+                    {data: 'tko_kodesbu', name: 'tko_kodesbu', visible: false}, //hidden data, untuk memfilter data yang muncul
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowToko');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+        }
+        function getModalKat(){
+            tableKat =  $('#tableModalKat').DataTable({ //langsung $('#tableModalKat').DataTable({}) juga bisa, tapi pakai tableKat untuk membaca isi di fungsi lain
+                "ajax": {
+                    'url' : '{{ url()->current().'/getkat' }}',
+                },
+                "columns": [
+                    {data: 'kat_kodekategori', name: 'kat_kodekategori'},
+                    {data: 'kat_namakategori', name: 'kat_namakategori'},
+                    {data: 'kat_kodedepartement', name: 'kat_kodedepartement', visible: false}, //hidden data, untuk memfilter data yang muncul
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowKat');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+        }
+        function getModalMon(dateA,dateB){
+            tableMon =  $('#tableModalMon').DataTable({ //langsung $('#tableModalKat').DataTable({}) juga bisa, tapi pakai tableKat untuk membaca isi di fungsi lain
+                "ajax": {
+                    'url' : '{{ url()->current().'/getmon' }}',
+                    "data" : {
+                        'date1' : dateA,
+                        'date2' : dateB,
+                    },
+                },
+                "columns": [
+                    {data: 'mpl_kodemonitoring', name: 'mpl_kodemonitoring'},
+                    {data: 'mpl_namamonitoring', name: 'mpl_namamonitoring'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRowMon');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+        }
 
         //    Function untuk onclick pada data modal DIV
         // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
@@ -420,10 +763,12 @@
 
             if(cursor.substr(0,5) === "menu1"){
                 chooseDivMenu1(currentButton);
+            }else if(cursor.substr(0,5) === "menu3"){
+                chooseDivMenu3(currentButton);
             }
         });
 
-        //    Function untuk onclick pada data modal DIV
+        //    Function untuk onclick pada data modal Dept
         // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
         $(document).on('click', '.modalRowDept', function () {
             $('#deptModal').modal('toggle');
@@ -431,8 +776,111 @@
 
             if(cursor.substr(0,5) === "menu1"){
                 chooseDeptMenu1(currentButton);
+            }else if(cursor.substr(0,5) === "menu3"){
+                chooseDeptMenu3(currentButton);
             }
         });
+
+        //    Function untuk onclick pada data modal Toko
+        // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
+        $(document).on('click', '.modalRowToko', function () {
+            $('#tokoModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menu2"){
+                chooseTokoMenu2(currentButton);
+            }
+        });
+
+        //    Function untuk onclick pada data modal Kat
+        // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
+        $(document).on('click', '.modalRowKat', function () {
+            $('#katModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menu3"){
+                chooseKatMenu3(currentButton);
+            }
+        });
+
+        //    Function untuk onclick pada data modal Kat
+        // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
+        $(document).on('click', '.modalRowMon', function () {
+            $('#monModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menu3"){
+                chooseMonMenu3(currentButton);
+            }
+        });
+
+        function kembali(){
+            if($('#menu1').is(":visible")){
+                clearMenu1();
+                $('#menu1').prop("hidden",true);
+                $('#mainMenu').prop("hidden",false);
+            }else if($('#menu2').is(":visible")){
+                clearMenu2();
+                $('#menu2').prop("hidden",true);
+                $('#mainMenu').prop("hidden",false);
+            }
+            else if($('#menu3').is(":visible")){
+                clearMenu3();
+                $('#menu3').prop("hidden",true);
+                $('#mainMenu').prop("hidden",false);
+            }
+            else if($('#menu4').is(":visible")){
+                $('#menu4').prop("hidden",true);
+                $('#mainMenu').prop("hidden",false);
+            }
+            else if($('#menu5').is(":visible")){
+                $('#menu5').prop("hidden",true);
+                $('#mainMenu').prop("hidden",false);
+            }
+        }
+
+        //Untuk periksa apakah div ada
+        function checkDivExist(val){
+            for(i=0;i<tableDiv.data().length;i++){
+                if(tableDiv.row(i).data()['div_kodedivisi'] == val){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //Untuk periksa apakah dept ada
+        function checkDeptExist(val){
+            for(i=0;i<tableDept.data().length;i++){
+                if(tableDept.row(i).data()['dep_kodedepartement'] == val){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //Untuk periksa apakah kat ada
+        function checkKatExist(val){
+            for(i=0;i<tableKat.data().length;i++){
+                if(tableKat.row(i).data()['kat_kodekategori'] == val){
+                    return true;
+                }
+            }
+            return false;
+        }
+        //Untuk periksa apakah mon ada
+        function checkMonExist(val){
+            for(i=0;i<tableMon.data().length;i++){
+                if(tableMon.row(i).data()['mpl_kodemonitoring'] == val){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //-------------------- END OF ### GLOBAL FUNCTION ### --------------------
+
+        //-------------------- SCRIPT UNTUK ### MENU MAIN ### --------------------
 
         function changeInput(val){
             // SEKEDAR INFO!!!
@@ -489,37 +937,16 @@
                 }
             }
         }
-        function kembali(){
-            if($('#menu1').is(":visible")){
-                clearMenu1();
-                $('#menu1').prop("hidden",true);
-                $('#mainMenu').prop("hidden",false);
-            }else if($('#menu2').is(":visible")){
-                $('#menu2').prop("hidden",true);
-                $('#mainMenu').prop("hidden",false);
-            }
-            else if($('#menu3').is(":visible")){
-                $('#menu3').prop("hidden",true);
-                $('#mainMenu').prop("hidden",false);
-            }
-            else if($('#menu4').is(":visible")){
-                $('#menu4').prop("hidden",true);
-                $('#mainMenu').prop("hidden",false);
-            }
-            else if($('#menu5').is(":visible")){
-                $('#menu5').prop("hidden",true);
-                $('#mainMenu').prop("hidden",false);
-            }
-        }
+        //-------------------- END OF SCRIPT ### MENU 5 ### --------------------
 
-        //merubah format date range picker
-        $(function() {
-            $("#daterangepicker").daterangepicker({
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
-            });
-        });
+        ////merubah format date range picker Tidak pakai
+        // $(function() {
+        //     $("#daterangepicker").daterangepicker({
+        //         locale: {
+        //             format: 'DD/MM/YYYY'
+        //         }
+        //     });
+        // });
 
         //-------------------- SCRIPT UNTUK ### MENU 1 ### --------------------
         //Menggerakkan cursor
@@ -592,6 +1019,7 @@
                     break;
                 case 'Y':
                     $('#divA').prop("hidden",false);
+                    $('#divA').prop("disabled",false);
                     $('#divB').prop("hidden",true);
 
                     $('#deptA').prop("hidden",false);
@@ -614,7 +1042,7 @@
             switch (cursor.substr(5,5)){
                 case "A1div":
                     $('#menu1divA1').val(kodedivisi);
-                    setTimeout(function() { //tidak tau kenapa harus 10milisecond baru bisa pindah focus
+                    setTimeout(function() { //tidak tau kenapa harus selama 10milisecond baru bisa pindah focus
                         $('#menu1divA1').focus();
                     }, 10);
 
@@ -653,7 +1081,7 @@
             switch (cursor.substr(5,6)){
                 case "A1dept":
                     $('#menu1deptA1').val(kodedepartemen);
-                    setTimeout(function() { //tidak tau kenapa harus 10milisecond baru bisa pindah focus
+                    setTimeout(function() { //tidak tau kenapa harus selama 10milisecond baru bisa pindah focus
                         $('#menu1deptA1').focus();
                     }, 10);
 
@@ -831,16 +1259,6 @@
                 }
             }
         });
-
-        //Untuk periksa apakah div ada
-        function checkDivExist(val){
-            for(i=0;i<tableDiv.data().length;i++){
-                if(tableDiv.row(i).data()['div_kodedivisi'] == val){
-                    return true;
-                }
-            }
-            return false;
-        }
 
         //fungsi untuk periksa apakah ada div 3 dipilih dan enable input dept, dan disable bila tidak ada
         function check3div(){ //khusus menu 1 dan khusus elektronik
@@ -1048,16 +1466,6 @@
             }
         });
 
-        //Untuk periksa apakah dept ada
-        function checkDeptExist(val){
-            for(i=0;i<tableDept.data().length;i++){
-                if(tableDept.row(i).data()['dep_kodedepartement'] == val){
-                    return true;
-                }
-            }
-            return false;
-        }
-
         //fungsi cetak menu 1
         function cetakMenu1(){
             let date = $('#daterangepicker1').val();
@@ -1204,9 +1612,10 @@
             if($('#yaTidakMenu1').val() == 'Y'){
                 qty = 'Y';
                 //cetak_lap_jual_kategory_y
+                window.open(`{{ url()->current() }}/printdocumentmenu1?date1=${dateA}&date2=${dateB}&qty=${qty}&dept1=${$('#menu1deptA1').val()}&dept2=${$('#menu1deptA2').val()}&dept3=${$('#menu1deptA3').val()}&dept4=${$('#menu1deptA4').val()}&div1=${$('#menu1divA1').val()}&div2=${$('#menu1divA2').val()}&div3=${$('#menu1divA3').val()}&elek=Y`, '_blank');
                 kembali();
-
             }else{
+                //cetak_lap_jual_kategory_t
                 swal("Qty untuk tiap-tiap Dept/Kategori ikut dicetak ?", {
                     buttons: {
                         ya: {
@@ -1231,7 +1640,7 @@
                         }// bila tidak menekan salah satu tombol maka qty akan dianggap 'T' mengikuti nilai qty deklarasi awal
 
                         //cetak_lap_jual_kategory_t
-                        window.open(`{{ url()->current() }}/printdocument?date1=${dateA}&date2=${dateB}&qty=${qty}&dept1=${$('#menu1deptB1').val()}&dept2=${$('#menu1deptB2').val()}&div1=${$('#menu1divB1').val()}&div2=${$('#menu1divB2').val()}`, '_blank');
+                        window.open(`{{ url()->current() }}/printdocumentmenu1?date1=${dateA}&date2=${dateB}&qty=${qty}&dept1=${$('#menu1deptB1').val()}&dept2=${$('#menu1deptB2').val()}&div1=${$('#menu1divB1').val()}&div2=${$('#menu1divB2').val()}&elek=T`, '_blank');
                         kembali();
                     });
             }
@@ -1243,8 +1652,8 @@
             $('#daterangepicker1').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
             $('#daterangepicker1').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
 
-            $('#divA input').prop('disabled',true);
-            $('#divA button').prop('disabled',true);
+            //$('#divA input').prop('disabled',true);
+            //$('#divA button').prop('disabled',true);
             $('#deptA input').prop('disabled',true);
             $('#deptA button').prop('disabled',true);
 
@@ -1252,8 +1661,645 @@
             $('#divB').prop('hidden',true);
             $('#deptA').prop('hidden',true);
             $('#deptB').prop('hidden',true);
+
+            $('#min').val('').change();
+            $('#max').val('').change();
+        }
+        //-------------------- END OF SCRIPT ### MENU 1 ### --------------------
+
+        //-------------------- SCRIPT UNTUK ### MENU 2 ### --------------------
+        let menu2Grosir = '';
+        let menu2UnitSBU = '';
+        let menu2GrosirA = '';
+
+        //Menggerakkan cursor
+        $("#menu2 :button").click(function(){
+            cursor = this.id;
+        });
+
+        //fungsi date menu2
+        $('#daterangepicker2').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function(start, end, label) { //untuk mendeteksi bila perubahan tidak dibulan yang sama ketika melakukan perubahan
+            if(start.format('YYYY') !== end.format('YYYY') || start.format('MM') !== end.format('MM')){
+                swal({
+                    title:'Periode Bulan',
+                    text: 'Bulan Periode Tanggal harus sama.',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#daterangepicker2').data('daterangepicker').setStartDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker2').data('daterangepicker').setEndDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker2').select();
+                });
+            }else{
+                $('#export').focus(); //focus ke kolom berikutnya
+            }
+            //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+
+        function isYTMenu2(evt){ //membatasi input untuk hanya boleh Y dan T, serta mendeteksi bila menekan tombol enter
+            $('#export').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
+            let charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 121) // y kecil
+                return 89; // Y besar
+
+            if (charCode == 116) // t kecil
+                return 84; //t besar
+
+            if (charCode == 89 || charCode == 84)
+                return true
+            if (charCode == 13){
+                if($('#export').val() == 'Y'){
+                    menu2Grosir = 'T';
+                    menu2UnitSBU = 'F';
+                    menu2GrosirA = 'T';
+                    $('#menu2Ext').prop('hidden',true);
+                    $('#menu2Ext input').val('');
+                    $('#menu2Ext2').prop('hidden',true);
+                    $('#menu2Ext2 input').val('');
+                    $('#menu2Ext3').prop('hidden',true);
+                    $('#menu2Ext3 input').val('');
+                    $('#menu2Cetak').focus();
+                }else{
+                    menu2Grosir = '';
+                    menu2UnitSBU = '';
+                    menu2GrosirA = '';
+                    $('#jenisToko').val('S').change();
+                    $('#menu2Ext').prop('hidden',false);
+                    $('#menu2Ext input').val('');
+                    $('#menu2Ext2').prop('hidden',true);
+                    $('#menu2Ext2 input').val('');
+                    $('#menu2Ext3').prop('hidden',true);
+                    $('#menu2Ext3 input').val('');
+                }
+
+                return true
+            }
+            return false;
         }
 
-        //tips navigasi (Ctrl+F) ketik ### menu <menu mana yang mau di lihat> (Ex. ### menu 0
+        function lstPrint(val){
+            // SEKEDAR INFO!!!
+            // val == 1, then  "INDOGROSIR ALL [IGR + (OMI/IDM)]";
+            // val == 2, then  "INDOGROSIR [TANPA (OMI/IDM)]";
+            // val == 3, then  "OMI/IDM PER TOKO";
+            // val == 4, then  "OMI/IDM GABUNGAN ALL TOKO";
+            // val == 5, then  "GABUNGAN ALL TOKO OMI KHUSUS";
+            switch (val){
+                case 1 :
+                    menu2Grosir = 'T';
+                    menu2UnitSBU = 'F';
+                    menu2GrosirA = 'T';
+                    $('#lstPrint').val("INDOGROSIR ALL [IGR + (OMI/IDM)]");
+                    $('#lstPrintHidden').val("1");
+                    $('#menu2Ext2').prop('hidden',true);
+                    $('#menu2Ext3').prop('hidden',true);
+                    $('#menu2Cetak').focus();
+                    break;
+                case 2 :
+                    menu2Grosir = 'T';
+                    menu2UnitSBU = 'F';
+                    menu2GrosirA = 'F';
+                    $('#lstPrint').val("INDOGROSIR [TANPA (OMI/IDM)]");
+                    $('#lstPrintHidden').val("2");
+                    $('#menu2Ext2').prop('hidden',true);
+                    $('#menu2Ext3').prop('hidden',true);
+                    $('#menu2Cetak').focus();
+                    break;
+                case 3 :
+                    menu2Grosir = 'F';
+                    menu2UnitSBU = 'T';
+                    menu2GrosirA = 'F';
+                    $('#lstPrint').val("OMI/IDM PER TOKO");
+                    $('#lstPrintHidden').val("3");
+                    $('#menu2Ext2').prop('hidden',false);
+                    $('#menu2Ext3').prop('hidden',false);
+                    break;
+                case 4 :
+                    menu2Grosir = 'F';
+                    menu2UnitSBU = 'T';
+                    menu2GrosirA = 'T';
+                    $('#lstPrint').val("OMI/IDM GABUNGAN ALL TOKO");
+                    $('#lstPrintHidden').val("4");
+                    $('#menu2Ext2').prop('hidden',false);
+                    $('#menu2Ext3').prop('hidden',true);
+                    break;
+                case 5 :
+                    menu2Grosir = 'F';
+                    menu2UnitSBU = 'T';
+                    menu2GrosirA = 'T';
+                    $('#lstPrint').val("GABUNGAN ALL TOKO OMI KHUSUS");
+                    $('#lstPrintHidden').val("5");
+                    $('#menu2Ext2').prop('hidden',false);
+                    $('#menu2Ext3').prop('hidden',true);
+                    break;
+            }
+        }
+
+        function isOISMenu2(evt){ //membatasi input untuk hanya boleh O dan I dan S, serta mendeteksi bila menekan tombol enter
+            $('#sbu').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
+            let charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 111) // o kecil
+                return 79; // O besar
+
+            if (charCode == 105) // i kecil
+                return 73; //i besar
+
+            if (charCode == 115) // s kecil
+                return 83; //s besar
+
+            if (charCode == 79 || charCode == 73 || charCode == 83)
+                return true
+
+            if (charCode == 13){
+                if($('#sbu').val() == 'O' || $('#sbu').val() == 'I' || $('#sbu').val() == 'S'){
+                    $('#jenisToko').val($('#sbu').val()).change(); //isi filter jenisToko
+                    $('#menu2TokoInput').focus();
+                }
+                return true
+            }
+            return false;
+        }
+
+        function chooseTokoMenu2(val){
+            let kodeToko = val.children().first().text();
+            $('#menu2TokoInput').val(kodeToko);
+            setTimeout(function() { //tidak tau kenapa harus selama 10milisecond baru bisa pindah focus
+                $('#menu2TokoInput').focus();
+            }, 10);
+        }
+
+        $('#menu2TokoInput').on('keypress',function(e){
+            if(e.which == 13){
+                if($('#menu2TokoInput').val() == ''){
+                    $('#menu2TokoInput').val('SEMUA');
+                    $('#dis_omi').val('SEMUA');
+                    $('#menu2Cetak').focus();
+                    return true;
+                }else if(!checkTokoExist($('#menu2TokoInput').val())){
+                    $('#menu2TokoInput').val('');
+                    $('#menu2TokoInput').focus();
+                }else{
+                    for(i=0;i<tableToko.data().length;i++){
+                        if(tableToko.row(i).data()['tko_kodeomi'] == $('#menu2TokoInput').val()){
+                            $('#dis_omi').val(tableToko.row(i).data()['tko_namaomi']+' - '+tableToko.row(i).data()['tko_kodecustomer']);
+                            break;
+                        }
+                    }
+                    $('#menu2Cetak').focus();
+                }
+            }
+        });
+
+        //Untuk periksa apakah div ada
+        function checkTokoExist(val){
+            for(i=0;i<tableToko.data().length;i++){
+                if(tableToko.row(i).data()['tko_kodeomi'] == val){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function cetakMenu2(){
+            let date = $('#daterangepicker2').val();
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+            if($('#export').val() != 'Y' && $('#export').val() != 'T'){
+                swal({
+                    title:'Warning',
+                    text: 'Khusus Export Y/T ?',
+                    icon:'warning',
+                }).then(function() {
+                    $('#export').focus();
+                })
+                return false;
+            }
+            if($('#export').val() == 'T' && ($('#lstPrint').val() == '')){
+                swal({
+                    title:'Warning',
+                    text: 'Inputan salah',
+                    icon:'warning',
+                }).then(function() {
+                    menu2Grosir = '';
+                    menu2UnitSBU = '';
+                    menu2GrosirA = '';
+                    $('#lstPrint').focus();
+                })
+                return false;
+            }
+            if($('#lstPrintHidden').val() == '3' || $('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
+                if($('#sbu').val() != 'I' && $('#sbu').val() != 'O' && $('#sbu').val() != 'S'){
+                    swal({
+                        title:'Warning',
+                        text: 'Inputan salah',
+                        icon:'warning',
+                    }).then(function() {
+                        $('#sbu').focus();
+                    })
+                    $('#sbu').focus();
+                }else if($('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
+                    if($('#sbu').val() == 'S'){
+                        $('#menu2TokoInput').val('SEMUA');
+                    }
+                }else if($('#lstPrintHidden').val() == '3' && $('#menu2TokoInput').val('')){
+                    $('#sbu').val('S');
+                    $('#jenisToko').val('S').change();
+                    $('#menu2TokoInput').val('SEMUA');
+                    $('#dis_omi').val('SEMUA');
+                }
+            }
+            if(menu2Grosir == 'T'){
+                //cetak_lap_jual_perdept
+                window.open(`{{ url()->current() }}/printdocumentmenu2?date1=${dateA}&date2=${dateB}&export=${$('#export').val()}&grosira=${menu2GrosirA}&lst_print=${$('#lstPrint').val()}`, '_blank');
+                clearMenu2();
+                kembali();
+            }else{
+                //cetak_lap_jual_perdept_c
+                if($('#menu2TokoInput').val() == 'SEMUA'){
+                    temptoko = 'z';
+                }else{
+                    temptoko = $('#menu2TokoInput').val();
+                }
+
+                //kondisi tempsbu(seharusnya :sbu kalau diprogram lama) dan khusus (:khusus di program lama) di jalankan disini
+                if($('#lstPrintHidden').val() == '3' || $('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
+                    if($('#sbu').val() != 'S'){
+                        tempsbu = $('#sbu').val();
+                    }else{
+                        tempsbu = 'z';
+                    }
+
+                    if($('#lstPrintHidden').val() == '5'){
+                        khusus = 'K';
+                    }else{
+                        khusus = 'z';
+                    }
+                }
+
+                if($('#lstPrintHidden').val() == '3'){
+                    //perdept_d
+                    window.open(`{{ url()->current() }}/printdocumentdmenu2?date1=${dateA}&date2=${dateB}&p_khusus=${khusus}&p_sbu=${tempsbu}&p_omi=${temptoko}&lst_print=${$('#lstPrint').val()}`, '_blank');
+                }else{
+                    //perdept_c
+                    window.open(`{{ url()->current() }}/printdocumentcmenu2?date1=${dateA}&date2=${dateB}&p_khusus=${khusus}&p_sbu=${tempsbu}&p_omi=${temptoko}&lst_print=${$('#lstPrint').val()}`, '_blank');
+                }
+                clearMenu2();
+                kembali();
+            }
+        }
+
+        function clearMenu2(){
+            $('#menu2 input').val('');
+            $('#daterangepicker2').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker2').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+
+            $('#jenisToko').val('S').change();
+            $('#menu2Ext').prop('hidden',true);
+            $('#menu2Ext2').prop('hidden',true);
+            $('#menu2Ext3').prop('hidden',true);
+        }
+        //-------------------- END OF SCRIPT ### MENU 2 ### --------------------
+
+        //-------------------- SCRIPT UNTUK ### MENU 3 ### --------------------
+        //Menggerakkan cursor
+        $("#menu3 :button").click(function(){
+            cursor = this.id;
+        });
+
+        //fungsi date menu3
+        $('#daterangepicker3').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function(start, end, label) { //untuk mendeteksi bila perubahan tidak dibulan yang sama ketika melakukan perubahan
+            if(start.format('YYYY') !== end.format('YYYY') || start.format('MM') !== end.format('MM')){
+                swal({
+                    title:'Periode Bulan',
+                    text: 'Bulan Periode Tanggal harus sama.',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#daterangepicker3').data('daterangepicker').setStartDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker3').data('daterangepicker').setEndDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker3').select();
+                });
+            }else{
+                $('#menu3divA').focus(); //focus ke kolom berikutnya
+                let dateA = start.format('DD-MM-YYYY');
+                let dateB = end.format('DD-MM-YYYY');
+                tableMon.destroy();
+                $('#menu3monA').val('');
+                getModalMon(dateA, dateB);
+            }
+            //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+
+        //BAGIAN DIV
+        function chooseDivMenu3(val){
+            let kodedivisi = val.children().first().text();
+            let namadivisi = val.children().first().next().text();
+            $('#menu3divA').val(kodedivisi).change();
+            $('#menu3divdisplay').val(namadivisi);
+        }
+
+        //Menggunakan on change untuk mengurangi bug
+        $("#menu3divA").change(function(){
+            $("#menu3divdisplay").val('');
+            $("#menu3deptA").val('');
+            $("#menu3deptdisplay").val('');
+            $("#menu3katA").val('');
+            $("#menu3katdisplay").val('');
+            if($("#menu3divA").val() == ''){
+                $('#menu3divdisplay').val('');
+                $("#min").val('').change();
+                $("#max").val('').change();
+            }else if(!checkDivExist($("#menu3divA").val())){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Divisi tidak ditemukan',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3divA").val('').focus();
+                    $('#menu3divdisplay').val('');
+                    $("#min").val('').change();
+                    $("#max").val('').change();
+                });
+                return false;
+            }else{
+                $("#min").val( $("#menu3divA").val()).change();
+                $("#max").val( $("#menu3divA").val()).change();
+                $("#menu3deptA").focus();
+            }
+        });
+
+        //BAGIAN DEPT
+        function menu3DivNotEmpty(){
+            if($("#menu3divA").val() == ''){
+                $("#menu3divA").focus();
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        function deptMenu3(){
+            if(menu3DivNotEmpty()){
+                $('#deptModal').modal('toggle');
+            }else{
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Divisi masih kosong',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3divA").focus();
+                });
+            }
+        }
+
+        function chooseDeptMenu3(val){
+            let kodedepartemen = val.children().first().text();
+            let namadepartemen = val.children().first().next().text();
+            $('#menu3deptA').val(kodedepartemen).change();
+            $('#menu3deptdisplay').val(namadepartemen);
+        }
+
+        $("#menu3deptA").change(function(){
+            $("#menu3deptdisplay").val('');
+            $("#menu3katA").val('');
+            $("#menu3katdisplay").val('');
+            if($("#menu3deptA").val() == ''){
+                $('#menu3deptdisplay').val('');
+                $("#minKat").val('').change();
+                $("#maxKat").val('').change();
+            }else if(!checkDeptExist($("#menu3deptA").val())){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Departemen tidak ditemukan',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3deptA").val('').focus();
+                    $('#menu3deptdisplay').val('');
+                    $("#minKat").val('').change();
+                    $("#maxKat").val('').change();
+                });
+                return false;
+            }else{
+                $("#minKat").val( $("#menu3divA").val()).change();
+                $("#maxKat").val( $("#menu3divA").val()).change();
+                $("#menu3katA").focus();
+            }
+        });
+
+        //BAGIAN KAT
+        function menu3DeptNotEmpty(){
+            if($("#menu3deptA").val() == ''){
+                $("#menu3deptA").focus();
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        function katMenu3(){
+            if(menu3DeptNotEmpty()){
+                $('#katModal').modal('toggle');
+            }else{
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Departemen masih kosong',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3deptA").focus();
+                });
+            }
+        }
+
+        function chooseKatMenu3(val){
+            let kodekategori = val.children().first().text();
+            let namakategori = val.children().first().next().text();
+            $('#menu3katA').val(kodekategori).change();
+            $('#menu3katdisplay').val(namakategori);
+        }
+
+        $("#menu3katA").change(function(){
+            if($("#menu3katA").val() == ''){
+                $('#menu3katdisplay').val('');
+            }else if(!checkKatExist($("#menu3katA").val())){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Departemen tidak ditemukan',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3katA").val('').focus();
+                    $('#menu3katdisplay').val('');
+                });
+                return false;
+            }else{
+                $("#menu3Margin1").focus();
+            }
+        });
+
+        //BAGIAN MON
+        function chooseMonMenu3(val){
+            let kodemonitor = val.children().first().text();
+            $('#menu3monA').val(kodemonitor).change();
+        }
+
+        $("#menu3monA").change(function(){
+            if($("#menu3monA").val() == ''){
+                //do nothing
+            }else if(!checkMonExist($("#menu3monA").val())){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Monitor tidak ditemukan',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#menu3monA").val('').focus();
+                });
+                return false;
+            }else{
+                $("#cetakMenu3").focus();
+            }
+        });
+
+        //CETAK
+        function cetakMenu3(){
+            //LIST VARIABEL YANG AKAN DIGUNAKAN
+            let date = $('#daterangepicker3').val();
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            let margin1 = '';
+            if($('#menu3Margin1').val() == ''){
+                $('#menu3Margin1').val('-9999.99');
+                margin1 = -9999.99;
+            }else{
+                margin1 = $('#menu3Margin1').val();
+            }
+
+            let margin2 = '';
+            if($('#menu3Margin2').val() == ''){
+                $('#menu3Margin2').val('9999.99');
+                margin2 = 9999.99;
+            }else{
+                margin2 = $('#menu3Margin2').val();
+            }
+
+            let div = '';
+            if($('#menu3divA').val() == ''){
+                div = 'SEMUA DIVISI';
+            }else{
+                div = $('#menu3divA').val();
+            }
+
+            let dept = '';
+            if($('#menu3deptA').val() == ''){
+                dept = 'SEMUA DEPARTEMENT';
+            }else{
+                dept = $('#menu3deptA').val();
+            }
+
+            let kat = '';
+            if($('#menu3katA').val() == ''){
+                kat = 'SEMUA KATEGORY';
+            }else{
+                kat = $('#menu3katA').val();
+            }
+
+            let mon = '';
+            if($('#menu3monA').val() == ''){
+                mon = 'SEMUA MONITOR';
+            }else{
+                mon = $('#menu3monA').val();
+            }
+            let pluall = '';
+            if(mon == 'SEMUA MONITOR'){
+                pluall = 'Y'; //RPT_JUAL_DIVISI_PLUALL
+            }else{
+                pluall = 'N'; //RPT_JUAL_DIVISI
+            }
+            //END OF LIST VARIABEL
+            window.open(`{{ url()->current() }}/printdocumentmenu3?date1=${dateA}&date2=${dateB}&div=${div}&dept=${dept}&kat=${kat}&margin1=${margin1}&margin2=${margin2}&mon=${mon}&pluall=${pluall}`, '_blank');
+            kembali();
+        }
+
+        //Clear Input Menu 1
+        function clearMenu3(){
+            $('#menu3 input').val('').change();
+
+            $('#daterangepicker3').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker3').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+            let date = $('#daterangepicker3').val();
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+            tableMon.destroy();
+            getModalMon(dateA, dateB); //Mengisi ulang monModal
+        }
+
+        //-------------------- END OF SCRIPT ### MENU 3 ### --------------------
+
+        //-------------------- SCRIPT UNTUK ### MENU 4 ### --------------------
+
+        //-------------------- END OF SCRIPT ### MENU 4 ### --------------------
+
+        //-------------------- SCRIPT UNTUK ### MENU 5 ### --------------------
+
+        //-------------------- END OF SCRIPT ### MENU 5 ### --------------------
+
+        //tips navigasi (Ctrl+F) ketik ### <menu mana yang mau di lihat> (Ex. ### menu 0)
+        //tips navigasi menu khusus interface (Ctrl+F) ketik ### <menu mana yang mau di lihat> === (Ex. ### menu 0 ===)
+        //tips navigasi menu khusus javascript (Ctrl+F) ketik ### <menu mana yang mau di lihat> ### (Ex. ### menu 0 ###)
     </script>
 @endsection

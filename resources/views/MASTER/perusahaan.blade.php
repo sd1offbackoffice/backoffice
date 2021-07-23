@@ -435,7 +435,7 @@
             if (username != '' && password != '') {
                 ajaxSetup();
                 $.ajax({
-                    url: "update",
+                    url: '{{ url('master/perusahaan/update') }}',
                     type: 'post',
                     data: {
                         obj: obj,

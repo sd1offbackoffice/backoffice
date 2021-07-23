@@ -1233,7 +1233,7 @@
         function getModalDataPLU(value) {
             let tableModal = $('#tableModalPLU').DataTable({
                 "ajax": {
-                    'url': '{{ url('mstinformasihistoryproduct/lov_search') }}',
+                    'url': '{{ url('master/informasihistoryproduct/lov_search') }}',
                     "data": {
                         'value': value
                     },
@@ -1296,8 +1296,9 @@
         function get_data(value) {
             $('.page1').hide();
             $('.page2').show();
+            ajaxSetup();
             $.ajax({
-                    url: '/BackOffice/public/api/mstinformasihistoryproduct/lov_select',
+                    url: '/BackOffice/public/master/informasihistoryproduct/lov_select',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", value: value},
                     beforeSend: function () {
@@ -1875,7 +1876,7 @@
                     $('#modal-loader').modal('hide');
                 }
             };
-            xhttp.open("POST", "{{ url('api/mstinformasihistoryproduct/cetak_so') }}");
+            xhttp.open("POST", "{{ url('master/informasihistoryproduct/cetak_so') }}");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
             xhttp.responseType = 'blob';
@@ -1903,7 +1904,7 @@
                     $('#modal-loader').modal('hide');
                 }
             };
-            xhttp.open("POST", "{{ url('api/mstinformasihistoryproduct/cetak') }}");
+            xhttp.open("POST", "{{ url('master/informasihistoryproduct/cetak') }}");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
             xhttp.responseType = 'blob';
@@ -1941,8 +1942,9 @@
             plu = $('#plu').val();
             if (plu != '') {
                 if (event.which == 34) { // Page Down
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/mstinformasihistoryproduct/getNextPLU',
+                        url: '/BackOffice/public/master/informasihistoryproduct/getNextPLU',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {
@@ -1954,8 +1956,9 @@
                     });
                     event.preventDefault();
                 } else if (event.which == 33) { // Page Up
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/mstinformasihistoryproduct/getPrevPLU',
+                        url: '/BackOffice/public/master/informasihistoryproduct/getPrevPLU',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {

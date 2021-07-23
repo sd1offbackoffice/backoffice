@@ -1,0 +1,259 @@
+CREATE OR REPLACE PROCEDURE SP_HITUNG_MPLUSI_WEB (
+   p_periode       VARCHAR2,
+   p_sukses    OUT VARCHAR2,
+   p_errmsg    OUT VARCHAR2)
+IS
+   v_qty      NUMBER;
+   v_rph      NUMBER;
+   l_update   BOOLEAN;
+   v_temp     NUMBER;
+   v_lok      VARCHAR2 (2);
+   v_bulan    VARCHAR2 (2);
+   v_tahun    VARCHAR2 (4);
+   v_hasil    VARCHAR2 (100);
+   v_cabang   VARCHAR2 (2);
+   v_persl    VARCHAR2 (6);
+BEGIN
+   SELECT prs_kodecabang INTO v_cabang FROM tbmaster_perusahaan;
+
+   v_persl :=
+      TO_CHAR (ADD_MONTHS (TO_DATE (p_periode || '01', 'yyyyMMdd'), -1),
+               'yyyyMM');
+
+   SELECT NVL (COUNT (1), 0)
+     INTO v_temp
+     FROM tbtr_servicelevel
+    WHERE slv_periode = v_persl;
+
+   IF NVL (v_temp, 0) = 0
+   THEN
+      INSERT INTO tbhistory_hitung_pb (HHP_KODEIGR,
+                                       HHP_PERIODE,
+                                       HHP_ID,
+                                       HHP_STATUS,
+                                       HHP_KETERANGAN,
+                                       HHP_CREATE_BY,
+                                       HHP_CREATE_DT)
+           VALUES (v_cabang,
+                   v_persl,
+                   'MPLUSI',
+                   'ERROR',
+                   'SL KOSONG',
+                   'JOB',
+                   SYSDATE);
+
+      COMMIT;
+   ELSE
+      /*
+         SELECT NVL (COUNT (1), 0)
+           INTO v_temp
+           FROM tbmaster_kph
+          WHERE pid =
+                   TO_CHAR (
+                      TO_NUMBER (
+                         SUBSTR (v_persl, 5, 2) || SUBSTR (v_persl, 1, 4)));
+
+         IF NVL (v_temp, 0) = 0
+         THEN
+            INSERT INTO tbhistory_hitung_pb (HHP_KODEIGR,
+                                             HHP_PERIODE,
+                                             HHP_ID,
+                                             HHP_STATUS,
+                                             HHP_KETERANGAN,
+                                             HHP_CREATE_BY,
+                                             HHP_CREATE_DT)
+                 VALUES (v_cabang,
+                         p_periode,
+                         'MPLUSI',
+                         'ERROR',
+                         'KPH KOSONG',
+                         'JOB',
+                         SYSDATE);
+
+            COMMIT;
+         ELSE*/
+      MERGE INTO tbtr_hitung_pb i
+           USING (SELECT prc_pluidm,
+                         prd_prdcd,
+                         sl_qty,
+                         NVL (kf_koefisien, 12) kf_koefisien,
+                         ksl_mean
+                    FROM (SELECT prc_pluidm,
+                                 prd_prdcd,
+                                 NVL (slv_servicelevel_qty, 0) sl_qty,
+                                 ksl_mean
+                            FROM tbmaster_prodcrm,
+                                 tbmaster_prodmast,
+                                 tbtr_servicelevel,
+                                 ((SELECT pid, prdcd, ksl_mean
+                                     FROM (SELECT ROW_NUMBER ()
+                                                  OVER (
+                                                     PARTITION BY PRDCD
+                                                     ORDER BY
+                                                        TO_DATE (
+                                                           LPAD (pid, 6, '0'),
+                                                           'mmYYYY') DESC)
+                                                     AS RN,
+                                                  pid,
+                                                  prdcd,
+                                                  ksl_mean
+                                             FROM tbmaster_kph)
+                                    WHERE rn = 1)) kph
+                           WHERE     prc_group = 'I'
+                                 AND NVL (prc_kodetag, '_') NOT IN ('F',
+                                                                    'G',
+                                                                    'N',
+                                                                    'R',
+                                                                    'V')
+                                 AND prd_prdcd = prc_pluigr
+                                 AND kph.prdcd = prc_pluidm
+                                 AND slv_prdcd(+) = prd_prdcd
+                                 AND slv_periode(+) = v_persl) aa,
+                         tbmaster_koefisien
+                   WHERE     sl_qty >= kf_batasbawah(+)
+                         AND sl_qty < kf_batasatas(+)
+                         AND kf_tipe(+) = 'MPLUSI') t
+              ON (p_periode = i.THP_PERIODE AND t.prd_prdcd = i.THP_PRDCD)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (THP_KODEIGR,
+                     THP_PERIODE,
+                     THP_PRDCD,
+                     THP_KPH,
+                     THP_SL_MPLUSI,
+                     THP_N_MPLUSI,
+                     THP_MPLUSI,
+                     THP_CREATE_BY,
+                     THP_CREATE_DT)
+             VALUES (v_cabang,
+                     p_periode,
+                     prd_prdcd,
+                     ksl_mean,
+                     sl_qty,
+                     kf_koefisien,
+                     ROUND (ksl_mean * kf_koefisien),
+                     'JOB',
+                     SYSDATE)
+      WHEN MATCHED
+      THEN
+         UPDATE SET THP_KPH = ksl_mean,
+                    THP_SL_MPLUSI = sl_qty,
+                    THP_N_MPLUSI = kf_koefisien,
+                    THP_MPLUSI = ROUND (ksl_mean * kf_koefisien),
+                    THP_MODIFY_BY = 'JOB',
+                    THP_MODIFY_DT = SYSDATE;
+
+      INSERT INTO tbhistory_hitung_pb (HHP_KODEIGR,
+                                       HHP_PERIODE,
+                                       HHP_ID,
+                                       HHP_STATUS,
+                                       HHP_KETERANGAN,
+                                       HHP_CREATE_BY,
+                                       HHP_CREATE_DT)
+           VALUES (v_cabang,
+                   p_periode,
+                   'MPLUSI',
+                   'OK',
+                   'BERHASIL',
+                   'JOB',
+                   SYSDATE);
+
+      UPDATE tbmaster_pkmplus
+         SET pkmp_qtyminor = 0;
+
+      MERGE INTO tbmaster_pkmplus i
+           USING (SELECT prd_kodedivisi,
+                         prd_kodedepartement,
+                         prd_kodekategoribarang,
+                         thp_prdcd,
+                         thp_mplusi,
+                         thp_mpluso
+                    FROM tbtr_hitung_pb, tbmaster_prodmast
+                   WHERE thp_periode = p_periode AND prd_prdcd = thp_prdcd) t
+              ON (pkmp_prdcd = t.THP_PRDCD)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (pkmp_kodeigr,
+                     pkmp_kodedivisi,
+                     pkmp_kodedepartemen,
+                     pkmp_kodekategoribrg,
+                     pkmp_prdcd,
+                     pkmp_qtyminor,
+                     pkmp_mplusi,
+                     pkmp_mpluso,
+                     pkmp_CREATE_BY,
+                     pkmp_CREATE_DT)
+             VALUES (v_cabang,
+                     prd_kodedivisi,
+                     prd_kodedepartement,
+                     prd_kodekategoribarang,
+                     thp_prdcd,
+                     thp_mplusi + thp_mpluso,
+                     thp_mplusi,
+                     thp_mpluso,
+                     'JOB',
+                     SYSDATE)
+      WHEN MATCHED
+      THEN
+         UPDATE SET pkmp_qtyminor = thp_mplusi + thp_mpluso,
+                    pkmp_mplusi = thp_mplusi,
+                    pkmp_mpluso = thp_mpluso,
+                    pkmp_MODIFY_BY = 'JOB',
+                    pkmp_MODIFY_DT = SYSDATE;
+
+      MERGE INTO tbmaster_kkpkm i
+           USING (SELECT thp_prdcd, thp_mplusi, thp_mpluso
+                    FROM tbtr_hitung_pb
+                   WHERE thp_periode = p_periode) t
+              ON (pkm_prdcd = t.THP_PRDCD)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            pkm_qtymplus = thp_mplusi + thp_mpluso,
+            pkm_MODIFY_BY = 'JOB',
+            pkm_MODIFY_DT = SYSDATE;
+
+      MERGE INTO tbmaster_kkpkm  i
+           USING (SELECT prd_prdcd, prd_kodetag
+                    FROM tbmaster_prodmast
+                   WHERE     SUBSTR (prd_prdcd, 7, 1) = '0'
+                         AND NVL (PRD_KODETAG, '0') NOT IN ('N',
+                                                            'H',
+                                                            'X',
+                                                            'A',
+                                                            'O',
+                                                            'I',
+                                                            'U',
+                                                            'Q')) t
+              ON (pkm_prdcd = t.prd_PRDCD)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            pkm_pkmt =
+                 CASE
+                    WHEN NVL (pkm_adjust_by, 'XX') = 'XX'
+                    THEN
+                       NVL (pkm_mpkm, 0)
+                    ELSE
+                       NVL (pkm_pkm, 0)
+                 END
+               + NVL (pkm_qtymplus, 0),
+            pkm_MODIFY_BY = 'JOB',
+            pkm_MODIFY_DT = SYSDATE;
+
+      COMMIT;
+   --END IF;
+   END IF;
+
+   p_sukses := 'TRUE';
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      p_sukses := 'FALSE';
+      p_errmsg := SQLERRM;
+      ROLLBACK;
+END;
+/
+
+ALTER PROCEDURE SP_HITUNG_MPLUSI_WEB COMPILE;
+/

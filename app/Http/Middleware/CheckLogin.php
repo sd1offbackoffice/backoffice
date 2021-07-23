@@ -18,28 +18,30 @@ class CheckLogin
 
             $isChanged = false;
 
-            if(!AccessController::isAccessible(\Request::getPathInfo()) && $_SESSION['usid'] == 'LAW'){
-                return redirect('/unauthorized');
+            if(!AccessController::isAccessible(\Request::getPathInfo())){
+                abort(403);
+//                return redirect('/unauthorized');
             }
 
-            $menu = AccessController::getListMenu($_SESSION['usid']);
+            $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
 
-            if(count($menu) == count($_SESSION['menu'])){
-                for($i=0;$i<count($menu);$i++){
-                    if($menu[$i]->acc_id != $_SESSION['menu'][$i]->acc_id){
-                        $isChanged = true;
-                        break;
-                    }
-                }
-            }
-            else $isChanged = true;
+//            if(count($menu) == count($_SESSION['menu'])){
+//                for($i=0;$i<count($menu);$i++){
+//                    if($menu[$i]->acc_id != $_SESSION['menu'][$i]->acc_id){
+//                        $isChanged = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            else $isChanged = true;
 
-            if($isChanged)
-                return redirect('/logout-access');
-            else{
-                return $next($request);
-            }
-        } else return redirect('/login');
-
+//            if($isChanged)
+//                return redirect('/logout-access');
+//            else{
+//                return $next($request);
+//            }
+            return $next($request);
+        }
+        else return redirect('/login');
     }
 }

@@ -260,9 +260,10 @@
                         $('#i_faximile').val(data.cab_faxcabang);
                         $('#i_npwp').val(data.cab_npwpcabang);
                         $('#i_noSK').val(data.cab_nosk);
-                        $('#i_tglSK').val(data.cab_tglsk);
+                        $('#i_tglSK').val((data.cab_tglsk) ? formatDate(data.cab_tglsk) : data.cab_tglsk);
                         $('#i_kodeAnakCabang').val(data.cab_kodecabang_anak);
                         $('#i_namaAnakCabang').val(data.cab_namacabang_anak);
+                        $('#i_kodeCabang').focus();
                         globalVar = 0;
                     }
                 }, error: function (err) {

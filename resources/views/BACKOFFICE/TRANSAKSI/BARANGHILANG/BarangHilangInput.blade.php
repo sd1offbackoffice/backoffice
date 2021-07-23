@@ -320,7 +320,7 @@
                     if(confirm){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/bo/transaksi/brghilang/input/nmrBaruTrn',
+                            url: '/BackOffice/public/bo/transaksi/barang-hilang/input/nmrBaruTrn',
                             type: 'post',
                             data: {nodoc: nodoc},
                             beforeSend: function () {
@@ -355,7 +355,7 @@
             $('#search-modal-1').val('')
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_trn',
                 type: 'post',
                 data: {},
                 success: function (result) {
@@ -381,7 +381,7 @@
                 let search = $('#search-modal-1').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_trn',
+                    url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_trn',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
@@ -409,7 +409,7 @@
                 let index = this['attributes'][4]['value'];
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_plu',
+                    url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_plu',
                     type: 'POST',
                     data: {search: search},
                     success: function (result) {
@@ -436,7 +436,7 @@
             // console.log(index)
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/lov_plu',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_plu',
                 type: 'post',
                 data: {index:index},
                 success: function (result) {
@@ -459,7 +459,7 @@
             let tempgross = 0;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/showTrn',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/showTrn',
                 type: 'post',
                 data: {nodoc: nodoc},
                 beforeSend: function () {
@@ -580,7 +580,7 @@
             let temp = 0;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/showPlu',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/showPlu',
                 type: 'post',
                 data: {noplu:noplu}, //noplu sebelah kiri buat panggil noplu di controller, sebelah kanan yg dari parameter
                 beforeSend: function () {
@@ -743,7 +743,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/saveDoc',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/saveDoc',
                 type: 'post',
                 data: {
                     data:data,
@@ -785,7 +785,7 @@
         function deleteDoc() {
             let nodoc = $('#no-trn').val();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/brghilang/input/deleteDoc',
+                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/deleteDoc',
                 type: 'post',
                 data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
                 beforeSend: function () {

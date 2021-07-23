@@ -5,7 +5,6 @@
 
     <div class="container-fluid">
         <fieldset class="card border-secondary">
-            <legend  class="w-auto ml-5">Kertas Kerja Estimasi Kebutuhan Toko IGR</legend>
             <div class="card-body shadow-lg cardForm">
                 <div class="row">
                     <label for="periode" class="col-sm-1 col-form-label">Tanggal</label>
@@ -16,234 +15,299 @@
                         <input type="text" class="form-control" id="keterangan" disabled value="DATA KKEI">
                     </div>
                 </div>
-                <table id="table_data" class="table table-sm table-striped table-bordered mb-3 text-center">
-                    {{--                    <table id="table_data" class="table table-sm table-bordered mb-3 text-left">--}}
-                    <thead class="theadDataTables text-center">
-                    <tr class="">
-                        <th rowspan="2"><i class="fas fa-trash"></i> </th>
-                        <th rowspan="2">PLU</th>
-                        <th rowspan="2">Unit</th>
-                        <th rowspan="2">Frac</th>
-                        <th rowspan="2">Harga Beli</th>
-                        <th rowspan="2">Discount</th>
-                        <th colspan="3">--- Sales 3 Bulan Terakhir ---</th>
-                        <th colspan="2">--- AVG Sales ---</th>
-                        <th rowspan="2">Saldo Akhir</th>
-                        <th rowspan="2">Estimasi in PCS</th>
-                        <th colspan="5">--- Breakdown PB ---</th>
-                        <th colspan="2">--- Buffer ---</th>
-                        <th rowspan="2">Saldo Akhir</th>
-                        <th colspan="2">Outstanding PO</th>
-                        <th colspan="5">--- Tanggal Kirim ---</th>
-                    </tr>
-                    <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>Bulan</th>
-                        <th>Hari</th>
-                        <th>Minggu 1</th>
-                        <th>Minggu 2</th>
-                        <th>Minggu 3</th>
-                        <th>Minggu 4</th>
-                        <th>Minggu 5</th>
-                        <th>Lead Time</th>
-                        <th>Safety Stock</th>
-                        <th>Total</th>
-                        <th>QTY</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-
-                    </tbody>
-                </table>
-{{--                <div class="row">--}}
-{{--                                                <div class="col-sm-3 pr-0">--}}
-{{--                                                    <fieldset class="card border-secondary">--}}
-{{--                                                        <legend class="w-auto ml-4">Detail</legend>--}}
-{{--                                                        <div class="kiri col-sm table-wrapper-scroll-y my-custom-scrollbar scroll-y">--}}
-{{--                                                            <table id="table-detail" class="table table-sm table-bordered m-1 mb-4">--}}
-{{--                                                                <thead>--}}
-{{--                                                                <tr class="d-flex text-center putih">--}}
-{{--                                                                    <th class="col-sm-12">.</th>--}}
-{{--                                                                </tr>--}}
-{{--                                                                <tr class="col-sm-12"></tr>--}}
-{{--                                                                <tr class="d-flex text-center">--}}
-{{--                                                                    <th class="col-sm-2"></th>--}}
-{{--                                                                    <th class="col-sm-4">PLU</th>--}}
-{{--                                                                    <th class="col-sm-3">Unit</th>--}}
-{{--                                                                    <th class="col-sm-3">Frac</th>--}}
-{{--                                                                </tr>--}}
-{{--                                                                </thead>--}}
-{{--                                                                <tbody>--}}
-{{--                                                                @php for($i=0;$i<10;$i++){ @endphp--}}
-{{--                                                                <tr class="d-flex baris" id="row_detail_{{ $i }}">--}}
-{{--                                                                    <td class="col-sm-2 text-center">--}}
-{{--                                                                        <button onclick="deleteRow({{ $i }})" class="col-sm btn btn-danger btn-delete">X</button>--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td class="col-sm-4">--}}
-{{--                                                                        <input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'{{ $i }}')">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td class="col-sm-3">--}}
-{{--                                                                        <input disabled type="text" class="form-control kke_unit">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td class="col-sm-3">--}}
-{{--                                                                        <input disabled type="text" class="form-control kke_frac">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_deskripsi">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_panjangprod">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_lebarprod">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_tinggiprod">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_panjangkmsn">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_lebarkmsn">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_tinggikmsn">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_beratproduk">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_beratkmsn">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_kubikasiprod">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_kubikasikmsn">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_kdsup">--}}
-{{--                                                                    </td>--}}
-{{--                                                                    <td hidden>--}}
-{{--                                                                        <input type="text" class="form-control kke_nmsup">--}}
-{{--                                                                    </td>--}}
-{{--                                                                </tr>--}}
-{{--                                                                @php } @endphp--}}
-{{--                                                                </tbody>--}}
-{{--                                                                <tfoot>--}}
-{{--                                                                    <tr class="d-flex putih">--}}
-{{--                                                                        <td class="col-sm-12"><input disabled type="text" class="form-control" style="background-color: white;border: none;"></td>--}}
-{{--                                                                    </tr>--}}
-{{--                                                                </tfoot>--}}
-{{--                                                            </table>--}}
-{{--                                                        </div>--}}
-{{--                                                    </fieldset>--}}
-{{--                                                </div>--}}
-{{--                                                <div class="col-sm-8 pl-0">--}}
-{{--                                                    <fieldset class="card border-secondary">--}}
-{{--                                                        <legend  class="w-auto ml-4">Form</legend>--}}
-{{--                                                        <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky">--}}
-{{--                                                            <table id="table-form" class="table table-sm table-bordered mb-3">--}}
-{{--                                                                <thead>--}}
-{{--                                                                <tr class="d-flex text-center">--}}
-{{--                                                                    <th class="col-sm-4"></th>--}}
-{{--                                                                    <th class="col-sm-6">--- Sales 3 Bulan Terakhir ---</th>--}}
-{{--                                                                    <th class="col-sm-4">-- AVG Sales --</th>--}}
-{{--                                                                    <th class="col-sm-4"></th>--}}
-{{--                                                                    <th class="col-sm-10">------ Breakdown PB ------</th>--}}
-{{--                                                                    <th class="col-sm-4">---- Buffer ----</th>--}}
-{{--                                                                    <th class="col-sm-2"></th>--}}
-{{--                                                                    <th class="col-sm-2">Outstanding PO</th>--}}
-{{--                                                                    <th class="col-sm-10">------ Tanggal Kirim ------</th>--}}
-{{--                                                                </tr>--}}
-{{--                                                                <tr class="d-flex text-center">--}}
-{{--                                                                    <th class="col-sm-2">Harga Beli</th>--}}
-{{--                                                                    <th class="col-sm-2">Discount</th>--}}
-{{--                                                                    <th class="col-sm-2">1</th>--}}
-{{--                                                                    <th class="col-sm-2">2</th>--}}
-{{--                                                                    <th class="col-sm-2">3</th>--}}
-{{--                                                                    <th class="col-sm-2">Bulan</th>--}}
-{{--                                                                    <th class="col-sm-2">Hari</th>--}}
-{{--                                                                    <th class="col-sm-2">Saldo Akhir</th>--}}
-{{--                                                                    <th class="col-sm-2">Estimasi in PCS</th>--}}
-{{--                                                                    <th class="col-sm-2">Minggu 1</th>--}}
-{{--                                                                    <th class="col-sm-2">Minggu 2</th>--}}
-{{--                                                                    <th class="col-sm-2">Minggu 3</th>--}}
-{{--                                                                    <th class="col-sm-2">Minggu 4</th>--}}
-{{--                                                                    <th class="col-sm-2">Minggu 5</th>--}}
-{{--                                                                    <th class="col-sm-2">Lead Time</th>--}}
-{{--                                                                    <th class="col-sm-2">Safety Stock</th>--}}
-{{--                                                                    <th class="col-sm-2">Saldo Akhir</th>--}}
-{{--                                                                    <th class="col-sm-1">Total</th>--}}
-{{--                                                                    <th class="col-sm-1">QTY</th>--}}
-{{--                                                                    <th class="col-sm-2">1</th>--}}
-{{--                                                                    <th class="col-sm-2">2</th>--}}
-{{--                                                                    <th class="col-sm-2">3</th>--}}
-{{--                                                                    <th class="col-sm-2">4</th>--}}
-{{--                                                                    <th class="col-sm-2">5</th>--}}
-{{--                                                                </tr>--}}
-{{--                                                                </thead>--}}
-{{--                                                                <tbody>--}}
-{{--                                                                @php for($i=0;$i<10;$i++){ @endphp--}}
-{{--                                                                <tr id="row_form_{{ $i }}" class="d-flex baris number">--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_hargabeli"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_discount"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales01"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales02"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales03"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_avgbln"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_avghari"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoawal"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_estimasi"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb01"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb02"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb03"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb04"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb05"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferlt"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferss"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoakhir"></td>--}}
-{{--                                                                    <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpototal"></td>--}}
-{{--                                                                    <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpoqty"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim01"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim02"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim03"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim04"></td>--}}
-{{--                                                                    <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim05"></td>--}}
-{{--                                                                </tr>--}}
-{{--                                                                @php } @endphp--}}
-{{--                                                                </tbody>--}}
-{{--                                                                <tfoot>--}}
-{{--                                                                    <tr class="d-flex text-center">--}}
-{{--                                                                        <td class="col-sm-12"></td>--}}
-{{--                                                                        <th class="col-sm-4 text-right"><h4 class="">Total Kubikasi</h4></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_estimasi"></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb01"></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb02"></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb03"></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb04"></th>--}}
-{{--                                                                        <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb05"></th>--}}
-{{--                                                                    </tr>--}}
-{{--                                                                </tfoot>--}}
-{{--                                                            </table>--}}
-{{--                                                        </div>--}}
-{{--                                                    </fieldset>--}}
-{{--                                                </div>--}}
-
-{{--                </div>--}}
+{{--                <table id="table_data" class="table table-sm table-striped table-bordered mb-3 text-center">--}}
+{{--                    --}}{{--                    <table id="table_data" class="table table-sm table-bordered mb-3 text-left">--}}
+{{--                    <thead class="theadDataTables text-center">--}}
+{{--                    <tr class="">--}}
+{{--                        <th rowspan="2"><i class="fas fa-trash"></i> </th>--}}
+{{--                        <th rowspan="2">PLU</th>--}}
+{{--                        <th rowspan="2">Unit</th>--}}
+{{--                        <th rowspan="2">Frac</th>--}}
+{{--                        <th rowspan="2">Harga Beli</th>--}}
+{{--                        <th rowspan="2">Discount</th>--}}
+{{--                        <th colspan="3">--- Sales 3 Bulan Terakhir ---</th>--}}
+{{--                        <th colspan="2">--- AVG Sales ---</th>--}}
+{{--                        <th rowspan="2">Saldo Akhir</th>--}}
+{{--                        <th rowspan="2">Estimasi in PCS</th>--}}
+{{--                        <th colspan="5">--- Breakdown PB ---</th>--}}
+{{--                        <th colspan="2">--- Buffer ---</th>--}}
+{{--                        <th rowspan="2">Saldo Akhir</th>--}}
+{{--                        <th colspan="2">Outstanding PO</th>--}}
+{{--                        <th colspan="5">--- Tanggal Kirim ---</th>--}}
+{{--                    </tr>--}}
+{{--                    <tr>--}}
+{{--                        <th>1</th>--}}
+{{--                        <th>2</th>--}}
+{{--                        <th>3</th>--}}
+{{--                        <th>Bulan</th>--}}
+{{--                        <th>Hari</th>--}}
+{{--                        <th>Minggu 1</th>--}}
+{{--                        <th>Minggu 2</th>--}}
+{{--                        <th>Minggu 3</th>--}}
+{{--                        <th>Minggu 4</th>--}}
+{{--                        <th>Minggu 5</th>--}}
+{{--                        <th>Lead Time</th>--}}
+{{--                        <th>Safety Stock</th>--}}
+{{--                        <th>Total</th>--}}
+{{--                        <th>QTY</th>--}}
+{{--                        <th>1</th>--}}
+{{--                        <th>2</th>--}}
+{{--                        <th>3</th>--}}
+{{--                        <th>4</th>--}}
+{{--                        <th>5</th>--}}
+{{--                    </tr>--}}
+{{--                        <tr class="">--}}
+{{--                            <th rowspan="2"><i class="fas fa-trash"></i> </th>--}}
+{{--                            <th rowspan="2">PLU</th>--}}
+{{--                            <th rowspan="2">Unit</th>--}}
+{{--                            <th rowspan="2">Frac</th>--}}
+{{--                            <th rowspan="2">Harga Beli</th>--}}
+{{--                            <th rowspan="2">Discount</th>--}}
+{{--                            <th colspan="3">--- Sales 3 Bulan Terakhir ---</th>--}}
+{{--                            <th colspan="2">--- AVG Sales ---</th>--}}
+{{--                            <th rowspan="2">Saldo Akhir</th>--}}
+{{--                            <th rowspan="2">Estimasi in PCS</th>--}}
+{{--                            <th colspan="5">--- Breakdown PB ---</th>--}}
+{{--                            <th colspan="2">--- Buffer ---</th>--}}
+{{--                            <th rowspan="2">Saldo Akhir</th>--}}
+{{--                            <th colspan="2">Outstanding PO</th>--}}
+{{--                            <th colspan="5">--- Tanggal Kirim ---</th>--}}
+{{--                        </tr>--}}
+{{--                        <tr>--}}
+{{--                            <th>1</th>--}}
+{{--                            <th>2</th>--}}
+{{--                            <th>3</th>--}}
+{{--                            <th>Bulan</th>--}}
+{{--                            <th>Hari</th>--}}
+{{--                            <th>Minggu 1</th>--}}
+{{--                            <th>Minggu 2</th>--}}
+{{--                            <th>Minggu 3</th>--}}
+{{--                            <th>Minggu 4</th>--}}
+{{--                            <th>Minggu 5</th>--}}
+{{--                            <th>Lead Time</th>--}}
+{{--                            <th>Safety Stock</th>--}}
+{{--                            <th>Total</th>--}}
+{{--                            <th>QTY</th>--}}
+{{--                            <th>1</th>--}}
+{{--                            <th>2</th>--}}
+{{--                            <th>3</th>--}}
+{{--                            <th>4</th>--}}
+{{--                            <th>5</th>--}}
+{{--                        </tr>--}}
+{{--                    </thead>--}}
+{{--                    <tbody>--}}
+{{--                        <tr>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                            <td></td>--}}
+{{--                        </tr>--}}
+{{--                    </tbody>--}}
+{{--                </table>--}}
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <fieldset class="card border-secondary">
+                            <legend class="w-auto ml-4">Detail</legend>
+{{--                            <div class="kiri col-sm table-wrapper-scroll-y my-custom-scrollbar scroll-y">--}}
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y" style="position: sticky; overflow-x: hidden">
+                                <table id="table-detail" class="table table-sm table-bordered m-1 mb-4">
+                                    <thead>
+                                    <tr class="d-flex text-center putih">
+                                        <th class="col-sm-12" style="color: #5AA4DD">.</th>
+                                    </tr>
+                                    <tr class="d-flex text-center">
+                                        <th class="col-sm-2"></th>
+                                        <th class="col-sm-4">PLU</th>
+                                        <th class="col-sm-3">Unit</th>
+                                        <th class="col-sm-3">Frac</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @for($i=0;$i<10;$i++)
+                                    <tr class="d-flex baris" id="row_detail_{{ $i }}">
+                                        <td class="col-sm-2 text-center">
+                                            <button onclick="deleteRow({{ $i }})" class="col-sm btn btn-danger btn-delete">X</button>
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'{{ $i }}')">
+                                        </td>
+                                        <td class="col-sm-3">
+                                            <input disabled type="text" class="form-control kke_unit">
+                                        </td>
+                                        <td class="col-sm-3">
+                                            <input disabled type="text" class="form-control kke_frac">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_deskripsi">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_panjangprod">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_lebarprod">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_tinggiprod">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_panjangkmsn">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_lebarkmsn">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_tinggikmsn">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_beratproduk">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_beratkmsn">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_kubikasiprod">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_kubikasikmsn">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_kdsup">
+                                        </td>
+                                        <td hidden>
+                                            <input type="text" class="form-control kke_nmsup">
+                                        </td>
+                                    </tr>
+                                    @endfor
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="d-flex putih">
+                                            <td class="col-sm-12"><input disabled type="text" class="form-control" style="background-color: white;border: none;"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-sm-8 pl-0">
+                        <fieldset class="card border-secondary">
+                            <legend  class="w-auto ml-4">Form</legend>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y" style="position: sticky">
+                                <table id="table-form" class="table table-sm table-bordered mb-3">
+                                    <thead>
+                                    <tr class="d-flex text-center">
+                                        <th class="col-sm-4"></th>
+                                        <th class="col-sm-6">--- Sales 3 Bulan Terakhir ---</th>
+                                        <th class="col-sm-4">-- AVG Sales --</th>
+                                        <th class="col-sm-4"></th>
+                                        <th class="col-sm-10">------ Breakdown PB ------</th>
+                                        <th class="col-sm-4">---- Buffer ----</th>
+                                        <th class="col-sm-2"></th>
+                                        <th class="col-sm-2">Outstanding PO</th>
+                                        <th class="col-sm-10">------ Tanggal Kirim ------</th>
+                                    </tr>
+                                    <tr class="d-flex text-center">
+                                        <th class="col-sm-2">Harga Beli</th>
+                                        <th class="col-sm-2">Discount</th>
+                                        <th class="col-sm-2">1</th>
+                                        <th class="col-sm-2">2</th>
+                                        <th class="col-sm-2">3</th>
+                                        <th class="col-sm-2">Bulan</th>
+                                        <th class="col-sm-2">Hari</th>
+                                        <th class="col-sm-2">Saldo Akhir</th>
+                                        <th class="col-sm-2">Estimasi in PCS</th>
+                                        <th class="col-sm-2">Minggu 1</th>
+                                        <th class="col-sm-2">Minggu 2</th>
+                                        <th class="col-sm-2">Minggu 3</th>
+                                        <th class="col-sm-2">Minggu 4</th>
+                                        <th class="col-sm-2">Minggu 5</th>
+                                        <th class="col-sm-2">Lead Time</th>
+                                        <th class="col-sm-2">Safety Stock</th>
+                                        <th class="col-sm-2">Saldo Akhir</th>
+                                        <th class="col-sm-1">Total</th>
+                                        <th class="col-sm-1">QTY</th>
+                                        <th class="col-sm-2">1</th>
+                                        <th class="col-sm-2">2</th>
+                                        <th class="col-sm-2">3</th>
+                                        <th class="col-sm-2">4</th>
+                                        <th class="col-sm-2">5</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php for($i=0;$i<10;$i++){ @endphp
+                                    <tr id="row_form_{{ $i }}" class="d-flex baris number">
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_hargabeli"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_discount"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales01"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales02"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_sales03"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_avgbln"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_avghari"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoawal"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_estimasi"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb01"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb02"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb03"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb04"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control cek kke_breakpb05"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferlt"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_bufferss"></td>
+                                        <td class="col-sm-2"><input disabled type="text" class="form-control kke_saldoakhir"></td>
+                                        <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpototal"></td>
+                                        <td class="col-sm-1"><input disabled type="text" class="form-control kke_outpoqty"></td>
+                                        <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim01"></td>
+                                        <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim02"></td>
+                                        <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim03"></td>
+                                        <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim04"></td>
+                                        <td class="col-sm-2"><input maxlength="10" type="text" class="form-control tanggal kke_tglkirim05"></td>
+                                    </tr>
+                                    @php } @endphp
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="d-flex text-center">
+                                            <td class="col-sm-12"></td>
+                                            <th class="col-sm-4 text-right"><h4 class="">Total Kubikasi</h4></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_estimasi"></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb01"></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb02"></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb03"></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb04"></th>
+                                            <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb05"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
 
                 <div class="row mt-2">
                     <label for="periode" class="col-sm-1 col-form-label text-right pr-0">Search PLU :</label>
                     <div class="col-sm-2 pr-0">
-                        <input type="text" class="form-control" id="i-search">
+                        <input type="text" class="form-control" id="i-search" maxlength="7">
                     </div>
                 </div>
                 <div class="row mt-1">
@@ -289,6 +353,7 @@
         body {
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
+            /*overflow-y: hidden;*/
         }
         label {
             color: #232443;
@@ -347,15 +412,23 @@
             white-space: nowrap;
         }
 
+        thead tr th{
+            background-color: #5AA4DD;
+            color: white;
+        }
+
     </style>
 
     <script>
+        var getDetail = false;
+
         $(document).ready(function(){
             ready();
 
             $('#periode').prop('disabled',false);
             $('#periode').on('keydown',function(event){
-                if(event.which == 13 && checkDate($(this).val())){
+                if(event.which == 13 && checkDate($(this).val()) && !getDetail){
+                    getDetail = true;
                     get_detail_kkei($(this).val());
                 }
             });
@@ -369,6 +442,7 @@
                 scrollY: 350,
                 scrollX: true,
                 scrollCollapse: true,
+                searching: false,
                 paging: false,
                 fixedColumns: true,
                 fixedColumns:   {
@@ -394,7 +468,8 @@
         currentPos = 0;
         currentIndex = 0;
         special = false;
-        rowCount = 10;
+        rowCount = 0;
+        deletable = false;
         deleted = [];
 
         edit = true;
@@ -420,7 +495,8 @@
             $('#periode').off('change');
 
             $('#periode').on('change',function(){
-                if(checkDate($(this).val())){
+                if(checkDate($(this).val()) && !getDetail){
+                    getDetail = true;
                     get_detail_kkei($(this).val());
                 }
             });
@@ -752,6 +828,9 @@
         function get_detail_kkei(periode){
             periode = periode.replace(/\//g, '');
 
+            deleted = [];
+
+
             $.ajax({
                 url: '/BackOffice/public/bo/pb/kkei/get_detail_kkei',
                 type: 'POST',
@@ -760,24 +839,22 @@
                 },
                 data: {periode: periode},
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    if($('#modal-loader').is(':visible')){
-                        $('#modal-loader').modal('toggle');
-                    }
+                    $('#modal-loader').modal('hide');
 
-                    if (response.status == 'success') {
-                        $('#table-detail').find('tbody tr').remove();
-                        $('#table-form').find('tbody tr').remove();
+                    getDetail = false;
 
-                        rowCount = 0;
+                    now = new Date;
+                    periode = $('#periode').datepicker('getDate');
 
-                        if ($.fn.DataTable.isDataTable('#table_data')) {
-                            $('#table_data').DataTable().destroy();
-                            $("#table_data tbody [role='row']").remove();
-                        }
+                    $('#table-detail').find('tbody tr').remove();
+                    $('#table-form').find('tbody tr').remove();
 
+                    rowCount = 0;
+
+                    if (response.data.length > 0) {
                         for(i=0;i<response.data.length;i++){
                             deskripsi = response.data[i].kke_deskripsi;
 
@@ -949,228 +1026,6 @@
                                 '<input type="text" class="form-control tanggal kke_tglkirim05" value=' + formatDate(response.data[i].kke_tglkirim05) + '></td>' +
                                 '</tr>';
 
-                            // $('#table-detail').append(trDetail);
-                            // $('#table-form').append(trForm);
-
-                            $('#table_data').append(trData);
-
-                            rowCount++;
-                        }
-
-                        initTable();
-
-                        for(i=response.data.length;i<10;i++){
-                            addRow();
-                        }
-
-                        ready();
-
-
-
-                        totalKubikasi = 0;
-                        totalBerat = 0;
-                        $('.kke_estimasi').each(function(){
-                            if($(this).val() > 0) {
-                                currId = $(this).parent().parent().attr('id').split('_').pop();
-                                totalKubikasi += $('#row_detail_'+currId).find('.kke_kubikasikmsn').val() * $(this).val();
-                                totalBerat += $('#row_detail_'+currId).find('.kke_beratkmsn').val() * $(this).val();
-                            }
-                        });
-
-                        totalKubikasi = totalKubikasi / 28.5;
-                        totalBerat = totalBerat / 20900;
-
-                        if(totalKubikasi > totalBerat){
-                            total = Math.ceil(totalKubikasi);
-                        }
-                        else{
-                            total = Math.ceil(totalBerat);
-                        }
-                        $('#total_kke_estimasi').val(total);
-
-                        $('#total_kke_breakpb01').val(response.data[0].kke_kubik1);
-                        $('#total_kke_breakpb02').val(response.data[0].kke_kubik2);
-                        $('#total_kke_breakpb03').val(response.data[0].kke_kubik3);
-                        $('#total_kke_breakpb04').val(response.data[0].kke_kubik4);
-                        $('#total_kke_breakpb05').val(response.data[0].kke_kubik5);
-
-                        if(response.data[0].kke_upload == 'Y'){
-                            $('#keterangan').val('DATA SUDAH DIUPLOAD');
-                            $('#table-detail').find('input').each(function(){
-                                if($(this).attr('class').split(' ').pop() == 'kke_prdcd')
-                                    $(this).prop('readonly',true);
-                                else $(this).prop('disabled',true);
-                            });
-                            $('#table-form').find('input').each(function(){
-                                $(this).prop('disabled',true);
-                            });
-
-                            $('#btn-save').prop('disabled',true);
-                            $('#btn-print').prop('disabled',false);
-
-                            edit = false;
-                        }
-                        else{
-                            $('#keterangan').val('DATA BELUM DIUPLOAD');
-                            $('#btn-save').prop('disabled',false);
-                            $('#btn-print').prop('disabled',false);
-                            edit = true;
-                            cek();
-                        }
-                        $('#periode').prop('disabled',false);
-                        $('#periode').prop('readonly',false);
-                    }
-                    $('#row_detail_0').find('.kke_prdcd').select();
-                }
-            });
-        }
-
-        function get_detail_kkeiOld(periode){
-            periode = periode.replace(/\//g, '');
-
-            $.ajax({
-                url: '/BackOffice/public/bo/pb/kkei/get_detail_kkei',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {periode: periode},
-                beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
-                success: function (response) {
-                    if($('#modal-loader').is(':visible')){
-                        $('#modal-loader').modal('toggle');
-                    }
-
-                    if (response.status == 'success') {
-                        $('#table-detail').find('tbody tr').remove();
-                        $('#table-form').find('tbody tr').remove();
-
-                        rowCount = 0;
-
-                        if ($.fn.DataTable.isDataTable('#table_data')) {
-                            $('#table_data').DataTable().destroy();
-                            $("#table_data tbody [role='row']").remove();
-                        }
-
-                        for(i=0;i<response.data.length;i++){
-                            deskripsi = response.data[i].kke_deskripsi;
-
-                            trData = '<tr class="d-flex baris"  id="row_detail_'+rowCount+'">' +
-                                '<td class="text-center">' +
-                                '<button class="col-sm btn btn-danger btn-delete" onclick="deleteRow('+rowCount+')">X</button>' +
-                                '</td>' +
-                                '<td class="">' +
-                                '<input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'+rowCount+')" value="'+response.data[i].kke_prdcd+'">' +
-                                '</td>' +
-                                '</tr>';
-
-                            trDetail = '<tr class="d-flex baris"  id="row_detail_'+rowCount+'">' +
-                                '<td class="col-sm-2 text-center">' +
-                                '<button class="col-sm btn btn-danger btn-delete" onclick="deleteRow('+rowCount+')">X</button>' +
-                                '</td>' +
-                                '<td class="col-sm-4">' +
-                                '<input type="number" class="form-control kke_prdcd" onkeypress="get_detail_produk(event,'+rowCount+')" value="'+response.data[i].kke_prdcd+'">' +
-                                '</td>' +
-                                '<td class="col-sm-3">' +
-                                '<input disabled type="text" class="form-control kke_unit" value='+response.data[i].kke_unit+'>' +
-                                '</td>' +
-                                '<td class="col-sm-3">' +
-                                '<input disabled type="text" class="form-control kke_frac" value='+response.data[i].kke_frac+'>' +
-                                '</td>' +
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_deskripsi" value="'+response.data[i].kke_deskripsi+'">'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_panjangprod" value='+response.data[i].kke_panjangprod+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_lebarprod" value='+response.data[i].kke_lebarprod+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_tinggiprod" value='+response.data[i].kke_tinggiprod+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_panjangkmsn" value='+response.data[i].kke_panjangkmsn+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_lebarkmsn" value='+response.data[i].kke_lebarkmsn+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_tinggikmsn" value='+response.data[i].kke_tinggikmsn+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_beratproduk" value='+response.data[i].kke_beratproduk+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_beratkmsn" value='+response.data[i].kke_beratkmsn+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_kubikasiprod" value='+response.data[i].kke_kubikasiprod+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_kubikasikmsn" value='+response.data[i].kke_kubikasikmsn+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_kdsup" value='+response.data[i].kke_kdsup+'>'+
-                                '</td>'+
-                                '<td hidden>'+
-                                '<input type="text" class="form-control kke_nmsup" value='+response.data[i].kke_nmsup+'>'+
-                                '</td>'
-                            '</tr>';
-
-                            trForm = '<tr id="row_form_' + i + '" class="d-flex baris number">' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah(response.data[i].kke_hargabeli) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah(Math.round(response.data[i].kke_discount)) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_sales01" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_sales02" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_sales03" value=' + convertToRupiah2(response.data[i].kke_sales03) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_avgbln" value=' + convertToRupiah(response.data[i].kke_avgbln) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_avghari" value=' + convertToRupiah(response.data[i].kke_avghari) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_saldoawal" value=' + convertToRupiah2(response.data[i].kke_saldoawal) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_estimasi" value=' + convertToRupiah2(response.data[i].kke_estimasi) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_breakpb01" value=' + convertToRupiah2(response.data[i].kke_breakpb01) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_breakpb02" value=' + convertToRupiah2(response.data[i].kke_breakpb02) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_breakpb03" value=' + convertToRupiah2(response.data[i].kke_breakpb03) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_breakpb04" value=' + convertToRupiah2(response.data[i].kke_breakpb04) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control cek kke_breakpb05" value=' + convertToRupiah2(response.data[i].kke_breakpb05) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control kke_bufferlt" value=' + convertToRupiah2(response.data[i].kke_bufferlt) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control kke_bufferss" value=' + convertToRupiah2(response.data[i].kke_bufferss) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_saldoakhir" value=' + convertToRupiah2(response.data[i].kke_saldoakhir) + '></td>' +
-                                '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control kke_outpototal" value=' + convertToRupiah2(response.data[i].kke_outpototal) + '></td>' +
-                                '<td class="col-sm-1">' +
-                                '<input disabled type="text" class="form-control kke_outpoqty" value=' + convertToRupiah2(response.data[i].kke_outpoqty) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control tanggal kke_tglkirim01" value=' + formatDate(response.data[i].kke_tglkirim01) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control tanggal kke_tglkirim02" value=' + formatDate(response.data[i].kke_tglkirim02) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control tanggal kke_tglkirim03" value=' + formatDate(response.data[i].kke_tglkirim03) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control tanggal kke_tglkirim04" value=' + formatDate(response.data[i].kke_tglkirim04) + '></td>' +
-                                '<td class="col-sm-2">' +
-                                '<input type="text" class="form-control tanggal kke_tglkirim05" value=' + formatDate(response.data[i].kke_tglkirim05) + '></td>' +
-                                '</tr>';
-
                             $('#table-detail').append(trDetail);
                             $('#table-form').append(trForm);
 
@@ -1179,27 +1034,11 @@
                             rowCount++;
                         }
 
-                        $('#table_data').DataTable({
-                            "scrollX" : true,
-                            "paging": true,
-                            "lengthChange": true,
-                            "searching": true,
-                            "ordering": true,
-                            "info": true,
-                            "autoWidth": true,
-                            "responsive": true,
-                            "createdRow": function (row, data, dataIndex) {
-                            },
-                            "order": []
-                        });
-
                         for(i=response.data.length;i<10;i++){
                             addRow();
                         }
 
                         ready();
-
-
 
                         totalKubikasi = 0;
                         totalBerat = 0;
@@ -1229,6 +1068,7 @@
                         $('#total_kke_breakpb05').val(response.data[0].kke_kubik5);
 
                         if(response.data[0].kke_upload == 'Y'){
+                            deletable = false;
                             $('#keterangan').val('DATA SUDAH DIUPLOAD');
                             $('#table-detail').find('input').each(function(){
                                 if($(this).attr('class').split(' ').pop() == 'kke_prdcd')
@@ -1245,6 +1085,7 @@
                             edit = false;
                         }
                         else{
+                            deletable = true;
                             $('#keterangan').val('DATA BELUM DIUPLOAD');
                             $('#btn-save').prop('disabled',false);
                             $('#btn-print').prop('disabled',false);
@@ -1254,7 +1095,24 @@
                         $('#periode').prop('disabled',false);
                         $('#periode').prop('readonly',false);
                     }
+                    else{
+                        for(i=response.data.length;i<10;i++){
+                            addRow();
+                        }
+
+                        ready();
+                    }
+
                     $('#row_detail_0').find('.kke_prdcd').select();
+
+                    if(periode.getMonth() != now.getMonth() || periode.getFullYear() != now.getFullYear()){
+                        swal({
+                            title: 'Periode harus bulan berjalan!',
+                            icon: 'warning'
+                        }).then(function(){
+                            $('#row_detail_0').find('.kke_prdcd').select();
+                        });
+                    }
                 }
             });
         }
@@ -1372,18 +1230,26 @@
         }
 
         function deleteRow(row){
-            deleted.push($('#row_detail_'+row).find('.kke_prdcd').val());
+            if(deletable){
+                deleted.push($('#row_detail_'+row).find('.kke_prdcd').val());
 
-            $('#row_detail_'+row).remove();
-            $('#row_form_'+row).remove();
+                $('#row_detail_'+row).remove();
+                $('#row_form_'+row).remove();
 
-            count = 0;
-            $('#table-detail').find('#row_detail').each(function(){
-                count++;
-            });
+                count = 0;
+                $('#table-detail').find('#row_detail').each(function(){
+                    count++;
+                });
 
-            if(count < 10){
-                addRow();
+                if(count < 10){
+                    addRow();
+                }
+            }
+            else{
+                swal({
+                    title: 'Data tidak bisa didelete',
+                    icon: 'error'
+                });
             }
         }
 
@@ -1455,7 +1321,11 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: {kkei: datas, deleted: deleted},
+                data: {
+                    periode: $('#periode').val().replace(/\//g, ''),
+                    kkei: datas,
+                    deleted: deleted
+                },
                 beforeSend: function () {
                     $('#modal-loader').modal('toggle');
                     // console.log(datas);
@@ -1541,7 +1411,5 @@
             {{--xhttp.responseType = 'blob';--}}
             {{--xhttp.send(JSON.stringify(data));--}}
         }
-
     </script>
-
 @endsection

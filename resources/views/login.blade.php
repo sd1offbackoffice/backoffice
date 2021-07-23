@@ -179,7 +179,7 @@
         else {
             $('#lbl-validate-password').text('');
             $('#lbl-validate-username').text('');
-
+ajaxSetup()
             $.ajax({
                 url: '/BackOffice/public/api/login',
                 type: 'POST',
@@ -230,7 +230,6 @@
     });
 
     $('#btn-insert').on('click', function () {
-
             $.ajax({
                 url: '/BackOffice/public/api/insertip',
                 type: 'POST',
@@ -244,7 +243,11 @@
                             text: response['message'],
                             icon: response['status'],
                         });
-                }
+                },
+                error: function (response) {
+                        $('#modal-loader').modal('hide');
+                        errorHandlingforAjax(response);
+                    }
             });
 
     });

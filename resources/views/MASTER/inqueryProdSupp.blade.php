@@ -196,7 +196,7 @@
             $('#modal_supp').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/inqprodsupp/prodSupp',
+                url: '/BackOffice/public/inquery/prod-supp/prodSupp',
                 type: 'post',
                 data: {kodesupp: kodesupp},
                 beforeSend: function () {

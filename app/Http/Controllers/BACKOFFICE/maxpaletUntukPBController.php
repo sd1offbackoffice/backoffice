@@ -23,7 +23,6 @@ class maxpaletUntukPBController extends Controller
             ->get()->toArray();
 
         return response()->json(['data' =>  $datas]);
-//        return response()->json($datas);
     }
 
     public function getMaxPalet(Request $request){
@@ -81,7 +80,8 @@ class maxpaletUntukPBController extends Controller
     public function deleteData(Request $request){
         $kodePlu    = $request->kodePlu;
 
-        $search     = DB::table('tbmaster_prodmast')->where('prd_prdcd', $kodePlu)->get()->toArray();
+        // Query ditambahkan cek recordid supaya tidak menghapus data yg sudah terhapus
+        $search     = DB::table('tbmaster_pb_maxpalet')->where('pmp_prdcd', $kodePlu)->where('pmp_recordid', null)->get()->toArray();
 
         if (!$search){
             return response()->json(['kode' => '0', 'return' => "Data PLU Tidak Ada !!"]);

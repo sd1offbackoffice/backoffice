@@ -128,7 +128,7 @@
                         <div class="row form-group">
                             <label class="col-sm-3 text-right col-form-label">URL</label>
                             <div class="col-sm-7">
-                                <input type="text" class="form-control" id="add_url" maxlength="255">
+                                <input type="text" class="form-control" id="add_url" maxlength="255" placeholder="/group/subgroup/name">
                             </div>
                         </div>
                         <div class="row form-group">

@@ -79,7 +79,8 @@
 
                                 <div class="row form-group mt-3 mb-0">
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success" onclick="cetakEFaktur()">CSV eFaktur</button>
+                                        <button class="col btn btn-success" onclick="cetakEFaktur()">CSV eFaktur
+                                        </button>
                                     </div>
                                     <div class="col-sm-4">
                                         <button class="col btn btn-success" onclick="cetak()">CETAK</button>
@@ -145,6 +146,7 @@
 
     <script>
         nomor = '';
+        checked = [];
         $(document).ready(function () {
             $('.tanggal').datepicker({
                 "dateFormat": "dd/mm/yy",
@@ -165,20 +167,6 @@
             showData();
         });
 
-        $('#check10lbl').on('change', function () {
-            var bool = true;
-            if($(this).prop('checked')== true) {
-                bool = true;
-            }
-            else{
-                bool = false;
-            }
-            $("#tableDocument").find(".cekbox").each(function (index) {
-                if (index < 10) {
-                    $(this).prop('checked', bool);
-                }
-            });
-        });
 
         function cekMenu() {
             if ($('#dokumen').val() == 'K' && $('#laporan').val() == 'N') {
@@ -193,9 +181,7 @@
 
         function cekTanggal() {
             tgl1 = $.datepicker.parseDate('dd/mm/yy', $('#tgl1').val());
-            ;
             tgl2 = $.datepicker.parseDate('dd/mm/yy', $('#tgl2').val());
-            ;
             if ($('#reprint:checked').val() == 'on') {
                 if (tgl1 == '' || tgl2 == '') {
                     swal({
@@ -213,6 +199,7 @@
         }
 
         function showData() {
+            checked = [];
             $('#tableDocument').DataTable().destroy();
             $('#tableDocument').DataTable({
                 "ajax": {
@@ -228,6 +215,7 @@
                 "columns": [
                     {data: 'nodoc', name: 'nodoc'},
                     {data: 'tgldoc', name: 'tgldoc'},
+                    {data: 'cekbox', name: 'cekbox'},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -245,12 +233,6 @@
                         render: function (data, type, row) {
                             return formatDate(data)
                         }
-                    },
-                    {
-                        targets: [2],
-                        render: function (data, type, row) {
-                            return '<input class="cekbox" name="cekbox[]" type="checkbox" id="'+data+'" value="'+data+'"/>';
-                        }
                     }
                 ],
                 "order": []
@@ -258,11 +240,115 @@
 
         }
 
-        function cetakEFaktur(){
-            nodoc = [];
-            tgldoc = [];
-            console.log($("input[name='cekbox']").val());
-            {{--window.open(`{{ url()->current() }}/cetakEFaktur?doc=${$('#documen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&nodoc=${nodoc}&tgldoc=${tgldoc}`, '_blank');--}}
+        $('#check10lbl').on('change', function () {
+            var bool = true;
+            if ($(this).prop('checked') == true) {
+                bool = true;
+            } else {
+                bool = false;
+            }
+            $("#tableDocument").find(".cekbox").each(function (index) {
+                if (index < 10) {
+                    $(this).prop('checked', bool);
+                    val = $(this).val();
+                    const index = checked.indexOf(val);
+                    if (bool) {
+                        if (index > -1) {
+                        }
+                        else {
+                            checked.push(val);
+
+                        }
+                    }
+                    else{
+                        if (index > -1) {
+                            checked.splice(index, 1);
+                        }
+                    }
+                }
+            });
+        });
+        $(document).on('change', '.cekbox', function () {
+            val = $(this).val();
+            if ($(this).prop('checked') == true) {
+                checked.push(val);
+            } else {
+                const index = checked.indexOf(val);
+                if (index > -1) {
+                    checked.splice(index, 1);
+                }
+            }
+        });
+
+        function cetakEFaktur() {
+            if (checked.length != 0) {
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/cetak-dokumen/CSVeFaktur',
+                    type: 'post',
+                    data: {
+                        doc: $('#dokumen').val(),
+                        lap: $('#laporan').val(),
+                        reprint: $('#reprint:checked').val(),
+                        tgl1: $('#tgl1').val(),
+                        tgl2: $('#tgl2').val(),
+                        data: checked,
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (result) {
+                        $('#modal-loader').modal('hide');
+                        window.open('../' + result, '_blank');
+                    }, error: function (err) {
+                        $('#modal-loader').modal('hide');
+                        errorHandlingforAjax(err)
+                    }
+                })
+
+            } else {
+                swal({
+                    title: 'Dokumen belum dipilih!',
+                    icon: 'error'
+                });
+            }
+        }
+
+        function cetak() {
+            console.log(checked);
+            if (checked.length != 0) {
+                // ajaxSetup();
+                // $.ajax({
+                //     url: '/BackOffice/public/bo/cetak-dokumen/cetak',
+                //     type: 'post',
+                //     data: {
+                //         doc: $('#dokumen').val(),
+                //         lap: $('#laporan').val(),
+                //         reprint: $('#reprint:checked').val(),
+                //         tgl1: $('#tgl1').val(),
+                //         tgl2: $('#tgl2').val(),
+                //         kertas: $('#kertas').val(),
+                //         data: checked,
+                //     },
+                //     beforeSend: function () {
+                //         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                //     },
+                //     success: function (result) {
+                //         $('#modal-loader').modal('hide');
+                //         window.open('../' + result, '_blank');
+                //     }, error: function (err) {
+                //         $('#modal-loader').modal('hide');
+                //         errorHandlingforAjax(err);
+                //     }
+                // })
+                window.open(`{{ url()->current() }}/cetak?doc=${$('#dokumen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&kertas=${$('#kertas').val()}&data=${checked}`, '_blank');
+
+            } else {
+                swal({
+                    title: 'Dokumen belum dipilih!',
+                    icon: 'error'
+                });
+            }
         }
     </script>
 

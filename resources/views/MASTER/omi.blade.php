@@ -348,7 +348,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4"><p>* Tekan enter untuk konfirmasi perubahan <br> * Tekan 'ctrl+s' untuk menuju ke kotak search (hanya untuk di masa testing saja)</p></div>
+                            <div class="col-sm-4"><p>* Tekan enter untuk konfirmasi perubahan <br> </p></div>
                         </div>
                     </div>
                 </div>
@@ -412,7 +412,6 @@
         let kodeomiEditExpand;
 
         $(document).ready(function () {
-            $('#m_detailTokoOmi').modal('show')
             $('.flagKph').hide();
             // $('#m_detailTokoOmi').modal('show');
             $('.tanggal').datepicker({

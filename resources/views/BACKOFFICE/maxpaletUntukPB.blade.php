@@ -70,8 +70,12 @@
                     { "data" : "mpt_maxqty", "width": "15%" }
                 ]
             });
-            // loadData();
+            focusToKodeplu()
         });
+
+        function focusToKodeplu(){
+            $('#i_kodePlu').focus();
+        }
 
         function loadData() {
             location.reload();
@@ -114,8 +118,9 @@
                         clearField();
                     }
                 }, error: function (err) {
-                    console.log(err);
                     clearField();
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
                 }
             })
         }
@@ -139,15 +144,17 @@
                         },
                         success: function (result) {
                             if (result.kode === '0'){
-                                swal('', result.return, 'warning');
+                                swalWithTime('', result.return, 'warning', 2000);
                                 clearField();
                             } else {
                                 loadData();
-                                swal('Success', result.return, 'success');
+                                swalWithTime('Success', result.return, 'success',2000);
                                 clearField();
                             }
+                            focusToKodeplu()
                         }, error: function (err) {
-                            console.log(err);
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                             clearField();
                         }
                     })
@@ -179,35 +186,40 @@
         }
 
         $(document).on('keypress', '#i_kodePlu', function (e) {
-            if(e.which === 13) {
-                e.preventDefault();
-                let kodePlu = $('#i_kodePlu').val();
+            let kodePlu = $('#i_kodePlu').val();
 
-                ajaxSetup();
-                $.ajax({
-                    url:'/BackOffice/public/bomaxpalet/getmaxpalet',
-                    type:'Post',
-                    data: {
-                        kodePlu:kodePlu
-                    },
-                    success: function (result) {
-                        if (result.kode === '0'){
-                            swal('', result.return, 'warning');
+            if (kodePlu){
+                if(e.which === 13) {
+                    e.preventDefault();
+
+                    ajaxSetup();
+                    $.ajax({
+                        url:'/BackOffice/public/bomaxpalet/getmaxpalet',
+                        type:'Post',
+                        data: {
+                            kodePlu:kodePlu
+                        },
+                        success: function (result) {
+                            if (result.kode === '0'){
+                                swalWithTime('',result.return, 'warning', 2000)
+                                clearField();
+                                focusToKodeplu()
+                            } else {
+                                let data = result.return[0];
+                                $('#i_kodePlu').val(data.prd_prdcd);
+                                $('#i_maxPalet').val(data.maxpalet);
+                                $('#i_deskripsiPanjang').val(data.prd_deskripsipanjang);
+                                $('#i_frac').val(data.prd_unit +'/' + data.prd_frac);
+
+                                $('#save').focus();
+                            }
+                        }, error: function (err) {
                             clearField();
-                        } else {
-                            let data = result.return[0];
-                            $('#i_kodePlu').val(data.prd_prdcd);
-                            $('#i_maxPalet').val(data.maxpalet);
-                            $('#i_deskripsiPanjang').val(data.prd_deskripsipanjang);
-                            $('#i_frac').val(data.prd_unit +'/' + data.prd_frac);
-
-                            $('#save').focus();
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
                         }
-                    }, error: function (err) {
-                        console.log(err);
-                        clearField();
-                    }
-                })
+                    })
+                }
             }
         });
 

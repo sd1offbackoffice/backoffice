@@ -19,8 +19,8 @@
                                             <button class="btn float-left pl-0 btn-sm" type="button"
                                                     data-target="#m_pbHelp" data-toggle="modal"
                                                     onclick=""><img
-                                                        src="{{asset('image/icon/help.png')}}" height="20px"
-                                                        width="20px">
+                                                    src="{{asset('image/icon/help.png')}}" height="20px"
+                                                    width="20px">
                                             </button>
                                             <button type="button" id="btn-hapus-dokumen"
                                                     class="btn btn-danger btn-sm float-left ">Hapus Dokumen
@@ -411,10 +411,11 @@
                     buttons: true
                 }).then((createData) => {
                     if (createData) {
+                        ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/api/bopbmanual/getDataPB',
+                            url: '/BackOffice/public/bo/pb-manual/getDataPB',
                             type: 'POST',
-                            data: {"_token": "{{ csrf_token() }}", value: value},
+                            data: {value: value},
                             beforeSend: function () {
                                 $('#m_pbHelp').modal('hide');
                                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -436,12 +437,12 @@
                         });
                     }
                 });
-            }
-            else {
+            } else {
+                ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/api/bopbmanual/getDataPB',
+                    url: '/BackOffice/public/bo/pb-manual/getDataPB',
                     type: 'POST',
-                    data: {"_token": "{{ csrf_token() }}", value: value},
+                    data: {value: value},
                     beforeSend: function () {
                         $('#m_pbHelp').modal('hide');
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -453,8 +454,7 @@
                                 icon: response['status']
                             }).then((createData) => {
                             });
-                        }
-                        else {
+                        } else {
                             $('#no-pb').val(response['pb'].pbh_nopb);
                             $('#tgl-pb').val(formatDate(response['pb'].pbh_tglpb));
                             $('#model').val(response['MODEL']);
@@ -545,8 +545,7 @@
                                     icon: 'error'
                                 }).then((createData) => {
                                 });
-                            }
-                            else if (response['MODEL'] == 'PB SUDAH DICETAK / TRANSFER') {
+                            } else if (response['MODEL'] == 'PB SUDAH DICETAK / TRANSFER') {
                                 $('.btn-delete').hide();
                                 $('#btn-hapus-dokumen').prop("disabled", "disabled");
                                 $('.input-plu').prop("disabled", "disabled");
@@ -596,13 +595,13 @@
                     $('#table_lov .row_lov').remove();
                     $('#table_lov').append(trlov);
                     $('.invalid-feedback').hide();
-                }
-                else if (this.value.length >= 3) {
+                } else if (this.value.length >= 3) {
                     $('.invalid-feedback').hide();
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/bopbmanual/lov_search',
+                        url: '/BackOffice/public/bo/pb-manual/lov_search',
                         type: 'POST',
-                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        data: {value: this.value.toUpperCase()},
                         beforeSend: function () {
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
@@ -623,8 +622,7 @@
                             $('#modal-loader').modal('hide');
                         }
                     });
-                }
-                else {
+                } else {
                     $('.invalid-feedback').show();
                 }
             }
@@ -641,8 +639,7 @@
                     icon: 'error'
                 }).then((createData) => {
                 });
-            }
-            else {
+            } else {
                 $('.' + plu).click();
                 $('.' + plu + ' .input-plu').focus();
             }
@@ -685,10 +682,11 @@
         };
         $('#btn-hapus-dokumen').on('click', function () {
             value = $('#no-pb').val();
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/bopbmanual/hapusDokumen',
+                url: '/BackOffice/public/bo/pb-manual/hapusDokumen',
                 type: 'POST',
-                data: {"_token": "{{ csrf_token() }}", value: value},
+                data: {value: value},
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
@@ -717,13 +715,13 @@
                     $('#table_lov_plu .row_lov_plu').remove();
                     $('#table_lov_plu').append(trlov_plu);
                     $('.invalid-feedback').hide();
-                }
-                else if (this.value.length >= 3) {
+                } else if (this.value.length >= 3) {
                     $('.invalid-feedback').hide();
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/bopbmanual/lov_search_plu',
+                        url: '/BackOffice/public/bo/pb-manual/lov_search_plu',
                         type: 'POST',
-                        data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
+                        data: {value: this.value.toUpperCase()},
                         beforeSend: function () {
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
@@ -740,8 +738,7 @@
                             $('#modal-loader').modal('hide');
                         }
                     });
-                }
-                else {
+                } else {
                     $('.invalid-feedback').show();
                 }
             }
@@ -874,17 +871,17 @@
                         div.find('.input-plu').val("");
                         div.find('.input-plu').focus();
                     });
-                }
-                else {
+                } else {
                     if ($('.' + value + ' .input-plu').val() == null) {
                         tgl = $('#tgl-pb').val();
                         nopb = $('#no-pb').val();
                         div.find('.input-plu').val(value);
                         flag = $('#flag').val();
+                        ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/api/bopbmanual/cek_plu',
+                            url: '/BackOffice/public/bo/pb-manual/cek_plu',
                             type: 'POST',
-                            data: {"_token": "{{ csrf_token() }}", plu: value, tglpb: tgl, nopb: nopb, flag: flag},
+                            data: {plu: value, tglpb: tgl, nopb: nopb, flag: flag},
                             beforeSend: function () {
                                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                             },
@@ -898,8 +895,7 @@
                                         div.find('.input-plu').val("");
                                         div.find('.input-plu').focus();
                                     });
-                                }
-                                else {
+                                } else {
                                     div.remove();
                                     $('#table-detail').append(
                                         "<tr id='row-" + rowIterator + "' class='baris " + response["plu"].pbd_prdcd + "' onclick='setDataPLU(\"" + rowIterator + "\",\"" + response["plu"].pbd_prdcd + "\",\"" + response["plu"].prd_deskripsipanjang.replace(/\'/g, ' ') + "\",\"" + response["plu"].pbd_kodesupplier + "\",\"" + response["plu"].sup_namasupplier + "\",\"" + response["plu"].prd_hrgjual + "\",\"" + nvl(response["plu"].pbd_pkmt, 0) + "\",\"" + nvl(response["plu"].st_saldoakhir, 0) + "\",\"" + response["plu"].minor + "\")'>\n" +
@@ -981,8 +977,7 @@
                                 $('#modal-loader').modal('hide');
                             }
                         });
-                    }
-                    else {
+                    } else {
                         swal({
                             title: "PLU sudah ada !",
                             icon: 'error'
@@ -1050,21 +1045,20 @@
                     }).then((createData) => {
                         div.find('.input-ctn').focus();
                     });
-                }
-                else if ((div.find('.input-ctn').val() * detail[row].prd_frac) + value <= 0) {
+                } else if ((div.find('.input-ctn').val() * detail[row].prd_frac) + value <= 0) {
                     swal({
                         title: "QTYB + QTYK <= 0",
                         icon: "error"
                     }).then((createData) => {
                         div.find('.input-ctn').focus();
                     });
-                }
-                else {
+                } else {
+                    ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/api/bopbmanual/cek_bonus',
+                        url: '/BackOffice/public/bo/pb-manual/cek_bonus',
                         type: 'POST',
                         data: {
-                            "_token": "{{ csrf_token() }}",
+
                             plu: detail[row].pbd_prdcd,
                             kdsup: detail[row].pbd_kodesupplier,
                             tgl: $('#tgl-pb').val(),
@@ -1086,8 +1080,7 @@
                                     $(next).click();
                                     $(next).find('.input-plu').focus();
                                 }
-                            }
-                            else {
+                            } else {
                                 swal({
                                     title: response['message'],
                                     icon: response['status']
@@ -1158,8 +1151,7 @@
                         }).then((createData) => {
                             $(rid).find('.input-ctn').focus();
                         });
-                    }
-                    else if ((temp[3] * detail[id].prd_frac) + temp[4] <= 0) {
+                    } else if ((temp[3] * detail[id].prd_frac) + temp[4] <= 0) {
                         simpan = false;
                         swal({
                             title: "QTYB + QTYK <= 0",
@@ -1167,8 +1159,7 @@
                         }).then((createData) => {
                             $(rid).find('.input-ctn').focus();
                         });
-                    }
-                    else {
+                    } else {
                         data.prdcd[i] = temp[1];
                         data.kodedivisi[i] = detail[id].pbd_kodedivisi;
                         data.kodedivisipo[i] = detail[id].prd_kodedivisipo;
@@ -1202,11 +1193,12 @@
             });
             console.log(data);
 
+            ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/api/bopbmanual/save_data',
+                url: '/BackOffice/public/bo/pb-manual/save_data',
                 type: 'POST',
                 data: {
-                    "_token": "{{ csrf_token() }}",
+
                     nopb: nopb,
                     tglpb: tglpb,
                     flag: flag,

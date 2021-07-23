@@ -1,0 +1,295 @@
+CREATE OR REPLACE PROCEDURE SP_HITUNG_MPLUSO_WEB (
+   p_periode       VARCHAR2,
+   p_sukses    OUT VARCHAR2,
+   p_errmsg    OUT VARCHAR2)
+IS
+   v_qty      NUMBER;
+   v_rph      NUMBER;
+   l_update   BOOLEAN;
+   v_temp     NUMBER;
+   v_lok      VARCHAR2 (2);
+   v_bulan    VARCHAR2 (2);
+   v_tahun    VARCHAR2 (4);
+   v_hasil    VARCHAR2 (100);
+   v_cabang   VARCHAR2 (2);
+   v_persl    VARCHAR2 (6);
+BEGIN
+   SELECT prs_kodecabang INTO v_cabang FROM tbmaster_perusahaan;
+
+   v_persl :=
+      TO_CHAR (ADD_MONTHS (TO_DATE (p_periode || '01', 'yyyyMMdd'), -1),
+               'yyyyMM');
+
+   SELECT NVL (COUNT (1), 0)
+     INTO v_temp
+     FROM tbtr_servicelevel
+    WHERE slv_periode = v_persl;
+
+   IF NVL (v_temp, 0) = 0
+   THEN
+      INSERT INTO tbhistory_hitung_pb (HHP_KODEIGR,
+                                       HHP_PERIODE,
+                                       HHP_ID,
+                                       HHP_STATUS,
+                                       HHP_KETERANGAN,
+                                       HHP_CREATE_BY,
+                                       HHP_CREATE_DT)
+           VALUES (v_cabang,
+                   v_persl,
+                   'MPLUSO',
+                   'ERROR',
+                   'SL KOSONG',
+                   'JOB',
+                   SYSDATE);
+
+      COMMIT;
+   ELSE
+      MERGE INTO tbtr_hitung_pb i
+           USING (SELECT pbo_pluigr,
+                         nilai,
+                         sl_qty,
+                         NVL (kf_koefisien, 6) kf_koefisien
+                    FROM (SELECT pbo_pluigr,
+                                 qty,
+                                 item,
+                                 ROUND (qty / item) nilai,
+                                 NVL (slv_servicelevel_qty, 0) sl_qty
+                            FROM (  SELECT SUBSTR (pbo_pluigr, 1, 6) || '0'
+                                              pbo_pluigr,
+                                           SUM (pbo_qtyrealisasi) qty
+                                      FROM tbmaster_pbomi
+                                     WHERE     NVL (pbo_recordid, '0') = '5'
+                                           AND TO_CHAR (pbo_tglpb, 'yyyyMM') IN (SELECT tglpb
+                                                                                   FROM (  SELECT tglpb
+                                                                                             FROM (SELECT DISTINCT
+                                                                                                          TO_CHAR (
+                                                                                                             pbo_tglpb,
+                                                                                                             'yyyyMM')
+                                                                                                             tglpb
+                                                                                                     FROM tbmaster_pbomi
+                                                                                                    WHERE     NVL (
+                                                                                                                 pbo_recordid,
+                                                                                                                 '0') =
+                                                                                                                 '5'
+                                                                                                          AND pbo_tglpb >
+                                                                                                                 ADD_MONTHS (
+                                                                                                                    SYSDATE,
+                                                                                                                    -6)
+                                                                                                          AND TO_CHAR (
+                                                                                                                 pbo_tglpb,
+                                                                                                                 'yyyyMM') <
+                                                                                                                 p_periode)
+                                                                                            WHERE tglpb NOT IN (SELECT DISTINCT
+                                                                                                                       seo_periode
+                                                                                                                  FROM tbmaster_seasonalomi)
+                                                                                         ORDER BY tglpb DESC)
+                                                                                  WHERE ROWNUM <=
+                                                                                           3)
+                                  GROUP BY SUBSTR (pbo_pluigr, 1, 6) || '0')
+                                 bb,
+                                 (  SELECT SUBSTR (pbo_pluigr, 1, 6) || '0'
+                                              pluigr,
+                                           SUM (item) item
+                                      FROM (SELECT DISTINCT
+                                                   pbo_pluigr,
+                                                   pbo_tglpb,
+                                                   1 item
+                                              FROM tbmaster_pbomi
+                                             WHERE     NVL (pbo_recordid, '0') =
+                                                          '5'
+                                                   AND TO_CHAR (pbo_tglpb,
+                                                                'yyyyMM') IN (SELECT tglpb
+                                                                                FROM (  SELECT tglpb
+                                                                                          FROM (SELECT DISTINCT
+                                                                                                       TO_CHAR (
+                                                                                                          pbo_tglpb,
+                                                                                                          'yyyyMM')
+                                                                                                          tglpb
+                                                                                                  FROM tbmaster_pbomi
+                                                                                                 WHERE     NVL (
+                                                                                                              pbo_recordid,
+                                                                                                              '0') =
+                                                                                                              '5'
+                                                                                                       AND pbo_tglpb >
+                                                                                                              ADD_MONTHS (
+                                                                                                                 SYSDATE,
+                                                                                                                 -6)
+                                                                                                       AND TO_CHAR (
+                                                                                                              pbo_tglpb,
+                                                                                                              'yyyyMM') <
+                                                                                                              p_periode)
+                                                                                         WHERE tglpb NOT IN (SELECT DISTINCT
+                                                                                                                    seo_periode
+                                                                                                               FROM tbmaster_seasonalomi)
+                                                                                      ORDER BY tglpb DESC)
+                                                                               WHERE ROWNUM <=
+                                                                                        3))
+                                           aa
+                                  GROUP BY SUBSTR (pbo_pluigr, 1, 6) || '0')
+                                 cc,
+                                 tbtr_servicelevel
+                           WHERE     bb.pbo_pluigr = cc.pluigr
+                                 AND slv_prdcd(+) = bb.pbo_pluigr
+                                 AND slv_periode(+) = v_persl) dd,
+                         tbmaster_koefisien,
+                         tbmaster_prodmast
+                   WHERE     sl_qty >= kf_batasbawah(+)
+                         AND sl_qty < kf_batasatas(+)
+                         AND kf_tipe(+) = 'MPLUSO'
+                         AND prd_prdcd = pbo_pluigr
+                         AND prd_kodedivisi IN ('1', '2', '3')
+                         AND SUBSTR (prd_prdcd, 1, 1) <> '9'
+                         AND NVL (prd_flagbarangordertoko, 'N') <> 'Y'
+                         AND EXISTS
+                                (SELECT 1
+                                   FROM tbmaster_prodcrm
+                                  WHERE     prc_group <> 'I'
+                                        AND NVL (prc_kodetag, '_') NOT IN ('H',
+                                                                           'A',
+                                                                           'N',
+                                                                           'O',
+                                                                           'X')
+                                        AND prc_pluigr = pbo_pluigr)) t
+              ON (p_periode = i.THP_PERIODE AND t.pbo_pluigr = i.THP_PRDCD)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (THP_KODEIGR,
+                     THP_PERIODE,
+                     THP_PRDCD,
+                     THP_AVGPB_OMI,
+                     THP_SL_MPLUSO,
+                     THP_N_MPLUSO,
+                     THP_MPLUSO,
+                     THP_CREATE_BY,
+                     THP_CREATE_DT)
+             VALUES (v_cabang,
+                     p_periode,
+                     pbo_pluigr,
+                     nilai,
+                     sl_qty,
+                     kf_koefisien,
+                     ROUND (nilai * kf_koefisien),
+                     'JOB',
+                     SYSDATE)
+      WHEN MATCHED
+      THEN
+         UPDATE SET THP_AVGPB_OMI = nilai,
+                    THP_SL_MPLUSO = sl_qty,
+                    THP_N_MPLUSO = kf_koefisien,
+                    THP_MPLUSO = ROUND (nilai * kf_koefisien),
+                    THP_MODIFY_BY = 'JOB',
+                    THP_MODIFY_DT = SYSDATE;
+
+      INSERT INTO tbhistory_hitung_pb (HHP_KODEIGR,
+                                       HHP_PERIODE,
+                                       HHP_ID,
+                                       HHP_STATUS,
+                                       HHP_KETERANGAN,
+                                       HHP_CREATE_BY,
+                                       HHP_CREATE_DT)
+           VALUES (v_cabang,
+                   p_periode,
+                   'MPLUSO',
+                   'OK',
+                   'BERHASIL',
+                   'JOB',
+                   SYSDATE);
+
+      UPDATE tbmaster_pkmplus
+         SET pkmp_qtyminor = 0;
+
+      MERGE INTO tbmaster_pkmplus i
+           USING (SELECT prd_kodedivisi,
+                         prd_kodedepartement,
+                         prd_kodekategoribarang,
+                         thp_prdcd,
+                         thp_mplusi,
+                         thp_mpluso
+                    FROM tbtr_hitung_pb, tbmaster_prodmast
+                   WHERE thp_periode = p_periode AND prd_prdcd = thp_prdcd) t
+              ON (pkmp_prdcd = t.THP_PRDCD)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (pkmp_kodeigr,
+                     pkmp_kodedivisi,
+                     pkmp_kodedepartemen,
+                     pkmp_kodekategoribrg,
+                     pkmp_prdcd,
+                     pkmp_qtyminor,
+                     pkmp_mplusi,
+                     pkmp_mpluso,
+                     pkmp_CREATE_BY,
+                     pkmp_CREATE_DT)
+             VALUES (v_cabang,
+                     prd_kodedivisi,
+                     prd_kodedepartement,
+                     prd_kodekategoribarang,
+                     thp_prdcd,
+                     thp_mplusi + thp_mpluso,
+                     thp_mplusi,
+                     thp_mpluso,
+                     'JOB',
+                     SYSDATE)
+      WHEN MATCHED
+      THEN
+         UPDATE SET pkmp_qtyminor = thp_mplusi + thp_mpluso,
+                    pkmp_mplusi = thp_mplusi,
+                    pkmp_mpluso = thp_mpluso,
+                    pkmp_MODIFY_BY = 'JOB',
+                    pkmp_MODIFY_DT = SYSDATE;
+
+      MERGE INTO tbmaster_kkpkm i
+           USING (SELECT thp_prdcd, thp_mplusi, thp_mpluso
+                    FROM tbtr_hitung_pb
+                   WHERE thp_periode = p_periode) t
+              ON (pkm_prdcd = t.THP_PRDCD)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            pkm_qtymplus = thp_mplusi + thp_mpluso,
+            pkm_MODIFY_BY = 'JOB',
+            pkm_MODIFY_DT = SYSDATE;
+
+      MERGE INTO tbmaster_kkpkm i
+           USING (SELECT prd_prdcd, prd_kodetag
+                    FROM tbmaster_prodmast
+                   WHERE     SUBSTR (prd_prdcd, 7, 1) = '0'
+                         AND NVL (PRD_KODETAG, '0') NOT IN ('N',
+                                                            'H',
+                                                            'X',
+                                                            'A',
+                                                            'O',
+                                                            'I',
+                                                            'U',
+                                                            'Q')) t
+              ON (pkm_prdcd = t.prd_PRDCD)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            pkm_pkmt =
+                 CASE
+                    WHEN NVL (pkm_adjust_by, 'XX') = 'XX'
+                    THEN
+                       NVL (pkm_mpkm, 0)
+                    ELSE
+                       NVL (pkm_pkm, 0)
+                 END
+               + NVL (pkm_qtymplus, 0),
+            pkm_MODIFY_BY = 'JOB',
+            pkm_MODIFY_DT = SYSDATE;
+
+      COMMIT;
+   END IF;
+
+   p_sukses := 'TRUE';
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      p_sukses := 'FALSE';
+      p_errmsg := SQLERRM;
+      ROLLBACK;
+END;
+/
+
+ALTER PROCEDURE SP_HITUNG_MPLUSO_WEB COMPILE;
+/

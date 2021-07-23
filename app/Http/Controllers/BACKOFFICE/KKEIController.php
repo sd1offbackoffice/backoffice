@@ -274,6 +274,7 @@ class KKEIController extends Controller
         try{
             if(!empty($request->deleted)){
                 DB::table('temp_kkei')
+                    ->where('kke_periode','=',$request->periode)
                     ->whereIn('kke_prdcd',$request->deleted)
                     ->delete();
                 $status = 'success';
@@ -314,14 +315,14 @@ class KKEIController extends Controller
                 if($insert){
                     $status = 'success';
                     $message = 'Berhasil menyimpan data!';
-                    DB::commit();
                 }
                 else{
                     $status = 'failed';
                     $message = 'Gagal menyimpan data!';
-                    DB::rollBack();
                 }
             }
+
+            DB::commit();
         }
         catch (QueryException $e){
             $status = 'failed';

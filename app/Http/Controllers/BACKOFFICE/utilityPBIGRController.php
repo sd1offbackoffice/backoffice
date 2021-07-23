@@ -52,7 +52,7 @@ class utilityPBIGRController extends Controller
         $connection = $this->connection;
 
         try{
-            $exec = oci_parse($connection, "BEGIN  sp_hitung_mplusi2(:param,:sukses,:errtxt); END;");
+            $exec = oci_parse($connection, "BEGIN  sp_hitung_mplusi_web(:param,:sukses,:errtxt); END;"); // ganti 2 pakai _webg
             oci_bind_by_name($exec, ':param',$v_param);
             oci_bind_by_name($exec, ':sukses', $v_sukses,10);
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
@@ -65,8 +65,7 @@ class utilityPBIGRController extends Controller
                 return response()->json(['kode' => '1', 'return' => $msg]);
             }
         } catch (\Exception $catch){
-            return response()->json(['kode' => '0', 'return' => "Call Procedure Failed"]);
-
+            return response()->json(['kode' => '0', 'return' => $catch->getMessage()]);
         }
     }
 
@@ -74,7 +73,7 @@ class utilityPBIGRController extends Controller
         $connection = $this->connection;
 
         try{
-            $exec = oci_parse($connection, "BEGIN  sp_tarik_seasonalomi2(:sukses,:errtxt); END;");
+            $exec = oci_parse($connection, "BEGIN  sp_tarik_seasonalomi_web(:sukses,:errtxt); END;");
             oci_bind_by_name($exec, ':sukses', $v_sukses,10);
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
             oci_execute($exec);
@@ -82,7 +81,7 @@ class utilityPBIGRController extends Controller
             if (!$v_sukses){
                 return response()->json(['kode' => '0', 'return' => $v_errtxt]);
             } else {
-                $msg = 'arikan Data Bulan Seasonal Sudah di Proses !!';
+                $msg = 'Tarikan Data Bulan Seasonal Sudah di Proses !!';
                 return response()->json(['kode' => '1', 'return' => $msg]);
             }
         } catch (\Exception $catch){
@@ -281,7 +280,7 @@ class utilityPBIGRController extends Controller
                                            tbmaster_pkmplus,
                                            tbmaster_perusahaan
                                      WHERE     thp_periode = '$periode'
-                                           AND  (NVL (thp_mplusi, 0) <> 0  or  NVL (thp_mpluso, 0) <> 0) 
+                                           AND  (NVL (thp_mplusi, 0) <> 0  or  NVL (thp_mpluso, 0) <> 0)
                                            AND prc_pluigr(+) = thp_prdcd
                                            AND prc_group(+) = 'I'
                                            AND prcplu(+) = thp_prdcd

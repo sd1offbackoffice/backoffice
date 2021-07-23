@@ -365,19 +365,19 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_lebarkemasan" class="col-sm-4 col-form-label">Dimensi Lebar Kemasan Produk</label>
+                                                            <label for="di_lebarkemasan" class="col-sm-4 col-form-label">Dimensi Lebar Kemasan Karton</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_lebarkemasan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_panjangkemasan" class="col-sm-4 col-form-label">Dimensi Panjang Kemasan Produk</label>
+                                                            <label for="di_panjangkemasan" class="col-sm-4 col-form-label">Dimensi Panjang Kemasan Karton</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_panjangkemasan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="di_tinggikemasan" class="col-sm-4 col-form-label">Dimensi Tinggi Kemasan Produk</label>
+                                                            <label for="di_tinggikemasan" class="col-sm-4 col-form-label">Dimensi Tinggi Kemasan Karton</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_tinggikemasan" disabled>
                                                             </div>
@@ -587,7 +587,7 @@
         function getDataMasterBarang(value){
             tableModalBarang = $('#table_master_barang').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstbarang/getmasterbarang') }}',
+                    'url' : '{{ url('master/barang/getmasterbarang') }}',
                     'async':false, // menambah async false agar bisa sinkron dan menggunakan if untuk menampilkan data row pertama, sebaiknya async, kalau bukan karena untuk nampilin data pertama, hapus aja async nya
                     "data" : {
                         'value' : value
@@ -624,6 +624,9 @@
             if(startPage){
                 let hold = tableModalBarang.row( 0 ).data()['prd_prdcd'];
                 show(hold);
+                setTimeout(function() {
+                    $('#b_kodeplu').select();
+                }, 3000);
                 startPage = false;
             }
         }
@@ -631,7 +634,7 @@
         function getDataMasterBarangIdm(value){
             let tableModalBarangIdm = $('#table_master_barang_idm').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstbarang/getmasterbarangidm') }}',
+                    'url' : '{{ url('master/barang/getmasterbarangidm') }}',
                     "data" : {
                         'value' : value
                     },
@@ -675,7 +678,7 @@
         function getDataMasterBarangOmi(value){
             let tableModalBarangOmi =  $('#table_master_barang_omi').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstbarang/getmasterbarangomi') }}',
+                    'url' : '{{ url('master/barang/getmasterbarangomi') }}',
                     "data" : {
                         'value' : value
                     },
@@ -734,7 +737,7 @@
             $('#modal_pluOmi').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstbarang/showBarang',
+                url: '/BackOffice/public/master/barang/showBarang',
                 type: 'post',
                 data: {kodeplu: kodeplu},
                 beforeSend: function () {
@@ -830,7 +833,7 @@
 
         function convertBlanktoN(val) {
             if(val != 'Y'){
-                return 'N'
+                return ''
             } else {
                 return val
             }

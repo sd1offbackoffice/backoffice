@@ -61,9 +61,8 @@
                     } else {
                         swal('Success', result.return, 'success');
                     }
-                    console.log(result);
-                }, error: function (err) {
-                    console.log(err);
+                }, error: function (error) {
+                    errorHandlingforAjax(error)
                 }
             })
         }
@@ -84,9 +83,8 @@
                     } else {
                         swal('Success', result.return, 'success');
                     }
-                    console.log(result);
-                }, error: function (err) {
-                    console.log(err);
+                }, error: function (error) {
+                    errorHandlingforAjax(error)
                 }
             })
         }
@@ -107,9 +105,8 @@
                     } else {
                         swal('Success', result.return, 'success');
                     }
-                    console.log(result);
-                }, error: function (err) {
-                    console.log(err);
+                }, error: function (error) {
+                   errorHandlingforAjax(error)
                 }
             })
         }
@@ -144,8 +141,8 @@
                         window.open('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
                     }
                     console.log(result);
-                }, error: function (err) {
-                    console.log(err);
+                }, error: function (error) {
+                    errorHandlingforAjax(error)
                 }
             })
         }
