@@ -8,12 +8,12 @@
         can be of the full height and width !
      **/
     @page {
-        margin: 25px 25px;
+        margin: 15px 15px;
     }
 
     /** Define now the real margins of every page in the PDF **/
     body {
-        margin-top: 10px;
+        margin-top: 110px;
         margin-bottom: 0px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -24,12 +24,11 @@
 
     /** Define the header rules **/
     header {
-        /*position: fixed;*/
+        position: fixed;
         top: 0cm;
         left: 0cm;
         right: 0cm;
         height: 2cm;
-        margin-bottom: 30px;
     }
     table{
         border: 1px;
@@ -39,13 +38,6 @@
     }
     .page-numbers:after { content: counter(page); }
 </style>
-<script src={{asset('/js/jquery.js')}}></script>
-<script src={{asset('/js/sweetalert.js')}}></script>
-<script>
-    $(document).ready(function() {
-        swal('Information', 'Tekan Ctrl+P untuk print!\n\nPRINT DENGAN FORMAT LANDSCAPE UNTUK HASIL YANG BAGUS', 'info');
-    });
-</script>
 <body>
 <!-- Define header and footer blocks before your content -->
 <?php
@@ -67,39 +59,40 @@ function rupiah($angka){
         <p>{{$datas[0]->prs_namacabang}}</p>
         <p>{{$datas[0]->prs_namawilayah}}</p>
     </div>
-    <div style="float: right; margin-top: -38px">
+    <div style="position: absolute; left: 931px; top: -6px">
         <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69H</span>
     </div>
-    <div style="margin-top: 35px; line-height: 0.1 !important;">
+    <div style="margin-top: -30px; line-height: 0.1 !important;">
         <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
-        <h4 style="text-align: center">Periode : {{$date1}} s/d {{$date2}}</h4>
-        <h4 style="text-align: center">Margin : {{$margin1}} s/d {{$margin2}}</h4>
+        <h4 style="text-align: center; margin-top: -7px">Periode : {{$date1}} s/d {{$date2}}</h4>
+        <h4 style="text-align: center; margin-top: -7px">Kode Monitoring :  : {{$mon}}</h4>
+        <h4 style="text-align: center; margin-top: -7px">Margin : {{$margin1}} s/d {{$margin2}}</h4>
     </div>
 </header>
 <table style="border-collapse: collapse">
-    <thead style="font-weight: bold; vertical-align: center; text-align: center; border-top: 2px solid black; border-bottom: 2px solid black">
+    <thead style="font-weight: bold; vertical-align: middle; text-align: center; border-top: 2px solid black; border-bottom: 2px solid black">
         <tr>
             <td colspan="2" rowspan="3" style="border-right: 1px solid black">------- P  R  O  D  U  K---------</td>
-            <td rowspan="3" style="width: 5%; border-right: 1px solid black">UNIT</td>
+            <td rowspan="3" style="border-right: 1px solid black">UNIT</td>
             <td colspan="12" style="border-right: 1px solid black">SATUAN JUAL</td>
-            <td rowspan="3" style="width: 5%; border-right: 1px solid black">KWANTUM</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PENJUALAN KOTOR</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PAJAK</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PENJUALAN BERSIH</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">HPP RATA-RATA</td>
+            <td rowspan="3" style="border-right: 1px solid black">KWANTUM</td>
+            <td rowspan="3" style="border-right: 1px solid black">PENJUALAN<br>KOTOR</td>
+            <td rowspan="3" style="border-right: 1px solid black">PAJAK</td>
+            <td rowspan="3" style="border-right: 1px solid black">PENJUALAN<br>BERSIH</td>
+            <td rowspan="3" style="border-right: 1px solid black">HPP<br>RATA-RATA</td>
             <td rowspan="3" colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
-            <td rowspan="3" style="width: 5%">T<br>A<br>G</td>
+            <td rowspan="3">T<br>A<br>G</td>
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)
-                <td colspan="3" style="border-right: 1px solid black">--------{{$i}}--------</td>
+                <td colspan="3" style="border-right: 1px solid black; border-top: 1px solid black;">--------{{$i}}--------</td>
             @endfor
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)
-                <td style="width: 3%; border-right: 1px solid black">TRN</td>
-                <td style="width: 3%; border-right: 1px solid black">QTY</td>
-                <td style="width: 3%; border-right: 1px solid black">NILAI</td>
+                <td style="border-right: 1px solid black; border-top: 1px solid black;">TRN</td>
+                <td style="border-right: 1px solid black; border-top: 1px solid black;">QTY</td>
+                <td style="border-right: 1px solid black; border-top: 1px solid black;">NILAI</td>
             @endfor
         </tr>
     </thead>
@@ -119,48 +112,48 @@ function rupiah($angka){
     @for($i=0;$i<sizeof($datas);$i++)
         {{--HEAD BODY--}}
         @if($divisi != $datas[$i]->fdkdiv)
-            <tr style="text-align:left; font-weight: bold; font-size: 25px"><td colspan="23">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
+            <tr style="text-align:left; font-weight: bold;"><td colspan="23">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
             <?php $divisi =  $datas[$i]->fdkdiv?>
         @endif
         @if($departemen != $datas[$i]->fdkdep)
-            <tr style="text-align:left; font-weight: bold; font-size: 20px"><td colspan="23">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
+            <tr style="text-align:left; font-weight: bold;"><td colspan="23">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
             <?php $departemen =  $datas[$i]->fdkdep?>
         @endif
         @if($kategori != $datas[$i]->fdkatb)
-            <tr style="text-align:left; font-weight: bold; font-size: 15px"><td colspan="23">&nbsp;&nbsp;&nbsp;&nbsp;* KATEGORI : {{$datas[$i]->fdkatb}} - {{$datas[$i]->kat_namakategori}}</td></tr>
+            <tr style="text-align:left; font-weight: bold;"><td colspan="23">&nbsp;&nbsp;&nbsp;&nbsp;* KATEGORI : {{$datas[$i]->fdkatb}} - {{$datas[$i]->kat_namakategori}}</td></tr>
             <?php $kategori =  $datas[$i]->fdkatb?>
         @endif
         {{--MAIN BODY--}}
         <tr>
-            <td style="width: 5%; text-align: center">{{$datas[$i]->fdkplu}}</td>
-            <td style="width: 15%; text-align: left">{{$datas[$i]->prd_deskripsipanjang}}</td>
-            <td style="text-align: center">{{$datas[$i]->unit}}</td>
+            <td style="width: 8px; text-align: center">{{$datas[$i]->fdkplu}}</td>
+            <td style="width: 100px; text-align: left">{{$datas[$i]->prd_deskripsipanjang}}</td>
+            <td style="width: 10px; text-align: center">{{$datas[$i]->unit}}</td>
 
-            <td>{{rupiah($datas[$i]->fdntr0)}}</td>
-            <td>{{rupiah($datas[$i]->fdsat0)}}</td>
-            <td>{{rupiah($datas[$i]->fdnam0)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdntr0)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdsat0)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->fdnam0)}}</td>
 
-            <td>{{rupiah($datas[$i]->fdntr1)}}</td>
-            <td>{{rupiah($datas[$i]->fdsat1)}}</td>
-            <td>{{rupiah($datas[$i]->fdnam1)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdntr1)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdsat1)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->fdnam1)}}</td>
 
-            <td>{{rupiah($datas[$i]->fdntr2)}}</td>
-            <td>{{rupiah($datas[$i]->fdsat2)}}</td>
-            <td>{{rupiah($datas[$i]->fdnam2)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdntr2)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdsat2)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->fdnam2)}}</td>
 
-            <td>{{rupiah($datas[$i]->fdntr3)}}</td>
-            <td>{{rupiah($datas[$i]->fdsat3)}}</td>
-            <td>{{rupiah($datas[$i]->fdnam3)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdntr3)}}</td>
+            <td style="width: 10px">{{rupiah($datas[$i]->fdsat3)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->fdnam3)}}</td>
 
-            <td>{{rupiah($datas[$i]->tot1)}}</td>
-            <td>{{rupiah($datas[$i]->tot2)}}</td>
-            <td>{{rupiah($datas[$i]->tot3)}}</td>
-            <td>{{rupiah($datas[$i]->tot4)}}</td>
-            <td>{{rupiah($datas[$i]->tot5)}}</td>
-            <td style="width: 11%">{{rupiah($datas[$i]->tot6)}}</td>
-            <td style="width: 4%">{{round(($datas[$i]->nmarginp), 2)}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->tot1)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->tot2)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->tot3)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->tot4)}}</td>
+            <td style="width: 50px">{{rupiah($datas[$i]->tot5)}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->tot6)}}</td>
+            <td style="width: 9px">{{round(($datas[$i]->nmarginp), 2)}}</td>
 
-            <td style="text-align: center">{{$datas[$i]->prd_kodetag}}</td>
+            <td style="width: 5px; text-align: center">{{$datas[$i]->prd_kodetag}}</td>
         </tr>
 
         {{--SUMMARY VALUE--}}
@@ -183,7 +176,7 @@ function rupiah($angka){
 
         @if(($i+1) < sizeof($datas) )
             @if($kategori != $datas[$i+1]->fdkatb)
-                <tr style="font-weight: bold; font-size: 15px">
+                <tr style="font-weight: bold;">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;* TOTAL PER KATEGORI : </td>
                     <td>{{rupiah($sumNilai1['kat'])}}</td>
                     <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -216,7 +209,7 @@ function rupiah($angka){
                 ?>
             @endif
             @if($departemen != $datas[$i+1]->fdkdep)
-                <tr style="font-weight: bold; font-size: 16px">
+                <tr style="font-weight: bold;">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
                     <td>{{rupiah($sumNilai1['dep'])}}</td>
                     <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -249,7 +242,7 @@ function rupiah($angka){
                 ?>
             @endif
             @if($divisi != $datas[$i+1]->fdkdiv)
-                <tr style="font-weight: bold; font-size: 17px">
+                <tr style="font-weight: bold;">
                     <td colspan="5" style="text-align: left">*** TOTAL PER DIVISI : </td>
                     <td>{{rupiah($sumNilai1['div'])}}</td>
                     <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -285,7 +278,7 @@ function rupiah($angka){
     @endfor
 
 <!--OUT OF LOOP KATEGORI-->
-        <tr style="font-weight: bold; font-size: 15px">
+        <tr style="font-weight: bold;">
             <td colspan="5" style="text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;* TOTAL PER KATEGORI : </td>
             <td>{{rupiah($sumNilai1['kat'])}}</td>
             <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -318,7 +311,7 @@ function rupiah($angka){
         ?>
 
 <!--OUT OF LOOP DEPARTEMEN-->
-        <tr style="font-weight: bold; font-size: 16px">
+        <tr style="font-weight: bold;">
             <td colspan="5" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
             <td>{{rupiah($sumNilai1['dep'])}}</td>
             <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -351,7 +344,7 @@ function rupiah($angka){
         ?>
 
 <!--OUT OF LOOP DIVISI-->
-        <tr style="font-weight: bold; font-size: 17px">
+        <tr style="font-weight: bold;">
             <td colspan="5" style="text-align: left">*** TOTAL PER DIVISI : </td>
             <td>{{rupiah($sumNilai1['div'])}}</td>
             <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -385,6 +378,7 @@ function rupiah($angka){
         @foreach($arrayIndex as $index)
             @if($index != 'f')
                 <tr style="font-weight: bold;">
+                    ['c','p','x','i','b','e','g','r','h','total-40','total','f']
                     @if($index == 'c')
                         <td colspan="16">TOTAL COUNTER</td>
                     @elseif($index == 'p')

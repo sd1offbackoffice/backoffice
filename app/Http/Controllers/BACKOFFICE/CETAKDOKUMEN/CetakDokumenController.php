@@ -637,7 +637,6 @@ class CetakDokumenController extends Controller
         $nilppn = '';
         $nilsal = '';
         $nildisc = '';
-        $nrfp = '';
 
         $nilht_btkp = '';
         $nilppn_btkp = '';
@@ -654,14 +653,16 @@ class CetakDokumenController extends Controller
         $f_docbtkp = '';
         $f_docbkp = '';
 
+        $file= [];
         $doc = $request->doc;
         $lap = $request->lap;
         $reprint = $request->reprint;
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
         $kertas = $request->kertas;
-
+        $nrfp = $request->nrfp;
         $data = $request->data;
+
         $nodocs = [];
         $tgldocs = [];
         if (is_array($data)) {
@@ -676,6 +677,11 @@ class CetakDokumenController extends Controller
             array_push($tgldocs, $splitData[1]);
         }
 
+        if ($nrfp == 'on') {
+            $nrfp = 1;
+        } else {
+            $nrfp = 0;
+        }
         if ($reprint == 'on') {
             $reprint = 1;
         } else {
@@ -1467,7 +1473,8 @@ class CetakDokumenController extends Controller
 
             if (isset($temp)) {
                 //sini
-                return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+//                return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
 
 
                 if ($nrfp == 1) {
@@ -1505,9 +1512,8 @@ class CetakDokumenController extends Controller
                                and PRD_FLAGBKP1 = 'Y'
                                and PRD_FLAGBKP2 = 'Y';")[0]->count;
 
-
                                         if ($tmp > 0) {
-                                            Self::CETAK_BARU($nonota);
+                                            array_push($file, Self::CETAK_BARU($nonota,$reprint));
                                         }
                                     }
                                 }
@@ -1516,8 +1522,7 @@ class CetakDokumenController extends Controller
                           FROM TBTR_MSTRAN_D
                          WHERE MSTD_NODOC = '" . $nodoc . "'
                             and MSTD_TYPETRN = 'K'
-                            and MSTD_KODEIGR = '" . $_SESSION['kdigr'] . "';")[0]->pkp;
-
+                            and MSTD_KODEIGR = '" . $_SESSION['kdigr'] . "' ")[0]->pkp;
 
                                 if ($pkp == 'Y') {
                                     $pkp = DB::SELECT("SELECT COUNT(1) count
@@ -1526,11 +1531,11 @@ class CetakDokumenController extends Controller
                             and MSTD_TYPETRN = 'K'
                             and MSTD_NODOC = '" . $nodoc . "'
                             and PRD_FLAGBKP1 = 'Y'
-                            and PRD_FLAGBKP2 = 'Y';")[0]->count;
-
+                            and PRD_FLAGBKP2 = 'Y'")[0]->count;
 
                                     if ($tmp > 0) {
-                                        Self::CETAK_BARU($nodoc);
+                                        array_push($file, Self::CETAK_BARU($nodoc,$reprint));
+
                                     }
                                 }
                             }
@@ -1549,10 +1554,10 @@ class CetakDokumenController extends Controller
                     } else {
                         foreach ($sub_isi_docno as $sub) {
                             DB::update("UPDATE TBTR_MSTRAN_H
-                     SET MSTH_FLAGDOC = '1'
-                   WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "')
-                            and MSTH_TYPETRN = '" . $doc . "'
-                            and MSTH_NOPO = '" . $sub . "'");
+                            SET MSTH_FLAGDOC = '1'
+                            WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "')
+                                    and MSTH_TYPETRN = '" . $doc . "'
+                                    and MSTH_NOPO = '" . $sub . "'");
                         }
                     }
                 }
@@ -1858,7 +1863,8 @@ class CetakDokumenController extends Controller
                 $temp = substr($temp, 0, strlen($temp) - 1);
 
                 if (isset($temp)) {
-                    return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+//                    return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
 //sini
                     if ($lap == 'L') {
                         if ($reprint == '0') {
@@ -1889,8 +1895,8 @@ class CetakDokumenController extends Controller
             }
 
 //          SHOW_DATA($doc, $lap, $reprint);
-
         }
+        return $file;
     }
 
     public function PRD_CUR(string $plu)
@@ -2121,7 +2127,6 @@ class CetakDokumenController extends Controller
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-        $dompdf = new PDF();
 
         if (sizeof($data1) != 0) {
             $data = [
@@ -2132,17 +2137,23 @@ class CetakDokumenController extends Controller
                 'tgl2' => $tgl2
             ];
 
+            $dompdf = new PDF();
+
             $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
 
             error_reporting(E_ALL ^ E_DEPRECATED);
 
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
+
+            $canvas = $dompdf ->get_canvas();
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            return $dompdf->stream($filename . '.pdf');
+
+            file_put_contents($filename.'.pdf',$pdf->output());
+
+            return $filename.'.pdf';
         } else {
             return "TIDAK ADA DATA!";
 
@@ -2198,13 +2209,13 @@ class CetakDokumenController extends Controller
 ORDER BY MSTD_SEQNO");
         $perusahaan = DB::table('tbmaster_perusahaan')->first();
 
-        $dompdf = new PDF();
 
         if (sizeof($data1) != 0) {
             $data = [
                 'perusahaan' => $perusahaan,
                 'data1' => $data1
             ];
+            $dompdf = new PDF();
 
             $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
 
@@ -2216,7 +2227,10 @@ ORDER BY MSTD_SEQNO");
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            return $dompdf->stream($filename . '.pdf');
+            $filenames = $filename.'_'.$nodoc.'.pdf';
+            file_put_contents($filenames,$pdf->output());
+
+            return $filenames;
         }
     }
 }

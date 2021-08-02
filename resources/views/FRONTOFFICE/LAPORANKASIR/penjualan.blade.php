@@ -297,14 +297,20 @@
 {{--                        ### Menu 4 === Laporan Per Hari ###--}}
                         <div id="menu4" class="card-body shadow-lg cardForm" hidden>
                             <fieldset class="card border-dark">
-                                <legend class="w-auto ml-5">Laporan Per Hari</legend>
+                                <legend class="w-auto ml-5">Laporan Penjualan (Per Hari)</legend>
                                 <div class="row">
-                                    <label class="col-sm-4 text-right font-weight-normal col-form-label">Periode tanggal :</label>
-
+                                    <label class="col-sm-4 text-right col-form-label">Periode tanggal :</label>
+                                    <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker4">
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Khusus Export :</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="yaTidakMenu4" onkeypress="return isYTMenu4(event)" maxlength="1"> {{--kalau mau tanpa perlu klik enter tambahkan aja onchange="khususElektronik()"--}}
+                                    <label class="col-sm-2 text-left col-form-label">[Y]a/[T]idak :</label>
                                 </div>
                                 <br>
                                 <div class="d-flex justify-content-end">
                                     <button class="btn btn-primary btn-block col-sm-3" type="button" onclick="kembali()">BACK</button>
+                                    <button id="cetakMenu4" class="btn btn-success col-sm-3" type="button" onclick="cetakMenu4()">CETAK</button>
                                 </div>
                                 <br>
                             </fieldset>
@@ -313,14 +319,23 @@
 {{--                        ### Menu 5 === Laporan Per Kasir ###--}}
                         <div id="menu5" class="card-body shadow-lg cardForm" hidden>
                             <fieldset class="card border-dark">
-                                <legend class="w-auto ml-5">Laporan Per Kasir</legend>
+                                <legend class="w-auto ml-5">Laporan Penjualan (Per Kasir)</legend>
                                 <div class="row">
-                                    <label class="col-sm-4 text-right font-weight-normal col-form-label">Periode tanggal :</label>
-
+                                    <label class="col-sm-4 text-right col-form-label">Periode tanggal :</label>
+                                    <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker5">
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">Kasir :</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="kasirMenu5" style="text-transform:uppercase"> {{-- text-transform hanya visual, nanti di script diconvert menjadi capital sebelum data di send --}}
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-4 text-right col-form-label">No. Station :</label>
+                                    <input class="col-sm-2 text-center form-control" type="text" id="stationMenu5" style="text-transform:uppercase"> {{-- text-transform hanya visual, nanti di script diconvert menjadi capital sebelum data di send--}}
                                 </div>
                                 <br>
                                 <div class="d-flex justify-content-end">
                                     <button class="btn btn-primary btn-block col-sm-3" type="button" onclick="kembali()">BACK</button>
+                                    <button id="cetakMenu5" class="btn btn-success col-sm-3" type="button" onclick="cetakMenu5()">CETAK</button>
                                 </div>
                                 <br>
                             </fieldset>
@@ -830,10 +845,12 @@
                 $('#mainMenu').prop("hidden",false);
             }
             else if($('#menu4').is(":visible")){
+                clearMenu4();
                 $('#menu4').prop("hidden",true);
                 $('#mainMenu').prop("hidden",false);
             }
             else if($('#menu5').is(":visible")){
+                clearMenu5();
                 $('#menu5').prop("hidden",true);
                 $('#mainMenu').prop("hidden",false);
             }
@@ -851,9 +868,37 @@
 
         //Untuk periksa apakah dept ada
         function checkDeptExist(val){
+            lowest = tableDept.row(tableDept.data().length - 1).data()['dep_kodedepartement'];
             for(i=0;i<tableDept.data().length;i++){
+                if(tableDept.row(i).data()['dep_kodedepartement'] < lowest){
+                    if($('#min').val() <= (tableDept.row(i).data()['dep_kodedivisi'])){
+                        lowest = i;
+                    }
+                }
+            }
+            highest = 0; //suka suka saya kasih angka berapa dong
+            for(i=0;i<tableDept.data().length;i++){
+                if(tableDept.row(i).data()['dep_kodedepartement'] > highest){
+                    if($('#max').val() >= tableDept.row(i).data()['dep_kodedivisi']){
+                        highest = i;
+                    }
+                }
+            }
+            for(i=lowest;i<=highest;i++){
                 if(tableDept.row(i).data()['dep_kodedepartement'] == val){
                     return true;
+                }
+            }
+            return false;
+        }
+
+        //Untuk periksa apakah toko ada
+        function checkTokoExist(val){
+            for(i=0;i<tableToko.data().length;i++){
+                if(tableToko.row(i).data()['tko_kodeomi'] == val){
+                    if($('#jenisToko').val() == tableToko.row(i).data()['tko_kodesbu']){
+                        return true;
+                    }
                 }
             }
             return false;
@@ -863,7 +908,9 @@
         function checkKatExist(val){
             for(i=0;i<tableKat.data().length;i++){
                 if(tableKat.row(i).data()['kat_kodekategori'] == val){
-                    return true;
+                    if(tableKat.row(i).data()['kat_kodedepartement'] >= $('#minKat').val() && tableKat.row(i).data()['kat_kodedepartement'] <= $('#maxKat').val()){
+                        return true;
+                    }
                 }
             }
             return false;
@@ -937,7 +984,7 @@
                 }
             }
         }
-        //-------------------- END OF SCRIPT ### MENU 5 ### --------------------
+        //-------------------- END OF SCRIPT ### MENU MAIN ### --------------------
 
         ////merubah format date range picker Tidak pakai
         // $(function() {
@@ -1105,13 +1152,13 @@
                     }, 10);
                     break;
                 case "B1dept":
-                    $('#menu1deptB1').val(kodedepartemen);
+                    $('#menu1deptB1').val(kodedepartemen).change();
                     setTimeout(function() {
                         $('#menu1deptB1').focus();
                     }, 10);
                     break;
                 case "B2dept":
-                    $('#menu1deptB2').val(kodedepartemen);
+                    $('#menu1deptB2').val(kodedepartemen).change();
                     setTimeout(function() {
                         $('#menu1deptB2').focus();
                     }, 10);
@@ -1147,6 +1194,20 @@
                 }
             }
         });
+        $('#menu1divA1').on('change',function(e){
+            if(!checkDivExist($('#menu1divA1').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1divA1').select();
+                })
+                return false;
+            }else{
+                check3div();
+            }
+        });
         $('#menu1divA2').on('keypress',function(e){
             if(e.which == 13){
                 if($('#menu1divA2').val() == ''){
@@ -1171,6 +1232,20 @@
                     check3div();
                     $('#menu1divA3').focus();
                 }
+            }
+        });
+        $('#menu1divA2').on('change',function(e){
+            if(!checkDivExist($('#menu1divA2').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1divA2').select();
+                })
+                return false;
+            }else{
+                check3div();
             }
         });
         $('#menu1divA3').on('keypress',function(e){
@@ -1203,6 +1278,20 @@
                 }
             }
         });
+        $('#menu1divA3').on('change',function(e){
+            if(!checkDivExist($('#menu1divA3').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1divA3').select();
+                })
+                return false;
+            }else{
+                check3div();
+            }
+        });
 
         //Menu Div B
         $('#menu1divB1').on('keypress',function(e){
@@ -1232,6 +1321,20 @@
                 }
             }
         });
+        $('#menu1divB1').on('change',function(e){
+            if(!checkDivExist($('#menu1divB1').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1divB1').select();
+                })
+                return false;
+            }else{
+                $('#min').val($('#menu1divB1').val()).change(); //isi filter min
+            }
+        });
         $('#menu1divB2').on('keypress',function(e){
             if(e.which == 13){
                 if($('#menu1divB2').val() == ''){
@@ -1257,6 +1360,20 @@
                     $('#max').val($('#menu1divB2').val()).change(); //isi filter max
                     $('#menu1deptB1').focus();
                 }
+            }
+        });
+        $('#menu1divB2').on('change',function(e){
+            if(!checkDivExist($('#menu1divB2').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1divB2').select();
+                })
+                return false;
+            }else{
+                $('#max').val($('#menu1divB2').val()).change(); //isi filter max
             }
         });
 
@@ -1320,6 +1437,18 @@
                 }
             }
         });
+        $('#menu1deptA1').on('change',function(e){
+            if(!checkDeptExist($('#menu1deptA1').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptA1').select();
+                })
+                return false;
+            }
+        });
         $('#menu1deptA2').on('keypress',function(e){
             if(e.which == 13){
                 if($('#menu1deptA2').val() == ''){
@@ -1343,6 +1472,18 @@
                 }else{
                     $('#menu1deptA3').focus();
                 }
+            }
+        });
+        $('#menu1deptA2').on('change',function(e){
+            if(!checkDeptExist($('#menu1deptA2').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptA2').select();
+                })
+                return false;
             }
         });
         $('#menu1deptA3').on('keypress',function(e){
@@ -1370,6 +1511,18 @@
                 }
             }
         });
+        $('#menu1deptA3').on('change',function(e){
+            if(!checkDeptExist($('#menu1deptA3').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptA3').select();
+                })
+                return false;
+            }
+        });
         $('#menu1deptA4').on('keypress',function(e){
             if(e.which == 13){
                 if($('#menu1deptA4').val() == ''){
@@ -1395,7 +1548,20 @@
                 }
             }
         });
+        $('#menu1deptA4').on('change',function(e){
+            if(!checkDeptExist($('#menu1deptA4').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptA4').select();
+                })
+                return false;
+            }
+        });
 
+        //Menu Dept B
         $('#menu1deptB1').on('keypress',function(e){
             if(e.which == 13){
                 if($('#menu1divB1').val() == '' || $('#menu1divB2').val() == ''){
@@ -1408,10 +1574,12 @@
                     })
                     return false;
                 }else if($('#menu1deptB1').val() == ''){
-                    lowest = tableDept.row(0).data()['dep_kodedepartement'];
+                    lowest = tableDept.row(tableDept.data().length - 1).data()['dep_kodedepartement'];
                     for(i=0;i<tableDept.data().length;i++){
                         if(tableDept.row(i).data()['dep_kodedepartement'] < lowest){
-                            lowest = tableDept.row(i).data()['dep_kodedepartement'];
+                            if($('#min').val() <= (tableDept.row(i).data()['dep_kodedivisi'])){
+                                lowest = tableDept.row(i).data()['dep_kodedepartement'];
+                            }
                         }
                     }
                     $('#menu1deptB1').val(lowest);
@@ -1430,6 +1598,28 @@
                 }
             }
         });
+        $('#menu1deptB1').on('change',function(e){
+            if($('#menu1divB1').val() == '' || $('#menu1divB2').val() == ''){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi ada yang Kosong!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptB1').val('');
+                    $('#menu1divB1').focus();
+                })
+                return false;
+            }else if(!checkDeptExist($('#menu1deptB1').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptB1').select();
+                })
+                return false;
+            }
+        });
 
         $('#menu1deptB2').on('keypress',function(e){
             if(e.which == 13){
@@ -1443,10 +1633,12 @@
                     })
                     return false;
                 }else if($('#menu1deptB2').val() == ''){
-                    highest = tableDept.row(0).data()['dep_kodedepartement'];
+                    highest = 0; //suka suka saya kasih angka berapa dong
                     for(i=0;i<tableDept.data().length;i++){
                         if(tableDept.row(i).data()['dep_kodedepartement'] > highest){
-                            highest = tableDept.row(i).data()['dep_kodedepartement'];
+                            if($('#max').val() >= tableDept.row(i).data()['dep_kodedivisi']){
+                                highest = tableDept.row(i).data()['dep_kodedepartement'];
+                            }
                         }
                     }
                     $('#menu1deptB2').val(highest);
@@ -1463,6 +1655,30 @@
                 }else{
                     $('#menu1Cetak').focus();
                 }
+            }
+        });
+        $('#menu1deptB2').on('change',function(e){
+            if($('#menu1divB1').val() == '' || $('#menu1divB2').val() == ''){
+                swal({
+                    title:'Warning',
+                    text: 'Data Divisi ada yang Kosong!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptB2').val('');
+                    $('#menu1divB1').focus();
+                })
+                return false;
+            }else if(!checkDeptExist($('#menu1deptB2').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Data Departemen Salah!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu1deptB2').select();
+                })
+                return false;
+            }else{
+                $('#menu1Cetak').focus();
             }
         });
 
@@ -1582,6 +1798,7 @@
             }else{
                 if($('#menu1divB1').val() == '' || !checkDivExist($('#menu1divB1').val())){ //bila data div salah diubah jadi 1
                     $('#menu1divB1').val('1');
+                    $('#min').val('1').change();
                 }
                 if($('#menu1divB2').val() == '' || !checkDivExist($('#menu1divB2').val())){ //bila data div salah diubah jadi divisi tertinggi
                     highest = tableDiv.row(0).data()['div_kodedivisi'];
@@ -1591,16 +1808,27 @@
                         }
                     }
                     $('#menu1divB2').val(highest);
+                    $('#max').val(highest).change();
                 }
                 if($('#menu1deptB1').val() == '' || !checkDeptExist($('#menu1deptB1').val())){ //bila data dept salah diubah jadi 01
-                    $('#menu1deptB1').val('01');
+                    lowest = tableDept.row(tableDept.data().length - 1).data()['dep_kodedepartement'];
+                    for(i=0;i<tableDept.data().length;i++){
+                        if(tableDept.row(i).data()['dep_kodedepartement'] < lowest){
+                            if($('#min').val() <= (tableDept.row(i).data()['dep_kodedivisi'])){
+                                lowest = tableDept.row(i).data()['dep_kodedepartement'];
+                            }
+                        }
+                    }
+                    $('#menu1deptB1').val(lowest);
                 }
                 if($('#menu1deptB2').val() == '' || !checkDeptExist($('#menu1deptB2').val())){ //bila data dept salah diubah jadi departemen tertinggi
                     //$('#menu1deptB2').val('53');
-                    highest = tableDept.row(0).data()['dep_kodedepartement'];
+                    highest = 0; //suka suka saya kasih angka berapa dong
                     for(i=0;i<tableDept.data().length;i++){
                         if(tableDept.row(i).data()['dep_kodedepartement'] > highest){
-                            highest = tableDept.row(i).data()['dep_kodedepartement'];
+                            if($('#max').val() >= tableDept.row(i).data()['dep_kodedivisi']){
+                                highest = tableDept.row(i).data()['dep_kodedepartement'];
+                            }
                         }
                     }
                     $('#menu1deptB2').val(highest);
@@ -1825,11 +2053,21 @@
                 if($('#sbu').val() == 'O' || $('#sbu').val() == 'I' || $('#sbu').val() == 'S'){
                     $('#jenisToko').val($('#sbu').val()).change(); //isi filter jenisToko
                     $('#menu2TokoInput').focus();
+                    $('#menu2TokoInput').val('');
+                    $('#dis_omi').val('');
                 }
                 return true
             }
             return false;
         }
+        $('#sbu').on('change',function(e){
+            if($('#sbu').val() == 'O' || $('#sbu').val() == 'I' || $('#sbu').val() == 'S'){
+                $('#jenisToko').val($('#sbu').val()).change(); //isi filter jenisToko
+                //$('#menu2TokoInput').focus();
+                $('#menu2TokoInput').val('');
+                $('#dis_omi').val('');
+            }
+        });
 
         function chooseTokoMenu2(val){
             let kodeToko = val.children().first().text();
@@ -1847,8 +2085,16 @@
                     $('#menu2Cetak').focus();
                     return true;
                 }else if(!checkTokoExist($('#menu2TokoInput').val())){
-                    $('#menu2TokoInput').val('');
-                    $('#menu2TokoInput').focus();
+                    swal({
+                        title:'Warning',
+                        text: 'Kode Toko tidak sesuai',
+                        icon:'warning',
+                    }).then(function() {
+                        $('#menu2TokoInput').val('');
+                        $('#dis_omi').val('');
+                        $('#menu2TokoInput').focus();
+                    })
+                    return false;
                 }else{
                     for(i=0;i<tableToko.data().length;i++){
                         if(tableToko.row(i).data()['tko_kodeomi'] == $('#menu2TokoInput').val()){
@@ -1860,16 +2106,40 @@
                 }
             }
         });
-
-        //Untuk periksa apakah div ada
-        function checkTokoExist(val){
-            for(i=0;i<tableToko.data().length;i++){
-                if(tableToko.row(i).data()['tko_kodeomi'] == val){
-                    return true;
-                }
+        $('#menu2TokoInput').on('change',function(e){
+            if($('#sbu').val() == ''){
+                swal({
+                    title:'Warning',
+                    text: 'Kode SBU masih kosong!',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu2TokoInput').val('');
+                    $('#dis_omi').val('');
+                    $('#menu2TokoInput').focus();
+                })
+                return false
             }
-            return false;
-        }
+            if(!checkTokoExist($('#menu2TokoInput').val())){
+                swal({
+                    title:'Warning',
+                    text: 'Kode Toko tidak sesuai',
+                    icon:'warning',
+                }).then(function() {
+                    $('#menu2TokoInput').val('');
+                    $('#dis_omi').val('');
+                    $('#menu2TokoInput').focus();
+                })
+                return false;
+            }else{
+                for(i=0;i<tableToko.data().length;i++){
+                    if(tableToko.row(i).data()['tko_kodeomi'] == $('#menu2TokoInput').val()){
+                        $('#dis_omi').val(tableToko.row(i).data()['tko_namaomi']+' - '+tableToko.row(i).data()['tko_kodecustomer']);
+                        break;
+                    }
+                }
+                $('#menu2Cetak').focus();
+            }
+        });
 
         function cetakMenu2(){
             let date = $('#daterangepicker2').val();
@@ -2050,6 +2320,12 @@
                 });
                 return false;
             }else{
+                for(i=0;i<tableDiv.data().length;i++){
+                    if($("#menu3divA").val() == tableDiv.row(i).data()['div_kodedivisi']){
+                        $('#menu3divdisplay').val(tableDiv.row(i).data()['div_namadivisi']);
+                    }
+                }
+
                 $("#min").val( $("#menu3divA").val()).change();
                 $("#max").val( $("#menu3divA").val()).change();
                 $("#menu3deptA").focus();
@@ -2116,8 +2392,16 @@
                 });
                 return false;
             }else{
-                $("#minKat").val( $("#menu3divA").val()).change();
-                $("#maxKat").val( $("#menu3divA").val()).change();
+                for(i=0;i<tableDept.data().length;i++){
+                    if(tableDept.row(i).data()['dep_kodedivisi'] >= $('#min').val() && tableDept.row(i).data()['dep_kodedivisi'] <= $('#max').val()){
+                        if($("#menu3deptA").val() == tableDept.row(i).data()['dep_kodedepartement']){
+                            $('#menu3deptdisplay').val(tableDept.row(i).data()['dep_namadepartement']);
+                        }
+                    }
+                }
+
+                $("#minKat").val( $("#menu3deptA").val()).change();
+                $("#maxKat").val( $("#menu3deptA").val()).change();
                 $("#menu3katA").focus();
             }
         });
@@ -2163,7 +2447,7 @@
             }else if(!checkKatExist($("#menu3katA").val())){
                 swal({
                     title:'Kesalahan data',
-                    text: 'Departemen tidak ditemukan',
+                    text: 'Kategori tidak ditemukan',
                     icon:'warning',
                     timer: 2000,
                     buttons: {
@@ -2175,6 +2459,13 @@
                 });
                 return false;
             }else{
+                for(i=0;i<tableKat.data().length;i++){
+                    if(tableKat.row(i).data()['kat_kodedepartement'] >= $('#minKat').val() && tableKat.row(i).data()['kat_kodedepartement'] <= $('#maxKat').val()){
+                        if($("#menu3katA").val() == tableKat.row(i).data()['kat_kodekategori']){
+                            $('#menu3katdisplay').val(tableKat.row(i).data()['kat_namakategori']);
+                        }
+                    }
+                }
                 $("#menu3Margin1").focus();
             }
         });
@@ -2291,10 +2582,165 @@
         //-------------------- END OF SCRIPT ### MENU 3 ### --------------------
 
         //-------------------- SCRIPT UNTUK ### MENU 4 ### --------------------
+        //fungsi date menu4
+        $('#daterangepicker4').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function(start, end, label) { //untuk mendeteksi bila perubahan tidak dibulan yang sama ketika melakukan perubahan
+            if(start.format('YYYY') !== end.format('YYYY') || start.format('MM') !== end.format('MM')){
+                swal({
+                    title:'Periode Bulan',
+                    text: 'Bulan Periode Tanggal harus sama.',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#daterangepicker4').data('daterangepicker').setStartDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker4').data('daterangepicker').setEndDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker4').select();
+                });
+            }else{
+                $('#yaTidakMenu4').focus(); //focus ke kolom berikutnya
+            }
+            //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+
+        function isYTMenu4(evt){ //membatasi input untuk hanya boleh Y dan T, serta mendeteksi bila menekan tombol enter
+            $('#yaTidakMenu4').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
+            let charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 121) // y kecil
+                return 89; // Y besar
+
+            if (charCode == 116) // t kecil
+                return 84; //t besar
+
+            if (charCode == 89 || charCode == 84)
+                return true
+
+            return false;
+        }
+
+        function cetakMenu4(){
+            let date = $('#daterangepicker4').val();
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            if($('#yaTidakMenu4').val() == ''){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Khusus Export Y/T ?',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#yaTidakMenu4").focus();
+                });
+                return false;
+            }
+
+            window.open(`{{ url()->current() }}/printdocumentmenu4?date1=${dateA}&date2=${dateB}&ekspor=${$('#yaTidakMenu4').val()}`, '_blank');
+            kembali();
+        }
+
+        function clearMenu4(){
+            $('#menu4 input').val('');
+            $('#daterangepicker4').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker4').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+        }
 
         //-------------------- END OF SCRIPT ### MENU 4 ### --------------------
 
         //-------------------- SCRIPT UNTUK ### MENU 5 ### --------------------
+        //fungsi date menu4
+        $('#daterangepicker5').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function(start, end, label) { //untuk mendeteksi bila perubahan tidak dibulan yang sama ketika melakukan perubahan
+            if(start.format('YYYY') !== end.format('YYYY') || start.format('MM') !== end.format('MM')){
+                swal({
+                    title:'Periode Bulan',
+                    text: 'Bulan Periode Tanggal harus sama.',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#daterangepicker5').data('daterangepicker').setStartDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker5').data('daterangepicker').setEndDate(start.format('DD/MM/YYYY'));
+                    $('#daterangepicker5').select();
+                });
+            }else{
+                $('#kasirMenu5').focus(); //focus ke kolom berikutnya
+            }
+            //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+
+        function cetakMenu5(){
+            let date = $('#daterangepicker5').val();
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            if($('#kasirMenu5').val() == ''){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Kode Kasir Harus Di Isi !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#kasirMenu5").focus();
+                });
+                return false;
+            }
+            let kasir = ($('#kasirMenu5').val()).toUpperCase();
+            if($('#stationMenu5').val() == ''){
+                swal({
+                    title:'Kesalahan data',
+                    text: 'Kode Station Kasir Harus Di Isi !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $("#stationMenu5").focus();
+                });
+                return false;
+            }
+            let station = ($('#stationMenu5').val()).toUpperCase();
+            window.open(`{{ url()->current() }}/printdocumentmenu5?date1=${dateA}&date2=${dateB}&kasir=${kasir}&station=${station}`, '_blank');
+            kembali();
+        }
+
+
+        function clearMenu5(){
+            $('#menu5 input').val('');
+            $('#daterangepicker5').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker5').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+        }
 
         //-------------------- END OF SCRIPT ### MENU 5 ### --------------------
 

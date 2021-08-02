@@ -30,6 +30,7 @@ Route::get('/unauthorized', 'Auth\loginController@unauthorized');
 
 
 /******** Template ********/
+Route::get('/template/testing', 'TemplateController@testing');
 Route::get('/template/index', 'TemplateController@index');
 Route::get('/template/datamodal', 'TemplateController@dataModal');
 Route::get('/template/searchdatamodal', 'TemplateController@searchDataModal');
@@ -614,7 +615,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@index');
             Route::get('/showData', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@showData');
             Route::post('/CSVeFaktur', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@CSVeFaktur');
-            Route::get('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
+            Route::post('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
         });
 
         Route::prefix('/pb-gudang-pusat')->group(function () {
@@ -759,6 +760,29 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak-omi','FRONTOFFICE\LAPORANKASIR\ActualController@cetakOmi');
                 Route::get('/cetak-struk','FRONTOFFICE\LAPORANKASIR\ActualController@cetakStruk');
             });
+
+            Route::prefix('/kartu-kredit')->group(function(){
+                Route::prefix('/per-nama')->group(function(){
+                    Route::get('/','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerNamaController@index');
+                    Route::get('/cetak','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerNamaController@cetak');
+                });
+
+                Route::prefix('/per-kasir')->group(function(){
+                    Route::get('/','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerKasirController@index');
+                    Route::get('/get-lov','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerKasirController@getLov');
+                    Route::get('/cetak','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerKasirController@cetak');
+                });
+
+                Route::prefix('/per-debit-ukm')->group(function(){
+                    Route::get('/','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerDebitUKMController@index');
+                    Route::get('/get-lov','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerDebitUKMController@getLov');
+                    Route::get('/cetak','FRONTOFFICE\LAPORANKASIR\KARTUKREDIT\KKPerDebitUKMController@cetak');
+                });
+            });
+        });
+        Route::prefix('/laporan-planogram')->group(function(){
+            Route::get('/','FRONTOFFICE\LaporanPlanogramController@index');
+            Route::get('/cetak','FRONTOFFICE\LaporanPlanogramController@cetak');
         });
     });
 });
@@ -1201,6 +1225,28 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/printdocumentdmenu2', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentDMenu2');
                 Route::get('/printdocumentcmenu2', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentCMenu2');
                 Route::get('/printdocumentmenu3', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentMenu3');
+                Route::get('/printdocumentmenu4', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentMenu4');
+                Route::get('/printdocumentmenu5', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentMenu5');
+            });
+        });
+    });
+
+    //FORNTOFFICE - LAPORAN KASIR - LAPORAN PENJUALAN
+    Route::prefix('/frontoffice')->group(function () {
+        Route::prefix('/laporankasir')->group(function () {
+            Route::prefix('/strukperkasir')->group(function () {
+                Route::get('/', 'FRONTOFFICE\LAPORANKASIR\strukperkasirController@index');
+                Route::get('/printstruk', 'FRONTOFFICE\LAPORANKASIR\strukperkasirController@printstruk');
+                Route::get('/printwaktu', 'FRONTOFFICE\LAPORANKASIR\strukperkasirController@printwaktu');
+            });
+        });
+    });
+
+    Route::prefix('/frontoffice')->group(function () {
+        Route::prefix('/laporankasir')->group(function () {
+            Route::prefix('/transaksivoucher')->group(function () {
+                Route::get('/', 'FRONTOFFICE\LAPORANKASIR\transaksivoucherController@index');
+                Route::get('/print', 'FRONTOFFICE\LAPORANKASIR\transaksivoucherController@print');
             });
         });
     });

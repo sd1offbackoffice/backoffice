@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="col-sm-4 form-check notareturfp">
                                         <input type="checkbox" class="form-check-input" id="cetaknotareturfp">
-                                        <label for="reprint"> CETAK NOTA RETUR FP</label><br>
+                                        <label for="cetaknotareturfp"> CETAK NOTA RETUR FP</label><br>
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -95,6 +95,25 @@
                 </fieldset>
             </div>
             <div class="col-sm-2"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_result" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Laporan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="pdf">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -254,13 +273,11 @@
                     const index = checked.indexOf(val);
                     if (bool) {
                         if (index > -1) {
-                        }
-                        else {
+                        } else {
                             checked.push(val);
 
                         }
-                    }
-                    else{
+                    } else {
                         if (index > -1) {
                             checked.splice(index, 1);
                         }
@@ -315,33 +332,45 @@
         }
 
         function cetak() {
-            console.log(checked);
             if (checked.length != 0) {
-                // ajaxSetup();
-                // $.ajax({
-                //     url: '/BackOffice/public/bo/cetak-dokumen/cetak',
-                //     type: 'post',
-                //     data: {
-                //         doc: $('#dokumen').val(),
-                //         lap: $('#laporan').val(),
-                //         reprint: $('#reprint:checked').val(),
-                //         tgl1: $('#tgl1').val(),
-                //         tgl2: $('#tgl2').val(),
-                //         kertas: $('#kertas').val(),
-                //         data: checked,
-                //     },
-                //     beforeSend: function () {
-                //         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                //     },
-                //     success: function (result) {
-                //         $('#modal-loader').modal('hide');
-                //         window.open('../' + result, '_blank');
-                //     }, error: function (err) {
-                //         $('#modal-loader').modal('hide');
-                //         errorHandlingforAjax(err);
-                //     }
-                // })
-                window.open(`{{ url()->current() }}/cetak?doc=${$('#dokumen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&kertas=${$('#kertas').val()}&data=${checked}`, '_blank');
+                ajaxSetup();
+                $.ajax({
+                    url: '/BackOffice/public/bo/cetak-dokumen/cetak',
+                    type: 'post',
+                    data: {
+                        nrfp: $('#cetaknotareturfp:checked').val(),
+                        doc: $('#dokumen').val(),
+                        lap: $('#laporan').val(),
+                        reprint: $('#reprint:checked').val(),
+                        tgl1: $('#tgl1').val(),
+                        tgl2: $('#tgl2').val(),
+                        kertas: $('#kertas').val(),
+                        data: checked,
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (result) {
+                        $('#modal-loader').modal('hide');
+                        $('#pdf').empty();
+                        console.log(result);
+                        buttons = '';
+                        if (result) {
+                            $.each(result, function (index, value) {
+                                $('#pdf').append(`<div class="row form-group" >
+                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
+                                </div>`);
+                            });
+                        }
+                        $('#m_result').modal('show');
+
+                        // window.open('../' + result, '_blank');
+                    }, error: function (err) {
+                        $('#modal-loader').modal('hide');
+                        errorHandlingforAjax(err);
+                    }
+                });
+                {{--window.open(`{{ url()->current() }}/cetak?doc=${$('#dokumen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&nrfp=${$('#cetaknotareturfp:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&kertas=${$('#kertas').val()}&data=${checked}`, '_blank');--}}
 
             } else {
                 swal({

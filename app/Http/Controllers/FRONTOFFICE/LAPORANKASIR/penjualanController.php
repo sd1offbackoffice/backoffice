@@ -1252,7 +1252,64 @@ ORDER BY omidiv, omidep");
         $mon = $request->mon;
         $pluall = $request->pluall;
 
-        if($pluall == 'Y'){
+        if ($pluall == 'N'){
+            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+	   fdsat0, fdnam0, fdntr0,
+	   fdsat1, fdnam1, fdntr1,
+	   fdsat2, fdnam2, fdntr2,
+	   fdsat3, fdnam3, fdntr3,
+	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+	   (fdnamt + fdfnam) tot2,
+       (fdntax + fdftax) tot3,
+       (fdnnet + fdfnet) tot4,
+	   (fdnhpp + fdfhpp) tot5,
+	   (fdmrgn + fdfmgn) tot6,
+	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+	   PRD_KODETAG
+FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
+(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+		   NVL(cexp,'F') cexp
+	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+	  (	SELECT sls_prdcd prdcd, 'T' cexp
+		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+		WHERE sls_prdcd = exp_prdcd
+		  AND trjd_recordid IS NULL
+		  AND trjd_prdcd = sls_prdcd
+		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+		  AND trjd_cus_kodemember = cus_kodemember (+)
+	 	  AND cus_jenismember = 'E'
+		)
+	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+	  AND sls_prdcd = prdcd(+)
+	  AND sls_prdcd = mpl_prdcd
+	  AND translate(mpl_kodemonitoring,' ','_') = '$mon'
+	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+)
+WHERE prs_kodeigr = '$kodeigr'
+  AND sls_kodeigr = prs_kodeigr
+  AND fdkplu = prd_prdcd
+  AND fdkdiv = div_kodedivisi (+)
+  AND fdkdep = dep_kodedepartement (+)
+  AND fdkdiv = dep_kodedivisi (+)
+  AND fdkdep = kat_kodedepartement (+)
+  AND fdkatb = kat_kodekategori (+)
+  --AND fdkdiv in ('".$div."')
+  ".$p_div." ".$p_dept." ".$p_kat."
+  AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
+ORDER BY fdkdiv, fdkdep, fdkatb");
+        }else{ //jika pluall == Y maka masuk else
             $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
@@ -1302,7 +1359,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND fdkdiv = dep_kodedivisi (+)
   AND fdkdep = kat_kodedepartement (+)
   AND fdkatb = kat_kodekategori (+)
-  --AND fdkdiv in ('$div')
+  --AND fdkdiv in ('".$div."')
   ".$p_div." ".$p_dept." ".$p_kat."
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
 	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
@@ -1321,7 +1378,63 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
             $gross[$index] = 0; $tax[$index] = 0; $net[$index] = 0; $hpp[$index] = 0; $margin[$index] = 0; $margp[$index] = 0;
         }
 
-        $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+        if($pluall == 'N'){
+            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+	   fdsat0, fdnam0, fdntr0,
+	   fdsat1, fdnam1, fdntr1,
+	   fdsat2, fdnam2, fdntr2,
+	   fdsat3, fdnam3, fdntr3,
+	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+	   (fdnamt + fdfnam) tot2,
+     (fdntax + fdftax) tot3,
+     (fdnnet + fdfnet) tot4,
+	   (fdnhpp + fdfhpp) tot5,
+	   (fdmrgn + fdfmgn) tot6,
+	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+	   PRD_KODETAG
+FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
+(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+		   NVL(cexp,'F') cexp
+	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+	  (	SELECT sls_prdcd prdcd, 'T' cexp
+		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+		WHERE sls_prdcd = exp_prdcd
+		  AND trjd_recordid IS NULL
+		  AND trjd_prdcd = sls_prdcd
+		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+		  AND trjd_cus_kodemember = cus_kodemember (+)
+	 	  AND cus_jenismember = 'E'
+		)
+	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+	  AND sls_prdcd = prdcd(+)
+	  AND sls_prdcd = mpl_prdcd
+	  AND mpl_kodemonitoring = '$mon'
+	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+)
+WHERE prs_kodeigr = '$kodeigr'
+  AND sls_kodeigr = prs_kodeigr
+  AND fdkplu = prd_prdcd
+  AND fdkdiv = div_kodedivisi (+)
+  AND fdkdep = dep_kodedepartement (+)
+  AND fdkdiv = dep_kodedivisi (+)
+  AND fdkdep = kat_kodedepartement (+)
+  AND fdkatb = kat_kodekategori (+)
+  AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+	    CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
+ORDER BY fdkdiv, fdkdep, fdkatb");
+        }else{
+            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
 	   fdsat1, fdnam1, fdntr1,
@@ -1373,6 +1486,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
 	    CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
 ORDER BY fdkdiv, fdkdep, fdkatb");
+        }
 
         for($i=0;$i<sizeof($rec);$i++){
             if($rec[$i]->fdkdiv == $div || $div == 'SEMUA DIVISI'){
@@ -1477,10 +1591,527 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        if($pluall == 'Y'){
+        if($pluall == 'N'){
+            $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf',
+                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'mon' =>$mon, 'margin1' => $margin1,'margin2' => $margin2, 'datas' => $datas, 'today' => $today, 'time' => $time,
+                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(768, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+            return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf');
+        }else{
             return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv_all-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'margin1' => $margin1,'margin2' => $margin2, 'datas' => $datas, 'today' => $today, 'time' => $time,
-                'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
+                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         }
+    }
+
+    public function printDocumentMenu4(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $dateA = $request->date1;
+        $dateB = $request->date2;
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        if($dateA != $dateB){
+            $periode = 'PERIODE: '.$dateA.' s/d '.$dateB;
+        }else{
+            $periode = 'TANGGAL: '.$dateA;
+        }
+
+        $ekspor = $request->ekspor;
+
+        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+	   CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
+	   sls_periode, hari,
+	   sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
+	   CASE WHEN  sls_net <> 0 THEN  sls_margin * 100 / sls_net ELSE 100 END p_margin
+FROM TBMASTER_PERUSAHAAN,
+(	 SELECT sls_kodeigr, sls_periode,
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'SUN' THEN 'MINGGU' ELSE
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'MON' THEN 'SENIN'  ELSE
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'TUE' THEN 'SELASA' ELSE
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'WED' THEN 'RABU'	 ELSE
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'THU' THEN 'KAMIS'  ELSE
+		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'FRI' THEN 'JUMAT'  ELSE
+		   'SABTU' END END END END END END hari,
+		   SUM(sls_nilainomi+sls_nilaiomi+sls_nilaiidm) sls_nilai,
+		   SUM(sls_taxnomi+sls_taxomi+sls_taxidm) sls_tax,
+		   SUM(sls_netnomi+sls_netomi+sls_netidm) sls_net,
+		   SUM(sls_hppnomi+sls_hppomi+sls_hppidm) sls_hpp,
+		   SUM(sls_marginnomi+sls_marginomi+sls_marginidm) sls_margin, NVL(cexp,'T') cexp
+	FROM TBTR_SUMSALES, TBMASTER_PERUSAHAAN,
+	( 	 SELECT sls_prdcd prdcd, 'Y' cexp
+		 FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+		 WHERE sls_prdcd = exp_prdcd
+		   AND trjd_recordid IS NULL
+		   AND trjd_prdcd = sls_prdcd
+		   AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+		   AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+		   AND trjd_cus_kodemember = cus_kodemember (+)
+	 	   AND cus_jenismember = 'E'
+	)
+	WHERE sls_prdcd = prdcd(+)
+	   AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+	GROUP BY sls_kodeigr,sls_periode,cexp
+	)
+WHERE prs_kodeigr = '$kodeigr'
+  AND sls_kodeigr = prs_kodeigr
+  AND cexp = '$ekspor'
+ORDER BY sls_periode");
+        if(sizeof($datas) == 0){
+            return "**DATA TIDAK ADA**";
+        }
+
+        $val['gross'] = 0; $val['tax'] = 0; $val['net'] = 0; $val['hpp'] = 0; $val['margin'] = 0; $val['margp'] = 0;
+
+        for($i=0;$i<sizeof($datas);$i++){
+            $val['gross'] = $val['gross'] + $datas[$i]->sls_nilai;
+            $val['tax'] = $val['tax'] + $datas[$i]->sls_tax;
+            $val['net'] = $val['net'] + $datas[$i]->sls_net;
+            $val['hpp'] = $val['hpp'] + $datas[$i]->sls_hpp;
+            $val['margin'] = $val['margin'] + $datas[$i]->sls_margin;
+        }
+        if($val['net'] != 0){
+            $val['margp'] = $val['margin']*100/$val['net'];
+        }else{
+            if($val['margin'] != 0){
+                $val['margp'] = 100;
+            }else{
+                $val['margp'] = 0;
+            }
+        }
+
+        //PRINT
+        $today = date('d-m-Y');
+        $time = date('H:i:s');
+        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,
+                'val' => $val, 'today' => $today, 'time' => $time, 'periode' => $periode]);
+        $pdf->setPaper('A4', 'potrait');
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(503, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf');
+    }
+
+    public function printDocumentMenu5(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $dateA = $request->date1;
+        $dateB = $request->date2;
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        $kasir = $request->kasir;
+        $station = $request->station;
+        if($dateA != $dateB){
+            $periode = 'PERIODE: '.$dateA.' s/d '.$dateB;
+        }else{
+            $periode = 'TANGGAL: '.$dateA;
+        }
+
+        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
+	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
+	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
+	   	   	   CASE WHEN admfee > 0 THEN
+			     CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+				   fdnamt * 1.1 ELSE fdnamt
+				 END
+			   ELSE fdnamt
+			   END
+	         ELSE
+			   CASE WHEN recordid IS NULL AND tipe = 'R' THEN
+		   	   	 CASE WHEN admfee > 0 THEN
+				   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+					 fdnamt * 1.1 * (0-1) ELSE fdnamt * (0-1)
+				   END
+				 ELSE fdnamt * (0-1)
+				 END
+			   END
+			 END
+		   ) fdnAmt,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+			 END
+		   ) fdnTax,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
+			 END
+		   ) fdnNet,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
+			 END
+		   ) fdnMrgn,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
+			 END
+		   ) fdnHpp
+FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
+(	SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
+		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+		     SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
+		   ELSE
+		     (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
+		   END SHPP,
+		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+		     CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
+		   ELSE
+		     sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
+		   END SMARGIN
+	FROM
+	(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
+			   KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
+			   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+			     NOMINALAMT
+			   ELSE
+			     CASE WHEN ADMFEE <> 0 THEN
+				   CASE WHEN KASIR = 'BKL' THEN
+				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
+					   NOMINALAMT
+		 			 ELSE
+					   NOMINALAMT - STAX
+					 END
+				   ELSE
+		 			 NOMINALAMT
+		 		   END
+		 	     ELSE
+		 	   	   CASE WHEN KASIR = 'BKL' THEN
+				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
+					   NOMINALAMT
+					 ELSE
+					   NOMINALAMT - STAX
+					 END
+				   ELSE
+		 			 NOMINALAMT - STAX
+				   END
+				 END
+		       END SNET
+		FROM
+		(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
+				   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
+				   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+				     0
+				   ELSE
+			    	 CASE WHEN ADMFEE <> 0 THEN
+					   CASE WHEN KASIR = 'BKL' THEN
+					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+						 ELSE
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / 1.1) ELSE 0 END ELSE 0 END
+						 END
+			 		   ELSE
+					     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+					   END
+			 	     ELSE
+			 	   	   CASE WHEN KASIR = 'BKL' THEN
+					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+			 			 ELSE
+			 			   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
+			 			 END
+			 		   ELSE
+			 		     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
+			 		   END
+			 		 END
+			 	   END STAX
+			FROM TBMASTER_PRODMAST,
+			(	SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
+					   TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
+					   TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
+					   CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
+					   CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
+					      CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
+					   CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
+					   CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
+				FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+				WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+				  AND trjd_create_by = '$kasir'
+				  AND trjd_cashierstation = '$station'
+				  AND trjd_cus_kodemember = cus_kodemember(+)
+			)
+			WHERE PRDCD = PRD_PRDCD
+		)
+	)
+)
+WHERE PRS_KODEIGR = '$kodeigr'
+  AND KDIGR = PRS_KODEIGR
+  AND KDIV = DIV_KODEDIVISI
+  AND SUBSTR(DIV,1,2) = DEP_KODEDEPARTEMENT
+  AND SUBSTR(DIV,1,2) = KAT_KODEDEPARTEMENT
+  AND SUBSTR(DIV,-2,2) = KAT_KODEKATEGORI
+GROUP BY prs_namaperusahaan, prs_namacabang, KASIR, STAT, KDIV, div_namadivisi, SUBSTR(DIV,1,2), dep_namadepartement, SUBSTR(DIV,-2,2), kat_namakategori, FLAGTAX2, CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END
+ORDER BY FDKDIV, FDKDEP");
+        if(sizeof($datas) == 0){
+            return "**DATA TIDAK ADA**";
+        }
+
+        //CALCULATE GRAND TOTAL
+        $arrayIndex = ['c','p','x','b','e','g','r','h','total-40','total','f','d']; //tersusun, f merupakan departemen 40, hanya dipakai untuk mendapatkan total-40, tidak untuk ditampilkan
+                                                                                    //sedangkan d, ga tau kenapa muncul padahal ga dipakai di laporan, jadi tidak ditampilkan juga
+
+        foreach ($arrayIndex as $index){
+            $gross[$index] = 0; $tax[$index] = 0; $net[$index] = 0; $hpp[$index] = 0; $margin[$index] = 0; $margp[$index] = 0;
+        }
+        $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
+	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
+	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
+	   	   	   CASE WHEN admfee > 0 THEN
+			     CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+				   fdnamt * 1.1 ELSE fdnamt
+				 END
+			   ELSE fdnamt
+			   END
+	         ELSE
+			   CASE WHEN recordid IS NULL AND tipe = 'R' THEN
+		   	   	 CASE WHEN admfee > 0 THEN
+				   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+					 fdnamt * 1.1 * (0-1) ELSE fdnamt * (0-1)
+				   END
+				 ELSE fdnamt * (0-1)
+				 END
+			   END
+			 END
+		   ) fdnAmt,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+			 END
+		   ) fdnTax,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
+			 END
+		   ) fdnNet,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
+			 END
+		   ) fdnMrgn,
+	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
+	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
+			 END
+		   ) fdnHpp
+FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
+(	SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
+		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+		     SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
+		   ELSE
+		     (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
+		   END SHPP,
+		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+		     CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
+		   ELSE
+		     sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
+		   END SMARGIN
+	FROM
+	(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
+			   KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
+			   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+			     NOMINALAMT
+			   ELSE
+			     CASE WHEN ADMFEE <> 0 THEN
+				   CASE WHEN KASIR = 'BKL' THEN
+				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
+					   NOMINALAMT
+		 			 ELSE
+					   NOMINALAMT - STAX
+					 END
+				   ELSE
+		 			 NOMINALAMT
+		 		   END
+		 	     ELSE
+		 	   	   CASE WHEN KASIR = 'BKL' THEN
+				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
+					   NOMINALAMT
+					 ELSE
+					   NOMINALAMT - STAX
+					 END
+				   ELSE
+		 			 NOMINALAMT - STAX
+				   END
+				 END
+		       END SNET
+		FROM
+		(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
+				   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
+				   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+				     0
+				   ELSE
+			    	 CASE WHEN ADMFEE <> 0 THEN
+					   CASE WHEN KASIR = 'BKL' THEN
+					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+						 ELSE
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / 1.1) ELSE 0 END ELSE 0 END
+						 END
+			 		   ELSE
+					     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+					   END
+			 	     ELSE
+			 	   	   CASE WHEN KASIR = 'BKL' THEN
+					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
+						   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
+			 			 ELSE
+			 			   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
+			 			 END
+			 		   ELSE
+			 		     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
+			 		   END
+			 		 END
+			 	   END STAX
+			FROM TBMASTER_PRODMAST,
+			(	SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
+					   TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
+					   TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
+					   CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
+					   CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
+					      CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
+					   CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
+					   CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
+				FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+				WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+				  AND trjd_create_by = '$kasir'
+				  AND trjd_cashierstation = '$station'
+				  AND trjd_cus_kodemember = cus_kodemember(+)
+			)
+			WHERE PRDCD = PRD_PRDCD
+		)
+	)
+)
+WHERE PRS_KODEIGR = '$kodeigr'
+  AND KDIGR = PRS_KODEIGR
+  AND KDIV = DIV_KODEDIVISI
+  AND SUBSTR(DIV,1,2) = DEP_KODEDEPARTEMENT
+  AND SUBSTR(DIV,1,2) = KAT_KODEDEPARTEMENT
+  AND SUBSTR(DIV,-2,2) = KAT_KODEKATEGORI
+GROUP BY prs_namaperusahaan, prs_namacabang, KASIR, STAT, KDIV, div_namadivisi, SUBSTR(DIV,1,2), dep_namadepartement, SUBSTR(DIV,-2,2), kat_namakategori, FLAGTAX2, CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END
+ORDER BY FDKDIV, FDKDEP");
+
+        for($i=0;$i<sizeof($rec);$i++){
+            if($rec[$i]->fdkdiv && ($rec[$i]->fdkdep != '39' && $rec[$i]->fdkdep != '40' && $rec[$i]->fdkdep != '43') ){
+                if($rec[$i]->fdntax != 0){
+                    $gross['p'] = $gross['p'] + $rec[$i]->fdnamt;
+                    $tax['p'] = $tax['p'] + $rec[$i]->fdntax;
+                    $net['p'] = $net['p'] + $rec[$i]->fdnnet;
+                    $hpp['p'] = $hpp['p'] + $rec[$i]->fdnhpp;
+                    $margin['p'] = $margin['p'] + $rec[$i]->fdnmrgn;
+                }else{
+                    if($rec[$i]->fdfbkp == 'P'){
+                        $gross['b'] = $gross['b'] + $rec[$i]->fdnamt;
+                        $tax['b'] = $tax['b'] + $rec[$i]->fdntax;
+                        $net['b'] = $net['b'] + $rec[$i]->fdnnet;
+                        $hpp['b'] = $hpp['b'] + $rec[$i]->fdnhpp;
+                        $margin['b'] = $margin['b'] + $rec[$i]->fdnmrgn;
+                    }elseif($rec[$i]->fdfbkp == 'C'){
+                        $gross['d'] = $gross['d'] + $rec[$i]->fdnamt;
+                        $tax['d'] = $tax['d'] + $rec[$i]->fdntax;
+                        $net['d'] = $net['d'] + $rec[$i]->fdnnet;
+                        $hpp['d'] = $hpp['d'] + $rec[$i]->fdnhpp;
+                        $margin['d'] = $margin['d'] + $rec[$i]->fdnmrgn;
+                    }elseif($rec[$i]->fdfbkp == 'G'){
+                        $gross['g'] = $gross['g'] + $rec[$i]->fdnamt;
+                        $tax['g'] = $tax['g'] + $rec[$i]->fdntax;
+                        $net['g'] = $net['g'] + $rec[$i]->fdnnet;
+                        $hpp['g'] = $hpp['g'] + $rec[$i]->fdnhpp;
+                        $margin['g'] = $margin['g'] + $rec[$i]->fdnmrgn;
+                    }elseif($rec[$i]->fdfbkp == 'W'){
+                        $gross['r'] = $gross['r'] + $rec[$i]->fdnamt;
+                        $tax['r'] = $tax['r'] + $rec[$i]->fdntax;
+                        $net['r'] = $net['r'] + $rec[$i]->fdnnet;
+                        $hpp['r'] = $hpp['r'] + $rec[$i]->fdnhpp;
+                        $margin['r'] = $margin['r'] + $rec[$i]->fdnmrgn;
+                    }else{
+                        if($rec[$i]->fexpor == 'Y'){
+                            $gross['e'] = $gross['e'] + $rec[$i]->fdnamt;
+                            $tax['e'] = $tax['e'] + $rec[$i]->fdntax;
+                            $net['e'] = $net['e'] + $rec[$i]->fdnnet;
+                            $hpp['e'] = $hpp['e'] + $rec[$i]->fdnhpp;
+                            $margin['e'] = $margin['e'] + $rec[$i]->fdnmrgn;
+                        }else{
+                            $gross['x'] = $gross['x'] + $rec[$i]->fdnamt;
+                            $tax['x'] = $tax['x'] + $rec[$i]->fdntax;
+                            $net['x'] = $net['x'] + $rec[$i]->fdnnet;
+                            $hpp['x'] = $hpp['x'] + $rec[$i]->fdnhpp;
+                            $margin['x'] = $margin['x'] + $rec[$i]->fdnmrgn;
+                        }
+                    }
+                }
+            }elseif($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '39'){
+                $gross['c'] = $gross['c'] + $rec[$i]->fdnamt;
+                $tax['c'] = $tax['c'] + $rec[$i]->fdntax;
+                $net['c'] = $net['c'] + $rec[$i]->fdnnet;
+                $hpp['c'] = $hpp['c'] + $rec[$i]->fdnhpp;
+                $margin['c'] = $margin['c'] + $rec[$i]->fdnmrgn;
+            }elseif($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '40'){
+                $gross['f'] = $gross['f'] + $rec[$i]->fdnamt;
+                $tax['f'] = $tax['f'] + $rec[$i]->fdntax;
+                $net['f'] = $net['f'] + $rec[$i]->fdnnet;
+                $hpp['f'] = $hpp['f'] + $rec[$i]->fdnhpp;
+                $margin['f'] = $margin['f'] + $rec[$i]->fdnmrgn;
+            }elseif($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '43'){
+                $gross['h'] = $gross['h'] + $rec[$i]->fdnamt;
+                $tax['h'] = $tax['h'] + $rec[$i]->fdntax;
+                $net['h'] = $net['h'] + $rec[$i]->fdnnet;
+                $hpp['h'] = $hpp['h'] + $rec[$i]->fdnhpp;
+                $margin['h'] = $margin['h'] + $rec[$i]->fdnmrgn;
+            }
+        }
+        for($i=0;$i<sizeof($datas);$i++){
+            $gross['total'] = $gross['total'] + $datas[$i]->fdnamt;
+            $tax['total'] = $tax['total'] + $datas[$i]->fdntax;
+            $net['total'] = $net['total'] + $datas[$i]->fdnnet;
+            $hpp['total'] = $hpp['total'] + $datas[$i]->fdnhpp;
+            $margin['total'] = $margin['total'] + $datas[$i]->fdnmrgn;
+        }
+        $gross['total-40'] = $gross['total'] - $gross['f'];
+        $tax['total-40'] = $tax['total'] - $tax['f'];
+        $net['total-40'] = $net['total'] - $net['f'];
+        $hpp['total-40'] = $hpp['total'] - $hpp['f'];
+        $margin['total-40'] = $margin['total'] - $margin['f'];
+
+
+        foreach ($arrayIndex as $index){
+            if($net[$index] != 0){
+                $margp[$index] = $margin[$index]*100/$net[$index];
+            }else{
+                if($margin[$index] != 0){
+                    $margp[$index] = 100;
+                }else{
+                    $margp[$index] = 0;
+                }
+            }
+        }
+
+        $nmarginp = [];
+        for($i=0;$i<sizeof($datas);$i++){
+            if($datas[$i]->fdnnet != 0){
+                $nmarginp[$i] = ($datas[$i]->fdnmrgn)*100/($datas[$i]->fdnnet);
+            }else{
+                if(($datas[$i]->fdnmrgn) != 0){
+                    $nmarginp[$i] = 100;
+                }else{
+                    $nmarginp[$i] = 0;
+                }
+            }
+        }
+
+        //PRINT
+        $today = date('d-m-Y');
+        $time = date('H:i:s');
+        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'nmarginp' => $nmarginp , 'today' => $today, 'time' => $time, 'kasir' =>$kasir, 'station' => $station,
+                'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
+        $pdf->setPaper('A4', 'potrait');
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(524, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf');
     }
 }

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{ strtoupper($data1[0]->judul) }}</title>
+    <title>Report</title>
 
 </head>
 <body>
@@ -35,21 +35,22 @@ if (substr($data1[0]->mstd_date2, 4, 2) == '01') {
     $bulan = 'OKTOBER';
 } else if (substr($data1[0]->mstd_date2, 4, 2) == '11') {
     $bulan = 'NOVEMBER';
-else {
-        $bulan = 'DESEMBER';
-    }
+} else {
+    $bulan = 'DESEMBER';
+}
 
-    $cf_fakturpjk = $data1[0]->mstd_istype . '.' . $data1[0]->mstd_invno;
-    $cf_harga = floor($data1[0]->cs_harga * 0.1);
-    $cf_nofak = $data1[0]->prs_kodemto . '.' . substr($data1[0]->msth_tgldoc, 8, 2) . '.0' . $data1[0]->mstd_docno2 . $data1[0]->msth_flagdoc == 'T' ? '*' : '';
-    $cf_skp_sup = '';
-    if ($data1[0]->sup_tglsk) {
-        $cf_skp_sup = $data1[0]->sup_nosk . '         Tanggal PKP : ' . $data1[0]->sup_tglSk;
-    } else {
-        $cf_skp_sup = $data1[0]->sup_nosk;
-    }
-    $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasupplier ." ". $data1[0]->sup_singkatansupplier;
-    ?>
+$cf_fakturpjk = $data1[0]->mstd_istype . '.' . $data1[0]->mstd_invno;
+$cf_nofak = $data1[0]->prs_kodemto . '.' . substr($data1[0]->msth_tgldoc, 8, 2) . '.0' . $data1[0]->mstd_docno2 . $data1[0]->msth_flagdoc == 'T' ? '*' : '';
+$cf_skp_sup = '';
+if ($data1[0]->sup_tglsk) {
+    $cf_skp_sup = $data1[0]->sup_nosk . ' Tanggal PKP : ' . substr($data1[0]->sup_tglsk,1,10);
+} else {
+    $cf_skp_sup = $data1[0]->sup_nosk;
+}
+$f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasupplier . " " . $data1[0]->sup_singkatansupplier;
+
+
+?>
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
@@ -64,14 +65,12 @@ else {
         </p>
     </div>
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
+        <br>
+        <br>
         <p>
             PRG : IGR BO LIST<br>
         </p><br><br>
-        <p>
-            {{ $data1[0]->status }}
-        </p>
     </div>
-    <h2 style="text-align: center">  {{ $data1[0]->judul }} </h2>
 </header>
 
 <main style="margin-top: 50px;">
@@ -91,18 +90,33 @@ else {
             $i=1;
         @endphp
 
+
         @if(sizeof($data1)!=0)
             @foreach($data1 as $d)
+                @php
+                    $nqty2     = floor($d->mstd_qty/$d->mstd_frac);
+                   $nqtyk     = $d->mstd_qty % $d->mstd_frac;
+                   if ($d->mstd_unit =='KG '){
+                        $nqty    = (((floor($d->mstd_qty/$d->mstd_frac)) * $d->mstd_frac) + (($d->mstd_qty % $d->mstd_frac))) / $d->mstd_frac;
+                   }
+                   else{
+                        $nqty    = ((floor($d->mstd_qty/$d->mstd_frac)) * $d->mstd_frac) + ($d->mstd_qty % $d->mstd_frac);
+                   }
+
+                   $ngross  = $d->mstd_gross - $d->mstd_discrph;
+
+                   $nprice  = ( $ngross / ($nqty2 * $d->mstd_frac + $nqtyk) );
+                @endphp
                 <tr>
                     <td>{{ $i }}</td>
                     <td>{{ $d->prd_deskripsipanjang}}</td>
-                    <td class="right">{{ $d->nqty }}</td>
-                    <td class="right">{{ number_format(round($d->nprice), 0, '.', ',') }}</td>
-                    <td class="right">{{ number_format(round($d->ngross), 0, '.', ',') }}</td>
+                    <td class="right">{{ $nqty }}</td>
+                    <td class="right">{{ number_format(round($nprice), 0, '.', ',') }}</td>
+                    <td class="right">{{ number_format(round($ngross), 0, '.', ',') }}</td>
                 </tr>
                 @php
                     $i++;
-                    $total += $d->total;
+                    $total += $ngross;
                 @endphp
             @endforeach
         @else
@@ -115,9 +129,12 @@ else {
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="7"></td>
-            <td style="font-weight: bold">TOTAL SELURUHNYA</td>
+            <td colspan="4"></td>
             <td class="right">{{ number_format(round($total), 0, '.', ',') }}</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td class="right">{{ number_format(floor($total * 0.1), 0, '.', ',') }}</td>
         </tr>
         </tfoot>
     </table>
