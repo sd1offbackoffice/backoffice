@@ -1,18 +1,18 @@
 @extends('navbar')
-@section('title','Laporan Transaksi Sales Voucher')
+@section('title','Laporan Rekap Refund Kasir')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Transaksi Sales Voucher</legend>--}}
+{{--                    <legend class="w-auto ml-5">Laporan Rekap Refund Kasir</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <br>
                             <div class="card-body shadow-lg cardForm">
                                 <fieldset class="card border-dark">
-{{--                                    <legend class="w-auto ml-5">Rekap Struk Per Kasir</legend>--}}
+{{--                                    <legend class="w-auto ml-5">Laporan Rekap Refund Kasir</legend>--}}
                                     <br>
                                     <div class="row">
                                         <label class="col-sm-4 text-right col-form-label">Tanggal :</label>

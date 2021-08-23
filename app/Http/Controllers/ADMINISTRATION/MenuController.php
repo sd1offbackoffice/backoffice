@@ -129,6 +129,21 @@ class MenuController extends Controller
                     'acc_create_dt' => DB::RAW("SYSDATE")
                 ]);
 
+            DB::connection('igrsmg')
+                ->table('tbmaster_access_migrasi')
+                ->insert([
+                    'acc_id' => $id,
+                    'acc_group' => $request->group,
+                    'acc_subgroup1' => $request->subgroup1,
+                    'acc_subgroup2' => $request->subgroup2,
+                    'acc_subgroup3' => $request->subgroup3,
+                    'acc_name' => $request->name,
+                    'acc_level' => $request->level,
+                    'acc_url' => $request->url,
+                    'acc_create_by' => $_SESSION['usid'],
+                    'acc_create_dt' => DB::RAW("SYSDATE")
+                ]);
+
             return response()->json([
                 'title' => 'Data berhasil ditambahkan!'
             ], 200);
@@ -160,6 +175,21 @@ class MenuController extends Controller
                     'acc_modify_dt' => DB::RAW("SYSDATE")
                 ]);
 
+            DB::connection('igrsmg')
+                ->table('tbmaster_access_migrasi')
+                ->where('acc_id','=',$request->id)
+                ->update([
+                    'acc_group' => $request->group,
+                    'acc_subgroup1' => $request->subgroup1,
+                    'acc_subgroup2' => $request->subgroup2,
+                    'acc_subgroup3' => $request->subgroup3,
+                    'acc_name' => $request->name,
+                    'acc_level' => $request->level,
+                    'acc_url' => $request->url,
+                    'acc_modify_by' => $_SESSION['usid'],
+                    'acc_modify_dt' => DB::RAW("SYSDATE")
+                ]);
+
             return response()->json([
                 'title' => 'Data berhasil diubah!'
             ], 200);
@@ -178,6 +208,11 @@ class MenuController extends Controller
 
         if($temp){
             DB::table('tbmaster_access_migrasi')
+                ->where('acc_id','=',$request->id)
+                ->delete();
+
+            DB::connection('igrsmg')
+                ->table('tbmaster_access_migrasi')
                 ->where('acc_id','=',$request->id)
                 ->delete();
 

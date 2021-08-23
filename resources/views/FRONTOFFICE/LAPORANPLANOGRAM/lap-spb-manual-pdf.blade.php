@@ -16,14 +16,12 @@
             <p>
                 <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
                 {{ $perusahaan->prs_namacabang }}<br><br><br>
-                {{ $data[0]->p_order }}
+                {{ $p_order }}
             </p>
         </div>
         <div style="float:right; margin-top: 0px; line-height: 8px !important;">
             <p>
-                TGL : {{ e(date("d-m-Y")) }}
-            </p><br><br>
-            <p>
+                TGL : {{ e(date("d-m-Y")) }}<br>
                 JAM : {{ $datetime->format('H:i:s') }}
             </p>
         </div>
@@ -55,8 +53,8 @@
                 $i=1;
         @endphp
 
-        @if(sizeof($data1)!=0)
-            @foreach($data1 as $d)
+        @if(sizeof($data)!=0)
+            @foreach($data as $d)
                 <tr>
                     <td>{{ $i }}</td>
                     <td>{{ $d->spb_prdcd }}</td>
@@ -92,8 +90,6 @@
 
 <style>
     @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
         size: 750pt 500pt;
     }
 

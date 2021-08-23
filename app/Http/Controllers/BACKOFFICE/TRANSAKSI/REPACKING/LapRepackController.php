@@ -25,8 +25,8 @@ class LapRepackController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $dateA = $request->dateA;
         $dateB = $request->dateB;
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         $cursor = DB::select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,
              Case mstd_flagdisc1 When 'P' Then mstd_prdcd Else Null End prd_p,
@@ -62,8 +62,8 @@ Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $p_prog = 'LAP030';
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
     $datas = DB::select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,

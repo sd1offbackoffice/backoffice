@@ -94,9 +94,23 @@ class AccessController extends Controller
                 ->where('uac_userid','=',$request->userid)
                 ->delete();
 
+            DB::connection('igrsmg')
+                ->table('tbmaster_useraccess_migrasi')
+                ->where('uac_userid','=',$request->userid)
+                ->delete();
+
             if($request->menu){
                 foreach($request->menu as $m){
                     DB::table('tbmaster_useraccess_migrasi')
+                        ->insert([
+                            'uac_userid' => $request->userid,
+                            'uac_acc_id' => $m,
+                            'uac_create_by' => $_SESSION['usid'],
+                            'uac_create_dt' => DB::RAW("SYSDATE")
+                        ]);
+
+                    DB::connection('igrsmg')
+                        ->table('tbmaster_useraccess_migrasi')
                         ->insert([
                             'uac_userid' => $request->userid,
                             'uac_acc_id' => $m,
@@ -113,24 +127,25 @@ class AccessController extends Controller
     }
 
     public function clone(){
-        $menu = DB::table('tbmaster_access_migrasi')->get();
-        $access = DB::table('tbmaster_useraccess_migrasi')->get();
-
-        DB::connection('igrsmg')
-            ->table('tbmaster_access_migrasi')
-            ->delete();
-
-        DB::connection('igrsmg')
-            ->table('tbmaster_useraccess_migrasi')
-            ->delete();
-
-        DB::connection('igrsmg')
-            ->table('tbmaster_access_migrasi')
-            ->insert(json_decode(json_encode($menu), true));
-
-        DB::connection('igrsmg')
-            ->table('tbmaster_useraccess_migrasi')
-            ->insert(json_decode(json_encode($access), true));
+//        $menu = DB::table('tbmaster_access_migrasi')->get();
+//        $access = DB::table('tbmaster_useraccess_migrasi')->get();
+//
+//        DB::connection('igrsmg')
+//            ->table('tbmaster_access_migrasi')
+//            ->delete();
+//
+//        DB::connection('igrsmg')
+//            ->table('tbmaster_useraccess_migrasi')
+//            ->delete();
+//
+//        DB::connection('igrsmg')
+//            ->table('tbmaster_access_migrasi')
+//            ->insert(json_decode(json_encode($menu), true));
+//
+//        DB::connection('igrsmg')
+//            ->table('tbmaster_useraccess_migrasi')
+//            ->insert(json_decode(json_encode($access), true));
+        dd('sudah otomatis, tidak perlu clone manual lagi :)');
     }
 
     public static function getListMenu($usid){

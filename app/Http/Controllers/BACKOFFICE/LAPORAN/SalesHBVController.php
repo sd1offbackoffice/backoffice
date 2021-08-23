@@ -25,8 +25,8 @@ class SalesHBVController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $dateA = $request->dateA;
         $dateB = $request->dateB;
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         $cursor = DB::select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
          PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT, TRJD_QUANTITY, HBV_QTY_GRAM,
          (TRJD_QUANTITY * HBV_QTY_GRAM) QTY, TRJD_UNITPRICE, round((ST_AVGCOST / 1000),0) HRG_DASAR,
@@ -64,8 +64,8 @@ ORDER BY TRJD_PRDCD");
         $dateB = $request->date2;
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
     $datas = DB::select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
          PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT, TRJD_QUANTITY, HBV_QTY_GRAM,

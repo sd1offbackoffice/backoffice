@@ -55,8 +55,8 @@ class ServiceLevelItemParetoController extends Controller
         $dateB = $request->dateB;
         $kmp = $request->kmp;
         $rad_order = $request->rad_order;
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         $p_and = " AND NVL(PRD_FLAGBARANGORDERTOKO, 'N') = 'Y' ";
 
         if($kmp != 'zonk-zonk'){
@@ -232,8 +232,8 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $kmp = $request->kodemon;
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         $mon = DB::table('TBTR_MONITORINGPLU')
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
@@ -347,8 +347,8 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $p_and = " AND NVL(PRD_FLAGBARANGORDERTOKO, 'N') = 'Y' ";
         $kdmon = '';
         $nmon = '';
-        $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('m-d-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         if($kmp != 'zonk-zonk'){
             $mon = DB::table('TBTR_MONITORINGPLU')

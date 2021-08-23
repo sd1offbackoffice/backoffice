@@ -93,9 +93,19 @@ function nvl(value,param) {
 // Created By : JR (27/02/2020) | Modify By :
 function formatDateForInputType(value) {
     if(value == null || value == '')
-        return '';
+        return 0;
     else {
         return value.substr(0,10);
+    }
+}
+
+// Untuk substring waktu yang ada di tanggal
+// Created By : Denni (23/08/2021) | Modify By :
+function cekNull(value,p2) {
+    if(value == null || value == '')
+        return p2;
+    else {
+        return value;
     }
 }
 

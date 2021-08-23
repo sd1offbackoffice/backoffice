@@ -12,7 +12,7 @@
                             <div class="col-sm-12">
                                 <label class="col-sm-4 text-right font-weight-normal">Periode Tanggal</label>
                                 <input class="col-sm-3 text-center" type="text" id="daterangepicker">
-                                <label class="col-sm-2 text-left">MM / DD / YYYY</label>
+                                <label class="col-sm-2 text-left">DD / MM / YYYY</label>
                             </div>
                             <br>
                             <div class="d-flex justify-content-center">
@@ -26,8 +26,10 @@
     </div>
     <<script>
 
-        $("#daterangepicker").daterangepicker( {
-            format: 'MM/DD/YYYY',
+        $('#daterangepicker').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
         });
         function print() {
             let date = $('#daterangepicker').val();

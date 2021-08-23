@@ -2,69 +2,95 @@
 <html>
 
 <head>
-        <title>Laporan QTY Planogram Minus</title>
-    </head>
-    <body>
+    <title>Laporan Rekap Perolehan Reward MyPoin</title>
+</head>
+<body>
 
-    <?php
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-    <header>
-        <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-                {{ $perusahaan->prs_namacabang }}<br><br><br>
-                {{ $p_order }}
-            </p>
-        </div>
-        <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                TGL : {{ e(date("d-m-Y")) }}<br>
-                JAM : {{ $datetime->format('H:i:s') }}
-            </p>
-        </div>
-        <h2 style="text-align: center">  Laporan SPB Manual </h2>
-    </header>
+<?php
+$datetime = new DateTime();
+$timezone = new DateTimeZone('Asia/Jakarta');
+$datetime->setTimezone($timezone);
+?>
+<header>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
+            {{ $perusahaan->prs_namacabang }}<br><br><br>
+        </p>
+    </div>
+    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            TGL : {{ e(date("d-m-Y")) }}<br>
+            JAM : {{ $datetime->format('H:i:s') }}
+        </p>
+    </div>
+    <div style="text-align: center;margin-bottom: 0;padding-bottom: 0">
+    <h2 >Rekap Perolehan Reward MyPoin <br>Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}} </h2>
+    </div>
 
-    <main style="margin-top: 50px;">
-        <table class="table">
-            <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-            <tr>
-                <th>NO.</th>
-                <th>LOKASI</th>
-                <th>QTY</th>
-                <th>PLU</th>
-                <th>DESKRIPSI</th>
-            </tr>
-            </thead>
-            <tbody>
-            @php
-                $total = 0;
-                $i=1;
+</header>
+
+<main style="margin-top: 50px;">
+    <table class="table">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <tr>
+            <th>NO.</th>
+            <th>ID</th>
+            <th>MEMBER MERAH</th>
+            <th>POIN REWARD</th>
+            <th>POIN VALID</th>
+            <th>POIN INVALID</th>
+        </tr>
+        </thead>
+        <tbody>
+        @php
+            $total = 0;
+            $total_valid=0;
+            $total_invalid=0;
+            $temptgl = '';
+            $temp='';
         @endphp
 
         @if(sizeof($data)!=0)
-            @foreach($data as $d)
+            @for($i=0;$i<count($data);$i++)
+
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->lokasi }}</td>
-                    <td>{{ $d->lks_qty }}</td>
-                    <td>{{ $d->lks_prdcd }}</td>
-                    <td align="left">{{ $d->prd_deskripsipanjang}}</td>
+                    <td>{{ $i+1 }}</td>
+                    <td>{{ $data[$i]->kodemember }}</td>
+                    <td>{{ $data[$i]->namamember }}</td>
+                    <td>{{ $data[$i]->js }}</td>
+                    <td>{{ $data[$i]->tot_valid}}</td>
+                    <td>{{ $data[$i]->tot_notvalid }}</td>
                 </tr>
                 @php
-                    $i++;
+                    $total_valid+=$data[$i]->tot_valid;
+                    $total_invalid+=$data[$i]->tot_notvalid;
+                    $total+=$data[$i]->tot_jml;
                 @endphp
-            @endforeach
+            @endfor
         @else
             <tr>
                 <td colspan="10">TIDAK ADA DATA</td>
             </tr>
         @endif
+
+
         </tbody>
         <tfoot>
+        <tr>
+            <th>mypoin INTRN:</th>
+            <th>{{ isset($t_pi)?$t_pi:0 }}</th>
+            <th>mypoin EXTRN:</th>
+            <th>{{ isset($t_pe)?$t_pe:0 }}</th>
+            <th rowspan="2">Total:</th>
+            <th rowspan="2">{{ $total }}</th>
+        </tr>
+        <tr>
+            <th>mypoin Valid:</th>
+            <th>{{ isset($total_valid)?$total_valid:0 }}</th>
+            <th>mypoin Invalid:</th>
+            <th>{{ isset($total_invalid)?$total_invalid:0 }}</th>
+        </tr>
         </tfoot>
     </table>
 </main>
@@ -75,8 +101,6 @@
 
 <style>
     @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
         size: 750pt 500pt;
     }
 

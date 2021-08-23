@@ -2,65 +2,83 @@
 <html>
 
 <head>
-        <title>Laporan QTY Planogram Minus</title>
-    </head>
-    <body>
+    <title>Rincian Penggunaan Reward MyPoin</title>
+</head>
+<body>
 
-    <?php
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-    <header>
-        <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-                {{ $perusahaan->prs_namacabang }}<br><br><br>
-                {{ $p_order }}
-            </p>
-        </div>
-        <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                TGL : {{ e(date("d-m-Y")) }}<br>
-                JAM : {{ $datetime->format('H:i:s') }}
-            </p>
-        </div>
-        <h2 style="text-align: center">  Laporan SPB Manual </h2>
-    </header>
+<?php
+$datetime = new DateTime();
+$timezone = new DateTimeZone('Asia/Jakarta');
+$datetime->setTimezone($timezone);
+?>
+<header>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
+            {{ $perusahaan->prs_namacabang }}<br><br><br>
+        </p>
+    </div>
+    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            TGL : {{ e(date("d-m-Y")) }}<br>
+            JAM : {{ $datetime->format('H:i:s') }}
+        </p>
+    </div>
+    <div style="text-align: center;margin-bottom: 0;padding-bottom: 0">
+    <h2 >REKAPITULASI MUTASI POINT REWARD <br>Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0
+,10)}} </h2>
+    </div>
 
-    <main style="margin-top: 50px;">
-        <table class="table">
-            <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-            <tr>
-                <th>NO.</th>
-                <th>LOKASI</th>
-                <th>QTY</th>
-                <th>PLU</th>
-                <th>DESKRIPSI</th>
-            </tr>
-            </thead>
-            <tbody>
-            @php
-                $total = 0;
-                $i=1;
+</header>
+
+<main style="margin-top: 50px;">
+    <table class="table">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <tr>
+            <th colspan="5"></th>
+            <th colspan="2">---- Pemakaian ----</th>
+            <th colspan="2"></th>
+        </tr>
+        <tr>
+            <th>MEMBER MERAH</th>
+            <th>ID. MEMBER</th>
+            <th>Saldo Awal</th>
+            <th>Perolehan Hadiah Struk Trn</th>
+            <th>Transfer Dari Kode Member Lama</th>
+            <th>Pembayaran Dengan Point</th>
+            <th>Produk Redeem Point</th>
+            <th>Transfer Dari Kode Member Baru</th>
+            <th>Saldo Akhir</th>
+        </tr>
+        </thead>
+        <tbody>
+        @php
+            $sub_tkr = 0;
+            $sub_rdm= 0;
+            $sub_tot_tkr = 0;
+            $total_tkr = 0;
+            $total_rdm= 0;
+            $total_tot_tkr = 0;
+            $temptgl = '';
         @endphp
 
         @if(sizeof($data)!=0)
-            @foreach($data as $d)
+            @for($i=0;$i<count($data);$i++)
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->lokasi }}</td>
-                    <td>{{ $d->lks_qty }}</td>
-                    <td>{{ $d->lks_prdcd }}</td>
-                    <td align="left">{{ $d->prd_deskripsipanjang}}</td>
+                    <td>{{ $data[$i]->cus_namamember }}</td>
+                    <td>{{ $data[$i]->kdmbr }}</td>
+                    <td>{{ $data[$i]->saldo_awal_bulan }}</td>
+                    <td>{{ $data[$i]->perolehanpoint}}</td>
+                    <td>{{ $data[$i]->trf_kodelama }}</td>
+                    <td>{{ $data[$i]->penukaranpoint }}</td>
+                    <td>{{ $data[$i]->redeempoint }}</td>
+                    <td>{{ $data[$i]->trf_kodebaru }}</td>
+                    <td>{{ $data[$i]->saldo_akhir_bulan }}</td>
                 </tr>
-                @php
-                    $i++;
-                @endphp
-            @endforeach
+            @endfor
         @else
             <tr>
-                <td colspan="10">TIDAK ADA DATA</td>
+                <td colspan="6">TIDAK ADA DATA</td>
             </tr>
         @endif
         </tbody>
@@ -75,8 +93,6 @@
 
 <style>
     @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
         size: 750pt 500pt;
     }
 

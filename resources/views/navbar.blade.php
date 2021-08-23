@@ -256,10 +256,10 @@
                                                aria-expanded="false">Perubahan Status</a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <li>
-                                                    <a href="{{url("/bo/transaksi/perubahanstatus/entrySortirBarang/index")}}">Entry
+                                                    <a href="{{url("/bo/transaksi/perubahanstatus/entrySortirBarang/")}}">Entry
                                                         Sortir Barang</a></li>
                                                 <li>
-                                                    <a href="{{url("/bo/transaksi/perubahanstatus/rubahStatus/index")}}">Entry
+                                                    <a href="{{url("/bo/transaksi/perubahanstatus/rubahStatus/")}}">Entry
                                                         Perubahan Status</a></li>
                                             </ul>
                                         </li>
