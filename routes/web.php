@@ -837,6 +837,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-nodoc','OMI\ReturController@getLovNodoc');
             Route::get('/get-data','OMI\ReturController@getData');
         });
+        Route::prefix('/free-plu-omi-kepala-9')->group(function(){
+            Route::get('/','OMI\FreePLUOMIKepala9Controller@index');
+            Route::get('/get-lov-nodoc','OMI\FreePLUOMIKepala9Controller@getLovNodoc');
+            Route::get('/get-data','OMI\FreePLUOMIKepala9Controller@getData');
+        });
     });
 });
 
@@ -1334,6 +1339,9 @@ Route::middleware(['CheckLogin'])->group(function () {
     Route::prefix('/frontoffice')->group(function () {
         Route::prefix('/uniquecode')->group(function () {
             Route::get('/', 'FRONTOFFICE\uniquecodeController@index');
+            Route::get('/getcashback', 'FRONTOFFICE\uniquecodeController@getCashBack');
+            Route::get('/getgift', 'FRONTOFFICE\uniquecodeController@getGift');
+            Route::get('/getpembanding', 'FRONTOFFICE\uniquecodeController@getPembanding');
         });
     });
 });

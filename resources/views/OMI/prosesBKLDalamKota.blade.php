@@ -50,7 +50,7 @@
                                 <label for="checkAllFile" class="custom-control-label">Check All</label>
                             </div>
                             <div class="col-sm-7"></div>
-                            <button class="col btn btn-primary" onclick="proses_alfdoc()">PROSES BKL</button>
+                            <button class="col btn btn-primary" onclick="prosesBKL()">PROSES BKL</button>
                         </div>
                     </div>
                 </div>
@@ -96,6 +96,14 @@
             }
         }
 
+        function prosesBKL(){
+            let file    = fileUpload;
+
+            if (fileUpload.length < 1){
+                swal('Upload File Terlebih Dahulu !', '', 'warning');
+                return false;
+            }
+        }
 
     </script>
 
