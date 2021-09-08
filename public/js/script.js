@@ -177,7 +177,8 @@ function swalWithTime(title,text,icon,time){
         icon: icon,
         title: title,
         text:text,
-        showConfirmButton: false,
+        // showConfirmButton: false,
+        buttons: false,
         timer: time
     });
 }

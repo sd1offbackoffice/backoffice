@@ -8,7 +8,7 @@
             <div class="col-sm-5">
                 <fieldset class="card border-secondary">
                     <legend class="w-auto ml-3">Retur OMI</legend>
-                    <div class="card-body">
+                    <div class="card-body pt-0">
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Nomor Dokumen</label>
                             <div class="col-sm-5 buttonInside">
@@ -17,54 +17,55 @@
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
-                            <button class="col-sm-4 btn btn-success">New Dokumen</button>
+                            <button id="btn_new" class="col-sm-4 btn btn-primary" onclick="newDoc()">New Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Tgl Dokumen</label>
                             <div class="col-sm-5">
                                 <input type="text" class="form-control text-left" id="tgldoc" disabled>
                             </div>
-                            <button class="col-sm-4 btn btn-danger">Delete Dokumen</button>
+                            <button id="btn_save" class="col-sm-4 btn btn-success" onclick="saveData()">Save Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Kode Member</label>
                             <div class="col-sm-3 buttonInside">
-                                <input type="text" class="form-control text-left" id="kodemember" onchange="checkLanggananValid('langganan2')">
-                                <button id="" type="button" class="btn btn-primary btn-lov btn-lov-langganan p-0" onclick="showLovLangganan('langganan2')" disabled>
+                                <input type="text" class="form-control text-left" id="kodemember">
+                                <button id="btn_lov_member" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_member" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control text-left" id="kodetoko" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="kodetoko" disabled>
                             </div>
-                            <button class="col-sm-4 btn btn-primary">Print Dokumen</button>
+                            <button id="btn_delete" class="col-sm-4 btn btn-danger">Delete Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Nomor NRB</label>
                             <div class="col-sm-5 buttonInside">
-                                <input type="text" class="form-control text-left" id="nomornrb" onchange="checkLanggananValid('langganan2')">
-                                <button id="" type="button" class="btn btn-primary btn-lov btn-lov-langganan p-0" onclick="showLovLangganan('langganan2')" disabled>
-                                    <i class="fas fa-spinner fa-spin"></i>
-                                </button>
+                                <input type="text" class="form-control text-left" id="nomornrb">
+{{--                                <button id="" type="button" class="btn btn-primary btn-lov btn-lov-langganan p-0" onclick="showLovLangganan('langganan2')" disabled>--}}
+{{--                                    <i class="fas fa-spinner fa-spin"></i>--}}
+{{--                                </button>--}}
                             </div>
-                            <button class="col-sm-4 btn btn-secondary">CSV eFaktur</button>
+                            <button id="btn_print" class="col-sm-4 btn btn-success">Print Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Tgl NRB</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control text-left" id="tglnrb" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="tglnrb" autocomplete="off">
                             </div>
+                            <button id="btn_csv" class="col-sm-4 btn btn-primary">CSV eFaktur</button>
                         </div>
-                        <div class="row mb-1">
+                        <div class="row mb-1" id="div_namafile" style="display: none">
                             <label class="col-sm-3 text-right col-form-label pl-0">Nama File</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control text-left" id="namafile" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="namafile">
                             </div>
                         </div>
-                        <div class="row mb-1">
+                        <div class="row mb-1" id="div_alldoc" style="display: none">
                             <label class="col-sm-3 text-right col-form-label pl-0">All Dokumen Retur</label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control text-left" id="alldoc" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="alldoc">
                             </div>
                         </div>
                     </div>
@@ -73,7 +74,7 @@
             <div class="col-sm-5">
                 <fieldset class="card border-secondary">
                     <legend class="w-auto ml-3">Referensi Harga Struk OMI</legend>
-                    <div class="card-body">
+                    <div class="card-body pt-0">
                         <div class="row mb-1">
                             <label class="col-sm-4 text-center col-form-label pl-0">Tgl Transaksi</label>
                             <label class="col-sm-8 text-center col-form-label pl-0">Qty</label>
@@ -85,35 +86,35 @@
                         </div>
                         <div class="row mb-1">
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_tgl1" disabled>
                             </div>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_qty1" disabled>
                             </div>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
-                            </div>
-                        </div>
-                        <div class="row mb-1">
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
-                            </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
-                            </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_hrgsatuan1" disabled>
                             </div>
                         </div>
                         <div class="row mb-1">
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_tgl2" disabled>
                             </div>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_qty2" disabled>
                             </div>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control text-left" id="langganan2" onchange="checkLanggananValid('langganan2')">
+                                <input type="text" class="form-control text-left" id="hso_hrgsatuan2" disabled>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control text-left" id="hso_tgl3" disabled>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control text-left" id="hso_qty3" disabled>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control text-left" id="hso_hrgsatuan3" disabled>
                             </div>
                         </div>
                     </div>
@@ -126,10 +127,11 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-10">
                 <fieldset class="card border-secondary" id="data-field">
-                    <div class="card-body">
+                    <div class="card-body pt-0">
                         <table class="table table bordered table-sm mt-3" id="table_data">
                             <thead class="theadDataTables">
                             <tr class="text-center align-middle">
+                                <th></th>
                                 <th>PLU</th>
                                 <th>Harga Satuan<br>( Include PPN )</th>
                                 <th>Total</th>
@@ -141,20 +143,17 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @for($i=0;$i<60;$i++)
-                                <tr>
-                                    <td>AAA</td>
-                                    <td>BBB</td>
-                                    <td>CCC</td>
-                                    <td>DDD</td>
-                                    <td>EEE</td>
-                                    <td>FFF</td>
-                                    <td>GGG</td>
-                                    <td>HHH</td>
-                                </tr>
-                            @endfor
                             </tbody>
                         </table>
+                        <div class="row mt-2">
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="deskripsi" disabled>
+                            </div>
+                            <label class="col-sm-1 text-right col-form-label pl-0">Nama Driver</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control text-left" id="namadriver" disabled>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -189,7 +188,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="m_lov_outlet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="m_lov_member" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
@@ -198,39 +197,12 @@
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov_outlet">
+                                <table class="table table-sm mb-0" id="table_lov_member">
                                     <thead>
                                     <tr>
-                                        <th>Kode Outlet</th>
-                                        <th>Nama Outlet</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="table_lov_body">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="m_lov_suboutlet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-            <div class="modal-content">
-                <br>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col lov">
-                                <table class="table table-sm mb-0" id="table_lov_suboutlet">
-                                    <thead>
-                                    <tr>
-                                        <th>Kode Outlet</th>
-                                        <th>Kode Sub Outlet</th>
-                                        <th>Nama Sub Outlet</th>
+                                        <th>Kode OMI</th>
+                                        <th>Kode Member</th>
+                                        <th>Nama Member</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table_lov_body">
@@ -248,6 +220,7 @@
         body {
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
+            overflow-y: hidden;
         }
 
         input[type=number]::-webkit-inner-spin-button,
@@ -305,24 +278,44 @@
         .modal thead tr th{
             vertical-align: middle;
         }
+
+        .selected{
+            background-color: lightgrey !important;
+        }
     </style>
 
     <script>
         var arrData = [];
+        var arrCurrData = [];
+        var arrAdtData = [];
+        var paramTypeRetur;
+        var pkp;
+        var paramVB;
+        var paramStatusBaru;
+        var tableRow;
 
         $(document).ready(function(){
-            $('#tanggal').daterangepicker({
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
+            $('#tglnrb').datepicker({
+                "dateFormat" : "dd/mm/yy",
             });
 
-            $('#table_data').dataTable();
+            makeDataTable();
 
             getLovNodoc('');
-            // getLovOutlet();
-            // getLovSubOutlet();
+            getLovMember();
+
+            popUpEdit();
         });
+
+        function makeDataTable(){
+            $('#table_data').dataTable({
+                ordering: false,
+                searching: false,
+                lengthChange: false,
+                paging: false,
+                scrollY: "350px",
+            });
+        }
 
         function getLovNodoc(value){
             tableLovNodoc = $('#table_lov_nodoc').DataTable({
@@ -363,7 +356,7 @@
                 }
             });
 
-            $('#table_lov_nodoc_filter input').val(value);
+            $('#table_lov_nodoc_filter input').val(value).focus();
 
             $('#table_lov_nodoc_filter input').off().on('keypress', function (e){
                 if (e.which == 13) {
@@ -373,43 +366,13 @@
             });
         }
 
-        $('#m_lov_nodoc').on('shown.bs.modal',function(){
-            $('#table_lov_nodoc_filter input').select();
-        });
-
-        function showLovNodoc(){
-            $('#m_lov_nodoc').modal('show');
-        }
-
-        function getData(nodokumen){
-            if($.fn.DataTable.isDataTable('#table_data')){
-                $('#table_data').DataTable().clear().destroy();
-            }
-
-            arrData = [];
-
-            $('#table_data').DataTable({
-                "ajax": {
-                    url: '{{ url()->current() }}/get-data',
-                    data: {
-                        "nodokumen" : nodokumen
-                    }
-                },
+        function getLovMember(){
+            tableLovMember = $('#table_lov_member').DataTable({
+                "ajax": '{{ url()->current() }}/get-lov-member',
                 "columns": [
-                    {data: 'rom_prdcd'},
-                    {data: 'rom_hrg', render:function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'rom_ttl', render:function(data){
-                            return convertToRupiah2(data);
-                        }
-                    },
-                    {data: 'rom_qty'},
-                    {data: 'rom_qtyrealisasi'},
-                    {data: 'rom_qtyselisih'},
-                    {data: 'rom_qtymlj'},
-                    {data: 'rom_qtytlj'},
+                    {data: 'tko_kodeomi'},
+                    {data: 'cus_kodemember'},
+                    {data: 'cus_namamember'},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -419,19 +382,844 @@
                 "autoWidth": false,
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('row-data text-right').css({'cursor': 'pointer'});
-                    $(row).find('td:eq(0)').addClass('text-center');
-
-                    arrData.push(data);
+                    $(row).addClass('row-lov-member').css({'cursor': 'pointer'});
                 },
                 "order" : [],
-                "initComplete": function(data){
+                "initComplete": function(){
+                    // $('#table_lov_member_filter input').addClass('text-uppercase').val(value);
+                    //
+                    $('#btn_lov_member').prop('disabled', false).html('').append('<i class="fas fa-question"></i>');
+                    //
+                    $(document).on('click', '.row-lov-member', function (e) {
+                        $('#kodetoko').val($(this).find('td:eq(0)').html());
+                        $('#kodemember').val($(this).find('td:eq(1)').html());
+
+                        $('#m_lov_member').modal('hide');
+                    });
+                }
+            });
+        }
+
+        $('#m_lov_member').on('close.bs.modal', function(){
+            $('#nomornb').select();
+        });
+
+        $('#m_lov_nodoc').on('shown.bs.modal',function(){
+            $('#table_lov_nodoc_filter input').select();
+        });
+
+        function showLovNodoc(){
+            $('#m_lov_nodoc').modal('show');
+        }
+
+        function popUpEdit(){
+            @if($nomorEdit != '')
+                swal({
+                    title: '{{ $nomorEdit }}',
+                    icon: 'warning'
+                }).then(function(){
+                    popUpCek()
+                });
+            @else
+                popUpCek();
+            @endif
+        }
+
+        function popUpCek(){
+            @if($nomorCek != '')
+                swal({
+                    title: '{{ $nomorCek }}',
+                    icon: 'warning'
+                }).then(function(){
+                    popUpRetur()
+                });
+            @else
+                popUpRetur();
+            @endif
+        }
+
+        function popUpRetur(){
+            swal({
+                title: 'Input Retur?',
+                icon: 'warning',
+                buttons: {
+                    M: "Manual",
+                    T: "Otomatis dari file"
+                },
+                closeOnClickOutside: false
+            }).then(function(result){
+                paramTypeRetur = result;
+
+                initial();
+                $('#nodoc').select();
+            });
+        }
+
+        function initial(){
+            lok = true;
+
+            if(paramTypeRetur === 'M'){
+                $('#div_namafile').hide();
+                $('#div_alldoc').hide();
+                $('#alldoc').val('');
+            }
+            else{
+                $('#div_namafile').show();
+                $('#div_alldoc').show();
+            }
+
+            if(lok){
+                $('#btn_delete').prop('disabled',true);
+                $('#btn_print').prop('disabled',true);
+                $('#btn_csv').prop('disabled',true);
+                $('#namadriver').prop('disabled',true);
+            }
+        }
+
+        function newDoc(){
+            popUpRetur();
+
+            clearData();
+        }
+
+        $('#nodoc').on('keypress',function(event){
+            if(event.which == 13){
+                lok = true;
+
+                if(paramTypeRetur == 'M'){
+                    $('#alldoc').val('');
+                }
+                else{
+                    if(!$(this).val()){
+                        swal({
+                            title: 'Nomor dokumen yang diisi harus berasal dari nomor dokumen hasil transferan!',
+                            icon: 'error'
+                        }).then(() => {
+                            $(this).select();
+                            lok = false;
+                            clearData();
+                        });
+                        return false;
+                    }
+                }
+
+                if(lok){
+                    $('#btn_delete').prop('disabled',true);
+                    $('#btn_print').prop('disabled',true);
+                    $('#btn_csv').prop('disabled',true);
+                    $('#namadriver').prop('disabled',true);
+
+                    if(!$(this).val()){
+                        if(paramTypeRetur == 'M'){
+                            //field qty
+                        }
+                        else{
+                            //field qty
+                        }
+
+                        swal({
+                            title: 'Buat Nomor Retur OMI baru?',
+                            icon: 'warning',
+                            buttons: true,
+                            dangerMode: true
+                        }).then((result)=>{
+                            if(result){
+                                getNewNodoc();
+                            }
+                            else $('#nodoc').select();
+                        });
+                    }
+                    else{
+                        getData($(this).val());
+                    }
+                }
+            }
+        });
+
+        function getNewNodoc(){
+            $.ajax({
+                url: '{{ url()->current() }}/get-new-nodoc',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    clearData();
+
+                    $('#nodoc').val(response.nodoc);
+                    $('#tgldoc').val(formatDate('now'));
+
+                    $('#kodemember').select();
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: 'Terjadi kesalahan!',
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    });
+                }
+            });
+        }
+
+        $('#kodemember').on('keypress',function(event){
+            if(event.which === 13 && $(this).val()){
+                checkMember();
+            }
+        });
+
+        function checkMember(){
+            $.ajax({
+                url: '{{ url()->current() }}/check-member',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    kodemember: $('#kodemember').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    pkp = response.pkp;
+                    $('#kodetoko').val(response.kodetoko);
+
+                    $('#nomornrb').select();
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#kodemember').select();
+                    });
+                }
+            });
+        }
+
+        $('#nomornrb').on('keypress',function(event){
+            if(event.which === 13){
+                if(!$(this).val()){
+                    swal({
+                        title: 'Nomor NRP tidak boleh kosong!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+                else{
+                    if(!$('#tglnrb').val()){
+                        $('#tglnrb').val(formatDate('now')).select();
+                    }
+                    else checkNRB();
+                }
+            }
+        });
+
+        $('#tglnrb').on('keypress',function(event){
+            if(event.which == 13){
+                if(!$(this).val()){
+                    swal({
+                        title: 'Tanggal NRB tidak boleh kosong!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+                else{
+                    checkNRB();
+                }
+            }
+        });
+
+        function checkNRB(){
+            if(!$('#kodetoko').val()){
+                swal({
+                    title: 'Kode toko belum diisi!',
+                    icon: 'warning'
+                }).then(() => {
+                    $('#kodetoko').select();
+                });
+            }
+            else{
+                $.ajax({
+                    url: '{{ url()->current() }}/check-nrb',
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        kodetoko: $('#kodetoko').val(),
+                        nonrb: $('#nonrb').val(),
+                        tglnrb: $('#tglnrb').val()
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+
+                        addRow();
+                        paramStatusBaru = 'Y';
+                        $('#btn_save').prop('disabled',false);
+
+                        $('#table_data tbody tr').find('.prdcd').select();
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: error.responseJSON.message,
+                            icon: 'error',
+                        }).then(() => {
+                            $('#nomornrb').select();
+                        });
+                    }
+                });
+            }
+        }
+
+        function getData(nodokumen){
+            $.ajax({
+                url: '{{ url()->current() }}/get-data',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nodokumen: nodokumen
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    paramStatusBaru = 'N';
+                    arrAdtData = [];
+                    arrData = [];
+                    arrCurrData = [];
+
+                    if($.fn.DataTable.isDataTable('#table_data')){
+                        $('#table_data').DataTable().clear().destroy();
+                    }
+
+                    tableRow = response.length;
+
+                    for(i=0;i<response.length;i++){
+                        arrAdtData[i] = {
+                            'rom_avgcost' : response[i].rom_avgcost,
+                            'rom_flagbkp' : response[i].rom_flagbkp,
+                            'rom_flagbkp2' : response[i].rom_flagbkp2,
+                            'prd_deskripsipanjang' : response[i].prd_deskripsipanjang,
+                            'rom_prdcd' : response[i].rom_prdcd,
+                        };
+
+                        $('#table_data tbody').append(`
+                            <tr id="row-data-${i}" onmouseover="showDesc(${i})">
+                                <td class="align-middle"><button class="btn btn-danger btn-delete" onclick="deleteRow(${i})"><i class="fas fa-times"></i></button></td>
+                                <td class="align-middle"><input type="text" maxlength="8" onkeypress="getPRDCD(${i}, event)" class="form-control prdcd" value="${response[i].rom_prdcd}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right harga" value="${convertToRupiah2(response[i].rom_hrg)}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right total" value="${convertToRupiah2(response[i].rom_ttl)}"></td>
+                                <td class="align-middle"><input type="number" onchange="fnQTY(${i}, event, true)" onkeypress="fnQTY(${i}, event, false)" class="form-control text-right qty" value="${response[i].rom_qty}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right realisasi" value="${response[i].rom_qtyrealisasi}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right selisih" value="${response[i].rom_qtyselisih}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right jual" value="${response[i].rom_qtymlj}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right nonjual" value="${response[i].rom_qtytlj}"></td>
+                            </tr>
+                        `);
+                    }
+
+                    makeDataTable();
+
+                    $('#deskripsi').val('');
+                    arrData = response;
+
                     d = arrData[0];
 
                     $('#kodemember').val(d.rom_member);
                     $('#kodetoko').val(d.rom_kodetoko);
                     $('#nomornrb').val(d.rom_noreferensi);
                     $('#tglnrb').val(d.rom_tglreferensi);
+                    $('#namadriver').val(d.rom_namadrive);
+
+                    if(d.rom_refrensistruk == 'VB')
+                        paramVB = 'Y';
+                    else paramVB = 'N';
+
+                    paramStatusBaru = 'N';
+
+                    $('#btn_delete').prop('disabled',false);
+                    $('#btn_new').prop('disabled',false);
+                    $('#btn_print').prop('disabled',true);
+
+                    if(d.rom_statusdata == '1'){
+                        paramTypeRetur = 'M';
+                        $('.qty').prop('disabled',false);
+                        $('.realisasi').prop('disabled',true);
+                        $('.selisih').prop('disabled',true);
+                        $('.jual').prop('disabled',true);
+                        $('.nonjual').prop('disabled',true);
+                    }
+                    else{
+                        paramTypeRetur = 'T';
+                        $('.btn-delete').prop('disabled',true);
+                        $('.prdcd').prop('disabled',true);
+                        $('.qty').prop('disabled',true);
+                        $('.realisasi').prop('disabled',false);
+                        $('.selisih').prop('disabled',true);
+                        $('.jual').prop('disabled',true);
+                        $('.nonjual').prop('disabled',false);
+                    }
+
+                    if(d.rom_recordid == '2'){
+                        $('.btn-delete').prop('disabled',true);
+                        $('.qty').prop('disabled',true);
+                        $('.realisasi').prop('disabled',true);
+                        $('.selisih').prop('disabled',true);
+                        $('.jual').prop('disabled',true);
+                        $('.nonjual').prop('disabled',true);
+
+                        $('.prdcd').prop('disabled',true);
+                        $('#btn_csv').prop('disabled',true);
+                    }
+
+                    showDesc(0);
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#modal-loader').modal('hide');
+
+                        $('#nodoc').select();
+                    });
+                }
+            });
+        }
+
+        function showDesc(index){
+            if(typeof arrAdtData[index] != 'undefined'){
+                $('#deskripsi').val(arrAdtData[index].prd_deskripsipanjang);
+
+                $('#hso_tgl1').val(arrAdtData[index].hso_tgldokumen1);
+                $('#hso_tgl2').val(arrAdtData[index].hso_tgldokumen2);
+                $('#hso_tgl3').val(arrAdtData[index].hso_tgldokumen3);
+
+                $('#hso_qty1').val(arrAdtData[index].hso_qty1);
+                $('#hso_qty2').val(arrAdtData[index].hso_qty2);
+                $('#hso_qty3').val(arrAdtData[index].hso_qty3);
+
+                $('#hso_hrgsatuan1').val(arrAdtData[index].hso_hrgsatuan1);
+                $('#hso_hrgsatuan2').val(arrAdtData[index].hso_hrgsatuan2);
+                $('#hso_hrgsatuan3').val(arrAdtData[index].hso_hrgsatuan3);
+            }
+            else{
+                $('#deskripsi').val('');
+                $('#hso_tgl1').val('');
+                $('#hso_tgl2').val('');
+                $('#hso_tgl3').val('');
+                $('#hso_qty1').val('');
+                $('#hso_qty2').val('');
+                $('#hso_qty3').val('');
+                $('#hso_hrgsatuan1').val('');
+                $('#hso_hrgsatuan2').val('');
+                $('#hso_hrgsatuan3').val('');
+            }
+
+            $('.selected').removeClass('selected');
+            $('#row-data-'+index).addClass('selected');
+        }
+
+        $('#btn_delete').on('click',function(){
+            if(arrData[0].rom_statusdata == '2'){
+                swal({
+                    title: 'Data Retur OMI via DCP tidak dapat dibatalkan!',
+                    icon: 'error'
+                })
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin menghapus data dengan nomor dokumen '+$('#nodoc').val()+' ?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((result) => {
+                    if(result){
+                        $.ajax({
+                            url: '{{ url()->current() }}/delete-data',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            data: {
+                                nodoc: $('#nodoc').val(),
+                                tgldoc: $('#tgldoc').val(),
+                                kodemember: $('#kodemember').val()
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(function(){
+                                    clearData();
+
+                                    tableLovNodoc.destroy();
+                                    getLovNodoc('');
+
+                                    $('#btn_delete').prop('disabled',true);
+                                    $('#btn_print').prop('disabled',true);
+                                    $('#btn_csv').prop('disabled',true);
+                                    $('#namadriver').prop('disabled',true);
+
+                                    $('#nodoc').select();
+                                })
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
+                                swal({
+                                    title: 'Terjadi kesalahan!',
+                                    text: error.responseJSON.message,
+                                    icon: 'error',
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        function clearData(){
+            $('#btn_new').prop('disabled',false);
+            $('#btn_save').prop('disabled',true);
+            $('#btn_delete').prop('disabled',true);
+            $('#btn_print').prop('disabled',true);
+            $('#btn_csv').prop('disabled',true);
+
+            if($.fn.DataTable.isDataTable('#table_data')){
+                $('#table_data').DataTable().clear().destroy();
+            }
+
+            makeDataTable();
+
+            arrData = [];
+            tableRow = 0;
+
+            $('input').val('');
+        }
+
+        function deleteRow(index){
+            if($.fn.DataTable.isDataTable('#table_data')){
+                $('#table_data').DataTable().destroy();
+            }
+
+            $('#deskripsi').val('');
+
+            $('#row-data-'+index).remove();
+
+            arrData[index] = null;
+
+            makeDataTable();
+        }
+
+        function addRow(){
+            if(
+                typeof $('#table_data tbody tr:last').find('.prdcd').val() == 'undefined' ||
+                (typeof $('#table_data tbody tr:last').find('.prdcd').val() != 'undefined' &&
+                $('#table_data tbody tr:last').find('.prdcd').val() != '')
+            ){
+                if($.fn.DataTable.isDataTable('#table_data')){
+                    $('#table_data').DataTable().destroy();
+                }
+
+                row = tableRow++;
+
+                $('#table_data tbody').append(`
+                <tr id="row-data-${row}" onmouseover="showDesc(${row})">
+                    <td class="align-middle"><button class="btn btn-danger btn-delete" onclick="deleteRow(${row})"><i class="fas fa-times"></i></button></td>
+                    <td class="align-middle"><input type="text" maxlength="8" onkeypress="getPRDCD(${row}, event)" class="form-control prdcd"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right harga"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right total"></td>
+                    <td class="align-middle"><input type="number" onchange="fnQTY(${row}, event, true)" onkeypress="fnQTY(${row}, event, false)" class="form-control text-right qty"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right realisasi"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right selisih"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right jual"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right nonjual"></td>
+                </tr>
+            `);
+
+                makeDataTable();
+            }
+
+            $('#table_data tbody tr:last').find('.prdcd').select();
+        }
+
+        function getPRDCD(row, event){
+            if(event.which == 13){
+                $.ajax({
+                    url: '{{ url()->current() }}/get-prdcd',
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: {
+                        prdcd: $('#row-data-'+row).find('.prdcd').val(),
+                        nodoc: $('#nodoc').val(),
+                        tgldoc: $('#tgldoc').val()
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+
+                        currRow = $('#row-data-'+row);
+
+                        currRow.find('.prdcd').val(response.prd_prdcd)
+
+                        arrAdtData[row] = {
+                            'rom_avgcost' : response.st_avgcost,
+                            'rom_flagbkp' : response.prd_flagbkp1,
+                            'rom_flagbkp2' : response.prd_flagbkp2,
+                            'prd_deskripsipanjang' : response.prd_deskripsipanjang,
+                            'rom_prdcd' : response.prd_prdcd,
+                        };
+
+                        if(paramTypeRetur == 'T')
+                            currRow.find('.realisasi').select();
+                        else currRow.find('.qty').select();
+
+                        // arrData[row] = {
+                        //     'prd_deskripsipanjang' : response.prd_deskripsipanjang,
+                        //     'rom_prdcd' : response.prd_prdcd,
+                        // };
+
+                        showDesc(row);
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: 'Terjadi kesalahan!',
+                            text: error.responseJSON.message,
+                            icon: 'error',
+                        }).then(() => {
+                            $('#table_data tbody tr:eq('+row+')').find('.prdcd').select();
+                        });
+                    }
+                });
+            }
+        }
+
+        function fnQTY(row, event, status){
+            curr = $('#row-data-'+row);
+            if(event.which == 13 || status){
+                if(nvl(curr.find('.qty').val(),0) == 0){
+                    swal({
+                        title: 'Qty Retur OMI tidak boleh 0!',
+                        icon: 'warning'
+                    }).then(() => {
+                        curr.find('.qty').select();
+                    });
+                }
+                else{
+                    if(paramTypeRetur == 'T'){
+                        curr.find('.total').val(curr.find('.qty').val() * curr.find('.harga').val());
+                        curr.find('.selisih').val(nvl(curr.find('.qty'), 0) - nvl(curr.find('.realisasi'), 0));
+                        curr.find('.jual').val(curr.find('.realisasi').val());
+                        curr.find('.nonjual').val(nvl(curr.find('.realisasi'), 0) - nvl(curr.find('.jual'), 0));
+
+                        //txt_ada
+
+                        curr.find('.realisasi').select();
+                    }
+                    else{
+                        curr.find('.total').val(curr.find('.harga').val());
+                        curr.find('.realisasi').val(curr.find('.qty').val());
+                        curr.find('.selisih').val(0);
+                        curr.find('.jual').val(0);
+                        curr.find('.nonjual').val(0);
+
+                        //txt_ada
+
+                        addRow();
+                    }
+
+                    // arrData[row].rom_hrg = curr.find('.harga').val();
+                    // arrData[row].rom_ttl = curr.find('.total').val();
+                    // arrData[row].rom_qty = curr.find('.qty').val();
+                    // arrData[row].rom_qtyrealisasi = curr.find('.realisasi').val();
+                    // arrData[row].rom_qtyselisih = curr.find('.selisih').val();
+                    // arrData[row].rom_qtymlj = curr.find('.jual').val();
+                    // arrData[row].rom_qtytlj = curr.find('.nonjual').val();
+                }
+            }
+        }
+
+        function isDataChanged(){
+            arrCurrData = [];
+
+            $('#table_data tbody tr').each(function(){
+                if($(this).find('.prdcd').val() != ''){
+                    d = {
+                        'rom_prdcd' : $(this).find('.prdcd').val(),
+                        'rom_hrg' : unconvertToRupiah($(this).find('.harga').val()),
+                        'rom_ttl' : unconvertToRupiah($(this).find('.total').val()),
+                        'rom_qty' : unconvertToRupiah($(this).find('.qty').val()),
+                        'rom_qtyrealisasi' : unconvertToRupiah($(this).find('.realisasi').val()),
+                        'rom_qtyselisih' : unconvertToRupiah($(this).find('.selisih').val()),
+                        'rom_qtymlj' : unconvertToRupiah($(this).find('.jual').val()),
+                        'rom_qtytlj' : unconvertToRupiah($(this).find('.nonjual').val()),
+                        'rom_avgcost' : arrAdtData[$(this).index()].rom_avgcost,
+                        'rom_flagbkp' : arrAdtData[$(this).index()].rom_flagbkp,
+                        'rom_flagbkp2' : arrAdtData[$(this).index()].rom_flagbkp2,
+                    };
+
+                    arrCurrData.push(d);
+                }
+            });
+
+            isChanged = false;
+
+            if(arrCurrData.length == arrData.length){
+                for(i=0;i<arrCurrData.length;i++){
+                    for(j=0;j<arrCurrData.length;j++){
+                        if(arrCurrData[i].rom_prdcd == arrData[j].rom_prdcd){
+                            if(
+                                arrCurrData[i].rom_prdcd != arrData[j].rom_prdcd ||
+                                arrCurrData[i].rom_hrg != arrData[j].rom_hrg ||
+                                arrCurrData[i].rom_ttl != arrData[j].rom_ttl ||
+                                arrCurrData[i].rom_qty != arrData[j].rom_qty ||
+                                arrCurrData[i].rom_qtyrealisasi != arrData[j].rom_qtyrealisasi ||
+                                arrCurrData[i].rom_qtyselisih != arrData[j].rom_qtyselisih ||
+                                arrCurrData[i].rom_qtymlj != arrData[j].rom_qtymlj ||
+                                arrCurrData[i].rom_qtytlj != arrData[j].rom_qtytlj
+                            ){
+                                isChanged = true;
+                                break;
+                                break;
+                            }
+                        }
+                        else isChanged = true;
+                    }
+                }
+            }
+            else isChanged = true;
+
+            if(
+                $('#kodemember').val() != nvl(arrData[0].rom_member, '') ||
+                $('#kodetoko').val() != nvl(arrData[0].rom_kodetoko, '') ||
+                $('#nomornrb').val() != nvl(arrData[0].rom_noreferensi, '') ||
+                $('#tglnrb').val() != nvl(arrData[0].rom_tglreferensi, '') ||
+                $('#namadriver').val() != nvl(arrData[0].rom_namadrive, '')
+            ){
+                isChanged = true;
+            }
+            else isChanged = false;
+
+            return isChanged;
+        }
+
+        function saveData(){
+            // if(!isDataChanged()){
+            //     swal({
+            //         title: 'Tidak ada perubahan!',
+            //         icon: 'warning'
+            //     }).then(() => {
+            //         $('#btn_print').prop('disabled',false);
+            //     });
+            // }
+            // else{
+            //
+            // }
+
+            arrCurrData = [];
+
+            $('#table_data tbody tr').each(function(){
+                if($(this).find('.prdcd').val() != ''){
+                    d = {
+                        'rom_prdcd' : $(this).find('.prdcd').val(),
+                        'rom_hrg' : unconvertToRupiah($(this).find('.harga').val()),
+                        'rom_ttl' : unconvertToRupiah($(this).find('.total').val()),
+                        'rom_qty' : unconvertToRupiah($(this).find('.qty').val()),
+                        'rom_qtyrealisasi' : unconvertToRupiah($(this).find('.realisasi').val()),
+                        'rom_qtyselisih' : unconvertToRupiah($(this).find('.selisih').val()),
+                        'rom_qtymlj' : unconvertToRupiah($(this).find('.jual').val()),
+                        'rom_qtytlj' : unconvertToRupiah($(this).find('.nonjual').val()),
+                        'rom_avgcost' : arrAdtData[$(this).index()].rom_avgcost,
+                        'rom_flagbkp' : arrAdtData[$(this).index()].rom_flagbkp,
+                        'rom_flagbkp2' : arrAdtData[$(this).index()].rom_flagbkp2,
+                    };
+
+                    arrCurrData.push(d);
+                }
+            });
+
+            swal({
+                title: 'Yakin ingin menyimpan data?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((result) => {
+                if(result){
+                    $.ajax({
+                        url: '{{ url()->current() }}/save-data',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            oldData: arrData,
+                            newData: arrCurrData,
+                            typeRetur: paramTypeRetur,
+                            statusBaru: paramStatusBaru,
+                            kodemember: $('#kodemember').val(),
+                            kodetoko: $('#kodetoko').val(),
+                            nodokumen: $('#nodoc').val(),
+                            tgldokumen: $('#tgldoc').val(),
+                            noreferensi: $('#nomornrb').val(),
+                            tglreferensi: $('#tglnrb').val(),
+                            namadrive: $('#namadriver').val()
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            $('#btn_print').prop('disabled',false);
+
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                getData($('#nodoc').val());
+                            });
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: 'Terjadi kesalahan!',
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            });
+                        }
+                    });
                 }
             });
         }

@@ -3,8 +3,59 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="" />
+    <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/CetakLaporanPromosiController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/TransaksiPerNilaiStrukController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/OMI/EnrtyGroupRakController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/OMI/rubahstatusomiController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/CETAKLAPORANPROMOSI/cetak-laporan-promosi-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/CETAKLAPORANPROMOSI/cetak-laporan-promosi.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/TRANSAKSIPERNILAISTRUK/transaksipernilaistruk-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/TRANSAKSIPERNILAISTRUK/transaksipernilaistruk.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/laporanParetoSalesMember.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/uniquecode-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/OMI/entrygrouprak.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/OMI/rubahstatusomi.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/OMI/rubahstatusomi_fp-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/backovis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backovis.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/loginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/loginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/uniquecodeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/uniquecodeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/OMI/FreePLUOMIKepala9Controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/OMI/FreePLUOMIKepala9Controller.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/OMI/ProsesBKLDalamKotaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/OMI/ProsesBKLDalamKotaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/OMI/ReturController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/OMI/ReturController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/formHJK.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/formHJK.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/uniquecode.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/uniquecode.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/OMI/freepluomikepala9.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/OMI/freepluomikepala9.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/OMI/prosesBKLDalamKota.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/OMI/prosesBKLDalamKota.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/OMI/retur.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/OMI/retur.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/login.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,53 +77,6 @@
     <expand />
     <select />
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>tgl1</find>
-      <find>sup1</find>
-      <find>laporan</find>
-      <find>tag</find>
-      <find>tgldoc</find>
-      <find>temp</find>
-      <find>vplula</find>
-      <find>gudang</find>
-      <find>tbtr_mstran_h</find>
-      <find>savedata</find>
-      <find>saveData</find>
-      <find>tamba</find>
-      <find>append</find>
-      <find>button</find>
-      <find>ctrl</find>
-      <find>addNewRow</find>
-      <find>saveMe</find>
-      <find>clearForm</find>
-      <find>#jenisKertas</find>
-      <find>print</find>
-      <find>dropDown</find>
-      <find>musnah</find>
-      <find>msth</find>
-      <find>nodoc</find>
-      <find>status</find>
-      <find>pot</find>
-      <find>MSTD_KODEMONITORING</find>
-      <find>disc4</find>
-      <find>sum_gross_bkp</find>
-      <find>sum_potongan_bkp</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>$d-&gt;</replace>
-      <replace>text-sm-left</replace>
-      <replace>val(response.</replace>
-      <replace>pembatalan</replace>
-      <replace>$res-&gt;</replace>
-      <replace>$</replace>
-      <replace>$data-&gt;</replace>
-      <replace>responseJSON.message</replace>
-      <replace>.</replace>
-      <replace>tempDataBTB</replace>
-      <replace>DaftarPembelian</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -83,69 +87,6 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PROSES/hitungulangstock.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PROSES/MonthEndController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PROSES/hapustahun-cetak.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PROSES/HitungUlangStockController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PROSES/settingPagiHari.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/EntryInqueryKertasKerjaPKMController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PKM/entry-inquery.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/laporanservicelevel-cetak-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/LaporanServiceLevel.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PROSES/settingPagiHariController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/LaporanServiceLevelController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PKM/monitoring.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/MonitoringController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/PKM/monitoring-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatusController.php" />
-        <option value="$PROJECT_DIR$/resources/views/template.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/TemplateController.php" />
-        <option value="$PROJECT_DIR$/resources/views/index.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/IGRIDM/CetakRegisterController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/cetak-register.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/InqueryController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalan.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/inquery.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian-ringkasan-divdepkat-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/MASTER/lokasi.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regnpp-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regterima-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regsj-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regpack-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regnbh-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regkeluar-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regdbr-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regbamusnah-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Middleware/CheckLogin.php" />
-        <option value="$PROJECT_DIR$/resources/views/login.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalanController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/repack.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/repack-laporan.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/REPACKING/repackController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regbtlmusnah-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regbtlbapb-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKREGISTER/CetakRegisterController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian-rincian-per-divdepkat-pdf.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php" />
-        <option value="$PROJECT_DIR$/resources/views/navbar.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" />
-        <option value="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPB.blade.php" />
-        <option value="$PROJECT_DIR$/routes/web.php" />
-      </list>
-    </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/package.json" />
@@ -242,118 +183,19 @@
       <path value="$PROJECT_DIR$/vendor/phenx/php-font-lib" />
       <path value="$PROJECT_DIR$/vendor/phenx/php-svg-lib" />
       <path value="$PROJECT_DIR$/vendor/yajra/laravel-datatables-oracle" />
+      <path value="$PROJECT_DIR$/vendor/php-parallel-lint/php-console-highlighter" />
+      <path value="$PROJECT_DIR$/vendor/php-parallel-lint/php-console-color" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/league/mime-type-detection" />
+      <path value="$PROJECT_DIR$/vendor/hisamu/php-xbase" />
     </include_path>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-11" />
-    <option name="y" value="-11" />
-    <option name="width" value="1924" />
-    <option name="height" value="1042" />
   </component>
   <component name="ProjectId" id="1pJzoT1m6vfPWJxuwh8VVNFpVYd" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
-  </component>
-  <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-      <flattenPackages />
-      <showMembers />
-      <showModules />
-      <showLibraryContents />
-      <hideEmptyPackages />
-      <abbreviatePackageNames />
-      <autoscrollToSource />
-      <autoscrollFromSource />
-      <sortByType />
-      <manualOrder />
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="app" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="app" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Http" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="app" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Http" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Controllers" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="app" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Http" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Controllers" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="BACKOFFICE" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="app" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Http" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Controllers" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="BACKOFFICE" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="CETAKREGISTER" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="views" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="views" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="BACKOFFICE" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="views" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="BACKOFFICE" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="CETAKREGISTER" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="routes" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="BackOffice" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BackOffice" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="storage" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
-    </panes>
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -373,23 +215,23 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
-    <property name="ts.external.directory.path" value="D:\Program Files\JetBrains\PhpStorm 2020.3.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="ts.external.directory.path" value="E:\Program Files\PhpStorm 2020.2.4\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Websites\BackOffice\resources\views\OMI" />
-      <recent name="D:\Websites\BackOffice\app\Http\Controllers\OMI" />
-      <recent name="D:\Websites\BackOffice\resources\views\FRONTOFFICE\POINTREWARDMEMBERMERAH" />
-      <recent name="D:\Websites\BackOffice\app\Http\Controllers\FRONTOFFICE\POINTREWARDMEMBERMERAH" />
-      <recent name="D:\Websites\BackOffice\resources\views\FRONTOFFICE\POINTREWARDMEMBERMERAH\PEROLEHANPOINTREWARDPERTANGGAL" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\FRONTOFFICE" />
       <recent name="D:\Websites\BackOffice\resources\views\FRONTOFFICE\LAPORANKASIR" />
       <recent name="D:\Websites\BackOffice\app\Http\Controllers\FRONTOFFICE\LAPORANKASIR\KARTUKREDIT" />
       <recent name="D:\Websites\BackOffice\resources\views\FRONTOFFICE\LAPORANKASIR\KARTUKREDIT" />
       <recent name="D:\Websites\BackOffice\resources\views\errors" />
-      <recent name="D:\Websites\BackOffice\public" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\FRONTOFFICE" />
+      <recent name="E:\Websites\BackOffice\resources\views\FRONTOFFICE" />
+      <recent name="E:\Websites\BackOffice\resources\views\FRONTOFFICE\LAPORANKASIR\TRANSAKSIPERNILAISTRUK" />
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\FRONTOFFICE\LAPORANKASIR" />
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\OMI" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -477,609 +319,62 @@
       <workItem from="1629085631210" duration="23915000" />
       <workItem from="1629455068164" duration="20382000" />
       <workItem from="1629963868173" duration="4941000" />
+      <workItem from="1630031959447" duration="11376000" />
+      <workItem from="1630461166088" duration="3642000" />
     </task>
     <servers />
-  </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="598599000" />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1552" height="744" extended-state="6" />
-    <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24798928" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="19" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="16" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22320442" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32707182" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288364" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-    </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2293578" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13272922" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="706" y="322" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1630061257189">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="706" y="322" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1630061257189" />
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1630894989732">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1630894989732" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1630035153358">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1630035153358" />
+    <state x="288" y="226" key="RollbackChangesDialog" timestamp="1630058109750">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="288" y="226" key="RollbackChangesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1630058109750" />
+    <state x="172" y="4" width="1220" height="801" key="find.popup" timestamp="1630926145772">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="399" y="9" width="660" height="662" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1630314540602" />
+    <state x="172" y="4" width="1220" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1630926145772" />
+    <state x="599" y="14" width="723" height="1011" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1630893836572" />
+    <state x="493" y="190" key="run.anything.popup" timestamp="1630925697295">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="493" y="190" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1630925697295" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1630901157401" />
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1630984012871">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="114" y="182" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1630308930728" />
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1630984012871" />
+  </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/views/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="13" column="83" lean-forward="false" selection-start-line="13" selection-start-column="83" selection-end-line="13" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/IGRIDM/cetak-register.blade.php" />
-    <entry file="file://$PROJECT_DIR$/public/js/jquery-ui.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="10294" column="86" lean-forward="false" selection-start-line="10294" selection-start-column="79" selection-end-line="10294" selection-end-column="86" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/PKM/monitoring.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
-          <caret line="726" column="131" lean-forward="false" selection-start-line="726" selection-start-column="19" selection-end-line="726" selection-end-column="131" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/PKM/monitoring-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1360">
-          <caret line="121" column="5" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/stylee.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/InqueryController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftarpembelian-ringkasan-divdepkat-pdf.blade.php" />
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/PenyesuaianController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="114" column="111" lean-forward="true" selection-start-line="114" selection-start-column="32" selection-end-line="114" selection-end-column="111" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/MASTER/lokasi.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="881" column="85" lean-forward="false" selection-start-line="881" selection-start-column="85" selection-end-line="881" selection-end-column="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/MonitoringController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="341" column="0" lean-forward="true" selection-start-line="341" selection-start-column="0" selection-end-line="341" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regterima-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="402">
-          <caret line="113" column="68" lean-forward="false" selection-start-line="113" selection-start-column="68" selection-end-line="113" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regsj-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="103" column="12" lean-forward="true" selection-start-line="103" selection-start-column="12" selection-end-line="103" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regnpp-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1836">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regdbr-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="89" column="67" lean-forward="false" selection-start-line="89" selection-start-column="67" selection-end-line="89" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regkeluar-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2006">
-          <caret line="120" column="85" lean-forward="true" selection-start-line="120" selection-start-column="85" selection-end-line="120" selection-end-column="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regpack-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="118" column="77" lean-forward="false" selection-start-line="118" selection-start-column="77" selection-end-line="118" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/web.php___jb_old___" />
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/restoreController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="37" column="47" lean-forward="false" selection-start-line="37" selection-start-column="47" selection-end-line="37" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2795">
-          <caret line="1029" column="50" lean-forward="false" selection-start-line="1029" selection-start-column="50" selection-end-line="1029" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Auth/loginController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Middleware/CheckLogin.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/login.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="577">
-          <caret line="223" column="0" lean-forward="false" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/entrySortirBarang-laporan.blade.php" />
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/RubahStatus-laporan.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="59" column="42" lean-forward="false" selection-start-line="59" selection-start-column="36" selection-end-line="59" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatus.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="878" column="137" lean-forward="true" selection-start-line="878" selection-start-column="28" selection-end-line="878" selection-end-column="137" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/entrySortirBarang.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="880" column="8" lean-forward="false" selection-start-line="880" selection-start-column="8" selection-end-line="887" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/RubahStatusRak-laporan.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="67" column="34" lean-forward="false" selection-start-line="51" selection-start-column="4" selection-end-line="67" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/repack-laporan.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1156">
-          <caret line="68" column="10" lean-forward="false" selection-start-line="60" selection-start-column="4" selection-end-line="68" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatusController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15997">
-          <caret line="945" column="111" lean-forward="false" selection-start-line="945" selection-start-column="93" selection-end-line="945" selection-end-column="111" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/repack.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19057">
-          <caret line="1120" column="0" lean-forward="false" selection-start-line="1120" selection-start-column="0" selection-end-line="1120" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/REPACKING/repackController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="469" column="18" lean-forward="false" selection-start-line="469" selection-start-column="18" selection-end-line="469" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regnbh-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="41" column="36" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regbtlbamusnah-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1632">
-          <caret line="94" column="36" lean-forward="false" selection-start-line="94" selection-start-column="36" selection-end-line="94" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/cetak-register.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="37" column="32" lean-forward="true" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/inquery.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3604">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2975">
-          <caret line="886" column="26" lean-forward="false" selection-start-line="886" selection-start-column="12" selection-end-line="886" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/template.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="290" column="15" lean-forward="true" selection-start-line="273" selection-start-column="12" selection-end-line="290" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian-ringkasan-divdepkat-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3893">
-          <caret line="229" column="89" lean-forward="false" selection-start-line="223" selection-start-column="12" selection-end-line="229" selection-end-column="89" />
-          <folding>
-            <marker date="1614587043648" expanded="true" signature="352:385" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="410:439" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="490:497" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="504:511" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="658:673" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="710:738" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="780:799" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="1003:1923" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="2608:2633" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="2651:2689" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="2822:2848" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="2855:2880" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="2971:3014" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3151:3182" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3217:3247" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3353:3386" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3429:3458" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3502:3537" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3581:3614" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3658:3693" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3737:3770" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3814:3846" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3890:3923" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="3967:4002" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="4061:5671" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="5708:5846" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6005:6038" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6045:6075" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6123:6156" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6204:6234" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6282:6313" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6361:6391" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6439:6469" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6517:6547" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6595:6624" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6695:6934" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="6994:7118" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7279:7307" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7314:7341" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7389:7422" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7470:7500" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7548:7579" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7627:7657" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7705:7735" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7783:7813" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7861:7890" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="7961:8238" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8449:8483" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8523:8560" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8600:8634" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8674:8706" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8746:8777" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8817:8849" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="8889:8923" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9064:9099" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9139:9177" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9217:9252" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9292:9325" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9365:9397" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9437:9470" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9510:9545" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9692:9742" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9782:9838" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9878:9928" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="9968:10014" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="10054:10098" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="10138:10184" ph="..." />
-            <marker date="1614587043648" expanded="true" signature="10224:10274" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/daftar-pembelian-rincian-per-divdepkat-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1411">
-          <caret line="83" column="24" lean-forward="false" selection-start-line="83" selection-start-column="24" selection-end-line="83" selection-end-column="24" />
-          <folding>
-            <marker date="1614845140757" expanded="true" signature="350:383" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="408:437" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="488:495" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="502:509" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="656:671" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="708:736" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="778:797" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="1001:1225" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="1001:2061" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="3642:3667" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="3685:3723" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="3857:3883" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="3890:3915" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4006:4049" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4187:4218" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4253:4264" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4253:4283" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4353:4396" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4532:4563" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4598:4625" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4731:4750" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4793:4813" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4856:4872" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4915:4948" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="4991:5011" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5054:5081" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5124:5140" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5183:5199" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5242:5260" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5304:5339" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5383:5412" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5383:5421" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5465:5498" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5542:5574" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5618:5651" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5695:5730" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5773:5801" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5845:5880" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="5924:5959" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="6018:7722" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="6018:7782" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="7819:7958" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8133:8166" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8173:8202" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8250:8282" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8330:8365" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8413:8443" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8491:8521" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8569:8599" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8647:8676" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="8803:9047" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9107:9245" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9416:9449" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9456:9486" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9534:9567" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9615:9650" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9698:9728" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9776:9806" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9854:9884" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="9932:9961" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10088:10294" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10354:10478" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10651:10679" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10686:10713" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10761:10794" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10842:10877" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10873:10877" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="10925:10955" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11003:11033" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11081:11111" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11159:11188" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11315:11559" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11408:11559" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11771:11805" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11845:11882" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11922:11954" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="11994:12025" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12065:12097" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12137:12171" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12346:12381" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12421:12459" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12499:12532" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12572:12604" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12644:12677" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12717:12752" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="12933:12983" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="13023:13079" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="13119:13165" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="13205:13249" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="13289:13335" ph="..." />
-            <marker date="1614845140757" expanded="true" signature="13375:13425" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="29" column="31" lean-forward="false" selection-start-line="29" selection-start-column="31" selection-end-line="29" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PRINTBPB/printBPBController.php" />
-    <entry file="file://$PROJECT_DIR$/resources/views/navbar.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="200" column="101" lean-forward="false" selection-start-line="200" selection-start-column="93" selection-end-line="200" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalanController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="14" column="66" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" />
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalan.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPB.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/web.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="467" column="90" lean-forward="false" selection-start-line="467" selection-start-column="90" selection-end-line="467" selection-end-column="90" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKREGISTER/CetakRegisterController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="566">
-          <caret line="896" column="1" lean-forward="false" selection-start-line="896" selection-start-column="1" selection-end-line="896" selection-end-column="1" />
-          <folding>
-            <marker date="1614791666043" expanded="true" signature="2440:4394" ph="select msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="2904:4192" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="7408:9009" ph="select msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="7813:8800" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="11882:12989" ph="SELECT msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="12115:12763" ph="SELECT msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="13765:17902" ph="SELECT MSTH_... MSTH_NODOC" />
-            <marker date="1614791666043" expanded="true" signature="14922:17012" ph="SELECT MSTH_... MSTH_NODOC" />
-            <marker date="1614791666043" expanded="true" signature="15339:16622" ph="SELECT MSTH_... TBTR_MSTRAN_H" />
-            <marker date="1614791666043" expanded="true" signature="17028:17587" ph="SELECT DOC2,... MSTH_NODOC" />
-            <marker date="1614791666043" expanded="true" signature="17089:17554" ph="SELECT MSTH_... TBTR_MSTRAN_H" />
-            <marker date="1614791666043" expanded="true" signature="19484:20620" ph="select msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="19722:20416" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="21438:23594" ph="SELECT msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="21821:23330" ph="SELECT msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="24421:25611" ph="select msth_... msth_nodoc" />
-            <marker date="1614791666043" expanded="true" signature="24688:25355" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="26519:27624" ph="SELECT to_ch... msth_tgldoc" />
-            <marker date="1614791666043" expanded="true" signature="26752:27469" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="28531:29660" ph="SELECT to_ch... msth_tgldoc" />
-            <marker date="1614791666043" expanded="true" signature="28776:29537" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="30464:31511" ph="SELECT mstd_... msth_tgldoc" />
-            <marker date="1614791666043" expanded="true" signature="30702:31310" ph="select msth_... tbtr_mstran_h" />
-            <marker date="1614791666043" expanded="true" signature="32312:36541" ph="select msth_... msth_tgldoc" />
-            <marker date="1614791666043" expanded="true" signature="33208:36395" ph="select msth_... tbtr_mstran_h" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKREGISTER/regbtlbapb-pdf.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="40" column="54" lean-forward="false" selection-start-line="40" selection-start-column="54" selection-end-line="40" selection-end-column="54" />
-          <folding>
-            <marker date="1614791243674" expanded="true" signature="319:352" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="377:406" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="536:551" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="588:616" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="658:677" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="789:796" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="803:810" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1445:1527" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1561:1572" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1590:1614" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1636:1647" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1746:1753" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1805:1844" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="1997:2084" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2201:2218" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2306:2310" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2340:2356" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2386:2402" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2447:2462" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2507:2523" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2567:2606" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2651:2663" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2722:2804" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2918:2925" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="2965:3004" ph="..." />
-            <marker date="1614791243674" expanded="true" signature="3199:3235" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

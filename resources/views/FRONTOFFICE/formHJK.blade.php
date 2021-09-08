@@ -76,7 +76,7 @@
                                             <td><input disabled class="form-control lastcost" type="text"></td>
                                             <td><input disabled class="form-control avgcost" type="text"></td>
                                             <td><input disabled class="form-control normal" type="text"></td>
-                                            <td><input class="form-control usulan" onchange="calculateMargin(this)" type="text" onkeypress="return isNumberKey(event)"></td>
+                                            <td><input class="form-control usulan" onchange="calculateMargin(this)" type="text" onkeypress="return isNumberKey(event)"onkeypress="return isNumberKey(event)"></td>
                                             <td><input disabled class="form-control normalMargin" type="text"></td>
                                             <td><input disabled class="form-control lastcostMargin" type="text"></td>
                                             <td><input disabled class="form-control avgcostMargin" type="text"></td>

@@ -64,6 +64,12 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'DBF' => [
+            'driver' => 'local',
+            'root' => public_path() . '/DBF',
+            'visibility' => 'public',
+        ],
+
     ],
 
 ];

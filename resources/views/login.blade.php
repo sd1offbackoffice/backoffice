@@ -189,7 +189,7 @@ ajaxSetup()
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
-
+                    console.log(response);
                     if (response['message']) {
                         swal({
                             title:  response['status'],

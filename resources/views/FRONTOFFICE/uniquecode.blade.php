@@ -12,8 +12,8 @@
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Jenis Promosi</label>
                             <select class="col-sm-2 text-center form-control" name="jenisPromosi" id="jenisPromosi">
-                                <option value="cashback">CASHBACK</option>
-                                <option value="gift">GIFT</option>
+                                <option value="cashback">CASHBACK</option> <!--program lama opsi 1-->
+                                <option value="gift">GIFT</option> <!--program lama opsi 2-->
                             </select>
                         </div>
                         <div class="row">
@@ -39,9 +39,9 @@
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Jenis Member</label>
                             <select class="col-sm-2 text-center form-control" name="jenisMember" id="jenisMember">
-                                <option value="all">ALL</option>
-                                <option value="biasa">BIASA</option>
-                                <option value="khusus">KHUSUS</option>
+                                <option value="all">ALL</option> <!--program lama opsi 3-->
+                                <option value="biasa">BIASA</option> <!--program lama opsi 2-->
+                                <option value="khusus">KHUSUS</option> <!--program lama opsi 1-->
                             </select>
                         </div>
                         <div class="row">
@@ -56,11 +56,11 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Minimum Pembelian</label>
-                            <input class="col-sm-2 text-center form-control" type="text" id="minPembelian">
+                            <input class="col-sm-2 text-center form-control" type="text" id="minPembelian" onkeypress="return isNumberKey(event)">
                         </div>
                         <br>
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-success col-sm-3" type="button" id="cetak">CETAK</button>
+                            <button class="btn btn-success col-sm-3" type="button" id="cetak" onclick="cetak()">CETAK</button>
                         </div>
                         <br>
                     </div>
@@ -356,8 +356,11 @@
         }
 
         function checkKodePembandingExist(){
+            // if(tablePembanding.data().length == 0){
+            //     return checkKodePembandingExist();
+            // }
             for(i=0;i<tablePembanding.data().length;i++){
-                if(tablePembanding.row(i).data()['gfh_kodepromosi'] == $('#kodePembanding').val()){
+                if(tablePembanding.row(i).data()['prd_prdcd'] == $('#kodePembanding').val()){
                     return i;
                 }
             }
@@ -470,6 +473,10 @@
 
         $('#kodePembanding').on('change', function (e) {
             let kode = $('#kodePembanding').val();
+            if(kode == ''){
+                //do nothing
+                return false;
+            }
             if(kode.substr(1,1) == '#'){
                 $('#kodePembanding').val(kode.substr(2,(kode.length)-1));
                 let kode = $('#kodePembanding').val();
@@ -478,7 +485,169 @@
                 //$('#kodePembanding').val(kode.padStart(kode.padEnd(kode.substr(0,(kode.length)-1),'0'),7,'0'));
                 $('#kodePembanding').val(kode.padStart(7,'0'));
             }
-            alert($('#kodePembanding').val());
+            let index = checkKodePembandingExist();
+            if(index != 'false'){
+                let nama = tablePembanding.row(index).data()['prd_deskripsipendek'];
+
+                $('#namaPembanding').val(nama);
+            }else{
+                swal({
+                    title:'Alert',
+                    text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo $_SESSION['kdigr'] ?> + ' Tidak Terdaftar di Master Barang',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#kodePembanding').val('');
+                    $('#namaPembanding').val('');
+                });
+            }
         });
+
+        function isNumberKey(evt){
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
+        function cetak(){
+            if($('#jenisPromosi').val() != "cashback" && $('#jenisPromosi').val() != "gift"){
+                swal({
+                    title:'Alert',
+                    text: 'Jenis Promosi Harus Ditentukan !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#jenisPromosi').focus();
+                });
+                return false;
+            }
+            if($('#kodePromosi').val() == ''){
+                swal({
+                    title:'Alert',
+                    text: 'Kode Promosi Tidak Boleh Kosong !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#jenisPromosi').focus();
+                });
+                return false;
+            }
+            let date = $('#daterangepicker').val();
+            if(date == null || date == ""){
+                swal({
+                    title:'Alert',
+                    text: 'Tanggal Awal/Akhir Promosi Tidak Boleh Kosong !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#jenisPromosi').focus();
+                });
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            if($('#jenisMember').val() != "all" && $('#jenisMember').val() != "biasa" && $('#jenisMember').val() != "khusus"){
+                swal({
+                    title:'Alert',
+                    text: 'Jenis Member Harus Ditentukan !!',
+                    icon:'warning',
+                    timer: 2000,
+                    buttons: {
+                        confirm: false,
+                    },
+                }).then(() => {
+                    $('#jenisMember').focus();
+                });
+                return false;
+            }
+            if($('#kodePembanding').val() != ''){
+                if(checkKodePembandingExist() == 'false'){
+                    swal({
+                        title:'Alert',
+                        text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo $_SESSION['kdigr'] ?> + ' Tidak Terdaftar di Master Barang',
+                        icon:'warning',
+                        timer: 2000,
+                        buttons: {
+                            confirm: false,
+                        },
+                    }).then(() => {
+                        $('#kodePembanding').val('');
+                        $('#namaPembanding').val('');
+                    });
+                    return false;
+                }
+            }
+            if($('#minPembelian').val() == '0' || $('#minPembelian').val() == ''){
+                $('#minPembelian').val(1);
+            }
+
+            //CETAK
+            window.open(`{{ url()->current() }}/cetak?jenisPromosi=${$('#jenisPromosi').val()}&kodePromosi=${$('#kodePromosi').val()}&namaPromosi=${$('#namaPromosi').val()}&tglSales1=${dateA}&tglSales2=${dateB}&tglPromo1=${$('#p_promosiA').val()}&tglPromo2=${$('#p_promosiB').val()}&jenisMember=${$('#jenisMember').val()}&kodePembanding=${$('#kodePembanding').val()}&namaPembanding=${$('#namaPembanding').val()}&minPembelian=${$('#minPembelian').val()}`, '_blank');
+            bersihkan();
+            //data yang digunakan adalah data di ajax bawah ini
+            {{--$.ajax({--}}
+            {{--    url: '{{ url()->current() }}/cetak',--}}
+            {{--    type: 'GET',--}}
+            {{--    data: {--}}
+            {{--        jenisPromosi: $('#jenisPromosi').val(),--}}
+            {{--        kodePromosi: $('#kodePromosi').val(),--}}
+            {{--        namaPromosi: $('#namaPromosi').val(),--}}
+            {{--        tglSales1: dateA,--}}
+            {{--        tglSales2: dateB,--}}
+            {{--        tglPromo1: $('#p_promosiA').val(),--}}
+            {{--        tglPromo2: $('#p_promosiB').val(),--}}
+            {{--        jenisMember: $('#jenisMember').val(),--}}
+            {{--        kodePembanding: $('#kodePembanding').val(),--}}
+            {{--        namaPembanding: $('#namaPembanding').val(),--}}
+            {{--        minPembelian: $('#minPembelian').val(),--}}
+            {{--    },--}}
+            {{--    beforeSend: function () {--}}
+            {{--        $('#modal-loader').modal('show');--}}
+            {{--    },--}}
+            {{--    success: function (rec) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
+
+            {{--    },--}}
+            {{--    error: function (error) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
+            {{--        swal({--}}
+            {{--            title: error.responseJSON.title,--}}
+            {{--            text: error.responseJSON.message,--}}
+            {{--            icon: 'error',--}}
+            {{--        });--}}
+            {{--        return false;--}}
+            {{--    }--}}
+            {{--});--}}
+        }
+
+        function bersihkan(){
+            $('#jenisPromosi').val('cashback');
+            $('#kodePromosi').val('');
+            $('#namaPromosi').val('');
+            $('#p_promosiA').val('');
+            $('#p_promosiB').val('');
+            $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+            $('#jenisMember').val('all');
+            $('#kodePembanding').val('');
+            $('#namaPembanding').val('');
+            $('#minPembelian').val('');
+        }
     </script>
 @endsection

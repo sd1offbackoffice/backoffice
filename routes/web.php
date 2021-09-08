@@ -792,6 +792,11 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/print-detail','FRONTOFFICE\LAPORANKASIR\RekapEvaluasiController@printDetail');
                 Route::get('/print-rekap','FRONTOFFICE\LAPORANKASIR\RekapEvaluasiController@printRekap');
             });
+
+            Route::prefix('/transaksi-per-nilai-struk')->group(function(){
+                Route::get('/','FRONTOFFICE\LAPORANKASIR\TransaksiPerNilaiStrukController@index');
+                Route::get('/cetak','FRONTOFFICE\LAPORANKASIR\TransaksiPerNilaiStrukController@cetak');
+            });
         });
         Route::prefix('/laporan-planogram')->group(function(){
             Route::get('/','FRONTOFFICE\LaporanPlanogramController@index');
@@ -828,6 +833,12 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak','FRONTOFFICE\POINTREWARDMEMBERMERAH\RekapitulasiMutasiPointReward@cetak');
             });
         });
+        Route::prefix('/cetak-laporan-promosi')->group(function(){
+            Route::get('/','FRONTOFFICE\CetakLaporanPromosiController@index');
+            Route::get('/cetak','FRONTOFFICE\CetakLaporanPromosiController@cetak');
+            Route::get('/lovkoderak','FRONTOFFICE\CetakLaporanPromosiController@lovKodeRak');
+            Route::get('/lovkodepromosi','FRONTOFFICE\CetakLaporanPromosiController@lovKodePromosi');
+        });
 
     });
 
@@ -835,12 +846,32 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/retur')->group(function(){
             Route::get('/','OMI\ReturController@index');
             Route::get('/get-lov-nodoc','OMI\ReturController@getLovNodoc');
+            Route::get('/get-lov-member','OMI\ReturController@getLovMember');
             Route::get('/get-data','OMI\ReturController@getData');
+            Route::get('/get-new-nodoc','OMI\ReturController@getNewNodoc');
+            Route::get('/check-member','OMI\ReturController@checkMember');
+            Route::get('/check-nrb','OMI\ReturController@checkNRB');
+            Route::post('/delete-data','OMI\ReturController@deleteData');
+            Route::get('/get-prdcd','OMI\ReturController@getPRDCD');
+            Route::post('/save-data','OMI\ReturController@saveData');
         });
+
         Route::prefix('/free-plu-omi-kepala-9')->group(function(){
             Route::get('/','OMI\FreePLUOMIKepala9Controller@index');
-            Route::get('/get-lov-nodoc','OMI\FreePLUOMIKepala9Controller@getLovNodoc');
-            Route::get('/get-data','OMI\FreePLUOMIKepala9Controller@getData');
+            Route::get('/get-lov-plu','OMI\FreePLUOMIKepala9Controller@getLovPLU');
+            Route::get('/get-data-input','OMI\FreePLUOMIKepala9Controller@getDataInput');
+            Route::get('/get-datatable','OMI\FreePLUOMIKepala9Controller@getDatatable');
+            Route::post('/simpan','OMI\FreePLUOMIKepala9Controller@simpan');
+            Route::post('/hapus','OMI\FreePLUOMIKepala9Controller@hapus');
+        });
+
+        Route::prefix('/entry-group-rak')->group(function(){
+            Route::get('/','OMI\EnrtyGroupRakController@index');
+            Route::get('/get-data-header','OMI\EnrtyGroupRakController@getDataHeader');
+            Route::get('/get-data-detail','OMI\EnrtyGroupRakController@getDataDetail');
+            Route::post('/simpan-header','OMI\EnrtyGroupRakController@simpanHeader');
+            Route::post('/simpan-detail','OMI\EnrtyGroupRakController@simpanDetail');
+            Route::post('/hapus-detail','OMI\EnrtyGroupRakController@hapusDetail');
         });
     });
 });
@@ -1097,7 +1128,13 @@ Route::get('/bo/transaksi/penerimaan/cetakbpb/viewreport/', 'BACKOFFICE\TRANSAKS
 
 //OMI-PROSES BKL
 Route::get('/OMI/proses-bkl',                           'OMI\ProsesBKLDalamKotaController@index')->middleware('CheckLogin');
+Route::post('/OMI/proses-bkl/proses-file',               'OMI\ProsesBKLDalamKotaController@prosesFile')->middleware('CheckLogin');
 
+
+//FRONT OFFICE - LAPORAN KASIR - LAPORAN PARETO SALES BY MEMBER
+Route::get('/frontoffice/laporankasir/laporan-pareto-sales-by-member',                  'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@index')->middleware('CheckLogin');
+Route::get('/frontoffice/laporankasir/laporan-pareto-sales-by-member/get-lov-member',   'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@getLovMember')->middleware('CheckLogin');
+Route::post('/frontoffice/laporankasir/laporan-pareto-sales-by-member/validasi-cetak',  'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@validasiCetak')->middleware('CheckLogin');
 
 
 /******** Ryan ********/
@@ -1342,6 +1379,20 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/getcashback', 'FRONTOFFICE\uniquecodeController@getCashBack');
             Route::get('/getgift', 'FRONTOFFICE\uniquecodeController@getGift');
             Route::get('/getpembanding', 'FRONTOFFICE\uniquecodeController@getPembanding');
+            Route::get('/cetak', 'FRONTOFFICE\uniquecodeController@cetak');
+        });
+    });
+//IGR_BO_RUBAHSTATUSOMI
+    Route::prefix('/OMI')->group(function () {
+        Route::prefix('/rubahstatusomi')->group(function () {
+            Route::get('/', 'OMI\rubahstatusomiController@index');
+            Route::get('/newforminstance', 'OMI\rubahstatusomiController@newFormInstance');
+            Route::get('/modalptkp', 'OMI\rubahstatusomiController@modalPTKP');
+            Route::get('/chooseptkp', 'OMI\rubahstatusomiController@choosePTKP');
+            Route::get('/modalpkp', 'OMI\rubahstatusomiController@modalPKP');
+            Route::get('/choosepkp', 'OMI\rubahstatusomiController@choosePKP');
+            Route::get('/prosesdata', 'OMI\rubahstatusomiController@prosesData');
+            Route::get('/cetak', 'OMI\rubahstatusomiController@cetak');
         });
     });
 });

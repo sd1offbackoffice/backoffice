@@ -29,6 +29,7 @@ class loginController extends Controller
     {
 
         session_start();
+        $userstatus='';
         $conUser = 'SIMSMG';
         $conPassword = 'SIMSMG';
         $conString = '192.168.237.193:1521/SIMSMG';
@@ -193,7 +194,6 @@ class loginController extends Controller
                 else $usertype = 'XXX';
 
                 $_SESSION['usertype'] = $usertype;
-
                 if (!is_null($_SESSION['usid']) AND $_SESSION['usid'] != 'NUL') {
                     $cek = DB::table('tbmaster_perusahaan')
                         ->whereRaw('prs_periodeterakhir = trunc(sysdate)')
