@@ -72,7 +72,8 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
         $kodepromosi = '';
         $cetakby = $request->cetakby;
         $data = '';
-
+$w = 545;
+$h = 50.75;
         if ($cetakby == 'RAKPROMO' || $cetakby == 'RAK' || $cetakby == 'PROMO' || $cetakby == 'ALL') {
             if ($cetakby == 'RAKPROMO') {
                 $koderak1 = $request->koderak;
@@ -95,7 +96,7 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
                 $koderak2 = 'O%';
                 $kodepromosi = '%';
             }
-            $filename = 'igr_promo_per_rak';
+            $filename = 'igr-promo-per-rak';
 
             $data = DB::select("SELECT * FROM (
                                         SELECT DISTINCT LKS_KODESUBRAK AS SubRak, LKS_SHELVINGRAK AS Shelving, CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN, LKS_KODERAK AS RAK,
@@ -169,8 +170,8 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
             AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
             AND PRS_KODEIGR = LKS_KODEIGR AND CBH_TGLAKHIR >= SYSDATE
             AND CBA_KODEPROMOSI = CBD_KODEPROMOSI");
-
-            $filename = 'igr_promo_cashback';
+            //toomuch data
+            $filename = 'igr-promo-cashback';
             //CETAK_LAP_CB;
         } else if ($cetakby == 'GFPRINT') {
             $koderak1 = 'R%';
@@ -203,8 +204,10 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
 AND GFH_KODEIGR = GFD_KODEIGR AND  GFH_KODEPROMOSI = GFD_KODEPROMOSI
 AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
 AND PRS_KODEIGR = LKS_KODEIGR AND GFH_TGLAKHIR >= SYSDATE AND BPRP_PRDCD = GFH_KETHADIAH
-AND GFA_KODEPROMOSI = GFD_KODEPROMOSI");
-            $filename = 'igr_promo_gift';
+AND GFA_KODEPROMOSI = GFD_KODEPROMOSI
+and rownum <10");
+            $w = 640;
+            $filename = 'igr-promo-gift';
             //CETAK_LAP_GF;
         } else if ($cetakby == 'PRINTBESOK') {
             $data = DB::select("SELECT DISTINCT CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
@@ -251,17 +254,18 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
             AND GFA_KODEIGR = GFD_KODEIGR
             AND GFA_KODEPROMOSI = GFD_KODEPROMOSI
             AND GFH_TGLAKHIR BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE)+1");
-            $filename = 'igr_promo_last_besok';
+            $filename = 'igr-promo-last-besok';
+            $w = 640;
             //CETAK_LAP_BESOK;
         }
 
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-
+        $date = Carbon::now();
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.TRANSAKSIPERNILAISTRUK.transaksipernilaistruk-pdf', compact(['perusahaan', 'data']));
+        $pdf = PDF::loadview('FRONTOFFICE.CETAKLAPORANPROMOSI.'.$filename.'-pdf', compact(['perusahaan', 'data','koderak1','koderak2','kodepromosi']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -269,10 +273,10 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text(695, 50.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Transaksi Per Nilai Struk - ' . $startDate . '-' . $endDate . '.pdf');
+        return $dompdf->stream($filename.' - ' . $date . '.pdf');
     }
 }

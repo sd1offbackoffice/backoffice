@@ -6,6 +6,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
+                    <legend  class="w-auto ml-5">Evaluasi Langganan / Member</legend>
                     <div class="card-body">
                         <div class="row form-group">
                             <label class="col-sm-3 text-right col-form-label pl-0">Tanggal</label>

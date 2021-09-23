@@ -18,6 +18,13 @@
                                 <button class="btn btn-primary col-sm-2 btn-block" type="button" onclick="viewFile()">View File</button>
                             </div>
                         </form>
+                        <div class="row mt-5 justify-content-center">
+                            <div class="col-sm-2 btnCetak" id="btnCetakList"><button class="btn btn-success btn-block" onclick="choosePaperSize('1')">Print List</button></div>
+                            <div class="col-sm-2 btnCetak" id="btnCetakBpb"><button class="btn btn-success btn-block" onclick="choosePaperSize('2')">Print BPB</button></div>
+                            <div class="col-sm-2 btnCetak" id="btnCetakStruk"><button class="btn btn-success btn-block" onclick="choosePaperSize('3')">Print Struk</button></div>
+                            <div class="col-sm-2 btnCetak" id="btnCetakReset"><button class="btn btn-success btn-block" onclick="choosePaperSize('4')">Print Reset</button></div>
+                            <div class="col-sm-2 btnCetak" id="btnCetakTolakan"><button class="btn btn-success btn-block" onclick="choosePaperSize('5')">Print Tolakan</button></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,7 +71,7 @@
         let fileUpload = [];
 
         $(document).ready(function () {
-            // alert('asd')
+            $('.btnCetak').hide();
         })
 
         function viewFile(){
@@ -95,8 +102,7 @@
             $(e.target).prop('checked',true);
         }
 
-        function prosesBKL()
-        {
+        function prosesBKL() {
             let totalFiles  = 0;
             let fileDBF     = new FormData();
             let dbfChecked  = $('.checkBoxFile:checked').val();
@@ -139,10 +145,52 @@
                 success: function (result) {
                     console.log(result)
                     console.log(result.msg)
+                    let idButtonCetak = result.data.report_id;
+                    if (idButtonCetak) {
+                        for(let i = 0; i < idButtonCetak.length; i++){
+                            if (idButtonCetak[i] == 1) {
+                                $('#btnCetakList').show();
+                                $('#btnCetakBpb').show();
+                                $('#btnCetakStruk').show();
+                                $('#btnCetakReset').show();
+                            } else if (idButtonCetak[i] == 5) {
+                                $('#btnCetakTolakan').show();
+                            }
+                        }
+                    }
                 }, error: function (error) {
                     errorHandlingforAjax(error)
                 }
             })
+        }
+
+        function choosePaperSize(report_id) {
+            if (report_id == 5) {
+                console.log("cetak tolakan tanpa tanya size");
+                return false;
+            }
+            swal({
+                title: 'Pilih ukuran cetakan',
+                icon: 'warning',
+                buttons: {
+                    cancel: 'Cancel',
+                    besar: {
+                        text: 'Besar',
+                        value: 'B'
+                    },
+                    kecil: {
+                        text: 'Kecil',
+                        value: 'K'
+                    }
+                },
+                dangerMode: true
+            }).then((size) => {
+                if (size){
+                    console.log(size)
+                    console.log(report_id)
+                    console.log("cetak report")
+                }
+            });
         }
 
     </script>

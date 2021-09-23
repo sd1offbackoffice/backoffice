@@ -1,0 +1,74 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ryan
+ * Date: 20/09/2021
+ * Time: 8:28 AM
+ */
+
+namespace App\Http\Controllers\OMI\LAPORAN;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use PDF;
+use DateTime;
+use Yajra\DataTables\DataTables;
+
+class lapregbrgrtrController extends Controller
+{
+
+    public function index()
+    {
+        return view('OMI\LAPORAN.lapregbrgrtr');
+    }
+
+
+
+    public function cetak(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $nodoc1 = $request->nodoc1;
+        $nodoc2 = $request->nodoc2;
+        $p_prog = 'IGR0369';
+        $and_doc = '';
+        if($nodoc1 != '' && $nodoc2 != ''){
+            $and_doc = " and rom_nodokumen between '".$nodoc1."' and '".$nodoc2."'";
+        }
+
+        $dateA = $request->date1;
+        $dateB = $request->date2;
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+
+        $datas = DB::select("SELECT rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi,
+    rom_tglreferensi, SUM(rom_ttlcost) total, cus_namamember, SUM(item) item,
+    prs_namaperusahaan, prs_namacabang, prs_namawilayah, (rom_member  || ' - ' || cus_namamember) member,
+    sum(case when flag_bkp='Y' then rom_ttlcost else 0 end) ttl_bkp,
+    sum(case when flag_bkp ='N' then rom_ttlcost else 0 end) ttl_btkp
+FROM(SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_kodetoko, rom_member,
+    rom_noreferensi, rom_tglreferensi, rom_ttlcost, cus_namamember, 1 item,
+    prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+    case when prd_flagbkp1='Y' and prd_flagbkp1='Y' then 'Y' else 'N' end flag_bkp
+FROM TBTR_RETUROMI, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST
+WHERE rom_kodeigr = '$kodeigr'
+              AND TRUNC(rom_tgldokumen) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
+              ".$and_doc."
+              --AND cus_kodeigr(+) = rom_kodeigr
+              AND cus_kodemember(+) = rom_member
+              AND prs_kodeigr = rom_kodeigr
+              AND substr(rom_prdcd,1,6)||'0' = prd_prdcd(+)
+ORDER BY rom_tgldokumen, rom_nodokumen)
+GROUP BY rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi, rom_tglreferensi,
+    cus_namamember, prs_namaperusahaan, prs_namacabang, prs_namawilayah
+    ORDER BY tgldok, rom_nodokumen
+");
+        if(sizeof($datas) == 0){
+            return "**DATA TIDAK ADA**";
+        }
+        //PRINT
+        $today = date('d-m-Y');
+        $time = date('H:i:s');
+        return view('OMI\LAPORAN\lapregbrgrtr-pdf',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+    }
+}

@@ -49,13 +49,13 @@
                         </div>
                         <div class="row form-group">
                             <label class="col-sm-3 text-right col-form-label pl-0">Rangking</label>
-                            <input type="text" class="form-control text-left col-sm-2" id="rank_member">
+                            <input type="number" class="form-control text-right col-sm-2" id="rank_member">
                             <label class="col-sm-2 pt-1 text-center">member</label>
                         </div>
                         <div class="row form-group">
                             <label class="col-sm-3 text-right col-form-label pl-0">Limit</label>
-                            <label class="col-sm-1 pt-1 text-center">Rp.</label>
-                            <input type="text" class="form-control text-left col-sm-2" id="limit">
+                            <label class="col-sm-1 pt-1 text-right">Rp.</label>
+                            <input type="text" class="form-control text-left col-sm-2" id="limit" onchange="changeLimit(this.value)">
 
                         </div>
                         <div class="row form-group">
@@ -71,6 +71,7 @@
                             <label class="col-sm-3 text-right col-form-label pl-0">Rangking By</label>
                             <div class="col-sm-2 buttonInside pl-0">
                                 <select class="form-control" id="rank_by">
+                                    <option value="0">All</option>
                                     <option value="1">Sales</option>
                                     <option value="2">Gross Margin</option>
                                 </select>
@@ -240,6 +241,10 @@
             $('#'+flagOpenModalMember).val(value)
         } );
 
+        function changeLimit(value){
+            $('#limit').val(convertToRupiah2(value))
+        }
+
         function cetakLaporan(){
             let tgl_start       = $('#tgl_start').val();
             let tgl_end         = $('#tgl_end').val();
@@ -247,10 +252,11 @@
             let outlet_end      = $('#outlet_end').val();
             let member_start    = $('#member_start').val();
             let member_end      = $('#member_end').val();
-            let limit           = $('#limit').val();
+            let limit           = unconvertToRupiah($('#limit').val());
             let rank_member     = $('#rank_member').val();
             let up_under        = $('#up_under').val();
             let rank_by         = $('#rank_by').val();
+
 
             if (!tgl_start){
                 swal("Tanggal 1 harus di isi", "", "info")
@@ -261,13 +267,24 @@
                 let lastDay =  new Date(y, m +1, 0).getDate() + '/' + m + '/' + y;
                 $('#tgl_start').val(lastDay)
                 $('#outlet_start').focus();
+                return false;
             } else if (tgl_start > tgl_end) {
                 swal("Tanggal 2 harus di isi >= tanggal 1", "", "info")
                 $('#tgl_end').focus();
                 return false;
-            } else if (outlet_start > outlet_end) {
-                swal("Outlet 2 harus di isi >= Outlet 1", "", "info")
-                $('#outlet2').focus();
+            } else if (outlet_start > 6 && outlet_start < 0) {
+                swal("Kode Outlet 1 Tidak Tersedia", "", "info")
+                $('#outlet_start').val('')
+                $('#outlet_start').focus()
+                return false;
+            }  else if (outlet_end > 6 || outlet_end < 0) {
+                swal("Kode Outlet 2 Tidak Tersedia", "", "info")
+                $('#outlet_end').val('')
+                $('#outlet_end').focus()
+                return false;
+            } else if (outlet_end && outlet_start > outlet_end) {
+                $('#outlet_end').val('');
+                $('#outlet_end').focus();
                 return false;
             } else if (member_start > member_end) {
                 swal("Member 2 harus di isi >= Member 1", "", "info")
@@ -275,23 +292,11 @@
                 return false;
             } else if (!limit) {
                 swal("Limit harus di isi", "", "info")
-                $('#member_start').focus();
+                $('#limit').focus();
                 return false;
             }
 
-            ajaxSetup();
-            $.ajax({
-                url: '{{url('/frontoffice/laporankasir/laporan-pareto-sales-by-member/validasi-cetak')}}',
-                type: 'POST',
-                data: {tgl_start, tgl_end, outlet_start, outlet_end, member_start, member_end, limit, rank_member, up_under, rank_by},
-                success: function (result) {
-                    console.log(result)
-                }, error: function (error) {
-                    errorHandlingforAjax(error)
-                }
-            })
-
-
+            window.open(`{{ url()->current() }}/cetak-laporan?tgl_start=${tgl_start}&tgl_end=${tgl_end}&outlet_start=${outlet_start}&outlet_end=${outlet_end}&member_start=${member_start}&member_end=${member_end}&limit=${limit}&rank_member=${rank_member}&up_under=${up_under}&rank_by=${rank_by}`);
         }
 
 

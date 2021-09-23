@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use XBase\TableReader;
 use ZipArchive;
 use File;
+use PDF;
 
 class ProsesBKLDalamKotaController extends Controller
 {
@@ -23,13 +24,14 @@ class ProsesBKLDalamKotaController extends Controller
         $file       = $request->file('file');
         $filename   = '';
         $list = [];
-        $sesiproc = '999999';
+        $tempReportId = [];
+        $sesiproc = rand(11,99).date('His');
 
+        DB::table('temp_cetak_tolakanbkldalamkota')->delete();
+        DB::table('temp_list_bkldalamkota')->delete();
 
-//        DB::table('temp_cetak_tolakanbkldalamkota')->delete();
-//        DB::table('temp_list_bkldalamkota')->delete();
-
-        $stat = DB::table('tbmaster_computer')->where('ip', $ip)->where('kodeigr', $kodeigr)->get();
+        $stat = DB::table('tbmaster_computer')->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->toArray();
+        $station = ($stat)? $stat[0]->station : '';
 
         if (strtolower($file->getClientOriginalExtension()) == 'zip'){
             $zip = new ZipArchive;
@@ -58,8 +60,6 @@ class ProsesBKLDalamKotaController extends Controller
             $file->move(public_path("/DBF"), $filename);
         }
 
-//        $temp = File::files(public_path('DBF'."/".$filename)); dd($temp);
-
         $table = new TableReader(public_path('/DBF/'.$filename));
 
         while ($record = $table->nextRecord()) {
@@ -84,57 +84,247 @@ class ProsesBKLDalamKotaController extends Controller
                      FROM temp_bkl_dalamkota bkl
                     WHERE sessid = $sesiproc AND namafile = '$filename')");
 
-        $prosesData = $this->prosesData($filename, $kodeigr, $sesiproc);
+        //testing report
+        DB::insert("INSERT INTO temp_cetak_tolakanbkldalamkota
+                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, keter, sessid, namafile
+                     FROM temp_bkl_dalamkota bkl
+                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 
-        dd($prosesData);
+        DB::insert("INSERT INTO temp_list_bkldalamkota
+                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, price, gross, 12345, inv_date, istype, sessid, namafile
+                     FROM temp_bkl_dalamkota bkl
+                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 
-        return response()->json($prosesData);
+//        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+//
+//        $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg); END;");
+//        oci_bind_by_name($exec, ':sesiproc', $sesiproc,100);
+//        oci_bind_by_name($exec, ':namafiler', $filename,100);
+//        oci_bind_by_name($exec, ':stat', $station,100);
+//        oci_bind_by_name($exec, ':kodeigr', $kodeigr,100);
+//        oci_bind_by_name($exec, ':userid', $userId,100);
+//        oci_bind_by_name($exec, ':param_proses', $param_proses,100);
+//        oci_bind_by_name($exec, ':result_kode', $res_kode,100);
+//        oci_bind_by_name($exec, ':result_msg', $res_msg,1000);
+//        oci_execute($exec);
+
+//        if ($param_proses == 1){
+//            $temp = DB::table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
+//                ->where('namafile', $filename)->get()->toArray();
+//
+//            if ($temp){
+//                $tempReportId = ['1','2','3','4'];
+//            }
+//
+//            $temp = DB::table('temp_cetak_tolakanbkldalamkota')->where('sessid', $sesiproc)
+//                ->where('namafile', $filename)->get()->toArray();
+//
+//            if ($temp){
+//                $tempReportId = array_push($tempReportId,"5");
+//            }
+//
+//        }
+
+        //Kalau dari proses data return alert, function di bawah call proses data di jalanin atau enggak?
+
+//        DB::table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
+
+        array_push($tempReportId,'1','2','3','4');
+        array_push($tempReportId,'5');
+
+        $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId];
+        return response()->json(['kode' => 1, 'msg' => "Proses Data Berhasil", 'data' => $data]);
     }
 
-    public function prosesData($filename, $kodeigr, $sesiproc){
-        $BULAN_NO = '123456789ABC';
-        $TAHUN_NO = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    public function cetakLaporan(Request $request){
+        $report_id  = $request->report_id;
+        $size       = $request->size;
+        $filename   = $request->filename;
+        $sesiproc   = $request->sesiproc;
+        $kodeigr    = $_SESSION['kdigr'];
+        $bladeName  = '';
+        $pageNum1   = -10;
+        $pageNum2   = -10;
+        $result     = '';
 
-        $temp = DB::select("  SELECT NVL (COUNT (1), 0) as temp
-                                    FROM TEMP_BKL_DALAMKOTA
-                                    WHERE TRIM (SESSID) = $sesiproc
-                                        AND TRIM (NAMAFILE) = NAMAFILE
-                                        AND KETER IS NOT NULL
-                                        AND EXISTS ( SELECT MSTH_NOREF3
-                                                     FROM TBTR_MSTRAN_H
-                                                    WHERE MSTH_KODEIGR = $kodeigr AND MSTH_NOREF3 = KETER)");
+        if ($report_id == 1){
+            $result     = $this->laporanList($filename,$sesiproc,$kodeigr);
+            $pageNum1   = 510;
+            $pageNum2   = 45;
+//            $bladeName  = "OMI.prosesBKL-list-pdf";
+            $bladeName  = "OMI.prosesBKL-list-detail-pdf";
+        } elseif ($report_id == 2){
+            $result     = $this->laporanBpb($kodeigr, '01400045');
+            $bladeName  = "OMI.prosesBKL-bpb-pdf";
+        } elseif ($report_id == 3){
+            $result     = $this->laporanStruk($kodeigr);
+            $bladeName  = "OMI.prosesBKL-struk-pdf";
+        } elseif ($report_id == 4){
+            $result     = $this->laporanReset('01400045', $kodeigr, '70', 'ADM');
+            $jmlh_trans = DB::select("select LPAD(nvl(count(*),0), 7, '0') as total from (
+                                              SELECT DISTINCT trjd_transactionno
+                                              FROM tbtr_jualdetail
+                                              WHERE trjd_kodeigr = '$kodeigr'
+                                              AND trjd_create_by = 'BKL'
+                                              --AND TRUNC(trjd_transactiondate) = TRUNC(sysdate)
+                                                AND trjd_cashierstation = '70' ) a");
 
-        if($temp[0]->temp != 0){
-            return ["kode" => 2, "msg" => "Data BKL Sudah Pernah Diproses !!", "data" => ""];
+            $result[0]->jmlh_trans = $jmlh_trans[0]->total;
+            $bladeName  = "OMI.prosesBKL-reset-pdf";
+        } elseif ($report_id == 5){
+            $result     = $this->laporanTolakan($filename,$sesiproc,$kodeigr);
+            $pageNum1   = 508;
+            $pageNum2   = 38;
+            $bladeName  = "OMI.prosesBKL-tolakan-pdf";
         }
 
-        $temp = DB::select("SELECT NVL (COUNT (1), 0) as temp
-                                  FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
-                                                   FROM TEMP_BKL_DALAMKOTA, TBTR_MSTRAN_H
-                                                  WHERE TRIM (SESSID) = $sesiproc
-                                                    AND TRIM (NAMAFILE) = NAMAFILE
-                                                    AND MSTH_KODEIGR = $kodeigr
-                                                    AND TRIM (MSTH_NOFAKTUR) = TRIM (GUDANG || BUKTI_NO)
-                                                    AND MSTH_TGLFAKTUR = BUKTI_TGL) A");
+//        dd([$bladeName,$result]);
 
-        $temp2 = DB::select("SELECT NVL (COUNT (1), 0) as temp2
-                                    FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
-                                                       FROM TEMP_BKL_DALAMKOTA
-                                                      WHERE SESSID = $sesiproc AND NAMAFILE = NAMAFILE) A");
+        $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        //-- cek data ada di mstran apa ngak
-        if($temp[0]->temp == $temp2[0]->temp2){
-            return ["kode" => 2, "msg" => "Semua Record di File BKL $filename Sudah Pernah Diproses !!", "data" => ""];
-        } else {
-            //-- kondisi ada data yg sudah di proses dan belum di proses file nya ditolak atau bagaimana?
-            //-- delete data temporary yg sudah ada di mstran, biar ngak ke proses masuk lg
-        }
-
-        dd([$temp, $temp2]);
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text($pageNum1, $pageNum2, "{PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
 
+        return $pdf->stream("$bladeName");
+    }
 
-        return ["kode" => 1, "msg" => "Data BKL Sukses !!", "data" => ""];
+    public function laporanList($filename,$sesiproc,$kodeigr){
+        return DB::select(" SELECT no_bukti, tgl_bukti, kodetoko, cus_kodemember, cus_namamember, kodesupplier, sup_namasupplier, no_tran, TRUNC (tgl_tran) as tgl_tran, prs_namaperusahaan,
+                                            prs_namacabang, prs_namawilayah, SUM (harga) harga, SUM (gross) gross
+                                        FROM (SELECT bkl.no_bukti, bkl.tgl_bukti, bkl.kodetoko, cus_kodemember, cus_namamember, bkl.kodesupplier, sup_namasupplier, bkl.no_tran,
+                                                     bkl.tgl_tran, bkl.harga, bkl.gross, prs_namaperusahaan, prs_namacabang, prs_namawilayah
+                                                FROM temp_list_bkldalamkota bkl,
+                                                     tbmaster_tokoigr,
+                                                     tbmaster_Customer,
+                                                     tbmaster_supplier,
+                                                     tbmaster_perusahaan
+                                               WHERE     bkl.sessid = '$sesiproc'
+                                                     AND bkl.namafile = '$filename'
+                                                     AND tko_kodeigr = '$kodeigr'
+                                                     AND tko_kodeomi = bkl.kodetoko
+                                                     AND cus_kodeigr = '$kodeigr'
+                                                     AND cus_kodemember = tko_kodecustomer
+                                                     AND sup_kodeigr = '$kodeigr'
+                                                     AND sup_kodesupplier = bkl.kodesupplier
+                                                     AND prs_kodeigr = '$kodeigr') a
+                                    GROUP BY no_bukti,
+                                             tgl_bukti,
+                                             kodetoko,
+                                             cus_kodemember,
+                                             cus_namamember,
+                                             kodesupplier,
+                                             sup_namasupplier,
+                                             no_tran,
+                                             TRUNC (tgl_tran),
+                                             prs_namaperusahaan,
+                                             prs_namacabang,
+                                             prs_namawilayah
+                                    ORDER BY no_bukti, tgl_bukti, kodetoko");
+
+
+    }
+
+    public function laporanBpb($kodeigr, $no_po){
+        return DB::select("SELECT  msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (TRUNC (mstd_tgldoc) + msth_cterm) tgljt,
+                                           mstd_cterm, mstd_typetrn, prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamatfakturpajak1, prs_alamatfakturpajak2, prs_alamatfakturpajak3,
+                                           sup_kodesupplier || ' ' || sup_namasupplier || '/' || sup_singkatansupplier supplier,
+                                           sup_npwp,
+                                           sup_alamatsupplier1 || '   ' || sup_alamatsupplier2 alamat_supplier,
+                                           sup_telpsupplier,
+                                           sup_contactperson contact_person,
+                                           sup_kotasupplier3,
+                                           mstd_prdcd || ' ' || prd_deskripsipanjang plu,
+                                           mstd_unit || '/' || mstd_frac kemasan,
+                                           FLOOR (mstd_qty / mstd_frac) qty,
+                                           MOD (mstd_qty, mstd_frac) qtyk,
+                                           mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph,
+                                           NVL (mstd_gross, 0) - NVL (mstd_discrph, 0) + NVL (mstd_dis4cr, 0) + NVL (mstd_dis4rr, 0) + NVL (mstd_dis4jr, 0) jumlah,
+                                           ROUND (NVL (mstd_gross, 0) - NVL (mstd_discrph, 0) + NVL (mstd_dis4cr, 0) + NVL (mstd_dis4rr, 0) + NVL (mstd_dis4jr, 0)) JML,
+                                           NVL (mstd_rphdisc1, 0) rphdisc1,
+                                           (NVL (mstd_rphdisc2, 0) + NVL (mstd_rphdisc2ii, 0) + NVL (mstd_rphdisc2iii, 0)) disc2,
+                                           NVL (mstd_rphdisc3, 0) rphdisc3,
+                                           NVL (mstd_qtybonus1, 0) qtybonus1,
+                                           NVL (mstd_qtybonus2, 0) qtybonus2,
+                                           NVL (mstd_keterangan, 'OO') keterangan,
+                                           (NVL (mstd_dis4cr, 0) + NVL (mstd_dis4rr, 0) + NVL (mstd_dis4jr, 0)) dis4,
+                                           CASE
+                                              WHEN NVL (mstd_kodesupplier, '11111') <> '11111' THEN '( PROFORMA)'
+                                              ELSE '( LAIN - LAIN )'
+                                           END
+                                              judul
+                                      FROM tbtr_mstran_h,
+                                           tbmaster_perusahaan,
+                                           tbmaster_supplier,
+                                           tbtr_mstran_d,
+                                           tbmaster_prodmast
+                                     WHERE     msth_kodeigr = '$kodeigr'
+                                           AND prs_kodeigr = msth_kodeigr
+                                           AND sup_kodesupplier(+) = msth_kodesupplier
+                                           AND sup_kodeigr(+) = msth_kodeigr
+                                           AND mstd_nodoc = msth_nodoc
+                                           AND mstd_kodeigr = msth_kodeigr
+                                           AND prd_kodeigr = msth_kodeigr
+                                           AND prd_prdcd = mstd_prdcd
+                                           --&p_and
+                                           AND msth_nodoc = '$no_po'");
+    }
+
+    public function laporanStruk($kodeigr){
+        return DB::select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
+                                        trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
+                                        trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
+                                        trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,
+                                        prs_kodemto || '.BKL.' || trjd_cashierstation || '.' || trjd_transactionno nomor,
+                                        TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee
+                                        FROM tbtr_jualdetail, tbtr_jualheader, tbmaster_prodmast, tbmaster_customer, tbmaster_tokoigr, tbmaster_perusahaan
+                                        WHERE prs_kodeigr = '$kodeigr' and trjd_kodeigr = '$kodeigr'
+                                        --AND trjd_create_by = 'BKL'
+                                        AND TRUNC(trjd_transactiondate) = trunc(sysdate-1)
+                                        AND jh_kodeigr = '$kodeigr'
+                                        --AND jh_cashierid = 'BKL'
+                                        AND jh_transactionno = trjd_transactionno
+                                        AND jh_cashierstation = trjd_cashierstation
+                                        AND TRUNC(jh_transactiondate) = TRUNC(trjd_transactiondate)
+                                        AND prd_kodeigr = '$kodeigr'  AND prd_prdcd = trjd_prdcd
+                                        AND cus_kodeigr = '$kodeigr'
+                                        AND cus_kodemember = trjd_cus_kodemember
+                                        AND tko_kodeigr = '$kodeigr'
+                                        AND tko_kodecustomer = trjd_cus_kodemember
+                                        and jh_transactionno = '00040'
+                                        and jh_cashierstation = '34'
+                                        --&p_and");
+    }
+
+    public function laporanReset($noDoc, $kodeigr, $station, $userId){
+        return DB::select("SELECT js_totcreditsalesamt, prs_kodecabang, js_cashierstation, prs_namaperusahaan, prs_namacabang, 'No. Reset : ' || '$noDoc' nomor, TO_CHAR(SYSDATE,'dd-MM-yy') tgl, TO_CHAR(SYSDATE, 'hh:mm:ss') jam, 0 void, userid,  username
+                                FROM TBTR_JUALSUMMARY, TBMASTER_PERUSAHAAN, TBMASTER_USER
+                                WHERE js_kodeigr = '$kodeigr'
+                                AND js_cashierid = 'BKL'
+                                AND js_cashierstation = '$station'
+                                --AND TRUNC(js_transactiondate) = TRUNC(SYSDATE)
+                                AND KODEIGR(+) = '$kodeigr'
+                                AND userid(+) = '$userId'
+                                AND prs_kodeigr = '$kodeigr'");
+    }
+
+    public function laporanTolakan($filename,$sesiproc, $kodeigr){
+        return DB::select("SELECT kodetoko, tko_namaomi, no_bukti, tgl_bukti, kodesupplier, prdcd, qty, bonus, keterangan,
+                                        prd_deskripsipendek, prd_unit || '/' || prd_frac satuan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
+                                  FROM temp_cetak_tolakanbkldalamkota,
+                                       tbmaster_perusahaan,
+                                       tbmaster_prodmast,
+                                       tbmaster_tokoigr
+                                 WHERE     sessid = '$sesiproc'
+                                       AND namafile = '$filename'
+                                       AND prd_kodeigr(+) = '$kodeigr'
+                                       AND prd_prdcd(+) = prdcd
+                                       AND tko_kodeigr(+) = '$kodeigr'
+                                       AND tko_kodeomi(+) = kodetoko
+                                       AND prs_kodeigr = '$kodeigr'");
     }
 
 

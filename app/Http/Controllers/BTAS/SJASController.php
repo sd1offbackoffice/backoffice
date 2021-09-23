@@ -111,7 +111,7 @@ class SJASController extends Controller
                             AND TRJD_PRDCD = '".$d->trjd_prdcd."'");
 
             if(count($temp) > 0){
-                $d->qtyrefund = $temp[0]->trjd_quantity;
+                $d->qtyrefund = $temp[0]->trjd_quantity == null ? 0 : $temp[0]->trjd_quantity;
             }
             else $d->qtyrefund = 0;
 
@@ -124,12 +124,10 @@ class SJASController extends Controller
                        AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                        AND SJD_PRDCD = '".$d->trjd_prdcd."'");
 
-            if(count($temp) > 0){
-                $d->qtyok = $temp[0]->jml;
-            }
-            else $d->qtyok = 0;
+            $d->qtyok = $temp[0]->jml == null ? 0 : $temp[0]->jml;
 
             $d->qtysisa = $d->qtytitip - $d->qtyok;
+            $d->qtysisaall = $d->qtytitip - $d->qtyok;
 
             if($data->tahap == 'x1'){
                 $temp = DB::select("SELECT NVL(SJD_QTYSJAS, 0) qty
@@ -163,6 +161,93 @@ class SJASController extends Controller
         if(!$temp)
             return 'false';
         return 'true';
+    }
+
+    public function save(Request $request){
+        try{
+            DB::beginTransaction();
+
+            $temp = DB::selectOne("SELECT SJH_NOSJAS, to_char(SJH_TGLSJAS, 'dd/mm/yyyy') SJH_TGLSJAS, SJH_FREKTAHAPAN
+                    FROM TBTR_SJAS_H
+                    WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."'
+                    AND SJH_NOSTRUK = '".$request->nostruk."'
+                    AND SJH_TGLSTRUK = to_date('".$request->tglstruk."','dd/mm/yyyy')
+                    AND SJH_KODECUSTOMER = '".$request->kodecustomer."'");
+
+            if($temp->sjh_nosjas == null){
+                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SJS','Surat Jalan Atas Struk', 'S'||TO_CHAR(SYSDATE, 'yy'),4,TRUE); END;");
+                oci_bind_by_name($s, ':ret', $nosj, 32);
+                oci_execute($s);
+
+                $tglsj = DB::RAW("SYSDATE");
+            }
+            else{
+                $nosj = $temp->sjh_nosjas;
+                $tglsj = DB::RAW("to_date('".$temp->sjh_tglsjas."','dd/mm/yyyy')");
+            }
+
+            if($request->tahapan == null)
+                $tahapan = 1;
+            else $tahapan = $request->tahapan + 1;
+
+            $insert = [];
+            foreach($request->data as $d){
+                $ins = [];
+                $ins['sjd_kodeigr'] = $_SESSION['kdigr'];
+                $ins['sjd_nosjas'] = $nosj;
+                $ins['sjd_tglsjas'] = $tglsj;
+                $ins['sjd_kodecustomer'] = $request->kodecustomer;
+                $ins['sjd_tahapan'] = $tahapan;
+                $ins['sjd_tgltahapan'] = DB::RAW("SYSDATE");
+                $ins['sjd_prdcd'] = $d['prdcd'];
+                $ins['sjd_seqno'] = $d['seqno'];
+                $ins['sjd_qtystruk'] = $d['qtytitip'];
+                $ins['sjd_qtysjas'] = $d['qtyambil'];
+                $ins['sjd_flagcetak'] = '1';
+                $ins['sjd_create_by'] = $_SESSION['usid'];
+                $ins['sjd_create_dt'] = DB::RAW("SYSDATE");
+
+                $insert[] = $ins;
+            }
+
+            DB::table('tbtr_sjas_d')
+                ->insert($insert);
+
+            if($request->sumsisa == 0){
+                $fok = 'Y';
+            }
+            else $fok = null;
+
+            DB::table('tbtr_sjas_h')
+                ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+                ->where('sjh_nostruk','=',$request->nostruk)
+                ->where('sjh_tglstruk','=',DB::RAW("to_date('".$request->tglstruk."','dd/mm/yyyy')"))
+                ->where('sjh_kodecustomer','=',$request->kodecustomer)
+                ->update([
+                    'sjh_nosjas' => $nosj,
+                    'sjh_tglsjas' => $tglsj,
+                    'sjh_flagselesai' => $fok,
+                    'sjh_frektahapan' => $tahapan,
+                    'sjh_modify_by' => $_SESSION['usid'],
+                    'sjh_modify_dt' => DB::RAW("SYSDATE")
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'success',
+                'nosj' => $nosj,
+                'tahapan' => $tahapan
+            ], 200);
+        }
+        catch (QueryException $e){
+            DB::rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function checkPrint(Request $request){

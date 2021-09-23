@@ -6,6 +6,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
+                    <legend  class="w-auto ml-5">Laporan Transaksi Kartu Debit & UKM Mandiri</legend>
                     <div class="card-body">
                         <div class="row form-group">
                             <div class="col-sm-2"></div>

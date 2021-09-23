@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','LAPORAN KASIR | REKAP & EVALUASI PER MEMBER')
+@section('title','RETUR | OMI')
 @section('content')
 
     <div class="container-fluid">
@@ -37,7 +37,7 @@
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="kodetoko" disabled>
                             </div>
-                            <button id="btn_delete" class="col-sm-4 btn btn-danger">Delete Dokumen</button>
+                            <button id="btn_delete" class="col-sm-4 btn btn-danger" onclick="deleteData()">Delete Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Nomor NRB</label>
@@ -47,14 +47,14 @@
 {{--                                    <i class="fas fa-spinner fa-spin"></i>--}}
 {{--                                </button>--}}
                             </div>
-                            <button id="btn_print" class="col-sm-4 btn btn-success">Print Dokumen</button>
+                            <button id="btn_print" onclick="print()" class="col-sm-4 btn btn-success">Print Dokumen</button>
                         </div>
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Tgl NRB</label>
                             <div class="col-sm-5">
                                 <input type="text" class="form-control text-left" id="tglnrb" autocomplete="off">
                             </div>
-                            <button id="btn_csv" class="col-sm-4 btn btn-primary">CSV eFaktur</button>
+                            <button id="btn_csv" onclick="csvEfaktur()" class="col-sm-4 btn btn-primary">CSV eFaktur</button>
                         </div>
                         <div class="row mb-1" id="div_namafile" style="display: none">
                             <label class="col-sm-3 text-right col-form-label pl-0">Nama File</label>
@@ -216,6 +216,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_print" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Laporan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="button_field">
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" id="btn_listing-manual" onclick="printDoc('listing-manual')">Listing Manual</button>
+                            <button class="ml-1 col-sm btn btn-primary" id="btn_bpb-manual" onclick="printDoc('bpb-manual')">BPB Manual</button>
+                        </div>
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" id="btn_listing" onclick="printDoc('listing')">Listing</button>
+                            <button class="ml-1 col-sm btn btn-primary" id="btn_bpb" onclick="printDoc('bpb')">BPB</button>
+                        </div>
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" id="btn_nota-barang-retur" onclick="printDoc('nota-barang-retur')">Nota Barang Retur</button>
+                            <button class="ml-1 col-sm btn btn-primary" id="btn_nota-barang-rusak" onclick="printDoc('nota-barang-rusak')">Nota Barang Rusak</button>
+                        </div>
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" id="btn_selisih" onclick="printDoc('selisih')">Selisih</button>
+                            <button class="ml-1 col-sm btn btn-primary" id="btn_struk" onclick="printDoc('struk')">Struk</button>
+                            <button class="ml-1 col-sm btn btn-primary" id="btn_reset" onclick="printDoc('reset')">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         body {
             background-color: #edece9;
@@ -293,6 +328,7 @@
         var paramVB;
         var paramStatusBaru;
         var tableRow;
+        var noreset;
 
         $(document).ready(function(){
             $('#tglnrb').datepicker({
@@ -308,6 +344,10 @@
         });
 
         function makeDataTable(){
+            if($.fn.DataTable.isDataTable('#table_data')){
+                $('#table_data').DataTable().destroy();
+            }
+
             $('#table_data').dataTable({
                 ordering: false,
                 searching: false,
@@ -450,8 +490,13 @@
             }).then(function(result){
                 paramTypeRetur = result;
 
-                initial();
-                $('#nodoc').select();
+                if(paramTypeRetur == 'M'){
+                    initial();
+                    $('#nodoc').select();
+                }
+                else{
+
+                }
             });
         }
 
@@ -714,19 +759,13 @@
 
                     tableRow = response.length;
 
-                    for(i=0;i<response.length;i++){
-                        arrAdtData[i] = {
-                            'rom_avgcost' : response[i].rom_avgcost,
-                            'rom_flagbkp' : response[i].rom_flagbkp,
-                            'rom_flagbkp2' : response[i].rom_flagbkp2,
-                            'prd_deskripsipanjang' : response[i].prd_deskripsipanjang,
-                            'rom_prdcd' : response[i].rom_prdcd,
-                        };
+                    arrAdtData = response;
 
+                    for(i=0;i<response.length;i++){
                         $('#table_data tbody').append(`
                             <tr id="row-data-${i}" onmouseover="showDesc(${i})">
                                 <td class="align-middle"><button class="btn btn-danger btn-delete" onclick="deleteRow(${i})"><i class="fas fa-times"></i></button></td>
-                                <td class="align-middle"><input type="text" maxlength="8" onkeypress="getPRDCD(${i}, event)" class="form-control prdcd" value="${response[i].rom_prdcd}"></td>
+                                <td class="align-middle"><input type="text" maxlength="7" onkeypress="getPRDCD(${i}, event)" class="form-control prdcd" value="${response[i].rom_prdcd}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right harga" value="${convertToRupiah2(response[i].rom_hrg)}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right total" value="${convertToRupiah2(response[i].rom_ttl)}"></td>
                                 <td class="align-middle"><input type="number" onchange="fnQTY(${i}, event, true)" onkeypress="fnQTY(${i}, event, false)" class="form-control text-right qty" value="${response[i].rom_qty}"></td>
@@ -745,13 +784,14 @@
 
                     d = arrData[0];
 
+                    $('#tgldoc').val(d.rom_tgldokumen);
                     $('#kodemember').val(d.rom_member);
                     $('#kodetoko').val(d.rom_kodetoko);
                     $('#nomornrb').val(d.rom_noreferensi);
                     $('#tglnrb').val(d.rom_tglreferensi);
                     $('#namadriver').val(d.rom_namadrive);
 
-                    if(d.rom_refrensistruk == 'VB')
+                    if(d.rom_referensistruk == 'VB')
                         paramVB = 'Y';
                     else paramVB = 'N';
 
@@ -789,7 +829,7 @@
                         $('.nonjual').prop('disabled',true);
 
                         $('.prdcd').prop('disabled',true);
-                        $('#btn_csv').prop('disabled',true);
+                        $('#btn_csv').prop('disabled',false);
                     }
 
                     showDesc(0);
@@ -821,9 +861,9 @@
                 $('#hso_qty2').val(arrAdtData[index].hso_qty2);
                 $('#hso_qty3').val(arrAdtData[index].hso_qty3);
 
-                $('#hso_hrgsatuan1').val(arrAdtData[index].hso_hrgsatuan1);
-                $('#hso_hrgsatuan2').val(arrAdtData[index].hso_hrgsatuan2);
-                $('#hso_hrgsatuan3').val(arrAdtData[index].hso_hrgsatuan3);
+                $('#hso_hrgsatuan1').val(convertToRupiah2(arrAdtData[index].hso_hrgsatuan1));
+                $('#hso_hrgsatuan2').val(convertToRupiah2(arrAdtData[index].hso_hrgsatuan2));
+                $('#hso_hrgsatuan3').val(convertToRupiah2(arrAdtData[index].hso_hrgsatuan3));
             }
             else{
                 $('#deskripsi').val('');
@@ -842,7 +882,7 @@
             $('#row-data-'+index).addClass('selected');
         }
 
-        $('#btn_delete').on('click',function(){
+        function deleteData(){
             if(arrData[0].rom_statusdata == '2'){
                 swal({
                     title: 'Data Retur OMI via DCP tidak dapat dibatalkan!',
@@ -903,7 +943,7 @@
                     }
                 });
             }
-        });
+        }
 
         function clearData(){
             $('#btn_new').prop('disabled',false);
@@ -919,6 +959,8 @@
             makeDataTable();
 
             arrData = [];
+            arrAdtData = [];
+            arrCurrData = [];
             tableRow = 0;
 
             $('input').val('');
@@ -934,6 +976,8 @@
             $('#row-data-'+index).remove();
 
             arrData[index] = null;
+            arrAdtData[index] = null;
+            arrCurrData[index] = null;
 
             makeDataTable();
         }
@@ -953,7 +997,7 @@
                 $('#table_data tbody').append(`
                 <tr id="row-data-${row}" onmouseover="showDesc(${row})">
                     <td class="align-middle"><button class="btn btn-danger btn-delete" onclick="deleteRow(${row})"><i class="fas fa-times"></i></button></td>
-                    <td class="align-middle"><input type="text" maxlength="8" onkeypress="getPRDCD(${row}, event)" class="form-control prdcd"></td>
+                    <td class="align-middle"><input type="text" maxlength="7" onkeypress="getPRDCD(${row}, event)" class="form-control prdcd"></td>
                     <td class="align-middle"><input disabled class="form-control text-right harga"></td>
                     <td class="align-middle"><input disabled class="form-control text-right total"></td>
                     <td class="align-middle"><input type="number" onchange="fnQTY(${row}, event, true)" onkeypress="fnQTY(${row}, event, false)" class="form-control text-right qty"></td>
@@ -972,57 +1016,88 @@
 
         function getPRDCD(row, event){
             if(event.which == 13){
-                $.ajax({
-                    url: '{{ url()->current() }}/get-prdcd',
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: {
-                        prdcd: $('#row-data-'+row).find('.prdcd').val(),
-                        nodoc: $('#nodoc').val(),
-                        tgldoc: $('#tgldoc').val()
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
+                found = 0;
+                plu = convertPlu($('#row-data-'+row).find('.prdcd').val());
 
-                        currRow = $('#row-data-'+row);
-
-                        currRow.find('.prdcd').val(response.prd_prdcd)
-
-                        arrAdtData[row] = {
-                            'rom_avgcost' : response.st_avgcost,
-                            'rom_flagbkp' : response.prd_flagbkp1,
-                            'rom_flagbkp2' : response.prd_flagbkp2,
-                            'prd_deskripsipanjang' : response.prd_deskripsipanjang,
-                            'rom_prdcd' : response.prd_prdcd,
-                        };
-
-                        if(paramTypeRetur == 'T')
-                            currRow.find('.realisasi').select();
-                        else currRow.find('.qty').select();
-
-                        // arrData[row] = {
-                        //     'prd_deskripsipanjang' : response.prd_deskripsipanjang,
-                        //     'rom_prdcd' : response.prd_prdcd,
-                        // };
-
-                        showDesc(row);
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal({
-                            title: 'Terjadi kesalahan!',
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        }).then(() => {
-                            $('#table_data tbody tr:eq('+row+')').find('.prdcd').select();
-                        });
+                $('.prdcd').each(function(){
+                    if($(this).val() == plu){
+                        found++;
                     }
                 });
+
+                if(found > 1){
+                    $('#table_data tbody tr:eq('+row+')').find('.prdcd').val(plu);
+
+                    swal({
+                        title: 'PLU '+plu+' sudah ada!',
+                        icon: 'error'
+                    }).then(() => {
+                        $('#table_data tbody tr:eq('+row+')').find('.prdcd').select();
+                    });
+                }
+                else{
+                    $.ajax({
+                        url: '{{ url()->current() }}/get-prdcd',
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            prdcd: $('#row-data-'+row).find('.prdcd').val(),
+                            nodoc: $('#nodoc').val(),
+                            tgldoc: $('#tgldoc').val(),
+                            kodemember: $('#kodemember').val()
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            currRow = $('#row-data-'+row);
+
+                            currRow.find('.prdcd').val(response.prd_prdcd)
+
+                            arrAdtData[row] = {
+                                'rom_avgcost' : response.st_avgcost,
+                                'rom_flagbkp' : response.prd_flagbkp1,
+                                'rom_flagbkp2' : response.prd_flagbkp2,
+                                'prd_deskripsipanjang' : response.prd_deskripsipanjang,
+                                'rom_prdcd' : response.prd_prdcd,
+                                'hso_tgldokumen1' : response.hso_tgldokumen1,
+                                'hso_qty1' : response.hso_qty1,
+                                'hso_hrgsatuan1' : response.hso_hrgsatuan1,
+                                'hso_tgldokumen2' : response.hso_tgldokumen2,
+                                'hso_qty2' : response.hso_qty2,
+                                'hso_hrgsatuan2' : response.hso_hrgsatuan2,
+                                'hso_tgldokumen3' : response.hso_tgldokumen3,
+                                'hso_qty3' : response.hso_qty3,
+                                'hso_hrgsatuan3' : response.hso_hrgsatuan3,
+                            };
+
+                            if(paramTypeRetur == 'T')
+                                currRow.find('.realisasi').select();
+                            else currRow.find('.qty').select();
+
+                            // arrData[row] = {
+                            //     'prd_deskripsipanjang' : response.prd_deskripsipanjang,
+                            //     'rom_prdcd' : response.prd_prdcd,
+                            // };
+
+                            showDesc(row);
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: 'Terjadi kesalahan!',
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            }).then(() => {
+                                $('#table_data tbody tr:eq('+row+')').find('.prdcd').select();
+                            });
+                        }
+                    });
+                }
             }
         }
 
@@ -1150,6 +1225,8 @@
 
             arrCurrData = [];
 
+            qty = 0;
+
             $('#table_data tbody tr').each(function(){
                 if($(this).find('.prdcd').val() != ''){
                     d = {
@@ -1167,7 +1244,15 @@
                     };
 
                     arrCurrData.push(d);
+
+                    qty += parseInt(unconvertToRupiah($(this).find('.qty').val()));
                 }
+            });
+
+            hitungSelisih = 0;
+
+            $('.selisih').each(function(){
+                hitungSelisih += parseInt($(this).val());
             });
 
             swal({
@@ -1184,7 +1269,6 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         data: {
-                            oldData: arrData,
                             newData: arrCurrData,
                             typeRetur: paramTypeRetur,
                             statusBaru: paramStatusBaru,
@@ -1194,7 +1278,9 @@
                             tgldokumen: $('#tgldoc').val(),
                             noreferensi: $('#nomornrb').val(),
                             tglreferensi: $('#tglnrb').val(),
-                            namadrive: $('#namadriver').val()
+                            namadrive: $('#namadriver').val(),
+                            hitungSelisih: hitungSelisih,
+                            qty: qty
                         },
                         beforeSend: function () {
                             $('#modal-loader').modal('show');
@@ -1203,18 +1289,19 @@
                             $('#modal-loader').modal('hide');
 
                             $('#btn_print').prop('disabled',false);
+                            $('#btn_delete').prop('disabled',false);
 
                             swal({
                                 title: response.message,
                                 icon: 'success'
                             }).then(() => {
-                                getData($('#nodoc').val());
+                                // getData($('#nodoc').val());
                             });
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
                             swal({
-                                title: 'Terjadi kesalahan!',
+                                title: error.responseJSON.title ? error.responseJSON.title : 'Terjadi kesalahan!',
                                 text: error.responseJSON.message,
                                 icon: 'error',
                             });
@@ -1223,6 +1310,223 @@
                 }
             });
         }
+
+        function print(){
+            swal({
+                title: 'Yakin ingin print data?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((result) => {
+                if(result){
+                    hitungSelisih = 0;
+
+                    $('.selisih').each(function(){
+                        hitungSelisih += parseInt($(this).val());
+                    });
+
+                    $.ajax({
+                        url: '{{ url()->current() }}/print',
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            nodoc: $('#nodoc').val(),
+                            tgldoc: $('#tgldoc').val(),
+                            nonrb: $('#nomornrb').val(),
+                            tglnrb: $('#tglnrb').val(),
+                            kodemember: $('#kodemember').val(),
+                            hitungSelisih: hitungSelisih,
+                            driver: $('#namadriver').val(),
+                            paramTypeRetur: paramTypeRetur
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                $('#btn_csv').prop('disabled',false);
+
+                                $('#button_field button').prop('disabled',true);
+
+                                for(i=0;i<response.print.length;i++){
+                                    $('#btn_'+response.print[i]).prop('disabled',false);
+                                }
+
+                                noreset = response.noreset;
+
+                                $('#m_print').modal('show');
+                            });
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+
+                            errorData = error.responseJSON;
+
+                            if(errorData.type == 'TAGX'){
+                                swal({
+                                    title: errorData.message,
+                                    icon: 'error',
+                                }).then(() => {
+                                    swal({
+                                        title: 'Silahkan edit file R terlebih dahulu!',
+                                        icon: 'warning',
+                                    }).then(() => {
+                                        deleteData();
+                                    });
+                                });
+                            }
+                            else if(errorData.type == 'DRIVER'){
+                                swal({
+                                    title: errorData.title,
+                                    text: errorData.message,
+                                    icon: 'error'
+                                });
+                            }
+                            else{
+                                swal({
+                                    title: 'Terjadi kesalahan!',
+                                    text: errorData.message,
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function printDoc(type){
+            if(type == 'reset')
+                window.open(`{{ url()->current() }}/print-${type}?noreset=${noreset}&tgldoc=${$('#tgldoc').val()}`, '_blank');
+            else window.open(`{{ url()->current() }}/print-${type}?nodoc=${$('#nodoc').val()}&tgldoc=${$('#tgldoc').val()}`, '_blank');
+        }
+
+        function csvEfaktur(){
+            $.ajax({
+                url: '{{ url()->current() }}/create-faktur-check',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    paramVB: paramVB,
+                    kodemember: $('#kodemember').val(),
+                    kodetoko: $('#kodetoko').val(),
+                    nodoc: $('#nodoc').val(),
+                    tgldoc: $('#tgldoc').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    if(response.message == 'OK')
+                        window.location.href = `{{ url()->current() }}/create-faktur?nodoc=${$('#nodoc').val()}&tgldoc=${$('#tgldoc').val()}&kodetoko=${$('#kodetoko').val()}&kodemember=${$('#kodemember').val()}`;
+                },
+                error: function (error) {
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#modal-loader').modal('hide');
+                    });
+                }
+            });
+        }
+
+        var Upload = function (file) {
+            this.file = file;
+        };
+
+        Upload.prototype.getType = function() {
+            return this.file.type;
+        };
+        Upload.prototype.getSize = function() {
+            return this.file.size;
+        };
+        Upload.prototype.getName = function() {
+            return this.file.name;
+        };
+
+        $('#btn_upload').on('click',function(){
+            $('#fileR').click();
+        });
+
+        $('#fileR').on('change',function(e){
+            var filename = e.target.files[0].name;
+            var directory = $(this).val();
+
+            var file = $(this)[0].files[0];
+
+            filecsv = new Upload(file);
+
+            Swal.fire({
+                title: 'Upload file ' + filecsv.getName() + ' ?',
+                icon: 'warning',
+                showCancelButton: true,
+                focusCancel: true,
+            }).then(function(ok){
+                if(ok.value === true){
+                    var formData = new FormData();
+                    var filename = filecsv.getName();
+
+                    // add assoc key values, this will be posts values
+                    formData.append("file", filecsv.file, filecsv.getName());
+                    formData.append("kodespi", $('#kodespi').val());
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url()->current() }}/upload",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            $('#csv').val('');
+
+                            Swal.fire({
+                                title: response.title,
+                                text: response.message,
+                                icon: 'success'
+                            }).then(function(ok){
+                                getData($('#kodespi').val());
+                                $('#modal-loader').modal('hide');
+                            });
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+
+                            Swal.fire({
+                                title: error.responseJSON.title,
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            }).then(() => {
+                                $('#modal-loader').modal('hide');
+                                $('#csv').val('');
+                            });
+                        },
+                        async: true,
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        timeout: 60000
+                    });
+                }
+            });
+        });
     </script>
 
 @endsection

@@ -7,51 +7,48 @@
     <div class="container" id="main_view">
         <div class="row">
             <div class="offset-1 col-sm-10">
+
                 <fieldset class="card border-secondary">
-                    <div class="card-body">
-                        <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">CETAK LAPORAN PROMOSI</legend>
-                            <div class="card-body ">
-                                <div class="row form-group">
-                                    <label class="col-sm-2 col-form-label text-md-right">Kode Rak</label>
-                                    <div class="col-sm-4 buttonInside">
-                                        <input type="text" id="koderak" class="form-control field field3" field="3">
-                                        <button class="btn btn-lov p-0" type="button" data-toggle="modal"
-                                                data-target="#m_lov_koderak">
-                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-sm-2 col-form-label text-md-right">Kode Promosi</label>
-                                    <div class="col-sm-4 buttonInside">
-                                        <input type="text" id="kodepromosi" class="form-control field field3" field="3">
-                                        <button class="btn btn-lov p-0" type="button" data-toggle="modal"
-                                                data-target="#m_lov_kodepromosi">
-                                            <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label class="col-sm-2 col-form-label text-md-right">Cetak</label>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" id="cetakby">
-                                            <option value="ALL">By All</option>
-                                            <option value="RAK">By Rak</option>
-                                            <option value="PROMO">By Promosi</option>
-                                            <option value="RAKPROMO">By Rak & Promosi</option>
-                                            <option value="GFPRINT">Promosi Gift Berjalan</option>
-                                            <option value="CBPRINT">Promosi Cashback Berjalan</option>
-                                            <option value="PRINTBESOK">Promosi yang akan Berakhir</option>
-                                        </select>
-                                    </div>
-                                    <div class="offset-2 col-sm-2">
-                                        <button class="col btn btn-success" onclick="cetak()">Cetak
-                                        </button>
-                                    </div>
-                                </div>
+                    <legend class="w-auto ml-3">CETAK LAPORAN PROMOSI</legend>
+                    <div class="card-body ">
+                        <div class="row form-group">
+                            <label class="col-sm-2 col-form-label text-md-right">Kode Rak</label>
+                            <div class="col-sm-4 buttonInside">
+                                <input type="text" id="koderak" class="form-control field field3" field="3">
+                                <button class="btn btn-lov p-0" type="button" data-toggle="modal"
+                                        data-target="#m_lov_koderak">
+                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                </button>
                             </div>
-                        </fieldset>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-sm-2 col-form-label text-md-right">Kode Promosi</label>
+                            <div class="col-sm-4 buttonInside">
+                                <input type="text" id="kodepromosi" class="form-control field field3" field="3">
+                                <button class="btn btn-lov p-0" type="button" data-toggle="modal"
+                                        data-target="#m_lov_kodepromosi">
+                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-sm-2 col-form-label text-md-right">Cetak</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="cetakby">
+                                    <option value="ALL">By All</option>
+                                    <option value="RAK">By Rak</option>
+                                    <option value="PROMO">By Promosi</option>
+                                    <option value="RAKPROMO">By Rak & Promosi</option>
+                                    <option value="GFPRINT">Promosi Gift Berjalan</option>
+                                    <option value="CBPRINT">Promosi Cashback Berjalan</option>
+                                    <option value="PRINTBESOK">Promosi yang akan Berakhir</option>
+                                </select>
+                            </div>
+                            <div class="offset-2 col-sm-2">
+                                <button class="col btn btn-success" onclick="cetak()">Cetak
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>

@@ -290,7 +290,7 @@
                         $('#cus_kode').val(response.kode);
                         $('#cus_nama').val(response.nama);
                         $('#keterangan').val(response.status);
-                        $('#btn_proses').prop('disabled',response.button);
+                        $('#btn_proses').prop('disabled',response.button == 'false' ? true : false);
 
                         data = response;
                         $('#detail').html('');
@@ -411,6 +411,8 @@
                         swal({
                             title: 'Transaksi berhasil diproses!',
                             icon: 'success'
+                        }).then(()=>{
+                            getData();
                         });
 
                         $('#btn_proses').prop('disabled',false);

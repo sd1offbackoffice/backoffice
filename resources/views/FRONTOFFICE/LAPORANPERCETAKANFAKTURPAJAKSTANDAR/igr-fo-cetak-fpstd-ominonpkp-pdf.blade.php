@@ -2,75 +2,71 @@
 <html>
 
 <head>
-        <title>{{ strtoupper($data1[0]->judul) }}</title>
+    <title>LAPORAN PENCETAKAN FAKTUR PAJAK STANDAR OMI NON PKP</title>
 
-    </head>
-    <body>
+</head>
+<body>
 
-    <?php
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-    <header>
-        <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-                {{ $perusahaan->prs_namacabang }}<br><br>
-                NOMOR TRN : {{ $data1[0]->trbo_nodoc }} <br>
-                TANGGAL : {{ substr($data1[0]->trbo_tgldoc,0,10) }}<br><br>
-                NO. REF : {{ substr($data1[0]->trbo_noreff,0,10) }}<br><br>
-                KET : {{ substr($data1[0]->ket,0,10) }}<br><br>
-            </p>
-        </div>
-        <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                PRG : IGR BO LIST<br>
-            </p><br><br>
-            <p>
-                {{ $data1[0]->status }}
-            </p>
-        </div>
-        <h2 style="text-align: center">  {{ $data1[0]->judul }} </h2>
-    </header>
+<?php
+$datetime = new DateTime();
+$timezone = new DateTimeZone('Asia/Jakarta');
+$datetime->setTimezone($timezone);
+?>
+<header>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
+            {{ $perusahaan->prs_namacabang }}<br><br>
+        </p>
+    </div>
+    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
+        </p>
+    </div>
+    <h2 style="text-align: center">LAPORAN PENCETAKAN FAKTUR PAJAK STANDAR OMI NON PKP</h2>
+    <h4 style="text-align: center">
+        {{ substr($tgl1,0,10) .' - '. substr($tgl2,0,10) }}<br><br>
+    </h4>
+</header>
 
-    <main style="margin-top: 50px;">
-        <table class="table">
-            <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-            <tr>
-                <th rowspan="2">NO</th>
-                <th rowspan="2">PLU</th>
-                <th rowspan="2">NAMA BARANG</th>
-                <th colspan="2">KEMASAN</th>
-                <th colspan="2">KWANTUM</th>
-                <th rowspan="2">HARGA<br>SATUAN</th>
-                <th rowspan="2">TOTAL</th>
-                <th rowspan="2">KET</th>
-            </tr>
-            </thead>
-            <tbody>
-            @php
-                $total = 0;
-                $i=1;
+<main style="margin-top: 50px;">
+    <table class="table">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <tr>
+            <th>TGL STR</th>
+            <th>CUSTOMER</th>
+            <th>STT</th>
+            <th>KASIR</th>
+            <th>STR. NO</th>
+            <th>NO SERI FP</th>
+            <th>TGL FP</th>
+            <th>DPP</th>
+            <th>PPN</th>
+        </tr>
+        </thead>
+        <tbody>
+        @php
+            $total_dpp = 0;
+            $total_ppn = 0;
         @endphp
 
-        @if(sizeof($data1)!=0)
-            @foreach($data1 as $d)
+        @if(sizeof($data)!=0)
+            @foreach($data as $d)
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->trbo_prdcd }}</td>
-                    <td>{{ $d->prd_deskripsipanjang}}</td>
-                    <td>{{ $d->trbo_unit }}</td>
-                    <td class="right">{{ $d->trbo_frac }}</td>
-                    <td class="right">{{ $d->ctn }}</td>
-                    <td class="right">{{ $d->pcs }}</td>
-                    <td class="right">{{ number_format(round($d->trbo_hrgsatuan), 0, '.', ',') }}</td>
-                    <td class="right">{{ number_format(round($d->total), 0, '.', ',') }}</td>
-                    <td>{{ $d->trbo_keterangan }}</td>
+                    <td>{{ substr($d->tgl_struk,0,10) }}</td>
+                    <td>{{ $d->customer }}</td>
+                    <td>{{ $d->station}}</td>
+                    <td>{{ $d->kasir }}</td>
+                    <td>{{ $d->struk_no }}</td>
+                    <td>{{ $d->no_seri_fp }}</td>
+                    <td>{{ substr($d->tgl_fp,0,10) }}</td>
+                    <td>{{ $d->dpp }}</td>
+                    <td>{{ $d->ppn }}</td>
                 </tr>
                 @php
-                    $i++;
-                    $total += $d->total;
+                    $total_dpp += $d->dpp;
+                    $total_ppn += $d->ppn;
                 @endphp
             @endforeach
         @else
@@ -78,14 +74,12 @@
                 <td colspan="10">TIDAK ADA DATA</td>
             </tr>
         @endif
-
-
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="7"></td>
-            <td style="font-weight: bold">TOTAL SELURUHNYA</td>
-            <td class="right">{{ number_format(round($total), 0, '.', ',') }}</td>
+            <td colspan="7" align="right">TOTAL</td>
+            <td align="center">{{ $total_dpp }}</td>
+            <td align="center">{{ $total_ppn }}</td>
         </tr>
         </tfoot>
     </table>
@@ -99,7 +93,7 @@
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 750pt 500pt;
+        size: 600pt 500pt;
     }
 
     header {

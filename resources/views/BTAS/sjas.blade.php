@@ -296,6 +296,28 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_cetak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Laporan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" onclick="cetak('all')">Semua Item Struk</button>
+                            <button class="ml-1 col-sm btn btn-primary" onclick="cetak('item')">Hanya Item yang diambil</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         body {
             background-color: #edece9;
@@ -353,7 +375,9 @@
         var sjasok = 0;
 
         $(document).ready(function(){
-
+            $('#tglstruk').datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
         });
 
         function showLovCustomer(){
@@ -441,11 +465,21 @@
                     $('#station').val(data.station);
                     $('#kasir').val(data.kasir);
                     $('#transaksi').val(data.no);
-                    $('#nosjas').val(data.nosj);
-                    $('#tglsjas').val(data.tglsj);
-                    $('#tahapan').val(data.tahap);
-                    $('#status').val(data.status);
-                    $('#tgltitip').val(data.tgltitip);
+
+                    if(data.nosj == null){
+                        $('#nosjas').val('BARU');
+                        $('#tglsjas').val(formatDate('now'));
+                        $('#tahapan').val('1');
+                        $('#status').val('BARU');
+                        $('#tgltitip').val(formatDate('now'));
+                    }
+                    else{
+                        $('#nosjas').val(data.nosj);
+                        $('#tglsjas').val(data.tglsj);
+                        $('#tahapan').val(data.tahap);
+                        $('#status').val(data.status);
+                        $('#tgltitip').val(data.tgltitip);
+                    }
 
                     $('#detail').html('');
                     for(i=0;i<detail.length;i++){
@@ -471,12 +505,12 @@
 
         function fillDetail(data, row){
             $('#detail').append(
-                `<div class="row form-group m-1 mb-2">
+                `<div class="row form-group m-1 mb-2 row-data">
                     <div class="col-sm-1 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled value="${ data.trjd_seqno }">
+                        <input type="text" class="form-control text-center seqno" disabled value="${ data.trjd_seqno }">
                     </div>
                     <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled value="${ data.trjd_prdcd }">
+                        <input type="text" class="form-control text-center prdcd" disabled value="${ data.trjd_prdcd }">
                     </div>
                     <div class="col-sm pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled value="${ data.trjd_quantity }">
@@ -485,13 +519,13 @@
                         <input type="text" class="form-control text-center" disabled value="${ data.qtyrefund }">
                     </div>
                     <div class="col-sm pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled value="${ data.qtytitip }">
+                        <input type="text" class="form-control text-center qtytitip" disabled value="${ data.qtytitip }">
                     </div>
                     <div class="col-sm pr-1 pl-1">
-                        <input type="text" class="form-control text-center" id="qtyambil-${row}" value="${ data.qtyambil }" onfocus="showInfo(${row})" onkeypress="editQty(event,${row})">
+                        <input type="text" class="form-control text-center qtyambil" id="qtyambil-${row}" value="${ data.qtyambil }" onfocus="showInfo(${row})" onkeypress="editQty(event,${row})">
                     </div>
                     <div class="col-sm pr-1 pl-1">
-                        <input type="text" class="form-control text-center" id="qtysisa-${row}" disabled value="${ data.qtysisa }">
+                        <input type="text" class="form-control text-center qtysisa" id="qtysisa-${row}" disabled value="${ data.qtysisa }">
                     </div>
                 </div>`
             );
@@ -575,7 +609,7 @@
             if(e.which == 13){
                 currRow = row;
 
-                if($('#qtyambil-'+row).val() > $('#qtysisa-'+row).val()){
+                if(parseInt($('#qtyambil-'+row).val()) > detail[row].qtysisaall){
                     swal({
                         title: 'Qty tidak boleh lebih besar dari sisa!',
                         icon: 'warning'
@@ -584,31 +618,35 @@
                     });
                 }
                 else{
-                    $('#qtysisa-'+row).val(parseInt(detail[row].qtysisa) - parseInt($('#qtyambil-'+row).val()));
+                    if(parseInt($('#qtyambil-'+row).val()) < parseInt(detail[row].qtysisaall)){
+                        $('#qtysisa-'+row).val(detail[row].qtysisaall - parseInt($('#qtyambil-'+row).val()));
 
-                    if(data.flagoto == '1'){
-                        swal({
-                            title: 'Item sudah dititipkan lebih dari 2 hari, harus dibuatkan SJ semua!',
-                            icon: 'warning',
-                            buttons: {
-                                ok : 'ALL QTY',
-                                aut : 'Autorisasi MGR'
-                            }
-                        }).then((ok) => {
-                            if(ok == 'aut'){
-                                $('#aut_user').val('');
-                                $('#aut_pass').val('');
-                                $('#m_autorisasi').modal('show');
-                            }
-                            else{
-
-                            }
-                        });
+                        if(data.flagoto == '1'){
+                            swal({
+                                title: 'Item sudah dititipkan lebih dari 2 hari, harus dibuatkan SJ semua!',
+                                icon: 'warning',
+                                buttons: {
+                                    ok : 'ALL QTY',
+                                    aut : 'Autorisasi MGR'
+                                }
+                            }).then((ok) => {
+                                if(ok == 'aut'){
+                                    $('#aut_user').val('');
+                                    $('#aut_pass').val('');
+                                    $('#m_autorisasi').modal('show');
+                                }
+                                else{
+                                    $('#qtyambil-'+row).val(detail[row].qtysisaall);
+                                    $('#qtysisa-'+row).val(0)
+                                }
+                            });
+                        }
                     }
                     else{
-                        $('#qtysisa-'+row).val(detail[row].qtysisa);
-                        $('#qtyambil-'+row).val(0).select();
+                        $('#qtysisa-'+row).val(parseInt(detail[row].qtysisaall) - parseInt(nvl($('#qtyambil-'+row).val(), 0)));
                     }
+
+                    $('#qtyambil-'+row).parent().parent().next().find('div:eq(5) input').focus().select();
                 }
             }
         }
@@ -637,16 +675,14 @@
                     $('#modal-loader').modal('hide');
 
                     if(response == 'false'){
-                        if(response == 'false'){
-                            alertError('Autorisasi untuk masa perpanjangan ditolak!','');
-                        }
+                        alertError('Autorisasi untuk masa perpanjangan ditolak!','');
                     }
                     else{
                         if(sjasok == '1'){
 
                         }
                         else{
-                            $('#qtysisa-'+currRow).val(detail[currRow].qtysisa - $('#qtyambil-'+currRow).val());
+                            // $('#qtysisa-'+currRow).val(detail[currRow].qtysisa - $('#qtyambil-'+currRow).val());
                         }
 
                         $('#m_autorisasi').modal('hide');
@@ -684,25 +720,56 @@
                     $('#modal-loader').modal('hide');
 
                     if(response == 'true'){
-                        swal({
-                            title: 'Cetak Surat Jalan dengan model?',
-                            icon: 'warning',
-                            buttons: {
-                                all : 'Semua Item Struk',
-                                item : 'Hanya Item yang diambil',
-                                cancel : 'BATAL'
-                            }
-                        }).then((ok) => {
-                            if(ok){
-                                window.open(`{{ url()->current() }}/print?nosj=${$('#nosjas').val()}&tahap=${$('#tahapan').val()}&cus_kode=${$('#cus_kode').val()}&item=${ok.substr(0,1).toUpperCase()}&reprint=Y`,'_blank');
-                            }
-                            else{
-
-                            }
-                        });
+                        $('#m_cetak').modal('show');
                     }
                     else{
+                        sumqtyambil = 0;
+                        $('.qtyambil').each(function(){
+                            sumqtyambil += parseInt($(this).val());
+                        });
 
+                        if(sumqtyambil == 0){
+                            swal({
+                                title: 'Qty Pengambilan masih kosong!',
+                                icon: 'error'
+                            });
+                        }
+                        else{
+                            sjasok = 0;
+
+                            diffDays = (new Date() - $('#tglstruk').datepicker('getDate')) /1000/60/60/24;
+
+                            sumqtysisa = 0;
+                            $('.qtysisa').each(function(){
+                                sumqtysisa += parseInt($(this).val());
+                            });
+
+                            if(diffDays > 2 && sumqtysisa > 0){
+                                swal({
+                                    title: 'Item sudah dititipkan lebih dari 2 hari, harus dibuatkan SJ semua!',
+                                    icon: 'warning',
+                                    buttons: {
+                                        ok : 'ALL QTY',
+                                        aut : 'Autorisasi MGR'
+                                    }
+                                }).then((ok) => {
+                                    if(ok == 'aut'){
+                                        $('#aut_user').val('');
+                                        $('#aut_pass').val('');
+                                        $('#m_autorisasi').modal('show');
+                                    }
+                                    else{
+                                        for(i=0;i<detail.length;i++){
+                                            $('#qtyambil-'+i).val(detail[i].qtysisaall);
+                                            $('#qtysisa-'+i).val(0);
+                                        }
+                                    }
+                                });
+                            }
+                            else{
+                                simpan();
+                            }
+                        }
                     }
                 },
                 error: function (error) {
@@ -710,6 +777,66 @@
                     swal({
                         title: error.responseJSON.title,
                         text: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+
+                    });
+                }
+            });
+        }
+
+        function cetak(tipe){
+            if(tipe == 'all')
+                window.open(`{{ url()->current() }}/print?nosj=${$('#nosjas').val()}&tahap=${$('#tahapan').val()}&cus_kode=${$('#cus_kode').val()}&item=A&reprint=Y`,'_blank');
+            else window.open(`{{ url()->current() }}/print?nosj=${$('#nosjas').val()}&tahap=${$('#tahapan').val()}&cus_kode=${$('#cus_kode').val()}&item=I&reprint=Y`,'_blank');
+        }
+
+        function simpan(){
+            data = [];
+
+            sumsisa = 0;
+
+            $('.row-data').each(function(){
+                data.push({
+                    prdcd: $(this).find('.prdcd').val(),
+                    seqno : $(this).find('.seqno').val(),
+                    qtytitip : $(this).find('.qtytitip').val(),
+                    qtyambil : $(this).find('.qtyambil').val()
+                });
+
+                sumsisa += parseInt($(this).find('.qtysisa').val());
+            });
+
+            $.ajax({
+                url: '{{ url()->current() }}/save',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nosj: $('#nosjas').val(),
+                    kodecustomer: $('#cus_kode').val(),
+                    nostruk: $('#station').val()+$('#kasir').val()+$('#transaksi').val(),
+                    tglstruk: $('#tglstruk').val(),
+                    tahapan: $('#tahapan').val(),
+                    data: data,
+                    sumsisa: sumsisa
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    $('#nosjas').val(response.nosj);
+                    $('#tahapan').val(response.tahapan);
+
+                    $('#m_cetak').modal('show');
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.message,
                         icon: 'error',
                     }).then(() => {
 

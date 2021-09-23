@@ -462,7 +462,7 @@ class ActualController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -556,7 +556,7 @@ class ActualController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -588,7 +588,7 @@ class ActualController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -638,7 +638,7 @@ ORDER BY JS_CASHIERSTATION, JS_CASHIERID");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -669,7 +669,7 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -701,7 +701,7 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -733,7 +733,7 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -794,7 +794,7 @@ ORDER BY trpt_cus_kodemember");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -856,7 +856,7 @@ ORDER BY trpt_cus_kodemember");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -889,7 +889,7 @@ ORDER BY trpt_cus_kodemember");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
