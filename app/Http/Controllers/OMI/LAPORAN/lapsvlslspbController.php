@@ -15,19 +15,24 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class laprincislvpbController extends Controller
+class lapsvlslspbController extends Controller
 {
 
     public function index()
     {
-        return view('OMI\LAPORAN.laprincislvpb');
+        return view('OMI\LAPORAN.lapsvlslspb');
     }
 
-    public function tagModal(Request $request){
+    public function pbModal(Request $request){
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table("tbmaster_tag")
-            ->selectRaw("tag_kodetag, tag_keterangan")
-            ->where('tag_kodeigr','=',$kodeigr)
+
+        $datas = DB::table("tbmaster_pbomi")
+            ->selectRaw("DISTINCT pbo_nopb, pbo_kodeomi")
+            ->where('pbo_kodeigr','=',$kodeigr)
+            //->whereRaw("trunc(pbo_create_dt) between :tgl1 and :tgl2")
+            ->whereRaw("(SUBSTR(pbo_nostruk,-3,3) <> 'BKL'  OR pbo_nostruk IS NULL)")
+            ->whereRaw("pbo_nokoli IS NULL")
+            ->whereRaw("SUBSTR(pbo_pluigr,1,6) NOT IN ('074828', '074829')")
             ->get();
 
         return Datatables::of($datas)->make(true);

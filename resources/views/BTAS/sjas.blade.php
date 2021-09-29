@@ -373,6 +373,7 @@
         var detail = [];
         var currRow = 0;
         var sjasok = 0;
+        var paramTHP;
 
         $(document).ready(function(){
             $('#tglstruk').datepicker({
@@ -429,6 +430,8 @@
 
                         $('#m_customer').modal('hide');
 
+                        paramTHP = 'N';
+
                         getData();
                     });
                 }
@@ -449,7 +452,9 @@
                     station: $('#station').val(),
                     kasir: $('#kasir').val(),
                     nostruk: $('#transaksi').val(),
-                    tglstruk: $('#tglstruk').val()
+                    tglstruk: $('#tglstruk').val(),
+                    tahap: $('#tahapan').val(),
+                    paramTHP: paramTHP
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -476,7 +481,10 @@
                     else{
                         $('#nosjas').val(data.nosj);
                         $('#tglsjas').val(data.tglsj);
-                        $('#tahapan').val(data.tahap);
+
+                        if(paramTHP == 'N')
+                            $('#tahapan').val(data.tahap);
+
                         $('#status').val(data.status);
                         $('#tgltitip').val(data.tgltitip);
                     }
@@ -560,6 +568,7 @@
         }
 
         function prev(){
+            paramTHP = 'Y';
             if($('#tahapan').val() == '1'){
                 swal({
                     title: 'Sudah pada tahapan awal!',
@@ -568,6 +577,7 @@
             }
             else{
                 $('#tahapan').val(parseInt($('#tahapan').val()) - 1);
+                getData();
             }
         }
 
@@ -580,7 +590,9 @@
                     });
                 }
                 else{
+                    paramTHP = 'Y';
                     $('#tahapan').val(parseInt($('#tahapan').val()) + 1);
+                    getData();
                 }
             }
             else{
@@ -591,7 +603,9 @@
                     });
                 }
                 else{
+                    paramTHP = 'Y';
                     $('#tahapan').val(parseInt($('#tahapan').val()) + 1);
+                    getData();
 
                     if($('#tahapan').val() == parseInt(data.tahap) + 1){
 

@@ -860,7 +860,9 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-lov-kode-omi', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getLovKodeOMI');
                 Route::post('/get-data-omi', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getDataOMI');
                 Route::get('/get-data-master-kredit-limit-omi', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getDataMasterKreditLimitOMI');
+                Route::get('/get-monitoring-data-pb-tolakan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getMonitoringDataPBTolakan');
                 Route::post('/get-data-top', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getDataTop');
+                Route::post('/simpan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@simpan');
             });
         });
         Route::prefix('/retur')->group(function () {
@@ -887,6 +889,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/print-reset', 'OMI\ReturController@printReset');
             Route::get('/create-faktur-check', 'OMI\ReturController@createFakturCheck');
             Route::get('/create-faktur', 'OMI\ReturController@createFaktur');
+            Route::post('/transfer-file-r', 'OMI\ReturController@transferFileR');
         });
 
         Route::prefix('/free-plu-omi-kepala-9')->group(function () {
@@ -1461,6 +1464,11 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'OMI\LAPORAN\laprincislvpbController@index');
                 Route::get('/gettag', 'OMI\LAPORAN\laprincislvpbController@tagModal');
                 Route::get('/cetak', 'OMI\LAPORAN\laprincislvpbController@cetak');
+            });
+
+            Route::prefix('/lapsvlslspb')->group(function () {
+                Route::get('/', 'OMI\LAPORAN\lapsvlslspbController@index');
+                Route::get('/getpb', 'OMI\LAPORAN\lapsvlslspbController@pbModal');
             });
         });
     });

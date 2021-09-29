@@ -251,6 +251,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_transfer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="button_field">
+                        <div class="row form-group">
+                            <label class="col-sm-1 text-right col-form-label pl-0">File</label>
+                            <div class="col-sm-8 pr-0">
+                                <input type="text" class="form-control text-left" id="fileRInfo" disabled>
+                            </div>
+                            <input type="file" class="d-none" id="fileR">
+                            <button id="btn_file" class="col-sm btn btn-secondary ml-0 mr-2" onclick="chooseFileR()">...</button>
+                            <button id="btn_transfer" class="col-sm-2 btn btn-primary" onclick="transferFileR()">Transfer File</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         body {
             background-color: #edece9;
@@ -329,6 +356,7 @@
         var paramStatusBaru;
         var tableRow;
         var noreset;
+        var fileR;
 
         $(document).ready(function(){
             $('#tglnrb').datepicker({
@@ -490,12 +518,13 @@
             }).then(function(result){
                 paramTypeRetur = result;
 
+                initial();
+
                 if(paramTypeRetur == 'M'){
-                    initial();
                     $('#nodoc').select();
                 }
                 else{
-
+                    $('#m_transfer').modal('show');
                 }
             });
         }
@@ -1456,35 +1485,41 @@
             return this.file.name;
         };
 
-        $('#btn_upload').on('click',function(){
+        function chooseFileR(){
             $('#fileR').click();
-        });
+        }
 
         $('#fileR').on('change',function(e){
-            var filename = e.target.files[0].name;
-            var directory = $(this).val();
+            if($('#fileR').val()){
+                var filename = e.target.files[0].name;
+                var directory = $(this).val();
 
-            var file = $(this)[0].files[0];
+                var file = $(this)[0].files[0];
 
-            filecsv = new Upload(file);
+                $('#fileRInfo').val(filename);
 
-            Swal.fire({
-                title: 'Upload file ' + filecsv.getName() + ' ?',
+                fileR = new Upload(file);
+            }
+        });
+
+        function transferFileR(){
+            swal({
+                title: 'Transfer file ' + fileR.getName() + ' ?',
                 icon: 'warning',
-                showCancelButton: true,
-                focusCancel: true,
-            }).then(function(ok){
-                if(ok.value === true){
+                buttons: true,
+                dangerMode: true
+            }).then(function(result){
+                if(result){
                     var formData = new FormData();
-                    var filename = filecsv.getName();
 
                     // add assoc key values, this will be posts values
-                    formData.append("file", filecsv.file, filecsv.getName());
-                    formData.append("kodespi", $('#kodespi').val());
+                    formData.append("fileR", fileR.file, fileR.getName());
+                    // formData.append("kodespi", $('#kodespi').val());
 
                     $.ajax({
                         type: "POST",
-                        url: "{{ url()->current() }}/upload",
+                        url: "{{ url()->current() }}/transfer-file-r",
+                        timeout: 0,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -1494,27 +1529,24 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
-                            $('#csv').val('');
-
-                            Swal.fire({
-                                title: response.title,
-                                text: response.message,
+                            swal({
+                                title: response.message,
                                 icon: 'success'
                             }).then(function(ok){
-                                getData($('#kodespi').val());
+                                $('#m_transfer').modal('hide');
                                 $('#modal-loader').modal('hide');
+                                $('#fileRInfo').val('');
                             });
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
 
-                            Swal.fire({
-                                title: error.responseJSON.title,
-                                text: error.responseJSON.message,
+                            swal({
+                                title: error.responseJSON.message,
                                 icon: 'error',
                             }).then(() => {
                                 $('#modal-loader').modal('hide');
-                                $('#csv').val('');
+                                $('#fileRInfo').val('');
                             });
                         },
                         async: true,
@@ -1522,11 +1554,10 @@
                         cache: false,
                         contentType: false,
                         processData: false,
-                        timeout: 60000
                     });
                 }
             });
-        });
+        }
     </script>
 
 @endsection

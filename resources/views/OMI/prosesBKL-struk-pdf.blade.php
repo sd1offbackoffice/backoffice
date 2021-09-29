@@ -5,7 +5,7 @@
         @page {
             /*margin: 130px 25px 25px 25px;*/
             /*size: 595pt 442pt;*/
-            size: 298pt {{ 230+(count($result)*28) }}pt;
+            size: 298pt {{ 370+(count($result)*28) }}pt;
         }
 
         .header {

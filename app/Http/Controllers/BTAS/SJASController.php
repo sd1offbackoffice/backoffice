@@ -129,17 +129,17 @@ class SJASController extends Controller
             $d->qtysisa = $d->qtytitip - $d->qtyok;
             $d->qtysisaall = $d->qtytitip - $d->qtyok;
 
-            if($data->tahap == 'x1'){
-                $temp = DB::select("SELECT NVL(SJD_QTYSJAS, 0) qty
+            if($request->paramTHP == 'Y'){
+                $temp = DB::selectOne("SELECT NVL(SJD_QTYSJAS, 0) qty
                           FROM TBTR_SJAS_D
                          WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
                            AND SJD_NOSJAS = '".$data->nosj."'
                            AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                            AND SJD_PRDCD = '".$d->trjd_prdcd."'
-                           AND SJD_TAHAPAN = '".$data->tahap."'");
+                           AND SJD_TAHAPAN = '".$request->tahap."'");
 
-                if(count($temp) > 0){
-                    $d->qtyambil = $temp[0]->qty;
+                if($temp){
+                    $d->qtyambil = $temp->qty;
                 }
                 else $d->qtyambil = $d->qtysisa;
             }
@@ -187,9 +187,9 @@ class SJASController extends Controller
                 $tglsj = DB::RAW("to_date('".$temp->sjh_tglsjas."','dd/mm/yyyy')");
             }
 
-            if($request->tahapan == null)
+            if($temp->sjh_frektahapan == null)
                 $tahapan = 1;
-            else $tahapan = $request->tahapan + 1;
+            else $tahapan = intval($temp->sjh_frektahapan) + 1;
 
             $insert = [];
             foreach($request->data as $d){
@@ -282,8 +282,7 @@ class SJASController extends Controller
         to_char(SJD_TGLTAHAPAN,'dd/mm/yyyy') SJD_TGLTAHAPAN, SUBSTR('00' || SJD_TAHAPAN ,LENGTH('00' || SJD_TAHAPAN ) - 1, 2) SJD_TAHAPAN, SJD_SEQNO, SJD_PRDCD, SJD_QTYSJAS,  SJD_QTYSTRUK,
         CUS_NAMAMEMBER,
         PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
-        'PRINT : ' || TO_CHAR(SYSDATE, 'DD-MM-YYYY hh:mm:ss') KET,
-        (sjd_qtystruk - sjd_qtysjas) qtysisa
+        'PRINT : ' || TO_CHAR(SYSDATE, 'DD-MM-YYYY hh:mm:ss') KET
         FROM TBTR_SJAS_H, TBTR_SJAS_D, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
         WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."' AND SJH_NOSJAS = '".$request->nosj."' AND SJH_KODECUSTOMER = '".$request->cus_kode."'
         AND SJD_KODEIGR = SJH_KODEIGR AND SJD_NOSJAS = SJH_NOSJAS AND SJD_KODECUSTOMER = SJH_KODECUSTOMER
@@ -292,6 +291,18 @@ class SJASController extends Controller
         AND PRD_KODEIGR = SJD_KODEIGR AND PRD_PRDCD = SJD_PRDCD
         ".$p_and."
         ORDER BY SJD_SEQNO");
+
+        foreach($data as $d){
+            $temp = DB::selectOne("SELECT SUM (NVL (SJD_QTYSJAS, 0)) qty
+                  FROM TBTR_SJAS_D
+                 WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                   AND SJD_NOSJAS = '".$request->nosj."'
+                   AND SJD_KODECUSTOMER = '".$request->cus_kode."'
+                   AND SJD_TAHAPAN <= '".$request->tahap."'
+                   AND SJD_PRDCD = '".$d->sjd_prdcd."'");
+
+            $d->qtysisa = $d->sjd_qtystruk - $temp->qty;
+        }
 
 //        dd($data);
 

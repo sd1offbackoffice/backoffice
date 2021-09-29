@@ -79,10 +79,10 @@ $datetime->setTimezone($timezone);
             <td colspan="4">.</td>
         </tr>
         <tr>
-            <td>Customer</td>
-            <td>Checker SPV / Delivery</td>
-            <td>Duty Manager</td>
-            <td>Checker</td>
+            <td><p class="overline">Customer</p></td>
+            <td><p class="overline">Checker SPV / Delivery</p></td>
+            <td><p class="overline">Duty Manager</p></td>
+            <td><p class="overline">Checker</p></td>
         </tr>
         <tr><td colspan="4" class="left" style="font-weight: normal">Note : INDOGROSIR Tidak Bertanggung Jawab Terhadap Barang Titipan Jika Terjadi Musibah Kebakaran / Kebanjiran / dll.</td></tr>
     </table>
@@ -211,5 +211,8 @@ $datetime->setTimezone($timezone);
         border-top: 1px solid black;
     }
 
+    .overline{
+        text-decoration: overline;
+    }
 </style>
 </html>

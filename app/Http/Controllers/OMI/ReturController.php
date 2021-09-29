@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\OMI;
 
 use Carbon\Carbon;
+use FontLib\Table\Table;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use XBase\TableReader;
 use Yajra\DataTables\DataTables;
 use File;
 
@@ -105,7 +107,7 @@ class ReturController extends Controller
         }
     }
 
-    public function checkPKP($kodemember){
+    public static function checkPKP($kodemember){
         $temp = DB::table('tbmaster_customer')
             ->select('cus_npwp')
             ->where('cus_kodemember','=',$kodemember)
@@ -2379,6 +2381,835 @@ ORDER BY rom_nodokumen, rom_prdcd");
         }
         fclose($file);
         return response()->download($fname, $fname, $headers)->deleteFileAfterSend(true);
+    }
+
+    public function transferFileR(Request $request){
+        set_time_limit(0);
+
+        $fileR = $request->file('fileR');
+
+        try{
+            DB::beginTransaction();
+//            $sesiproc = DB::selectOne("select TO_CHAR (USERENV ('SESSIONID')) userenv from dual")->userenv;
+
+            $sesiproc = '9999999';
+            $lok = false;
+
+//            dd($sesiproc);
+
+            $v_filename = substr($fileR->getClientOriginalName(), 0, 8).'.DBF';
+            $v_file = $fileR;
+
+//            $pdo = DB::getPdo();
+//            $sql = "INSERT INTO t_file_transfer (ftuser, ftfile)
+//        VALUES ('".$sesiproc."', EMPTY_BLOB())
+//        RETURNING ftfile INTO :blob";
+//            $stmt = $pdo->prepare($sql);
+//            $stmt->bindParam(':blob', $v_file, \PDO::PARAM_LOB);
+//            $stmt->execute();
+
+            $dataFileR = new TableReader($fileR);
+
+//            dd($dataFileR->getRecordCount());
+
+            $insert = [];
+
+
+            while($recs = $dataFileR->nextRecord()){
+                $temp = [];
+                $temp['RECID'] = $recs->get('recid');
+                $temp['GUDANG'] = $recs->get('gudang');
+                $temp['ID'] = $recs->get('id');
+                $temp['LOKASI'] = $recs->get('lokasi');
+                $temp['RTYPE'] = $recs->get('rtype');
+                $temp['BUKTI_NO'] = $recs->get('bukti_no');
+                $temp['BUKTI_TGL'] = $recs->get('bukti_tgl');
+                $temp['SUPCO'] = $recs->get('supco');
+                $temp['CR_TERM'] = $recs->get('cr_term');
+                $temp['PRDCD'] = $recs->get('prdcd');
+                $temp['QTY'] = $recs->get('qty');
+                $temp['BONUS'] = $recs->get('bonus');
+                $temp['PRICE'] = $recs->get('price');
+                $temp['GROSS'] = $recs->get('gross');
+                $temp['PPN'] = $recs->get('ppn');
+                $temp['FMDFEE'] = $recs->get('fmdfee');
+                $temp['PPNFEE'] = $recs->get('ppnfee');
+                $temp['PPNBM'] = $recs->get('ppnbm');
+                $temp['HRG_BOTOL'] = $recs->get('hrg_botol');
+                $temp['DISC1'] = $recs->get('disc1');
+                $temp['DISC2'] = $recs->get('disc2');
+                $temp['DISC3'] = $recs->get('disc3');
+                $temp['DISC4CR'] = $recs->get('disc4cr');
+                $temp['DISC4RR'] = $recs->get('disc4rr');
+                $temp['DISC4JR'] = $recs->get('disc4jr');
+                $temp['INVNO'] = $recs->get('invno');
+                $temp['INV_DATE'] = $recs->get('inv_date');
+                $temp['PO_NO'] = $recs->get('po_no');
+                $temp['PO_DATE'] = $recs->get('po_date');
+                $temp['ISTYPE'] = $recs->get('istype');
+                $temp['BKL'] = $recs->get('bkl');
+                $temp['JAM'] = $recs->get('jam');
+                $temp['KETER'] = $recs->get('keter');
+                $temp['NOSPH'] = $recs->get('nosph');
+                $temp['TGLSPH'] = $recs->get('tglsph');
+                $temp['SESSID'] = $sesiproc;
+                $temp['NAMAFILE'] = $v_filename;
+
+                $insert[] = $temp;
+            }
+
+            DB::table('temp_retur_omi')
+                ->insert($insert);
+
+            DB::table('temp_retur_omi')
+                ->whereRaw("nvl(qty, 0) = 0")
+                ->where('SESSID','=',$sesiproc)
+                ->delete();
+
+            DB::commit();
+
+            $lok = true;
+
+            if($lok){
+                return self::prosesTransfer($sesiproc, $v_filename);
+            }
+        }
+        catch(QueryException $e){
+            DB::rollBack();
+
+            return $e->getMessage();
+        }
+    }
+
+    public static function prosesTransfer($sesiproc, $namaFileR){
+        set_time_limit(0);
+
+        try{
+            DB::beginTransaction();
+
+            $all_nodoc = '';
+
+            $tokoomi = DB::table('temp_retur_omi')
+                ->select('GUDANG')
+                ->where('SESSID','=',$sesiproc)
+                ->where('NAMAFILE','=',$namaFileR)
+                ->distinct()
+                ->first()->gudang;
+
+            $memberomi = DB::table('tbmaster_tokoigr')
+                ->select('tko_kodecustomer')
+                ->where('tko_kodeigr','=',$_SESSION['kdigr'])
+                ->whereRaw("((TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'O')
+            OR (TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'I'))")
+                ->first()->tko_kodecustomer;
+
+            $paramPKP = self::checkPKP($memberomi);
+
+            $tempketer = DB::table('temp_retur_omi')
+                ->where('SESSID','=',$sesiproc)
+                ->where('NAMAFILE','=',$namaFileR)
+                ->whereRaw("NVL(trim(KETER), 'AA') <> 'AA'")
+                ->first();
+
+            if($tempketer){
+                if($paramPKP == 'Y')
+                    $paramVB = 'Y';
+                else $paramVB = 'N';
+
+                DB::table('tbmaster_tokoigr')
+                    ->where('tko_kodeomi','=',$tokoomi)
+                    ->update([
+                        'tko_flagvb' => 'Y',
+                        'tko_modify_by' => 'RTR',
+                        'tko_modify_dt' => DB::RAW("SYSDATE")
+                    ]);
+            }
+            else $paramVB = 'N';
+
+            $temp = DB::table('temp_retur_omi')
+                ->join('tbmaster_tokoigr','tko_kodeomi','=','gudang')
+                ->where('sessid','=',$sesiproc)
+                ->whereRaw("NVL(tko_flagvb,'N') = 'Y'")
+                ->first();
+
+            if($temp){
+                if($paramPKP == 'Y' && !$tempketer){
+                    return [
+                        'message' => 'Toko OMMI sudah VB dan PKP, data FP di File R Kosong! Hubungi EDP!',
+                        'status' => 'error'
+                    ];
+                }
+                else if($paramPKP != 'Y' && $tempketer){
+                    return [
+                        'message' => 'Toko OMMI sudah VB dan PKP, data FP di File R terisi! Hubungi EDP!',
+                        'status' => 'error'
+                    ];
+                }
+            }
+            else{
+                if($paramPKP != 'Y' && $tempketer){
+                    return [
+                        'message' => 'Toko OMMI bukan VB dan Non PKP, data FP terisi di file R! Hubungi EDP!',
+                        'status' => 'error'
+                    ];
+                }
+                else if($paramPKP == 'Y' && !$tempketer){
+                    return [
+                        'message' => 'Toko OMMI bukan VB dan PKP, data FP di File R terisi! Hubungi EDP!',
+                        'status' => 'error'
+                    ];
+                }
+            }
+
+            $temp = DB::table('temp_retur_omi')
+                ->join('tbtr_returomi',function($join){
+                    $join->on('rom_noreferensi','=','bukti_no');
+                    $join->on('rom_kodetoko','=','gudang');
+                    $join->on(DB::RAW("TO_CHAR(rom_tglreferensi,'YYYY')"),'=',DB::RAW("TO_CHAR(bukti_tgl,'YYYY')"));
+                })
+                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                ->where('sessid','=',$sesiproc)
+                ->where('namafile','=',$namaFileR)
+                ->first();
+
+            if(!$temp){
+                DB::table('temp_retur_omi')
+                    ->where('sessid','=',$sesiproc)
+                    ->where('namafile','=',$namaFileR)
+                    ->delete();
+
+                return [
+                    'message' => 'File Retur OMI '.$namaFileR.' sudah pernah diproses!',
+                    'status' => 'error'
+                ];
+            }
+            else{
+                $lsupco = false;
+                $lqty = true;
+
+                $recs = DB::select("SELECT PRDCD, QTY, PRC_SATUANRENCENG,
+                           (  CEIL (QTY / CASE
+                                        WHEN PRC_SATUANRENCENG = 0
+                                            THEN 1
+                                        ELSE PRC_SATUANRENCENG
+                                    END)
+                            * CASE
+                                  WHEN PRC_SATUANRENCENG = 0
+                                      THEN 1
+                                  ELSE PRC_SATUANRENCENG
+                              END
+                           ) QTYHASIL
+                      FROM TEMP_RETUR_OMI, TBMASTER_PRODCRM
+                     WHERE SESSID = '".$sesiproc."'
+                       AND TRIM (NAMAFILE) = '".$namaFileR."'
+                       AND TRIM (SUPCO) = 'SIGR5'
+                       AND PRC_KODEIGR = '".$_SESSION['kdigr']."'
+                       AND (PRC_PLUOMI = PRDCD OR (PRC_PLUIDM = PRDCD AND PRC_GROUP = 'I'))");
+
+                foreach($recs as $rec){
+                    $lsupco = true;
+
+                    if(self::nvl($rec->qty, 0) != self::nvl($rec->qtyhasil,0)){
+                        $lqty = false;
+                        $plu = $rec->prdcd;
+                        $qty = $rec->qty;
+                        $renceng = $rec->prc_satuanrenceng;
+                    }
+                }
+
+                if(!$lqty){
+                    DB::table('temp_retur_omi')
+                        ->where('sessid','=',$sesiproc)
+                        ->where('namafile','=',$namaFileR)
+                        ->delete();
+
+                    return [
+                        'message' => 'Proses tidak dapat dilanjutkan --> PLU Renceng OMI '.$plu
+                            .' Qtynya : '.$qty.' bukan kelipatan dari renceng OMI :'.$renceng
+                            .'; Harap data '.$namaFileR.' direvisi terlebih dahulu!',
+                        'status' => 'error'
+                    ];
+                }
+                else{
+                    if(!$lsupco){
+                        DB::table('temp_retur_omi')
+                            ->where('sessid','=',$sesiproc)
+                            ->where('namafile','=',$namaFileR)
+                            ->delete();
+
+                        return [
+                            'message' => 'Tidak ada data yang diproses!',
+                            'status' => 'error'
+                        ];
+                    }
+                    else{
+                        $viewtk = false;
+
+                        $recs = DB::table('temp_retur_omi')
+                            ->where('sessid','=',$sesiproc)
+                            ->where('namafile','=',$namaFileR)
+                            ->orderBy('bukti_no')
+                            ->distinct()
+                            ->get();
+
+                        foreach($recs as $rec){
+                            $lok = true;
+
+                            $recnos = DB::select("SELECT   GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO, PRDCD, SUM (QTY) QTY,
+                                           SUM (BONUS) BONUS
+                                      FROM TEMP_RETUR_OMI
+                                     WHERE BUKTI_NO = '".$rec->bukti_no."'
+                                       AND SESSID = '".$sesiproc."'
+                                       AND NAMAFILE = '".$namaFileR."'
+                                  GROUP BY GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO, PRDCD");
+
+                            foreach($recnos as $recno){
+                                $temp = DB::table('tbmaster_prodcrm')
+                                    ->select('prc_pluigr')
+                                    ->where('prc_kodeigr','=',$_SESSION['kdigr'])
+                                    ->whereRaw("(PRC_PLUOMI = '".$recno->prdcd."' OR (PRC_PLUIDM = '".$recno->prdcd."' AND PRC_GROUP = 'I'))")
+                                    ->first();
+
+                                $pluigr = null;
+
+                                if(!$temp){
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'PLU tidak terdaftar di Master OMI',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+                                else{
+                                    $pluigr = $temp->prc_pluigr;
+                                }
+
+                                $temp = DB::table('tbmaster_prodcrm')
+                                    ->join('tbmaster_prodmast',function($join){
+                                        $join->on('prd_kodeigr','=','prc_kodeigr');
+                                        $join->on('prd_prdcd','=','prc_pluigr');
+                                    })
+                                    ->select('prc_pluigr')
+                                    ->where('prc_kodeigr','=',$_SESSION['kdigr'])
+                                    ->whereRaw("(PRC_PLUOMI = '".$recno->prdcd."' OR (PRC_PLUIDM = '".$recno->prdcd."' AND PRC_GROUP = 'I'))")
+                                    ->first();
+
+                                if(!$temp){
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'PLU tidak terdaftar di Master Indogrosir',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+
+                                $temp = DB::table('tbmaster_tokoigr')
+                                    ->select('tko_kodecustomer')
+                                    ->where('tko_kodeigr','=',$_SESSION['kdigr'])
+                                    ->whereRaw("nvl(trunc(tko_tgltutup), sysdate + 30) > trunc(sysdate)")
+                                    ->whereRaw("(TKO_KODEOMI = '".$recno->gudang."' AND TKO_KODESBU = 'O') OR (TKO_KODEOMI = '".$recno->gudang."' AND TKO_KODESBU = 'I')")
+                                    ->first();
+
+                                if(!$temp){
+                                    if(!$viewtk){
+                                        $viewtk = true;
+
+                                        return [
+                                            'message' => 'Member OMI '.$recno->gudang.' tidak terdaftar di Master Toko OMI!',
+                                            'status' => 'error'
+                                        ];
+                                    }
+
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'Member OMI tidak terdaftar di Master Toko OMI',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+                                else{
+                                    $memberomi = $temp->tko_kodecustomer;
+                                }
+
+                                $temp = DB::table('tbmaster_customer')
+                                    ->where('cus_kodemember','=','199999')
+                                    ->first();
+
+                                if(!$temp){
+                                    if(!$viewtk){
+                                        $viewtk = true;
+
+                                        return [
+                                            'message' => 'Member OMI 199999 tidak terdaftar di Master Member!'
+                                        ];
+                                    }
+
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'Member OMI tidak terdaftar di Master Member',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+
+                                $temp = DB::table('tbmaster_stock')
+                                    ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                    ->whereRaw("st_prdcd = substr('".$pluigr."',1,6) || '0'")
+                                    ->where('st_lokasi','=','01')
+                                    ->first();
+
+                                if(!$temp){
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'PLU tidak terdaftar di Master Stock',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+
+                                $temp = DB::table('tbmaster_prodmast')
+                                    ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+                                    ->whereRaw("prd_prdcd = substr('".$pluigr."',1,6) || '0'")
+                                    ->whereRaw("nvl(prd_kodetag,'_') = 'X'")
+                                    ->first();
+
+                                if($temp){
+                                    DB::table('temp_cetak_tolakanreturomi')
+                                        ->insert([
+                                            'kodetoko' => $recno->gudang,
+                                            'no_bukti' => $recno->bukti_no,
+                                            'tgl_bukti' => $recno->bukti_tgl,
+                                            'kodesupplier' => $recno->supco,
+                                            'prdcd' => $recno->prdcd,
+                                            'qty' => $recno->qty,
+                                            'bonus' => $recno->bonus,
+                                            'keterangan' => 'PLU Tag X',
+                                            'sessid' => $sesiproc,
+                                            'namafile' => $namaFileR
+                                        ]);
+
+                                    $lok = false;
+                                }
+                            }
+
+                            if(!$lok){
+                                return [
+                                    'message' => 'Masih ada data retur OMI yang tidak memenuhi syarat di no dokumen : '
+                                    .$rec->bukti_no.' File Retur OMI : '.$namaFileR.' Harap disimpan; Untuk proses ulang Retur OMI setelah tolakannya direvisi!',
+                                    'status' => 'error'
+                                ];
+                            }
+                            else{
+                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
+                                 'RTO',
+                                 'Nomor Retur OMI',
+                                 'O' || TO_CHAR(SYSDATE, 'yy'),
+                                 4,
+                                 TRUE); END;");
+                                oci_bind_by_name($query, ':ret', $nodoc, 32);
+                                oci_execute($query);
+
+                                $recnos = DB::select("SELECT   RECID, GUDANG, ID, LOKASI, RTYPE, BUKTI_NO,
+                                               BUKTI_TGL, SUPCO, CR_TERM, PRDCD, SUM (QTY) QTY,
+                                               SUM (BONUS) BONUS, SUM (GROSS) GROSS, SUM (PPN) PPN,
+                                               SUM (FMDFEE) FMDFEE, SUM (PPNFEE) PPNFEE,
+                                               SUM (PPNBM) PPNBM, SUM (HRG_BOTOL) HRG_BOTOL,
+                                               SUM (DISC1) DISC1, SUM (DISC2) DISC2,
+                                               SUM (DISC3) DISC3, SUM (DISC4CR) DISC4CR,
+                                               SUM (DISC4RR) DISC4RR, SUM (DISC4JR) DISC4JR, INVNO,
+                                               INV_DATE, PO_NO, BKL, JAM, SESSID, NAMAFILE,
+                                               TBMASTER_PRODCRM.PRC_SATUANRENCENG,
+                                               TBMASTER_PRODMAST.PRD_PRDCD,
+                                               TBMASTER_PRODMAST.PRD_FLAGBKP1,
+                                               TBMASTER_PRODMAST.PRD_FLAGBKP2,
+                                               TBMASTER_TOKOIGR.TKO_KODECUSTOMER,
+                                               TBMASTER_TOKOIGR.TKO_FLAGVB
+                                          FROM TEMP_RETUR_OMI,
+                                               TBMASTER_PRODCRM,
+                                               TBMASTER_PRODMAST,
+                                               TBMASTER_TOKOIGR
+                                         WHERE BUKTI_NO = '".$rec->bukti_no."'
+                                           AND SESSID = '".$sesiproc."'
+                                           AND NAMAFILE = '".$namaFileR."'
+                                           AND PRC_KODEIGR = '".$_SESSION['kdigr']."'
+                                           AND (   PRC_PLUOMI = PRDCD
+                                                OR (PRC_PLUIDM = PRDCD AND PRC_GROUP = 'I')
+                                               )
+                                           AND PRD_KODEIGR = PRC_KODEIGR
+                                           AND PRD_PRDCD = PRC_PLUIGR
+                                           AND TKO_KODEIGR = '".$_SESSION['kdigr']."'
+                                           AND (   (TKO_KODEOMI = GUDANG AND TKO_KODESBU = 'O')
+                                                OR (TKO_KODEOMI = GUDANG AND TKO_KODESBU = 'I')
+                                               )
+                                      GROUP BY RECID,
+                                               GUDANG,
+                                               ID,
+                                               LOKASI,
+                                               RTYPE,
+                                               BUKTI_NO,
+                                               BUKTI_TGL,
+                                               SUPCO,
+                                               CR_TERM,
+                                               PRDCD,
+                                               INVNO,
+                                               INV_DATE,
+                                               PO_NO,
+                                               BKL,
+                                               JAM,
+                                               SESSID,
+                                               NAMAFILE,
+                                               PRC_SATUANRENCENG,
+                                               PRD_PRDCD,
+                                               PRD_FLAGBKP1,
+                                               PRD_FLAGBKP2,
+                                               TKO_KODECUSTOMER,
+                                               TKO_FLAGVB");
+
+                                foreach($recnos as $recno){
+                                    if(in_array($recno->prd_flagbkp2, ['P','G','W','C','N'])){
+                                        $hrgsatuan = ($recno->gross / $recno->qty)
+                                        * $recno->prc_satuanrenceng == 0 ? 1  : $recno->prc_satuanrenceng;
+                                    }
+                                    else{
+                                        $hrgsatuan = (($recno->gross + self::nvl($recno->ppn, 0)) / $recno->qty)
+                                        * $recno->prc_satuanrenceng == 0 ? 1  : $recno->prc_satuanrenceng;
+                                    }
+
+                                    $nopo = '';
+
+                                    $top = DB::table('tbmaster_customer')
+                                        ->select('cus_top')
+                                        ->where('cus_kodemember','=',$recno->tko_kodecustomer)
+                                        ->first()->cus_top;
+
+                                    $acost = DB::table('tbmaster_stock')
+                                        ->select('st_avgcost')
+                                        ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                        ->where('st_prdcd','=',substr($recno->prd_prdcd,0,6).'0')
+                                        ->where('st_lokasi','=','01')
+                                        ->first()->st_avgcost;
+
+                                    $memberomi = $recno->tko_kodecustomer;
+                                    $paramPKP = self::checkPKP($memberomi);
+
+                                    $temp = DB::table('tbtr_returomi')
+                                        ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                                        ->where('rom_noreferensi','=',$rec->bukti_no)
+                                        ->where('rom_tglreferensi','=',$recno->bukti_tgl)
+                                        ->where('rom_kodetoko','=',$recno->gudang)
+                                        ->where('rom_prdcd','=',$recno->prd_prdcd)
+                                        ->first();
+
+                                    if(!$temp){
+                                        if($paramPKP == 'Y' && $paramVB == 'Y'){
+                                            if(self::nvl($recno->tko_flagvb,'N') != 'Y'){
+                                                DB::table('tbmaster_tokoigr')
+                                                    ->where('tko_kodeomi','=',$recno->gudang)
+                                                    ->update([
+                                                        'tko_flagvb' => 'Y',
+                                                        'tko_modify_by' => 'RTR',
+                                                        'tko_modify_dt' => DB::RAW("SYSDATE")
+                                                    ]);
+                                            }
+
+                                            $temp = DB::table('tbtr_returomi_pajak')
+                                                ->where('rpj_kodeigr','=',$_SESSION['kdigr'])
+                                                ->where('rpj_nodokumen','=',$nodoc)
+                                                ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
+                                                ->where('rpj_prdcd','=',$recno->prd_prdcd)
+                                                ->first();
+
+                                            if($temp){
+                                                DB::table('tbtr_returomi_pajak')
+                                                    ->where('rpj_kodeigr','=',$_SESSION['kdigr'])
+                                                    ->where('rpj_nodokumen','=',$nodoc)
+                                                    ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
+                                                    ->where('rpj_prdcd','=',$recno->prd_prdcd)
+                                                    ->delete();
+                                            }
+
+                                            $recpjks = DB::select("SELECT BUKTI_NO, BUKTI_TGL, PRDCD, INVNO,
+                                                          INV_DATE, PO_NO, PO_DATE, ISTYPE, KETER,
+                                                          NOSPH, TGLSPH, GROSS, PPN
+                                                     FROM TEMP_RETUR_OMI
+                                                    WHERE BUKTI_NO = '".$rec->bukti_no."'
+                                                      AND SESSID = '".$sesiproc."'
+                                                      AND NAMAFILE = '".$namaFileR."'
+                                                      AND PRDCD = '".$recno->prdcd."'");
+
+                                            foreach($recpjks as $recpjk){
+                                                $temp = DB::table('tbmaster_faktur')
+                                                    ->selectRaw("(FKT_NOTRANSAKSI || FKT_STATION || FKT_KASIR) refstruk")
+                                                    ->whereRaw("fkt_noseri = trim('".$recpjk->keter."')")
+                                                    ->first();
+
+                                                $refstruk = '';
+
+                                                if($temp){
+                                                    $refstruk = $temp->refstruk;
+                                                }
+
+                                                DB::table('tbtr_returomi_pajak')
+                                                    ->insert([
+                                                        'rpj_kodeigr' => $_SESSION['kdigr'],
+                                                        'rpj_nodokumen' => $nodoc,
+                                                        'rpj_tgldokumen' => DB::RAW("SYSDATE"),
+                                                        'rpj_prdcd' => $recno->prd_prdcd,
+                                                        'rpj_nofp1' => substr($recpjk->istype, 2,7),
+                                                        'rpj_nofp2' => substr($recpjk->nosph, 2,7),
+                                                        'rpj_tglfp' => $recpjk->tglsph,
+                                                        'rpj_referensistruk' => $refstruk,
+                                                        'rpj_referensifp' => substr(str_replace('.','',str_replace('-','',$recpjk->keter)), 3,13),
+                                                        'rpj_referensitglfp' => $recpjk->po_date,
+                                                        'rpj_nilai' => ($recpjk->gross + self::nvl($recpjk->ppn, 0)),
+                                                        'rpj_create_by' => $_SESSION['usid'],
+                                                        'rpj_create_dt' => DB::RAW("SYSDATE")
+                                                    ]);
+                                            }
+
+                                            DB::table('tbtr_returomi')
+                                                ->insert([
+                                                    'ROM_KODEIGR' => $_SESSION['kdigr'],
+                                                    'ROM_NODOKUMEN' => $nodoc,
+                                                    'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
+                                                    'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_NOREFERENSI' => $recno->bukti_no,
+                                                    'ROM_TGLREFERENSI' => $recno->bukti_tgl,
+                                                    'ROM_KODETOKO' => $recno->gudang,
+                                                    'ROM_MEMBER' => $recno->tko_kodecustomer,
+                                                    'ROM_PRDCD' => $recno->prd_prdcd,
+                                                    'ROM_AVGCOST' => $acost,
+                                                    'ROM_TTLCOST' => $acost * $recno->qty,
+                                                    'ROM_FLAGBKP' => $recno->prd_flagbkp1,
+                                                    'ROM_FLAGBKP2' => $recno->prd_flagbkp2,
+                                                    'ROM_QTY' => $recno->qty,
+                                                    'ROM_QTYREALISASI' => 0,
+                                                    'ROM_QTYSELISIH' => 0,
+                                                    'ROM_QTYMLJ' => $recno->qty,
+                                                    'ROM_QTYTLJ' => 0,
+                                                    'ROM_HRG' => $hrgsatuan,
+                                                    'ROM_TTL' => ($recno->gross + self::nvl($recno->ppn,0)),
+                                                    'ROM_STATUSDATA' => '2',
+                                                    'ROM_STATUSTRF' => '1',
+                                                    'ROM_CREATE_BY' => $_SESSION['usid'],
+                                                    'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
+                                                    'ROM_HRGSATUAN' => 0,
+                                                    'ROM_TTLNILAI' => 0,
+                                                    'ROM_QTYTLR' => 0,
+                                                    'ROM_REFERENSISTRUK' => 'VB',
+                                                ]);
+                                        }
+                                        else{
+                                            DB::table('tbtr_returomi')
+                                                ->insert([
+                                                    'ROM_KODEIGR' => $_SESSION['kdigr'],
+                                                    'ROM_NODOKUMEN' => $nodoc,
+                                                    'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
+                                                    'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_NOREFERENSI' => $recno->bukti_no,
+                                                    'ROM_TGLREFERENSI' => $recno->bukti_tgl,
+                                                    'ROM_KODETOKO' => $recno->gudang,
+                                                    'ROM_MEMBER' => $recno->tko_kodecustomer,
+                                                    'ROM_PRDCD' => $recno->prd_prdcd,
+                                                    'ROM_AVGCOST' => $acost,
+                                                    'ROM_TTLCOST' => $acost * $recno->qty,
+                                                    'ROM_FLAGBKP' => $recno->prd_flagbkp1,
+                                                    'ROM_FLAGBKP2' => $recno->prd_flagbkp2,
+                                                    'ROM_QTY' => $recno->qty,
+                                                    'ROM_QTYREALISASI' => 0,
+                                                    'ROM_QTYSELISIH' => 0,
+                                                    'ROM_QTYMLJ' => $recno->qty,
+                                                    'ROM_QTYTLJ' => 0,
+                                                    'ROM_HRG' => $hrgsatuan,
+                                                    'ROM_TTL' => ($recno->gross + self::nvl($recno->ppn,0)),
+                                                    'ROM_STATUSDATA' => '2',
+                                                    'ROM_STATUSTRF' => '1',
+                                                    'ROM_CREATE_BY' => $_SESSION['usid'],
+                                                    'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
+                                                    'ROM_HRGSATUAN' => 0,
+                                                    'ROM_TTLNILAI' => 0,
+                                                    'ROM_QTYTLR' => 0
+                                                ]);
+                                        }
+                                    }
+
+                                    $no_nrb = $recno->bukti_no;
+                                    $tgl_nrb = $recno->bukti_tgl;
+                                }
+
+                                $all_nodoc = $all_nodoc . $nodoc . '-';
+                                $rpretur = 0;
+                                $ppnretur = 0;
+
+                                $recs = DB::select("SELECT TBTR_RETUROMI.*, TBMASTER_PRODMAST.PRD_FLAGBKP1,
+                                           TBMASTER_PRODMAST.PRD_FLAGBKP2
+                                      FROM TBTR_RETUROMI, TBMASTER_PRODMAST
+                                     WHERE ROM_KODEIGR = '".$_SESSION['kdigr']."'
+                                       AND ROM_NODOKUMEN = '".$nodoc."'
+                                       AND TRUNC (ROM_TGLDOKUMEN) = TRUNC (SYSDATE)
+                                       AND PRD_KODEIGR = ROM_KODEIGR
+                                       AND PRD_PRDCD = ROM_PRDCD");
+
+                                foreach($recs as $rec){
+                                    $rpretur = $rpretur + ($rec->rom_qty * $rec->rom_hrg);
+
+                                    if(self::nvl($rec->prd_flagbkp1,'N') == 'Y'){
+                                        if(in_array(self::nvl($rec->prd_flagbkp2,'N'), ['P','G','W'])){
+                                            $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / 1.1)) * $rec->rom_qty),0);
+                                        }
+                                    }
+                                }
+
+                                $temp = DB::table('tbmaster_piutang')
+                                    ->where('ptg_kodeigr','=',$_SESSION['kdigr'])
+                                    ->where('ptg_kodemember','=',$memberomi)
+                                    ->first();
+
+                                if(!$temp){
+                                    DB::table('tbmaster_piutang')
+                                        ->insert([
+                                            'ptg_kodeigr' => $_SESSION['kdigr'],
+                                            'ptg_kodemember' => $memberomi,
+                                            'ptg_amtar' => $rpretur * (-1),
+                                            'ptg_create_by' => $_SESSION['usid'],
+                                            'ptg_create_dt' => DB::RAW("SYSDATE"),
+                                            'ptg_amtpayment' => 0
+                                        ]);
+                                }
+                                else{
+                                    DB::update("UPDATE TBMASTER_PIUTANG
+                                        SET PTG_AMTAR = NVL (PTG_AMTAR, 0) - ".$rpretur.",
+                                        PTG_MODIFY_BY = '".$_SESSION['usid']."',
+                                        PTG_MODIFY_DT = SYSDATE
+                                        WHERE PTG_KODEIGR = '".$_SESSION['kdigr']."'
+                                        AND PTG_KODEMEMBER = '".$memberomi."'");
+                                }
+
+                                $temp = DB::table('tbtr_piutang')
+                                    ->where('trpt_kodeigr','=',$_SESSION['kdigr'])
+                                    ->where('trpt_type','=','D')
+                                    ->whereRaw("TRUNC(trpt_receivedate) = TRUNC(SYSDATE)")
+                                    ->where('trpt_cus_kodemember','=',$memberomi)
+                                    ->where('trpt_docno','=',$nodoc)
+                                    ->first();
+
+                                if(!$temp){
+                                    $top = DB::table('tbmaster_customer')
+                                        ->select('cus_top')
+                                        ->where('cus_kodemember','=',$memberomi)
+                                        ->first()->cus_top;
+
+                                    $temp = DB::table('tbtr_jualheader')
+                                        ->select('jh_transactionno')
+                                        ->where('jh_kodeigr','=',$_SESSION['kdigr'])
+                                        ->whereRaw("TO_CHAR(jh_transactiondate, 'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM')")
+                                        ->orderBy('jh_transactionno','desc')
+                                        ->first();
+
+                                    if(!$temp){
+                                        $nokasir = '00001';
+                                    }
+                                    else{
+                                        $nokasir = substr('00000'.(intval($temp->jh_transactionno)+1),-5);
+                                    }
+
+                                    DB::table('tbtr_piutang')
+                                        ->insert([
+                                            'TRPT_KODEIGR' => $_SESSION['kdigr'],
+                                            'TRPT_TYPE' => 'D',
+                                            'TRPT_SALESINVOICEDATE' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'TRPT_SALESINVOICENO' => $nokasir,
+                                            'TRPT_CASHIERSTATION' => '99',
+                                            'TRPT_CUS_KODEMEMBER' => $memberomi,
+                                            'TRPT_CASHIERID' => 'SOS',
+                                            'TRPT_INVOICETAXNO' => $no_nrb,
+                                            'TRPT_INVOICETAXDATE' => $tgl_nrb,
+                                            'TRPT_DOCNO' => $nodoc,
+                                            'TRPT_RECEIVEDATE' => DB::RAW("SYSDATE"),
+                                            'TRPT_SALESVALUE' => $rpretur,
+                                            'TRPT_NETSALES' => $rpretur - $ppnretur,
+                                            'TRPT_PPNTAXVALUE' => $ppnretur,
+                                            'TRPT_SALESDUEDATE' => DB::RAW("SYSDATE + ".$top),
+                                            'TRPT_CREATE_BY' => $_SESSION['usid'],
+                                            'TRPT_CREATE_DT' => DB::RAW("SYSDATE"),
+                                            'TRPT_SPH_AMOUNT' => 0,
+                                            'TRPT_PAYMENTVALUE' => 0,
+                                            'TRPT_DISTFEE' => 0,
+                                            'TRPT_PPNFEEVALUE' => 0
+                                        ]);
+                                }
+                            }
+                        }
+
+                        DB::table('temp_retur_omi')
+                            ->where('sessid','=',$sesiproc)
+                            ->where('namafile','=',$namaFileR)
+                            ->delete();
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return [
+                'message' => 'Proses transfer file '.$namaFileR.' berhasil!',
+                'status' => 'success'
+            ];
+        }
+        catch (QueryException $e){
+            DB::rollBack();
+
+            return [
+                'message' => $e->getMessage(),
+                'status' => 'error'
+            ];
+        }
     }
 
     public static function nvl($value, $default){

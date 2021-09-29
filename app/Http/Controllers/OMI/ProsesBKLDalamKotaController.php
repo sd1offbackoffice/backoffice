@@ -143,16 +143,17 @@ class ProsesBKLDalamKotaController extends Controller
         $sesiproc   = $request->sesiproc;
         $kodeigr    = $_SESSION['kdigr'];
         $bladeName  = '';
+        $paperFormat= 'potrait';
         $pageNum1   = -10;
         $pageNum2   = -10;
         $result     = '';
 
         if ($report_id == 1){
-            $result     = $this->laporanList($filename,$sesiproc,$kodeigr);
-            $pageNum1   = 510;
+            $result     = ($size == 'K') ? $this->laporanList($filename,$sesiproc,$kodeigr) : $this->laporanListDetail($filename,$sesiproc,$kodeigr);
+            $bladeName  = ($size == 'K') ? "OMI.prosesBKL-list-pdf" : "OMI.prosesBKL-list-detail-pdf";
+            $paperFormat = ($size == 'K') ? "potrait" : "landscape";
+            $pageNum1   = ($size == 'K') ? 510 : 756;
             $pageNum2   = 45;
-//            $bladeName  = "OMI.prosesBKL-list-pdf";
-            $bladeName  = "OMI.prosesBKL-list-detail-pdf";
         } elseif ($report_id == 2){
             $result     = $this->laporanBpb($kodeigr, '01400045');
             $bladeName  = "OMI.prosesBKL-bpb-pdf";
@@ -181,7 +182,7 @@ class ProsesBKLDalamKotaController extends Controller
 //        dd([$bladeName,$result]);
 
         $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
-        $pdf->setPaper('A4', 'landscape');
+        $pdf->setPaper('A4', $paperFormat);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -224,6 +225,23 @@ class ProsesBKLDalamKotaController extends Controller
                                              prs_namacabang,
                                              prs_namawilayah
                                     ORDER BY no_bukti, tgl_bukti, kodetoko");
+
+
+    }
+
+    public function laporanListDetail($filename,$sesiproc,$kodeigr){
+        return DB::select("SELECT no_bukti, trunc(tgl_bukti) tgl_bukti, kodetoko, cus_kodemember,
+                                    kodesupplier, sup_namasupplier, no_tran, trunc(tgl_tran) tgl_tran, prdcd,  qty, bonus,
+                                    prd_deskripsipendek, prd_unit || '/' || prd_frac satuan, harga, gross, gross total,
+                                    prs_namaperusahaan, prs_namacabang, prs_namawilayah
+                                    FROM temp_list_bkldalamkota, tbmaster_tokoigr, tbmaster_Customer, tbmaster_supplier, tbmaster_prodmast, tbmaster_perusahaan
+                                    WHERE sessid = '$sesiproc' AND namafile = '$filename'
+                                    AND tko_kodeigr = '$kodeigr' AND tko_kodeomi = kodetoko
+                                    AND cus_kodeigr = '$kodeigr' AND cus_kodemember = tko_kodecustomer
+                                    AND sup_kodeigr = '$kodeigr' AND sup_kodesupplier = kodesupplier
+                                    --AND prd_kodeigr = '$kodeigr' AND prd_prdcd = prdcd
+                                    AND prs_kodeigr = '$kodeigr'
+                                    and prd_deskripsipendek like '%SOFTEX PL DS NP 50%'");
 
 
     }

@@ -30,13 +30,15 @@
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">Kode Proxy</label>
                             <div class="form-check mt-2 ml-3">
-                                <input class="form-check-input" type="radio" name="kodeproxy" id="proxyregular" value="1">
+                                <input class="form-check-input" type="radio" name="kodeproxy" id="proxyregular"
+                                       value="1">
                                 <label class="form-check-label" for="proxyregular">
                                     1 - Regular
                                 </label>
                             </div>
                             <div class="form-check mt-2 ml-4">
-                                <input class="form-check-input" type="radio" name="kodeproxy" id="proxyalokasi" value="2">
+                                <input class="form-check-input" type="radio" name="kodeproxy" id="proxyalokasi"
+                                       value="2">
                                 <label class="form-check-label" for="proxyalokasi">
                                     2 - Alokasi
                                 </label>
@@ -45,7 +47,7 @@
                         <div class="row mb-1">
                             <label class="col-sm-3 text-right col-form-label pl-0">OMI Tertentu</label>
                             <div class="col-sm-2 m-2">
-                                <input class="input-checkbox" id="omitertentu" type="checkbox">
+                                <input class="input-checkbox" id="omitertentu" type="checkbox" value="Y">
                             </div>
                         </div>
                         <div class="row mb-1">
@@ -279,40 +281,48 @@
             });
             getLovKodeOMI('');
             getDataMasterKreditLimitOMI();
-
-
         });
-        $("#kodeomi").on('keypress',function (e) {
-            if(e.which == 13) {
-                if($('#kodeomi').val() != '' && $('#namatokoomi').val() != '' && $('#kodecustomer').val() != '') {
+
+        function reset(){
+            $('#namatokoomi').val('');
+            $('#kodecustomer').val('');
+            $('#proxyregular').prop('checked', false);
+            $('#proxyalokasi').prop('checked', false);
+            $('#omitertentu').prop('checked', false);
+            $('#nilaikreditlimit').val('');
+            $('#top').val('');
+            $('#tgltop').val('');
+        }
+
+        $("#kodeomi").on('keypress', function (e) {
+            if (e.which == 13) {
+                if ($('#kodeomi').val() != '' && $('#namatokoomi').val() != '' && $('#kodecustomer').val() != '') {
                     getDataOMI();
                 }
             }
         })
-        $("input[name='kodeproxy']").on('change',function () {
-            $("#tgltop").prop('disabled',false);
-            $("#top").prop('disabled',false);
-            if($("input[name='kodeproxy']:checked").val() == '1'){
-                $("#tgltop").prop('disabled',true);
+        $("input[name='kodeproxy']").on('change', function () {
+            $("#tgltop").prop('disabled', false);
+            $("#top").prop('disabled', false);
+            if ($("input[name='kodeproxy']:checked").val() == '1') {
+                $("#tgltop").prop('disabled', true);
                 $("#tgltop").val('');
-            }else if($("input[name='kodeproxy']:checked").val() == '2'){
-                $("#top").prop('disabled',true);
+            } else if ($("input[name='kodeproxy']:checked").val() == '2') {
+                $("#top").prop('disabled', true);
                 $("#top").val('');
             }
-            if($('#kodeomi').val() != '' && $('#namatokoomi').val() != '' && $('#kodecustomer').val() != '') {
+            if ($('#kodeomi').val() != '' && $('#namatokoomi').val() != '' && $('#kodecustomer').val() != '') {
                 getDataTop();
             }
         })
-        function getLovKodeOMI(value) {
+
+        function getLovKodeOMI() {
             if ($.fn.DataTable.isDataTable('#table_lov_kode_omi')) {
                 $('#table_lov_kode_omi').DataTable().destroy();
             }
             table_lov_kode_omi = $('#table_lov_kode_omi').DataTable({
                 "ajax": {
                     url: '{{ url()->current() }}/get-lov-kode-omi',
-                    data: {
-                        "search": value
-                    }
                 },
                 "columns": [
                     {data: 'tko_kodeomi'},
@@ -337,22 +347,20 @@
                         $('#kodeomi').val($(this).find('td:eq(0)').html());
                         $('#namatokoomi').val($(this).find('td:eq(1)').html());
                         $('#kodecustomer').val($(this).find('td:eq(2)').html());
-
-                        // getData($('#kodeomi').val());
-
+                        getDataOMI();
                         $('#m_lov_kode_omi').modal('hide');
                     });
                 }
             });
 
-            $('#table_lov_nodoc_filter input').val(value).focus();
+            // $('#table_lov_nodoc_filter input').val().focus();
 
-            $('#table_lov_nodoc_filter input').off().on('keypress', function (e) {
-                if (e.which == 13) {
-                    tableLovNodoc.destroy();
-                    getLovNodoc($(this).val().toUpperCase());
-                }
-            });
+            // $('#table_lov_nodoc_filter input').off().on('keypress', function (e) {
+            //     if (e.which == 13) {
+            //         tableLovNodoc.destroy();
+            //         getLovNodoc($(this).val().toUpperCase());
+            //     }
+            // });
         }
 
         function getDataMasterKreditLimitOMI() {
@@ -400,8 +408,9 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (result) {
+                    reset();
+
                     $('#modal-loader').modal('hide');
-                    console.log(result);
                     $('#namatokoomi').val(result.data.tko_namaomi);
                     $('#kodecustomer').val(result.data.tko_kodecustomer);
                 }, error: function (e) {
@@ -425,8 +434,10 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    $('#nilaikreditlimit').val(result.data.mcl_maxnilaicl);
-                    $('#top').val(result.data.mcl_tgltop);
+                    if(result != 'no data'){
+                        $('#nilaikreditlimit').val(result.data.mcl_maxnilaicl);
+                        $('#top').val(result.data.mcl_tgltop);
+                    }
                 }, error: function (e) {
                     console.log(e);
                     alert('error');
@@ -434,7 +445,35 @@
             })
         }
 
+        $("#top").on('keypress', function (e) {
+            if (e.which == 13) {
+                if ($("input[name='kodeproxy']:checked").val() == '1') {
+                    if ($("#top").val() < 1 || $("#top").val() > 999) {
+                        swal('Info', 'Untuk Proxy Regular, tidak boleh <= 0 !!', 'info');
+                        $("#top").val('');
+                        $("#top").select();
+                    }
+                    if ($("#top").val() == '') {
+                        $("#top").val(7);
+                        swal('Info', 'Untuk Proxy Regular, default TOP 7 hari', 'info');
+                    }
+                } else {
+                    $("#top").val('');
+                }
+            }
+        })
 
+        $("#tgltop").on('keypress', function (e) {
+            if (e.which == 13) {
+                if ($("input[name='kodeproxy']:checked").val() == '2') {
+                    if ($("#tgltop").val() == '') {
+                        swal('Warning', 'Untuk Proxy Alokasi, Tgl TOP harus diinput !!', 'warning');
+                    }
+                } else {
+                    $("#tgltop").val('');
+                }
+            }
+        })
 
 
         function simpan() {
@@ -444,9 +483,10 @@
                 type: 'post',
                 data: {
                     kodeomi: $('#kodeomi').val(),
-                    kodeproxy: $('#kodeproxy').val(),
+                    kodeproxy: $("input[name='kodeproxy']:checked").val(),
                     nilaikreditlimit: $('#nilaikreditlimit').val(),
                     top: $('#top').val(),
+                    nontop: $('#omitertentu:checked').val(),
                     tgltop: $('#tgltop').val(),
                     kodecustomer: $('#kodecustomer').val(),
                 },
@@ -456,7 +496,8 @@
                 success: function (result) {
                     $('#modal-loader').modal('hide');
 
-                    if(result.message){
+                    if (result.message) {
+                        reset();
                         swal(result.status, result.message, result.status);
                     }
 
@@ -466,6 +507,51 @@
                     alert('error');
                 }
             })
+        }
+
+        function getMonitoringDataPBTolakan() {
+            if ($.fn.DataTable.isDataTable('#table-monitoring-data-pb-tolakan')) {
+                $('#table-monitoring-data-pb-tolakan').DataTable().destroy();
+            }
+            table_monitoring_data_pb_tolakan = $('#table-monitoring-data-pb-tolakan').DataTable({
+                "ajax": {
+                    url: '{{ url()->current() }}/get-monitoring-data-pb-tolakan',
+                    data: {}
+                },
+                "columns": [
+                    {data: 'cla_kodeomi'},
+                    {data: 'cla_nopb'},
+                    {data: 'cla_tglpb'},
+                    {data: 'cla_nilaipb'},
+                    {data: 'cla_nilaicl'},
+                    {data: 'cla_sisacl'},
+                    {data: 'cla_nilaiovercl'},
+                    {data: 'cla_nilaioverdue'},
+                    {data: 'cla_jtoverdue'},
+                    {data: 'cla_keterangan'},
+                    {data: 'cla_kodeomi'}
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "columnDefs": [ {
+                    "targets": 10,
+                    "render": function ( data, type, row, meta ) {
+                        return `<button class="offset-1 col-sm-3 btn btn-success btn-proses" data="`+data+`">
+                                Simpan
+                            </button>`;
+                    }
+                } ],
+                "createdRow": function (row, data, dataIndex) {
+                },
+                "order": [],
+                "initComplete": function () {
+                }
+            });
         }
     </script>
 

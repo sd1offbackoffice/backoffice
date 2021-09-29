@@ -90,18 +90,18 @@
     <table class="body" style="line-height: 10px">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black; text-align: center">
         <tr style="text-align: center;">
-            <th style="width: 50px">NO DOK</th>
-            <th style="width: 50px">TGL DOK</th>
-            <th style="width: 50px">TOKO</th>
-            <th style="width: 90px" colspan="2">MEMBER</th>
-            <th style="width: 90px" colspan="2">SUPPLIER</th>
-            <th style="width: 50px">STRUK</th>
-            <th style="width: 60px">TGL STRUK</th>
-            <th style="width: 50px">PLU</th>
-            <th style="width: 50px">NAMA BARANG</th>
-            <th style="width: 50px">SATUAN</th>
-            <th style="width: 50px">QTY</th>
-            <th style="width: 50px">BNS</th>
+            <th style="width: 40px">NO DOK</th>
+            <th style="width: 40px">TGL DOK</th>
+            <th style="width: 40px">TOKO</th>
+            <th style="width: 40px">MEMBER</th>
+            <th style="width: 100px" colspan="2">SUPPLIER</th>
+            <th style="width: 40px">STRUK</th>
+            <th style="width: 40px">TGL STRUK</th>
+            <th style="width: 40px">PLU</th>
+            <th style="width: 120px">NAMA BARANG</th>
+            <th style="width: 40px">SATUAN</th>
+            <th style="width: 30px">QTY</th>
+            <th style="width: 40px">BNS</th>
             <th style="width: 50px">PRICE</th>
             <th style="width: 60px">TOTAL</th>
             <th style="width: 60px">TOTAL STRUK</th>
@@ -110,23 +110,28 @@
         <tbody>
         {{--        @for($i = 0; $i<100;$i++)--}}
 {{--        <?php $total = 0;$total_struk = 0 ?>--}}
-{{--        @foreach($result as $data)--}}
-{{--            <tr>--}}
-{{--                <td style="width: 50px">{{$data->no_bukti}}</td>--}}
-{{--                <td style="width: 50px; text-align: right">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>--}}
-{{--                <td style="width: 50px">{{$data->kodetoko}}</td>--}}
-{{--                <td style="">{{$data->cus_kodemember}}</td>--}}
-{{--                <td style="width: 100px">{{$data->cus_namamember}}</td>--}}
-{{--                <td style="">{{$data->kodesupplier}}</td>--}}
-{{--                <td style="width: 100px">{{$data->sup_namasupplier}}</td>--}}
-{{--                <td style="width: 50px; text-align: right" >{{$data->no_tran}}</td>--}}
-{{--                <td style="width: 50px; text-align: right" >{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>--}}
-{{--                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>--}}
-{{--                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>--}}
-{{--            </tr>--}}
+        @foreach($result as $data)
+            <tr>
+                <td style="width: 40px">{{$data->no_bukti}}</td>
+                <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>
+                <td style="width: 40px">{{$data->kodetoko}}</td>
+                <td style="width: 40px;">{{$data->cus_kodemember}}</td>
+                <td style="">{{$data->kodesupplier}}</td>
+                <td style="width: 100px">{{$data->sup_namasupplier}}</td>
+                <td style="width: 40px;">{{$data->no_tran}}</td>
+                <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>
+                <td style="width: 40px;">{{$data->prdcd}}</td>
+                <td style="width: 150px;">{{$data->prd_deskripsipendek}}</td>
+                <td style="width: 40px;">{{$data->satuan}}</td>
+                <td style="width: 30px; text-align: right" >{{$data->qty}}</td>
+                <td style="width: 40px; text-align: right" >{{$data->bonus}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->total), 0, '.', ',')}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>
+            </tr>
 {{--            {{$total = $total + $data->harga}}--}}
 {{--            {{$total_struk = $total_struk + $data->gross}}--}}
-{{--        @endforeach--}}
+        @endforeach
         {{--        @endfor--}}
 {{--        <tr>--}}
 {{--            <td colspan="9" style="text-align: right">** Total Akhir :</td>--}}
