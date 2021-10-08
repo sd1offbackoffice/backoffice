@@ -36,6 +36,9 @@ class PerItemController extends Controller
                                  AND PRD_PRDCD = TRJD_PRDCD)
                     GROUP BY TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC
                     ORDER BY TRJD_PRDCD");
+        if(sizeof($datas) == 0){
+            $qtysj[0] = "0";
+        }
         for($i=0;$i<sizeof($datas);$i++){
             $pewpew = $datas[$i]->trjd_prdcd;
 
@@ -86,6 +89,9 @@ class PerItemController extends Controller
                                  AND PRD_PRDCD = TRJD_PRDCD)
                     GROUP BY TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC
                     ORDER BY TRJD_PRDCD");
+        if(sizeof($datas) == 0){
+            $qtysj[0] = "0";
+        }
         for($i=0;$i<sizeof($datas);$i++){
             $pewpew = $datas[$i]->trjd_prdcd;
 

@@ -1,12 +1,12 @@
 @extends('navbar')
-@section('title','Laporan Promosi Redeem via Unique Code')
+@section('title','Perubahan Status OMI PTKP --> PKP')
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5 text-center">LAPORAN PROMOSI REDEEM UNIQUE CODE</legend>--}}
+                    <legend class="w-auto ml-5">Perubahan Status OMI PTKP --> PKP</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">

@@ -9,7 +9,7 @@
                     <div class="card-body pt-0">
                         <br>
                         <fieldset class="card border-dark">
-{{--                            <legend  class="w-auto ml-3">PLU TIMBANGAN</legend>--}}
+                            <legend  class="w-auto ml-3">PLU TIMBANGAN</legend>
                             <div class="card-body shadow-lg cardForm">
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">PLU</label>

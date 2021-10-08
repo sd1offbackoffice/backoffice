@@ -51,10 +51,10 @@
         tr {
             display: table-row;
             vertical-align: inherit;
-            border-color: inherit;
+            /*border-color: inherit;*/
         }
         th, td {
-            border: 1px solid black;
+            /*border: 1px solid black;*/
             line-height: 12px;
         }
 
@@ -121,24 +121,24 @@
                 <tbody>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{date('d/m/Y', strtotime($result[0]->msth_tgldoc))}}</td>
+                    <td>: {{($result[0]->msth_tgldoc) ? date('d/m/Y', strtotime($result[0]->msth_tgldoc)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{date('d/m/Y', strtotime($result[0]->msth_tglpo))}}</td>
+                    <td>: {{($result[0]->msth_tglpo) ? date('d/m/Y', strtotime($result[0]->msth_tglpo)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{date('d/m/Y', strtotime($result[0]->msth_tglfaktur))}}</td>
+                    <td>: {{($result[0]->msth_tglfaktur) ? date('d/m/Y', strtotime($result[0]->msth_tglfaktur)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>JATUH TEMPO</td>
-                    <td>: {{date('d/m/Y', strtotime($result[0]->tgljt))}}</td>
+                    <td>: {{($result[0]->tgljt) ? date('d/m/Y', strtotime($result[0]->tgljt)) : ''}}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div style="width: 60%; margin-left: 40%; margin-top: -100px">
+        <div style="width: 80%; margin-left: 40%; margin-top: -100px">
             <table style="line-height: 8px !important;">
                 <tbody>
                 <tr>
@@ -156,7 +156,7 @@
                 <tr>
                     <td>TELP</td>
                     <td>: {{$result[0]->sup_telpsupplier}}</td>
-                    <td style="width: 70px"></td>
+                    <td style="width: 10px"></td>
                     <td>C. PERSON</td>
                     <td>: {{$result[0]->contact_person}}</td>
                 </tr>
@@ -191,7 +191,7 @@
 {{--        @for($i = 0; $i < 10; $i++)--}}
             <?php $no = 1 ; $total = 0; $ppn = 0; $disc4 = 0?>
             @foreach($result as $data)
-                <tr>
+                <tr style="border-top: 1px solid black">
                     <td rowspan="2" style="width: 20px; text-align: left;">{{$no++}}</td>
                     <td rowspan="2" style="width: 265px; text-align: left;">{{$data->plu}}</td>
                     <td colspan="1" style="width: 50px; text-align: center">{{$data->kemasan}}</td>
@@ -202,22 +202,24 @@
                     <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->mstd_ppnbtlrph), 0, '.', ',')}}</td>
                     <td rowspan="2" style="width: 50px; text-align: right">Rp. {{number_format(round($data->jumlah), 0, '.', ',')}}</td>
                 </tr>
-                <tr>
+                <tr style="">
                     <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->rphdisc1), 0, '.', ',')}}</td>
                     <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->disc2), 0, '.', ',')}}</td>
                     <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->rphdisc3), 0, '.', ',')}}</td>
                     <td colspan="1" style="width: 50px; text-align: right">{{$data->qtybonus1}}</td>
                     <td colspan="1" style="width: 50px; text-align: right">{{$data->qtybonus2}}</td>
-                    <td colspan="1" style="width: 50px;">{{$data->keterangan}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{$data->keterangan}}</td>
                 </tr>
+                <tr><td colspan="9" style="height: 1px; border-bottom: 1px solid black"></td></tr>
                 {{$total = $total + $data->jumlah}}
-                {{$ppn = $ppn + ($data->mstd_ppnbmrph + $data->mstd_ppnbtlrph)}}
+{{--                {{$ppn = $ppn + ($data->mstd_ppnbmrph + $data->mstd_ppnbtlrph)}}--}}
+                {{$ppn = $ppn + (0.1 * $total)}}
                 {{$disc4 = $disc4 + $data->dis4}}
             @endforeach
 {{--        @endfor--}}
 
 
-        <tr><td colspan="9" style="height: 10px"></td></tr>
+{{--        <tr><td colspan="9" style="height: 10px; border-bottom: 1px solid black"></td></tr>--}}
         <tr>
             <td colspan="7" style="text-align: right"> TOTAL HARGA BELI</td>
             <td colspan="2" style="text-align: right">Rp. {{number_format(round($total), 0, '.', ',')}}</td>
@@ -233,7 +235,7 @@
         </tbody>
     </table>
 
-    <table style="margin-top: 20px">
+    <table style="border: 1px solid black ;margin-top: 20px">
         <tbody>
         <tr>
             <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 235px">

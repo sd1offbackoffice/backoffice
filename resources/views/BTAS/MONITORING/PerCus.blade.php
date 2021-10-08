@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Monitoring Barang Titipan per Customer (Urut Tanggal Penitipan)</legend>--}}
+                    <legend class="w-auto ml-5">Monitoring Barang Titipan per Customer (Urut Tanggal Penitipan)</legend>
                     <div class="card-body shadow-lg cardForm">
 
                         <div class="p-0 tableFixedHeader" style="height: 250px;">
@@ -25,7 +25,11 @@
                                     <tr class="baris" onclick="SelectRow(this)">
                                         <td>{{$datas[$i]->cus_namamember}}</td>
                                         <td>{{$datas[$i]->sjh_kodecustomer}}</td>
-                                        <td>{{$datas[$i]->sjh_tglpenitipan}}</td>
+                                        <?php
+                                        $split = explode(' ',($datas[$i]->sjh_tglpenitipan));
+                                        $split = explode('-',$split[0]);
+                                        ?>
+                                        <td>{{$split[2]}}/{{$split[1]}}/{{$split[0]}}</td>
                                         <td>{{$datas[$i]->viewstruk}}</td>
                                     </tr>
                                 @endfor
@@ -94,6 +98,7 @@
         let noSJAS = [];
         let frekTahapan = [];
         let tanggalTrn = [];
+        let tanggalTitip = [];
         let noStruk = [];
         let struk = [];
         $(document).ready(function() {
@@ -107,6 +112,7 @@
                         frekTahapan[i] = result[i].sjh_frektahapan;
                         kodeCust[i] = result[i].sjh_kodecustomer;
                         tanggalTrn[i] = result[i].sjh_tglstruk;
+                        tanggalTitip[i] = result[i].sjh_tglpenitipan;
                         noStruk[i] = result[i].viewstruk;
                         struk[i] = result[i].sjh_nostruk;
                     }
@@ -164,7 +170,9 @@
                             qtySisa = (result.datas[i].trjd_quantity)-qty;
                             $('#tbodyModalHelp').append("<tr class='modalRow'><td>"+ result.datas[i].trjd_seqno +"</td> <td>"+ result.datas[i].prd_deskripsipendek +"</td> <td>"+ result.datas[i].unit +"</td><td>"+result.datas[i].trjd_quantity+"</td><td>"+qty+"</td><td>"+qtySisa+"</td></tr>")
                         }
-                        $('#tanggalH').val(tanggalTrn[curTr]);
+                        let date = tanggalTitip[curTr].substr(0,10);
+                        date = date.split('-');
+                        $('#tanggalH').val(date[2]+'-'+date[1]+'-'+date[0]);
                         $('#strukH').val(noStruk[curTr]);
                         $('#modalHelp').modal('show');
                     }, error: function () {
@@ -202,6 +210,7 @@
                         frekTahapan[i] = result[i].sjh_frektahapan;
                         kodeCust[i] = result[i].sjh_kodecustomer;
                         tanggalTrn[i] = result[i].sjh_tglstruk;
+                        tanggalTitip[i] = result[i].sjh_tglpenitipan;
                         noStruk[i] = result[i].viewstruk;
                         struk[i] = result[i].sjh_nostruk;
 
@@ -223,6 +232,7 @@
                         frekTahapan[i] = result[i].sjh_frektahapan;
                         kodeCust[i] = result[i].sjh_kodecustomer;
                         tanggalTrn[i] = result[i].sjh_tglstruk;
+                        tanggalTitip[i] = result[i].sjh_tglpenitipan;
                         noStruk[i] = result[i].viewstruk;
                         struk[i] = result[i].sjh_nostruk;
 

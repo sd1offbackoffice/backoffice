@@ -59,7 +59,7 @@ $datetime->setTimezone($timezone);
                 <td class="left">{{ $d->prd_deskripsipanjang }}</td>
                 <td>{{ $d->sjd_prdcd }}</td>
                 <td>{{ $d->unit }}</td>
-                <td class="right">{{ $d->sjd_qtystruk }}</td>
+                <td class="right">{{ $d->sjd_qtysjas }}</td>
                 <td class="right">{{ $d->qtysisa }}</td>
             </tr>
         @endforeach

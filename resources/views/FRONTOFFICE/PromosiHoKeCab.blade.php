@@ -6,18 +6,18 @@
         <div class="row justify-content-center">
             <div class="col-md-5">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Proses Tarik Data Promosi HO</legend>--}}
+                    <legend class="w-auto ml-5">Proses Tarik Data Promosi HO</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <form>
-                            <br>
-                            <div class="col-sm-12">
-                                <button class="btn btn-primary col-sm-12" type="button" onclick="DownBaru()">DOWNLOAD DATA BARU PROMOSI HO</button>
-                            </div>
-                            <br>
-                            <div class="col-sm-12">
-                                <button class="btn btn-primary col-sm-12" type="button" onclick="DownEdit()">DOWNLOAD DATA EDITAN PROMOSI HO</button>
-                            </div>
-                        </form>
+
+                        <br>
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary col-sm-12" type="button" onclick="DownBaru()">DOWNLOAD DATA BARU PROMOSI HO</button>
+                        </div>
+                        <br>
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary col-sm-12" type="button" onclick="DownEdit()">DOWNLOAD DATA EDITAN PROMOSI HO</button>
+                        </div>
+
                     </div>
                 </fieldset>
             </div>

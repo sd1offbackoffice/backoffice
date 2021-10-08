@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">SPB MANUAL</legend>--}}
+                    <legend class="w-auto ml-5">SPB MANUAL</legend>
                     <div class="card-body shadow-lg cardForm">
 
                             <br>

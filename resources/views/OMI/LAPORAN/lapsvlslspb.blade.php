@@ -37,15 +37,9 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Pilihan</label>
-                            <input class="col-sm-2 text-center form-control" type="text" id="pilihan">
+                            <input class="col-sm-2 text-center form-control" type="text" id="pilihan" onkeypress="return isDT(event)" maxlength="1">
                             <label class="col-sm-2 col-form-label text-center">[D]etil</label>
                             <label class="col-sm-2 col-form-label text-left">[T]otal</label>
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Kategori</label>
-                            <input class="col-sm-4 text-center form-control" type="text" id="kat1">
-                            <label class="col-sm-2 col-form-label text-center">s/d</label>
-                            <input class="col-sm-4 text-center form-control" type="text" id="kat2">
                         </div>
 
                         <br>
@@ -73,6 +67,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                    <input type="text" hidden id="date1">
+                    <input type="text" hidden id="date2">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -81,8 +77,8 @@
                                 <table class="table table-striped table-bordered" id="tablePb">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Tag_Kodetag</th>
-                                        <th>Tag_Keterangan</th>
+                                        <th>Tag Kodetag</th>
+                                        <th>Tag Keterangan</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyTag"></tbody>
@@ -106,9 +102,53 @@
             locale: {
                 format: 'DD/MM/YYYY'
             }
+        }, function(start, end, label) { //untuk mendeteksi perubahan
+            //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            $('#date1').val(start.format('YYYY-MM-DD'));
+            $('#date1').change();
+            $('#date2').val(end.format('YYYY-MM-DD'));
+            $('#date2').change();
+            // console.log(start.format('YYYY-MM-DD') + ' to ' + end.format('DD-MM-YYYY'));
         });
+
+        $('#date1, #date2').change( function() {
+            tablePb.draw();
+        } );
+
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+
+                let min = Date.parse($('#date1').val());
+                let max = Date.parse($('#date2').val());
+                let val = Date.parse(data[2].substr(0,10)); // use data for the val column, [2] maksudnya kolom ke 2, yaitu pbo_create_dt
+                if ( ( isNaN( min ) && isNaN( max ) ) ||
+                    ( isNaN( min ) && val <= max ) ||
+                    ( min <= val   && isNaN( max ) ) ||
+                    ( min <= val   && val <= max ) )
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        $(document).on({
+            ajaxStart: function() { $('#modal-loader').modal('show');   },
+            ajaxStop: function() { $('#modal-loader').modal('hide'); }
+        });
+
         $(document).ready(function () {
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd;
+
             getPb();
+            $('#date1').val(today);
+            $('#date2').val(today);
+            $('#date2').change();
         })
 
         function getPb(){
@@ -119,6 +159,7 @@
                 "columns": [
                     {data: 'pbo_nopb', name: 'pbo_nopb'},
                     {data: 'pbo_kodeomi', name: 'pbo_kodeomi'},
+                    {data: 'pbo_create_dt', name: 'pbo_create_dt', visible: false},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -157,6 +198,26 @@
             $('#m_pb').modal('toggle');
         }
 
+        function isDT(evt){ //membatasi input untuk hanya boleh Y dan T, serta mendeteksi bila menekan tombol enter
+            $('#pilihan').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
+            let charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 100) // d kecil
+                return 68; // D besar
+
+            if (charCode == 116) // t kecil
+                return 84; //T besar
+
+            if (charCode == 68 || charCode == 84)
+                return true
+            // if (charCode == 13){
+            //     $('#pilihan').val('T');
+            //     return 84;
+            // }
+            return false;
+        }
+
         function cetak(){
             let date = $('#daterangepicker').val();
             if(date == null || date == ""){
@@ -178,7 +239,7 @@
             dateA = dateA.split('/').join('-');
             dateB = dateB.split('/').join('-');
 
-            if(($('#cab1').val() == '' && $('#cab2').val() != '')||($('#cab1').val() != '' && $('#cab2').val() == '')){
+            if($('#cab1').val() == '' && $('#cab2').val() != '' && $('#cab1').val() != '' && $('#cab2').val() == ''){
                 swal({
                     title:'Alert',
                     text: 'Kode Cabang Harus Terisi Semua Atau Tidak Terisi Sama Sekali ',
@@ -206,97 +267,51 @@
                 });
                 return false;
             }
-            if(($('#div1').val() == '' && $('#div2').val() != '')||($('#div1').val() != '' && $('#div2').val() == '')){
+            if($('#pb1').val() == '' && $('#pb2').val() != '' && $('#pb1').val() != '' && $('#pb2').val() == ''){
                 swal({
                     title:'Alert',
-                    text: 'Kode Divisi Harus Terisi Semua Atau Tidak Terisi Sama Sekali ',
+                    text: 'No. PB Harus Terisi Semua atau Tidak Terisi Sama Sekali',
                     icon:'warning',
                     timer: 2000,
                     buttons: {
                         confirm: false,
                     },
                 }).then(() => {
-                    $('#div1').focus();
+                    $('#cab1').focus();
                 });
                 return false;
             }
-            if($('#div1').val() > $('#div2').val()){
+            if($('#pb1').val() > $('#pb2').val()){
                 swal({
                     title:'Alert',
-                    text: 'Kode Divisi 1 Harus Lebih Kecil dari Kode Divisi 2',
+                    text: 'No. PB 1 Harus Lebih Kecil dari No. PB 2',
                     icon:'warning',
                     timer: 2000,
                     buttons: {
                         confirm: false,
                     },
                 }).then(() => {
-                    $('#div1').focus();
+                    $('#pb1').focus();
                 });
                 return false;
             }
-            if(($('#dep1').val() == '' && $('#dep2').val() != '')||($('#dep1').val() != '' && $('#dep2').val() == '')){
-                swal({
-                    title:'Alert',
-                    text: 'Kode Departemen Harus Terisi Semua Atau Tidak Terisi Sama Sekali ',
-                    icon:'warning',
-                    timer: 2000,
-                    buttons: {
-                        confirm: false,
-                    },
-                }).then(() => {
-                    $('#dep1').focus();
-                });
-                return false;
-            }
-            if($('#dep1').val() > $('#dep2').val()){
-                swal({
-                    title:'Alert',
-                    text: 'Kode Departemen 1 Harus Lebih Kecil dari Kode Departemen 2',
-                    icon:'warning',
-                    timer: 2000,
-                    buttons: {
-                        confirm: false,
-                    },
-                }).then(() => {
-                    $('#dep1').focus();
-                });
-                return false;
-            }
-            if(($('#kat1').val() == '' && $('#kat2').val() != '')||($('#kat1').val() != '' && $('#kat2').val() == '')){
-                swal({
-                    title:'Alert',
-                    text: 'Kode Kategori Barang Harus Terisi Semua Atau Tidak Terisi Sama Sekali ',
-                    icon:'warning',
-                    timer: 2000,
-                    buttons: {
-                        confirm: false,
-                    },
-                }).then(() => {
-                    $('#kat1').focus();
-                });
-                return false;
-            }
-            if($('#kat1').val() > $('#kat2').val()){
-                swal({
-                    title:'Alert',
-                    text: 'Kode Kategori Barang 1 Harus Lebih Kecil dari Kode Kategori Barang 2',
-                    icon:'warning',
-                    timer: 2000,
-                    buttons: {
-                        confirm: false,
-                    },
-                }).then(() => {
-                    $('#kat1').focus();
-                });
-                return false;
-            }
-            if($('#rel1').val() == ''){
-                $('#rel1').val('-999');
-            }
-            if($('#rel2').val() == ''){
-                $('#rel2').val('999999');
-            }
-            window.open(`{{ url()->current() }}/cetak?date1=${dateA}&date2=${dateB}&cab1=${$('#cab1').val()}&cab2=${$('#cab2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&rel1=${$('#rel1').val()}&rel2=${$('#rel2').val()}&tag1=${$('#inputTag1').val()}&tag2=${$('#inputTag2').val()}&tag3=${$('#inputTag3').val()}&tag4=${$('#inputTag4').val()}&tag5=${$('#inputTag5').val()}`, '_blank');
+            window.open(`{{ url()->current() }}/cetak?date1=${dateA}&date2=${dateB}&cab1=${$('#cab1').val()}&cab2=${$('#cab2').val()}&pb1=${$('#pb1').val()}&pb2=${$('#pb2').val()}&pilihan=${$('#pilihan').val()}`, '_blank');
+        }
+
+        function clear(){
+            $(' input').val('');
+            $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd;
+
+            $('#date1').val(today);
+            $('#date2').val(today);
+            $('#date2').change();
         }
     </script>
 @endsection

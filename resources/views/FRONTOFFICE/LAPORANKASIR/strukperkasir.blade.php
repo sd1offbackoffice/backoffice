@@ -6,31 +6,24 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Struk Per Kasir</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Struk Per Kasir</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <form>
-                            <br>
-                            <div class="card-body shadow-lg cardForm">
-                                <fieldset class="card border-dark">
-                                    <legend class="w-auto ml-5">Rekap Struk Per Kasir</legend>
-                                    <div class="row">
-                                        <label class="col-sm-4 text-right col-form-label">Tanggal :</label>
-                                        <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker">
-                                    </div>
-                                    <div class="row">
-                                        <label class="col-sm-4 text-right col-form-label">Type Transaksi :</label>
-                                        <input class="col-sm-2 text-center form-control" type="text" id="menuSR" onkeypress="return isSR(event)" maxlength="1"> {{--kalau mau tanpa perlu klik enter tambahkan aja onchange="khususElektronik()"--}}
-                                        <label class="col-sm-2 text-left col-form-label">[S- Sales / R - Refund]</label>
-                                    </div>
-                                    <br>
-                                    <div class="d-flex justify-content-end">
-                                        <button class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK</button>
-                                    </div>
-                                    <br>
-                                </fieldset>
-                            </div>
-                            <br>
-                        </form>
+
+                        <div class="row">
+                            <label class="col-sm-4 text-right col-form-label">Tanggal :</label>
+                            <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker">
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-4 text-right col-form-label">Type Transaksi :</label>
+                            <input class="col-sm-2 text-center form-control" type="text" id="menuSR" onkeypress="return isSR(event)" maxlength="1"> {{--kalau mau tanpa perlu klik enter tambahkan aja onchange="khususElektronik()"--}}
+                            <label class="col-sm-2 text-left col-form-label">[S- Sales / R - Refund]</label>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK</button>
+                        </div>
+                        <br>
+
                     </div>
                 </fieldset>
             </div>

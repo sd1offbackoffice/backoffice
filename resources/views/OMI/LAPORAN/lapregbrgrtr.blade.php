@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5 text-center">LAPORAN REGISTER BARANG RETUR</legend>--}}
+                    <legend class="w-auto ml-5">LAPORAN REGISTER BARANG RETUR</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
@@ -19,6 +19,7 @@
                             <label class="col-sm-2 col-form-label text-center">s/d</label>
                             <input class="col-sm-4 text-center form-control" type="text" id="noDoc2">
                         </div>
+                        <br>
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK LAPORAN</button>
                         </div>

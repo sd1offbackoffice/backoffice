@@ -52,8 +52,8 @@
 </head>
 <body>
     <div id="menu_area" class="menu-area">
-        <div class="container">
-            <div class="row">
+                <div class="container">
+                <div class="row">
                 <nav class="navbar navbar-light navbar-expand-lg mainmenu">
                     <a class="navbar-brand" href="{{url("/")}}">
                         <img src="{{asset('image/Indogrosir_logo.jpg')}}" width="100px">
@@ -895,5 +895,3 @@
 
 </script>
 
-
- 

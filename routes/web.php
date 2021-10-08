@@ -713,6 +713,18 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/delete-batch', 'TABEL\PLUNonPromoController@deleteBatch');
             Route::get('/print', 'TABEL\PLUNonPromoController@print');
         });
+
+        Route::prefix('/plu-voucher')->group(function(){
+            Route::get('/','TABEL\PLUVoucherController@index');
+            Route::get('/get-lov-voucher','TABEL\PLUVoucherController@getLovVoucher');
+            Route::get('/get-lov-supplier','TABEL\PLUVoucherController@getLovSupplier');
+            Route::get('/get-data','TABEL\PLUVoucherController@getData');
+            Route::get('/get-data-plu-supplier','TABEL\PLUVoucherController@getDataPLUSupplier');
+            Route::get('/get-supplier','TABEL\PLUVoucherController@getSupplier');
+            Route::get('/get-plu','TABEL\PLUVoucherController@getPLU');
+            Route::post('/save-data','TABEL\PLUVoucherController@saveData');
+            Route::get('/get-list-supplier','TABEL\PLUVoucherController@getListSupplier');
+        });
     });
 
     Route::prefix('/administration')->group(function () {
@@ -1469,6 +1481,20 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::prefix('/lapsvlslspb')->group(function () {
                 Route::get('/', 'OMI\LAPORAN\lapsvlslspbController@index');
                 Route::get('/getpb', 'OMI\LAPORAN\lapsvlslspbController@pbModal');
+                Route::get('/cetak', 'OMI\LAPORAN\lapsvlslspbController@cetak');
+            });
+        });
+    });
+
+    Route::prefix('/tabel')->group(function () {
+        Route::prefix('/hadiahtransaksi')->group(function () {
+            //hadiah per item
+            Route::prefix('/hdhitem')->group(function () {
+                Route::get('/', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@index');
+                Route::get('/modalplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalPlu');
+                Route::get('/modalhadiah', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalHadiah');
+                Route::get('/modalhistory', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalHistory');
+                Route::get('/checkplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@CheckPlu');
             });
         });
     });

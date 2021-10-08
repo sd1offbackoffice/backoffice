@@ -60,30 +60,25 @@ class laprincislvpbController extends Controller
             }else{
                 $p_tag = "'b'";
             }
-            if($tag1 != ''){
-                $p_tag = "'".$tag1."'";
-            }else{
-                $p_tag = "'b'";
-            }
             if($tag2 != ''){
                 $p_tag = $p_tag.",'".$tag2."'";
             }else{
-                $p_tag = $p_tag."'b'";
+                $p_tag = $p_tag.",'b'";
             }
             if($tag3 != ''){
                 $p_tag = $p_tag.",'".$tag3."'";
             }else{
-                $p_tag = $p_tag."'b'";
+                $p_tag = $p_tag.",'b'";
             }
             if($tag4 != ''){
                 $p_tag = $p_tag.",'".$tag4."'";
             }else{
-                $p_tag = $p_tag."'b'";
+                $p_tag = $p_tag.",'b'";
             }
             if($tag5 != ''){
                 $p_tag = $p_tag.",'".$tag5."'";
             }else{
-                $p_tag = $p_tag."'b'";
+                $p_tag = $p_tag.",'b'";
             }
         }
 
@@ -147,8 +142,8 @@ FROM
     WHERE pbo_kodeigr = '$kodeigr'
     AND TRUNC(pbo_tglpb) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
     AND SUBSTR(pbo_pluigr,1,6) NOT IN ('074828', '074829')
-    -- AND case when pbo_qtyorder <> 0 then ((pbo_qtyrealisasi / pbo_qtyorder) * 100) else -100 end BETWEEN '$rel1' and '$rel2' -- ini modifikasi, apakah sesuai dengan kondisi where program lama?
-    AND ((pbo_qtyrealisasi / pbo_qtyorder) * 100) BETWEEN '$rel1' and '$rel2' --bila pbo qty_order 0 maka akan error karena divisor tidak boleh 0, hasilnya infitiy, namun pakai baris ini biar sesuai dengan program lama meski tahu akan error
+    AND case when pbo_qtyorder <> 0 then ((pbo_qtyrealisasi / pbo_qtyorder) * 100) else null end BETWEEN '$rel1' and '$rel2' -- ini modifikasi, apakah sesuai dengan kondisi where program lama?
+    -- AND ((pbo_qtyrealisasi / pbo_qtyorder) * 100) BETWEEN '$rel1' and '$rel2' --bila pbo qty_order 0 maka akan error karena divisor tidak boleh 0, hasilnya infiti, namun pakai baris ini biar sesuai dengan program lama meski tahu akan error
     ".$and_cab."
     ".$and_div."
     ".$and_dep."
@@ -172,6 +167,7 @@ FROM
     AND prs_kodeigr = pbo_kodeigr
     --AND pbo_kodedivisi||pbo_kodedepartemen||pbo_kodekategoribrg between :p_div1||:p_dep1||:p_kat1 and :p_div2||:p_dep2||:p_kat2
 )
+--WHERE rownum < 20000
 GROUP BY pbo_kodeomi, pbo_pluigr, pbo_kodemember,
                     pbo_kodedivisi, pbo_kodedepartemen, pbo_kodekategoribrg,
                     prd_deskripsipanjang, kemasan, prd_kodetag, tko_namaomi,
@@ -179,6 +175,8 @@ GROUP BY pbo_kodeomi, pbo_pluigr, pbo_kodemember,
                     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY pbo_kodeomi, pbo_pluigr");
 
+
+        dd($datas);
         if(sizeof($datas) == 0){
             return "**DATA TIDAK ADA**";
         }

@@ -6,12 +6,12 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan OUtsanding Scanning IDM / OMI</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Outsanding Scanning IDM / OMI</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form><br>
-                            <div class="col-sm-12">
+                            <div class="row">
                                 <label class="col-sm-4 col-form-label text-right font-weight-normal">Periode s/d</label>
-                                <input type="text" id="datepicker">
+                                <input type="text" id="datepicker" class="form-control col-sm-2">
                             </div>
                                 <button class="btn btn-success" style="float: right" type="button" onclick="Cetak()">C E T A K</button>
                         </form>

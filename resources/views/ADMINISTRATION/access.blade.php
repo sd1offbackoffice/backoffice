@@ -78,7 +78,7 @@
                                     <input type="checkbox" class="custom-control-input" id="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" onchange="checkAll('{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}',event)">
                                     <label class="custom-control-label" for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}"></label>
                                 </div>
-                                <label for="" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }} - {{ $menu[$i]->acc_subgroup2 }}</label>
+                                <label for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }} - {{ $menu[$i]->acc_subgroup2 }}</label>
                             </div>
                             <div id="field_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}">
                             @php $div = true; @endphp
@@ -92,7 +92,7 @@
                                     <input type="checkbox" class="custom-control-input" id="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}" onchange="checkAll('{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}',event)">
                                     <label class="custom-control-label" for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}"></label>
                                 </div>
-                                <label for="" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }}</label>
+                                <label for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }}</label>
                             </div>
                             <div id="field_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}">
                             @php $div = true; @endphp
@@ -114,7 +114,7 @@
                                 <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
                             </div>
                         </div>
-                        <label for="" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
+                        <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
                         @if($i+1 < count($menu))
                             @if($menu[$i]->acc_group == $menu[$i+1]->acc_group && $menu[$i]->acc_subgroup1 == $menu[$i+1]->acc_subgroup1 && $menu[$i]->acc_subgroup2 == $menu[$i+1]->acc_subgroup2)
                                 <div class="col-sm-1">
@@ -123,7 +123,7 @@
                                         <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
                                     </div>
                                 </div>
-                                <label for="" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
+                                <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
                             @endif
                         @endif
                     </div>

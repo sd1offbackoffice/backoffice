@@ -9,7 +9,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Header Perubahan Status Barang</legend>--}}
+                    <legend class="w-auto ml-5">Header Perubahan Status Barang</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row text-right">

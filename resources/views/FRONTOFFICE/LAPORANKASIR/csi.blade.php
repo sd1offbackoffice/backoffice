@@ -6,9 +6,8 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Cash Back / Supplier / Item</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Cash Back / Supplier / Item</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <form>
                             <br>
                             <div class="row">
                                 <label class="col-sm-4 text-right font-weight-normal">Tanggal</label>
@@ -49,7 +48,6 @@
                             </div>
 
                             <br>
-                        </form>
                     </div>
                 </fieldset>
             </div>

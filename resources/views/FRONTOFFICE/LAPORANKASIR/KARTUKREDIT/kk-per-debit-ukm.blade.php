@@ -20,14 +20,14 @@
                             <div class="col-sm-3 buttonInside pl-0">
                                 <input type="text" class="form-control text-left" id="kasir1" onchange="checkKasir('kasir1')" disabled>
                                 <button id="btn_lov_kasir" type="button" class="btn btn-primary btn-lov p-0" onclick="showLov('kasir1')" disabled>
-                                    <i class="fas fa-question"></i>
+                                    <i class="fas fa-spin fa-spinner"></i>
                                 </button>
                             </div>
                             <label class="col-sm-1 pt-1 text-center">s/d</label>
                             <div class="col-sm-3 buttonInside p-0">
                                 <input type="text" class="form-control text-left" id="kasir2" onchange="checkKasir('kasir2')" disabled>
                                 <button id="btn_lov_kasir" type="button" class="btn btn-primary btn-lov p-0" onclick="showLov('kasir2')" disabled>
-                                    <i class="fas fa-question"></i>
+                                    <i class="fas fa-spin fa-spinner"></i>
                                 </button>
                             </div>
                             <div class="col-sm"></div>
@@ -162,10 +162,11 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('row-lov').css({'cursor': 'pointer'});
-                    $('.btn-lov').prop('disabled', false);
                 },
                 "order" : [],
                 "initComplete": function(){
+                    $('.btn-lov').empty().append('<i class="fas fa-question">').prop('disabled', false);
+
                     $(document).on('click', '.row-lov', function (e) {
                         $('#'+currField).val($(this).find('td:eq(0)').html());
 

@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">.:: [Header] ::.</legend>--}}
+                    <legend class="w-auto ml-5">.:: [Header] ::.</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="col-sm-12">
                             <div class="form-group row mb-0">

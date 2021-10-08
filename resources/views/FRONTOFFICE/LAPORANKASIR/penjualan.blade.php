@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>
                     <div class="card-body shadow-lg cardForm">
 
 {{--                        ### MENU UTAMA ###   --}}

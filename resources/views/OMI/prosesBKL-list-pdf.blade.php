@@ -28,7 +28,7 @@
         body {
             font-size: 9px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-weight: bold;
+            /*font-weight: bold;*/
             margin-top: 70px;
         }
 
@@ -50,7 +50,8 @@
             border-color: inherit;
         }
         th, td {
-            border: 1px solid black;
+            /*border: 1px solid black;*/
+            border-bottom: 1px solid black;
             line-height: 12px;
         }
 
@@ -79,26 +80,27 @@
         <div style="float:right; margin-top: -20px; line-height: 5px !important;">
             <p> Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
                 Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-                PGM : ?????? <br><br>
                 Hal. :
         </div>
         <div style="clear: right"></div>
-        <h1 style="text-align: center; padding-top: 12px">* * LISTING BUKTI TRANSFER BARANG KIRIM LANGSUNG DARI OMI **</h1>
+        <h2 style="text-align: center; padding-top: 15px">* * LISTING BUKTI TRANSFER BARANG KIRIM LANGSUNG DARI OMI **</h2>
     </div>
 
 
     <table class="body" style="line-height: 10px">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black; text-align: center">
         <tr style="text-align: center;">
-            <th style="width: 50px">NO DOK</th>
-            <th style="width: 50px">TGLDOK</th>
-            <th style="width: 50px">TOKO</th>
-            <th style="width: 90px" colspan="2">MEMBER</th>
-            <th style="width: 90px" colspan="2">SUPPLIER</th>
-            <th style="width: 50px">STRUK</th>
-            <th style="width: 60px">TGL STRUK</th>
-            <th style="width: 60px">TOTAL</th>
-            <th style="width: 60px">TOTAL STRUK</th>
+            <th style="width: 40px">NO DOK</th>
+            <th style="width: 40px">TGLDOK</th>
+            <th style="width: 40px">TOKO</th>
+            <th style="width: 150px">MEMBER</th>
+            <th style="width: 190px">SUPPLIER</th>
+            {{--            <th style="width: 90px" colspan="2">MEMBER</th>--}}
+            {{--            <th style="width: 130px" colspan="2">SUPPLIER</th>--}}
+            <th style="width: 40px">STRUK</th>
+            <th style="width: 40px">TGL STRUK</th>
+            <th style="width: 40px">TOTAL</th>
+            <th style="width: 40px">TOTAL STRUK</th>
         </tr>
         </thead>
         <tbody>
@@ -106,24 +108,23 @@
         <?php $total = 0;$total_struk = 0 ?>
         @foreach($result as $data)
             <tr>
-                <td style="width: 50px">{{$data->no_bukti}}</td>
-                <td style="width: 50px; text-align: right">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>
-                <td style="width: 50px">{{$data->kodetoko}}</td>
-                <td style="">{{$data->cus_kodemember}}</td>
-                <td style="width: 100px">{{$data->cus_namamember}}</td>
-                <td style="">{{$data->kodesupplier}}</td>
-                <td style="width: 100px">{{$data->sup_namasupplier}}</td>
-                <td style="width: 50px; text-align: right" >{{$data->no_tran}}</td>
-                <td style="width: 50px; text-align: right" >{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>
-                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>
-                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>
+                <td style="width: 40px">{{$data->no_bukti}}</td>
+                <td style="width: 40px; text-align: right">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>
+                <td style="width: 40px; text-align: center">{{$data->kodetoko}}</td>
+                <td style="width: 150px">{{$data->cus_kodemember}} {{$data->cus_namamember}}</td>
+                <td style="width: 190px">{{$data->kodesupplier}} {{$data->sup_namasupplier}}</td>
+{{--                <td style="">{{$data->sup_namasupplier}}</td>--}}
+                <td style="width: 40px; text-align: right" >{{$data->no_tran}}</td>
+                <td style="width: 40px; text-align: right" >{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>
+                <td style="width: 40px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>
+                <td style="width: 40px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>
             </tr>
             {{$total = $total + $data->harga}}
             {{$total_struk = $total_struk + $data->gross}}
         @endforeach
 {{--        @endfor--}}
         <tr>
-            <td colspan="9" style="text-align: right">** Total Akhir :</td>
+            <td colspan="7" style="text-align: right"><strong>** Total Akhir </strong></td>
             <td style="text-align: right">Rp. {{number_format($total ,0,',','.')}}</td>
             <td style="text-align: right">Rp. {{number_format($total_struk ,0,',','.')}}</td>
         </tr>

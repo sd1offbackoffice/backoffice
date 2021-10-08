@@ -36,7 +36,7 @@
             <div class="col-sm-10">
                 <div class="card border-dark">
                     <div class="card-body cardForm">
-                        <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky;height:455px">
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky;height:455px;overflow-y: scroll">
                             <table id="table_tsj" class="table table-sm table-bordered mb-3 text-center">
                                 <thead class="thColor">
                                 <tr>
@@ -69,6 +69,8 @@
 
     <script>
         let fileUpload = [];
+        let filename;
+        let sesiproc;
 
         $(document).ready(function () {
             $('.btnCetak').hide();
@@ -142,9 +144,22 @@
                 contentType:false,
                 dataType: "json",
                 data:fileDBF,
+                beforeSend : function (){
+                    $('#btnCetakList').hide();
+                    $('#btnCetakBpb').hide();
+                    $('#btnCetakStruk').hide();
+                    $('#btnCetakReset').hide();
+                    $('#btnCetakTolakan').hide();
+                },
                 success: function (result) {
-                    console.log(result)
-                    console.log(result.msg)
+                    filename = result.data.namafiler
+                    sesiproc = result.data.sesiproc
+
+                    if (result.kode == 1){
+                        swal(result.msg, '', 'success')
+                    } else {
+                        swal(result.msg, '', 'warning')
+                    }
                     let idButtonCetak = result.data.report_id;
                     if (idButtonCetak) {
                         for(let i = 0; i < idButtonCetak.length; i++){
@@ -167,6 +182,8 @@
         function choosePaperSize(report_id) {
             if (report_id == 5) {
                 console.log("cetak tolakan tanpa tanya size");
+                // window.location("http://172.20.28.17/BackOffice/public/OMI/proses-bkl/cetak-laporan?report_id=5&size=B&filename=BLO6BJ28.DBF&sesiproc=1625647")
+                window.open(`{{ url()->current() }}/cetak-laporan?report_id=5&size=B&filename=${filename}&sesiproc=${sesiproc}`);
                 return false;
             }
             swal({
@@ -189,6 +206,7 @@
                     console.log(size)
                     console.log(report_id)
                     console.log("cetak report")
+                    window.open(`{{ url()->current() }}/cetak-laporan?report_id=${report_id}&size=${size}&filename=${filename}&sesiproc=${sesiproc}`);
                 }
             });
         }

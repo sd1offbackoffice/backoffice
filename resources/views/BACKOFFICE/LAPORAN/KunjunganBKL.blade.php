@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Kedatangan Supplier BKL</legend>--}}
+                    <legend class="w-auto ml-5">Kedatangan Supplier BKL</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="col-sm-12">

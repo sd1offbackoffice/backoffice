@@ -85,55 +85,56 @@ class ProsesBKLDalamKotaController extends Controller
                     WHERE sessid = $sesiproc AND namafile = '$filename')");
 
         //testing report
-        DB::insert("INSERT INTO temp_cetak_tolakanbkldalamkota
-                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, keter, sessid, namafile
-                     FROM temp_bkl_dalamkota bkl
-                    WHERE sessid = $sesiproc AND namafile = '$filename')");
-
-        DB::insert("INSERT INTO temp_list_bkldalamkota
-                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, price, gross, 12345, inv_date, istype, sessid, namafile
-                     FROM temp_bkl_dalamkota bkl
-                    WHERE sessid = $sesiproc AND namafile = '$filename')");
-
-//        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+//        DB::insert("INSERT INTO temp_cetak_tolakanbkldalamkota
+//                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, keter, sessid, namafile
+//                     FROM temp_bkl_dalamkota bkl
+//                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 //
-//        $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg); END;");
-//        oci_bind_by_name($exec, ':sesiproc', $sesiproc,100);
-//        oci_bind_by_name($exec, ':namafiler', $filename,100);
-//        oci_bind_by_name($exec, ':stat', $station,100);
-//        oci_bind_by_name($exec, ':kodeigr', $kodeigr,100);
-//        oci_bind_by_name($exec, ':userid', $userId,100);
-//        oci_bind_by_name($exec, ':param_proses', $param_proses,100);
-//        oci_bind_by_name($exec, ':result_kode', $res_kode,100);
-//        oci_bind_by_name($exec, ':result_msg', $res_msg,1000);
-//        oci_execute($exec);
+//        DB::insert("INSERT INTO temp_list_bkldalamkota
+//                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, price, gross, 12345, inv_date, istype, sessid, namafile
+//                     FROM temp_bkl_dalamkota bkl
+//                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 
-//        if ($param_proses == 1){
-//            $temp = DB::table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
-//                ->where('namafile', $filename)->get()->toArray();
-//
-//            if ($temp){
-//                $tempReportId = ['1','2','3','4'];
-//            }
-//
-//            $temp = DB::table('temp_cetak_tolakanbkldalamkota')->where('sessid', $sesiproc)
-//                ->where('namafile', $filename)->get()->toArray();
-//
-//            if ($temp){
-//                $tempReportId = array_push($tempReportId,"5");
-//            }
-//
-//        }
+        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
-        //Kalau dari proses data return alert, function di bawah call proses data di jalanin atau enggak?
+        $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg); END;");
+        oci_bind_by_name($exec, ':sesiproc', $sesiproc,100);
+        oci_bind_by_name($exec, ':namafiler', $filename,100);
+        oci_bind_by_name($exec, ':stat', $station,100);
+        oci_bind_by_name($exec, ':kodeigr', $kodeigr,100);
+        oci_bind_by_name($exec, ':userid', $userId,100);
+        oci_bind_by_name($exec, ':param_proses', $param_proses,100);
+        oci_bind_by_name($exec, ':result_kode', $res_kode,100);
+        oci_bind_by_name($exec, ':result_msg', $res_msg,1000);
+        oci_execute($exec);
 
+//        $param_proses = 1;
+//        $res_kode = 1;
+//        $res_msg = "OKe";
+
+//        dd([$param_proses,$res_kode,$res_msg]);
+
+        if ($param_proses == 1){
+            $temp = DB::table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
+                ->where('namafile', $filename)->get()->toArray();
+
+            if ($temp){
+                array_push($tempReportId,'1','2','3','4');
+            }
+
+            $temp = DB::table('temp_cetak_tolakanbkldalamkota')->where('sessid', $sesiproc)
+                ->where('namafile', $filename)->get()->toArray();
+
+            if ($temp){
+                array_push($tempReportId,'5');
+            }
+        }
+
+//        dd($tempReportId);
 //        DB::table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
 
-        array_push($tempReportId,'1','2','3','4');
-        array_push($tempReportId,'5');
-
         $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId];
-        return response()->json(['kode' => 1, 'msg' => "Proses Data Berhasil", 'data' => $data]);
+        return response()->json(['kode' => $res_kode, 'msg' => $res_msg, 'data' => $data]);
     }
 
     public function cetakLaporan(Request $request){
@@ -153,9 +154,16 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = ($size == 'K') ? "OMI.prosesBKL-list-pdf" : "OMI.prosesBKL-list-detail-pdf";
             $paperFormat = ($size == 'K') ? "potrait" : "landscape";
             $pageNum1   = ($size == 'K') ? 510 : 756;
-            $pageNum2   = 45;
+            $pageNum2   = 39;
         } elseif ($report_id == 2){
-            $result     = $this->laporanBpb($kodeigr, '01400045');
+            $noPO = DB::select("SELECT * FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL, msth_nodoc
+                                       FROM TEMP_BKL_DALAMKOTA, TBTR_MSTRAN_H
+                                      WHERE  TRIM (NAMAFILE) like '%$filename%'
+                                        AND MSTH_KODEIGR = '$kodeigr'
+                                        AND TRIM (MSTH_NOFAKTUR) = TRIM (GUDANG || BUKTI_NO)
+                                        AND MSTH_TGLFAKTUR = BUKTI_TGL) A");
+
+            $result     = $this->laporanBpb($kodeigr, $noPO[0]->msth_nodoc ?? '00000');
             $bladeName  = "OMI.prosesBKL-bpb-pdf";
         } elseif ($report_id == 3){
             $result     = $this->laporanStruk($kodeigr);

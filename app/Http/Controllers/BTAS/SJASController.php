@@ -96,7 +96,7 @@ class SJASController extends Controller
             ORDER BY TRJD_SEQNO");
 
         foreach($detail as $d){
-            $temp = DB::select("SELECT *
+            $temp = DB::selectOne("SELECT *
                       FROM TBTR_JUALHEADER, TBTR_JUALDETAIL
                      WHERE JH_TRANSACTIONTYPE = 'R'
                             AND JH_REFERENCECASHIERSTATION = '".$data->station."'
@@ -110,21 +110,26 @@ class SJASController extends Controller
                             AND TRJD_TRANSACTIONTYPE = 'R'
                             AND TRJD_PRDCD = '".$d->trjd_prdcd."'");
 
-            if(count($temp) > 0){
-                $d->qtyrefund = $temp[0]->trjd_quantity == null ? 0 : $temp[0]->trjd_quantity;
+            if($temp){
+                $d->qtyrefund = $temp->trjd_quantity;
             }
             else $d->qtyrefund = 0;
 
             $d->qtytitip = $d->trjd_quantity - $d->qtyrefund;
 
-            $temp = DB::select("SELECT SUM(NVL (SJD_QTYSJAS, 0)) jml
+            $temp = DB::selectOne("SELECT SUM(NVL (SJD_QTYSJAS, 0)) jml
                       FROM TBTR_SJAS_D
                      WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
                        AND SJD_NOSJAS = '".$data->nosj."'
                        AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                        AND SJD_PRDCD = '".$d->trjd_prdcd."'");
 
-            $d->qtyok = $temp[0]->jml == null ? 0 : $temp[0]->jml;
+            if(!$temp){
+                $d->qtyok = 0;
+            }
+            else{
+                $d->qtyok = $temp->jml;
+            }
 
             $d->qtysisa = $d->qtytitip - $d->qtyok;
             $d->qtysisaall = $d->qtytitip - $d->qtyok;
@@ -138,14 +143,16 @@ class SJASController extends Controller
                            AND SJD_PRDCD = '".$d->trjd_prdcd."'
                            AND SJD_TAHAPAN = '".$request->tahap."'");
 
-                if($temp){
-                    $d->qtyambil = $temp->qty;
+                if(!$temp){
+                    $d->qtyambil = $d->qtysisa;
                 }
-                else $d->qtyambil = $d->qtysisa;
+                else $d->qtyambil = $temp->qty;
             }
             else $d->qtyambil = $d->qtysisa;
 
             $d->qtysisa -= $d->qtyambil;
+
+//            $d->qtysisa = $d->qtysisaall;
         }
 
         return compact(['data','detail']);
@@ -208,7 +215,9 @@ class SJASController extends Controller
                 $ins['sjd_create_by'] = $_SESSION['usid'];
                 $ins['sjd_create_dt'] = DB::RAW("SYSDATE");
 
-                $insert[] = $ins;
+                DB::table('tbtr_sjas_d')
+                    ->insert($ins);
+//                $insert[] = $ins;
             }
 
             DB::table('tbtr_sjas_d')

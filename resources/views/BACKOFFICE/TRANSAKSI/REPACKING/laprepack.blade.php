@@ -9,10 +9,10 @@
 {{--                    <legend class="w-auto ml-5">Cetak Laporan Repacking</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <form>
-                            <div class="col-sm-12">
-                                <label class="col-sm-4 text-right font-weight-normal">Periode Tanggal</label>
-                                <input class="col-sm-3 text-center" type="text" id="daterangepicker">
-                                <label class="col-sm-2 text-left">DD / MM / YYYY</label>
+                            <div class="row">
+                                <label class="col-sm-4 text-right font-weight-normal col-form-label">Periode Tanggal</label>
+                                <input class="col-sm-3 text-center form-control" type="text" id="daterangepicker">
+                                <label class="col-sm-2 text-left col-form-label">DD / MM / YYYY</label>
                             </div>
                             <br>
                             <div class="d-flex justify-content-center">

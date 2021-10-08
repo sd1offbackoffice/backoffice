@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Posisi Barang Titipan</legend>--}}
+                    <legend class="w-auto ml-5">Posisi Barang Titipan</legend>
                     <div class="card-body shadow-lg cardForm">
 
                         <div class="p-0 tableFixedHeader" style="height: 250px;">

@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: ryan
- * Date: 20/09/2021
- * Time: 14:58 AM
+ * Date: 04/10/2021
+ * Time: 15:02 PM
  */
 
-namespace App\Http\Controllers\OMI\LAPORAN;
+namespace App\Http\Controllers\TABEL\SETTINGHADIAHPADATRANSAKSIKASIR;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,28 +15,130 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class lapsvlslspbController extends Controller
+class hdhitemController extends Controller
 {
 
     public function index()
     {
-        return view('OMI\LAPORAN.lapsvlslspb');
+        return view('TABEL\SETTINGHADIAHPADATRANSAKSIKASIR.hdhitem');
     }
 
-    public function pbModal(Request $request){
+    public function ModalPlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
 
-        $datas = DB::table("tbmaster_pbomi")
-            ->selectRaw("DISTINCT pbo_nopb, pbo_kodeomi, pbo_create_dt")
-            ->where('pbo_kodeigr','=',$kodeigr)
-            //->whereRaw("trunc(pbo_create_dt) between :tgl1 and :tgl2")
-            ->whereRaw("(SUBSTR(pbo_nostruk,-3,3) <> 'BKL'  OR pbo_nostruk IS NULL)")
-            ->whereRaw("pbo_nokoli IS NULL")
-            ->whereRaw("SUBSTR(pbo_pluigr,1,6) NOT IN ('074828', '074829')")
-            //->limit(100)
+        $datas = DB::table("TBMASTER_PRODMAST")
+            ->selectRaw("PRD_DESKRIPSIPANJANG")
+            ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
+            ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
+            ->selectRaw("PRD_KODETAG")
+            ->selectRaw("PRD_MINJUAL JUAL")
+            ->selectRaw("PRD_PRDCD")
+            ->selectRaw("NULL REG")
+
+            ->where('PRD_DESKRIPSIPANJANG','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_UNIT','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_FRAC','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_HRGJUAL','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_KODETAG','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_MINJUAL','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->orWhere('PRD_PRDCD','LIKE', '%'.$search.'%')
+            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+
+            ->limit(1000)
+            ->get();
+
+//        $datas = DB::table("TBMASTER_PRODMAST")
+//            ->selectRaw("PRD_DESKRIPSIPANJANG")
+//            ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
+//            ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
+//            ->selectRaw("PRD_KODETAG")
+//            ->selectRaw("PRD_MINJUAL JUAL")
+//            ->selectRaw("PRD_PRDCD")
+//            ->selectRaw("NULL REG")
+//            ->where('PRD_KODEIGR','=',$kodeigr)
+//            ->whereRaw("SUBSTR(PRD_PRDCD,7,1) = '0'")
+//            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function ModalHadiah(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
+
+        $datas = DB::table("TBMASTER_BRGPROMOSI")
+            ->selectRaw("BPRP_KETPANJANG")
+            ->selectRaw("BPRP_PRDCD")
+
+            ->where('BPRP_KODEIGR','=',$kodeigr)
+            ->orderBy("BPRP_KETPANJANG")
+
             ->get();
 
         return Datatables::of($datas)->make(true);
+    }
+
+    public function ModalHistory(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::select("SELECT ISD_PRDCD, TO_CHAR(ISD_TGLAWAL, 'dd-MM-yyyy') || ' s/d ' || TO_CHAR(ISD_TGLAKHIR,'dd-MM-yyyy') BERLAKU,
+ISH_KETERANGAN, ISD_KODEPROMOSI, PRD_DESKRIPSIPANJANG FROM TBTR_INSTORE_DTL, TBTR_INSTORE_HDR, TBMASTER_PRODMAST
+WHERE ISD_KODEIGR = '$kodeigr' AND ISD_JENISPROMOSI = 'I' AND ISH_KODEIGR = ISD_KODEIGR
+AND ISH_JENISPROMOSI = ISD_JENISPROMOSI AND ISH_KODEPROMOSI = ISD_KODEPROMOSI AND TRUNC(ISH_TGLAWAL) = TRUNC(ISD_TGLAWAL)
+AND TRUNC(ISH_TGLAKHIR) = TRUNC(ISD_TGLAKHIR) AND PRD_KODEIGR = '$kodeigr' AND PRD_PRDCD = ISD_PRDCD
+ORDER BY BERLAKU, ISD_PRDCD");
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function CheckPlu(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $prd = $request->prd;
+
+        $datas = DB::select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
+          FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
+         WHERE prd_kodeigr = '22'
+           AND prd_prdcd = brc_prdcd(+)
+           AND (prd_prdcd = TRIM ('$prd') OR brc_barcode = TRIM ('$prd'))");
+
+        if(sizeof($datas) != 0){
+            //#NOTE# :TXT_KODE di program lama nilainya sekalu null
+            $temp = DB::table("TBTR_INSTORE_DTL")
+                ->selectRaw("NVL(COUNT(1),0) as result")
+                ->where("ISD_KODEIGR",'=',$kodeigr)
+                ->where("ISD_JENISPROMOSI",'=','I')
+                ->where("ISD_PRDCD",'=',$datas[0]->prd_prdcd)
+                ->first();
+            if((int)$temp->result == 0){
+                $status = 'baru';
+            }else{
+                $status = 'tidak baru';
+            }
+
+            return response()->json(['prdcd' => $datas[0]->prd_prdcd, 'deskripsi' =>$datas[0]->deskripsi, 'status' => $status]);
+        }else{
+            return response()->json('0');
+        }
     }
 
     public function cetak(Request $request){

@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5 text-center">LAPORAN SERVICE LEVEL PB</legend>--}}
+{{--                    <legend class="w-auto ml-5">LAPORAN SERVICE LEVEL PB</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
@@ -28,6 +28,7 @@
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
+                            <label class="col-sm-2 col-form-label text-center">s/d</label>
                             <div class="col-sm-2 buttonInside" style="margin-left: -15px; margin-right: 30px">
                                 <input type="text" class="form-control" id="kodePromosi2">
                                 <button id="pb2" type="button" class="btn btn-lov p-0" onclick="toggleData(this)">

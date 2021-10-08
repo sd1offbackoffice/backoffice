@@ -6,29 +6,27 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Cash Back / Event / Item</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Cash Back per Event per Item</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <form>
-                            <br>
-                            <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Periode Tanggal</label>
-                                <input class="col-sm-3 text-center form-control" type="text" id="daterangepicker">
-                                <label class="col-sm-2 text-left">DD / MM / YYYY</label>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Kode Event</label>
-                                <input class="col-sm-1 form-control" type="text" id="event1">
-                                <span class="col-sm-1 text-center">s/d</span>
-                                <input class="col-sm-1 form-control" type="text" id="event2">
-                            </div>
-                            <br>
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-success col-sm-3" type="button" onclick="print()">C E T A K</button>
-                            </div>
+                        <br>
+                        <div class="row">
+                            <label class="col-sm-4 text-right font-weight-normal">Periode Tanggal</label>
+                            <input class="col-sm-3 text-center form-control" type="text" id="daterangepicker">
+                            <label class="col-sm-2 text-left">DD / MM / YYYY</label>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="col-sm-4 text-right font-weight-normal">Kode Event</label>
+                            <input class="col-sm-1 form-control" type="text" id="event1">
+                            <span class="col-sm-1 text-center">s/d</span>
+                            <input class="col-sm-1 form-control" type="text" id="event2">
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-success col-sm-3" type="button" onclick="print()">C E T A K</button>
+                        </div>
 
-                            <br>
-                        </form>
+                        <br>
                     </div>
                 </fieldset>
             </div>

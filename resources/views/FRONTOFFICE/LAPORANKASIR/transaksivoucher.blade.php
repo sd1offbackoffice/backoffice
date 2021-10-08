@@ -6,27 +6,20 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">Laporan Transaksi Sales Voucher</legend>--}}
+                    <legend class="w-auto ml-5">Laporan Transaksi Sales Voucher</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <form>
-                            <br>
-                            <div class="card-body shadow-lg cardForm">
-                                <fieldset class="card border-dark">
-{{--                                    <legend class="w-auto ml-5">Rekap Struk Per Kasir</legend>--}}
-                                    <br>
-                                    <div class="row">
-                                        <label class="col-sm-4 text-right col-form-label">Tanggal :</label>
-                                        <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker">
-                                    </div>
-                                    <br>
-                                    <div class="d-flex justify-content-end">
-                                        <button class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK</button>
-                                    </div>
-                                    <br>
-                                </fieldset>
-                            </div>
-                            <br>
-                        </form>
+
+                        <br>
+                        <div class="row">
+                            <label class="col-sm-4 text-right col-form-label">Tanggal :</label>
+                            <input class="col-sm-4 text-center form-control" type="text" id="daterangepicker">
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK</button>
+                        </div>
+                        <br>
+
                     </div>
                 </fieldset>
             </div>
