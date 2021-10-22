@@ -36,7 +36,7 @@
             <div class="col-sm-10">
                 <div class="card border-dark">
                     <div class="card-body cardForm">
-                        <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky;height:455px;overflow-y: scroll">
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y hidden" style="position: sticky;height:300px;overflow-y: scroll">
                             <table id="table_tsj" class="table table-sm table-bordered mb-3 text-center">
                                 <thead class="thColor">
                                 <tr>
@@ -45,10 +45,6 @@
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyTableViewFile">
-                                    <tr>
-                                        <td>  <input type="checkbox" aria-label="Checkbox for following text input"></td>
-                                        <td>asdsasd</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -71,6 +67,7 @@
         let fileUpload = [];
         let filename;
         let sesiproc;
+        let kasir;
 
         $(document).ready(function () {
             $('.btnCetak').hide();
@@ -154,6 +151,8 @@
                 success: function (result) {
                     filename = result.data.namafiler
                     sesiproc = result.data.sesiproc
+                    kasir = result.data.param_all_kasir
+                    kasir = kasir.substr(1,6);
 
                     if (result.kode == 1){
                         swal(result.msg, '', 'success')
@@ -180,10 +179,9 @@
         }
 
         function choosePaperSize(report_id) {
-            if (report_id == 5) {
-                console.log("cetak tolakan tanpa tanya size");
-                // window.location("http://172.20.28.17/BackOffice/public/OMI/proses-bkl/cetak-laporan?report_id=5&size=B&filename=BLO6BJ28.DBF&sesiproc=1625647")
-                window.open(`{{ url()->current() }}/cetak-laporan?report_id=5&size=B&filename=${filename}&sesiproc=${sesiproc}`);
+            if (report_id > 1) {
+                console.log("selain cetak list tidak tanya size");
+                window.open(`{{ url()->current() }}/cetak-laporan?report_id=${report_id}&size=B&filename=${filename}&sesiproc=${sesiproc}&kasir=${kasir}`);
                 return false;
             }
             swal({
@@ -206,7 +204,7 @@
                     console.log(size)
                     console.log(report_id)
                     console.log("cetak report")
-                    window.open(`{{ url()->current() }}/cetak-laporan?report_id=${report_id}&size=${size}&filename=${filename}&sesiproc=${sesiproc}`);
+                    window.open(`{{ url()->current() }}/cetak-laporan?report_id=${report_id}&size=${size}&filename=${filename}&sesiproc=${sesiproc}&kasir=${kasir}`);
                 }
             });
         }

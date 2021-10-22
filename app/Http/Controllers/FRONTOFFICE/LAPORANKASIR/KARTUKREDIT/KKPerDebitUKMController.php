@@ -127,7 +127,7 @@ ORDER BY TANGGAL, NAMAKARTU, KODE, IDTRANS");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

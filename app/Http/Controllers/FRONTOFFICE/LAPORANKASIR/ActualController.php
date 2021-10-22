@@ -254,6 +254,8 @@ class ActualController extends Controller
         }
         catch(QueryException $e){
             DB::rollBack();
+
+            return $e->getMessage();
         }
     }
 
@@ -266,7 +268,13 @@ class ActualController extends Controller
             ->first();
 
         if($data){
-            $this->prosesSales($request->tanggal);
+            $result = $this->prosesSales($request->tanggal);
+            if(!is_null($result)){
+                return response()->json([
+                    'message' => 'Terjadi kesalahan!',
+                    'error' => $result
+                ], 500);
+            }
         }
 
         $tanggal = $request->tanggal;
@@ -454,19 +462,32 @@ class ActualController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.sales-pdf',compact(['perusahaan','data','sums','tanggal']));
+        $title = 'Laporan Sales Harian Kasir / Actual - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.sales-pdf',compact(['perusahaan','data','sums','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(755, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Sales Harian / Actual - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakIsaku(Request $request){
@@ -548,19 +569,32 @@ class ActualController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.isaku-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Transaksi i-Saku - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.isaku-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Transaksi i-Saku - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakVirtual(Request $request){
@@ -580,19 +614,32 @@ class ActualController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.virtual-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Transaksi Virtual Untuk Kasir Online - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.virtual-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Transaksi Virtual Untuk Kasir Online - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakCbNk(Request $request){
@@ -630,19 +677,32 @@ ORDER BY JS_CASHIERSTATION, JS_CASHIERID");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.cb-nk-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Laporan Potongan Pada Sales Harian Kasir / Actual - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.cb-nk-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Potongan Pada Sales Harian Kasir / Actual - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakTransfer(Request $request){
@@ -661,19 +721,32 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.transfer-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Laporan Rincian Transaksi Transfer - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.transfer-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Rincian Transaksi Transfer - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakPlastik(Request $request){
@@ -693,19 +766,32 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.plastik-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Laporan Pemakaian Kantong Plastik - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.plastik-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Pemakaian kantong Plastik - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakMerchant(Request $request){
@@ -725,19 +811,31 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.merchant-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Laporan Pengisian Top Up Merchant Apps - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.merchant-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Laporan Pengisian Top Up Merchant Apps - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakKredit(Request $request){
@@ -786,19 +884,31 @@ ORDER BY trpt_cus_kodemember");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.kredit-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Perincian Kredit - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.kredit-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(755, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Perincian Kredit - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakOmi(Request $request){
@@ -844,23 +954,35 @@ ORDER BY trpt_cus_kodemember");
     GROUP BY trjd_cus_kodemember, tko_namaomi
     ORDER BY trjd_cus_kodemember");
 
-//        dd($data);
+//        dd($data)
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.omi-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Rekap Penjualan OMI - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.omi-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(755, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Rekap Penjualan OMI - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakStruk(Request $request){
@@ -881,18 +1003,30 @@ ORDER BY trpt_cus_kodemember");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.struk-pdf',compact(['perusahaan','data','tanggal']));
+        $title = 'Rincian Struk Titipan - '.$tanggal;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.struk-pdf',compact(['perusahaan','data','tanggal']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Rincian Struk Titipan - '.$tanggal.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 }

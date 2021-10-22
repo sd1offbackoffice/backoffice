@@ -21,7 +21,8 @@ $datetime->setTimezone($timezone);
         <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
             Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
             <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
-            Hal. :
+            Hal. :<br><br>
+            PRG : LAP618
     </div>
     <h2 style="text-align: center">
         ** LAPORAN TRANSAKSI KARTU DEBIT & KREDIT USAHA **<br>
@@ -70,10 +71,10 @@ $datetime->setTimezone($timezone);
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            Subtotal Per Jenis Debit
+                            <strong>Subtotal Per Jenis Debit</strong>
                         </td>
-                        <td class="right">{{ number_format($nilai, 0, '.', ',') }}</td>
-                        <td class="right">{{ number_format($tunai, 0, '.', ',') }}</td>
+                        <td class="right"><strong>{{ number_format($nilai, 0, '.', ',') }}</strong></td>
+                        <td class="right"><strong>{{ number_format($tunai, 0, '.', ',') }}</strong></td>
                         <td></td>
                     </tr>
                     <tr class="bold">
@@ -83,10 +84,10 @@ $datetime->setTimezone($timezone);
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            Subtotal Debit
+                            <strong>Subtotal Debit</strong>
                         </td>
-                        <td class="right">{{ number_format($nilaiTgl, 0, '.', ',') }}</td>
-                        <td class="right">{{ number_format($tunaiTgl, 0, '.', ',') }}</td>
+                        <td class="right"><strong>{{ number_format($nilaiTgl, 0, '.', ',') }}</strong></td>
+                        <td class="right"><strong>{{ number_format($tunaiTgl, 0, '.', ',') }}</strong></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -96,10 +97,10 @@ $datetime->setTimezone($timezone);
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            Subtotal Per Tanggal
+                            <strong>Subtotal Per Tanggal</strong>
                         </td>
-                        <td class="right">{{ number_format($nilaiTgl, 0, '.', ',') }}</td>
-                        <td class="right">{{ number_format($tunaiTgl, 0, '.', ',') }}</td>
+                        <td class="right"><strong>{{ number_format($nilaiTgl, 0, '.', ',') }}</strong></td>
+                        <td class="right"><strong>{{ number_format($tunaiTgl, 0, '.', ',') }}</strong></td>
                         <td></td>
                     </tr>
                 @endif
@@ -125,10 +126,10 @@ $datetime->setTimezone($timezone);
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            Subtotal per Jenis Debit
+                            <strong>Subtotal per Jenis Debit</strong>
                         </td>
-                        <td class="right">{{ number_format($nilai, 0, '.', ',') }}</td>
-                        <td class="right">{{ number_format($tunai, 0, '.', ',') }}</td>
+                        <td class="right"><strong>{{ number_format($nilai, 0, '.', ',') }}</strong></td>
+                        <td class="right"><strong>{{ number_format($tunai, 0, '.', ',') }}</strong></td>
                         <td></td>
                     </tr>
                     @php
@@ -165,10 +166,10 @@ $datetime->setTimezone($timezone);
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    Subtotal Per Jenis Debit
+                    <strong>Subtotal Per Jenis Debit</strong>
                 </td>
-                <td class="right">{{ number_format($nilai, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($tunai, 0, '.', ',') }}</td>
+                <td class="right"><strong>{{ number_format($nilai, 0, '.', ',') }}</strong></td>
+                <td class="right"><strong>{{ number_format($tunai, 0, '.', ',') }}</strong></td>
                 <td></td>
             </tr>
             <tr class="bold">
@@ -178,10 +179,10 @@ $datetime->setTimezone($timezone);
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    Subtotal Debit
+                    <strong>Subtotal Debit</strong>
                 </td>
-                <td class="right">{{ number_format($nilaiTgl, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($tunaiTgl, 0, '.', ',') }}</td>
+                <td class="right"><strong>{{ number_format($nilaiTgl, 0, '.', ',') }}</strong></td>
+                <td class="right"><strong>{{ number_format($tunaiTgl, 0, '.', ',') }}</strong></td>
                 <td></td>
             </tr>
             <tr>
@@ -191,10 +192,10 @@ $datetime->setTimezone($timezone);
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    Subtotal Per Tanggal
+                    <strong>Subtotal Per Tanggal</strong>
                 </td>
-                <td class="right">{{ number_format($nilaiTgl, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($tunaiTgl, 0, '.', ',') }}</td>
+                <td class="right"><strong>{{ number_format($nilaiTgl, 0, '.', ',') }}</strong></td>
+                <td class="right"><strong>{{ number_format($tunaiTgl, 0, '.', ',') }}</strong></td>
                 <td></td>
             </tr>
         <tfoot>
@@ -228,7 +229,7 @@ $datetime->setTimezone($timezone);
         height: 3cm;
     }
     body {
-        margin-top: 80px;
+        margin-top: 90px;
         margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

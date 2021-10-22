@@ -129,7 +129,7 @@
             cursor = val.id;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/kerjasamaigridm/stout/getdiv',
+                url: '{{ url()->current() }}/getdiv',
                 type: 'post',
                 success: function (result) {
                     $('#modalThName1').text('KODE DIVISI');
@@ -165,7 +165,7 @@
                 let div2 = $('#div2').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/kerjasamaigridm/stout/getdept',
+                    url: '{{ url()->current() }}/getdept',
                     type: 'post',
                     data: {
                         div1:div1,
@@ -208,7 +208,7 @@
                 $('#searchModal').val('');
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/kerjasamaigridm/stout/getkat',
+                    url: '{{ url()->current() }}/getkat',
                     type: 'post',
                     data: {
                         dept1:dept1,
@@ -277,7 +277,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/kerjasamaigridm/stout/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     choice:rad,
@@ -293,7 +293,7 @@
                 },
                 success: function (result) {
                     if(result.kode == '0'){
-                        window.open('/BackOffice/public/kerjasamaigridm/stout/printdoc/'+rad+'/'+div1+'-'+div2+'/'+dept1+'-'+dept2+'/'+kat1+'-'+kat2,'_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+rad+'/'+div1+'-'+div2+'/'+dept1+'-'+dept2+'/'+kat1+'-'+kat2,'_blank');
                     }else if(result.kode == '1'){
                         swal('', "tidak ada data", 'warning');
                     }else if(result.kode == '2'){

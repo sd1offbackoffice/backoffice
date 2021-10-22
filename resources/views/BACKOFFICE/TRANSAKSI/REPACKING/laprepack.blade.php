@@ -46,7 +46,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/transaksi/laprepacking/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     dateA:dateA,
@@ -57,7 +57,7 @@
                 },
                 success: function (result) {
                     if(result.kode == '1'){
-                        window.open('/BackOffice/public/transaksi/laprepacking/printdoc/'+dateA+'/'+dateB,'_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB,'_blank');
                     }else{
                         swal('', "tidak ada data", 'warning');
                     }

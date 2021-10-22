@@ -120,11 +120,11 @@ function rupiah($angka){
         {{--HEAD BODY--}}
         @if($divisi != $datas[$i]->fdkdiv)
             <tr style="text-align:left; font-weight: bold; font-size: 25px"><td colspan="23">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
-            <?php $divisi =  $datas[$i]->fdkdiv?>
+            <?php $divisi =  $datas[$i]->fdkdiv; $departemen = ''?>
         @endif
         @if($departemen != $datas[$i]->fdkdep)
             <tr style="text-align:left; font-weight: bold; font-size: 20px"><td colspan="23">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
-            <?php $departemen =  $datas[$i]->fdkdep?>
+            <?php $departemen =  $datas[$i]->fdkdep; $kategori = ''?>
         @endif
         @if($kategori != $datas[$i]->fdkatb)
             <tr style="text-align:left; font-weight: bold; font-size: 15px"><td colspan="23">&nbsp;&nbsp;&nbsp;&nbsp;* KATEGORI : {{$datas[$i]->fdkatb}} - {{$datas[$i]->kat_namakategori}}</td></tr>
@@ -182,7 +182,7 @@ function rupiah($angka){
         ?>
 
         @if(($i+1) < sizeof($datas) )
-            @if($kategori != $datas[$i+1]->fdkatb)
+            @if($kategori != $datas[$i+1]->fdkatb || $departemen != $datas[$i+1]->fdkdep)
                 <tr style="font-weight: bold; font-size: 15px">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;* TOTAL PER KATEGORI : </td>
                     <td>{{rupiah($sumNilai1['kat'])}}</td>
@@ -215,7 +215,7 @@ function rupiah($angka){
                 $sumKwantum['kat'] = 0; $sumGross['kat'] = 0; $sumTax['kat'] = 0; $sumNet['kat'] = 0; $sumHpp['kat'] = 0; $sumMargin['kat'] = 0;
                 ?>
             @endif
-            @if($departemen != $datas[$i+1]->fdkdep)
+            @if($departemen != $datas[$i+1]->fdkdep || $divisi != $datas[$i+1]->fdkdiv)
                 <tr style="font-weight: bold; font-size: 16px">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
                     <td>{{rupiah($sumNilai1['dep'])}}</td>

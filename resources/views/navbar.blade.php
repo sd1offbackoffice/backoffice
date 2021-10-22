@@ -52,7 +52,8 @@
 </head>
 <body>
     <div id="menu_area" class="menu-area">
-                <div class="container">
+                <div class="container-fluid" style="display: flex;
+    justify-content: center">
                 <div class="row">
                 <nav class="navbar navbar-light navbar-expand-lg mainmenu">
                     <a class="navbar-brand" href="{{url("/")}}">
@@ -507,7 +508,7 @@
                             $tempsubgroup3 = '';
                         @endphp
                         <li class="dropdown">
-                            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            <a class="dropdown-toggle" @if(strlen($m->acc_subgroup1) > 25) style="white-space: normal" @endif href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_subgroup1 }}</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 @endif

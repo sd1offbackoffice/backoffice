@@ -119,7 +119,7 @@
     <script>
         $(document).ready(function () {
             $('#monitoringTable').DataTable({
-                "ajax": '{{ url('laporan/servicelevelitempareto/modalnmr') }}',
+                "ajax": '{{ url()->current().'/modalnmr' }}',
                 "columns": [
                     {data: 'mpl_kodemonitoring', name: 'mpl_kodemonitoring'},
                     {data: 'mpl_namamonitoring', name: 'mpl_namamonitoring'},
@@ -167,7 +167,7 @@
             $('#modal-loader').modal('show');
                 ajaxSetup();
                 $.ajax({
-                url: '/BackOffice/public/laporan/servicelevelitempareto/getnmr',
+                url: '{{ url()->current() }}/getnmr',
                 type: 'post',
                 data: {
                     val:val
@@ -231,7 +231,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/laporan/servicelevelitempareto/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     dateA:dateA,
@@ -245,9 +245,9 @@
                 success: function (result) {
                     if(result.kode == '1'){
                         if(rad_order == "Supplier" || kmp == "zonk-zonk"){
-                            window.open('/BackOffice/public/laporan/servicelevelitempareto/printdocsupplier/'+kmp+'/'+dateA+'/'+dateB,'_blank');
+                            window.open('{{ url()->current() }}/printdocsupplier/'+kmp+'/'+dateA+'/'+dateB,'_blank');
                         }else{
-                            window.open('/BackOffice/public/laporan/servicelevelitempareto/printdocddk/'+kmp+'/'+dateA+'/'+dateB,'_blank');
+                            window.open('{{ url()->current() }}/printdocddk/'+kmp+'/'+dateA+'/'+dateB,'_blank');
                         }
                     }else if (result.kode == '2'){
                         swal('', "Kode Monitoring Tidak Terdaftar !!", 'warning');

@@ -75,7 +75,7 @@
                                     <option value="K">KHUSUS</option>
                                     <option value="F">FREEPAS</option>
                                     <option value="B">BIASA</option>
-                                    <option value="ALL">ALL</option>
+                                    <option value="ALL" selected>ALL</option>
                                     <option value="BIRU">MEMBER BIRU</option>
                                     <option value="MERAH">MEMBER MERAH</option>
                                 </select>
@@ -87,7 +87,7 @@
                             <div class="col-sm-2 buttonInside pl-0">
                                 <select class="form-control" id="monitoring">
                                     @foreach($monitoring as $m)
-                                        <option value="{{ $m->mem_kodemonitoring == '' ? 'ALL' : $m->mem_kodemonitoring }}">
+                                        <option value="{{ $m->mem_kodemonitoring == '' ? 'ALL' : $m->mem_kodemonitoring }}" @if($m->mem_kodemonitoring == '') selected @endif>
                                             @if($m->mem_kodemonitoring == '')
                                                 ALL
                                             @else

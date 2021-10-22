@@ -79,14 +79,14 @@ ORDER BY TGL, KODEMEMBER");
 
             error_reporting(E_ALL ^ E_DEPRECATED);
 
+            $pdf->setPaper('A4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf->get_canvas();
-            $canvas->page_text($cw, $ch, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-
 
             return $dompdf->stream($filename . '_' . $tgl1 . ' - ' . $tgl2 . '.pdf');
         } else {

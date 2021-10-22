@@ -4,7 +4,6 @@
 <head>
     <title>Laporan Rekap Perolehan Reward MyPoin</title>
 </head>
-<body>
 
 <?php
 $datetime = new DateTime();
@@ -14,58 +13,76 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TGL : {{ e(date("d-m-Y")) }}<br>
-            JAM : {{ $datetime->format('H:i:s') }}
+            {{ $perusahaan->prs_namacabang }}
         </p>
     </div>
-    <div style="text-align: center;margin-bottom: 0;padding-bottom: 0">
-    <h2 >Rekap Perolehan Reward MyPoin <br>Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}} </h2>
+    <div style="float:right; margin-top: 0px;">
+            Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+            Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+            <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-
+    <div style="float:center;">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD POIN</p>
+{{--        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD MYPOIN</p>--}}
+        <p style="text-align: center;margin: 0;padding: 0">Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}}</p>
+    </div>
 </header>
-
-<main style="margin-top: 50px;">
+<body>
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th>NO.</th>
-            <th>ID</th>
-            <th>MEMBER MERAH</th>
-            <th>POIN REWARD</th>
-            <th>POIN VALID</th>
-            <th>POIN INVALID</th>
+            <th align="right" class="padding-right" width="5%">NO.</th>
+            <th align="left">ID</th>
+            <th align="left">MEMBER MERAH</th>
+            <th align="left">POIN REWARD</th>
+            <th align="right">POIN VALID</th>
+            <th align="right">POIN INVALID</th>
         </tr>
         </thead>
         <tbody>
         @php
-            $total = 0;
+            //$total = 0;
             $total_valid=0;
             $total_invalid=0;
             $temptgl = '';
             $temp='';
+            $tempNama = '';
+            $number = 0;
         @endphp
 
         @if(sizeof($data)!=0)
             @for($i=0;$i<count($data);$i++)
 
-                <tr>
-                    <td>{{ $i+1 }}</td>
-                    <td>{{ $data[$i]->kodemember }}</td>
-                    <td>{{ $data[$i]->namamember }}</td>
-                    <td>{{ $data[$i]->js }}</td>
-                    <td>{{ $data[$i]->tot_valid}}</td>
-                    <td>{{ $data[$i]->tot_notvalid }}</td>
-                </tr>
+
+                @if($tempNama != $data[$i]->kodemember )
+                    @php
+                        $number++
+                    @endphp
+                    <tr>
+                        <td align="right" class="padding-right">{{ $number }}</td>
+                        <td align="left">{{ $data[$i]->kodemember }}</td>
+                        <td align="left">{{ $data[$i]->namamember }}</td>
+                        <td align="left"> {{ $data[$i]->js }}</td>
+                        <td align="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
+                        <td align="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td align="right" class="padding-right"></td>
+                        <td align="left"></td>
+                        <td align="left"></td>
+                        <td align="left"> {{ $data[$i]->js }}</td>
+                        <td align="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
+                        <td align="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
+                    </tr>
+                @endif
                 @php
                     $total_valid+=$data[$i]->tot_valid;
                     $total_invalid+=$data[$i]->tot_notvalid;
-                    $total+=$data[$i]->tot_jml;
+                    $tempNama = $data[$i]->kodemember;
                 @endphp
             @endfor
         @else
@@ -73,48 +90,43 @@ $datetime->setTimezone($timezone);
                 <td colspan="10">TIDAK ADA DATA</td>
             </tr>
         @endif
-
-
         </tbody>
         <tfoot>
         <tr>
-            <th>mypoin INTRN:</th>
-            <th>{{ isset($t_pi)?$t_pi:0 }}</th>
-            <th>mypoin EXTRN:</th>
-            <th>{{ isset($t_pe)?$t_pe:0 }}</th>
-            <th rowspan="2">Total:</th>
-            <th rowspan="2">{{ $total }}</th>
+            <th style="border-right: 1px solid black;" colspan="2">Poin INTERN: {{ isset($t_pi)?number_format($t_pi, 0,".",","):0 }}</th>
+            <th style="border-right: 1px solid black;" colspan="2">Poin EXTERN: {{ isset($t_pe)?number_format($t_pe, 0,".",","):0 }}</th>
+            <th colspan="2" rowspan="2" >Total: {{  number_format($total, 0,".",",")}}</th>
         </tr>
         <tr>
-            <th>mypoin Valid:</th>
-            <th>{{ isset($total_valid)?$total_valid:0 }}</th>
-            <th>mypoin Invalid:</th>
-            <th>{{ isset($total_invalid)?$total_invalid:0 }}</th>
+            <th style="border-right: 1px solid black;" colspan="2">Poin Valid: {{ isset($total_valid)?number_format($total_valid, 0,".",","):0 }}</th>
+            <th style="border-right: 1px solid black;" colspan="2">Poin Invalid: {{ isset($total_invalid)?number_format($total_invalid, 0,".",","):0 }}</th>
+        </tr>
+        <tr>
+            <th style="border-top: 1px solid black;" colspan="6" class="right">** Akhir dari laporan **</th>
         </tr>
         </tfoot>
     </table>
-</main>
-
 <br>
 </body>
 
 
 <style>
-    @page {
-        size: 750pt 500pt;
-    }
+    /*@page {*/
+    /*    size: 500pt 750pt;*/
+    /*}*/
 
     header {
         position: fixed;
         top: 0cm;
         left: 0cm;
         right: 0cm;
-        height: 3cm;
+        height: 0cm;
+        margin-bottom: 50px;
     }
 
     body {
-        margin-top: 80px;
-        margin-bottom: 10px;
+        margin-top: 70px;
+        /*margin-bottom: 10px;*/
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
@@ -234,5 +246,8 @@ $datetime->setTimezone($timezone);
         border-bottom: 1px solid black;
     }
 
+    .table tbody td.padding-right, .table thead th.padding-right{
+        padding-right: 10px !important;
+    }
 </style>
 </html>

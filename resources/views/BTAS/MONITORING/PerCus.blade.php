@@ -104,7 +104,7 @@
         $(document).ready(function() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/percus/getdata',
+                url: '{{ url()->current() }}/getdata',
                 type: 'post',
                 success: function (result) {
                     for (i = 0; i< result.length; i++){
@@ -152,7 +152,7 @@
             }else{
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/btas/monitoring/percus/getdetail',
+                    url: '{{ url()->current() }}/getdetail',
                     type: 'post',
                     data: {
                         kodeMember:kodeCust[curTr],
@@ -202,7 +202,7 @@
         function UrutCust(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/percus/sortcust',
+                url: '{{ url()->current() }}/sortcust',
                 type: 'post',
                 success: function (result) {
                     for (i = 0; i< result.length; i++){
@@ -224,7 +224,7 @@
         function UrutTgl(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/percus/sorttgl',
+                url: '{{ url()->current() }}/sorttgl',
                 type: 'post',
                 success: function (result) {
                     for (i = 0; i< result.length; i++){
@@ -255,7 +255,7 @@
                 if (result.isConfirmed) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/btas/monitoring/percus/checkdata',
+                        url: '{{ url()->current() }}/checkdata',
                         type: 'post',
                         data: {
                             all:'Y'
@@ -265,7 +265,7 @@
                         },
                         success: function (result) {
                             if(result.kode == '0'){
-                                window.open('/BackOffice/public/btas/monitoring/percus/printdoc/Y/_/_','_blank');
+                                window.open('{{ url()->current() }}/printdoc/Y/_/_','_blank');
                             }else{
                                 swal.fire('', "tidak ada data", 'warning');
                             }
@@ -283,7 +283,7 @@
                     }else{
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/btas/monitoring/percus/checkdata',
+                            url: '{{ url()->current() }}/checkdata',
                             type: 'post',
                             data: {
                                 all:'',
@@ -296,7 +296,7 @@
                             },
                             success: function (result) {
                                 if(result.kode == '0'){
-                                    window.open('/BackOffice/public/btas/monitoring/percus/printdoc/_/'+kodeCust[curTr]+'/'+struk[curTr]+'','_blank');
+                                    window.open('{{ url()->current() }}/printdoc/_/'+kodeCust[curTr]+'/'+struk[curTr]+'','_blank');
                                 }else{
                                     swal.fire('', "tidak ada data", 'warning');
                                 }

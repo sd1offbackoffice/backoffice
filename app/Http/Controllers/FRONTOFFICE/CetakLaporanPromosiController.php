@@ -204,8 +204,7 @@ $h = 50.75;
 AND GFH_KODEIGR = GFD_KODEIGR AND  GFH_KODEPROMOSI = GFD_KODEPROMOSI
 AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
 AND PRS_KODEIGR = LKS_KODEIGR AND GFH_TGLAKHIR >= SYSDATE AND BPRP_PRDCD = GFH_KETHADIAH
-AND GFA_KODEPROMOSI = GFD_KODEPROMOSI
-and rownum <10");
+AND GFA_KODEPROMOSI = GFD_KODEPROMOSI");
             $w = 640;
             $filename = 'igr-promo-gift';
             //CETAK_LAP_GF;
@@ -269,11 +268,12 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

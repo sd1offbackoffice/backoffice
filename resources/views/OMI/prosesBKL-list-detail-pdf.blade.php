@@ -37,20 +37,20 @@
         }
 
         table{
-            border-collapse: collapse;
+            /*border-collapse: collapse;*/
         }
         tbody {
             display: table-row-group;
             vertical-align: middle;
-            border-color: inherit;
+            /*border-color: inherit;*/
         }
         tr {
-            display: table-row;
-            vertical-align: inherit;
-            border-color: inherit;
+            /*display: table-row;*/
+            /*vertical-align: inherit;*/
+            /*border-color: inherit;*/
         }
-        th, td {
-            border: 1px solid black;
+        td {
+            /*border-bottom: 1px solid black;*/
             line-height: 12px;
         }
 
@@ -79,7 +79,6 @@
         <div style="float:right; margin-top: -20px; line-height: 5px !important;">
             <p> Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
                 Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-                PGM : ?????? <br><br>
                 Hal. :
         </div>
         <div style="clear: right"></div>
@@ -88,6 +87,7 @@
 
 
     <table class="body" style="line-height: 10px">
+{{--        <thead style="text-align: center">--}}
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black; text-align: center">
         <tr style="text-align: center;">
             <th style="width: 40px">NO DOK</th>
@@ -108,36 +108,48 @@
         </tr>
         </thead>
         <tbody>
-        {{--        @for($i = 0; $i<100;$i++)--}}
-{{--        <?php $total = 0;$total_struk = 0 ?>--}}
-        @foreach($result as $data)
+        <?php $total_all = 0;$struk_all = 0; $total = 0; $struk = 0; ?>
+        @for($i = 0; $i < sizeof($result); $i++)
             <tr>
-                <td style="width: 40px">{{$data->no_bukti}}</td>
-                <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>
-                <td style="width: 40px">{{$data->kodetoko}}</td>
-                <td style="width: 40px;">{{$data->cus_kodemember}}</td>
-                <td style="">{{$data->kodesupplier}}</td>
-                <td style="width: 100px">{{$data->sup_namasupplier}}</td>
-                <td style="width: 40px;">{{$data->no_tran}}</td>
-                <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>
-                <td style="width: 40px;">{{$data->prdcd}}</td>
-                <td style="width: 150px;">{{$data->prd_deskripsipendek}}</td>
-                <td style="width: 40px;">{{$data->satuan}}</td>
-                <td style="width: 30px; text-align: right" >{{$data->qty}}</td>
-                <td style="width: 40px; text-align: right" >{{$data->bonus}}</td>
-                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>
-                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->total), 0, '.', ',')}}</td>
-                <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>
+                <td style="width: 40px">{{$result[$i]->no_bukti}}</td>
+                <td style="width: 40px;">{{date('d/m/Y', strtotime($result[$i]->tgl_bukti))}}</td>
+                <td style="width: 40px">{{$result[$i]->kodetoko}}</td>
+                <td style="width: 40px;">{{$result[$i]->cus_kodemember}}</td>
+                <td style="">{{$result[$i]->kodesupplier}}</td>
+                <td style="width: 100px">{{$result[$i]->sup_namasupplier}}</td>
+                <td style="width: 40px;">{{$result[$i]->no_tran}}</td>
+                <td style="width: 40px;">{{date('d/m/Y', strtotime($result[$i]->tgl_tran))}}</td>
+                <td style="width: 40px;">{{$result[$i]->prdcd}}</td>
+                <td style="width: 150px;">{{$result[$i]->prd_deskripsipendek}}</td>
+                <td style="width: 40px;">{{$result[$i]->satuan}}</td>
+                <td style="width: 30px; text-align: right" >{{$result[$i]->qty}}</td>
+                <td style="width: 40px; text-align: right" >{{$result[$i]->bonus}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($result[$i]->harga), 0, '.', ',')}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($result[$i]->total), 0, '.', ',')}}</td>
+                <td style="width: 50px; text-align: right">Rp. {{number_format(round($result[$i]->gross), 0, '.', ',')}}</td>
             </tr>
-{{--            {{$total = $total + $data->harga}}--}}
-{{--            {{$total_struk = $total_struk + $data->gross}}--}}
-        @endforeach
-        {{--        @endfor--}}
-{{--        <tr>--}}
-{{--            <td colspan="9" style="text-align: right">** Total Akhir :</td>--}}
-{{--            <td style="text-align: right">Rp. {{number_format($total ,0,',','.')}}</td>--}}
-{{--            <td style="text-align: right">Rp. {{number_format($total_struk ,0,',','.')}}</td>--}}
-{{--        </tr>--}}
+
+            {{$total = $total + $result[$i]->total}}
+            {{$struk = $struk + $result[$i]->gross}}
+            {{$total_all = $total_all + $result[$i]->total}}
+            {{$struk_all = $struk_all + $result[$i]->gross}}
+
+            @if($i == (sizeof($result)-1) || $result[$i]->no_bukti != $result[$i+1]->no_bukti)
+                <tr style="border-bottom: 1px solid black">
+                    <td colspan="14" style="text-align: right; border-bottom: 1px solid black">** Sub Total :</td>
+                    <td style="text-align: right; border-bottom: 1px solid black">Rp. {{number_format($total ,0,',','.')}}</td>
+                    <td style="text-align: right; border-bottom: 1px solid black">Rp. {{number_format($struk ,0,',','.')}}</td>
+                    {{$total = 0}} {{$struk = 0}}
+                </tr>
+{{--                <tr style="border-bottom: 1px solid black"><td colspan="16"></td></tr>--}}
+            @endif
+
+        @endfor
+        <tr>
+            <td colspan="14" style="text-align: right">** Total Akhir :</td>
+            <td style="text-align: right">Rp. {{number_format($total_all ,0,',','.')}}</td>
+            <td style="text-align: right">Rp. {{number_format($struk_all ,0,',','.')}}</td>
+        </tr>
         </tbody>
     </table>
     <br><br>
@@ -146,3 +158,26 @@
 
 </body>
 </html>
+
+{{--@foreach($result as $data)--}}
+{{--    <tr>--}}
+{{--        <td style="width: 40px">{{$data->no_bukti}}</td>--}}
+{{--        <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</td>--}}
+{{--        <td style="width: 40px">{{$data->kodetoko}}</td>--}}
+{{--        <td style="width: 40px;">{{$data->cus_kodemember}}</td>--}}
+{{--        <td style="">{{$data->kodesupplier}}</td>--}}
+{{--        <td style="width: 100px">{{$data->sup_namasupplier}}</td>--}}
+{{--        <td style="width: 40px;">{{$data->no_tran}}</td>--}}
+{{--        <td style="width: 40px;">{{date('d/m/Y', strtotime($data->tgl_tran))}}</td>--}}
+{{--        <td style="width: 40px;">{{$data->prdcd}}</td>--}}
+{{--        <td style="width: 150px;">{{$data->prd_deskripsipendek}}</td>--}}
+{{--        <td style="width: 40px;">{{$data->satuan}}</td>--}}
+{{--        <td style="width: 30px; text-align: right" >{{$data->qty}}</td>--}}
+{{--        <td style="width: 40px; text-align: right" >{{$data->bonus}}</td>--}}
+{{--        <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->harga), 0, '.', ',')}}</td>--}}
+{{--        <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->total), 0, '.', ',')}}</td>--}}
+{{--        <td style="width: 50px; text-align: right">Rp. {{number_format(round($data->gross), 0, '.', ',')}}</td>--}}
+{{--    </tr>--}}
+{{--    {{$total_all = $total_all + $data->harga}}--}}
+{{--    {{$struk_all = $struk_all + $data->gross}}--}}
+{{--@endforeach--}}

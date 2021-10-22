@@ -150,7 +150,7 @@
         function loadPlu(value){
             let tableModal = $('#tableModalTemplate').DataTable({
                 "ajax": {
-                    'url' : '{{ url('frontoffice/formHJK/datamodal') }}',
+                    'url' : '{{ url()->current() }}/datamodal',
                     "data" : {
                         'value' : value
                     },
@@ -247,7 +247,7 @@
             $('#modalHelp').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/chooseplu',
+                url: '{{ url()->current() }}/chooseplu',
                 type: 'post',
                 data: {
                     kode: kode
@@ -431,7 +431,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/calculatemargin',
+                url: '{{ url()->current() }}/calculatemargin',
                 type: 'post',
                 data: {
                     kode: kode
@@ -528,7 +528,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/printdocument',
+                url: '{{ url()->current() }}/printdocument',
                 type: 'get',
                 data: {
                     dateA:dateA,

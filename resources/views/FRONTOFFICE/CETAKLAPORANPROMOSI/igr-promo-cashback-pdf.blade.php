@@ -15,72 +15,78 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
+            {{ $perusahaan->prs_namacabang }}
+        </p>
+        <br>
+        <p>
+            Jenis : {{ $data[0]->cborgf }}<br><br>
         </p>
     </div>
-    <h2 style="text-align: center">Laporan Promosi yang Masih Berlaku</h2>
-    <h4>
-        {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
-    </h4>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
+    </div>
+    <div style="float:center;">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">LAPORAN PROMOSI YANG MASIH
+            BERLAKU</p>
+    </div>
 </header>
 
-<main style="margin-top: 50px;">
-    <p>
-        Jenis : {{ $data[0]->cborgf }}<br><br>
-    </p>
-    <table class="table">
-        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-        <tr>
-            <th rowspan="2">No</th>
-            <th rowspan="2">Kode Promosi</th>
-            <th rowspan="2" align="left">Nama Program Promosi</th>
-            <th rowspan="2">Berlaku untuk Member</th>
-            <th rowspan="2">Produk Sponsor</th>
-            <th rowspan="2">Cashback</th>
-            <th colspan="2">Periode Promosi</th>
-        </tr>
-        <tr>
-            <th>Awal</th>
-            <th>Akhir</th>
-        </tr>
-        </thead>
-        <tbody>
-        @php
-            $total = 0;
-            $i=1;
-        @endphp
 
-        @if(sizeof($data)!=0)
-            @foreach($data as $d)
-                <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->kodepromosi }}</td>
-                    <td align="left">{{ $d->promosi}}</td>
-                    <td>{{ $d->memberberlaku }}</td>
-                    <td>{{ $d->plu }}</td>
-                    <td>{{ $d->cashbackamt }}</td>
-                    <td>{{ substr($d->cbh_tglawal,0,10) }}</td>
-                    <td>{{ substr($d->cbh_tglakhir,0,10) }}</td>
-                </tr>
-                @php
-                    $i++;
-                @endphp
-            @endforeach
-        @else
+<table class="table">
+    <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+    <tr>
+        <th align="right" class="padding-right" rowspan="2">No</th>
+        <th align="left" rowspan="2">Kode<br>Promosi</th>
+        <th align="left" rowspan="2" align="left">Nama Program Promosi</th>
+        <th align="left" rowspan="2">Berlaku <br>untuk <br>Member</th>
+        <th align="left" rowspan="2">Produk Sponsor</th>
+        <th align="right" class="padding-right" rowspan="2">Cashback</th>
+        <th align="left" colspan="2">Periode Promosi</th>
+    </tr>
+    <tr>
+        <th align="left">Awal</th>
+        <th align="left">Akhir</th>
+    </tr>
+    </thead>
+    <tbody>
+    @php
+        $total = 0;
+        $i=1;
+    @endphp
+
+    @if(sizeof($data)!=0)
+        @foreach($data as $d)
             <tr>
-                <td colspan="10">TIDAK ADA DATA</td>
+                <td align="right" class="padding-right">{{ $i }}</td>
+                <td align="left">{{ $d->kodepromosi }}</td>
+                <td align="left">{{ $d->promosi}}</td>
+                <td align="left">{{ $d->memberberlaku }}</td>
+                <td align="left">{{ $d->plu }}</td>
+                <td align="right" class="padding-right">{{ $d->cashbackamt }}</td>
+                <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglawal,0,10))) }}</td>
+                <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglakhir,0,10))) }}</td>
             </tr>
-        @endif
-        </tbody>
-        <tfoot></tfoot>
-    </table>
-</main>
+            @php
+                $i++;
+            @endphp
+        @endforeach
+    @else
+        <tr>
+            <td colspan="10">TIDAK ADA DATA</td>
+        </tr>
+    @endif
+    </tbody>
+    <tfoot>
+    <tr>
+        <th colspan="9" class="right">** Akhir dari laporan **</th>
+    </tr>
+    </tfoot>
+</table>
 
 <br>
 </body>
@@ -90,7 +96,6 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 600pt 500pt;
     }
 
     header {
@@ -223,5 +228,8 @@ $datetime->setTimezone($timezone);
         border-bottom: 1px solid black;
     }
 
+    .table tbody td.padding-right, .table thead th.padding-right {
+        padding-right: 10px !important;
+    }
 </style>
 </html>

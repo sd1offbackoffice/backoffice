@@ -253,11 +253,12 @@ ORDER BY tgl_struk, no_seri_fp");
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -281,7 +282,7 @@ select  kodemember || ' - ' || nama customer,
          tgl_faktur,
          sum(total_dpp) dpp,
          sum(total_ppn) ppn
-from tbtr_faktur_nonpkp_hdr where tgl_faktur= last_day( to_date('".$periode."','mm/yyyy'))
+from tbtr_faktur_nonpkp_hdr where tgl_faktur= last_day( to_date('" . $periode . "','mm/yyyy'))
 and rownum < 100
 group by kodemember, nama,
          nomor_faktur,
@@ -299,11 +300,12 @@ order by customer");
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -333,7 +335,7 @@ order by customer");
          AND EXISTS
                 (SELECT 1
                    FROM tbmaster_customer
-                  WHERE     cus_kodeigr = '".$_SESSION['kdigr']."'
+                  WHERE     cus_kodeigr = '" . $_SESSION['kdigr'] . "'
                         AND cus_jenismember = 'T'
                         AND cus_kodemember = kodemember
                         AND NVL (cus_flagpkp, 'N') <> 'Y')
@@ -354,11 +356,12 @@ ORDER BY transactiondate, nomor_faktur");
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -520,10 +523,10 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                                         AND TRUNC (OBI_TGLSTRUK) =
                                                                TRUNC (
                                                                   TRJD_TRANSACTIONDATE)
-                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('".$tgl1."','dd/mm/yyyy')
-                                                                      AND to_date('".$tgl2."','dd/mm/yyyy'))
-                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('".$tgl1."','dd/mm/yyyy')
-                                                                      AND to_date('".$tgl2."','dd/mm/yyyy')
+                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
+                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
+                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
+                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                             GROUP BY FKT_NOSERI,
                                      FKT_TGLFAKTUR,
                                      CUS_NPWP,
@@ -579,8 +582,8 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                      AND (   TRJD_NOINVOICE1 <> '0'
                                           OR TRJD_NOINVOICE2 <> '0')
                                      AND TRJD_NOMINALAMT > 0
-                                     AND TRUNC (JH_REFERENCEDATE) BETWEEN to_date('".$tgl1."','dd/mm/yyyy')
-                                                                      AND to_date('".$tgl2."','dd/mm/yyyy')
+                                     AND TRUNC (JH_REFERENCEDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
+                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                                      AND JH_CUS_KODEMEMBER = CUS_KODEMEMBER
                                      AND JH_CUS_KODEMEMBER = TRJD_CUS_KODEMEMBER
                                      AND JH_TRANSACTIONNO = TRJD_TRANSACTIONNO
@@ -619,7 +622,7 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                    TRJD_CREATE_BY,
                    trjd_transactiondate) d,
          tbmaster_perusahaan
-   WHERE prs_kodeigr = '".$_SESSION['kdigr']."'
+   WHERE prs_kodeigr = '" . $_SESSION['kdigr'] . "'
 ORDER BY trjd_transactiondate, nofak");
         $filename = 'igr-fo-cetak-fpstd-ominonpkp';
 
@@ -633,11 +636,12 @@ ORDER BY trjd_transactiondate, nofak");
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -704,11 +708,12 @@ ORDER BY tgl_struk, no_seri_fp");
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

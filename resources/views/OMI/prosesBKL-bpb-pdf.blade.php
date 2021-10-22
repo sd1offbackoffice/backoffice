@@ -212,14 +212,11 @@
                 </tr>
                 <tr><td colspan="9" style="height: 1px; border-bottom: 1px solid black"></td></tr>
                 {{$total = $total + $data->jumlah}}
-{{--                {{$ppn = $ppn + ($data->mstd_ppnbmrph + $data->mstd_ppnbtlrph)}}--}}
-                {{$ppn = $ppn + (0.1 * $total)}}
+                {{$ppn = $ppn + (0.1 * $data->jumlah)}}
                 {{$disc4 = $disc4 + $data->dis4}}
             @endforeach
 {{--        @endfor--}}
 
-
-{{--        <tr><td colspan="9" style="height: 10px; border-bottom: 1px solid black"></td></tr>--}}
         <tr>
             <td colspan="7" style="text-align: right"> TOTAL HARGA BELI</td>
             <td colspan="2" style="text-align: right">Rp. {{number_format(round($total), 0, '.', ',')}}</td>

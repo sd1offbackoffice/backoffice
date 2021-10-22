@@ -103,6 +103,10 @@
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
+                    data:{
+                        tgl1: $('#tgl1').val(),
+                        tgl2: $('#tgl2').val(),
+                    },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
                     },

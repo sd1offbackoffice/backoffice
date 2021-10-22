@@ -154,7 +154,7 @@ WHERE kdmbr = T_kdmbr(+)
         $thn = $request->thn;
         $sort = $request->sort;
         $p_sort='';
-        $periode = $bln . $thn;
+        $periode = $thn.$bln;
 
         $filename = 'igr-fo-rwd-lpp';
         if($sort == 'kode'){
@@ -184,7 +184,7 @@ FROM TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN,
 		   WHERE P_periode < substr('".$periode."',1,6)
 		   GROUP BY P_kdmbr
 		 ),
-		 ( SELECT T_kdmbr, SUM(penukaranpoint)penukaranpoint, SUM(redeempoint) redeempoint FROM
+		 ( SELECT T_kdmbr, SUM(penukaranpoint) penukaranpoint, SUM(redeempoint) redeempoint FROM
 		   ( SELECT pot_kodemember T_kdmbr, SUBSTR(pot_kodetransaksi,1,8) T_periode, pot_penukaranpoint penukaranpoint, pot_redeempoint redeempoint
 		     FROM TBTR_PENUKARANPOIN
 		   )

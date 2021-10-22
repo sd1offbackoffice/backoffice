@@ -1177,6 +1177,7 @@
                     trbo_qty.push(frac * row.find('.kctn').val() + parseInt(row.find('.kpcs').val()));
                     trbo_hrgsatuan.push(data[idx].prd_avgcost);
                     trbo_gross.push(unconvertToRupiah(row.find('.gross').val()));
+                    trbo_ppnrph.push(unconvertToRupiah(row.find('.ppn').val()));
                     trbo_averagecost.push(data[idx].prd_avgcost);
                     trbo_stokqty.push(frac * row.find('.sctn').val() + parseInt(row.find('.spcs').val()));
                 });

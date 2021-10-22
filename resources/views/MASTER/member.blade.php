@@ -1403,8 +1403,13 @@
                 },
                 "order": [],
                 columnDefs : [
-                ]
+                ],
+                "initComplete" : function(){
+                    $('#table_lov_member_filter input').val(value).select();
+                }
             });
+
+            $('#table_lov_member_filter input').val(value);
 
             $('#table_lov_member_filter input').off().on('keypress', function (e){
                 if (e.which == 13) {

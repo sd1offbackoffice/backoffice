@@ -380,7 +380,7 @@
         function loadNmr(value){
             let tableNmr = $('#tableNmr').DataTable({
                 "ajax": {
-                    'url' : '{{ url('transaksi/repacking/modalnmrtrn') }}',
+                    'url' : '{{ url()->current() }}/modalnmrtrn',
                     "data" : {
                         'value' : value
                     },
@@ -417,7 +417,7 @@
         function loadPlu(value){
             let tablePlu = $('#tablePlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url('transaksi/repacking/modalplu') }}',
+                    'url' : '{{ url()->current() }}/modalplu',
                     "data" : {
                         'value' : value
                     },
@@ -924,7 +924,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/saveData',
+                url: '{{ url()->current() }}/saveData',
                 type: 'post',
                 data: {
                     nomorTrn:nomorTrn,
@@ -1114,7 +1114,7 @@
                         let val = $('#nomorTrn').val();
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/transaksi/repacking/deleteTrn',
+                            url: '{{ url()->current() }}/deleteTrn',
                             type: 'post',
                             data: {
                                 val:val
@@ -1201,7 +1201,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '/BackOffice/public/transaksi/repacking/getNewNmrTrn',
+                                url: '{{ url()->current() }}/getNewNmrTrn',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -1237,7 +1237,7 @@
             let val = $('#nomorTrn').val();
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/getNmrTrn',
+                url: '{{ url()->current() }}/getNmrTrn',
                 type: 'post',
                 data: {
                     val:val
@@ -1260,7 +1260,7 @@
             deskripsiPanjang = [];
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/chooseTrn',
+                url: '{{ url()->current() }}/chooseTrn',
                 type: 'post',
                 data: {
                     kode:a
@@ -1392,7 +1392,7 @@
             $('#modalHelp').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/transaksi/repacking/choosePlu',
+                url: '{{ url()->current() }}/choosePlu',
                 type: 'post',
                 data: {
                     kode: kode
@@ -1548,7 +1548,7 @@
                     if(true){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/transaksi/repacking/print',
+                            url: '{{ url()->current() }}/print',
                             type: 'post',
                             data: {
                                 nomorTrn:nomorTrn,
@@ -1557,9 +1557,9 @@
                             },
                             success: function () {
                                 if($('#jenisKertas').val() == 'Biasa'){
-                                    window.open('/BackOffice/public/transaksi/repacking/printdoc/'+nomorTrn+'/','_blank');
+                                    window.open('{{ url()->current() }}/printdoc/'+nomorTrn+'/','_blank');
                                 }else if($('#jenisKertas').val() == 'Kecil'){
-                                    window.open('/BackOffice/public/transaksi/repacking/printdockecil/'+nomorTrn+'/','_blank');
+                                    window.open('{{ url()->current() }}/printdockecil/'+nomorTrn+'/','_blank');
                                 }
                                 clearForm();
                             }, error: function () {

@@ -20,9 +20,9 @@ class InputController extends Controller
     public function getDataLovTrn(){
         $lov = DB::table('tbtr_backoffice')
             ->selectRaw("TRBO_NODOC,TO_CHAR(TRBO_TGLDOC, 'DD/MM/YYYY') TRBO_TGLDOC,
-                    CASE 
-                        WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA 
-                        ELSE 'Belum Cetak Nota' 
+                    CASE
+                        WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA
+                        ELSE 'Belum Cetak Nota'
                     END NOTA")
             ->where('trbo_typetrn','O')
             ->orderBy('trbo_nodoc','desc')
@@ -56,7 +56,7 @@ class InputController extends Controller
     }
 
     public function getDataLovIpb(){
-        $lov = DB::select("SELECT DISTINCT 
+        $lov = DB::select("SELECT DISTINCT
                 IPB_NOIPB,IPB_TGLIPB,IPB_KODECABANG2,CAB_NAMACABANG
                 FROM TBTR_IPB,TBMASTER_CABANG
                 WHERE IPB_KODECABANG2=CAB_KODECABANG AND
@@ -140,8 +140,8 @@ class InputController extends Controller
     public function getDataPlu(Request $request){
         $data = DB::select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,
                                     PRD_AVGCOST,ST_AVGCOST,PRD_FLAGBKP1,ST_SALDOAKHIR
-                                  FROM TBMASTER_PRODMAST,TBMASTER_STOCK 
-                                  WHERE PRD_KODEIGR = ST_KODEIGR(+) AND 
+                                  FROM TBMASTER_PRODMAST,TBMASTER_STOCK
+                                  WHERE PRD_KODEIGR = ST_KODEIGR(+) AND
                                       PRD_PRDCD = ST_PRDCD(+) AND
                                       PRD_KODEIGR = '".$_SESSION['kdigr']."' AND
                                       ST_LOKASI(+)='01' AND PRD_PRDCD='".$request->prdcd."'");
@@ -443,6 +443,7 @@ ORDER BY PRDCD,
 
             $status = 'success';
             $title = 'Berhasil menyimpan data nomor '.$nodoc;
+            $message = '';
         }
         catch(QueryException $e){
             DB::rollBack();

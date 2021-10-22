@@ -623,14 +623,14 @@
 
                 if(data[data.length - 1].prdcd != '')
                     addRow();
+
+                makeDataTable();
+
+                showDesc(data.length-1);
             }
             else{
                 dataPLU = [];
             }
-
-            makeDataTable();
-
-            showDesc(data.length-1);
         }
 
         function getPLU(index, event){

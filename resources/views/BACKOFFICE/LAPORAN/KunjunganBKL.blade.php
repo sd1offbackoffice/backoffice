@@ -56,7 +56,7 @@
             // let month = date2[0];
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/laporan/kunjunganbkl/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     date:date
@@ -66,7 +66,7 @@
                 },
                 success: function (result) {
                     if(result.kode == '1'){
-                        window.open('/BackOffice/public/laporan/kunjunganbkl/printdoc/'+date,'_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+date,'_blank');
                     }else{
                         swal('', "Tidak ada data!", 'warning');
                     }

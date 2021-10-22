@@ -27,7 +27,7 @@
         function DownBaru() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/promosihokecab/downbaru',
+                url: '{{ url()->current() }}/downbaru',
                 type: 'post',
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -44,7 +44,7 @@
         function DownEdit() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/promosihokecab/downedit',
+                url: '{{ url()->current() }}/downedit',
                 type: 'post',
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});

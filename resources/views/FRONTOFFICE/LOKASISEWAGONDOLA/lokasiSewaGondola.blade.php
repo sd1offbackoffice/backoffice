@@ -658,10 +658,11 @@
                     $('#body-table-detail').empty();
                     $('#body-table-lokasi').empty();
                     if (response.data) {
+                        maxrow = response.data.length;
                         for (i = 0; i < response.data.length; i++) {
                             row = i;
                             $('#body-table-detail').append(`
-                                    <tr class="rowDetail modalRow" row="` + row + `">
+                                    <tr class="rowDetail modalRow row-` + row + `" row="` + row + `">
                                         <td><input type="text" class="form-control text" readonly value="` + response.data[i].gdl_prdcd + `"></td>
                                         <td><input type="text" class="form-control text" readonly value="` + response.data[i].gdl_kodedisplay + `"></td>
                                         <td><input type="text" class="form-control text" readonly value="` + response.data[i].gdl_qty + `"></td>
@@ -871,14 +872,15 @@
 
         function simpanPerjanjianSewa() {
             data = [];
+
             for (i = 0; i < maxrow + 1; i++) {
                 obj = {};
-                obj.plu = $('.row-' + i).children().first().next().find('input').val();
-                obj.kodedisplay = $('.row-' + i).children().first().next().next().find('input').val();
-                obj.qty = $('.row-' + i).children().first().next().next().next().find('input').val();
-                obj.kodeprincipal = $('.row-' + i).children().first().next().next().next().next().find('input').val();
-                obj.tglawal = $('.row-' + i).children().first().next().next().next().next().next().find('input').val();
-                obj.tglakhir = $('.row-' + i).children().first().next().next().next().next().next().next().next().find('input').val();
+                obj.plu = $('.row-' + i).children().first().find('input').val();
+                obj.kodedisplay = $('.row-' + i).children().first().next().find('input').val();
+                obj.qty = $('.row-' + i).children().first().next().next().find('input').val();
+                obj.kodeprincipal = $('.row-' + i).children().first().next().next().next().find('input').val();
+                obj.tglawal = $('.row-' + i).children().first().next().next().next().next().find('input').val();
+                obj.tglakhir = $('.row-' + i).children().first().next().next().next().next().next().find('input').val();
                 obj.lokasi = $('.row-' + i).children().last().find('input').val();
 
                 if (obj.plu != '' && obj.kodedisplay != '' && obj.qty != '' && obj.kodeprincipal != '' && obj.tglawal != '' && obj.tglakhir != '' && obj.lokasi != '') {
@@ -890,7 +892,6 @@
             }
             model = $('#model').val();
             nopjsewa = $('#nopjsewa').val();
-
             if (nopjsewa != '' && data.length > 0) {
                 ajaxSetup();
                 $.ajax({
@@ -906,7 +907,7 @@
                     },
                     success: function (response) {
                         $('#modal-loader').modal('toggle');
-                        swal(response.status.toUpperCase(), response.message, response.status);
+                        swal(response.status, response.message, response.status);
                     },
                     error: function (response) {
                         $('#modal-loader').modal('toggle');

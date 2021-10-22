@@ -14,14 +14,16 @@ $datetime->setTimezone($timezone);
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
             {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}
+            {{ $perusahaan->prs_namacabang }}<br><br>
+
         </p>
     </div>
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
             Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
             <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
-            Hal. :
+            Hal. :<br><br>
+            PRG : LAP203
     </div>
     <h2 style="text-align: center">
         ** LAPORAN TRANSAKSI KARTU KREDIT PER NAMA KARTU **<br>
@@ -294,7 +296,7 @@ $datetime->setTimezone($timezone);
         height: 3cm;
     }
     body {
-        margin-top: 80px;
+        margin-top: 90px;
         margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

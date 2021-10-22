@@ -28,7 +28,7 @@
                                     <span style="text-decoration: underline" class="col-sm-12 text-center">PERIODE :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Tgl Mulai</label>
+                                    <label class="col-sm-2 col-form-label text-right">Tanggal</label>
                                     <input class="col-sm-8 text-center form-control" type="text" id="daterangepicker">
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Kelipatan</label>
-                            <input class="col-sm-1 text-center form-control" type="number" id="kelipatan">
+                            <input class="col-sm-1 text-center form-control" type="text" id="kelipatan" onkeypress="return isYT(event)" maxlength="1">
                             <label class="col-sm-2 col-form-label text-left">[ Y / T ]</label>
                         </div>
                         <br>
@@ -129,35 +129,35 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="RB" onkeydown="check(this)" checked>&nbsp;REGULER BIRU</label>
+                                            <label><input type="checkbox" value="" id="RB" class="checktype" onkeydown="check(this)" checked>&nbsp;REGULER BIRU</label>
                                         </div>
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="RGP" onkeydown="check(this)" checked>&nbsp;REGULER BIRU PLUS</label>
+                                            <label><input type="checkbox" value="" id="RBP" class="checktype" onkeydown="check(this)" checked>&nbsp;REGULER BIRU PLUS</label>
                                         </div>
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="F" onkeydown="check(this)" checked>&nbsp;FREEPASS</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="RM" onkeydown="check(this)" checked>&nbsp;RETAILER MERAH</label>
-                                        </div>
-                                        <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="S" onkeydown="check(this)" checked>&nbsp;SILVER</label>
-                                        </div>
-                                        <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="P" onkeydown="check(this)" checked>&nbsp;PLATINUM</label>
+                                            <label><input type="checkbox" value="" id="F" class="checktype" onkeydown="check(this)" checked>&nbsp;FREEPASS</label>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="G1" onkeydown="check(this)" checked>&nbsp;GOLD 1</label>
+                                            <label><input type="checkbox" value="" id="RM" class="checktype" onkeydown="check(this)" checked>&nbsp;RETAILER MERAH</label>
                                         </div>
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="G2" onkeydown="check(this)" checked>&nbsp;GOLD 2</label>
+                                            <label><input type="checkbox" value="" id="S" class="checktype" onkeydown="check(this)" checked>&nbsp;SILVER</label>
                                         </div>
                                         <div class="row checkbox">
-                                            <label><input type="checkbox" value="" id="G3" onkeydown="check(this)" checked>&nbsp;GOLD 3</label>
+                                            <label><input type="checkbox" value="" id="P" class="checktype" onkeydown="check(this)" checked>&nbsp;PLATINUM</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="row checkbox">
+                                            <label><input type="checkbox" value="" id="G1" class="checktype" onkeydown="check(this)" checked>&nbsp;GOLD 1</label>
+                                        </div>
+                                        <div class="row checkbox">
+                                            <label><input type="checkbox" value="" id="G2" class="checktype" onkeydown="check(this)" checked>&nbsp;GOLD 2</label>
+                                        </div>
+                                        <div class="row checkbox">
+                                            <label><input type="checkbox" value="" id="G3" class="checktype" onkeydown="check(this)" checked>&nbsp;GOLD 3</label>
                                         </div>
                                     </div>
                                 </div>
@@ -183,9 +183,9 @@
 
                         {{--BUTTONS--}}
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary col-sm-1" type="button">NEW</button>&nbsp;
-                            <button class="btn btn-primary col-sm-1" type="button">EDIT</button>&nbsp;
-                            <button class="btn btn-primary col-sm-1" type="button">SAVE</button>&nbsp;
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="ClearForm()">NEW</button>&nbsp;
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="EditButton()">EDIT</button>&nbsp;
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="SaveButton()">SAVE</button>&nbsp;
                             <button class="btn btn-primary col-sm-2" type="button" id="history" onclick="ToggleData(this)">History Hadiah</button>
                         </div>
                         <br>
@@ -309,6 +309,9 @@
         let tablePlu;
         let tableHadiah;
         let tableHistory;
+
+        let statusForm = "baru";
+
         $('#daterangepicker').daterangepicker({
             locale: {
                 format: 'DD/MM/YYYY'
@@ -415,12 +418,18 @@
                                     $('#pluTrans').val(response.prdcd);
                                     $('#ketTrans').val(response.deskripsi);
                                     $('#pluTrans').prop('disabled',true);
+                                    $('#trans').prop('hidden',true);
                                 }else{
                                     $('#hiddenParamater').val(response.prdcd).change();
                                     //setTimeout(function(){ $('#m_history').modal('toggle'); }, 5000);
                                     $('#m_history').modal('toggle');
                                 }
                             });
+                        }else{//baru
+                            $('#pluTrans').val(response.prdcd);
+                            $('#ketTrans').val(response.deskripsi);
+                            $('#pluTrans').prop('disabled',true);
+                            $('#trans').prop('hidden',true);
                         }
                     }
                 },
@@ -462,7 +471,7 @@
             if(index = checkHadiahExist(crop)){
                 index = index-1;
                 $('#pluHadiah').val(tableHadiah.row(index).data()['bprp_prdcd']);
-                $('#ketHadiah').val(tableHadiah.row(index).data()['bprp_ketpanjang']);
+                $('#ketHadiah').val(tableHadiah.row(index).data()['bprp_ketpanjang'] + ' - ' + tableHadiah.row(index).data()['satuan']);
             }else{
                 swal({
                     title:'Alert',
@@ -624,6 +633,7 @@
                 "columns": [
                     {data: 'bprp_ketpanjang', name: 'bprp_ketpanjang'},
                     {data: 'bprp_prdcd', name: 'bprp_prdcd'},
+                    {data: 'satuan', name: 'satuan', visible: false},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -649,10 +659,11 @@
                 },
                 "columns": [
                     {data: 'berlaku', name: 'berlaku'},
-                    {data: 'ish_keterangan', name: 'berlaku'},
-                    {data: 'prd_deskripsipanjang', name: 'berlaku'},
+                    {data: 'ish_keterangan', name: 'ish_keterangan'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
                     {data: 'isd_prdcd', name: 'isd_prdcd'},
                     {data: 'isd_kodepromosi', name: 'isd_kodepromosi'},
+                    {data: 'satuan', name: 'satuan', visible: false},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -692,9 +703,130 @@
 
             $('#pluHadiah').val(kode);
             $('#ketHadiah').val(nama);
+            $('#pluHadiah').change();
 
             $('#m_hadiah').modal('toggle');
         });
+
+        $(document).on('click', '.modalHistory', function () {
+            let currentButton = $(this);
+            let nama = currentButton.children().first().next().next().text();
+            let prdcd = currentButton.children().first().next().next().next().text();
+            let kode = currentButton.children().first().next().next().next().next().text();
+            let satuan = tableHistory.row(this).data()['satuan'];
+
+            $('#pluTrans').val(prdcd);
+            $('#ketTrans').val(nama + ' - ' + satuan);
+
+            RetrieveHistory(prdcd, kode);
+
+            $('#m_history').modal('toggle');
+            DisableAll();
+        });
+
+        function RetrieveHistory(prdcd, kode){
+            $.ajax({
+                url: '{{ url()->current() }}/gethistory',
+                type: 'GET',
+                data: {
+                    prdcd:prdcd,
+                    kode:kode
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    statusForm = kode;
+                    let dateA = response.ish_tglawal.substr(0,10);
+                    dateA = dateA.split('-'); //[0]=year, [1]=month, [2]=date
+                    dateA = dateA[2]+'/'+dateA[1]+'/'+dateA[0];
+                    let dateB = response.ish_tglakhir.substr(0,10);
+                    dateB = dateB.split('-'); //[0]=year, [1]=month, [2]=date
+                    dateB = dateB[2]+'/'+dateB[1]+'/'+dateB[0];
+                    $('#daterangepicker').data('daterangepicker').setStartDate(dateA);
+                    $('#daterangepicker').data('daterangepicker').setEndDate(dateB);
+
+                    $('#minPcs').val(response.isd_minpcs);
+                    $('#maxPcs').val(response.isd_maxpcs);
+                    $('#minRph').val(response.isd_minrph);
+                    $('#maxRph').val(response.isd_maxrph);
+
+                    $('#pluHadiah').val(response.ish_prdcdhadiah).change();
+                    //$('#ketHadiah').val();
+                    $('#jumlahHadiah').val(response.ish_jmlhadiah);
+                    $('#kelipatan').val(response.ish_kelipatanhadiah);
+
+                    $('#jmlPerhari').val(response.ish_maxjmlhari);
+                    $('#maxKeluar').val(response.ish_maxouthari);
+                    $('#maxFrekHadiah').val(response.ish_maxfrekhari);
+
+                    $('#alokasi').val(response.ish_qtyalokasi);
+                    $('#sisa').val(Number(response.ish_qtyalokasi)-Number(response.pakai));
+                    $('#pakai').val(response.pakai);
+
+                    //kumpulan checkbox
+                    if(response.ish_reguler == '1'){
+                        $('#RB').prop('checked',true);
+                    }else{
+                        $('#RB').prop('checked',false);
+                    }
+                    if(response.ish_regulerbiruplus == '1'){
+                        $('#RBP').prop('checked',true);
+                    }else{
+                        $('#RBP').prop('checked',false);
+                    }
+                    if(response.ish_freepass == '1'){
+                        $('#F').prop('checked',true);
+                    }else{
+                        $('#F').prop('checked',false);
+                    }
+                    if(response.ish_retailer == '1'){
+                        $('#RM').prop('checked',true);
+                    }else{
+                        $('#RM').prop('checked',false);
+                    }
+                    if(response.ish_silver == '1'){
+                        $('#S').prop('checked',true);
+                    }else{
+                        $('#S').prop('checked',false);
+                    }
+                    if(response.ish_platinum == '1'){
+                        $('#P').prop('checked',true);
+                    }else{
+                        $('#P').prop('checked',false);
+                    }
+                    if(response.ish_gold1 == '1'){
+                        $('#G1').prop('checked',true);
+                    }else{
+                        $('#G1').prop('checked',false);
+                    }
+                    if(response.ish_gold2 == '1'){
+                        $('#G2').prop('checked',true);
+                    }else{
+                        $('#G2').prop('checked',false);
+                    }
+                    if(response.ish_gold3 == '1'){
+                        $('#G3').prop('checked',true);
+                    }else{
+                        $('#G3').prop('checked',false);
+                    }
+
+                    $('#keterangan').val(response.ish_keterangan);
+                    $('#maxFrekPrevent').val(response.ish_maxfrekevent);
+                    $('#maxJmlPrevent').val(response.ish_maxjmlevent);
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.title,
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    });
+                    return false;
+                }
+            });
+        }
 
         function ToggleData(val){
             if(val.id == 'trans'){
@@ -705,6 +837,23 @@
                 $('#hiddenParamater').val('').change();
                 $('#m_history').modal('toggle');
             }
+        }
+
+        function isYT(evt){ //membatasi input untuk hanya boleh Y dan T, serta mendeteksi bila menekan tombol enter
+            $('#kelipatan').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
+            let charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 121) // y kecil
+                return 89; // Y besar
+
+            if (charCode == 116) // t kecil
+                return 84; //t besar
+
+            if (charCode == 89 || charCode == 84)
+                return true
+
+            return false;
         }
 
         function isNumberKey(evt){
@@ -721,8 +870,241 @@
             return false;
         }
 
-        function ClearForm(){
+        function DisableAll(){
+            $(' input').prop('disabled', true);
+            $('#trans').prop('hidden',true);
+            $('#hadiah').prop('hidden',true);
+        }
 
+        function ClearForm(){
+            statusForm = "baru";
+
+            $(' input').val('');
+            $(' input').prop('disabled', false);
+
+            $('#trans').prop('hidden',false);
+            $('#ketTrans').prop('disabled', true);
+
+            $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+            $('#minPcs').val('0');
+            $('#maxPcs').val('0');
+            $('#minRph').val('1');
+            $('#maxRph').val('0');
+
+            $('#hadiah').prop('hidden',false);
+            $('#ketHadiah').prop('disabled', true);
+            $('#jumlahHadiah').val('1');
+
+            $('#jmlPerhari').val('0');
+            $('#maxKeluar').val('0');
+            $('#maxFrekHadiah').val('0');
+
+            $('#alokasi').val('0');
+            $('#sisa').val('0');
+            $('#pakai').val('0');
+            $('.checktype').prop('checked',true);
+
+            $('#maxFrekPrevent').val('0');
+            $('#maxJmlPrevent').val('1');
+        }
+
+        function EditButton(){
+            if($('#trans').prop('hidden')){
+                $(' input').prop('disabled', false);
+                $('#pluTrans').prop('disabled', true);
+                $('#ketTrans').prop('disabled', true);
+                $('#ketHadiah').prop('disabled', true);
+            }
+        }
+
+        function SaveButton(){
+            if($('#pluTrans').val() == ''){
+                swal({
+                    title:'Alert',
+                    text: 'PLU Transaksi Tidak Boleh Kosong !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#pluTrans').focus();
+                });
+                return false;
+            }
+            if($('#minPcs').val() == '0' && $('#minRph').val() == '0'){
+                swal({
+                    title:'Alert',
+                    text: 'Minimum JML atau HRG Struk harus diisi !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#minPcs').focus();
+                });
+                return false;
+            }else if($('#minPcs').val() != '0' && $('#minRph').val() != '0'){
+                swal({
+                    title:'Alert',
+                    text: 'Isi Salah Satu Antara Minimum JML atau HRG Struk !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#minPcs').focus();
+                });
+                return false;
+            }
+            if(!checkHadiahExist($('#pluHadiah').val())){
+                swal({
+                    title:'Alert',
+                    text: 'PLU Hadiah Tidak Terdaftar !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#pluHadiah').select();
+                });
+                return false;
+            }
+            if($('#jumlahHadiah').val() == '0'){
+                swal({
+                    title:'Alert',
+                    text: 'Qty Hadiah Tidak Boleh Dikosongkan !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#jumlahHadiah').select();
+                });
+                return false;
+            }
+            if($('#kelipatan').val() == ''){
+                swal({
+                    title:'Alert',
+                    text: 'Flag Kelipatan Harus Diisi !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#kelipatan').focus();
+                });
+                return false;
+            }else if($('#kelipatan').val() != 'Y' && $('#kelipatan').val() != 'T'){
+                swal({
+                    title:'Alert',
+                    text: 'Inputan Salah [ Y / T ] !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#kelipatan').select();
+                });
+                return false;
+            }
+            if($(".checktype:checked").length === 0){
+                swal({
+                    title:'Alert',
+                    text: 'Jenis Member Harus Dipilih !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#RB').select();
+                });
+                return false;
+            }
+            if($('#maxFrekPrevent').val() == '0' && $('#maxJmlPrevent').val() == '0'){
+                swal({
+                    title:'Alert',
+                    text: 'Maximum PCS atau FREK Event Promo harus diisi !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#maxFrekPrevent').select();
+                });
+                return false;
+            }else if($('#maxFrekPrevent').val() != '0' && $('#maxJmlPrevent').val() != '0'){
+                swal({
+                    title:'Alert',
+                    text: 'Isi Salah Satu Antara Maximum PCS atau FREK Event Promo !!',
+                    icon:'warning',
+                }).then(() => {
+                    $('#maxFrekPrevent').select();
+                });
+                return false;
+            }
+
+            //SAVE AFTER ALL VALIDATION
+            //Variable to send
+            let date = $('#daterangepicker').val();
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            //checkbox
+            let allchecktype = $('.checktype:checkbox');
+            let theCheckbox = [];
+            for(i=0;i<$('.checktype:checkbox').length;i++){
+                if($('#'+allchecktype[i].id).prop('checked')){
+                    theCheckbox[allchecktype[i].id] = 1;
+                }else{
+                    theCheckbox[allchecktype[i].id] = 0;
+                }
+            }
+
+            //Saving
+            $.ajax({
+                url: '{{ url()->current() }}/save',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    status:statusForm,
+                    plu:$('#pluTrans').val(),
+                    date1:dateA,
+                    date2:dateB,
+                    minjmlstruk:$('#minPcs').val(),
+                    maxjmlstruk:$('#maxPcs').val(),
+                    minrphstruk:$('#minRph').val(),
+                    maxrphstruk:$('#maxRph').val(),
+                    pluhdh:$('#pluHadiah').val(),
+                    jmlhadiah:$('#jumlahHadiah').val(),
+                    kelipatan:$('#kelipatan').val(),
+                    maxjmlperhari:$('#jmlPerhari').val(),
+                    maxfrekperhari:$('#maxFrekHadiah').val(),
+                    maxkeluar:$('#maxKeluar').val(),
+                    alokasi:$('#alokasi').val(),
+                    sisa:$('#sisa').val(),
+                    pakai:$('#pakai').val(),
+                    keterangan:$('#keterangan').val(),
+                    maxfrekprevent:$('#maxFrekPrevent').val(),
+                    maxjmlprevent:$('#maxJmlPrevent').val(),
+                    reguler:theCheckbox['RB'],
+                    freepass:theCheckbox['F'],
+                    retailer:theCheckbox['RM'],
+                    regulerbiruplus:theCheckbox['RBP'],
+                    silver:theCheckbox['S'],
+                    gold1:theCheckbox['G1'],
+                    gold2:theCheckbox['G2'],
+                    gold3:theCheckbox['G3'],
+                    platinum:theCheckbox['P'],
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                    swal({
+                        title: response.title,
+                        icon: 'success'
+                    }).then(() => {
+                        ClearForm();
+                        tableHistory.destroy();
+                        HistoryModal();
+                        $('#pluTrans').focus();
+                    })
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: error.responseJSON.title,
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    });
+                    return false;
+                }
+            });
         }
     </script>
 @endsection

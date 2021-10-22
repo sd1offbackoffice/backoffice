@@ -38,6 +38,7 @@ class LaporanPlanogramController extends Controller
         $ch = '';
         $data1 = '';
         $p_order = '';
+        $p_recid= '';
         $menu = $request->menu;
         $rak1 = $request->rak1;
         $rak2 = $request->rak2;

@@ -127,7 +127,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/amp/getdata',
+                url: '{{ url()->current() }}/getdata',
                 type: 'post',
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -228,7 +228,7 @@
                     if(document.getElementById("tetap"+index).checked){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/amp/updatedata',
+                            url: '{{ url()->current() }}/updatedata',
                             type: 'post',
                             data: {
                                 kd_member:tempDatas[index].sgc_kd_member,
@@ -246,7 +246,7 @@
                     }else if(document.getElementById("naik"+index).checked){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/amp/updatedata2',
+                            url: '{{ url()->current() }}/updatedata2',
                             type: 'post',
                             data: {
                                 kd_member:tempDatas[index].sgc_kd_member,
@@ -265,7 +265,7 @@
                     if(document.getElementById("tetap"+index).checked){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/amp/updatedata3',
+                            url: '{{ url()->current() }}/updatedata3',
                             type: 'post',
                             data: {
                                 kd_member:tempDatas[index].sgc_kd_member,
@@ -282,7 +282,7 @@
                     }else if(document.getElementById("turun"+index).checked){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/amp/updatedata4',
+                            url: '{{ url()->current() }}/updatedata4',
                             type: 'post',
                             data: {
                                 kd_member:tempDatas[index].sgc_kd_member,

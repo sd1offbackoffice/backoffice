@@ -3,9 +3,9 @@
     <title>Reset - BKL</title>
     <style>
         @page {
-            /*margin: 130px 25px 25px 25px;*/
+            margin: 25px 25px;
             /*size: 595pt 442pt;*/
-            size: 298pt 350pt;
+            /*size: 298pt 350pt;*/
         }
 
         .header {
@@ -31,6 +31,7 @@
         body {
             margin-top: 0px;
             margin-bottom: 0px;
+            width: 200pt;
             font-size: 9px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             font-weight: 400;
@@ -115,6 +116,10 @@
             <tr>
                 <td>NOMOR STATION</td>
                 <td>: {{$result[0]->js_cashierstation}}</td>
+            </tr>
+            <tr>
+                <td>KASIR</td>
+                <td>: BKL - BKL</td>
             </tr>
 
             <tr><td style="height: 10px" colspan="4"> </td></tr>

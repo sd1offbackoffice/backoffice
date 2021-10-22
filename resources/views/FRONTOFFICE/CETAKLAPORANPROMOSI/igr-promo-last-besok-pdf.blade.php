@@ -15,37 +15,34 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
+            {{ $perusahaan->prs_namacabang }}
         </p>
     </div>
-    <h2 style="text-align: center">Laporan Promosi yang Akan Berakhir</h2>
-    <h4 style="text-align: center">
-        {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
-    </h4>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
+    </div>
+    <div>
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">LAPORAN PROMOSI YANG AKAN BERAKHIR</p>
+    </div>
 </header>
 
-<main style="margin-top: 50px;">
-    <p>
-        Jenis : {{ $data[0]->cborgf }}<br><br>
-    </p>
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th rowspan="2">No</th>
-            <th rowspan="2">Kode Promosi</th>
+            <th rowspan="2" align="right" class="padding-right">No</th>
+            <th rowspan="2" align="left">Kode Promosi</th>
             <th rowspan="2" align="left">Nama Program Promosi</th>
-            <th rowspan="2">Produk Sponsor</th>
-            <th colspan="2">Periode Promosi</th>
+            <th rowspan="2" align="left">Produk Sponsor</th>
+            <th colspan="2" align="left" style="padding-left: 25px">Periode Promosi</th>
         </tr>
         <tr>
-            <th>Awal</th>
-            <th>Akhir</th>
+            <th align="left">Awal</th>
+            <th align="left">Akhir</th>
         </tr>
         </thead>
         <tbody>
@@ -57,12 +54,12 @@ $datetime->setTimezone($timezone);
         @if(sizeof($data)!=0)
             @foreach($data as $d)
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->cbh_kodepromosi }}</td>
+                    <td align="right" class="padding-right">{{ $i }}</td>
+                    <td align="left">{{ $d->cbh_kodepromosi }}</td>
                     <td align="left">{{ $d->promosi}}</td>
                     <td align="left">{{ $d->plu }} - {{ $d->descpan }}</td>
-                    <td>{{ substr($d->cbh_tglawal,0,10) }}</td>
-                    <td>{{ substr($d->cbh_tglakhir,0,10) }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglawal,0,10))) }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglakhir,0,10))) }}</td>
                 </tr>
                 @php
                     $i++;
@@ -74,11 +71,13 @@ $datetime->setTimezone($timezone);
             </tr>
         @endif
         </tbody>
-        <tfoot></tfoot>
+        <tfoot>
+        <tr>
+            <th style="border-top: 1px solid black;" colspan="10" class="right">** Akhir dari laporan **</th>
+        </tr>
+        </tfoot>
     </table>
-</main>
 
-<br>
 </body>
 
 
@@ -86,7 +85,6 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 700pt 500pt;
     }
 
     header {
@@ -218,6 +216,8 @@ $datetime->setTimezone($timezone);
     .border-top {
         border-bottom: 1px solid black;
     }
-
+    .table tbody td.padding-right, .table thead th.padding-right {
+        padding-right: 10px !important;
+    }
 </style>
 </html>

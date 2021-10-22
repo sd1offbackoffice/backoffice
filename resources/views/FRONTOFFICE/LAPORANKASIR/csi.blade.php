@@ -99,7 +99,7 @@
         function getModalData(value){
             let tableModal = $('#tableModalTemplate').DataTable({
                 "ajax": {
-                    'url' : '{{ url('frontoffice/laporankasir/csi/getmodal') }}',
+                    'url' : '{{ url()->current() }}/getmodal',
                     "data" : {
                         'value' : value
                     },
@@ -168,7 +168,7 @@
             $('#modal-loader').modal('show');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/laporankasir/csi/getnmr',
+                url: '{{ url()->current() }}/getnmr',
                 type: 'post',
                 data: {
                     val:value
@@ -224,7 +224,7 @@
                     if($('#member').val() == 'R'){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdatar',
+                            url: '{{ url()->current() }}/checkdatar',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -238,7 +238,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdocr/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');
@@ -252,7 +252,7 @@
                     }else if($('#member').val() == 'K'){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdatak',
+                            url: '{{ url()->current() }}/checkdatak',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -266,7 +266,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdock/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');
@@ -280,7 +280,7 @@
                     }else{
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdata',
+                            url: '{{ url()->current() }}/checkdata',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -294,7 +294,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdoc/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');
@@ -310,7 +310,7 @@
                     if($('#member').val() == 'R'){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdatar',
+                            url: '{{ url()->current() }}/checkdatar',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -324,7 +324,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdocr/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');
@@ -338,7 +338,7 @@
                     }else if($('#member').val() == 'K'){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdatak',
+                            url: '{{ url()->current() }}/checkdatak',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -352,7 +352,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdock/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');
@@ -366,7 +366,7 @@
                     }else{
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/frontoffice/laporankasir/csi/checkdata',
+                            url: '{{ url()->current() }}/checkdata',
                             type: 'post',
                             data: {
                                 dateA:dateA,
@@ -380,7 +380,7 @@
                             },
                             success: function (w) {
                                 if(w.kode == '1'){
-                                    window.open('/BackOffice/public/frontoffice/laporankasir/csi/printdoc/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                                    window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
                                 }
                                 else if (w.kode == '0'){
                                     swal.fire('', "tidak ada data", 'warning');

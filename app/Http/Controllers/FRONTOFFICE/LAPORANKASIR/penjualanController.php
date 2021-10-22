@@ -2100,17 +2100,17 @@ ORDER BY FDKDIV, FDKDEP");
         }
 
         //PRINT
-        $today = date('d-m-Y');
-        $time = date('H:i:s');
+//        $today = date('d-m-Y');
+//        $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'nmarginp' => $nmarginp , 'today' => $today, 'time' => $time, 'kasir' =>$kasir, 'station' => $station,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'nmarginp' => $nmarginp , 'kasir' =>$kasir, 'station' => $station,
                 'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(524, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(508, 58, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf');
     }

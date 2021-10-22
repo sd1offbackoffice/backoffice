@@ -1945,34 +1945,37 @@
             if (charCode == 89 || charCode == 84)
                 return true
             if (charCode == 13){
-                if($('#export').val() == 'Y'){
-                    menu2Grosir = 'T';
-                    menu2UnitSBU = 'F';
-                    menu2GrosirA = 'T';
-                    $('#menu2Ext').prop('hidden',true);
-                    $('#menu2Ext input').val('');
-                    $('#menu2Ext2').prop('hidden',true);
-                    $('#menu2Ext2 input').val('');
-                    $('#menu2Ext3').prop('hidden',true);
-                    $('#menu2Ext3 input').val('');
-                    $('#menu2Cetak').focus();
-                }else{
-                    menu2Grosir = '';
-                    menu2UnitSBU = '';
-                    menu2GrosirA = '';
-                    $('#jenisToko').val('S').change();
-                    $('#menu2Ext').prop('hidden',false);
-                    $('#menu2Ext input').val('');
-                    $('#menu2Ext2').prop('hidden',true);
-                    $('#menu2Ext2 input').val('');
-                    $('#menu2Ext3').prop('hidden',true);
-                    $('#menu2Ext3 input').val('');
-                }
-
+                $('#export').change();
                 return true
             }
             return false;
         }
+
+        $('#export').on('change', function() {
+            if($('#export').val() == 'Y'){
+                menu2Grosir = 'T';
+                menu2UnitSBU = 'F';
+                menu2GrosirA = 'T';
+                $('#menu2Ext').prop('hidden',true);
+                $('#menu2Ext input').val('');
+                $('#menu2Ext2').prop('hidden',true);
+                $('#menu2Ext2 input').val('');
+                $('#menu2Ext3').prop('hidden',true);
+                $('#menu2Ext3 input').val('');
+                $('#menu2Cetak').focus();
+            }else{
+                menu2Grosir = '';
+                menu2UnitSBU = '';
+                menu2GrosirA = '';
+                $('#jenisToko').val('S').change();
+                $('#menu2Ext').prop('hidden',false);
+                $('#menu2Ext input').val('');
+                $('#menu2Ext2').prop('hidden',true);
+                $('#menu2Ext2 input').val('');
+                $('#menu2Ext3').prop('hidden',true);
+                $('#menu2Ext3 input').val('');
+            }
+        });
 
         function lstPrint(val){
             // SEKEDAR INFO!!!

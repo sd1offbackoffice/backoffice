@@ -15,30 +15,32 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
+            {{ $perusahaan->prs_namacabang }}
         </p>
     </div>
-    <h2 style="text-align: center">LAPORAN PENCETAKAN FAKTUR PAJAK STANDAR NONPKP</h2>
-    <h4 style="text-align: center">
-        {{ $periode }}<br><br>
-    </h4>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
+    </div>
+    <div style="float:center;">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">LAPORAN PENCETAKAN FAKTUR PAJAK STANDAR NONPKP</p>
+        {{--        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD MYPOIN</p>--}}
+        <p style="text-align: center;margin: 0;padding: 0">Periode : {{$periode}} </p>
+    </div>
 </header>
 
-<main style="margin-top: 50px;">
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th>CUSTOMER</th>
-            <th>NO SERI FP</th>
-            <th>TGL FP</th>
-            <th>DPP</th>
-            <th>PPN</th>
+            <th align="left">CUSTOMER</th>
+            <th align="left">NO. SERI FP</th>
+            <th align="left">TGL FP</th>
+            <th align="right">DPP</th>
+            <th align="right">PPN</th>
         </tr>
         </thead>
         <tbody>
@@ -50,11 +52,11 @@ $datetime->setTimezone($timezone);
         @if(sizeof($data)!=0)
             @foreach($data as $d)
                 <tr>
-                    <td>{{ $d->customer }}</td>
-                    <td>{{ $d->nomor_faktur }}</td>
-                    <td>{{ substr($d->tgl_faktur,0,10) }}</td>
-                    <td>{{ $d->dpp }}</td>
-                    <td>{{ $d->ppn }}</td>
+                    <td align="left">{{ $d->customer }}</td>
+                    <td align="left">{{ $d->nomor_faktur }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->tgl_faktur,0,10))) }}</td>
+                    <td align="right">{{ number_format($d->dpp, 0,".",",") }}</td>
+                    <td align="right">{{ number_format($d->ppn, 0,".",",") }}</td>
                 </tr>
                 @php
                     $total_dpp += $d->dpp;
@@ -69,13 +71,15 @@ $datetime->setTimezone($timezone);
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="3" align="right">TOTAL</td>
-            <td align="center">{{ $total_dpp }}</td>
-            <td align="center">{{ $total_ppn }}</td>
+            <th colspan="3" align="right">TOTAL :</th>
+            <th align="right">{{ number_format($total_dpp, 0,".",",") }}</th>
+            <th align="right">{{ number_format($total_ppn, 0,".",",") }}</th>
+        </tr>
+        <tr>
+            <th style="border-top: 1px solid black;" colspan="7" class="right">** Akhir dari laporan **</th>
         </tr>
         </tfoot>
     </table>
-</main>
 
 <br>
 </body>
@@ -85,7 +89,7 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 600pt 500pt;
+        /*size: 600pt 500pt;*/
     }
 
     header {

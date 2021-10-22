@@ -3,9 +3,9 @@
     <title>Struk BKL</title>
     <style>
         @page {
-            /*margin: 130px 25px 25px 25px;*/
+            margin: 25px 25px;
             /*size: 595pt 442pt;*/
-            size: 298pt {{ 370+(count($result)*28) }}pt;
+            {{--size: 298pt {{ 370+(count($result)*28) }}pt;--}}
         }
 
         .header {
@@ -31,6 +31,7 @@
         body {
             margin-top: 0px;
             margin-bottom: 0px;
+            width: 200pt;
             font-size: 9px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             font-weight: 400;

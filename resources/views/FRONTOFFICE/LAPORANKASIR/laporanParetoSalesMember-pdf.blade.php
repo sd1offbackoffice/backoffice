@@ -50,7 +50,7 @@
             border-color: inherit;
         }
         th, td {
-            border: 1px solid black;
+            /*border: 1px solid black;*/
             line-height: 12px;
         }
 
@@ -90,8 +90,8 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black; text-align: center">
         <tr style="text-align: center;">
             <th style="width: 30px">NO</th>
-            <th style="width: 70px">NOMOR</th>
-            <th style="width: 150px">NAMA LANGGANAN</th>
+            <th style="width: 50px">NOMOR</th>
+            <th style="width: 170px">NAMA LANGGANAN</th>
             <th style="width: 70px">OUTLET</th>
             <th style="width: 60px">KUNJUNGAN</th>
             <th style="width: 60px">SLIP</th>
@@ -106,16 +106,16 @@
         <?php $kunjungan = 0; $slip = 0; $produk = 0; $rupiah = 0; $margin = 0; ?>
         @foreach($query as $value)
             <tr>
-                <td style="width: 30px; text-align: center">{{$no++}}</td>
-                <th style="width: 70px">{{$value->fcusno}}</th>
-                <th style="width: 150px">{{$value->fnama}}</th>
-                <th style="width: 70px">{{$value->foutlt}} - {{$value->out_namaoutlet}}</th>
-                <th style="width: 60px">{{$value->fwfreq}}</th>
-                <th style="width: 60px">{{$value->fwslip}}</th>
-                <th style="width: 60px">{{number_format($value->fwprod ,0,',','.')}}</th>
-                <th style="width: 60px">{{number_format($value->fwamt ,0,',','.')}}</th>
-                <th style="width: 60px">{{number_format($value->fgrsmargn ,0,',','.')}}</th>
-                <th style="width: 50px">{{number_format((($value->fgrsmargn/$value->fwamt)*100),2) }}</th>
+                <td style="width: 30px; text-align: left">{{$no++}}</td>
+                <th style="width: 50px; text-align: left">{{$value->fcusno}}</th>
+                <th style="width: 170px; text-align: left">{{$value->fnama}}</th>
+                <th style="width: 70px; text-align: left">{{$value->foutlt}} - {{$value->out_namaoutlet}}</th>
+                <th style="width: 60px; text-align: right">{{$value->fwfreq}}</th>
+                <th style="width: 60px; text-align: right">{{$value->fwslip}}</th>
+                <th style="width: 60px; text-align: right">{{number_format($value->fwprod ,0,',','.')}}</th>
+                <th style="width: 60px; text-align: right">{{number_format($value->fwamt ,0,',','.')}}</th>
+                <th style="width: 60px; text-align: right">{{number_format($value->fgrsmargn ,0,',','.')}}</th>
+                <th style="width: 50px; text-align: right">{{number_format((($value->fgrsmargn/$value->fwamt)*100),2) }}</th>
             </tr>
             {{$kunjungan = $kunjungan + $value->fwfreq}};
             {{$slip = $slip + $value->fwslip}};
@@ -123,15 +123,17 @@
             {{$rupiah = $rupiah + $value->fwamt}};
             {{$margin = $margin + $value->fgrsmargn}};
         @endforeach
-        <tr>
-            <td colspan="4" style="text-align: right">Total :</td>
-            <td style="text-align: center">{{$kunjungan}}</td>
-            <td style="text-align: center">{{$slip}}</td>
-            <td style="text-align: center">{{number_format($produk ,0,',','.')}}</td>
-            <td style="text-align: center">{{number_format($rupiah ,0,',','.')}}</td>
-            <td style="text-align: center">{{number_format($margin ,0,',','.')}}</td>
-            <td style="text-align: center">{{number_format((($margin/$rupiah)*100),2) }}</td>
+        <tr><td colspan="10" style="line-height: 10px; border-bottom: 1px solid black"></td></tr>
+        <tr style="text-align: right">
+            <td colspan="4">Total :</td>
+            <td>{{$kunjungan}}</td>
+            <td>{{$slip}}</td>
+            <td>{{number_format($produk ,0,',','.')}}</td>
+            <td>{{number_format($rupiah ,0,',','.')}}</td>
+            <td>{{number_format($margin ,0,',','.')}}</td>
+            <td>{{number_format((($margin/$rupiah)*100),2) }}</td>
         </tr>
+        <tr><td colspan="10" style="line-height: 10px; border-bottom: 1px solid black"></td></tr>
         </tbody>
     </table>
     <br><br>

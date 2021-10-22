@@ -70,7 +70,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/laporankasir/cei/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     dateA:dateA,
@@ -83,7 +83,7 @@
                 },
                 success: function (w) {
                     if(w.kode == '1'){
-                        window.open('/BackOffice/public/frontoffice/laporankasir/cei/printdoc/'+dateA+'/'+dateB+'/'+event1+'/'+event2,'_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/'+event1+'/'+event2,'_blank');
                     }
                     else if (w.kode == '0'){
                         swal.fire('', "tidak ada data", 'warning');

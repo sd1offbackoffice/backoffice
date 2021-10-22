@@ -13,7 +13,7 @@
 
     /** Define now the real margins of every page in the PDF **/
     body {
-        margin-top: 110px;
+        margin-top: 75px;
         margin-bottom: 0px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -47,38 +47,61 @@ $timezone = new DateTimeZone('Asia/Jakarta');
 $datetime->setTimezone($timezone);
 //rupiah formatter (no Rp or .00)
 function rupiah($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,0,'.',',');
+    $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+//    $hasil_rupiah = number_format($angka,0,'.',',');
+    return $hasil_rupiah;
+}
+function twopoint($angka){
+    $hasil_rupiah = number_format($angka,2,'.',',');
     return $hasil_rupiah;
 }
 ?>
 
 <header>
-    <div style="font-size: 12px ;line-height: 0.1px !important;">
-        <p>{{$datas[0]->prs_namaperusahaan}}</p>
-        <p>{{$datas[0]->prs_namacabang}}</p>
+{{--    <div style="font-size: 12px ;line-height: 0.1px !important;">--}}
+{{--        <p>{{$datas[0]->prs_namaperusahaan}}</p>--}}
+{{--        <p>{{$datas[0]->prs_namacabang}}</p>--}}
+{{--    </div>--}}
+{{--    <div style="position: absolute; left: 512px; top: -6px">--}}
+{{--        <span>TGL CETAK : {{$today}}<br>JAM CETAK : {{$time}}<br><span style="font-style: italic">USER ID : 111</span></span>--}}
+{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL :  <br> PRG  : IDGP69S</span>--}}
+{{--    </div>--}}
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            {{ $datas[0]->prs_namaperusahaan }}
+        </p>
+        <p>
+            {{ $datas[0]->prs_namacabang }}
+        </p>
     </div>
-    <div style="position: absolute; left: 512px; top: -6px">
-        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69S</span>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-    <div style="margin-top: -30px; line-height: 0.1 !important;">
+    <div style="margin-top: 30px; line-height: 0.1 !important;">
         <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
-        <h2 style="text-align: center; margin-top: -7px">PER KASIR</h2>
-        <h4 style="text-align: center; margin-top: -7px">{{$periode}}</h4>
-        <h4 style="text-align: left; margin-top: -7px">Kasir : {{$kasir}}&nbsp;&nbsp;&nbsp;&nbsp;No. Stat : {{$station}}</h4>
+        <h2 style="text-align: center">PER KASIR</h2>
+        <h4 style="text-align: center">{{$periode}}</h4>
+        <h4 style="text-align: left">Kasir : {{$kasir}}&nbsp;&nbsp;&nbsp;&nbsp;No. Stat : {{$station}}</h4>
     </div>
 </header>
 <table style="border-collapse: collapse">
-    <thead style="font-weight: bold; vertical-align: middle; text-align: center; border-top: 2px solid black; border-bottom: 2px solid black">
+    <thead style="font-weight: bold; vertical-align: middle; border-top: 2px solid black; border-bottom: 2px solid black">
         <tr>
-            <td style="width: 20px; border-right: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td style="width: 150px; border-right: 1px solid black">KATEGORI</td>
-            <td style="width: 100px; border-right: 1px solid black">PENJUALAN<br>KOTOR</td>
-            <td style="width: 100px; border-right: 1px solid black">PAJAK</td>
-            <td style="width: 100px; border-right: 1px solid black">PENJUALAN<br>BERSIH</td>
-            <td style="width: 100px; border-right: 1px solid black">HPP RATA2</td>
-            <td style="width: 100px;">--MARGIN--</td>
-            <td style="width: 20px; ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td rowspan="2" style="width: 20px;">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td rowspan="2" style="width: 150px; text-align: left">KATEGORI</td>
+            <td rowspan="2" style="width: 100px; text-align: right">PENJUALAN<br>KOTOR</td>
+            <td rowspan="2" style="width: 100px; text-align: right">PAJAK</td>
+            <td rowspan="2" style="width: 100px; text-align: right">PENJUALAN<br>BERSIH</td>
+            <td rowspan="2" style="width: 100px; text-align: right">HPP RATA2</td>
+            <td style="text-align: right" colspan="2">--MARGIN--</td>
+{{--            <td style="width: 100px; text-align: right">--MARGIN--</td>--}}
+{{--            <td style="width: 20px; ">&nbsp;&nbsp;&nbsp;&nbsp;</td>--}}
+        </tr>
+        <tr>
+            <td style="width: 100px; text-align: right">Rp.</td>
+            <td style="width: 20px; text-align: right">%</td>
         </tr>
     </thead>
     <?php
@@ -111,7 +134,7 @@ function rupiah($angka){
             <td>{{rupiah($datas[$i]->fdnnet)}}</td>
             <td>{{rupiah($datas[$i]->fdnhpp)}}</td>
             <td>{{rupiah($datas[$i]->fdnmrgn)}}</td>
-            <td>{{round($nmarginp[$i], 2)}}</td>
+            <td>{{twopoint($nmarginp[$i])}}</td>
         </tr>
 
         {{--SUMMARY VALUE--}}
@@ -137,7 +160,7 @@ function rupiah($angka){
                     <td>{{rupiah($sumMargin['dep'])}}</td>
                     <td><?php
                         if($sumNet['dep'] != 0){
-                            echo round(($sumMargin['dep']*100/$sumNet['dep']), 2);
+                            echo twopoint(($sumMargin['dep']*100/$sumNet['dep']), 2);
                         }else{
                             if($sumMargin['dep'] != 0){
                                 echo 100;
@@ -153,15 +176,15 @@ function rupiah($angka){
             @endif
             @if($divisi != $datas[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
-                    <td colspan="2" style="text-align: left">*** TOTAL PER DIVISI : </td>
-                    <td>{{rupiah($sumGross['div'])}}</td>
-                    <td>{{rupiah($sumTax['div'])}}</td>
-                    <td>{{rupiah($sumNet['div'])}}</td>
-                    <td>{{rupiah($sumHpp['div'])}}</td>
-                    <td>{{rupiah($sumMargin['div'])}}</td>
-                    <td><?php
+                    <td colspan="2" style="text-align: left; border-bottom: 1px solid black">*** TOTAL PER DIVISI : </td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumGross['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumTax['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNet['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumHpp['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumMargin['div'])}}</td>
+                    <td style="border-bottom: 1px solid black"><?php
                         if($sumNet['div'] != 0){
-                            echo round(($sumMargin['div']*100/$sumNet['div']), 2);
+                            echo twopoint(($sumMargin['div']*100/$sumNet['div']), 2);
                         }else{
                             if($sumMargin['div'] != 0){
                                 echo 100;
@@ -188,7 +211,7 @@ function rupiah($angka){
             <td>{{rupiah($sumMargin['dep'])}}</td>
             <td><?php
                 if($sumNet['dep'] != 0){
-                    echo round(($sumMargin['dep']*100/$sumNet['dep']), 2);
+                    echo twopoint(($sumMargin['dep']*100/$sumNet['dep']), 2);
                 }else{
                     if($sumMargin['dep'] != 0){
                         echo 100;
@@ -204,15 +227,15 @@ function rupiah($angka){
 
 <!--OUT OF LOOP DIVISI-->
         <tr style="font-weight: bold;">
-            <td colspan="2" style="text-align: left">*** TOTAL PER DIVISI : </td>
-            <td>{{rupiah($sumGross['div'])}}</td>
-            <td>{{rupiah($sumTax['div'])}}</td>
-            <td>{{rupiah($sumNet['div'])}}</td>
-            <td>{{rupiah($sumHpp['div'])}}</td>
-            <td>{{rupiah($sumMargin['div'])}}</td>
-            <td><?php
+            <td colspan="2" style="text-align: left; border-bottom: 1px solid black">*** TOTAL PER DIVISI : </td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumGross['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumTax['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNet['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumHpp['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumMargin['div'])}}</td>
+            <td style="border-bottom: 1px solid black"><?php
                 if($sumNet['div'] != 0){
-                    echo round(($sumMargin['div']*100/$sumNet['div']), 2);
+                    echo twopoint(($sumMargin['div']*100/$sumNet['div']), 2);
                 }else{
                     if($sumMargin['div'] != 0){
                         echo 100;
@@ -255,11 +278,13 @@ function rupiah($angka){
                     <td>{{rupiah($net[$index])}}</td>
                     <td>{{rupiah($hpp[$index])}}</td>
                     <td>{{rupiah($margin[$index])}}</td>
-                    <td>{{round(($margp[$index]), 2)}}</td>
+                    <td>{{twopoint(($margp[$index]), 2)}}</td>
                 </tr>
             @endif
         @endforeach
     </tbody>
+    <hr>
+    <span style="float: right">**Akhir dari laporan**</span>
 </table>
 </body>
 </html>

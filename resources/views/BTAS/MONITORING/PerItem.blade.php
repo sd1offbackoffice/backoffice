@@ -101,7 +101,7 @@
         $(document).ready(function() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/peritem/getdata',
+                url: '{{ url()->current() }}/getdata',
                 type: 'post',
                 success: function (result) {
                     for (i = 0; i< result.datas.length; i++){
@@ -126,7 +126,7 @@
             }else{
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/btas/monitoring/peritem/getdetail',
+                    url: '{{ url()->current() }}/getdetail',
                     type: 'post',
                     data: {
                         prdcd:prdcd[curTr]
@@ -164,7 +164,7 @@
         function UrutPlu(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/peritem/getdata',
+                url: '{{ url()->current() }}/getdata',
                 type: 'post',
                 success: function (result) {
                     $('.baris').remove();
@@ -184,7 +184,7 @@
         function UrutDesc(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/btas/monitoring/peritem/sortdesc',
+                url: '{{ url()->current() }}/sortdesc',
                 type: 'post',
                 success: function (result) {
                     $('.baris').remove();
@@ -214,14 +214,14 @@
                 if (result.isConfirmed) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/btas/monitoring/peritem/checkdata',
+                        url: '{{ url()->current() }}/checkdata',
                         type: 'post',
                         beforeSend: function () {
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (result) {
                             if(result.kode == '0'){
-                                window.open('/BackOffice/public/btas/monitoring/peritem/printdoc','_blank');
+                                window.open('{{ url()->current() }}/printdoc','_blank');
                             }else{
                                 swal.fire('', "tidak ada data", 'warning');
                             }

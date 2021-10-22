@@ -53,7 +53,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/kerjasamaigridm/lapbedatag/checkdata',
+                url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
                     tag:tag
@@ -63,7 +63,7 @@
                 },
                 success: function (result) {
                     if(result.kode == '0'){
-                        window.open('/BackOffice/public/kerjasamaigridm/lapbedatag/printdoc/'+tag,'_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+tag,'_blank');
                     }else if(result.kode == '1'){
                         swal('', "tidak ada data", 'warning');
                     }else if(result.kode == '2'){

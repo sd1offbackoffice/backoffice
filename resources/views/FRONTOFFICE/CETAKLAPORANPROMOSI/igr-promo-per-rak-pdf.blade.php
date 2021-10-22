@@ -15,30 +15,35 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
+            {{ $perusahaan->prs_namacabang }}
+        </p>
+        <br>
+        <p>
+            Rak : {{ $koderak1 }}
         </p>
     </div>
-    <h2 style="text-align: center">Laporan Promosi per Rak Reguler</h2>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
+    </div>
+    <div>
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">LAPORAN PROMOSI PER RAK REGULER</p>
+    </div>
+
 </header>
 
-<main style="margin-top: 50px;">
-    <p>
-        Rak : {{ $koderak1 }}<br><br>
-    </p>
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th>NO</th>
-            <th>PLU</th>
+            <th align="right" class="padding-right">NO.</th>
+            <th align="left">PLU</th>
             <th align="left">DESKRIPSI</th>
-            <th>TGL AWAL</th>
-            <th>TGL AKHIR</th>
+            <th align="left">TGL AWAL</th>
+            <th align="left">TGL AKHIR</th>
         </tr>
         </thead>
         <tbody>
@@ -110,11 +115,11 @@ $datetime->setTimezone($timezone);
                     @endphp
                 @endif;
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->plu }}</td>
+                    <td align="right" class="padding-right">{{ $i }}</td>
+                    <td align="left">{{ $d->plu }}</td>
                     <td align="left">{{ $d->descpen}}</td>
-                    <td>{{ substr($d->cbh_tglawal,0,10) }}</td>
-                    <td>{{ substr($d->cbh_tglakhir,0,10) }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglawal,0,10))) }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglakhir,0,10))) }}</td>
                 </tr>
                 @php
                     $i++;
@@ -126,9 +131,12 @@ $datetime->setTimezone($timezone);
             </tr>
         @endif
         </tbody>
-        <tfoot></tfoot>
+        <tfoot>
+        <tr>
+            <th colspan="9" class="right">** Akhir dari laporan **</th>
+        </tr>
+        </tfoot>
     </table>
-</main>
 
 <br>
 </body>
@@ -138,7 +146,7 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 600pt 500pt;
+        /*size: 600pt 500pt;*/
     }
 
     header {
@@ -150,7 +158,7 @@ $datetime->setTimezone($timezone);
     }
 
     body {
-        margin-top: 80px;
+        margin-top: 70px;
         margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -270,6 +278,8 @@ $datetime->setTimezone($timezone);
     .border-top {
         border-bottom: 1px solid black;
     }
-
+    .table tbody td.padding-right, .table thead th.padding-right {
+        padding-right: 10px !important;
+    }
 </style>
 </html>

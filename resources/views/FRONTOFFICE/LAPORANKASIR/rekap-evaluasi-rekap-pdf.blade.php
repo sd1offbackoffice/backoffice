@@ -1,253 +1,197 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>EVALUASI LANGGANAN PER MEMBER {{ $tgl1 }} - {{ $tgl2 }}</title>
-</head>
-<body>
+@extends('pdf-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br><br>
-            BARANG COUNTER : {{ $counter }}
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">
-        ** EVALUASI LANGGANAN PER MEMBER **<br>
-        Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
-    </h2>
-</header>
+@section('page_title')
+    Evaluasi Langganan Per Member {{ $tgl1 }} - {{ $tgl2 }}
+@endsection
 
-<footer>
+@section('title')
+    ** EVALUASI LANGGANAN PER MEMBER **
+@endsection
 
-</footer>
+@section('subtitle')
+    Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
+@endsection
 
-<main>
+@section('header_left')
+    <br>
+    <p>
+        BARANG COUNTER : {{ strtoupper($counter) }}
+    </p>
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th class="center tengah" colspan="2">Outlet</th>
-            <th class="center tengah" colspan="2">Sub Outlet</th>
-            <th class="right tengah">Slip</th>
-            <th class="right tengah">Produk</th>
-            <th class="right tengah">Member</th>
-            <th class="right tengah">Kunjungan</th>
-            <th class="right tengah">Kont</th>
-            <th class="right tengah">Rupiah</th>
-            <th class="right tengah">&nbsp;&nbsp;&nbsp;&nbsp;Kont</th>
-            <th class="right tengah">Margin</th>
-            <th class="right tengah">&nbsp;&nbsp;&nbsp;&nbsp;Kont</th>
+            <th class="center tengah" colspan="2">OUTLET</th>
+            <th class="center tengah" colspan="2">SUB OUTLET</th>
+            <th class="right tengah">SLIP</th>
+            <th class="right tengah">PRODUK</th>
+            <th class="right tengah">MEMBER</th>
+            <th class="right tengah">KUNJ</th>
+            <th class="right tengah">KONT</th>
+            <th class="right tengah">RUPIAH</th>
+            <th class="right tengah">&nbsp;&nbsp;&nbsp;&nbsp;KONT</th>
+            <th class="right tengah">MARGIN</th>
+            <th class="right tengah">&nbsp;&nbsp;&nbsp;&nbsp;KONT</th>
             <th class="right tengah">%</th>
             <th class="right">&nbsp;&nbsp;&nbsp;&nbsp;MBR<br>1X / BLN</th>
         </tr>
         </thead>
         <tbody>
         @php
-            $kunjungan = 0;
-            $slip = 0;
-            $produk = 0;
-            $member = 0;
-            $rupiah = 0;
-            $margin = 0;
-            $otbmemb = 0;
+            $tot_slip = 0;
+            $tot_produk = 0;
+            $tot_member = 0;
+            $tot_kunjungan = 0;
+            $tot_kont1 = 0;
+            $tot_rupiah = 0;
+            $tot_kont2 = 0;
+            $tot_margin = 0;
+            $tot_kont3 = 0;
+            $tot_cost = 0;
+            $tot_mbr = 0;
 
-            $no = 1;
+            $tot_slip_lain = 0;
+            $tot_produk_lain = 0;
+            $tot_member_lain = 0;
+            $tot_kunjungan_lain = 0;
+            $tot_kont1_lain = 0;
+            $tot_rupiah_lain = 0;
+            $tot_kont2_lain = 0;
+            $tot_margin_lain = 0;
+            $tot_kont3_lain = 0;
+            $tot_cost_lain = 0;
+            $tot_mbr_lain = 0;
         @endphp
         @foreach($data as $d)
-            <tr>
-                <td class="left">{{ $d->foutlt }}</td>
-                <td class="left">{{ $d->out_namaoutlet }}</td>
-                <td class="left">&nbsp;&nbsp;&nbsp;&nbsp;{{ $d->fsoutl }}</td>
-                <td class="left">{{ $d->sub_namasuboutlet }}</td>
-                <td class="right">{{ $d->otslip }}</td>
-                <td class="right">{{ $d->otprod }}</td>
-                <td class="right">{{ $d->otmemb }}</td>
-                <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ $d->otfreq }}</td>
-                <td class="right">{{ $d->qtmemb }}</td>
-                <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($d->otamt, 0, '.', ',') }}</td>
-                <td class="right">{{ $d->qtamt }}</td>
-                <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($d->otamt - $d->otcost, 0, '.', ',') }}</td>
-                <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ $d->qtcost }}</td>
-                <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format(($d->otamt - $d->otcost) / $d->otamt * 100, 2) }}</td>
-                <td class="right">{{ $d->otbmemb }}</td>
-            </tr>
-        @php
-            $no++;
-            $kunjungan += $d->otfreq;
-            $slip += $d->otslip;
-            $produk += $d->otprod;
-            $member += $d->otmemb;
-            $rupiah += $d->otamt;
-            $margin += ($d->otamt - $d->otcost);
+            @if($d->otmemb != null)
+                @php
+                    $cf_totmemb = $d->otmemb;
+                    $cf_marginp = $d->otamt == null ? 0 : ($d->otamt - $d->otcost) / $d->otamt * 100;
 
-            $otbmemb += $d->otbmemb;
-        @endphp
+                    $margin = $d->otamt - $d->otcost;
+                    $kont1 = $d->otfreq / $total_kunj * 100;
+                    $kont2 = $d->otamt / $total_rupiah * 100;
+                    $kont3 = $margin / $total_margin * 100;
+
+                    $tot_slip += $d->otslip;
+                    $tot_produk += $d->otprod;
+                    $tot_member += $d->otmemb;
+                    $tot_kunjungan += $d->otfreq;
+                    $tot_kont1 += $kont1;
+                    $tot_rupiah += $d->otamt;
+                    $tot_kont2 += $kont2;
+                    $tot_margin += $margin;
+                    $tot_kont3 += $kont3;
+                    $tot_cost += $d->otcost;
+                    $tot_mbr += $d->otbmemb;
+                @endphp
+
+                <tr>
+                    <td colspan="2" class="left">{{ $d->foutlt }} &nbsp; {{ strlen($d->out_namaoutlet) > 7 ? substr($d->out_namaoutlet, 0, 7).'...' : $d->out_namaoutlet }}</td>
+{{--                    <td width="4%" class="left"></td>--}}
+                    <td colspan="2" class="left">{{ $d->fsoutl }} &nbsp; {{ strlen($d->sub_namasuboutlet) > 7 ? substr($d->sub_namasuboutlet, 0, 7).'...' : $d->sub_namasuboutlet }}</td>
+{{--                    <td class="left">{{ strlen($d->sub_namasuboutlet) > 7 ? substr($d->sub_namasuboutlet, 0, 7).'...' : $d->sub_namasuboutlet }}</td>--}}
+                    <td class="right">{{ $d->otslip }}</td>
+                    <td class="right">{{ $d->otprod }}</td>
+                    <td class="right">{{ $d->otmemb }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ $d->otfreq }}</td>
+                    <td class="right">{{ number_format($kont1, 2, '.', ',') }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($d->otamt, 0, '.', ',') }}</td>
+                    <td class="right">{{ number_format($kont2, 2, '.', ',') }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($margin, 0, '.', ',') }}</td>
+                    <td class="right">{{ number_format($kont3, 2, '.', ',') }}</td>
+                    <td class="right">{{ number_format($cf_marginp, 2, '.', ',') }}</td>
+                    <td class="right">{{ $d->otbmemb }}</td>
+                </tr>
+            @endif
+            @if($d->qtmemb != null)
+                @php
+                    $cf_totmemb = $d->otmemb + $d->qtmemb;
+                    $cf_marginp = $d->qtamt == null ? 0 : ($d->qtamt - $d->qtcost) / $d->qtamt * 100;
+
+                    $margin = $d->qtamt - $d->qtcost;
+                    $kont1 = $d->qtfreq / $total_kunj * 100;
+                    $kont2 = $d->qtamt / $total_rupiah * 100;
+                    $kont3 = $margin / $total_margin * 100;
+
+                    $tot_slip_lain += $d->qtslip;
+                    $tot_produk_lain += $d->qtprod;
+                    $tot_member_lain += $d->qtmemb;
+                    $tot_kunjungan_lain += $d->qtfreq;
+                    $tot_kont1_lain += $kont1;
+                    $tot_rupiah_lain += $d->qtamt;
+                    $tot_kont2_lain += $kont2;
+                    $tot_margin_lain += $margin;
+                    $tot_kont3_lain += $kont3;
+                    $tot_cost_lain += $d->qtcost;
+                    $tot_mbr_lain += $d->qtbmemb;
+                @endphp
+
+                <tr>
+                    <td class="left" colspan="4">CBG LAIN [ {{ strlen($d->out_namaoutlet) > 7 ? substr($d->out_namaoutlet, 0, 7).'...' : $d->out_namaoutlet }} ]</td>
+                    <td class="right">{{ $d->qtslip }}</td>
+                    <td class="right">{{ $d->qtprod }}</td>
+                    <td class="right">{{ $d->qtmemb }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ $d->qtfreq }}</td>
+                    <td class="right">{{ number_format($kont1, 2, '.', ',') }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($d->qtamt, 0, '.', ',') }}</td>
+                    <td class="right">{{ number_format($kont2, 2, '.', ',') }}</td>
+                    <td class="right">&nbsp;&nbsp;&nbsp;&nbsp;{{ number_format($margin, 0, '.', ',') }}</td>
+                    <td class="right">{{ number_format($kont3, 2, '.', ',') }}</td>
+                    <td class="right">{{ number_format($cf_marginp, 2, '.', ',') }}</td>
+                    <td class="right">{{ $d->qtbmemb }}</td>
+                </tr>
+        @endif
         @endforeach
         <tfoot>
         <tr class="bold">
             <td class="right" colspan="4">TOTAL :</td>
-            <td class="right">{{ number_format($slip, 0, '.', ',') }}</td>
-            <td class="right">{{ number_format($produk, 0, '.', ',') }}</td>
-            <td class="right">{{ number_format($member, 0, '.', ',') }}</td>
-            <td class="right">{{ number_format($kunjungan, 0, '.', ',') }}</td>
-            <td></td>
-            <td class="right">{{ number_format($rupiah, 0, '.', ',') }}</td>
-            <td></td>
-            <td class="right">{{ number_format($margin, 0, '.', ',') }}</td>
-            <td></td>
-            <td class="right">{{ number_format($margin / $rupiah * 100, 2, '.', ',') }}</td>
-            <td class="right">{{ number_format($otbmemb, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_slip, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_produk, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_member, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kunjungan, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont1, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_rupiah, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont2, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_margin, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont3, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format(($tot_rupiah - $tot_cost) / $tot_rupiah * 100, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_mbr, 0, '.', ',') }}</td>
         </tr>
         <tr class="bold">
             <td class="right" colspan="4">TOTAL CAB LAIN :</td>
-            <td class="right" colspan="11"></td>
+            <td class="right">{{ number_format($tot_slip_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_produk_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_member_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kunjungan_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont1_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_rupiah_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont2_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_margin_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont3_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format(($tot_rupiah_lain - $tot_cost_lain) / $tot_rupiah_lain * 100, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_mbr_lain, 0, '.', ',') }}</td>
         </tr>
         <tr class="bold">
-            <td class="right" colspan="4">GRAND TOTAL :</td>
-            <td class="right" colspan="11"></td>
+            <td class="right" colspan="4">TOTAL :</td>
+            <td class="right">{{ number_format($tot_slip + $tot_slip_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_produk + $tot_produk_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_member + $tot_member_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kunjungan + $tot_kunjungan_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont1 + $tot_kont1_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_rupiah + $tot_rupiah_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont2 + $tot_kont2_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_margin + $tot_margin_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_kont3 + $tot_kont3_lain, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format((($tot_rupiah + $tot_rupiah_lain) - ($tot_cost + $tot_cost_lain)) / ($tot_rupiah + $tot_rupiah_lain) * 100, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format($tot_mbr + $tot_mbr_lain, 0, '.', ',') }}</td>
         </tr>
-        <tr class="bold">
-            <td colspan="13" class="right">Total Poin Internal Member Merah : {{ $poin }}</td>
-            <td colspan="2"></td>
-        </tr>
-        <tr class="bold">
-            <td style="border-top: 1px solid black" colspan="15" class="right">** Akhir dari laporan **</td>
-        </tr>
+        {{--        <tr class="bold">--}}
+        {{--            <td colspan="13" class="right">Total Poin Internal Member Merah : {{ $poin }}</td>--}}
+        {{--            <td colspan="2"></td>--}}
+        {{--        </tr>--}}
         </tfoot>
     </table>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 595pt 842pt;
-        /*size: 842pt 638pt;*/
-    }
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.25;
-    }
-    table{
-        border-collapse: collapse;
-    }
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    td {
-        display: table-cell;
-    }
-    thead{
-        text-align: center;
-    }
-    tbody{
-        text-align: center;
-    }
-    tfoot{
-        border-top: 1px solid black;
-    }
-
-    .keterangan{
-        text-align: left;
-    }
-    .table{
-        width: 100%;
-        font-size: 10px;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-    .center{
-        text-align: center;
-    }
-
-    .left{
-        text-align: left;
-    }
-
-    .right{
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid{
-        page-break-inside: avoid;
-    }
-
-    .table-header td{
-        white-space: nowrap;
-    }
-
-    .tengah{
-        vertical-align: middle !important;
-    }
-    .blank-row
-    {
-        line-height: 70px!important;
-        color: white;
-    }
-
-    .bold td{
-        font-weight: bold;
-    }
-
-    .top-bottom{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-</style>
-</html>
+@endsection

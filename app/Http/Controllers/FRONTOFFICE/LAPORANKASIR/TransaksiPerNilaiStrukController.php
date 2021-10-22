@@ -113,5 +113,8 @@ ORDER BY jh_transactiondate");
         $dompdf = $pdf;
 
         return $dompdf->stream('Laporan Transaksi Per Nilai Struk - ' . $startDate . '-' . $endDate . '.pdf');
+        return $dompdf->generate('http://www.google.com', '/tmp/testPdf.pdf');
+
+
     }
 }

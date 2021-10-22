@@ -97,7 +97,7 @@ class ProsesBKLDalamKotaController extends Controller
 
         $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
-        $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg); END;");
+        $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg, :param_all_kasir); END;");
         oci_bind_by_name($exec, ':sesiproc', $sesiproc,100);
         oci_bind_by_name($exec, ':namafiler', $filename,100);
         oci_bind_by_name($exec, ':stat', $station,100);
@@ -106,6 +106,7 @@ class ProsesBKLDalamKotaController extends Controller
         oci_bind_by_name($exec, ':param_proses', $param_proses,100);
         oci_bind_by_name($exec, ':result_kode', $res_kode,100);
         oci_bind_by_name($exec, ':result_msg', $res_msg,1000);
+        oci_bind_by_name($exec, ':param_all_kasir', $param_all_kasir,1000);
         oci_execute($exec);
 
 //        $param_proses = 1;
@@ -133,7 +134,7 @@ class ProsesBKLDalamKotaController extends Controller
 //        dd($tempReportId);
 //        DB::table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
 
-        $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId];
+        $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId, 'param_all_kasir' => $param_all_kasir];
         return response()->json(['kode' => $res_kode, 'msg' => $res_msg, 'data' => $data]);
     }
 
@@ -142,7 +143,10 @@ class ProsesBKLDalamKotaController extends Controller
         $size       = $request->size;
         $filename   = $request->filename;
         $sesiproc   = $request->sesiproc;
+        $kasir      = $request->kasir;
         $kodeigr    = $_SESSION['kdigr'];
+        $userId     = $_SESSION['usid'];
+        $ip         = $_SESSION['ip'];
         $bladeName  = '';
         $paperFormat= 'potrait';
         $pageNum1   = -10;
@@ -154,29 +158,40 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = ($size == 'K') ? "OMI.prosesBKL-list-pdf" : "OMI.prosesBKL-list-detail-pdf";
             $paperFormat = ($size == 'K') ? "potrait" : "landscape";
             $pageNum1   = ($size == 'K') ? 510 : 756;
-            $pageNum2   = 39;
+            $pageNum2   = 37.5;
         } elseif ($report_id == 2){
-            $noPO = DB::select("SELECT * FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL, msth_nodoc
-                                       FROM TEMP_BKL_DALAMKOTA, TBTR_MSTRAN_H
-                                      WHERE  TRIM (NAMAFILE) like '%$filename%'
-                                        AND MSTH_KODEIGR = '$kodeigr'
-                                        AND TRIM (MSTH_NOFAKTUR) = TRIM (GUDANG || BUKTI_NO)
-                                        AND MSTH_TGLFAKTUR = BUKTI_TGL) A");
+            $noPO = DB::select("SELECT *
+                                          FROM (SELECT DISTINCT no_bukti, kodetoko, tgl_bukti,  msth_nodoc
+                                                  FROM temp_list_bkldalamkota, TBTR_MSTRAN_H
+                                                 WHERE     TRIM (NAMAFILE) LIKE '%$filename%'
+                                                       AND sessid = '$sesiproc'
+                                                       AND MSTH_KODEIGR = '$kodeigr'
+                                                       AND TRIM (MSTH_NOFAKTUR) = TRIM (kodetoko || no_bukti)
+                                                       AND MSTH_TGLFAKTUR = tgl_bukti) A");
 
             $result     = $this->laporanBpb($kodeigr, $noPO[0]->msth_nodoc ?? '00000');
             $bladeName  = "OMI.prosesBKL-bpb-pdf";
         } elseif ($report_id == 3){
-            $result     = $this->laporanStruk($kodeigr);
+            $result     = $this->laporanStruk($kodeigr, $kasir);
             $bladeName  = "OMI.prosesBKL-struk-pdf";
         } elseif ($report_id == 4){
-            $result     = $this->laporanReset('01400045', $kodeigr, '70', 'ADM');
-            $jmlh_trans = DB::select("select LPAD(nvl(count(*),0), 7, '0') as total from (
+            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
+            oci_bind_by_name($execute, ':ret', $noDoc, 32);
+            oci_execute($execute);
+
+            $stat = DB::table('tbmaster_computer')->select('station')
+                ->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->first();
+            $stat = $stat->station ?? '...';
+
+            $result     = $this->laporanReset($noDoc, $kodeigr, $stat, $userId);
+            $jmlh_trans = DB::select("select nvl(count(*),0) as total from (
                                               SELECT DISTINCT trjd_transactionno
                                               FROM tbtr_jualdetail
                                               WHERE trjd_kodeigr = '$kodeigr'
                                               AND trjd_create_by = 'BKL'
-                                              --AND TRUNC(trjd_transactiondate) = TRUNC(sysdate)
-                                                AND trjd_cashierstation = '70' ) a");
+                                              AND TRUNC(trjd_transactiondate) = TRUNC(sysdate)
+                                              AND trjd_cashierstation =  $stat) a");
 
             $result[0]->jmlh_trans = $jmlh_trans[0]->total;
             $bladeName  = "OMI.prosesBKL-reset-pdf";
@@ -186,8 +201,6 @@ class ProsesBKLDalamKotaController extends Controller
             $pageNum2   = 38;
             $bladeName  = "OMI.prosesBKL-tolakan-pdf";
         }
-
-//        dd([$bladeName,$result]);
 
         $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
         $pdf->setPaper('A4', $paperFormat);
@@ -247,9 +260,10 @@ class ProsesBKLDalamKotaController extends Controller
                                     AND tko_kodeigr = '$kodeigr' AND tko_kodeomi = kodetoko
                                     AND cus_kodeigr = '$kodeigr' AND cus_kodemember = tko_kodecustomer
                                     AND sup_kodeigr = '$kodeigr' AND sup_kodesupplier = kodesupplier
-                                    --AND prd_kodeigr = '$kodeigr' AND prd_prdcd = prdcd
+                                    AND prd_kodeigr = '$kodeigr' AND prd_prdcd = prdcd
                                     AND prs_kodeigr = '$kodeigr'
-                                    and prd_deskripsipendek like '%SOFTEX PL DS NP 50%'");
+                                    --and prd_deskripsipendek like '%SOFTEX PL DS NP 50%'
+                                    ");
 
 
     }
@@ -299,7 +313,7 @@ class ProsesBKLDalamKotaController extends Controller
                                            AND msth_nodoc = '$no_po'");
     }
 
-    public function laporanStruk($kodeigr){
+    public function laporanStruk($kodeigr, $kasir){
         return DB::select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
                                         trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
                                         trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
@@ -308,10 +322,10 @@ class ProsesBKLDalamKotaController extends Controller
                                         TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee
                                         FROM tbtr_jualdetail, tbtr_jualheader, tbmaster_prodmast, tbmaster_customer, tbmaster_tokoigr, tbmaster_perusahaan
                                         WHERE prs_kodeigr = '$kodeigr' and trjd_kodeigr = '$kodeigr'
-                                        --AND trjd_create_by = 'BKL'
-                                        AND TRUNC(trjd_transactiondate) = trunc(sysdate-1)
+                                        AND trjd_create_by = 'BKL'
+                                        AND TRUNC(trjd_transactiondate) = trunc(sysdate)
                                         AND jh_kodeigr = '$kodeigr'
-                                        --AND jh_cashierid = 'BKL'
+                                        AND jh_cashierid = 'BKL'
                                         AND jh_transactionno = trjd_transactionno
                                         AND jh_cashierstation = trjd_cashierstation
                                         AND TRUNC(jh_transactiondate) = TRUNC(trjd_transactiondate)
@@ -320,9 +334,7 @@ class ProsesBKLDalamKotaController extends Controller
                                         AND cus_kodemember = trjd_cus_kodemember
                                         AND tko_kodeigr = '$kodeigr'
                                         AND tko_kodecustomer = trjd_cus_kodemember
-                                        and jh_transactionno = '00040'
-                                        and jh_cashierstation = '34'
-                                        --&p_and");
+                                        and trjd_transactionno || trjd_cashierstation IN (''||'$kasir'||'')");
     }
 
     public function laporanReset($noDoc, $kodeigr, $station, $userId){
@@ -331,7 +343,7 @@ class ProsesBKLDalamKotaController extends Controller
                                 WHERE js_kodeigr = '$kodeigr'
                                 AND js_cashierid = 'BKL'
                                 AND js_cashierstation = '$station'
-                                --AND TRUNC(js_transactiondate) = TRUNC(SYSDATE)
+                                AND TRUNC(js_transactiondate) = TRUNC(SYSDATE)
                                 AND KODEIGR(+) = '$kodeigr'
                                 AND userid(+) = '$userId'
                                 AND prs_kodeigr = '$kodeigr'");

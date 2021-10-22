@@ -14,38 +14,40 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
         </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            TGL : {{ e(date("d-m-Y")) }}<br>
-            JAM : {{ $datetime->format('H:i:s') }}
+            {{ $perusahaan->prs_namacabang }}
         </p>
     </div>
-    <div style="text-align: center;margin-bottom: 0;padding-bottom: 0">
-    <h2 >Rincian Penggunaan Reward MyPoin <br>Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0
-,10)}} </h2>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
+    </div>
+    <div style="float:center;">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">RINCIAN PENGGUNAAN REWARD POIN</p>
+        {{--        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD MYPOIN</p>--}}
+        <p style="text-align: center;margin: 0;padding: 0">Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}}</p>
     </div>
 
 </header>
 
-<main style="margin-top: 50px;">
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th colspan="3"></th>
-            <th colspan="2">---- Pembayaran ----</th>
+            <th colspan="4"></th>
+            <th colspan="2" align="center" style="padding-left: 100px">---- Pembayaran ----</th>
             <th></th>
         </tr>
         <tr>
-            <th>ID</th>
-            <th>MEMBER MERAH</th>
-            <th>Struk</th>
-            <th>Trn.Normal</th>
-            <th>Trn.Redeem</th>
-            <th>Total<br>Penggunaan</th>
+            <th align="right" class="padding-right" width="1%">No.</th>
+            <th align="left" width="5%">ID</th>
+            <th align="left">Member Merah</th>
+            <th align="left">Struk</th>
+            <th align="right">Trn.Normal</th>
+            <th align="right">Trn.Redeem</th>
+            <th align="right">Total Penggunaan</th>
         </tr>
         </thead>
         <tbody>
@@ -57,24 +59,25 @@ $datetime->setTimezone($timezone);
             $total_rdm= 0;
             $total_tot_tkr = 0;
             $temptgl = '';
+            $number =1;
         @endphp
 
         @if(sizeof($data)!=0)
             @for($i=0;$i<count($data);$i++)
                 @if($temptgl != substr($data[$i]->tgl,0,10))
                 <tr style="font-weight: bold">
-                    <td>Tanggal</td>
-                    <td>{{ substr($data[$i]->tgl,0,10) }}</td>
-                    <td colspan="4"></td>
+                    <td align="left">Tanggal : {{ substr($data[$i]->tgl,0,10) }}</td>
+                    <td colspan="6"></td>
                 </tr>
                 @endif
                 <tr>
-                    <td>{{ $data[$i]->kodemember }}</td>
-                    <td>{{ $data[$i]->namamember }}</td>
-                    <td>{{ $data[$i]->trn }}</td>
-                    <td>{{ $data[$i]->tkr}}</td>
-                    <td>{{ $data[$i]->rdm }}</td>
-                    <td>{{ $data[$i]->tot_tkr }}</td>
+                    <td align="right" class="padding-right">{{ $number }}</td>
+                    <td align="left">{{ $data[$i]->kodemember }}</td>
+                    <td align="left">{{ $data[$i]->namamember }}</td>
+                    <td align="left">{{ $data[$i]->trn }}</td>
+                    <td align="right">{{ number_format($data[$i]->tkr, 0,".",",")}}</td>
+                    <td align="right">{{ number_format($data[$i]->rdm, 0,".",",")}}</td>
+                    <td align="right"> {{ number_format($data[$i]->tot_tkr, 0,".",",")}}</td>
                 </tr>
 
                 @php
@@ -85,14 +88,15 @@ $datetime->setTimezone($timezone);
                     $total_rdm += $data[$i]->rdm;
                     $total_tot_tkr += $data[$i]->tot_tkr;
                     $temptgl = substr($data[$i]->tgl,0,10);
+                    $number++;
                 @endphp
                 @if( isset($data[$i+1]->tgl) && $temptgl != substr($data[$i+1]->tgl,0,10) || !(isset($data[$i+1]->tgl)) )
                     <tr style="font-weight: bold">
-                        <td colspan="2"></td>
-                        <td>Subtotal Per Tgl</td>
-                        <td>{{ $sub_tkr }}</td>
-                        <td>{{ $sub_rdm }}</td>
-                        <td>{{ $sub_tot_tkr }}</td>
+                        <td colspan="3"></td>
+                        <td align="right">Subtotal Per Tgl</td>
+                        <td align="right">{{ number_format($sub_tkr, 0,".",",")  }}</td>
+                        <td align="right">{{ number_format($sub_rdm, 0,".",",")  }}</td>
+                        <td align="right">{{ number_format($sub_tot_tkr, 0,".",",")  }}</td>
                     </tr>
                     @php
                         $sub_tkr  =  0;
@@ -109,24 +113,24 @@ $datetime->setTimezone($timezone);
         </tbody>
         <tfoot>
         <tr style="font-weight: bold;text-align: center">
-            <td colspan="2"></td>
-            <td>Total</td>
-            <td>{{ $total_tkr }}</td>
-            <td>{{ $total_rdm }}</td>
-            <td>{{ $total_tot_tkr }}</td>
+            <td colspan="3"></td>
+            <td align="right">Total</td>
+            <td align="right">{{ number_format($total_tkr, 0,".",",")  }}</td>
+            <td align="right">{{ number_format($total_rdm, 0,".",",")  }}</td>
+            <td align="right">{{ number_format($total_tot_tkr, 0,".",",")  }}</td>
+        </tr>
+        <tr>
+            <th style="border-top: 1px solid black;" colspan="7" class="right">** Akhir dari laporan **</th>
         </tr>
         </tfoot>
     </table>
-</main>
-
-<br>
 </body>
 
 
 <style>
-    @page {
-        size: 750pt 500pt;
-    }
+    /*@page {*/
+    /*    size: 750pt 500pt;*/
+    /*}*/
 
     header {
         position: fixed;
@@ -257,6 +261,8 @@ $datetime->setTimezone($timezone);
     .border-top {
         border-bottom: 1px solid black;
     }
-
+    .table tbody td.padding-right, .table thead th.padding-right {
+        padding-right: 10px !important;
+    }
 </style>
 </html>

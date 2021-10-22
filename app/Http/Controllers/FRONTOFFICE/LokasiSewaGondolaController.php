@@ -126,7 +126,7 @@ AND LKS_KODERAK
     public function getDataNoPjSewa(Request $request)
     {
         $nopjsewa = $request->nopjsewa;
-        $modal = '';
+        $model = '';
         $property = '';
         $data = '';
         $temp = DB::select("SELECT COUNT (1) count
@@ -169,7 +169,6 @@ AND LKS_KODERAK
         $model = $request->model;
         $nopjsewa = $request->nopjsewa;
         try {
-
             foreach ($data as $d) {
 
                 if ($model == 'TAMBAH') {
@@ -177,20 +176,20 @@ AND LKS_KODERAK
  (GDL_KODEIGR, GDL_NOPERJANJIANSEWA, GDL_PRDCD, GDL_QTY, GDL_KODECABANG,
                 GDL_KODEDISPLAY, GDL_TGLAWAL, GDL_TGLAKHIR, GDL_KODEPRINCIPAL,
                 GDL_CREATE_BY, GDL_CREATE_DT)
-                 VALUES('" . $_SESSION['kdigr'] . "', '" . $nopjsewa . "', '" . $d->plu . "', '" . $d->qty . "', '" . $_SESSION['kdigr'] . "',
-                         '" . $d->kodedisplay . "', '" . $d->tglawal . "', '" . $d->tglakhir . "', '" . $d->kodeprincipal . "',
-                         '" . $_SESSION['usid'] . "', SYSDATE
+                 VALUES('" . $_SESSION['kdigr'] . "', '" . $nopjsewa . "', '" . $d['plu'] . "', '" . $d['qty'] . "', '" . $_SESSION['kdigr'] . "',
+                         '" . $d['kodedisplay'] . "', to_date('" . $d['tglawal'] . "','dd/mm/yyyy'), to_date('" . $d['tglakhir'] . "','dd/mm/yyyy'), '" . $d['kodeprincipal'] . "',
+                         '" . $_SESSION['usid'] . "', sysdate
                         )");
 
                 }
 
-                $temp = DB::select("SELECT COUNT(1)
+                $temp = DB::select("SELECT COUNT(1) count
                           FROM TBTR_GONDOLASEWA
                          WHERE GDS_NOPERJANJIANSEWA = '" . $nopjsewa . "'
-                    and GDS_PRDCD = '" . $d->plu . "'
-                    and GDS_KODEDISPLAY = '" . $d->kodedisplay . "'")[0]->count;
+                    and GDS_PRDCD = '" . $d['plu'] . "'
+                    and GDS_KODEDISPLAY = '" . $d['kodedisplay'] . "'")[0]->count;
 
-                $temp = DB::select("select case when trunc(sysdate) between to_date('" . $d->tanggalawal . "','dd/mm/yyyy') and  between to_date('" . $d->tanggalakhir . "','dd/mm/yyyy') and '" . $d->lokasi . "' is not null then 1 else 0 end case aa from dual;")[0]->aa;
+                $temp = DB::select("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','dd/mm/yyyy') and to_date('" . $d['tglakhir'] . "','dd/mm/yyyy') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan")[0]->aa;
 
                 if ($temp == 1) {
 
@@ -198,9 +197,9 @@ AND LKS_KODERAK
  (GDS_KODEIGR, GDS_NOPERJANJIANSEWA, GDS_PRDCD, GDS_QTY, GDS_KODECABANG,
                     GDS_KODEDISPLAY, GDS_TGLAWAL, GDS_TGLAKHIR, GDS_KODEPRINCIPAL,
                     GDS_LOKASI, GDS_CREATE_BY, GDS_CREATE_DT
-                 VALUES('" . $_SESSION['kdigr'] . "', '" . $nopjsewa . "', '" . $d->plu . "', '" . $d->qty . "', '" . $_SESSION['kdigr'] . "',
-                         '" . $d->kodedisplay . "', '" . $d->tglawal . "', '" . $d->tglakhir . "', '" . $d->kodeprincipal . "', '" . $d->lokasi . "',
-                         '" . $_SESSION['usid'] . "', SYSDATE
+                 VALUES('" . $_SESSION['kdigr'] . "', '" . $nopjsewa . "', '" . $d['plu'] . "', '" . $d['qty'] . "', '" . $_SESSION['kdigr'] . "',
+                         '" . $d['kodedisplay'] . "', to_date('" . $d['tglawal'] . "','dd/mm/yyyy'), to_date('" . $d['tglakhir'] . "','dd/mm/yyyy'), '" . $d['kodeprincipal'] . "', '" . $d->lokasi . "',
+                         '" . $_SESSION['usid'] . "', sysdate
                         )");
 
                     DB::update("UPDATE TBMASTER_LOKASI
@@ -208,13 +207,13 @@ AND LKS_KODERAK
                    LKS_MODIFY_BY = '" . $_SESSION['usid'] . "'
                    LKS_MODIFY_DT = SYSDATE
              WHERE LKS_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                and LKS_PRDCD = '" . $d->plu . "'
+                and LKS_PRDCD = '" . $d['plu'] . "'
                 and LKS_KODERAK NOT LIKE 'D%'
                 and LKS_KODERAK NOT LIKE 'G%'
                 and LKS_TIPERAK <> 'S'");
 
                     DB::update("UPDATE TBMASTER_LOKASI
-               SET LKS_PRDCD = '" . $d->plu . "',
+               SET LKS_PRDCD = '" . $d['plu'] . "',
                		 LKS_MODIFY_BY ='" . $_SESSION['usid'] . "'
                    LKS_MODIFY_DT = SYSDATE
              WHERE    LKS_KODERAK
@@ -225,7 +224,7 @@ AND LKS_KODERAK
                 || '.'
                 || LKS_SHELVINGRAK
                 || '.'
-                || LKS_NOURUT ='" . $d->lokasi . "';");
+                || LKS_NOURUT ='" . $d['lokasi'] . "';");
 
                 }
             }

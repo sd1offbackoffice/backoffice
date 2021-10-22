@@ -1,39 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Laporan Sales Harian / Actual - {{ $tanggal }}</title>
-</head>
-<body>
+@extends('pdf-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">** LAPORAN SALES HARIAN / ACTUAL **<br>Tanggal : {{ $tanggal }}</h2>
-</header>
+@section('paper_size','842pt 638pt')
 
-<footer>
+@section('table_font_size','7 px')
 
-</footer>
+@section('body_line_height','1.0')
 
-<main>
+@section('page_title')
+    Laporan Sales Harian Kasir / Actual - {{ $tanggal }}
+@endsection
+
+@section('title')
+    ** LAPORAN SALES HARIAN KASIR / ACTUAL **
+@endsection
+
+@section('subtitle')
+    Tanggal : {{ $tanggal }}
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
+            <th class="tengah left">No</th>
             <th class="tengah left">Kassa</th>
             <th class="tengah right">Sld. Awal</th>
             <th class="tengah right">Penjualan</th>
@@ -83,6 +72,7 @@ $datetime->setTimezone($timezone);
             $actual = 0;
             $struk = 0;
             $titip = 0;
+            $no = 0;
         @endphp
         @foreach($data as $d)
             @php
@@ -108,8 +98,10 @@ $datetime->setTimezone($timezone);
                 $actual += $d->actual;
                 $struk += $d->struk;
                 $titip += $d->titip;
+                $no++;
             @endphp
             <tr>
+                <td class="left">{{ $no }}</td>
                 <td class="left">{{ $d->kassa }}</td>
                 <td class="right">{{ number_format($d->awal, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($d->penj, 0, '.', ',') }}</td>
@@ -137,31 +129,31 @@ $datetime->setTimezone($timezone);
         @endforeach
         </tbody>
         <tfoot>
-            <tr>
-                <td class="left">TOTAL : </td>
-                <td class="right">{{ number_format($awal, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($penj, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($cb, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($rcb, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($debukm, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($kkredit, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($kdebit, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($voucher, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($kredit, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($refundtunai, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($refundkredit, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($distfee, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($nilai_in, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($tunai, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($pot, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($tunaibca, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($fisik, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($ambil, 0, '.', ',') }}</td>
-                <td class="right">({{ abs($var) }})</td>
-                <td class="right">{{ number_format($actual, 0, '.', ',') }}</td>
-                <td class="right">{{ $struk }}</td>
-                <td class="right">{{ number_format($titip, 0, '.', ',') }}</td>
-            </tr>
+        <tr>
+            <td class="left" colspan="2">TOTAL : </td>
+            <td class="right">{{ number_format($awal, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($penj, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($cb, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($rcb, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($debukm, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($kkredit, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($kdebit, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($voucher, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($kredit, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($refundtunai, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($refundkredit, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($distfee, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($nilai_in, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tunai, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($pot, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($tunaibca, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($fisik, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format($ambil, 0, '.', ',') }}</td>
+            <td class="right">@if($var < 0) ({{ abs($var) }}) @else {{ $var }} @endif</td>
+            <td class="right">{{ number_format($actual, 0, '.', ',') }}</td>
+            <td class="right">{{ $struk }}</td>
+            <td class="right">{{ number_format($titip, 0, '.', ',') }}</td>
+        </tr>
         </tfoot>
     </table>
     <br>
@@ -181,12 +173,12 @@ $datetime->setTimezone($timezone);
         </tr>
         </thead>
         <tbody>
-            @if(!$data)
-                <tr>
-                    <td colspan="7">Data tidak ditemukan</td>
-                </tr>
-            @endif
-            @foreach($sums as $s)
+        @if(!$data)
+            <tr>
+                <td colspan="7">Data tidak ditemukan</td>
+            </tr>
+        @endif
+        @foreach($sums as $s)
             <tr>
                 <td class="left">{{ $s->keterangan }}</td>
                 <td class="right">{{ number_format($s->nilai, 0, '.', ',') }}</td>
@@ -207,128 +199,4 @@ $datetime->setTimezone($timezone);
         * Nilai Tunai BCA termasuk dengan Cash Out I-Saku<br>
         * Nilai Tunai di luar pembayaran dengan Transfer Dana
     </p>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        /*size: 595pt 842pt;*/
-        size: 842pt 638pt;
-    }
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.0;
-    }
-    table{
-        border-collapse: collapse;
-    }
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    td {
-        display: table-cell;
-    }
-    thead{
-        text-align: center;
-    }
-    tbody{
-        text-align: center;
-    }
-    tfoot{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-
-    .keterangan{
-        text-align: left;
-    }
-    .table{
-        width: 100%;
-        font-size: 7px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table-ttd{
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-    .center{
-        text-align: center;
-    }
-
-    .left{
-        text-align: left;
-    }
-
-    .right{
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid{
-        page-break-inside: avoid;
-    }
-
-    .table-header td{
-        white-space: nowrap;
-    }
-
-    .tengah{
-        vertical-align: middle !important;
-    }
-    .blank-row
-    {
-        line-height: 70px!important;
-        color: white;
-    }
-
-</style>
-</html>
+@endsection

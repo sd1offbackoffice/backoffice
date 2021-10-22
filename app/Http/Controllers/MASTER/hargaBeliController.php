@@ -15,14 +15,30 @@ class hargaBeliController extends Controller
 
     public function getProdmast(Request $request){
         $search = $request->value;
-        $prodmast   = DB::table('tbmaster_prodmast')
-            ->select('prd_prdcd','prd_deskripsipanjang')
-            ->where('prd_prdcd','LIKE', '%'.$search.'%')
-            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
-            ->orderBy('prd_deskripsipanjang')
-            ->limit(100)
-            ->get();
+
+        if($search != ''){
+            $prodmast   = DB::table('tbmaster_prodmast')
+                ->select('prd_prdcd','prd_deskripsipanjang')
+                ->whereRaw("(prd_prdcd like '%".$search."%') OR (prd_deskripsipanjang like '%".$search."%')")
+//                ->where('prd_prdcd','LIKE', '%'.$search.'%')
+//                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+                ->whereRaw("substr(prd_prdcd,7,1) = '0'")
+//            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+                ->orderBy('prd_deskripsipanjang')
+                ->limit(100)
+                ->get();
+        }
+        else{
+            $prodmast   = DB::table('tbmaster_prodmast')
+                ->select('prd_prdcd','prd_deskripsipanjang')
+//                ->where('prd_prdcd','LIKE', '%'.$search.'%')
+//                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+                ->whereRaw("substr(prd_prdcd,7,1) = '0'")
+//            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+                ->orderBy('prd_deskripsipanjang')
+                ->limit(100)
+                ->get();
+        }
 
         return Datatables::of($prodmast)->make(true);
     }

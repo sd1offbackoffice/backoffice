@@ -11,7 +11,7 @@
                         <div class="row form-group">
                             <div class="col-sm"></div>
                             <label class="col-sm-2 text-right col-form-label">TANGGAL</label>
-                            <input type="text" class="col-sm-2 form-control" id="tanggal" maxlength="10" placeholder="DD/MM/YYYY">
+                            <input type="text" class="col-sm-2 form-control" id="tanggal" maxlength="10" placeholder="DD/MM/YYYY" autocomplete="off">
                             <label class="col-sm-2 pl-0 pr-0 text-center col-form-label">[DD/MM/YYYY]</label>
                             <div class="col-sm"></div>
                         </div>
