@@ -2187,6 +2187,7 @@
                         $('#sbu').focus();
                     })
                     $('#sbu').focus();
+                    return false;
                 }else if($('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
                     if($('#sbu').val() == 'S'){
                         $('#menu2TokoInput').val('SEMUA');

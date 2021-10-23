@@ -72,8 +72,11 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
         $kodepromosi = '';
         $cetakby = $request->cetakby;
         $data = '';
-$w = 545;
-$h = 50.75;
+
+        $paper = 'potrait';
+        $w = 0;
+        $h = 0;
+
         if ($cetakby == 'RAKPROMO' || $cetakby == 'RAK' || $cetakby == 'PROMO' || $cetakby == 'ALL') {
             if ($cetakby == 'RAKPROMO') {
                 $koderak1 = $request->koderak;
@@ -99,7 +102,8 @@ $h = 50.75;
             $filename = 'igr-promo-per-rak';
 
             $data = DB::select("SELECT * FROM (
-                                        SELECT DISTINCT LKS_KODESUBRAK AS SubRak, LKS_SHELVINGRAK AS Shelving, CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN, LKS_KODERAK AS RAK,
+                                        SELECT DISTINCT LKS_KODESUBRAK AS SubRak, LKS_SHELVINGRAK AS Shelving, CBH_TGLAWAL, CBH_TGLAKHIR,
+                                                        PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN, LKS_KODERAK AS RAK,
                                                         LKS_PRDCD AS PLU, PRD_DESKRIPSIPANJANG AS DESCPEN,
                                                         CONCAT (CBH_KODEPROMOSI, CONCAT (' - ', CBH_NAMAPROMOSI)) AS PROMOSI,
                                                         CASE WHEN cba_Reguler = '1' AND cba_Freepass ='1' AND  cba_Retailer ='1' THEN 'ALL' ELSE
@@ -142,7 +146,8 @@ $h = 50.75;
                                         AND PRS_KODEIGR = LKS_KODEIGR AND GFH_TGLAKHIR >= SYSDATE
                                         AND (LKS_KODERAK LIKE '" . $koderak1 . "' OR LKS_KODERAK LIKE '" . $koderak2 . "')
                                         AND GFA_KODEIGR = GFD_KODEIGR AND GFA_KODEPROMOSI = GFD_KODEPROMOSI )
-                                        WHERE CBH_KODEPROMOSI LIKE '" . $kodepromosi . "'");
+                                        WHERE CBH_KODEPROMOSI LIKE '" . $kodepromosi . "'
+                                        order by rak,1,2,cborgf,promosi");
         } else if ($cetakby == 'CBPRINT') {
             $koderak1 = 'R%';
             $koderak2 = 'O%';
@@ -169,8 +174,10 @@ $h = 50.75;
             AND CBH_KODEIGR = CBD_KODEIGR AND  CBH_KODEPROMOSI = CBD_KODEPROMOSI
             AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
             AND PRS_KODEIGR = LKS_KODEIGR AND CBH_TGLAKHIR >= SYSDATE
-            AND CBA_KODEPROMOSI = CBD_KODEPROMOSI");
+            AND CBA_KODEPROMOSI = CBD_KODEPROMOSI
+            order by kodepromosi,plu");
             //toomuch data
+            $paper = 'landscape';
             $filename = 'igr-promo-cashback';
             //CETAK_LAP_CB;
         } else if ($cetakby == 'GFPRINT') {
@@ -204,8 +211,10 @@ $h = 50.75;
 AND GFH_KODEIGR = GFD_KODEIGR AND  GFH_KODEPROMOSI = GFD_KODEPROMOSI
 AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
 AND PRS_KODEIGR = LKS_KODEIGR AND GFH_TGLAKHIR >= SYSDATE AND BPRP_PRDCD = GFH_KETHADIAH
-AND GFA_KODEPROMOSI = GFD_KODEPROMOSI");
-            $w = 640;
+AND GFA_KODEPROMOSI = GFD_KODEPROMOSI
+order by kodepromosi,plu
+");
+            $paper = 'landscape';
             $filename = 'igr-promo-gift';
             //CETAK_LAP_GF;
         } else if ($cetakby == 'PRINTBESOK') {
@@ -229,7 +238,7 @@ AND GFA_KODEPROMOSI = GFD_KODEPROMOSI");
             AND LKS_KODEIGR = PRD_KODEIGR AND LKS_PRDCD = PRD_PRDCD
             AND PRS_KODEIGR = LKS_KODEIGR AND LKS_KODERAK LIKE 'R%' AND CBH_TGLAKHIR >= SYSDATE
             AND CBA_KODEPROMOSI = CBD_KODEPROMOSI
-            AND CBH_TGLAKHIR BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE)+1
+            AND CBH_TGLAKHIR BETWEEN TRUNC(SYSDATE)-100 AND TRUNC(SYSDATE)+1
 UNION ALL
 SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
                 LKS_PRDCD AS PLU, PRD_DESKRIPSIPANJANG AS DESCPAN,
@@ -254,10 +263,17 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
             AND GFA_KODEPROMOSI = GFD_KODEPROMOSI
             AND GFH_TGLAKHIR BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE)+1");
             $filename = 'igr-promo-last-besok';
-            $w = 640;
             //CETAK_LAP_BESOK;
         }
 
+        if($paper == 'potrait'){
+            $w = 492;
+            $h = 74;
+        }
+        else{
+            $w = 738;
+            $h = 74;
+        }
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
@@ -268,12 +284,12 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $pdf->setPaper('A4', 'potrait');
+        $pdf->setPaper('A4', $paper);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

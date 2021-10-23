@@ -52,7 +52,6 @@ class TransaksiPerNilaiStrukController extends Controller
             ->first();
 
         $periode = 'DARI TANGGAL: ' . $startDate . ' S/D ' . $endDate;
-
         if ($member == 'BIRU') {
             $p_memb = " and nvl(cus_flagmemberkhusus, 'N') <> 'Y'";
         } else if ($member == 'MERAH') {
@@ -103,17 +102,18 @@ ORDER BY jh_transactiondate");
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.TRANSAKSIPERNILAISTRUK.transaksipernilaistruk-pdf', compact(['perusahaan', 'data', 'periode','member','bb1','ba1','bb2','ba2','bb3','ba3','bb4','ba4','bb5','ba5','bb6','ba6','bb7','ba7','bb8','ba8','bb9','ba9','bb10','ba10']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
+        $pdf->setPaper('A4', 'landscape');
 
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf->get_canvas();
-        $canvas->page_text(695, 50.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(738, 74, "Hal: {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
         return $dompdf->stream('Laporan Transaksi Per Nilai Struk - ' . $startDate . '-' . $endDate . '.pdf');
-        return $dompdf->generate('http://www.google.com', '/tmp/testPdf.pdf');
+//        return $dompdf->generate('http://www.google.com', '/tmp/testPdf.pdf');
 
 
     }

@@ -21,9 +21,6 @@ $datetime->setTimezone($timezone);
             {{ $perusahaan->prs_namacabang }}
         </p>
         <br>
-        <p>
-            Rak : {{ $koderak1 }}
-        </p>
     </div>
     <div style="float:right; margin-top: 0px;">
         Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
@@ -36,20 +33,10 @@ $datetime->setTimezone($timezone);
 
 </header>
 
-    <table class="table">
-        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-        <tr>
-            <th align="right" class="padding-right">NO.</th>
-            <th align="left">PLU</th>
-            <th align="left">DESKRIPSI</th>
-            <th align="left">TGL AWAL</th>
-            <th align="left">TGL AKHIR</th>
-        </tr>
-        </thead>
-        <tbody>
         @php
             $total = 0;
-            $i=1;
+            $no=1;
+            $temprak = '';
             $tempsubrak = '';
             $tempshelving = '';
             $tempcborgf = '';
@@ -57,86 +44,103 @@ $datetime->setTimezone($timezone);
         @endphp
 
         @if(sizeof($data)!=0)
-            @foreach($data as $d)
-                @if($tempsubrak != $d->subrak)
+            @for($i=0;$i<sizeof($data);$i++)
+                @if($temprak != $data[$i]->rak)
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th align="left" style="font-size: 10px">Rak : {{ $data[$i]->rak }}</th>
+                            </tr>
+                            <tr>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;" align="right" class="padding-right">NO.</th>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;" align="left">PLU</th>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;" align="left">DESKRIPSI</th>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;" align="left">TGL AWAL</th>
+                                <th style="border-top: 1px solid black;border-bottom: 1px solid black;" align="left">TGL AKHIR</th>
+                            </tr>
+                            </thead>
+                        @php
+                            $temprak=$data[$i]->rak;
+                        @endphp
+                @endif
+                @if($tempsubrak != $data[$i]->subrak)
+                </tbody>
                     <tr style="border-top: 1px solid">
-                        <td colspan="5" class="left"><b>Sub Rak : </b> {{$d->subrak}} </td>
+                        <td colspan="5" class="left"><b>Sub Rak : </b> {{$data[$i]->subrak}} </td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>Shelving : </b>{{$d->shelving}}</td>
+                        <td colspan="5" class="left"><b>Shelving : </b>{{$data[$i]->shelving}}</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>Promosi : </b>{{$d->cborgf}}</td>
+                        <td colspan="5" class="left"><b>Promosi : </b>{{$data[$i]->cborgf}}</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>{{$d->promosi}} - {{$d->memberberlaku}} </b></td>
+                        <td colspan="5" class="left"><b>{{$data[$i]->promosi}} - {{$data[$i]->memberberlaku}} </b></td>
                     </tr>
                     @php
-                        $tempsubrak=$d->subrak;
-                        $tempshelving = $d->shelving;
-                        $tempcborgf = $d->cborgf;
-                        $temppromosi = $d->promosi;
+                        $tempsubrak=$data[$i]->subrak;
+                        $tempshelving = $data[$i]->shelving;
+                        $tempcborgf = $data[$i]->cborgf;
+                        $temppromosi = $data[$i]->promosi;
                     @endphp
-                @endif;
-                @if($tempshelving != $d->shelving)
+                @endif
+                @if($tempshelving != $data[$i]->shelving)
                     <tr>
-                        <td colspan="5" class="left"><b>Shelving : </b>{{$d->shelving}}</td>
+                        <td colspan="5" class="left"><b>Shelving : </b>{{$data[$i]->shelving}}</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>Promosi : </b>{{$d->cborgf}}</td>
+                        <td colspan="5" class="left"><b>Promosi : </b>{{$data[$i]->cborgf}}</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>{{$d->promosi}} - {{$d->memberberlaku}} </b></td>
+                        <td colspan="5" class="left"><b>{{$data[$i]->promosi}} - {{$data[$i]->memberberlaku}} </b></td>
                     </tr>
                     @php
-                        $tempshelving = $d->shelving;
-                        $tempcborgf = $d->cborgf;
-                        $temppromosi = $d->promosi;
+                        $tempshelving = $data[$i]->shelving;
+                        $tempcborgf = $data[$i]->cborgf;
+                        $temppromosi = $data[$i]->promosi;
                     @endphp
-                @endif;
-                @if($tempcborgf != $d->cborgf)
+                @endif
+                @if($tempcborgf != $data[$i]->cborgf)
                     <tr>
-                        <td colspan="5" class="left"><b>Promosi : </b>{{$d->cborgf}}</td>
+                        <td colspan="5" class="left"><b>Promosi : </b>{{$data[$i]->cborgf}}</td>
                     </tr>
                     <tr>
-                        <td colspan="5" class="left"><b>{{$d->promosi}} - {{$d->memberberlaku}} </b></td>
-                    </tr>
-                    @php
-                        $tempcborgf = $d->cborgf;
-                        $temppromosi = $d->promosi;
-                    @endphp
-                @endif;
-                @if($temppromosi != $d->promosi)
-                    <tr>
-                        <td colspan="5" class="left"><b>{{$d->promosi}} - {{$d->memberberlaku}} </b></td>
+                        <td colspan="5" class="left"><b>{{$data[$i]->promosi}} - {{$data[$i]->memberberlaku}} </b></td>
                     </tr>
                     @php
-                        $temppromosi = $d->promosi;
+                        $tempcborgf = $data[$i]->cborgf;
+                        $temppromosi = $data[$i]->promosi;
                     @endphp
-                @endif;
+                @endif
+                @if($temppromosi != $data[$i]->promosi)
+                    <tr>
+                        <td colspan="5" class="left"><b>{{$data[$i]->promosi}} - {{$data[$i]->memberberlaku}} </b></td>
+                    </tr>
+                    @php
+                        $temppromosi = $data[$i]->promosi;
+                    @endphp
+                @endif
                 <tr>
-                    <td align="right" class="padding-right">{{ $i }}</td>
-                    <td align="left">{{ $d->plu }}</td>
-                    <td align="left">{{ $d->descpen}}</td>
-                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglawal,0,10))) }}</td>
-                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglakhir,0,10))) }}</td>
+                    <td align="right" class="padding-right">{{ $no }}</td>
+                    <td align="left">{{ $data[$i]->plu }}</td>
+                    <td align="left">{{ $data[$i]->descpen}}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($data[$i]->cbh_tglawal,0,10))) }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($data[$i]->cbh_tglakhir,0,10))) }}</td>
                 </tr>
+                @if( (isset($data[$i+1]->rak) && $temprak != $data[$i+1]->rak) || !isset($data[$i+1]->rak) )
+                        </tbody>
+                        </table>
+                @endif
                 @php
-                    $i++;
+                    $no++;
                 @endphp
-            @endforeach
+            @endfor
         @else
-            <tr>
-                <td colspan="10">TIDAK ADA DATA</td>
-            </tr>
+            <p align="center"> TIDAK ADA DATA </p>
         @endif
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="9" class="right">** Akhir dari laporan **</th>
-        </tr>
-        </tfoot>
-    </table>
+        <br>
+            <p style="border-top: 1px solid black" class="right">** Akhir dari laporan **</p>
+
 
 <br>
 </body>

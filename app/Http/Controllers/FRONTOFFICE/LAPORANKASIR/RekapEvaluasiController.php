@@ -473,9 +473,9 @@ class RekapEvaluasiController extends Controller
 
             $dompdf = new PDF();
 
-            if(count($data) == 0){
-                $title = 'EVALUASI LANGGANAN PER MEMBER '.$tgl1.' - '.$tgl2;
+            $title = 'Evaluasi per Member '.$tgl1.' - '.$tgl2;
 
+            if(count($data) == 0){
                 $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
                 error_reporting(E_ALL ^ E_DEPRECATED);
@@ -484,6 +484,7 @@ class RekapEvaluasiController extends Controller
                 $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             }
             else{
+                return view('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
                 $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
 
                 error_reporting(E_ALL ^ E_DEPRECATED);
@@ -497,8 +498,7 @@ class RekapEvaluasiController extends Controller
 
             $dompdf = $pdf;
 
-//            return $dompdf->render();
-            return $dompdf->stream('Evaluasi per Member '.$tgl1.' - '.$tgl2.'.pdf');
+            return $dompdf->stream($title.'.pdf');
         }
         catch (\Exception $e){
             dd($e->getMessage());

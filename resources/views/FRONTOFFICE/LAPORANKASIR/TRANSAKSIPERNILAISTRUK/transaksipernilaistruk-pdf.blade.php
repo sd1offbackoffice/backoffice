@@ -15,24 +15,28 @@ $datetime->setTimezone($timezone);
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
+            {{ $perusahaan->prs_namaperusahaan }}
+        </p>
+        <p>
+            {{ $perusahaan->prs_namacabang }}
         </p>
     </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            PRG : IGR FO TRN PERNSTRUK<br>
-        </p><br><br>
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-    <h2 style="text-align: center"> LAPORAN SALES TRANSAKSI / NILAI STRUK </h2>
-    <h2 style="text-align: center"> Member : {{$member}} </h2>
+    <div style="float:center;">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">LAPORAN SALES TRANSAKSI / NILAI STRUK</p>
+        {{--        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD MYPOIN</p>--}}
+        <p style="text-align: center;margin: 0;padding: 0">Member : {{$member}} </p>
+    </div>
 </header>
 
-<main style="margin-top: 50px;">
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th rowspan="2">Tanggal</th>
+            <th rowspan="2" align="left">Tanggal</th>
             <th colspan="2">{{$bb1}}-{{$ba1}}</th>
             <th colspan="2">{{$bb2}}-{{$ba2}}</th>
             <th colspan="2">{{$bb3}}-{{$ba3}}</th>
@@ -46,26 +50,26 @@ $datetime->setTimezone($timezone);
             <th rowspan="2" colspan="2">TOTAL</th>
         </tr>
         <tr>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
-            <th>STRK</th>
-            <th>TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
+            <th class="padding-right">STRK</th>
+            <th class="padding-right">TTL NILAI</th>
         </tr>
         </thead>
         <tbody>
@@ -105,29 +109,29 @@ $datetime->setTimezone($timezone);
                     $sa = $d->sa1 + $d->sa2 + $d->sa3 + $d->sa4 + $d->sa5 + $d->sa6 + $d->sa7 + $d->sa8 + $d->sa9 + $d->sa10;
                 @endphp
                 <tr>
-                    <td>{{substr($d->jh_transactiondate,0,10) }}</td>
-                    <td>{{ $d->sn1 }}</td>
-                    <td>{{ $d->sa1 }}</td>
-                    <td>{{ $d->sn2 }}</td>
-                    <td>{{ $d->sa2 }}</td>
-                    <td>{{ $d->sn3 }}</td>
-                    <td>{{ $d->sa3 }}</td>
-                    <td>{{ $d->sn4 }}</td>
-                    <td>{{ $d->sa4 }}</td>
-                    <td>{{ $d->sn5 }}</td>
-                    <td>{{ $d->sa5 }}</td>
-                    <td>{{ $d->sn6 }}</td>
-                    <td>{{ $d->sa6 }}</td>
-                    <td>{{ $d->sn7 }}</td>
-                    <td>{{ $d->sa7 }}</td>
-                    <td>{{ $d->sn8 }}</td>
-                    <td>{{ $d->sa8 }}</td>
-                    <td>{{ $d->sn9 }}</td>
-                    <td>{{ $d->sa9 }}</td>
-                    <td>{{ $d->sn10 }}</td>
-                    <td>{{ $d->sa10 }}</td>
-                    <td>{{ $sn }}</td>
-                    <td>{{ $sa }}</td>
+                    <td align="left">{{ date('d/m/Y',strtotime(substr($d->jh_transactiondate,0,10))) }}</td>
+                    <td>{{ number_format($d->sn1, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa1, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn2, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa2, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn3, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa3, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn4, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa4, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn5, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa5, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn6, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa6, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn7, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa7, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn8, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa8, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn9, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa9, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sn10, 0,".",",") }}</td>
+                    <td>{{ number_format($d->sa10, 0,".",",") }}</td>
+                    <td>{{ number_format($sn, 0,".",",") }}</td>
+                    <td>{{ number_format($sa, 0,".",",") }}</td>
                 </tr>
                 @php
                     $subsn1+=$d->sn1;
@@ -167,34 +171,59 @@ $datetime->setTimezone($timezone);
         <tfoot>
         <tr style="font-style: bold;text-align: center">
             <td></td>
-            <td>{{ $subsn1 }}</td>
-            <td>{{ $subsa1 }}</td>
-            <td>{{ $subsn2 }}</td>
-            <td>{{ $subsa2 }}</td>
-            <td>{{ $subsn3 }}</td>
-            <td>{{ $subsa3 }}</td>
-            <td>{{ $subsn4 }}</td>
-            <td>{{ $subsa4 }}</td>
-            <td>{{ $subsn5 }}</td>
-            <td>{{ $subsa5 }}</td>
-            <td>{{ $subsn6 }}</td>
-            <td>{{ $subsa6 }}</td>
-            <td>{{ $subsn7 }}</td>
-            <td>{{ $subsa7 }}</td>
-            <td>{{ $subsn8 }}</td>
-            <td>{{ $subsa8 }}</td>
-            <td>{{ $subsn9 }}</td>
-            <td>{{ $subsa9 }}</td>
-            <td>{{ $subsn10 }}</td>
-            <td>{{ $subsa10 }}</td>
-            <td>{{ $tot_sn }}</td>
-            <td>{{ $tot_sa }}</td>
+            <td>{{ number_format($subsn1, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn2, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn3, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn4, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn5, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn6, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn7, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn8, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn9, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsn10, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($tot_sn, 0,".",",") }}</td>
+            <td></td>
+        </tr>
+        <tr style="font-style: bold;text-align: center">
+            <td></td>
+            <td></td>
+            <td>{{ number_format($subsa1, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa2, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa3, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa4, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa5, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa6, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa7, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa8, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa9, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($subsa10, 0,".",",") }}</td>
+            <td></td>
+            <td>{{ number_format($tot_sa, 0,".",",") }}</td>
+        </tr>
+        <tr>
+            <th style="border-top: 1px solid black;" colspan="23" class="right">** Akhir dari laporan **</th>
         </tr>
         </tfoot>
     </table>
-</main>
-
-<br>
 </body>
 
 
@@ -202,7 +231,6 @@ $datetime->setTimezone($timezone);
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: 750pt 500pt;
     }
 
     header {
@@ -214,7 +242,7 @@ $datetime->setTimezone($timezone);
     }
 
     body {
-        margin-top: 80px;
+        margin-top: 70px;
         margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -335,5 +363,8 @@ $datetime->setTimezone($timezone);
         border-bottom: 1px solid black;
     }
 
+    .table tbody td.padding-right, .table thead th.padding-right {
+        padding-right: 3px !important;
+    }
 </style>
 </html>

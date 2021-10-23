@@ -230,6 +230,9 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
+        if(sizeof($datas) == 0){
+            return "**DATA TIDAK ADA**";
+        }
 
         $cf_nmargin = [];
         $cs_tlQty = 0;
@@ -855,7 +858,7 @@ ORDER BY cdiv,cdept");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(506, 58, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept-pdf');
     }
@@ -876,13 +879,13 @@ ORDER BY cdiv,cdept");
             $periode = 'TANGGAL: '.$dateA;
         }
         if($request->p_sbu != 'z'){
-            $p_sbu = 'AND tko_kodesbu = '.$request->p_sbu;
+            $p_sbu = "AND tko_kodesbu = '".$request->p_sbu."'";
         }
         if($request->p_khusus != 'z'){
-            $p_khusus = 'AND SUBSTR(tko_kodeomi,1,1) = '.$request->p_khusus;
+            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
         }
         if($request->p_omi != 'z'){
-            $p_omi = 'AND tko_kodeomi = '.$request->p_omi;
+            $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
         }
 
         $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, omisbu, namasbu, omikod, namaomi, omidiv, div_namadivisi, dep_namadepartement, omidep,
@@ -1055,13 +1058,13 @@ ORDER BY omikod");
             $periode = 'TANGGAL: '.$dateA;
         }
         if($request->p_sbu != 'z'){
-            $p_sbu = 'AND tko_kodesbu = '.$request->p_sbu;
+            $p_sbu = "AND tko_kodesbu = '".$request->p_sbu."'";
         }
         if($request->p_khusus != 'z'){
-            $p_khusus = 'AND SUBSTR(tko_kodeomi,1,1) = '.$request->p_khusus;
+            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
         }
         if($request->p_omi != 'z'){
-            $p_omi = 'AND tko_kodeomi = '.$request->p_omi;
+            $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
         }
 
         $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omisbu, namasbu, omidiv, omidep,
@@ -1215,7 +1218,7 @@ ORDER BY omidiv, omidep");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(534, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(506, 58, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_c-pdf');
 
@@ -1600,7 +1603,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(768, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+            $canvas->page_text(761, 51, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf');
         }else{
@@ -1696,7 +1699,7 @@ ORDER BY sls_periode");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(503, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(491, 67, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf');
     }

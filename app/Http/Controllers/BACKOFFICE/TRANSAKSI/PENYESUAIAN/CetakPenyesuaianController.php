@@ -79,8 +79,12 @@ class CetakPenyesuaianController extends Controller
     public function laporan(){
 //        dd($_SESSION);
 
+        $step = 0;
         try{
             DB::beginTransaction();
+
+            $perusahaan = DB::table('tbmaster_perusahaan')
+                ->first();
 
             $ukuran = $_SESSION['pys_ukuran'];
 
@@ -107,11 +111,11 @@ class CetakPenyesuaianController extends Controller
                              'GANTI PLU' end end as keterangan_h,
                             prs_namaperusahaan, prs_namacabang,
                             prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
-                            CASE WHEN 
-                                nvl(trbo_recordid,0) <> '1' and nvl(trbo_flagdoc,0)='1' 
-                            THEN 
-                                'REPRINT' 
-                            ELSE '' 
+                            CASE WHEN
+                                nvl(trbo_recordid,0) <> '1' and nvl(trbo_flagdoc,0)='1'
+                            THEN
+                                'REPRINT'
+                            ELSE ''
                             END AS REP")
                     ->where('trbo_kodeigr','=','22')
                     ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
@@ -121,19 +125,31 @@ class CetakPenyesuaianController extends Controller
 
                 $dompdf = new PDF();
 
-                $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENYESUAIAN.laporan-list',compact(['data','ukuran']));
+                $title = 'Laporan Penyesuaian';
 
-                error_reporting(E_ALL ^ E_DEPRECATED);
+                if(count($data) == 0){
+                    $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+                    error_reporting(E_ALL ^ E_DEPRECATED);
 
-                $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                    $pdf->output();
+                    $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+                }
+                else{
+                    $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENYESUAIAN.laporan-list',compact(['perusahaan','data','ukuran']));
+
+                    error_reporting(E_ALL ^ E_DEPRECATED);
+
+                    $pdf->output();
+                    $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+                    $canvas = $dompdf ->get_canvas();
+                    $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                }
 
                 $dompdf = $pdf;
 
-                return $dompdf->stream('Laporan Penyesuaian.pdf');
+                return $dompdf->stream($title.'.pdf');
             }
             else{
                 $lfirst = 1;
@@ -454,7 +470,7 @@ class CetakPenyesuaianController extends Controller
 
                                         if ($jum > 0) {
                                             $data = DB::table('tbmaster_prodmast')
-                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST, 
+                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
                                                 ->where('prd_kodeigr', $_SESSION['kdigr'])
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
@@ -464,7 +480,7 @@ class CetakPenyesuaianController extends Controller
                                             $cekacost = $data->prd_avgcost;
                                         } else {
                                             $data = DB::table('tbmaster_prodmast')
-                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST, 
+                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
                                                 ->where('prd_kodeigr', $_SESSION['kdigr'])
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
@@ -549,7 +565,7 @@ class CetakPenyesuaianController extends Controller
 
                                         if ($jum > 0) {
                                             $data = DB::table('tbmaster_prodmast')
-                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST, 
+                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
                                                 ->where('prd_kodeigr', $_SESSION['kdigr'])
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
@@ -559,7 +575,7 @@ class CetakPenyesuaianController extends Controller
                                             $cekacost = $data->prd_avgcost;
                                         } else {
                                             $data = DB::table('tbmaster_prodmast')
-                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST, 
+                                                ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
                                                 ->where('prd_kodeigr', $_SESSION['kdigr'])
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
@@ -2206,26 +2222,26 @@ class CetakPenyesuaianController extends Controller
                 }
                 $nodoc = substr($nodoc,0,strlen($nodoc)-1).")";
 
-                $report = DB::select("Select DISTINCT 
+                $report = DB::select("Select DISTINCT
                             msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                             msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
-                            mstd_prdcd, prd_deskripsipanjang, 
+                            mstd_prdcd, prd_deskripsipanjang,
                             prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
                                         mstd_seqno,
                             case when mstd_flagdisc1 = '1' then 'SELISIH STOCK OPNAME' else
                             case when mstd_flagdisc1 = '2' then 'TERTUKAR JENIS' else
                             'GANTI_PLU' end end as keterangan_h,
                             mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_gross,
-                            nvl(mstd_rphdisc1,0) mstd_rphdisc1, nvl(mstd_rphdisc2,0) mstd_rphdisc2,nvl(mstd_rphdisc3,0) mstd_rphdisc3, 
+                            nvl(mstd_rphdisc1,0) mstd_rphdisc1, nvl(mstd_rphdisc2,0) mstd_rphdisc2,nvl(mstd_rphdisc3,0) mstd_rphdisc3,
                             nvl(mstd_qtybonus1,0) mstd_qtybonus1, nvl(mstd_qtybonus2,0) mstd_qtybonus2,  mstd_keterangan,
-                            trbo_noreff, trbo_tglreff            
-                        From 
-                            tbtr_mstran_h, 
-                            tbtr_mstran_d, 
-                            tbmaster_prodmast, 
+                            trbo_noreff, trbo_tglreff
+                        From
+                            tbtr_mstran_h,
+                            tbtr_mstran_d,
+                            tbmaster_prodmast,
                             tbmaster_cabang,
                             tbtr_backoffice
-                        Where 
+                        Where
                             msth_kodeigr='".$_SESSION['kdigr']."'
                             and mstd_nodoc=msth_nodoc
                             and mstd_kodeigr=msth_kodeigr
@@ -2263,7 +2279,7 @@ class CetakPenyesuaianController extends Controller
                 return $dompdf->stream('Laporan Penyesuaian.pdf');
             }
         }
-        catch(QueryException $e){
+        catch(\Exception $e){
             DB::rollBack();
             $message = $e->getMessage();
 

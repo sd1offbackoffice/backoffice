@@ -79,7 +79,7 @@ function twopoint($angka){
         Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
         <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-    <div style="margin-top: 30px; line-height: 0.1 !important;">
+    <div style="float: center; margin-top: 30px; line-height: 0.1 !important;">
         <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
         <h2 style="text-align: center">PER KASIR</h2>
         <h4 style="text-align: center">{{$periode}}</h4>
@@ -119,11 +119,11 @@ function twopoint($angka){
         {{--HEAD BODY--}}
         @if($divisi != $datas[$i]->fdkdiv)
             <tr style="text-align:left; font-weight: bold;"><td colspan="8">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
-            <?php $divisi =  $datas[$i]->fdkdiv?>
+            <?php $divisi =  $datas[$i]->fdkdiv; $departemen = ''?>
         @endif
         @if($departemen != $datas[$i]->fdkdep)
             <tr style="text-align:left; font-weight: bold;"><td colspan="8">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
-            <?php $departemen =  $datas[$i]->fdkdep?>
+            <?php $departemen =  $datas[$i]->fdkdep; $kategori = ''?>
         @endif
         {{--MAIN BODY--}}
         <tr>
@@ -150,7 +150,7 @@ function twopoint($angka){
         ?>
 
         @if(($i+1) < sizeof($datas) )
-            @if($departemen != $datas[$i+1]->fdkdep)
+            @if($departemen != $datas[$i+1]->fdkdep || $divisi != $datas[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
                     <td>{{rupiah($sumGross['dep'])}}</td>

@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -51,11 +51,14 @@
             <tr>
                 <td class="right padding-right">{{ $no }}</td>
                 <td class="left">{{ $d->fcusno }}</td>
-                <td class="left">&nbsp;{{ strlen($d->fnama) < 15 ? $d->fnama : substr($d->fnama,0,15).'...' }}</td>
+{{--                <td class="left">&nbsp;{{ $d->fnama }}</td>--}}
+                <td class="left">&nbsp;{{ strlen($d->fnama) < 25 ? $d->fnama : substr($d->fnama,0,25).'..' }}</td>
                 <td class="left">{{ $d->foutlt }}</td>
-                <td class="left">{{ strlen($d->out_namaoutlet) < 10 ? $d->out_namaoutlet : substr($d->out_namaoutlet,0,10).'...' }}</td>
+{{--                <td class="left">{{ $d->out_namaoutlet }}</td>--}}
+                <td class="left">{{ strlen($d->out_namaoutlet) < 15 ? $d->out_namaoutlet : substr($d->out_namaoutlet,0,15).'..' }}</td>
                 <td class="left">&nbsp;&nbsp;{{ $d->fsoutl }}</td>
-                <td class="left">{{ strlen($d->sub_namasuboutlet) < 10 ? $d->sub_namasuboutlet : substr($d->sub_namasuboutlet,0,10).'...' }}</td>
+{{--                <td class="left">{{ $d->sub_namasuboutlet }}</td>--}}
+                <td class="left">{{ strlen($d->sub_namasuboutlet) < 15 ? $d->sub_namasuboutlet : substr($d->sub_namasuboutlet,0,15).'..' }}</td>
                 <td class="right">&nbsp;{{ $d->fwfreq }}</td>
                 <td class="right">{{ $d->fwslip }}</td>
                 <td class="right">{{ $d->fwprod }}</td>
@@ -72,7 +75,6 @@
             $margin += $d->fgrsmargn;
         @endphp
         @endforeach
-        <tfoot>
         <tr class="bold">
             <td class="top-bottom right" colspan="7">TOTAL :</td>
             <td class="top-bottom right">{{ number_format($kunjungan, 0, '.', ',') }}</td>
@@ -82,6 +84,7 @@
             <td class="top-bottom right">{{ number_format($margin, 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($margin / $rupiah * 100, 2, '.', ',') }}</td>
         </tr>
+        <tfoot>
         </tfoot>
     </table>
 @endsection

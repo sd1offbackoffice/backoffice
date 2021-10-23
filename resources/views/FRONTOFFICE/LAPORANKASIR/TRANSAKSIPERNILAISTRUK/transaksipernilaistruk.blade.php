@@ -300,7 +300,7 @@
             window.open(`{{ url()->current() }}/cetak?tanggal1=${$('#startDate').val()}&tanggal2=${$('#endDate').val()}&bb1=${$('#bb-1').val()}&ba1=${$('#ba-1').val()}
             &bb2=${$('#bb-2').val()}&ba2=${$('#ba-2').val()}&bb3=${$('#bb-3').val()}&ba3=${$('#ba-3').val()}&bb4=${$('#bb-4').val()}&ba4=${$('#ba-4').val()}&bb5=${$('#bb-5').val()}&ba5=${$('#ba-5').val()}
             &bb6=${$('#bb-6').val()}&ba6=${$('#ba-6').val()}&bb7=${$('#bb-7').val()}&ba7=${$('#ba-7').val()}&bb8=${$('#bb-8').val()}&ba8=${$('#ba-8').val()}&bb9=${$('#bb-9').val()}&ba9=${$('#ba-9').val()}
-            &bb10=${$('#bb-10').val()}&ba10=${$('#ba-10').val()}&member=${$("input[name='member']").val()}`, '_blank');
+            &bb10=${$('#bb-10').val()}&ba10=${$('#ba-10').val()}&member=${$("input[name='member']:checked").val()}`, '_blank');
         }
     </script>
 

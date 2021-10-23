@@ -13,7 +13,7 @@
 
     /** Define now the real margins of every page in the PDF **/
     body {
-        margin-top: 110px;
+        margin-top: 75px;
         margin-bottom: 0px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -51,22 +51,39 @@ function rupiah($angka){
     $hasil_rupiah = number_format($angka,0,'.',',');
     return $hasil_rupiah;
 }
+function twopoint($angka){
+    $hasil_rupiah = number_format($angka,2,'.',',');
+    return $hasil_rupiah;
+}
 ?>
 
 <header>
-    <div style="font-size: 12px ;line-height: 0.1px !important;">
-        <p>{{$datas[0]->prs_namaperusahaan}}</p>
-        <p>{{$datas[0]->prs_namacabang}}</p>
-        <p>{{$datas[0]->prs_namawilayah}}</p>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            {{ $datas[0]->prs_namaperusahaan }}
+        </p>
+        <p>
+            {{ $datas[0]->prs_namacabang }}
+        </p>
     </div>
-    <div style="position: absolute; left: 931px; top: -6px">
-        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69H</span>
+{{--    <div style="font-size: 12px ;line-height: 0.1px !important;">--}}
+{{--        <p>{{$datas[0]->prs_namaperusahaan}}</p>--}}
+{{--        <p>{{$datas[0]->prs_namacabang}}</p>--}}
+{{--        <p>{{$datas[0]->prs_namawilayah}}</p>--}}
+{{--    </div>--}}
+{{--    <div style="position: absolute; left: 931px; top: -6px">--}}
+{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69H</span>--}}
+{{--    </div>--}}
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-    <div style="margin-top: -30px; line-height: 0.1 !important;">
+    <div style="float: center; line-height: 0.1 !important;">
         <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
-        <h4 style="text-align: center; margin-top: -7px">Periode : {{$date1}} s/d {{$date2}}</h4>
-        <h4 style="text-align: center; margin-top: -7px">Kode Monitoring :  : {{$mon}}</h4>
-        <h4 style="text-align: center; margin-top: -7px">Margin : {{$margin1}} s/d {{$margin2}}</h4>
+        <h4 style="text-align: center;">Periode : {{$date1}} s/d {{$date2}}</h4>
+        <h4 style="text-align: center;">Kode Monitoring :  : {{$mon}}</h4>
+        <h4 style="text-align: center;">Margin : {{$margin1}} s/d {{$margin2}}</h4>
     </div>
 </header>
 <table style="border-collapse: collapse">
@@ -80,13 +97,15 @@ function rupiah($angka){
             <td rowspan="3" style="border-right: 1px solid black">PAJAK</td>
             <td rowspan="3" style="border-right: 1px solid black">PENJUALAN<br>BERSIH</td>
             <td rowspan="3" style="border-right: 1px solid black">HPP<br>RATA-RATA</td>
-            <td rowspan="3" colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
+            <td colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
             <td rowspan="3">T<br>A<br>G</td>
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)
                 <td colspan="3" style="border-right: 1px solid black; border-top: 1px solid black;">--------{{$i}}--------</td>
             @endfor
+            <td rowspan="2" style="border-right: 1px solid black; border-top: 1px solid black;">Rp.</td>
+            <td rowspan="2" style="border-right: 1px solid black; border-top: 1px solid black;">%</td>
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)
@@ -113,11 +132,11 @@ function rupiah($angka){
         {{--HEAD BODY--}}
         @if($divisi != $datas[$i]->fdkdiv)
             <tr style="text-align:left; font-weight: bold;"><td colspan="23">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
-            <?php $divisi =  $datas[$i]->fdkdiv?>
+            <?php $divisi =  $datas[$i]->fdkdiv; $departemen = ''?>
         @endif
         @if($departemen != $datas[$i]->fdkdep)
             <tr style="text-align:left; font-weight: bold;"><td colspan="23">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
-            <?php $departemen =  $datas[$i]->fdkdep?>
+            <?php $departemen =  $datas[$i]->fdkdep; $kategori = ''?>
         @endif
         @if($kategori != $datas[$i]->fdkatb)
             <tr style="text-align:left; font-weight: bold;"><td colspan="23">&nbsp;&nbsp;&nbsp;&nbsp;* KATEGORI : {{$datas[$i]->fdkatb}} - {{$datas[$i]->kat_namakategori}}</td></tr>
@@ -129,29 +148,29 @@ function rupiah($angka){
             <td style="width: 100px; text-align: left">{{$datas[$i]->prd_deskripsipanjang}}</td>
             <td style="width: 10px; text-align: center">{{$datas[$i]->unit}}</td>
 
-            <td style="width: 10px">{{rupiah($datas[$i]->fdntr0)}}</td>
-            <td style="width: 10px">{{rupiah($datas[$i]->fdsat0)}}</td>
-            <td style="width: 50px">{{rupiah($datas[$i]->fdnam0)}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdntr0}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdsat0}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->fdnam0)}}</td>
 
-            <td style="width: 10px">{{rupiah($datas[$i]->fdntr1)}}</td>
-            <td style="width: 10px">{{rupiah($datas[$i]->fdsat1)}}</td>
-            <td style="width: 50px">{{rupiah($datas[$i]->fdnam1)}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdntr1}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdsat1}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->fdnam1)}}</td>
 
-            <td style="width: 10px">{{rupiah($datas[$i]->fdntr2)}}</td>
-            <td style="width: 10px">{{rupiah($datas[$i]->fdsat2)}}</td>
-            <td style="width: 50px">{{rupiah($datas[$i]->fdnam2)}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdntr2}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdsat2}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->fdnam2)}}</td>
 
-            <td style="width: 10px">{{rupiah($datas[$i]->fdntr3)}}</td>
-            <td style="width: 10px">{{rupiah($datas[$i]->fdsat3)}}</td>
-            <td style="width: 50px">{{rupiah($datas[$i]->fdnam3)}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdntr3}}</td>
+            <td style="width: 10px">{{$datas[$i]->fdsat3}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->fdnam3)}}</td>
 
             <td style="width: 40px">{{rupiah($datas[$i]->tot1)}}</td>
             <td style="width: 50px">{{rupiah($datas[$i]->tot2)}}</td>
-            <td style="width: 50px">{{rupiah($datas[$i]->tot3)}}</td>
+            <td style="width: 40px">{{rupiah($datas[$i]->tot3)}}</td>
             <td style="width: 50px">{{rupiah($datas[$i]->tot4)}}</td>
             <td style="width: 50px">{{rupiah($datas[$i]->tot5)}}</td>
             <td style="width: 40px">{{rupiah($datas[$i]->tot6)}}</td>
-            <td style="width: 9px">{{round(($datas[$i]->nmarginp), 2)}}</td>
+            <td style="width: 9px">{{twopoint(($datas[$i]->nmarginp))}}</td>
 
             <td style="width: 5px; text-align: center">{{$datas[$i]->prd_kodetag}}</td>
         </tr>
@@ -175,7 +194,7 @@ function rupiah($angka){
         ?>
 
         @if(($i+1) < sizeof($datas) )
-            @if($kategori != $datas[$i+1]->fdkatb)
+            @if($kategori != $datas[$i+1]->fdkatb || $departemen != $datas[$i+1]->fdkdep)
                 <tr style="font-weight: bold;">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;* TOTAL PER KATEGORI : </td>
                     <td>{{rupiah($sumNilai1['kat'])}}</td>
@@ -193,12 +212,12 @@ function rupiah($angka){
                     <td>{{rupiah($sumMargin['kat'])}}</td>
                     <td><?php
                         if($sumNet['kat'] != 0){
-                            echo round(($sumMargin['kat']*100/$sumNet['kat']), 2);
+                            echo twopoint(($sumMargin['kat']*100/$sumNet['kat']));
                         }else{
                             if($sumMargin['kat'] != 0){
                                 echo 100;
                             }else{
-                                echo 0;
+                                echo "0.00";
                             }
                         }
                         ?></td>
@@ -208,7 +227,7 @@ function rupiah($angka){
                 $sumKwantum['kat'] = 0; $sumGross['kat'] = 0; $sumTax['kat'] = 0; $sumNet['kat'] = 0; $sumHpp['kat'] = 0; $sumMargin['kat'] = 0;
                 ?>
             @endif
-            @if($departemen != $datas[$i+1]->fdkdep)
+            @if($departemen != $datas[$i+1]->fdkdep || $divisi != $datas[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
                     <td colspan="5" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
                     <td>{{rupiah($sumNilai1['dep'])}}</td>
@@ -226,12 +245,12 @@ function rupiah($angka){
                     <td>{{rupiah($sumMargin['dep'])}}</td>
                     <td><?php
                         if($sumNet['dep'] != 0){
-                            echo round(($sumMargin['dep']*100/$sumNet['dep']), 2);
+                            echo twopoint(($sumMargin['dep']*100/$sumNet['dep']));
                         }else{
                             if($sumMargin['dep'] != 0){
                                 echo 100;
                             }else{
-                                echo 0;
+                                echo "0.00";
                             }
                         }
                         ?></td>
@@ -243,28 +262,28 @@ function rupiah($angka){
             @endif
             @if($divisi != $datas[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
-                    <td colspan="5" style="text-align: left">*** TOTAL PER DIVISI : </td>
-                    <td>{{rupiah($sumNilai1['div'])}}</td>
-                    <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>{{rupiah($sumNilai2['div'])}}</td>
-                    <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>{{rupiah($sumNilai3['div'])}}</td>
-                    <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>{{rupiah($sumNilai4['div'])}}</td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>{{rupiah($sumGross['div'])}}</td>
-                    <td>{{rupiah($sumTax['div'])}}</td>
-                    <td>{{rupiah($sumNet['div'])}}</td>
-                    <td>{{rupiah($sumHpp['div'])}}</td>
-                    <td>{{rupiah($sumMargin['div'])}}</td>
-                    <td><?php
+                    <td colspan="5" style="text-align: left; border-bottom: 1px solid black">*** TOTAL PER DIVISI : </td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNilai1['div'])}}</td>
+                    <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNilai2['div'])}}</td>
+                    <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNilai3['div'])}}</td>
+                    <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNilai4['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumGross['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumTax['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumNet['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumHpp['div'])}}</td>
+                    <td style="border-bottom: 1px solid black">{{rupiah($sumMargin['div'])}}</td>
+                    <td style="border-bottom: 1px solid black"><?php
                         if($sumNet['div'] != 0){
-                            echo round(($sumMargin['div']*100/$sumNet['div']), 2);
+                            echo twopoint(($sumMargin['div']*100/$sumNet['div']));
                         }else{
                             if($sumMargin['div'] != 0){
                                 echo 100;
                             }else{
-                                echo 0;
+                                echo "0.00";
                             }
                         }
                         ?></td>
@@ -295,12 +314,12 @@ function rupiah($angka){
             <td>{{rupiah($sumMargin['kat'])}}</td>
             <td><?php
                 if($sumNet['kat'] != 0){
-                    echo round(($sumMargin['kat']*100/$sumNet['kat']), 2);
+                    echo twopoint(($sumMargin['kat']*100/$sumNet['kat']));
                 }else{
                     if($sumMargin['kat'] != 0){
                         echo 100;
                     }else{
-                        echo 0;
+                        echo "0.00";
                     }
                 }
                 ?></td>
@@ -328,12 +347,12 @@ function rupiah($angka){
             <td>{{rupiah($sumMargin['dep'])}}</td>
             <td><?php
                 if($sumNet['dep'] != 0){
-                    echo round(($sumMargin['dep']*100/$sumNet['dep']), 2);
+                    echo twopoint(($sumMargin['dep']*100/$sumNet['dep']));
                 }else{
                     if($sumMargin['dep'] != 0){
                         echo 100;
                     }else{
-                        echo 0;
+                        echo "0.00";
                     }
                 }
                 ?></td>
@@ -345,28 +364,28 @@ function rupiah($angka){
 
 <!--OUT OF LOOP DIVISI-->
         <tr style="font-weight: bold;">
-            <td colspan="5" style="text-align: left">*** TOTAL PER DIVISI : </td>
-            <td>{{rupiah($sumNilai1['div'])}}</td>
-            <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td>{{rupiah($sumNilai2['div'])}}</td>
-            <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td>{{rupiah($sumNilai3['div'])}}</td>
-            <td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td>{{rupiah($sumNilai4['div'])}}</td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td>{{rupiah($sumGross['div'])}}</td>
-            <td>{{rupiah($sumTax['div'])}}</td>
-            <td>{{rupiah($sumNet['div'])}}</td>
-            <td>{{rupiah($sumHpp['div'])}}</td>
-            <td>{{rupiah($sumMargin['div'])}}</td>
-            <td><?php
+            <td colspan="5" style="text-align: left; border-bottom: 1px solid black">*** TOTAL PER DIVISI : </td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNilai1['div'])}}</td>
+            <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNilai2['div'])}}</td>
+            <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNilai3['div'])}}</td>
+            <td colspan="2" style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNilai4['div'])}}</td>
+            <td style="border-bottom: 1px solid black">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumGross['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumTax['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumNet['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumHpp['div'])}}</td>
+            <td style="border-bottom: 1px solid black">{{rupiah($sumMargin['div'])}}</td>
+            <td style="border-bottom: 1px solid black"><?php
                 if($sumNet['div'] != 0){
-                    echo round(($sumMargin['div']*100/$sumNet['div']), 2);
+                    echo twopoint(($sumMargin['div']*100/$sumNet['div']));
                 }else{
                     if($sumMargin['div'] != 0){
                         echo 100;
                     }else{
-                        echo 0;
+                        echo "0.00";
                     }
                 }
                 ?></td>
@@ -407,12 +426,14 @@ function rupiah($angka){
                     <td>{{rupiah($net[$index])}}</td>
                     <td>{{rupiah($hpp[$index])}}</td>
                     <td>{{rupiah($margin[$index])}}</td>
-                    <td>{{round(($margp[$index]), 2)}}</td>
+                    <td>{{twopoint(($margp[$index]))}}</td>
                 </tr>
             @endif
         @endforeach
     </tbody>
 </table>
+<hr>
+<span style="float: right">**Akhir dari laporan**</span>
 </body>
 </html>
 

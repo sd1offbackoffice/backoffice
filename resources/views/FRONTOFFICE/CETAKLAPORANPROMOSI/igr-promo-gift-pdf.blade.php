@@ -63,10 +63,12 @@ $datetime->setTimezone($timezone);
         @php
             $total = 0;
             $i=1;
+            $tempkodepromosi = '';
         @endphp
 
         @if(sizeof($data)!=0)
             @foreach($data as $d)
+                @if($tempkodepromosi != $d->kodepromosi)
                 <tr>
                     <td align="right" class="padding-right">{{ $i }}</td>
                     <td align="left">{{ $d->kodepromosi }}</td>
@@ -74,15 +76,32 @@ $datetime->setTimezone($timezone);
                     <td align="left">{{ $d->memberberlaku }}</td>
                     <td align="left">{{ $d->plu }}</td>
                     <td align="right" class="padding-right">{{ $d->hadiah }}</td>
-                    <td align="right">{{ number_format($d->minbeli, 0,".",",")  }}</td>
+                    <td align="right">{{'Rp. '.number_format($d->minbeli, 0,".",",").',-'  }}</td>
                     <td align="right" class="padding-right">{{ number_format($d->minqty, 0,".",",") }}</td>
                     <td align="right" class="padding-right">{{ number_format($d->gfh_jmlhadiah, 0,".",",") }}</td>
                     <td align="left" class="padding-right">{{ date('d/m/Y',strtotime(substr($d->gfh_tglawal,0,10))) }}</td>
                     <td align="left">{{ date('d/m/Y',strtotime(substr($d->gfh_tglakhir,0,10))) }}</td>
                 </tr>
-                @php
-                    $i++;
-                @endphp
+                    @php
+                        $tempkodepromosi =  $d->kodepromosi;
+                        $i++;
+                    @endphp
+                @else
+                <tr>
+                    <td align="right" class="padding-right"></td>
+                    <td align="left"></td>
+                    <td align="left"></td>
+                    <td align="left"></td>
+                    <td align="left">{{ $d->plu }}</td>
+                    <td align="right" class="padding-right"></td>
+                    <td align="right">{{'Rp. '.number_format($d->minbeli, 0,".",",").',-'  }}</td>
+                    <td align="right" class="padding-right">{{ number_format($d->minqty, 0,".",",") }}</td>
+                    <td align="right" class="padding-right">{{ number_format($d->gfh_jmlhadiah, 0,".",",") }}</td>
+                    <td align="left" class="padding-right"></td>
+                    <td align="left"></td>
+                </tr>
+                @endif
+
             @endforeach
         @else
             <tr>

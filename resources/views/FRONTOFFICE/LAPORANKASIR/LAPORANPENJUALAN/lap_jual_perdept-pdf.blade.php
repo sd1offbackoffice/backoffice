@@ -13,7 +13,7 @@
 
     /** Define now the real margins of every page in the PDF **/
     body {
-        margin-top: 150px;
+        margin-top: 75px;
         margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -47,20 +47,37 @@ $timezone = new DateTimeZone('Asia/Jakarta');
 $datetime->setTimezone($timezone);
 //rupiah formatter (no Rp or .00)
 function rupiah($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,0,'.',',');
+//    $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+    $hasil_rupiah = number_format($angka,2,'.',',');
+    return $hasil_rupiah;
+}
+function percent($angka){
+    $hasil_rupiah = number_format($angka,2,'.',',');
     return $hasil_rupiah;
 }
 ?>
 <header>
-    <div style="margin-top: -20px; line-height: 0.1px !important;">
-        <p>{{$datas[0]->prs_namaperusahaan}}</p>
-        <p>{{$datas[0]->prs_namacabang}}</p>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            {{ $datas[0]->prs_namaperusahaan }}
+        </p>
+        <p>
+            {{ $datas[0]->prs_namacabang }}
+        </p>
     </div>
-    <div style="position: absolute; top: -13px; left: 580px">
-        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69E</span>
+{{--    <div style="margin-top: -20px; line-height: 0.1px !important;">--}}
+{{--        <p>{{$datas[0]->prs_namaperusahaan}}</p>--}}
+{{--        <p>{{$datas[0]->prs_namacabang}}</p>--}}
+{{--    </div>--}}
+{{--    <div style="position: absolute; top: -13px; left: 580px">--}}
+{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69E</span>--}}
+{{--    </div>--}}
+    <div style="float:right; margin-top: 0px;">
+        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
+        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
+        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
     </div>
-    <div style="margin-top: 35px; line-height: 0.1 !important;">
+    <div style="float: center; line-height: 0.1 !important;">
         <h2 style="text-align: center">{{$datas[0]->title}}</h2>
         <h2 style="text-align: center">PER DEPARTEMEN</h2>
         <h4 style="text-align: center">{{$keterangan}}</h4>
@@ -70,17 +87,21 @@ function rupiah($angka){
 
 
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
-        <thead style="border-top: 3px solid black;border-bottom: 3px solid black; text-align: center">
-            <tr style="text-align: center; vertical-align: center">
-                <th colspan="2" style="text-align: left; border-right: 1px solid black; border-bottom: 1px solid black;">DEPARTEMEN</th>
-                <th style="width: 100px;border-right: 1px solid black; border-bottom: 1px solid black">PENJUALAN KOTOR</th>
-                <th style="width: 80px; border-right: 1px solid black; border-left: 1px solid black;">PAJAK</th>
-                <th style="width: 100px; border-right: 1px solid black; border-left: 1px solid black;">PENJUALAN BERSIH</th>
-                <th style="width: 100px;border-right: 1px solid black; border-left: 1px solid black;">H.P.P RATA2</th>
-                <th colspan="2" style="border-left: 1px solid black;">------MARGIN------</th>
+        <thead style="border-top: 2px solid black;border-bottom: 2px solid black; vertical-align: middle">
+            <tr>
+                <th rowspan="2" colspan="2" style="text-align: left;">DEPARTEMEN</th>
+                <th rowspan="2" style="text-align: right; width: 100px;">PENJUALAN KOTOR</th>
+                <th rowspan="2" style="text-align: right; width: 80px;">PAJAK</th>
+                <th rowspan="2" style="text-align: right; width: 100px;">PENJUALAN BERSIH</th>
+                <th rowspan="2" style="text-align: right; width: 100px;">H.P.P RATA2</th>
+                <th colspan="2" style="text-align: right;">------MARGIN------</th>
+            </tr>
+            <tr>
+                <td style="width: 80px; text-align: right;">Rp.</td>
+                <td style="width: 20px; text-align: right;">%</td>
             </tr>
         </thead>
-        <tbody style="border-bottom: 3px solid black; text-align: right">
+        <tbody style="border-bottom: 2px solid black; text-align: right">
         <?php
             $counterDiv = 0;
             $divisi = '';
@@ -118,7 +139,7 @@ function rupiah($angka){
                         if($marginTotal != 0){
                             $percentageTotal = 100;
                         }else{
-                            $percentageTotal = 0;
+                            $percentageTotal = "0.00";
                         }
                     }
                     $percentageTotal = round($percentageTotal, 2);
@@ -132,7 +153,7 @@ function rupiah($angka){
                         <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($netTotal)}}</td>
                         <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hppTotal)}}</td>
                         <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($marginTotal)}}</td>
-                        <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$percentageTotal}}</td>
+                        <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($percentageTotal)}}</td>
                     </tr>
                 @endif
             @endif
@@ -153,8 +174,8 @@ function rupiah($angka){
                 <td>{{rupiah($datas[$i]->ntax)}}</td>
                 <td>{{rupiah($datas[$i]->nnet)}}</td>
                 <td>{{rupiah($datas[$i]->nhpp)}}</td>
-                <td style="width: 80px">{{rupiah($datas[$i]->nmargin)}}</td>
-                <td style="width: 20px">{{$cf_nmargin[$i]}}</td>
+                <td>{{rupiah($datas[$i]->nmargin)}}</td>
+                <td>{{percent($cf_nmargin[$i])}}</td>
             </tr>
             <?php
                 $counterDiv++;
@@ -183,7 +204,7 @@ function rupiah($angka){
                 if($marginTotal != 0){
                     $percentageTotal = 100;
                 }else{
-                    $percentageTotal = 0;
+                    $percentageTotal = "0.00";
                 }
             }
             $percentageTotal = round($percentageTotal, 2);
@@ -197,7 +218,7 @@ function rupiah($angka){
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($netTotal)}}</td>
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hppTotal)}}</td>
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($marginTotal)}}</td>
-                <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$percentageTotal}}</td>
+                <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($percentageTotal)}}</td>
             </tr>
 
             {{--GRAND TOTAL--}}
@@ -208,7 +229,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['c'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['c'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['c'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['c']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['c'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">&nbsp;&nbsp;TOTAL BARANG KENA PAJAK</td>
@@ -217,7 +238,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['p'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['p'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['p'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['p']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['p'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">TOTAL BARANG TIDAK KENA PAJAK</td>
@@ -226,7 +247,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['x'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['x'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['x'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['x']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['x'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">TOTAL BARANG KENA CUKAI</td>
@@ -235,7 +256,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['k'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['k'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['k'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['k']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['k'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">TOTAL BARANG BEBAS PPN</td>
@@ -244,7 +265,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['b'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['b'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['b'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['b']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['b'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">TOTAL BARANG EXPORT</td>
@@ -253,7 +274,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['e'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['e'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['e'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['e']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['e'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: normal;font-size: 10px;">TOTAL BRG PPN DIBYR PMERINTH (MINYAK)</td>
@@ -262,7 +283,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['g'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['g'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['g'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['g']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['g'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: normal;font-size: 10px;">TOTAL BRG PPN DIBYR PMERINTH (TEPUNG)</td>
@@ -271,7 +292,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['r'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['r'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['r']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['r'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">TOTAL DEPARTEMEN 43</td>
@@ -280,7 +301,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['f'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['f'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['f'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['f']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['f'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">GRAND TOTAL (TANPA DEPT 40)</td>
@@ -289,7 +310,7 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['total']-$net['d'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['total']-$hpp['d'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['total']-$margin['d'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['tminp']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['tminp'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;font-size: 10px;">GRAND TOTAL (+ DEPT 40)</td>
@@ -298,11 +319,10 @@ function rupiah($angka){
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($net['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($hpp['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px;">{{rupiah($margin['total'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{$marginpersen['total']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px;">{{percent($marginpersen['total'])}}</td>
         </tr>
         </tbody>
     </table>
-    <hr>
     <p style="float: right">**Akhir dari Laporan**</p>
 
 </body>

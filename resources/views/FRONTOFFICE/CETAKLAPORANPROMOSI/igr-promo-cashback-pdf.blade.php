@@ -57,23 +57,38 @@ $datetime->setTimezone($timezone);
     @php
         $total = 0;
         $i=1;
+        $tempkodepromosi = '';
     @endphp
 
     @if(sizeof($data)!=0)
         @foreach($data as $d)
+            @if($tempkodepromosi != $d->kodepromosi)
             <tr>
                 <td align="right" class="padding-right">{{ $i }}</td>
                 <td align="left">{{ $d->kodepromosi }}</td>
                 <td align="left">{{ $d->promosi}}</td>
                 <td align="left">{{ $d->memberberlaku }}</td>
                 <td align="left">{{ $d->plu }}</td>
-                <td align="right" class="padding-right">{{ $d->cashbackamt }}</td>
+                <td align="right" class="padding-right">{{ number_format($d->cashbackamt, 0,".",",") }}</td>
                 <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglawal,0,10))) }}</td>
                 <td align="left">{{ date('d/m/Y',strtotime(substr($d->cbh_tglakhir,0,10))) }}</td>
             </tr>
             @php
+                $tempkodepromosi =  $d->kodepromosi;
                 $i++;
             @endphp
+            @else
+                <tr>
+                    <td align="right" class="padding-right"> </td>
+                    <td align="left"> </td>
+                    <td align="left"> </td>
+                    <td align="left"> </td>
+                    <td align="left">{{ $d->plu }}</td>
+                    <td align="right" class="padding-right">{{ $d->cashbackamt }}</td>
+                    <td align="left"> </td>
+                    <td align="left"> </td>
+                </tr>
+            @endif
         @endforeach
     @else
         <tr>

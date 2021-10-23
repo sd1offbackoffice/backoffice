@@ -29,7 +29,7 @@
             Hal. :
         </p>
     </div>
-    <div style="float:center;">
+    <div>
         <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
             @yield('title')
         </p>
@@ -46,7 +46,7 @@
 </main>
 
 <footer>
-    <p class="right">@yield('footer','** Akhir dari laporan **')</p>
+    <p class="right" style="font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
 </footer>
 
 <br>
@@ -71,7 +71,7 @@
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
-        line-height: @yield('body_line_height','1.25');
+        line-height: @yield('body_line_height','1.8'); /* 1.25 */
     }
     table{
         border-collapse: collapse;

@@ -55,7 +55,11 @@ $datetime->setTimezone($timezone);
 //rupiah formatter (no Rp or .00)
 function rupiah($angka){
     //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,0,'.',',');
+    $hasil_rupiah = number_format($angka,2,'.',',');
+    return $hasil_rupiah;
+}
+function percent($angka){
+    $hasil_rupiah = number_format($angka,2,'.',',');
     return $hasil_rupiah;
 }
 ?>
@@ -84,7 +88,7 @@ $percentageSbu = 0;
                     <p>{{$datas[0]->prs_namacabang}}</p>
                 </div>
                 <div style="float: right; margin-top: -38px">
-                    <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69E</span>
+                    <span>Tgl. Cetak : {{$today}}<br>Jam. Cetak : {{$time}}<br><i>User ID</i> : {{ $_SESSION['usid'] }}</span>
                 </div>
                 <div style="margin-top: 35px; line-height: 0.1 !important;">
                     <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
@@ -137,7 +141,7 @@ $percentageSbu = 0;
                 <td>{{rupiah($datas[$i]->ominet)}}</td>
                 <td>{{rupiah($datas[$i]->omihpp)}}</td>
                 <td style="width: 80px">{{rupiah($datas[$i]->omimrg)}}</td>
-                <td style="width: 20px">{{$cf_nmargin[$i]}}</td>
+                <td style="width: 20px">{{percent($cf_nmargin[$i])}}</td>
             </tr>
             <?php
                 $counterDiv++;
@@ -184,7 +188,7 @@ $percentageSbu = 0;
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($netTotal)}}</td>
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hppTotal)}}</td>
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($marginTotal)}}</td>
-                    <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$percentageTotal}}</td>
+                    <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($percentageTotal)}}</td>
                 </tr>
             @endif
             @if($omikod != $datas[$i+1]->omikod)
@@ -195,7 +199,20 @@ $percentageSbu = 0;
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($netSbu)}}</td>
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hppSbu)}}</td>
                     <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($marginSbu)}}</td>
-                    <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{round(($marginSbu/$netSbu)*100)}}</td>
+                    <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">
+                        <?php
+                        if($netSbu != 0){
+                            $calculator = ($marginSbu/$netSbu)*100;
+                        }else{
+                            if($marginSbu != 0){
+                                $calculator = 100;
+                            }else{
+                                $calculator = 0;
+                            }
+                        }
+                        echo percent($calculator);
+                        ?>
+                    </td>
                 </tr>
                 <?php
                 $omikod = $datas[$i+1]->omikod;
@@ -251,7 +268,7 @@ $percentageSbu = 0;
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($netTotal)}}</td>
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hppTotal)}}</td>
                 <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($marginTotal)}}</td>
-                <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$percentageTotal}}</td>
+                <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($percentageTotal)}}</td>
             </tr>
         </tbody>
     </table>
@@ -274,7 +291,7 @@ $percentageSbu = 0;
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($net['o'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hpp['o'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($margin['o'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$marginpersen['o']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($marginpersen['o'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: left; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">TOTAL SELURUH INDOMARET</td>
@@ -283,7 +300,7 @@ $percentageSbu = 0;
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($net['i'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hpp['i'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($margin['i'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$marginpersen['i']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($marginpersen['i'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: left; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">TOTAL SELURUH INDOMARET</td>
@@ -292,7 +309,7 @@ $percentageSbu = 0;
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($net['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($hpp['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($margin['total'])}}</td>
-            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{$marginpersen['total']}}</td>
+            <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($marginpersen['total'])}}</td>
         </tr>
         </tbody>
     </table>
