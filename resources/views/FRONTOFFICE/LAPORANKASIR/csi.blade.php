@@ -222,175 +222,181 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     if($('#member').val() == 'R'){
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdatar',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'S',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                        {{--ajaxSetup();--}}
+                        {{--$.ajax({--}}
+                        {{--    url: '{{ url()->current() }}/checkdatar',--}}
+                        {{--    type: 'post',--}}
+                        {{--    data: {--}}
+                        {{--        dateA:dateA,--}}
+                        {{--        dateB:dateB,--}}
+                        {{--        p_tipe:'S',--}}
+                        {{--        sup1:sup1,--}}
+                        {{--        sup2:sup2--}}
+                        {{--    },--}}
+                        {{--    beforeSend: function () {--}}
+                        {{--        $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                        {{--    },--}}
+                        {{--    success: function (w) {--}}
+                        {{--        if(w.kode == '1'){--}}
+                        {{--            window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');--}}
+                        {{--        }--}}
+                        {{--        else if (w.kode == '0'){--}}
+                        {{--            swal.fire('', "tidak ada data", 'warning');--}}
+                        {{--        }--}}
+                        {{--        $('#modal-loader').modal('hide');--}}
+                        {{--    }, error: function (e) {--}}
+                        {{--        console.log(e);--}}
+                        {{--        alert('error');--}}
+                        {{--    }--}}
+                        {{--})--}}
                     }else if($('#member').val() == 'K'){
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdatak',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'S',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                        {{--ajaxSetup();--}}
+                        {{--$.ajax({--}}
+                        {{--    url: '{{ url()->current() }}/checkdatak',--}}
+                        {{--    type: 'post',--}}
+                        {{--    data: {--}}
+                        {{--        dateA:dateA,--}}
+                        {{--        dateB:dateB,--}}
+                        {{--        p_tipe:'S',--}}
+                        {{--        sup1:sup1,--}}
+                        {{--        sup2:sup2--}}
+                        {{--    },--}}
+                        {{--    beforeSend: function () {--}}
+                        {{--        $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                        {{--    },--}}
+                        {{--    success: function (w) {--}}
+                        {{--        if(w.kode == '1'){--}}
+                        {{--            window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');--}}
+                        {{--        }--}}
+                        {{--        else if (w.kode == '0'){--}}
+                        {{--            swal.fire('', "tidak ada data", 'warning');--}}
+                        {{--        }--}}
+                        {{--        $('#modal-loader').modal('hide');--}}
+                        {{--    }, error: function (e) {--}}
+                        {{--        console.log(e);--}}
+                        {{--        alert('error');--}}
+                        {{--    }--}}
+                        {{--})--}}
                     }else{
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdata',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'S',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');
+                    {{--    ajaxSetup();--}}
+                    {{--    $.ajax({--}}
+                    {{--        url: '{{ url()->current() }}/checkdata',--}}
+                    {{--        type: 'post',--}}
+                    {{--        data: {--}}
+                    {{--            dateA:dateA,--}}
+                    {{--            dateB:dateB,--}}
+                    {{--            p_tipe:'S',--}}
+                    {{--            sup1:sup1,--}}
+                    {{--            sup2:sup2--}}
+                    {{--        },--}}
+                    {{--        beforeSend: function () {--}}
+                    {{--            $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                    {{--        },--}}
+                    {{--        success: function (w) {--}}
+                    {{--            if(w.kode == '1'){--}}
+                    {{--                window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/S/'+sup1+'/'+sup2,'_blank');--}}
+                    {{--            }--}}
+                    {{--            else if (w.kode == '0'){--}}
+                    {{--                swal.fire('', "tidak ada data", 'warning');--}}
+                    {{--            }--}}
+                    {{--            $('#modal-loader').modal('hide');--}}
+                    {{--        }, error: function (e) {--}}
+                    {{--            console.log(e);--}}
+                    {{--            alert('error');--}}
+                    {{--        }--}}
+                    {{--    })--}}
                     }
                 } else if (result.isDenied) {
                     if($('#member').val() == 'R'){
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdatar',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'R',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                        {{--ajaxSetup();--}}
+                        {{--$.ajax({--}}
+                        {{--    url: '{{ url()->current() }}/checkdatar',--}}
+                        {{--    type: 'post',--}}
+                        {{--    data: {--}}
+                        {{--        dateA:dateA,--}}
+                        {{--        dateB:dateB,--}}
+                        {{--        p_tipe:'R',--}}
+                        {{--        sup1:sup1,--}}
+                        {{--        sup2:sup2--}}
+                        {{--    },--}}
+                        {{--    beforeSend: function () {--}}
+                        {{--        $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                        {{--    },--}}
+                        {{--    success: function (w) {--}}
+                        {{--        if(w.kode == '1'){--}}
+                        {{--            window.open('{{ url()->current() }}/printdocr/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');--}}
+                        {{--        }--}}
+                        {{--        else if (w.kode == '0'){--}}
+                        {{--            swal.fire('', "tidak ada data", 'warning');--}}
+                        {{--        }--}}
+                        {{--        $('#modal-loader').modal('hide');--}}
+                        {{--    }, error: function (e) {--}}
+                        {{--        console.log(e);--}}
+                        {{--        alert('error');--}}
+                        {{--    }--}}
+                        {{--})--}}
                     }else if($('#member').val() == 'K'){
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdatak',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'R',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                        {{--ajaxSetup();--}}
+                        {{--$.ajax({--}}
+                        {{--    url: '{{ url()->current() }}/checkdatak',--}}
+                        {{--    type: 'post',--}}
+                        {{--    data: {--}}
+                        {{--        dateA:dateA,--}}
+                        {{--        dateB:dateB,--}}
+                        {{--        p_tipe:'R',--}}
+                        {{--        sup1:sup1,--}}
+                        {{--        sup2:sup2--}}
+                        {{--    },--}}
+                        {{--    beforeSend: function () {--}}
+                        {{--        $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                        {{--    },--}}
+                        {{--    success: function (w) {--}}
+                        {{--        if(w.kode == '1'){--}}
+                        {{--            window.open('{{ url()->current() }}/printdock/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');--}}
+                        {{--        }--}}
+                        {{--        else if (w.kode == '0'){--}}
+                        {{--            swal.fire('', "tidak ada data", 'warning');--}}
+                        {{--        }--}}
+                        {{--        $('#modal-loader').modal('hide');--}}
+                        {{--    }, error: function (e) {--}}
+                        {{--        console.log(e);--}}
+                        {{--        alert('error');--}}
+                        {{--    }--}}
+                        {{--})--}}
                     }else{
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/checkdata',
-                            type: 'post',
-                            data: {
-                                dateA:dateA,
-                                dateB:dateB,
-                                p_tipe:'R',
-                                sup1:sup1,
-                                sup2:sup2
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
-                            success: function (w) {
-                                if(w.kode == '1'){
-                                    window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
-                                }
-                                else if (w.kode == '0'){
-                                    swal.fire('', "tidak ada data", 'warning');
-                                }
-                                $('#modal-loader').modal('hide');
-                            }, error: function (e) {
-                                console.log(e);
-                                alert('error');
-                            }
-                        })
+                        window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');
+                        {{--ajaxSetup();--}}
+                        {{--$.ajax({--}}
+                        {{--    url: '{{ url()->current() }}/checkdata',--}}
+                        {{--    type: 'post',--}}
+                        {{--    data: {--}}
+                        {{--        dateA:dateA,--}}
+                        {{--        dateB:dateB,--}}
+                        {{--        p_tipe:'R',--}}
+                        {{--        sup1:sup1,--}}
+                        {{--        sup2:sup2--}}
+                        {{--    },--}}
+                        {{--    beforeSend: function () {--}}
+                        {{--        $('#modal-loader').modal({backdrop: 'static', keyboard: false});--}}
+                        {{--    },--}}
+                        {{--    success: function (w) {--}}
+                        {{--        if(w.kode == '1'){--}}
+                        {{--            window.open('{{ url()->current() }}/printdoc/'+dateA+'/'+dateB+'/R/'+sup1+'/'+sup2,'_blank');--}}
+                        {{--        }--}}
+                        {{--        else if (w.kode == '0'){--}}
+                        {{--            swal.fire('', "tidak ada data", 'warning');--}}
+                        {{--        }--}}
+                        {{--        $('#modal-loader').modal('hide');--}}
+                        {{--    }, error: function (e) {--}}
+                        {{--        console.log(e);--}}
+                        {{--        alert('error');--}}
+                        {{--    }--}}
+                        {{--})--}}
                     }
                 }
             })

@@ -352,17 +352,28 @@
                     },
                     success: function (result) {
                         $('#modal-loader').modal('hide');
-                        $('#pdf').empty();
-                        console.log(result);
-                        buttons = '';
-                        if (result) {
-                            $.each(result, function (index, value) {
-                                $('#pdf').append(`<div class="row form-group" >
-                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
-                                </div>`);
+
+                        if(result.status == 'error'){
+                            swal({
+                                title: result.message,
+                                icon: 'error'
                             });
                         }
-                        $('#m_result').modal('show');
+                        else{
+                            $('#pdf').empty();
+                            console.log(result);
+                            buttons = '';
+                            if (result) {
+                                $.each(result, function (index, value) {
+                                    $('#pdf').append(`<div class="row form-group" >
+                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
+                                </div>`);
+                                });
+                            }
+                            $('#m_result').modal('show');
+                        }
+
+
 
                         // window.open('../' + result, '_blank');
                     }, error: function (err) {

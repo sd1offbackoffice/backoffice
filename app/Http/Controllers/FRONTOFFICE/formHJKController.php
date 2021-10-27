@@ -188,13 +188,13 @@ class formHJKController extends Controller
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\formHJK-pdf',
-            ['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'prs' => $prs, 'today' => $today, 'time' => $time]);
+            ['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $prs, 'today' => $today, 'time' => $time]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(524, 24, "HAL {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\formHJK-pdf');
     }

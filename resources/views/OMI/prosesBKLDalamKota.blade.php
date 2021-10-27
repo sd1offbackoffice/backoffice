@@ -142,6 +142,7 @@
                 dataType: "json",
                 data:fileDBF,
                 beforeSend : function (){
+                    $('#modal-loader').modal('show');
                     $('#btnCetakList').hide();
                     $('#btnCetakBpb').hide();
                     $('#btnCetakStruk').hide();
@@ -149,16 +150,20 @@
                     $('#btnCetakTolakan').hide();
                 },
                 success: function (result) {
-                    filename = result.data.namafiler
-                    sesiproc = result.data.sesiproc
-                    kasir = result.data.param_all_kasir
-                    kasir = kasir.substr(1,6);
+                    $('#modal-loader').modal('hide');
 
                     if (result.kode == 1){
                         swal(result.msg, '', 'success')
                     } else {
                         swal(result.msg, '', 'warning')
+                        return  false
                     }
+
+                    filename = result.data.namafiler
+                    sesiproc = result.data.sesiproc
+                    kasir = result.data.param_all_kasir
+                    kasir = kasir.substr(1,6);
+
                     let idButtonCetak = result.data.report_id;
                     if (idButtonCetak) {
                         for(let i = 0; i < idButtonCetak.length; i++){

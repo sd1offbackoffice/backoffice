@@ -175,7 +175,6 @@ class PerolehanPointRewardPerTanggal extends Controller
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-        if (sizeof($data) != 0) {
             $data = [
                 'perusahaan' => $perusahaan,
                 'data' => $data,
@@ -185,6 +184,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                 't_pe' => $t_pe,
                 'total' => $total,
             ];
+        if ($menu== 'rekap') {
 
             $dompdf = new PDF();
 
@@ -192,12 +192,12 @@ class PerolehanPointRewardPerTanggal extends Controller
 
             error_reporting(E_ALL ^ E_DEPRECATED);
 
-            $pdf->setPaper('A4', 'potrait');
+//            $pdf->setPaper('A4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf->get_canvas();
-            $canvas->page_text(492, 74, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
 
@@ -205,8 +205,9 @@ class PerolehanPointRewardPerTanggal extends Controller
 //            return $dompdf->download($filename . '_' . $tgl1 . ' - ' . $tgl2 . '.pdf');
             return $dompdf->stream($filename . '_' . $tgl1 . ' - ' . $tgl2 . '.pdf');
 
-        } else {
-            return 'Tidak Ada Data!';
+        }
+        else {
+            return view('FRONTOFFICE.POINTREWARDMEMBERMERAH.PEROLEHANPOINTREWARDPERTANGGAL.' . $filename . '-pdf',$data);
         }
     }
 }

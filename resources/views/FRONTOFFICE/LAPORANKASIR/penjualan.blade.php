@@ -1040,20 +1040,23 @@
 
             if (charCode == 89 || charCode == 84)
                 return true
-            if (charCode == 13){
-                khususElektronik();
-
-                //Fokus ke kolom berikutnya
-                if($('#yaTidakMenu1').val() == 'Y'){
-                    $('#menu1divA1').focus();
-                }else if($('#yaTidakMenu1').val() == 'T'){
-                    $('#menu1divB1').focus();
-                }
-
-                return true
-            }
+            // if (charCode == 13){
+            //     khususElektronik();
+            //
+            //     //Fokus ke kolom berikutnya
+            //     if($('#yaTidakMenu1').val() == 'Y'){
+            //         $('#menu1divA1').focus();
+            //     }else if($('#yaTidakMenu1').val() == 'T'){
+            //         $('#menu1divB1').focus();
+            //     }
+            //
+            //     return true
+            // }
             return false;
         }
+        $('#yaTidakMenu1').on('keypress',function(){
+            khususElektronik();
+        });
 
         function khususElektronik(){ //untuk memperiksa apakah kolom khusus elektronik Y,T, atau kosong, lalu menampilkan div/dept sesuai input #yaTidakMenu1
             switch ($('#yaTidakMenu1').val()){
@@ -2191,8 +2194,10 @@
                 }else if($('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
                     if($('#sbu').val() == 'S'){
                         $('#menu2TokoInput').val('SEMUA');
+                    }else if($('#sbu').val() == 'I' || $('#sbu').val() == 'O'){
+                        $('#menu2TokoInput').val('SEMUA');
                     }
-                }else if($('#lstPrintHidden').val() == '3' && $('#menu2TokoInput').val('')){
+                }else if($('#lstPrintHidden').val() == '3' && $('#menu2TokoInput').val() == ''){
                     $('#sbu').val('S');
                     $('#jenisToko').val('S').change();
                     $('#menu2TokoInput').val('SEMUA');

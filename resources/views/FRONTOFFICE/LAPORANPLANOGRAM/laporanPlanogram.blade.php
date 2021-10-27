@@ -97,14 +97,14 @@
                                 <select class="form-control" id="realisasi">
                                     <option value="Y"> Y : sudah</option>
                                     <option value="N"> N : belum</option>
-                                    <option value=""> kosong : semua</option>
+                                    <option value="Z"> kosong : semua</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row form-group">
                             <label class="col-sm-3 col-form-label text-sm-right">Order By :</label>
                             <div class="col-sm-3">
-                                <select class="form-control" id="orderby">
+                                <select class="form-control" id="orderby2">
                                     <option value="PLU">PLU</option>
                                     <option value="RAK">LOKASI TUJUAN</option>
                                     <option value="TGL">Tanggal Antrian</option>
@@ -255,7 +255,7 @@
                 valid = cekTanggal();
             }
             if (valid) {
-                window.open(`{{ url()->current() }}/cetak?menu=${$('#menu').val()}&rak1=${$('#rak1').val()}&rak2=${$('#rak2').val()}&tgl1=${$('#startDate').val()}&tgl2=${$('#endDate').val()}&realisasi=${$('#realisasi').val()}&orderby=${$('#orderby').val()}`, '_blank');
+                window.open(`{{ url()->current() }}/cetak?menu=${$('#menu').val()}&rak1=${$('#rak1').val()}&rak2=${$('#rak2').val()}&tgl1=${$('#startDate').val()}&tgl2=${$('#endDate').val()}&realisasi=${$('#realisasi').val()}&orderby=${$('#orderby').val()}&orderby2=${$('#orderby2').val()}`, '_blank');
             }
         }
     </script>

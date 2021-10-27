@@ -157,8 +157,8 @@ class ProsesBKLDalamKotaController extends Controller
             $result     = ($size == 'K') ? $this->laporanList($filename,$sesiproc,$kodeigr) : $this->laporanListDetail($filename,$sesiproc,$kodeigr);
             $bladeName  = ($size == 'K') ? "OMI.prosesBKL-list-pdf" : "OMI.prosesBKL-list-detail-pdf";
             $paperFormat = ($size == 'K') ? "potrait" : "landscape";
-            $pageNum1   = ($size == 'K') ? 510 : 756;
-            $pageNum2   = 37.5;
+            $pageNum1   = ($size == 'K') ? 507 : 507; // list detail yg lama menggunakan landsacpe di koor : 756
+            $pageNum2   = 77.75;
         } elseif ($report_id == 2){
             $noPO = DB::select("SELECT *
                                           FROM (SELECT DISTINCT no_bukti, kodetoko, tgl_bukti,  msth_nodoc
@@ -202,13 +202,15 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = "OMI.prosesBKL-tolakan-pdf";
         }
 
-        $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
+        $perusahaan = DB::table('tbmaster_perusahaan')->first();
+
+        $pdf = PDF::loadview("$bladeName",[ 'data' => $result, 'perusahaan' => $perusahaan]);
         $pdf->setPaper('A4', $paperFormat);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text($pageNum1, $pageNum2, "{PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text($pageNum1, $pageNum2, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
 
         return $pdf->stream("$bladeName");

@@ -56,28 +56,29 @@ WHERE jh_kodeigr = prs_kodeigr
 ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno");
         }
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
         if($typeTransaksi == 'S') {
             return view('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_s-pdf',
-                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,
+                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                     'today' => $today, 'time' => $time]);
         }else{ //type R dan lain lain
             $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_r-pdf',
-                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,
+                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                     'today' => $today, 'time' => $time]);
             $pdf->setPaper('A4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(503, 49, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+            $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             return $pdf->stream('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_r-pdf');
         }
@@ -116,15 +117,13 @@ ORDER BY jh_transactiondate,
          jh_cashierid,
          jh_transactionno");
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         return view('FRONTOFFICE\LAPORANKASIR\lap_strk_waktu-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                 'periode' => $periode, 'today' => $today, 'time' => $time]);
     }
 }

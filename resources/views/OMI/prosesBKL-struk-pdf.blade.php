@@ -5,7 +5,7 @@
         @page {
             margin: 25px 25px;
             /*size: 595pt 442pt;*/
-            {{--size: 298pt {{ 370+(count($result)*28) }}pt;--}}
+            {{--size: 298pt {{ 370+(count($data)*28) }}pt;--}}
         }
 
         .header {
@@ -79,7 +79,7 @@
 </head>
 <body>
 
-@if (!$result)
+@if (!$data)
     <h1 style="text-align: center">Data Tidak Ada</h1>
 @else
     <?php
@@ -90,16 +90,16 @@
     <header>
     </header>
     <p style="text-align: center">
-        {{$result[0]->prs_namacabang}}<br>
-        {{$result[0]->prs_namaperusahaan}}<br>
-        {{$result[0]->prs_alamat1}}<br>
-        {{$result[0]->alamat}}<br>
-        {{$result[0]->prs_npwp}}<br>
+        {{$data[0]->prs_namacabang}}<br>
+        {{$data[0]->prs_namaperusahaan}}<br>
+        {{$data[0]->prs_alamat1}}<br>
+        {{$data[0]->alamat}}<br>
+        {{$data[0]->prs_npwp}}<br>
         PROFORMA<br>
-        {{$result[0]->prs_telepon}}<br>
+        {{$data[0]->prs_telepon}}<br>
     </p>
-    <div style="float: left">{{$result[0]->tanggal}}</div>
-    <div style="float: right; margin-left: 50%">{{$result[0]->nomor}}</div>
+    <div style="float: left">{{$data[0]->tanggal}}</div>
+    <div style="float: right; margin-left: 50%">{{$data[0]->nomor}}</div>
     <div style="clear: right"></div>
     <main>
         <hr>
@@ -124,19 +124,19 @@
                 $grand_total = 0;
             @endphp
 
-            @foreach($result as $data)
+            @foreach($data as $value)
                 <tr>
-                    <td style="width: 60%" colspan="2">{{$data->prd_deskripsipendek}}</td>
-                    <td style="text-align: right" colspan="2">{{$data->trjd_prdcd}}</td>
+                    <td style="width: 60%" colspan="2">{{$value->prd_deskripsipendek}}</td>
+                    <td style="text-align: right" colspan="2">{{$value->trjd_prdcd}}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left">{{$data->trjd_quantity}}</td>
-                    <td style="text-align: right">{{number_format($data->trjd_baseprice,0,'.',',')}}</td>
-                    <td style="text-align: right">{{number_format($data->trjd_discount,0,'.',',')}}</td>
-                    <td style="text-align: right">{{number_format($data->trjd_nominalamt,0,'.',',')}}</td>
+                    <td style="text-align: left">{{$value->trjd_quantity}}</td>
+                    <td style="text-align: right">{{number_format($value->trjd_baseprice,0,'.',',')}}</td>
+                    <td style="text-align: right">{{number_format($value->trjd_discount,0,'.',',')}}</td>
+                    <td style="text-align: right">{{number_format($value->trjd_nominalamt,0,'.',',')}}</td>
                 </tr>
-                {{$penjualan = $penjualan +  $data->trjd_nominalamt}}
-                {{$dist_fee = $dist_fee +  $data->trjd_admfee}}
+                {{$penjualan = $penjualan +  $value->trjd_nominalamt}}
+                {{$dist_fee = $dist_fee +  $value->trjd_admfee}}
                 {{$total_item = $total_item + 1}}
             @endforeach
 
@@ -189,12 +189,12 @@
             </tr>
             <tr>
                 <td>NO MEMBER</td>
-                <td>: {{$result[0]->trjd_cus_kodemember}}</td>
-                <td colspan="2">NAMA : {{$result[0]->cus_namamember}}</td>
+                <td>: {{$data[0]->trjd_cus_kodemember}}</td>
+                <td colspan="2">NAMA : {{$data[0]->cus_namamember}}</td>
             </tr>
             <tr>
                 <td class="left" colspan="1">REFRENSI</td>
-                <td class="left" colspan="2">: {{$result[0]->nobukti ?? '...'}} / {{$result[0]->tko_namaomi}}</td>
+                <td class="left" colspan="2">: {{$data[0]->nobukti ?? '...'}} / {{$data[0]->tko_namaomi}}</td>
             </tr>
             </tfoot>
         </table>

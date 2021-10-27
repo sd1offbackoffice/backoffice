@@ -280,19 +280,21 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
         $date = Carbon::now();
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.CETAKLAPORANPROMOSI.'.$filename.'-pdf', compact(['perusahaan', 'data','koderak1','koderak2','kodepromosi']));
+          return view('FRONTOFFICE.CETAKLAPORANPROMOSI.'.$filename.'-pdf', compact(['perusahaan', 'data','koderak1','koderak2','kodepromosi']));
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+//        $pdf = PDF::loadview('FRONTOFFICE.CETAKLAPORANPROMOSI.'.$filename.'-pdf', compact(['perusahaan', 'data','koderak1','koderak2','kodepromosi']));
 
-        $pdf->setPaper('A4', $paper);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//        error_reporting(E_ALL ^ E_DEPRECATED);
+//
+////        $pdf->setPaper('A4', $paper);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf->get_canvas();
+//        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        $dompdf = $pdf;
 
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename.' - ' . $date . '.pdf');
+//        return $dompdf->stream($filename.' - ' . $date . '.pdf');
     }
 }

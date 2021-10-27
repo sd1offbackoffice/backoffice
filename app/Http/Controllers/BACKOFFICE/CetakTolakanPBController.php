@@ -427,7 +427,7 @@ class CetakTolakanPBController extends Controller
             $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
         else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
 
-        $tolakan = DB::table('tbtr_tolakanpb')
+        $data = DB::table('tbtr_tolakanpb')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('tlk_kodeigr','prd_kodeigr');
                 $join->on('tlk_prdcd','prd_prdcd');
@@ -474,30 +474,19 @@ class CetakTolakanPBController extends Controller
 
 //        dd($tolakan);
 
-        $data = [
-            'title' => 'LAPORAN DAFTAR TOLAKAN PB / DIVISI / DEPT / KATEGORY',
-            'perusahaan' => $perusahaan,
-            'tolakan' => $tolakan,
-            'tgl1' => $tgl1,
-            'tgl2' => $tgl2
-        ];
-
-        $now = Carbon::now('Asia/Jakarta');
-        $now = date_format($now, 'd-m-Y H-i-s');
+        $title = 'LAPORAN DAFTAR TOLAKAN PB / DIVISI / DEPT / KATEGORI';
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-divisi', $data);
+        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-divisi', compact(['perusahaan','data','tgl1','tgl2','title']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
         $pdf->output();
 
-        if(count($tolakan) > 0) {
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(525, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-        }
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        $canvas = $dompdf->get_canvas();
+        $canvas->page_text(755, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -700,8 +689,8 @@ class CetakTolakanPBController extends Controller
     }
 
     public function print_by_sup(){
-        $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
-        $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
+        $tgl1 = $_GET['tgl1'];
+        $tgl2 = $_GET['tgl2'];
         $sup1 = $_GET['sup1'];
         $sup2 = $_GET['sup2'];
         $plu1 = $_GET['plu1'];
@@ -779,7 +768,7 @@ class CetakTolakanPBController extends Controller
             $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
         else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
 
-        $tolakan = DB::table('tbtr_tolakanpb')
+        $data = DB::table('tbtr_tolakanpb')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('tlk_kodeigr','prd_kodeigr');
                 $join->on('tlk_prdcd','prd_prdcd');
@@ -806,12 +795,12 @@ class CetakTolakanPBController extends Controller
                 $join->on('pkm_kodekategoribarang','prd_kodekategoribarang');
                 $join->on('pkm_prdcd','prd_prdcd');
             })
-            ->selectRaw("TO_CHAR(TLK_TGLPB,'DD/MM/YYYY') TGLPB, TLK_NOPB NOPB, 
+            ->selectRaw("TO_CHAR(TLK_TGLPB,'DD/MM/YYYY') TGLPB, TLK_NOPB NOPB,
                 TLK_PRDCD PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT || '/' || PRD_FRAC SATUAN,
                 PRD_KODETAG TAG, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
                 PRD_KODEKATEGORIBARANG KAT, TLK_KODESUPPLIER SUPCO, SUP_NAMASUPPLIER SUPNAME, PKM_PKMT PKMT,
                 TLK_KETERANGANTOLAKAN KETERANGAN")
-            ->whereRaw("trunc(tlk_tglpb) between to_date('".$tgl1."','dd-mm-yyyy')and to_date('".$tgl2."','dd-mm-yyyy')")
+            ->whereRaw("trunc(tlk_tglpb) between to_date('".$tgl1."','dd/mm/yyyy')and to_date('".$tgl2."','dd/mm/yyyy')")
             ->whereBetween('tlk_kodesupplier',[$sup1,$sup2])
             ->whereBetween('prd_prdcd',[$plu1,$plu2])
             ->whereRaw($where)
@@ -822,30 +811,19 @@ class CetakTolakanPBController extends Controller
 
 //        dd($tolakan);
 
-        $data = [
-            'title' => 'LAPORAN DAFTAR TOLAKAN PB / SUPPLIER',
-            'perusahaan' => $perusahaan,
-            'tolakan' => $tolakan,
-            'tgl1' => $tgl1,
-            'tgl2' => $tgl2
-        ];
-
-        $now = Carbon::now('Asia/Jakarta');
-        $now = date_format($now, 'd-m-Y H-i-s');
+        $title = 'LAPORAN DAFTAR TOLAKAN PB / SUPPLIER';
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-supplier', $data);
+        $pdf = PDF::loadview('BACKOFFICE.CetakTolakanPB-laporan-by-supplier', compact(['perusahaan','data','tgl1','tgl2','title']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
         $pdf->output();
 
-        if(count($tolakan) > 0) {
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(525, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-        }
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        $canvas = $dompdf->get_canvas();
+        $canvas->page_text(509, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

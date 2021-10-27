@@ -226,7 +226,6 @@ WHERE kdmbr = T_kdmbr(+)
                 'tgl1' => $tgl1,
                 'tgl2' => $tgl2,
             ];
-
             $dompdf = new PDF();
 
             $pdf = PDF::loadview('FRONTOFFICE.POINTREWARDMEMBERMERAH.REKAPITULASIMUTASIPOINTREWARD.' . $filename . '-pdf', $data);

@@ -191,9 +191,16 @@ GROUP BY A.plu, prd_deskripsipanjang, sup_kodesupplier,
          A.CBH_TGLAWAL, A.CBH_TGLAKHIR, PRS_NAMAPERUSAHAAN,
          PRS_NAMACABANG, PRS_NAMAWILAYAH
 ORDER BY A.CBH_KODEPROMOSI, A.PLU");
+
+        if(sizeof($datas) == 0){
+            return "**DATA TIDAK ADA**";
+        }
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
+        $dateA = str_replace("-","/",$dateA);
+        $dateB = str_replace("-","/",$dateB);
 //        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\csi-pdf',
 //            ['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
 //        $pdf->setPaper('A4', 'potrait');
@@ -205,6 +212,6 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
 
-        return view('FRONTOFFICE\LAPORANKASIR\cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        return view('FRONTOFFICE\LAPORANKASIR\cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas,'perusahaan' => $perusahaan ,'today' => $today, 'time' => $time]);
     }
 }

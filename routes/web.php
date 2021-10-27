@@ -35,7 +35,6 @@ Route::get('/template/index', 'TemplateController@index');
 Route::get('/template/datamodal', 'TemplateController@dataModal');
 Route::get('/template/searchdatamodal', 'TemplateController@searchDataModal');
 
-
 /******** Arie ********/
 // BACK OFFICE / PENGELUARAN /INPUT
 Route::get('/bo/transaksi/pengeluaran/input/index', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\inputController@index')->middleware('CheckLogin');

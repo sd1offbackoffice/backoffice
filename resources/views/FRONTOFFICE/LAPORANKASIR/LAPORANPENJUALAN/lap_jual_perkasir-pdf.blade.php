@@ -1,50 +1,103 @@
-<html>
-<head>
-    <title>LAPORAN-PENJUALAN PER KASIR</title>
-</head>
-<style>
-    /**
-        Set the margins of the page to 0, so the footer and the header
-        can be of the full height and width !
-     **/
-    @page {
-        margin: 25px 25px;
-    }
+@extends('pdf-template')
 
-    /** Define now the real margins of every page in the PDF **/
-    body {
-        margin-top: 75px;
-        margin-bottom: 0px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
-    }
+@section('custom_style')
 
-    /** Define the header rules **/
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 2cm;
-    }
-    table{
-        border: 1px;
-    }
-    .page-break {
-        page-break-after: always;
-    }
-    .page-numbers:after { content: counter(page); }
-</style>
-<body>
-<!-- Define header and footer blocks before your content -->
+@endsection
+
+@section('table_font_size','10 px')
+
+@section('page_title')
+    LAPORAN-PENJUALAN PER KASIR
+@endsection
+
+@section('title')
+    LAPORAN PENJUALAN PER KASIR
+@endsection
+
+@section('subtitle')
+    {{$periode}}
+@endsection
+
+@section('content')
+{{--<html>--}}
+{{--<head>--}}
+{{--    <title>LAPORAN-PENJUALAN PER KASIR</title>--}}
+{{--</head>--}}
+{{--<style>--}}
+{{--    /**--}}
+{{--        Set the margins of the page to 0, so the footer and the header--}}
+{{--        can be of the full height and width !--}}
+{{--     **/--}}
+{{--    @page {--}}
+{{--        margin: 25px 25px;--}}
+{{--    }--}}
+
+{{--    /** Define now the real margins of every page in the PDF **/--}}
+{{--    body {--}}
+{{--        margin-top: 75px;--}}
+{{--        margin-bottom: 0px;--}}
+{{--        font-size: 9px;--}}
+{{--        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;--}}
+{{--        font-weight: 400;--}}
+{{--        line-height: 1.8;--}}
+{{--        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/--}}
+{{--    }--}}
+
+{{--    /** Define the header rules **/--}}
+{{--    header {--}}
+{{--        position: fixed;--}}
+{{--        top: 0cm;--}}
+{{--        left: 0cm;--}}
+{{--        right: 0cm;--}}
+{{--        height: 2cm;--}}
+{{--    }--}}
+{{--    table{--}}
+{{--        border: 1px;--}}
+{{--    }--}}
+{{--    .page-break {--}}
+{{--        page-break-after: always;--}}
+{{--    }--}}
+{{--    .page-numbers:after { content: counter(page); }--}}
+{{--</style>--}}
+{{--<body>--}}
+{{--<!-- Define header and footer blocks before your content -->--}}
+
+
+{{--<header>--}}
+{{--    <div style="font-size: 12px ;line-height: 0.1px !important;">--}}
+{{--        <p>{{$data[0]->prs_namaperusahaan}}</p>--}}
+{{--        <p>{{$data[0]->prs_namacabang}}</p>--}}
+{{--    </div>--}}
+{{--    <div style="position: absolute; left: 512px; top: -6px">--}}
+{{--        <span>TGL CETAK : {{$today}}<br>JAM CETAK : {{$time}}<br><span style="font-style: italic">USER ID : 111</span></span>--}}
+{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL :  <br> PRG  : IDGP69S</span>--}}
+{{--    </div>--}}
+{{--    <div style="float:left; margin-top: 0px; line-height: 8px !important;">--}}
+{{--        <p>--}}
+{{--            {{ $data[0]->prs_namaperusahaan }}--}}
+{{--        </p>--}}
+{{--        <p>--}}
+{{--            {{ $data[0]->prs_namacabang }}--}}
+{{--        </p>--}}
+{{--    </div>--}}
+{{--    <div style="float:right; margin-top: 0px;">--}}
+{{--        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>--}}
+{{--        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>--}}
+{{--        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>--}}
+{{--    </div>--}}
+{{--    <div style="float: center; margin-top: 30px; line-height: 0.1 !important;">--}}
+{{--        <h2 style="text-align: center">LAPORAN PENJUALAN</h2>--}}
+{{--        <h2 style="text-align: center">PER KASIR</h2>--}}
+{{--        <h4 style="text-align: center">{{$periode}}</h4>--}}
+
+{{--    </div>--}}
+{{--</header>--}}
+
 <?php
-$i = 1;
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
+//$i = 1;
+//$datetime = new DateTime();
+//$timezone = new DateTimeZone('Asia/Jakarta');
+//$datetime->setTimezone($timezone);
 //rupiah formatter (no Rp or .00)
 function rupiah($angka){
     $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
@@ -56,36 +109,7 @@ function twopoint($angka){
     return $hasil_rupiah;
 }
 ?>
-
-<header>
-{{--    <div style="font-size: 12px ;line-height: 0.1px !important;">--}}
-{{--        <p>{{$datas[0]->prs_namaperusahaan}}</p>--}}
-{{--        <p>{{$datas[0]->prs_namacabang}}</p>--}}
-{{--    </div>--}}
-{{--    <div style="position: absolute; left: 512px; top: -6px">--}}
-{{--        <span>TGL CETAK : {{$today}}<br>JAM CETAK : {{$time}}<br><span style="font-style: italic">USER ID : 111</span></span>--}}
-{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL :  <br> PRG  : IDGP69S</span>--}}
-{{--    </div>--}}
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $datas[0]->prs_namaperusahaan }}
-        </p>
-        <p>
-            {{ $datas[0]->prs_namacabang }}
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px;">
-        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
-        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
-        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
-    </div>
-    <div style="float: center; margin-top: 30px; line-height: 0.1 !important;">
-        <h2 style="text-align: center">LAPORAN PENJUALAN</h2>
-        <h2 style="text-align: center">PER KASIR</h2>
-        <h4 style="text-align: center">{{$periode}}</h4>
-        <h4 style="text-align: left">Kasir : {{$kasir}}&nbsp;&nbsp;&nbsp;&nbsp;No. Stat : {{$station}}</h4>
-    </div>
-</header>
+<h4 style="text-align: left; float: left;margin-top: -20px">Kasir : {{$kasir}}&nbsp;&nbsp;&nbsp;&nbsp;No. Stat : {{$station}}</h4><br>
 <table style="border-collapse: collapse">
     <thead style="font-weight: bold; vertical-align: middle; border-top: 2px solid black; border-bottom: 2px solid black">
         <tr>
@@ -115,25 +139,25 @@ function twopoint($angka){
     }
     ?>
     <tbody style="text-align: right;">
-    @for($i=0;$i<sizeof($datas);$i++)
+    @for($i=0;$i<sizeof($data);$i++)
         {{--HEAD BODY--}}
-        @if($divisi != $datas[$i]->fdkdiv)
-            <tr style="text-align:left; font-weight: bold;"><td colspan="8">*** DIVISI : {{$datas[$i]->fdkdiv}} - {{$datas[$i]->div_namadivisi}}</td></tr>
-            <?php $divisi =  $datas[$i]->fdkdiv; $departemen = ''?>
+        @if($divisi != $data[$i]->fdkdiv)
+            <tr style="text-align:left; font-weight: bold;"><td colspan="8">*** DIVISI : {{$data[$i]->fdkdiv}} - {{$data[$i]->div_namadivisi}}</td></tr>
+            <?php $divisi =  $data[$i]->fdkdiv; $departemen = ''?>
         @endif
-        @if($departemen != $datas[$i]->fdkdep)
-            <tr style="text-align:left; font-weight: bold;"><td colspan="8">&nbsp;&nbsp;** DEPARTEMEN : {{$datas[$i]->fdkdep}} - {{$datas[$i]->dep_namadepartement}}</td></tr>
-            <?php $departemen =  $datas[$i]->fdkdep; $kategori = ''?>
+        @if($departemen != $data[$i]->fdkdep)
+            <tr style="text-align:left; font-weight: bold;"><td colspan="8">&nbsp;&nbsp;** DEPARTEMEN : {{$data[$i]->fdkdep}} - {{$data[$i]->dep_namadepartement}}</td></tr>
+            <?php $departemen =  $data[$i]->fdkdep; $kategori = ''?>
         @endif
         {{--MAIN BODY--}}
         <tr>
-            <td>{{$datas[$i]->fdkatb}}</td>
-            <td style="text-align: left">{{$datas[$i]->kat_namakategori}}</td>
-            <td>{{rupiah($datas[$i]->fdnamt)}}</td>
-            <td>{{rupiah($datas[$i]->fdntax)}}</td>
-            <td>{{rupiah($datas[$i]->fdnnet)}}</td>
-            <td>{{rupiah($datas[$i]->fdnhpp)}}</td>
-            <td>{{rupiah($datas[$i]->fdnmrgn)}}</td>
+            <td>{{$data[$i]->fdkatb}}</td>
+            <td style="text-align: left">{{$data[$i]->kat_namakategori}}</td>
+            <td>{{rupiah($data[$i]->fdnamt)}}</td>
+            <td>{{rupiah($data[$i]->fdntax)}}</td>
+            <td>{{rupiah($data[$i]->fdnnet)}}</td>
+            <td>{{rupiah($data[$i]->fdnhpp)}}</td>
+            <td>{{rupiah($data[$i]->fdnmrgn)}}</td>
             <td>{{twopoint($nmarginp[$i])}}</td>
         </tr>
 
@@ -141,16 +165,16 @@ function twopoint($angka){
         <?php
         //SUM
         foreach ($listIndex as $index){
-            $sumGross[$index] = $sumGross[$index] + $datas[$i]->fdnamt;
-            $sumTax[$index] = $sumTax[$index] + $datas[$i]->fdntax;
-            $sumNet[$index] = $sumNet[$index] + $datas[$i]->fdnnet;
-            $sumHpp[$index] = $sumHpp[$index] + $datas[$i]->fdnhpp;
-            $sumMargin[$index] = $sumMargin[$index] + $datas[$i]->fdnmrgn;
+            $sumGross[$index] = $sumGross[$index] + $data[$i]->fdnamt;
+            $sumTax[$index] = $sumTax[$index] + $data[$i]->fdntax;
+            $sumNet[$index] = $sumNet[$index] + $data[$i]->fdnnet;
+            $sumHpp[$index] = $sumHpp[$index] + $data[$i]->fdnhpp;
+            $sumMargin[$index] = $sumMargin[$index] + $data[$i]->fdnmrgn;
         }
         ?>
 
-        @if(($i+1) < sizeof($datas) )
-            @if($departemen != $datas[$i+1]->fdkdep || $divisi != $datas[$i+1]->fdkdiv)
+        @if(($i+1) < sizeof($data) )
+            @if($departemen != $data[$i+1]->fdkdep || $divisi != $data[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: left">&nbsp;&nbsp;** TOTAL PER DEPARTEMEN : </td>
                     <td>{{rupiah($sumGross['dep'])}}</td>
@@ -174,7 +198,7 @@ function twopoint($angka){
                 $sumGross['dep'] = 0; $sumTax['dep'] = 0; $sumNet['dep'] = 0; $sumHpp['dep'] = 0; $sumMargin['dep'] = 0;
                 ?>
             @endif
-            @if($divisi != $datas[$i+1]->fdkdiv)
+            @if($divisi != $data[$i+1]->fdkdiv)
                 <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: left; border-bottom: 1px solid black">*** TOTAL PER DIVISI : </td>
                     <td style="border-bottom: 1px solid black">{{rupiah($sumGross['div'])}}</td>
@@ -283,9 +307,10 @@ function twopoint($angka){
             @endif
         @endforeach
     </tbody>
-    <hr>
-    <span style="float: right">**Akhir dari laporan**</span>
+{{--    <hr>--}}
+{{--    <span style="float: right">**Akhir dari laporan**</span>--}}
 </table>
-</body>
-</html>
-
+<hr>
+{{--</body>--}}
+{{--</html>--}}
+@endsection

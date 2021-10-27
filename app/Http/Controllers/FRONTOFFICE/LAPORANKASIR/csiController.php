@@ -329,7 +329,9 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
 
-        return view('FRONTOFFICE\LAPORANKASIR\csi-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('FRONTOFFICE\LAPORANKASIR\csi-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function printDocumentK(Request $request){
@@ -395,10 +397,11 @@ GROUP BY A.TANGGAL, A.PLU, prd_deskripsipanjang, sup_kodesupplier,
       sup_namasupplier, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
 ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('FRONTOFFICE\LAPORANKASIR\csik-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        return view('FRONTOFFICE\LAPORANKASIR\csik-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function printDocumentR(Request $request){
@@ -464,9 +467,10 @@ GROUP BY A.TANGGAL, A.PLU, prd_deskripsipanjang, sup_kodesupplier,
       sup_namasupplier, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
 ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('FRONTOFFICE\LAPORANKASIR\csir-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        return view('FRONTOFFICE\LAPORANKASIR\csir-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 }

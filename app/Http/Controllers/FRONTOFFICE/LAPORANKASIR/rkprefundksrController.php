@@ -104,16 +104,17 @@ ORDER BY tglrefund, tanggal, jh_referencecashierid");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\rkprefundksr-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'val' => $val,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan, 'val' => $val,
                 'today' => $today, 'time' => $time]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(501, 33, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\rkprefundksr-pdf');
 

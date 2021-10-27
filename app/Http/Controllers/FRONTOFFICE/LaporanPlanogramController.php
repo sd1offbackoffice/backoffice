@@ -46,6 +46,7 @@ class LaporanPlanogramController extends Controller
         $tgl2 = $request->tgl2;
         $realisasi = $request->realisasi;
         $orderby = $request->orderby;
+        $orderby2 = $request->orderby2;
 
         if ($menu == '1') {
             $cw = 700;
@@ -71,14 +72,15 @@ class LaporanPlanogramController extends Controller
                                      WHERE prs_kodeigr = '" . $_SESSION['kdigr'] . "' AND prs_kodeigr = lks_kodeigr AND lks_prdcd = prd_prdcd(+)
                                            AND lks_koderak between '" . $rak1 . "' and '" . $rak2 . "'
                                            AND lks_qty < 0 " . $p_order);
+
             $filename = 'lap-qty-planogram-minus';
         } else {
 
-            if ($orderby == 'PLU') {
+            if ($orderby2 == 'PLU') {
                 $p_order = 'ORDER BY SPB_PRDCD';
-            } else if ($orderby == 'RAK') {
+            } else if ($orderby2 == 'RAK') {
                 $p_order = 'ORDER BY SPB_LOKASITUJUAN';
-            } else if ($orderby == 'TGL') {
+            } else if ($orderby2 == 'TGL') {
                 $p_order = 'ORDER BY SPB_CREATE_DT DESC';
             }
             if ($realisasi == 'Y') {
@@ -128,7 +130,7 @@ class LaporanPlanogramController extends Controller
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf->get_canvas();
-            $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
 

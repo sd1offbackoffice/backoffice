@@ -1,45 +1,29 @@
-<!DOCTYPE html>
-<html>
+@extends('pdf-template')
 
-<head>
-    <title>Laporan Rekap Perolehan Reward MyPoin</title>
-</head>
+@section('table_font_size','7 px')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}
-        </p>
-        <p>
-            {{ $perusahaan->prs_namacabang }}
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px;">
-            Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>
-            Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>
-            <i>User ID</i> : {{ $_SESSION['usid'] }}<br>
-    </div>
-    <div style="float:center;">
-        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD POIN</p>
-{{--        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">REKAP PEROLEHAN REWARD MYPOIN</p>--}}
-        <p style="text-align: center;margin: 0;padding: 0">Tgl : {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}}</p>
-    </div>
-</header>
-<body>
+@section('page_title')
+    LAPORAN REKAP PEROLEHAN REWARD POIN
+@endsection
+
+@section('title')
+    LAPORAN REKAP PEROLEHAN REWARD POIN
+@endsection
+
+@section('subtitle')
+    {{substr($tgl1,0,10)}} s/d {{substr($tgl2,0,10)}}
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th align="right" class="padding-right" width="5%">NO.</th>
-            <th align="left">ID</th>
-            <th align="left">MEMBER MERAH</th>
-            <th align="left">POIN REWARD</th>
-            <th align="right">POIN VALID</th>
-            <th align="right">POIN INVALID</th>
+            <th class="right padding-right" width="5%">NO.</th>
+            <th class="left">ID</th>
+            <th class="left">MEMBER MERAH</th>
+            <th class="left">POIN REWARD</th>
+            <th class="right">POIN VALID</th>
+            <th class="right">POIN INVALID</th>
         </tr>
         </thead>
         <tbody>
@@ -62,21 +46,21 @@ $datetime->setTimezone($timezone);
                         $number++
                     @endphp
                     <tr>
-                        <td align="right" class="padding-right">{{ $number }}</td>
-                        <td align="left">{{ $data[$i]->kodemember }}</td>
-                        <td align="left">{{ $data[$i]->namamember }}</td>
-                        <td align="left"> {{ $data[$i]->js }}</td>
-                        <td align="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
-                        <td align="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
+                        <td class="right padding-right">{{ $number }}</td>
+                        <td class="left">{{ $data[$i]->kodemember }}</td>
+                        <td class="left">{{ $data[$i]->namamember }}</td>
+                        <td class="left"> {{ $data[$i]->js }}</td>
+                        <td class="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
+                        <td class="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
                     </tr>
                 @else
                     <tr>
-                        <td align="right" class="padding-right"></td>
-                        <td align="left"></td>
-                        <td align="left"></td>
-                        <td align="left"> {{ $data[$i]->js }}</td>
-                        <td align="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
-                        <td align="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
+                        <td class="right padding-right"></td>
+                        <td class="left"></td>
+                        <td class="left"></td>
+                        <td class="left"> {{ $data[$i]->js }}</td>
+                        <td class="right">{{ number_format($data[$i]->tot_valid, 0,".",",") }}</td>
+                        <td class="right">{{ isset($data[$i]->tot_notvalid) ?  number_format($data[$i]->tot_notvalid, 0,".",",") : 0}}</td>
                     </tr>
                 @endif
                 @php
@@ -101,153 +85,6 @@ $datetime->setTimezone($timezone);
             <th style="border-right: 1px solid black;" colspan="2">Poin Valid: {{ isset($total_valid)?number_format($total_valid, 0,".",","):0 }}</th>
             <th style="border-right: 1px solid black;" colspan="2">Poin Invalid: {{ isset($total_invalid)?number_format($total_invalid, 0,".",","):0 }}</th>
         </tr>
-        <tr>
-            <th style="border-top: 1px solid black;" colspan="6" class="right">** Akhir dari laporan **</th>
-        </tr>
         </tfoot>
     </table>
-<br>
-</body>
-
-
-<style>
-    /*@page {*/
-    /*    size: 500pt 750pt;*/
-    /*}*/
-
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 0cm;
-        margin-bottom: 50px;
-    }
-
-    body {
-        margin-top: 70px;
-        /*margin-bottom: 10px;*/
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-
-    td {
-        display: table-cell;
-    }
-
-    thead {
-        text-align: center;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tfoot {
-        border-top: 1px solid black;
-    }
-
-    .keterangan {
-        text-align: left;
-    }
-
-    .table {
-        width: 100%;
-        font-size: 7px;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table-ttd {
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-
-    .table th {
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-
-    .judul, .table-borderless {
-        text-align: center;
-    }
-
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .left {
-        text-align: left;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid {
-        page-break-inside: avoid;
-    }
-
-    .table-header td {
-        white-space: nowrap;
-    }
-
-    .tengah {
-        vertical-align: middle !important;
-    }
-
-    .blank-row {
-        line-height: 70px !important;
-        color: white;
-    }
-
-    .border-top {
-        border-bottom: 1px solid black;
-    }
-
-    .table tbody td.padding-right, .table thead th.padding-right{
-        padding-right: 10px !important;
-    }
-</style>
-</html>
+@endsection

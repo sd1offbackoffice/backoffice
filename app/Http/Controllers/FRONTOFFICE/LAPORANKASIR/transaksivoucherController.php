@@ -95,9 +95,9 @@ class transaksivoucherController extends Controller
          TBMASTER_PERUSAHAAN
    WHERE PRS_KODEIGR = KODEIGR AND PRS_KODEIGR = '$kodeigr'
 ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
         $val['platinum'] = 0; $val['gold'] = 0;$val['silver'] = 0; $val['reguler'] = 0; $val['biru'] = 0; $val['gift_vcr'] = 0;
 
@@ -111,18 +111,19 @@ ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\lap_trn_vcr-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'val' => $val,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan ,'val' => $val,
                 'periode' => $periode, 'today' => $today, 'time' => $time]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 39, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\lap_trn_vcr-pdf');
 

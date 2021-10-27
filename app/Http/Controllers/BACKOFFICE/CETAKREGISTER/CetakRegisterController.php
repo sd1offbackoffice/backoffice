@@ -54,6 +54,7 @@ class CetakRegisterController extends Controller
             case 'I' : return $this->regtrfcab($cabang, $tgl1, $tgl2);
             case 'I2' : return $this->regtrfcabbtl($cabang, $tgl1, $tgl2);
             case 'O2' : return $this->regbtlsj($cabang, $tgl1, $tgl2);
+            default : return $this->regbamusnah('','');
         }
     }
 
@@ -717,19 +718,31 @@ ORDER BY MSTH_NODOC");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbamusnah-pdf',compact(['perusahaan','data','tgl1','tgl2']));
+        $title = 'Register Berita Acara Pemunsahan Barang '.$tgl1.' - '.$tgl2;
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        if(count($data) == 0){
+            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
 
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            error_reporting(E_ALL ^ E_DEPRECATED);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        }
+        else{
+            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbamusnah-pdf',compact(['perusahaan','data','tgl1','tgl2']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf ->get_canvas();
+            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        }
 
         $dompdf = $pdf;
 
-        return $dompdf->stream('Register Berita Acara Pemunsahan Barang '.$tgl1.' - '.$tgl2.'.pdf');
+        return $dompdf->stream($title.'.pdf');
     }
 
     public function regnbh($tgl1, $tgl2){
@@ -777,7 +790,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -829,7 +842,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -843,23 +856,25 @@ ORDER BY MSTH_NODOC");
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-            $data = DB::select("SELECT mstd_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nopo, to_char(mstd_tglpo, 'dd/mm/yyyy') mstd_tglpo, status,msth_noref3, msth_tgref3, sum(mstd_gross) total
-                FROM
-                (
-                    select  msth_tgldoc, mstd_nodoc, mstd_tgldoc,
-                       mstd_nopo, mstd_tglpo, mstd_gross,  msth_noref3, msth_tgref3,
-                       case when mstd_recordid = 1 then 'BATAL' ELSE '' end status
-                    from tbtr_mstran_h, tbtr_mstran_d
-                    where to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
-                    and msth_kodeigr = '".$_SESSION['kdigr']."'
-                    and msth_typetrn='F'
-                    and nvl(msth_recordid,9)=1
-                    and mstd_nodoc = msth_nodoc
-                    and mstd_kodeigr=msth_kodeigr
-                )
-                group by msth_tgldoc, mstd_nodoc, mstd_tgldoc,
-                mstd_nopo, mstd_tglpo, status,msth_noref3, msth_tgref3
-                order by msth_tgldoc, mstd_nodoc");
+            $data = DB::select("SELECT  to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc,'dd/mm/yyyy') mstd_tgldoc,
+                        mstd_nopo, to_char(mstd_tglpo, 'dd/mm/yyyy') mstd_tglpo, status,msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,
+                        sum(mstd_gross) mstd_gross
+                        FROM
+                        (
+                            select  msth_tgldoc, mstd_nodoc, mstd_tgldoc,
+                               mstd_nopo, mstd_tglpo, mstd_gross,  msth_noref3, msth_tgref3,
+                               case when mstd_recordid = 1 then 'BATAL' ELSE '' end status
+                            from tbtr_mstran_h, tbtr_mstran_d
+                            where msth_tgldoc between to_date('".$tgl1."','dd/mm/yyyy') and to_date('".$tgl2."','dd/mm/yyyy')
+                            and msth_kodeigr = '".$_SESSION['kdigr']."'
+                            and msth_typetrn='F'
+                            and nvl(msth_recordid,9)=1
+                            and mstd_nodoc = msth_nodoc
+                            and mstd_kodeigr=msth_kodeigr
+                        )
+                        group by msth_tgldoc, mstd_nodoc, mstd_tgldoc,
+                        mstd_nopo, mstd_tglpo,  status,msth_noref3, msth_tgref3
+                        order by mstd_nodoc asc");
 
 //        dd($data);
 
@@ -873,7 +888,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -1033,7 +1048,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -1132,7 +1147,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -1198,7 +1213,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -1260,7 +1275,7 @@ ORDER BY MSTH_NODOC");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 
@@ -1363,7 +1378,7 @@ ORDER BY MSTH_NODOC");
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlsj-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
+        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlsj-pdf',compact(['perusahaan','data','tgl1','tgl2']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 

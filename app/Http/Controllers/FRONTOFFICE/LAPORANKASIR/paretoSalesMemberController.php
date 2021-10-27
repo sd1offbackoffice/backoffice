@@ -65,7 +65,7 @@ class paretoSalesMemberController extends Controller
             }
         }
 
-        $cabang = DB::table('tbmaster_perusahaan')->get();
+        $perusahaan = DB::table('tbmaster_perusahaan')->first();
 
         $query = DB::select(" SELECT ROWNUM fnum, prs_namaperusahaan, prs_namacabang, out_namaoutlet, fNama,
                            fOutlt, fCusNo, fwFreq, fwSlip, fwProd, fwAmt, flCost, fGrsMargn
@@ -156,12 +156,12 @@ class paretoSalesMemberController extends Controller
                     WHERE ROWNUM <= '$rank_member' ");
 
 
-        $pdf = PDF::loadview('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember-pdf',['cabang' =>$cabang, 'query' => $query, 'tgl_start' => $tgl_start, 'tgl_end' => $tgl_end]);
+        $pdf = PDF::loadview('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember-pdf',['perusahaan' => $perusahaan, 'data' => $query, 'tgl_start' => $tgl_start, 'tgl_end' => $tgl_end]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(510, 45, "{PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
 
         return $pdf->stream('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember-pdf');

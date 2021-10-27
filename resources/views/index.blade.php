@@ -24,6 +24,12 @@
                                 PROCEDURE SP_HITUNG_MPLUSO_WEB</a></p>
                         <p><a href="{{url('file_procedure/sp_tarik_seasonomi_web.txt')}}" target="_blank">BACKOFFICE - PB - UTILITY PB IGR ->
                                 PROCEDURE SP_TARIK_SEASONOMI_WEB</a></p>
+
+                        <p>
+                            <a href="{{url('file_procedure/sp_igr_update_stock.txt')}}" target="_blank">
+                                BACKOFFICE - CETAK DOKUMEN -> PROCEDURE SP_IGR_UPDATE_STOCK
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

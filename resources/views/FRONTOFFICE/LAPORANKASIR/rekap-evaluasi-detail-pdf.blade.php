@@ -14,12 +14,6 @@
     Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
 @endsection
 
-@section('custom_style')
-    @page{
-        size: A4
-    }
-@endsection
-
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
@@ -63,8 +57,8 @@
                 <td class="right">{{ $d->fwslip }}</td>
                 <td class="right">{{ $d->fwprod }}</td>
                 <td class="right">{{ number_format($d->fwamt, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($d->fgrsmargn, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($d->fgrsmargn / $d->fwamt * 100, 1, '.', ',') }}</td>
+                <td class="right">{{ number_format($d->fgrsmargn, 2, '.', ',') }}</td>
+                <td class="right">{{ number_format($d->fgrsmargn / $d->fwamt * 100, 2, '.', ',') }}</td>
             </tr>
         @php
             $no++;
@@ -81,7 +75,7 @@
             <td class="top-bottom right">{{ number_format($slip, 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($produk, 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($rupiah, 0, '.', ',') }}</td>
-            <td class="top-bottom right">{{ number_format($margin, 0, '.', ',') }}</td>
+            <td class="top-bottom right">{{ number_format($margin, 2, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($margin / $rupiah * 100, 2, '.', ',') }}</td>
         </tr>
         <tfoot>

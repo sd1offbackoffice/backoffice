@@ -544,11 +544,11 @@ class ReorderPBGOController extends Controller
             nvl(ROUND(fdqebt/PRD_Frac),'0') stok_qtyb,
             nvl(MOD(fdqebt, PRD_Frac),'0') stok_qtyk,
             nvl(ROUND(PRD_MinOrder/PRD_Frac),'0') minorder_qtyb,
-            nvl(MOD(PRD_MinOrder, PRD_Frac),'0') minorder_qtyk,   
+            nvl(MOD(PRD_MinOrder, PRD_Frac),'0') minorder_qtyk,
             nvl(ROUND(fdmaxt/PRD_Frac),'0') max_qtyb,
-            nvl(MOD(fdmaxt,PRD_Frac),'0') max_qtyk,   
+            nvl(MOD(fdmaxt,PRD_Frac),'0') max_qtyk,
             nvl(ROUND(fdmint/PRD_Frac),'0') min_qtyb,
-            nvl(MOD(fdmint, PRD_Frac),'0') min_qtyk,   
+            nvl(MOD(fdmint, PRD_Frac),'0') min_qtyk,
             nvl(ROUND(out_po/PRD_Frac),'0') po_qtyb,
             nvl(MOD(out_po,PRD_Frac),'0') po_qtyk,
             nvl(ROUND(out_pb/PRD_Frac),'0') pb_qtyb,
@@ -578,7 +578,7 @@ class ReorderPBGOController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(525, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(509, 77.75, "Page {PAGE_NUM} dari {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
         $dompdf = $pdf;
 

@@ -116,7 +116,7 @@
                                                         </table>
                                                     </div>
                                                     <div class="col-sm-1" style="height: 125px;margin-top: 50px">
-                                                        <button class="btn btn-primary"
+                                                        <button class="btn btn-primary" id="btn-simpan-perjanjian-sewa"
                                                                 onclick="simpanPerjanjianSewa()">
                                                             S<br>i<br>m<br>p<br>a<br>n
                                                         </button>
@@ -643,6 +643,7 @@
         }
 
         function getDataPerjanjian() {
+            $('#btn-simpan-perjanjian-sewa').prop('disabled',false);
             let nopjsewa = $('#nopjsewa').val();
             $.ajax({
                 url: '{{ url()->current().'/getdatanopjsewa' }}',
@@ -671,7 +672,7 @@
                                         <td><input type="text" class="form-control text" readonly value="` + response.data[i].gdl_tglakhir.substring(0, 10) + `"></td>
                                         <td>
                                             <div class="col-sm-12 buttonInside">
-                                                <input id="lokasi-` + row + `" type="text" class="form-control text">
+                                                <input id="lokasi-` + row + `" type="text" class="form-control text" readonly value="` + nvl(response.data[i].gds_lokasi,'') + `">
                                                 <button type="button" class="btn btn-lov p-0"
                                                         data-toggle="modal" data-target="#m_lokasi" onclick="changeRow('` + row + `')">
                                                     <img src="{{ (asset('image/icon/help.png')) }}"
@@ -682,6 +683,10 @@
                                     </tr>
                             `);
                         }
+                        if (nvl(response.data[0].gds_lokasi,'') != '' ) {
+                            $('#btn-simpan-perjanjian-sewa').prop('disabled',true);
+                        }
+
                     }
 
                     if (response.model == 'TAMBAH') {
@@ -724,7 +729,7 @@
                                         <td><input type="text" class="form-control text tanggal"></td>
                                         <td>
                                             <div class="col-sm-12 buttonInside">
-                                                <input id="lokasi-` + maxrow + `" type="text" class="form-control text">
+                                                <input id="lokasi-` + maxrow + `" type="text" readonly class="form-control text">
                                                 <button type="button" class="btn btn-lov p-0"
                                                         data-toggle="modal" data-target="#m_lokasi" onclick="changeRow('` + maxrow + `')">
                                                     <img src="{{ (asset('image/icon/help.png')) }}"
@@ -869,7 +874,14 @@
             $('.row-' + maxrow).remove();
             maxrow--;
         });
-
+        function nvl(val,ret) {
+            if(val == null || val == '' || val == undefined){
+                return  ret;
+            }
+            else{
+                return val;
+            }
+        }
         function simpanPerjanjianSewa() {
             data = [];
 
@@ -893,27 +905,37 @@
             model = $('#model').val();
             nopjsewa = $('#nopjsewa').val();
             if (nopjsewa != '' && data.length > 0) {
-                ajaxSetup();
-                $.ajax({
-                    url: '{{ url()->current().'/simpanperjanjiansewa' }}',
-                    type: 'post',
-                    data: {
-                        data: data,
-                        model: model,
-                        nopjsewa: nopjsewa
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('toggle');
-                        swal(response.status, response.message, response.status);
-                    },
-                    error: function (response) {
-                        $('#modal-loader').modal('toggle');
-                        alertError(response);
+                swal({
+                    title: 'Yakin ingin menyimpan data no. Prj Sewa ' + nopjsewa + '?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((ok) => {
+                    if (ok) {
+                        ajaxSetup();
+                        $.ajax({
+                            url: '{{ url()->current().'/simpanperjanjiansewa' }}',
+                            type: 'post',
+                            data: {
+                                data: data,
+                                model: model,
+                                nopjsewa: nopjsewa
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('toggle');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('toggle');
+                                swal(response.status, response.message, response.status);
+                            },
+                            error: function (response) {
+                                $('#modal-loader').modal('toggle');
+                                alertError(response);
+                            }
+                        });
                     }
                 });
+
             } else {
                 swal('Error', 'Isi No Perjanjian Sewa!', 'error');
                 return false;
@@ -1092,29 +1114,38 @@
             tiperak = $('#tiperak').val();
 
             if (rak != '' && subrak != '' && tiperak != '') {
-                ajaxSetup();
-                $.ajax({
-                    url: '{{ url()->current().'/simpan2' }}',
-                    type: 'post',
-                    data: {
-                        rak: rak,
-                        subrak: subrak,
-                        tiperak: tiperak,
-                        shelving: shelving,
-                        nourut: nourut,
-                        plu: plu,
-                        noprjsewa: noprjsewa
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('toggle');
-                        swal(response.status.toUpperCase(), response.message, response.status);
-                    },
-                    error: function (response) {
-                        $('#modal-loader').modal('toggle');
-                        alertError('Error',response.responseJSON.message);
+                swal({
+                    title: 'Yakin ingin menyimpan data ?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((ok) => {
+                    if (ok) {
+                        ajaxSetup();
+                        $.ajax({
+                            url: '{{ url()->current().'/simpan2' }}',
+                            type: 'post',
+                            data: {
+                                rak: rak,
+                                subrak: subrak,
+                                tiperak: tiperak,
+                                shelving: shelving,
+                                nourut: nourut,
+                                plu: plu,
+                                noprjsewa: noprjsewa
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('toggle');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('toggle');
+                                swal(response.status.toUpperCase(), response.message, response.status);
+                            },
+                            error: function (response) {
+                                $('#modal-loader').modal('toggle');
+                                alertError('Error', response.responseJSON.message);
+                            }
+                        });
                     }
                 });
             } else {

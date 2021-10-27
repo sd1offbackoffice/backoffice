@@ -138,14 +138,18 @@ AND LKS_KODERAK
             $model = 'TAMBAH';
         } else {
             $data = DB::select("SELECT *
-      FROM TBTR_GONDOLA
-     WHERE GDL_NOPERJANJIANSEWA = '" . $nopjsewa . "'");
+                  FROM TBTR_GONDOLA left join TBTR_GONDOLASEWA on GDL_NOPERJANJIANSEWA = GDS_NOPERJANJIANSEWA
+                  AND GDL_PRDCD = GDS_PRDCD
+                  AND trim(GDL_KODEPRINCIPAL) = GDS_KODEPRINCIPAL
+                  AND trim(GDL_KODEDISPLAY) = GDS_KODEDISPLAY
+                 WHERE GDL_NOPERJANJIANSEWA = '" . $nopjsewa . "'");
             if (strlen($nopjsewa) >= 18) {
                 $property = true;
             } else {
                 $property = false;
             }
         }
+
         return compact(['model', 'data', 'property']);
     }
 
@@ -180,7 +184,6 @@ AND LKS_KODERAK
                          '" . $d['kodedisplay'] . "', to_date('" . $d['tglawal'] . "','dd/mm/yyyy'), to_date('" . $d['tglakhir'] . "','dd/mm/yyyy'), '" . $d['kodeprincipal'] . "',
                          '" . $_SESSION['usid'] . "', sysdate
                         )");
-
                 }
 
                 $temp = DB::select("SELECT COUNT(1) count
@@ -189,22 +192,22 @@ AND LKS_KODERAK
                     and GDS_PRDCD = '" . $d['plu'] . "'
                     and GDS_KODEDISPLAY = '" . $d['kodedisplay'] . "'")[0]->count;
 
-                $temp = DB::select("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','dd/mm/yyyy') and to_date('" . $d['tglakhir'] . "','dd/mm/yyyy') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan")[0]->aa;
-
+                $temp = DB::select("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','yyyy-mm-dd') and to_date('" . $d['tglakhir'] . "','yyyy-mm-dd') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan")[0]->aa;
+//dd("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','yyyy-mm-dd') and to_date('" . $d['tglakhir'] . "','yyyy-mm-dd') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan");
                 if ($temp == 1) {
 
                     DB::insert("INSERT INTO TBTR_GONDOLASEWA
  (GDS_KODEIGR, GDS_NOPERJANJIANSEWA, GDS_PRDCD, GDS_QTY, GDS_KODECABANG,
                     GDS_KODEDISPLAY, GDS_TGLAWAL, GDS_TGLAKHIR, GDS_KODEPRINCIPAL,
-                    GDS_LOKASI, GDS_CREATE_BY, GDS_CREATE_DT
+                    GDS_LOKASI, GDS_CREATE_BY, GDS_CREATE_DT)
                  VALUES('" . $_SESSION['kdigr'] . "', '" . $nopjsewa . "', '" . $d['plu'] . "', '" . $d['qty'] . "', '" . $_SESSION['kdigr'] . "',
-                         '" . $d['kodedisplay'] . "', to_date('" . $d['tglawal'] . "','dd/mm/yyyy'), to_date('" . $d['tglakhir'] . "','dd/mm/yyyy'), '" . $d['kodeprincipal'] . "', '" . $d->lokasi . "',
+                         '" . $d['kodedisplay'] . "', to_date('" . $d['tglawal'] . "','yyyy/mm/dd'), to_date('" . $d['tglakhir'] . "','yyyy/mm/dd'), '" . $d['kodeprincipal'] . "', '" . $d['lokasi'] . "',
                          '" . $_SESSION['usid'] . "', sysdate
                         )");
 
                     DB::update("UPDATE TBMASTER_LOKASI
-               SET LKS_MAXPLANO = LKS_MAXPLANO + :GDL_QTY,
-                   LKS_MODIFY_BY = '" . $_SESSION['usid'] . "'
+               SET LKS_MAXPLANO = LKS_MAXPLANO + " . $d['qty'] . ",
+                   LKS_MODIFY_BY = '" . $_SESSION['usid'] . "',
                    LKS_MODIFY_DT = SYSDATE
              WHERE LKS_KODEIGR = '" . $_SESSION['kdigr'] . "'
                 and LKS_PRDCD = '" . $d['plu'] . "'
@@ -212,9 +215,10 @@ AND LKS_KODERAK
                 and LKS_KODERAK NOT LIKE 'G%'
                 and LKS_TIPERAK <> 'S'");
 
+
                     DB::update("UPDATE TBMASTER_LOKASI
                SET LKS_PRDCD = '" . $d['plu'] . "',
-               		 LKS_MODIFY_BY ='" . $_SESSION['usid'] . "'
+               		 LKS_MODIFY_BY ='" . $_SESSION['usid'] . "',
                    LKS_MODIFY_DT = SYSDATE
              WHERE    LKS_KODERAK
                 || '.'
@@ -224,7 +228,7 @@ AND LKS_KODERAK
                 || '.'
                 || LKS_SHELVINGRAK
                 || '.'
-                || LKS_NOURUT ='" . $d['lokasi'] . "';");
+                || LKS_NOURUT ='" . $d['lokasi'] . "'");
 
                 }
             }

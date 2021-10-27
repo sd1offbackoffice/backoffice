@@ -4,7 +4,17 @@
     <title>@yield('page_title')</title>
 </head>
 <body>
-    <div style="margin:auto; width: 595pt">
+    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px">
+        <button style="float:right;    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+display: inline-block;
+    font-weight: 400;border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;" onclick="window.print()">CETAK</button>
+    </div>
+    <div style="margin:auto; width: @yield('paper_width','595pt')">
         <table class="report-container">
             <thead class="report-header">
             <tr>
@@ -30,7 +40,7 @@
                                 <i>User ID</i> : {{ $_SESSION['usid'] }}
                             </p>
                             <p>
-                                Hal. : <span id="pageNumber"></span>
+{{--                                Hal. : <span id="pageNumber"></span>--}}
                             </p>
                         </div>
                         <div class="center">
@@ -61,7 +71,7 @@
                         <div class="article">
                             <main>
                                 @yield('content')
-                                <p class="right" style="font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
+                                <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
                             </main>
                         </div>
                     </div>
@@ -97,6 +107,10 @@
     }
 
     @media print{
+        #buttonArea{
+            display: none;
+        }
+
         tfoot.report-footer{
             position: fixed;
             bottom: 0;

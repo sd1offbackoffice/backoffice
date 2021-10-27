@@ -1369,11 +1369,8 @@
                 })
             }
             else{
-                tgl1 = nvl(formatDateCustom(formatDate($('#sup_tanggal1').val()),'dd-mm-yy'),'ALL');
-                tgl2 = nvl(formatDateCustom(formatDate($('#sup_tanggal2').val()),'dd-mm-yy'),'ALL');
-
-                console.log(tgl1);
-                console.log(tgl2);
+                tgl1 = nvl($('#sup_tanggal1').val(),'ALL');
+                tgl2 = nvl($('#sup_tanggal2').val(),'ALL');
 
                 sup1 = nvl($('#sup_supplier1').val(),'ALL');
                 sup2 = nvl($('#sup_supplier2').val(),'ALL');

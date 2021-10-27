@@ -71,7 +71,6 @@
                             <label class="col-sm-3 text-right col-form-label pl-0">Rangking By</label>
                             <div class="col-sm-2 buttonInside pl-0">
                                 <select class="form-control" id="rank_by">
-                                    <option value="0">All</option>
                                     <option value="1">Sales</option>
                                     <option value="2">Gross Margin</option>
                                 </select>

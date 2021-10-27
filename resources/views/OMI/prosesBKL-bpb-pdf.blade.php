@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>BPB BKL</title>
+    <title>Bukti Penerimaan Barang</title>
     <style>
         @page {
             /*margin: 130px 25px 25px 25px;*/
@@ -32,7 +32,7 @@
         body {
             font-size: 9px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-weight: bold;
+            /*font-weight: bold;*/
             margin-top: 90px;
         }
 
@@ -63,7 +63,7 @@
 <body>
 
 {{--@if (isset($query))--}}
-@if (!$result)
+@if (!$data)
     <h1 style="text-align: center">Data Tidak Ada</h1>
 @else
 
@@ -77,20 +77,20 @@
     <div class="header" style="">
         <div style="width: 20%">
             <div>
-                <p>{{$result[0]->prs_namaperusahaan}}</p>
-                <p>NPWP : {{$result[0]->prs_npwp}}</p>
+                <p>{{$data[0]->prs_namaperusahaan}}</p>
+                <p>NPWP : {{$data[0]->prs_npwp}}</p>
             </div>
         </div>
         <div style="width: 20%; margin-left: 20%; margin-top: -100px">
             <div>
                 <p>BUKTI PENERIMAAN BARANG</p>
-                <p>{{$result[0]->judul}}</p>
+                <p>{{$data[0]->judul}}</p>
             </div>
         </div>
         <div style="width: 60%; margin-left: 40%; margin-top: -100px">
             <div>
-                <p>{{$result[0]->prs_namacabang}}</p>
-                <p>{{$result[0]->prs_alamatfakturpajak1}} <span/> {{$result[0]->prs_alamatfakturpajak2}} <span/> {{$result[0]->prs_alamatfakturpajak3}} </p>
+                <p>{{$data[0]->prs_namacabang}}</p>
+                <p>{{$data[0]->prs_alamatfakturpajak1}} <span/> {{$data[0]->prs_alamatfakturpajak2}} <span/> {{$data[0]->prs_alamatfakturpajak3}} </p>
             </div>
         </div>
 
@@ -99,19 +99,19 @@
                 <tbody>
                 <tr>
                     <td>No.BPB</td>
-                    <td>: {{$result[0]->msth_nodoc}}</td>
+                    <td>: {{$data[0]->msth_nodoc}}</td>
                 </tr>
                 <tr>
                     <td>No.PO</td>
-                    <td>: {{$result[0]->msth_nopo}}</td>
+                    <td>: {{$data[0]->msth_nopo}}</td>
                 </tr>
                 <tr>
                     <td>FAKTUR</td>
-                    <td>: {{$result[0]->msth_nofaktur}}</td>
+                    <td>: {{$data[0]->msth_nofaktur}}</td>
                 </tr>
                 <tr>
                     <td>T.O.P</td>
-                    <td>: {{$result[0]->msth_cterm}} Hari</td>
+                    <td>: {{$data[0]->msth_cterm}} Hari</td>
                 </tr>
                 </tbody>
             </table>
@@ -121,19 +121,19 @@
                 <tbody>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{($result[0]->msth_tgldoc) ? date('d/m/Y', strtotime($result[0]->msth_tgldoc)) : ''}}</td>
+                    <td>: {{($data[0]->msth_tgldoc) ? date('d/m/Y', strtotime($data[0]->msth_tgldoc)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{($result[0]->msth_tglpo) ? date('d/m/Y', strtotime($result[0]->msth_tglpo)) : ''}}</td>
+                    <td>: {{($data[0]->msth_tglpo) ? date('d/m/Y', strtotime($data[0]->msth_tglpo)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>TANGGAL</td>
-                    <td>: {{($result[0]->msth_tglfaktur) ? date('d/m/Y', strtotime($result[0]->msth_tglfaktur)) : ''}}</td>
+                    <td>: {{($data[0]->msth_tglfaktur) ? date('d/m/Y', strtotime($data[0]->msth_tglfaktur)) : ''}}</td>
                 </tr>
                 <tr>
                     <td>JATUH TEMPO</td>
-                    <td>: {{($result[0]->tgljt) ? date('d/m/Y', strtotime($result[0]->tgljt)) : ''}}</td>
+                    <td>: {{($data[0]->tgljt) ? date('d/m/Y', strtotime($data[0]->tgljt)) : ''}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -143,22 +143,22 @@
                 <tbody>
                 <tr>
                     <td>SUPPLIER</td>
-                    <td>: {{$result[0]->supplier}}</td>
+                    <td>: {{$data[0]->supplier}}</td>
                 </tr>
                 <tr>
                     <td>NPWP</td>
-                    <td>: {{$result[0]->sup_npwp}}</td>
+                    <td>: {{$data[0]->sup_npwp}}</td>
                 </tr>
                 <tr>
                     <td>ALAMAT</td>
-                    <td>: {{$result[0]->alamat_supplier}}</td>
+                    <td>: {{$data[0]->alamat_supplier}}</td>
                 </tr>
                 <tr>
                     <td>TELP</td>
-                    <td>: {{$result[0]->sup_telpsupplier}}</td>
+                    <td>: {{$data[0]->sup_telpsupplier}}</td>
                     <td style="width: 10px"></td>
                     <td>C. PERSON</td>
-                    <td>: {{$result[0]->contact_person}}</td>
+                    <td>: {{$data[0]->contact_person}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -190,44 +190,44 @@
         <tbody>
 {{--        @for($i = 0; $i < 10; $i++)--}}
             <?php $no = 1 ; $total = 0; $ppn = 0; $disc4 = 0?>
-            @foreach($result as $data)
+            @foreach($data as $value)
                 <tr style="border-top: 1px solid black">
                     <td rowspan="2" style="width: 20px; text-align: left;">{{$no++}}</td>
-                    <td rowspan="2" style="width: 265px; text-align: left;">{{$data->plu}}</td>
-                    <td colspan="1" style="width: 50px; text-align: center">{{$data->kemasan}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">{{$data->qty}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">{{$data->qtyk}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->mstd_hrgsatuan), 0, '.', ',')}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->mstd_ppnbmrph), 0, '.', ',')}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->mstd_ppnbtlrph), 0, '.', ',')}}</td>
-                    <td rowspan="2" style="width: 50px; text-align: right">Rp. {{number_format(round($data->jumlah), 0, '.', ',')}}</td>
+                    <td rowspan="2" style="width: 265px; text-align: left;">{{$value->plu}}</td>
+                    <td colspan="1" style="width: 50px; text-align: center">{{$value->kemasan}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{$value->qty}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{$value->qtyk}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{number_format(round($value->mstd_hrgsatuan), 2, '.', ',')}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{number_format(round($value->mstd_ppnbmrph), 2, '.', ',')}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{number_format(round($value->mstd_ppnbtlrph), 2, '.', ',')}}</td>
+                    <td rowspan="2" style="width: 50px; text-align: right">{{number_format(round($value->jumlah), 2, '.', ',')}}</td>
                 </tr>
                 <tr style="">
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->rphdisc1), 0, '.', ',')}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->disc2), 0, '.', ',')}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">Rp. {{number_format(round($data->rphdisc3), 0, '.', ',')}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">{{$data->qtybonus1}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">{{$data->qtybonus2}}</td>
-                    <td colspan="1" style="width: 50px; text-align: right">{{$data->keterangan}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{($value->rphdisc1 > 0) ? number_format(round($value->rphdisc1), 2, '.', ',') : ''}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{($value->disc2 > 0) ? number_format(round($value->disc2), 2, '.', ',') : ''}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{($value->rphdisc3 > 0) ? number_format(round($value->rphdisc3), 2, '.', ',') : ''}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{($value->qtybonus1 > 0) ? $value->qtybonus1 : ''}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{($value->qtybonus2 > 0) ? $value->qtybonus2 : ''}}</td>
+                    <td colspan="1" style="width: 50px; text-align: right">{{$value->keterangan}}</td>
                 </tr>
                 <tr><td colspan="9" style="height: 1px; border-bottom: 1px solid black"></td></tr>
-                {{$total = $total + $data->jumlah}}
-                {{$ppn = $ppn + (0.1 * $data->jumlah)}}
-                {{$disc4 = $disc4 + $data->dis4}}
+                {{$total = $total + $value->jumlah}}
+                {{$ppn = $ppn + (0.1 * $value->jumlah)}}
+                {{$disc4 = $disc4 + $value->dis4}}
             @endforeach
 {{--        @endfor--}}
 
         <tr>
             <td colspan="7" style="text-align: right"> TOTAL HARGA BELI</td>
-            <td colspan="2" style="text-align: right">Rp. {{number_format(round($total), 0, '.', ',')}}</td>
+            <td colspan="2" style="text-align: right">{{number_format(round($total), 2, '.', ',')}}</td>
         </tr>
         <tr>
             <td colspan="7" style="text-align: right"> TOTAL PPN</td>
-            <td colspan="2" style="border-bottom: 1px black solid; text-align: right">Rp. {{number_format(round($ppn), 0, '.', ',')}}</td>
+            <td colspan="2" style="border-bottom: 1px black solid; text-align: right">{{number_format(round($ppn), 2, '.', ',')}}</td>
         </tr>
         <tr>
             <td colspan="7" style="text-align: right"> TOTAL SELURUHNYA</td>
-            <td colspan="2" style="text-align: right"> Rp. {{number_format(round(($total + $ppn) - $disc4), 0, '.', ',')}}</td>
+            <td colspan="2" style="text-align: right"> {{number_format(round(($total + $ppn) - $disc4), 2, '.', ',')}}</td>
         </tr>
         </tbody>
     </table>

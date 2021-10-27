@@ -18,12 +18,12 @@ class CheckLogin
 
             $isChanged = false;
 
+            $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
+
             if(!AccessController::isAccessible(\Request::getPathInfo())){
                 abort(403);
 //                return redirect('/unauthorized');
             }
-
-            $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
 
 //            if(count($menu) == count($_SESSION['menu'])){
 //                for($i=0;$i<count($menu);$i++){

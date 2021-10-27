@@ -230,9 +230,6 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
 
         $cf_nmargin = [];
         $cs_tlQty = 0;
@@ -527,10 +524,11 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'qty' => $qty, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
         $pdf->setPaper('A4', 'potrait');
@@ -538,7 +536,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 24, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf');
     }
@@ -552,6 +550,9 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $export = $request->export; //P_CKSRX
         $grosirA = $request->grosira;
         $lst_print = $request->lst_print;
+        if($lst_print == "INDOGROSIR ALL [IGR   (OMI/IDM)]"){
+            $lst_print = "INDOGROSIR ALL [IGR + (OMI/IDM)]";
+        }
 
         if($dateA != $dateB){
             $periode = 'PERIODE: '.$dateA.' s/d '.$dateB;
@@ -600,22 +601,11 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
-        $cf_nmargin = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            if(($datas[$i]->nnet) != 0){
-                $cf_nmargin[$i] = round(($datas[$i]->nmargin)*100/($datas[$i]->nnet), 2);
-            }else{
-                if(($datas[$i]->nmargin) != 0){
-                    $cf_nmargin[$i]=100;
-                }else{
-                    $cf_nmargin[$i]=0;
-                }
-            }
-        }
+
 
         //CALCULATE GRAND TOTAL
 
@@ -846,11 +836,69 @@ ORDER BY cdiv,cdept");
             }
         }
 
+        //MENGAMBIL ULANG DATA TANPA FDFBKP agar tidak group by fdfbkp yang menyebabkan nilai menjadi double,
+        //fdfbkp sebelumnya diperlukan untuk menghitung total
+        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp,
+       CASE WHEN '$export' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
+       SUM(fdnamt + CASE WHEN '$grosirA'='T' THEN fdfnam ELSE 0 END) nGross, --fdnamt+fdfnam
+       CASE WHEN '$export' <> 'Y' THEN SUM( CASE WHEN '$export' <> 'Y' THEN fdntax END + CASE WHEN '$grosirA'='T' THEN fdftax ELSE 0 END  ) END nTax, --fdntax+fdftax
+       SUM(fdnnet + CASE WHEN '$grosirA'='T' THEN fdfnet ELSE 0 END) nNet, --fdnnet+fdfnet
+       SUM(fdnhpp + CASE WHEN '$grosirA'='T' THEN fdfhpp ELSE 0 END) nHpp, --fdnhpp+fdfhpp
+       SUM(fdmrgn + CASE WHEN '$grosirA'='T' THEN fdfmgn ELSE 0 END) nMargin --fdmrgn+fdfmgn
+FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
+(    SELECT sls_kodeigr, sls_kodedivisi cdiv, sls_kodedepartement cdept,
+           (sls_NilaiNOMI) fdnamt,
+           (sls_TaxNOMI) fdntax,
+           (sls_NetNOMI) fdnnet,
+           (sls_HppNOMI) fdnhpp,
+           (sls_MarginNOMI) fdmrgn,
+           (sls_NilaiOMI+sls_NilaiIDM) fdfnam,
+           (sls_TaxOMI+sls_TaxIDM) fdftax,
+           (sls_NetOMI+sls_NetIDM) fdfnet,
+           (sls_HppOMI+sls_HppIDM) fdfhpp,
+           (sls_MarginOMI+sls_MarginIDM) fdfmgn,
+           NVL(cexp,'F') cexp,
+           CASE WHEN '$export' ='Y' THEN NVL(cStat,'F') ELSE NVL(cStat,'T') END cStat
+    FROM TBTR_SUMSALES,
+    (    SELECT sls_prdcd prdcd, 'T' cexp, 'T' cStat
+        FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+        WHERE sls_prdcd = exp_prdcd
+          AND trjd_recordid IS NULL
+          AND trjd_prdcd = sls_prdcd
+          AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+          AND trjd_cus_kodemember = cus_kodemember (+)
+           AND cus_jenismember = 'E'
+        )
+    WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+      AND sls_prdcd = prdcd(+)
+)
+WHERE prs_kodeigr = '$kodeigr'
+  AND sls_kodeigr = prs_kodeigr
+  AND cdiv = div_kodedivisi
+  AND cdept = dep_kodedepartement
+  AND cStat = 'T'
+GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp
+ORDER BY cdiv,cdept");
+
+        $cf_nmargin = [];
+        for($i=0;$i<sizeof($datas);$i++){
+            if(($datas[$i]->nnet) != 0){
+                $cf_nmargin[$i] = round(($datas[$i]->nmargin)*100/($datas[$i]->nnet), 2);
+            }else{
+                if(($datas[$i]->nmargin) != 0){
+                    $cf_nmargin[$i]=100;
+                }else{
+                    $cf_nmargin[$i]=0;
+                }
+            }
+        }
+
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
         $pdf->setPaper('A4', 'potrait');
@@ -858,7 +906,7 @@ ORDER BY cdiv,cdept");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(506, 58, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept-pdf');
     }
@@ -955,9 +1003,9 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY prs_namaperusahaan, prs_namacabang, omikod, namaomi, omisbu, namasbu, omidiv, div_namadivisi, omidep, dep_namadepartement
 ORDER BY omikod");
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
 
         $cf_nmargin = [];
@@ -1022,6 +1070,7 @@ ORDER BY omikod");
         }
 
 //        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 //        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_cd-pdf',
@@ -1037,7 +1086,7 @@ ORDER BY omikod");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_cd-pdf');
 
-        return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_d-pdf',['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time,
+        return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_d-pdf',['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
             'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
             'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
     }
@@ -1066,7 +1115,6 @@ ORDER BY omikod");
         if($request->p_omi != 'z'){
             $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
         }
-
         $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omisbu, namasbu, omidiv, omidep,
 	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
 	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
@@ -1140,9 +1188,9 @@ ORDER BY omidiv, omidep");
             ->where('tko_kodeomi','=',$p_omi)
             ->first();
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
 
         $cf_nmargin = [];
@@ -1207,10 +1255,11 @@ ORDER BY omidiv, omidep");
         }
 
 //        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_c-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time, 'namaomi' => $namaomi,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'namaomi' => $namaomi, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
         $pdf->setPaper('A4', 'potrait');
@@ -1218,7 +1267,7 @@ ORDER BY omidiv, omidep");
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(506, 58, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_c-pdf');
 
@@ -1369,9 +1418,9 @@ WHERE prs_kodeigr = '$kodeigr'
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
         //CALCULATE GRAND TOTAL
         //$arrayIndex = ['p','i','b','g','r','e','x','c','f','h','total-40','total'];
@@ -1592,23 +1641,24 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         if($pluall == 'N'){
             $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf',
-                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'mon' =>$mon, 'margin1' => $margin1,'margin2' => $margin2, 'datas' => $datas, 'today' => $today, 'time' => $time,
+                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'mon' =>$mon, 'margin1' => $margin1,'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                     'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
             $pdf->setPaper('A4', 'landscape');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(761, 51, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $canvas->page_text(759, 78, "{PAGE_NUM}/{PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf');
         }else{
             return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv_all-pdf',
-                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'margin1' => $margin1,'margin2' => $margin2, 'datas' => $datas, 'today' => $today, 'time' => $time,
+                ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'margin1' => $margin1,'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                     'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         }
     }
@@ -1665,9 +1715,9 @@ WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
   AND cexp = '$ekspor'
 ORDER BY sls_periode");
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
 
         $val['gross'] = 0; $val['tax'] = 0; $val['net'] = 0; $val['hpp'] = 0; $val['margin'] = 0; $val['margp'] = 0;
 
@@ -1689,17 +1739,18 @@ ORDER BY sls_periode");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'val' => $val, 'today' => $today, 'time' => $time, 'periode' => $periode]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(491, 67, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf');
     }
@@ -2103,17 +2154,18 @@ ORDER BY FDKDIV, FDKDEP");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
 //        $today = date('d-m-Y');
 //        $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'nmarginp' => $nmarginp , 'kasir' =>$kasir, 'station' => $station,
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'nmarginp' => $nmarginp , 'kasir' =>$kasir, 'station' => $station, 'perusahaan' => $perusahaan,
                 'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(508, 58, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf');
     }

@@ -29,12 +29,12 @@
             Hal. :
         </p>
     </div>
-    <div>
+    <div style="float: center">
         <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
             @yield('title')
         </p>
         <p style="text-align: center;margin: 0;padding: 0">
-            @yield('subtitle')
+            @yield('subtitle',date("d/m/Y"))
         </p>
     </div>
 </header>
@@ -42,7 +42,11 @@
 
 
 <main>
-    @yield('content')
+    @if(sizeof($data) == 0)
+        <h4 class="center">TIDAK ADA DATA</h4>
+    @else
+        @yield('content')
+    @endif
 </main>
 
 <footer>
@@ -177,6 +181,10 @@
 
     .bold td{
         font-weight: bold;
+    }
+
+    .border-top td{
+        border-top: 1px solid black;
     }
 
     .top-bottom{

@@ -1,0 +1,163 @@
+CREATE OR REPLACE PROCEDURE SIMSMG.sp_igr_update_stock (
+   p_kodeigr           VARCHAR2,
+   v_lokasi            VARCHAR2,
+   v_plu               VARCHAR2,
+   v_kdsup             VARCHAR2,
+   v_kolupdate         VARCHAR2,
+   v_qty               NUMBER,
+   v_lcost             NUMBER,
+   v_acost             NUMBER,
+   p_userid            VARCHAR2,
+   v_lok         OUT   VARCHAR2,
+   v_message     OUT   VARCHAR2
+)
+IS
+   p_prdcd     VARCHAR2 (7);
+   p_trfin     NUMBER       := 0;
+   p_trfout    NUMBER       := 0;
+   p_sales     NUMBER       := 0;
+   p_retur     NUMBER       := 0;
+   p_adj       NUMBER       := 0;
+   p_transit   NUMBER       := 0;
+   p_akhir     NUMBER       := 0;
+   p_acost     NUMBER       := 0;
+   p_lcost     NUMBER       := 0;
+   v_trfin     NUMBER       := 0;
+   v_trfout    NUMBER       := 0;
+   v_sales     NUMBER       := 0;
+   v_retur     NUMBER       := 0;
+   v_adj       NUMBER       := 0;
+   v_transit   NUMBER       := 0;
+   v_akhir     NUMBER       := v_qty;
+   v_hpp       BOOLEAN      := FALSE;
+
+   CURSOR stock_cur
+   IS
+      SELECT st_prdcd, st_trfin, st_trfout, st_sales, st_retur, st_adj,
+             st_intransit, st_saldoakhir, st_lastcost, st_avgcost
+        FROM tbmaster_stock
+       WHERE st_prdcd = v_plu AND st_lokasi = v_lokasi;
+BEGIN
+   v_lok := FALSE;
+
+   OPEN stock_cur;
+
+   FETCH stock_cur
+    INTO p_prdcd, p_trfin, p_trfout, p_sales, p_retur, p_adj, p_transit,
+         p_akhir, p_lcost, p_acost;
+
+   IF stock_cur%NOTFOUND
+   THEN
+      --** Insert Data Stock **--
+      CASE
+         WHEN v_kolupdate = 'TRFIN'
+         THEN
+            v_trfin := v_qty;
+         WHEN v_kolupdate = 'TRFOUT'
+         THEN
+            v_trfout := v_qty;
+         WHEN v_kolupdate = 'SALES'
+         THEN
+            v_sales := v_qty;
+         WHEN v_kolupdate = 'RETUR'
+         THEN
+            v_retur := v_qty;
+         WHEN v_kolupdate = 'ADJ'
+         THEN
+            v_adj := v_qty;
+         WHEN v_kolupdate = 'TRANSIT'
+         THEN
+            v_transit := v_qty;
+         ELSE
+            NULL;
+      END CASE;
+
+      INSERT INTO tbmaster_stock
+                  (st_kodeigr, st_recordid, st_lokasi, st_prdcd,
+                   st_saldoawal, st_trfin, st_trfout, st_sales, st_retur,
+                   st_adj, st_intransit, st_saldoakhir, st_min, st_max,
+                   st_lastcost, st_avgcost, st_rpsaldoawal, st_create_by,
+                   st_create_dt, st_modify_by, st_modify_dt
+                  )
+           VALUES (p_kodeigr, '', v_lokasi, v_plu,
+                   0, v_trfin, v_trfout, v_sales, v_retur,
+                   v_adj, v_transit, v_akhir, 0, 0,
+                   v_lcost, v_acost, 0, p_userid,
+                   SYSDATE, p_userid, SYSDATE
+                  );
+   ELSE
+      v_trfin := p_trfin;
+      v_trfout := p_trfout;
+      v_sales := p_sales;
+      v_retur := p_retur;
+      v_adj := p_adj;
+      v_transit := p_transit;
+
+      --** Update Data Stock **--
+      CASE
+         WHEN v_kolupdate = 'TRFIN'
+         THEN
+            v_trfin := p_trfin + v_qty;
+            v_akhir := p_akhir + v_qty;
+            v_hpp := TRUE;
+            p_acost :=
+                  ((v_qty * v_lcost) + (p_akhir * p_acost))
+                / (v_qty + v_akhir);
+         WHEN v_kolupdate = 'TRFOUT'
+         THEN
+            v_trfout := p_trfout + v_qty;
+            v_akhir := p_akhir - v_qty;
+         WHEN v_kolupdate = 'SALES'
+         THEN
+            v_sales := p_sales + v_qty;
+            v_akhir := p_akhir - v_qty;
+         WHEN v_kolupdate = 'RETUR'
+         THEN
+            v_retur := p_retur + v_qty;
+            v_akhir := p_akhir + v_qty;
+         WHEN v_kolupdate = 'ADJ'
+         THEN
+            v_adj := p_adj + v_qty;
+            v_akhir := p_akhir + v_qty;
+         WHEN v_kolupdate = 'TRANSIT'
+         THEN
+            v_transit := p_transit + v_qty;
+            v_akhir := p_akhir - v_qty;
+         ELSE
+            NULL;
+      END CASE;
+
+      UPDATE tbmaster_stock
+         SET st_trfin = v_trfin,
+             st_trfout = v_trfout,
+             st_sales = v_sales,
+             st_retur = v_retur,
+             st_adj = v_adj,
+             st_intransit = v_transit,
+             st_saldoakhir = v_akhir,
+             st_lastcost = CASE v_lcost
+                             WHEN 0
+                                THEN p_lcost
+                             ELSE v_lcost
+                          END,
+             st_avgcost = CASE v_acost
+                            WHEN 0
+                               THEN p_acost
+                            ELSE v_acost
+                         END,
+             st_modify_by = p_userid,
+             st_modify_dt = SYSDATE
+       WHERE st_kodeigr = p_kodeigr
+         AND st_prdcd = v_plu
+         AND st_lokasi = v_lokasi;
+   END IF;
+
+   CLOSE stock_cur;
+
+   v_lok := TRUE;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      v_message := SQLERRM;
+END;
+/
