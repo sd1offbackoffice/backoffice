@@ -12,7 +12,6 @@
 
 @section('content')
 
-
         @php
             $total = 0;
             $no=1;

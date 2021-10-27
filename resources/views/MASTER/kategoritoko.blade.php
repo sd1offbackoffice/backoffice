@@ -99,7 +99,7 @@
         function get_kategoritoko() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kategoritoko/getDataKtk',
+                url: '{{ url()->current() }}/getDataKtk',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}"},
                 beforeSend: function () {
@@ -202,10 +202,9 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '{{url('kategoritoko/saveDataKtk')}}',
+                    url: '{{ url()->current() }}/saveDataKtk',
                     type: 'POST',
                     data: {
-                        "_token": "{{ csrf_token() }}",
                         kodeigr: kodeigrString,
                         kodektk: kodektk,
                         keterangan: keterangan

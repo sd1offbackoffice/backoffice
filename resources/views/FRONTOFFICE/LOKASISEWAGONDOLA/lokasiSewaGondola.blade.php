@@ -11,10 +11,10 @@
                                role="tab"
                                aria-controls="detail" aria-selected="false">No. Perjanjian Sewa</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="identityOmi-tab" data-toggle="tab" href="#tablokasi" role="tab"
-                               aria-controls="identity" aria-selected="true">Lokasi</a>
-                        </li>
+{{--                        <li class="nav-item">--}}
+{{--                            <a class="nav-link" id="identityOmi-tab" data-toggle="tab" href="#tablokasi" role="tab"--}}
+{{--                               aria-controls="identity" aria-selected="true">Lokasi</a>--}}
+{{--                        </li>--}}
                     </ul>
 
                     <div class="tab-content" id="myTabContentDetailTokoOmi">

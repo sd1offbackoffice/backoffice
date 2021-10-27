@@ -2032,7 +2032,7 @@
                     menu2GrosirA = 'T';
                     $('#lstPrint').val("GABUNGAN ALL TOKO OMI KHUSUS");
                     $('#lstPrintHidden').val("5");
-                    $('#menu2Ext2').prop('hidden',false);
+                    $('#menu2Ext2').prop('hidden',true);
                     $('#menu2Ext3').prop('hidden',true);
                     break;
             }
@@ -2181,6 +2181,9 @@
                 return false;
             }
             if($('#lstPrintHidden').val() == '3' || $('#lstPrintHidden').val() == '4' || $('#lstPrintHidden').val() == '5'){
+                if($('#lstPrintHidden').val() == '5'){
+                    $('#sbu').val('O');
+                }
                 if($('#sbu').val() != 'I' && $('#sbu').val() != 'O' && $('#sbu').val() != 'S'){
                     swal({
                         title:'Warning',
@@ -2198,7 +2201,6 @@
                         $('#menu2TokoInput').val('SEMUA');
                     }
                 }else if($('#lstPrintHidden').val() == '3' && $('#menu2TokoInput').val() == ''){
-                    $('#sbu').val('S');
                     $('#jenisToko').val('S').change();
                     $('#menu2TokoInput').val('SEMUA');
                     $('#dis_omi').val('SEMUA');

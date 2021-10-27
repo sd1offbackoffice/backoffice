@@ -103,6 +103,7 @@ class informasiHistoryProductController extends Controller
 //                   AND msth_nopo(+) = pbd_nopo
 //          ORDER BY kke_periode DESC");
 
+        $ITEM= '';
 
         $message = array();
         $lCek = 1;

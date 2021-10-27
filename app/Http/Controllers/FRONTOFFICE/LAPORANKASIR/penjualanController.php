@@ -930,7 +930,9 @@ ORDER BY cdiv,cdept");
             $p_sbu = "AND tko_kodesbu = '".$request->p_sbu."'";
         }
         if($request->p_khusus != 'z'){
-            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
+//            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
+            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = 'O'";
+            $p_sbu = "";
         }
         if($request->p_omi != 'z'){
             $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
@@ -1110,7 +1112,9 @@ ORDER BY omikod");
             $p_sbu = "AND tko_kodesbu = '".$request->p_sbu."'";
         }
         if($request->p_khusus != 'z'){
-            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
+//            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = '".$request->p_khusus."'";
+            $p_khusus = "AND SUBSTR(tko_kodeomi,1,1) = 'O'";
+            $p_sbu = "";
         }
         if($request->p_omi != 'z'){
             $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
@@ -1192,20 +1196,6 @@ ORDER BY omidiv, omidep");
 //            return "**DATA TIDAK ADA**";
 //        }
 
-
-        $cf_nmargin = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            if(($datas[$i]->ominet) != 0){
-                $cf_nmargin[$i] = round(($datas[$i]->omimrg)*100/($datas[$i]->ominet), 2);
-            }else{
-                if(($datas[$i]->nmargin) != 0){
-                    $cf_nmargin[$i]=100;
-                }else{
-                    $cf_nmargin[$i]=0;
-                }
-            }
-        }
-
         //CALCULATE GRAND TOTAL
 
         $gross['i'] = 0; $tax['i'] = 0; $net['i'] = 0; $hpp['i'] = 0; $margin['i'] = 0;
@@ -1254,6 +1244,87 @@ ORDER BY omidiv, omidep");
             }
         }
 
+        if($p_sbu == ''){
+            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omidiv, omidep,
+	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
+	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
+	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
+	   SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
+	   SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
+FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
+(	SELECT kodeigr, omikod, omisbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe, namasbu,
+		  CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+	         0
+	      ELSE
+	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*1.1)-Fdnamt) ELSE 0 END
+	         ELSE
+	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END
+	         END
+	      END nTax,
+	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+	         Fdnamt
+	      ELSE
+	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
+	            Fdnamt
+	         ELSE
+	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END)
+	         END
+	      END nNet,
+	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
+	      ELSE
+	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END) END) -
+			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+	      END nMargin,
+	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+	         Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
+	      ELSE
+	         (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+	      END nHpp,
+	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+	         CASE WHEN cBkp = 'Y' THEN
+	            fdnamt*1.1
+	         ELSE
+	            fdnamt
+	         END
+	      ELSE
+	         fdnamt
+	      END nGross
+	FROM
+	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
+			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
+			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
+			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO
+		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
+		WHERE trjd_cus_kodemember = tko_kodecustomer
+		  AND trjd_cus_kodemember = cus_kodemember
+		  AND trjd_prdcd = prd_prdcd
+		  ".$p_sbu." ".$p_khusus." ".$p_omi."
+		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+		  AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
+	)
+)
+WHERE prs_kodeigr = '$kodeigr'
+  AND kodeigr = prs_kodeigr
+  AND omidiv = div_kodedivisi
+  AND omidep = dep_kodedepartement
+GROUP BY prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omidiv, omidep
+ORDER BY omidiv, omidep");
+        }
+
+        $cf_nmargin = [];
+        for($i=0;$i<sizeof($datas);$i++){
+            if(($datas[$i]->ominet) != 0){
+                $cf_nmargin[$i] = round(($datas[$i]->omimrg)*100/($datas[$i]->ominet), 2);
+            }else{
+                if(($datas[$i]->nmargin) != 0){
+                    $cf_nmargin[$i]=100;
+                }else{
+                    $cf_nmargin[$i]=0;
+                }
+            }
+        }
 //        //PRINT
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');

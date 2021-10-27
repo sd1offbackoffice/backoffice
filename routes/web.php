@@ -615,6 +615,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/showData', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@showData');
             Route::post('/CSVeFaktur', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@CSVeFaktur');
             Route::post('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
+            Route::get('/print-doc', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@PRINT_DOC');
         });
 
         Route::prefix('/pb-gudang-pusat')->group(function () {

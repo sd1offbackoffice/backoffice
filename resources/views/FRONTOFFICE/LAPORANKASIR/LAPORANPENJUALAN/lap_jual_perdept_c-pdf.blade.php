@@ -2,6 +2,7 @@
 Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kulihat, ku tidak tahu kenapa kenapa harus ada kondisi ini, tapi hasil laporannya begitu, ya begimana lagi
 1. data perdivisi hanya menampilkan data dimana "omisbu == 'I'", kalau ingin menampilkan semua hapus semua kondisi dimana "omisbu == 'I'", harusnya ada 3
 2. {{$data[$i]->namasbu}} : {{$data[$i]->omidiv}} {{$namaomi}} tidak ditampilkan
+3. di program baru diminta ditampilin semua, lol
 --}}
 
 @extends('pdf-template')
@@ -107,10 +108,17 @@ function percent($angka){
 ?>
 
 <?php
-$counterDiv = 0;
-$omidiv = $data[0]->omidiv;
-$divisi = '';
-$divisiFooter = $data[0]->div_namadivisi;
+    if(sizeof($data) != 0){
+        $counterDiv = 0;
+        $omidiv = $data[0]->omidiv;
+        $divisi = '';
+        $divisiFooter = $data[0]->div_namadivisi;
+    }else{
+        $counterDiv = 0;
+        $omidiv = '';
+        $divisi = '';
+        $divisiFooter = '';
+    }
 
 ?>
 <table class="table table-bordered table-responsive" style="border-collapse: collapse;">
@@ -140,7 +148,7 @@ $divisiFooter = $data[0]->div_namadivisi;
                 </tr>
             @endif
         {{--BODY--}}
-        @if($data[$i]->omisbu == 'I')
+{{--        @if($data[$i]->omisbu == 'I')--}}
             <tr>
                 <td style="width: 20px; text-align: left">{{$data[$i]->omidep}}</td>
                 <td style="width: 200px; text-align: left">{{$data[$i]->dep_namadepartement}}</td>
@@ -151,7 +159,7 @@ $divisiFooter = $data[0]->div_namadivisi;
                 <td>{{rupiah($data[$i]->omimrg)}}</td>
                 <td>{{percent($cf_nmargin[$i])}}</td>
             </tr>
-        @endif
+{{--        @endif--}}
             <?php
                 $counterDiv++;
             ?>
@@ -167,13 +175,13 @@ $divisiFooter = $data[0]->div_namadivisi;
                     $percentageTotal = 0;
 
                     for($j=$i;$j>($i-$counterDiv);$j--){
-                        if($data[$j]->omisbu == 'I'){
+//                        if($data[$j]->omisbu == 'I'){
                             $grossTotal = $grossTotal + $data[$j]->omiamt;
                             $taxTotal = $taxTotal + $data[$j]->omitax;
                             $netTotal = $netTotal + $data[$j]->ominet;
                             $hppTotal = $hppTotal + $data[$j]->omihpp;
                             $marginTotal = $marginTotal + $data[$j]->omimrg;
-                        }
+//                        }
                     }
                     if($netTotal != 0){
                         $percentageTotal = $marginTotal*100/$netTotal;
@@ -211,13 +219,13 @@ $divisiFooter = $data[0]->div_namadivisi;
             $percentageTotal = 0;
 
             for($j=sizeof($data)-1;$j>(sizeof($data)-$counterDiv)-1;$j--){
-                if($data[$j]->omisbu == 'I'){
+//                if($data[$j]->omisbu == 'I'){
                     $grossTotal = $grossTotal + $data[$j]->omiamt;
                     $taxTotal = $taxTotal + $data[$j]->omitax;
                     $netTotal = $netTotal + $data[$j]->ominet;
                     $hppTotal = $hppTotal + $data[$j]->omihpp;
                     $marginTotal = $marginTotal + $data[$j]->omimrg;
-                }
+//                }
             }
             if($netTotal != 0){
                 $percentageTotal = $marginTotal*100/$netTotal;

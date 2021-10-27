@@ -960,6 +960,14 @@
                             closeOnClickOutside: false,
                             closeOnEsc: false,
                         });
+
+                        getTokoOmi()
+                        $('#m_expand').modal('hide')
+
+                        setTimeout(function(){
+                            $('#btnExpand').trigger('click');
+                        }, 2000);
+                        // setTimeout(function(){location.reload()}, 2000);
                     } else {
                         swal({
                             icon: 'warning',

@@ -11,10 +11,20 @@
 @endsection
 
 @section('header_left')
+    <br>
     Jenis : {{ $data[0]->cborgf }}
 @endsection
 
+@section('paper_width')
+    842
+@endsection
+
+@section('paper_size')
+    842pt  595pt
+@endsection
+
 @section('content')
+    <br>
 <table class="table">
     <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
     <tr>

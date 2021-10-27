@@ -365,9 +365,13 @@
                             buttons = '';
                             if (result) {
                                 $.each(result, function (index, value) {
-                                    $('#pdf').append(`<div class="row form-group" >
-                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
-                                </div>`);
+                                    if(value.func == 'print-doc'){
+                                        $('#pdf').append(`<div class="row form-group">
+                                        <a href="{{url()->current()}}/${value.func}?kodeigr=${value.kdigr}&nodoc=${value.temp}&typedoc=${value.doc}&typelap=${value.lap}&jnskertas=${value.kertas}&reprint=${value.reprint}&tgl1=${value.tgl1}&tgl2=${value.tgl2}"
+                                        target="_blank"><button class="btn btn-primary">
+                                        ${value.func}</button></a>
+                                    </div>`);
+                                    }
                                 });
                             }
                             $('#m_result').modal('show');

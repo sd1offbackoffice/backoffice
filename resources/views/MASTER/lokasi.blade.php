@@ -201,9 +201,9 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr id="row_tambah">
-                                                        <td><input type="number" class="form-control lks_nourut"></td>
-                                                        <td><input type="number" class="form-control lks_depanbelakang"></td>
-                                                        <td><input type="number" class="form-control lks_atasbawah"></td>
+                                                        <td><input type="text" class="form-control lks_nourut"></td>
+                                                        <td><input type="text" class="form-control lks_depanbelakang"></td>
+                                                        <td><input type="text" class="form-control lks_atasbawah"></td>
                                                         <td>
                                                             <div class="buttonInside">
                                                                 <input type="text" class="form-control t_lks_prdcd" maxlength="7">
@@ -552,11 +552,14 @@
 
         //fungsi memilih plu
         function choosePlu(val){
-            if($('#modal-loader').is(':visible'))
-                $('#modal-loader').modal('toggle');
+            $('#modal-loader').modal('hide');
+            $('#m_lov_plu').modal('hide');
 
-            if($('#m_lov_plu').is(':visible'))
-                $('#m_lov_plu').modal('toggle');
+            // if($('#modal-loader').is(':visible'))
+            //     $('#modal-loader').modal('toggle');
+            //
+            // if($('#m_lov_plu').is(':visible'))
+            //     $('#m_lov_plu').modal('toggle');
 
             if(cursorIdTable === "table-all"){
                 if($('#table-all .lks_prdcd')[cursorRow].value == ''){
@@ -620,276 +623,287 @@
                 });
             }
             else{
-                data = {};
-
-                if(row != 'input'){
-                    //ambil data dari datatables rak
-                    data['lks_koderak'] = row.children().first().text();
-                    data['lks_kodesubrak'] = row.children().first().next().text();
-                    data['lks_tiperak'] = row.children().first().next().next().text();
-                    data['lks_shelvingrak'] = row.children().first().next().next().next().text();
+                if(isDPD){
+                    $('#dpd_koderak').val(row.children().first().text());
+                    $('#dpd_kodesubrak').val(row.children().first().next().text());
+                    $('#dpd_tiperak').val(row.children().first().next().next().text());
+                    $('#dpd_shelvingrak').val(row.children().first().next().next().next().text());
                 }
                 else{
-                    data['lks_koderak'] = $('#lks_koderak').val();
-                    data['lks_kodesubrak'] =  $('#lks_kodesubrak').val();
-                    data['lks_tiperak'] = $('#lks_tiperak').val();
-                    data['lks_shelvingrak'] = $('#lks_shelvingrak').val();
-                }
+                    data = {};
 
-                $.ajax({
-                    url: '{{ url()->current().'/lov_rak_select' }}',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {data},
-                    beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
-                    },
-                    success: function (response) {
-                        if($('#modal-loader').is(':visible'))
-                            $('#modal-loader').modal('toggle');
+                    if(row != 'input'){
+                        //ambil data dari datatables rak
+                        data['lks_koderak'] = row.children().first().text();
+                        data['lks_kodesubrak'] = row.children().first().next().text();
+                        data['lks_tiperak'] = row.children().first().next().next().text();
+                        data['lks_shelvingrak'] = row.children().first().next().next().next().text();
+                    }
+                    else{
+                        data['lks_koderak'] = $('#lks_koderak').val();
+                        data['lks_kodesubrak'] =  $('#lks_kodesubrak').val();
+                        data['lks_tiperak'] = $('#lks_tiperak').val();
+                        data['lks_shelvingrak'] = $('#lks_shelvingrak').val();
+                    }
 
-                        if($('#m_lov_rak').is(':visible'))
-                            $('#m_lov_rak').modal('toggle');
+                    $.ajax({
+                        url: '{{ url()->current().'/lov_rak_select' }}',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {data},
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+                            $('#m_lov_rak').modal('hide');
 
-                        if(response.length == 0){
-                            swal({
-                                title: 'Data tidak ditemukan!',
-                                icon: 'error'
-                            }).then(function(){
-                                $('#lks_koderak').select();
-                            })
-                        }
-                        else{
-                            if(row != 'input'){
-                                $('#lks_koderak').val(data['lks_koderak']);
-                                $('#lks_kodesubrak').val(data['lks_kodesubrak']);
-                                $('#lks_tiperak').val(data['lks_tiperak']);
-                                $('#lks_shelvingrak').val(data['lks_shelvingrak']);
-                            }
+                            // if($('#modal-loader').is(':visible'))
+                            //     $('#modal-loader').modal('toggle');
+                            //
+                            // if($('#m_lov_rak').is(':visible'))
+                            //     $('#m_lov_rak').modal('toggle');
 
-                            jumlahitem = 0;
-
-
-                            if($('#lks_tiperak').val() == 'S'){
-                                cursorIdTable = "table-s";
-
-                                $('#table-all').hide();
-                                $('#table-tambah').prop('hidden',true);
-                                $('#table-s').show();
-                                $('#table-tambah-s').prop('hidden',false);
-                                $('#table-all tbody tr').remove();
-                                $('#table-s tbody tr').remove();
-
-
-                                for(i=0;i<response.length;i++){
-                                    if(response[i].desk != null){
-                                        jumlahitem++;
-                                    }
-                                    html =
-                                        '<tr onclick="cursorRowChanger(this)" id="row_'+ i +'">' +
-                                        '<td>' +
-                                        '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
-                                        '</td>' +
-                                        '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                        '<td>' +
-                                        '<div class="buttonInside">' +
-                                        '<input readonly type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
-                                        '<td><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
-                                        '</tr>';
-
-                                    $('#table-s tbody').append(html);
-
-                                    if(response[i].lks_prdcd == null){
-                                        //$('#table-s .lks_prdcd')[i].setAttribute("readonly", true); //memasang attribut
-                                        $('#table-s .lks_prdcd')[i].removeAttribute("readonly"); //menghapus attribut
-                                    }
-
-                                    if(response[i].lks_delete == 'Y'){
-                                        $('#cb_delete_'+i).prop('checked',true); // da heck is dis?
-                                    }
-                                }
-
-                                $('#table-s input').prop('disabled',true);
-                                $('#table-s .lks_nourut').prop('disabled', false);
-                                $('#table-s .lks_depanbelakang').prop('disabled',false);
-                                $('#table-s .lks_atasbawah').prop('disabled',false);
-
+                            if(response.length == 0){
+                                swal({
+                                    title: 'Data tidak ditemukan!',
+                                    icon: 'error'
+                                }).then(function(){
+                                    $('#lks_koderak').select();
+                                })
                             }
                             else{
-                                cursorIdTable = "table-all";
-
-                                $('#table-all').show();
-                                $('#table-tambah').prop('hidden',false);
-                                $('#table-s').hide();
-                                $('#table-tambah-s').prop('hidden',true);
-                                $('#table-s tbody tr').remove();
-                                $('#table-all tbody tr').remove();
-                                for(i=0;i<response.length;i++){
-                                    if(response[i].desk != null){
-                                        jumlahitem++;
-                                    }
-
-                                    mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
-                                    minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
-
-                                    html =
-                                        '<tr onclick="cursorRowChanger(this)" class="text-center" id="row_'+ i +'">' +
-                                        '<td>' +
-                                        '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
-                                        '</td>' +
-                                        '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                        '<td>' +
-                                        '<div class="buttonInside">' +
-                                        '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
-                                        '</div>' +
-                                        '</td>' +
-                                        '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control pkm" value="'+ noTwoDigit(nvl(response[i].pkm,'')) +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
-                                        '<td><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
-                                        '<td><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
-                                        '</tr>';
-
-                                    $('#table-all').append(html);
+                                if(row != 'input'){
+                                    $('#lks_koderak').val(data['lks_koderak']);
+                                    $('#lks_kodesubrak').val(data['lks_kodesubrak']);
+                                    $('#lks_tiperak').val(data['lks_tiperak']);
+                                    $('#lks_shelvingrak').val(data['lks_shelvingrak']);
                                 }
 
-                                $('.lks_prdcd').on('keypress',function(e){
-                                    if(e.which == 13){
-                                        lov_plu_select(convertPlu($(this).val()));
+                                jumlahitem = 0;
+
+
+                                if($('#lks_tiperak').val() == 'S'){
+                                    cursorIdTable = "table-s";
+
+                                    $('#table-all').hide();
+                                    $('#table-tambah').prop('hidden',true);
+                                    $('#table-s').show();
+                                    $('#table-tambah-s').prop('hidden',false);
+                                    $('#table-all tbody tr').remove();
+                                    $('#table-s tbody tr').remove();
+
+
+                                    for(i=0;i<response.length;i++){
+                                        if(response[i].desk != null){
+                                            jumlahitem++;
+                                        }
+                                        html =
+                                            '<tr onclick="cursorRowChanger(this)" id="row_'+ i +'">' +
+                                            '<td>' +
+                                            '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
+                                            '</td>' +
+                                            '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                            '<td>' +
+                                            '<div class="buttonInside">' +
+                                            '<input readonly type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                            '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
+                                            '<td><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
+                                            '</tr>';
+
+                                        $('#table-s tbody').append(html);
+
+                                        if(response[i].lks_prdcd == null){
+                                            //$('#table-s .lks_prdcd')[i].setAttribute("readonly", true); //memasang attribut
+                                            $('#table-s .lks_prdcd')[i].removeAttribute("readonly"); //menghapus attribut
+                                        }
+
+                                        if(response[i].lks_delete == 'Y'){
+                                            $('#cb_delete_'+i).prop('checked',true); // da heck is dis?
+                                        }
                                     }
-                                });
 
-                                $('.lks_noid').on('keypress',function(e){
-                                    if(e.which == 13){
-                                        noid_enter($(this).val());
-                                    }
-                                });
+                                    $('#table-s input').prop('disabled',true);
+                                    $('#table-s .lks_nourut').prop('disabled', false);
+                                    $('#table-s .lks_depanbelakang').prop('disabled',false);
+                                    $('#table-s .lks_atasbawah').prop('disabled',false);
 
-                                $('#table-all input').prop('disabled',true);
-
-                            }
-
-                            $('#jumlahitem').val(jumlahitem);
-
-                            $('input').off('focus');
-                            $('input').on('focus',function(){
-                                $(this).select();
-
-                                if(typeof $(this).parent().parent().attr('id') != 'undefined'){
-                                    if($(this).parent().parent().attr('id').substr(0,3) == 'row')
-                                        idrow = $(this).parent().parent().attr('id');
-                                }
-
-                                if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
-                                    $('.btn-lov-plu').hide();
-                                    $(this).parent().find('.btn-lov-plu').show();
-                                    idrow = $(this).parent().parent().parent().attr('id');
                                 }
                                 else{
-                                    $('.btn-lov-plu').hide();
-                                }
+                                    cursorIdTable = "table-all";
 
-                                if($(this).hasClass('lks_prdcd')){
-                                    tempprdcd = $(this).val();
-                                }
-                                else if($(this).hasClass('lks_noid')){
-                                    tempnoid = $(this).val();
-                                }
-                            });
+                                    $('#table-all').show();
+                                    $('#table-tambah').prop('hidden',false);
+                                    $('#table-s').hide();
+                                    $('#table-tambah-s').prop('hidden',true);
+                                    $('#table-s tbody tr').remove();
+                                    $('#table-all tbody tr').remove();
+                                    for(i=0;i<response.length;i++){
+                                        if(response[i].desk != null){
+                                            jumlahitem++;
+                                        }
 
-                            $('.btn-lov-plu').hide();
+                                        mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
+                                        minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
 
-                            if($('#m_lov_rak').is(':visible'))
-                                $('#m_lov_rak').modal('toggle');
+                                        html =
+                                            '<tr onclick="cursorRowChanger(this)" class="text-center" id="row_'+ i +'">' +
+                                            '<td>' +
+                                            '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
+                                            '</td>' +
+                                            '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                            '<td>' +
+                                            '<div class="buttonInside">' +
+                                            '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                            '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
+                                            '</div>' +
+                                            '</td>' +
+                                            '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control pkm" value="'+ noTwoDigit(nvl(response[i].pkm,'')) +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
+                                            '<td><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
+                                            '<td><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
+                                            '</tr>';
 
-                            if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
-                                $('.lks_prdcd').prop('disabled',false);
+                                        $('#table-all').append(html);
+                                    }
 
-                                if($('#lks_tiperak').val() != 'S'){
-                                    $('#table-all .lks_nourut').prop('disabled',false);
-                                    $('#table-all .lks_depanbelakang').prop('disabled',false);
-                                    $('#table-all .lks_atasbawah').prop('disabled',false);
-                                    $('#table-all .lks_tirkirikanan').prop('disabled',false);
-                                    $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
-                                    $('#table-all .lkstiratasbawah').prop('disabled',false);
-                                    $('#table-all .lks_maxdisplay').prop('disabled',false);
-                                    $('#table-all .lks_minpct').prop('disabled',false);
-                                    $('#table-all .lks_maxplano').prop('disabled',false);
-                                    $('#p_tambah').show();
-                                }
-                                else{
+                                    $('.lks_prdcd').on('keypress',function(e){
+                                        if(e.which == 13){
+                                            lov_plu_select(convertPlu($(this).val()));
+                                        }
+                                    });
+
+                                    $('.lks_noid').on('keypress',function(e){
+                                        if(e.which == 13){
+                                            noid_enter($(this).val());
+                                        }
+                                    });
+
                                     $('#table-all input').prop('disabled',true);
-                                    $('#p_tambah').hide();
+
                                 }
-                            }
 
-                            //if($('#lks_koderak').val().substr(0,1) == 'P'){
-                            if(true){ //selalu masuk if, untuk menyamakan dengan IAS
-                                $('#p_tambah input').prop('disabled',false);
-                                $('#table-tambah .lks_jenisrak').prop('disabled',true);
-                                $('#table-tambah .desk').prop('disabled',true);
-                                $('#table-tambah .satuan').prop('disabled',true);
-                                $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
-                                $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
-                                $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
-                                $('#table-tambah .lks_mindisplay').prop('disabled',true);
-                                $('#table-tambah .pkm').prop('disabled',true);
+                                $('#jumlahitem').val(jumlahitem);
 
-                                $('.lks_prdcd').each(function(){
-                                    $(this).prop('disabled',false);
+                                $('input').off('focus');
+                                $('input').on('focus',function(){
+                                    $(this).select();
+
+                                    if(typeof $(this).parent().parent().attr('id') != 'undefined'){
+                                        if($(this).parent().parent().attr('id').substr(0,3) == 'row')
+                                            idrow = $(this).parent().parent().attr('id');
+                                    }
+
+                                    if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
+                                        $('.btn-lov-plu').hide();
+                                        $(this).parent().find('.btn-lov-plu').show();
+                                        idrow = $(this).parent().parent().parent().attr('id');
+                                    }
+                                    else{
+                                        $('.btn-lov-plu').hide();
+                                    }
+
+                                    if($(this).hasClass('lks_prdcd')){
+                                        tempprdcd = $(this).val();
+                                    }
+                                    else if($(this).hasClass('lks_noid')){
+                                        tempnoid = $(this).val();
+                                    }
                                 });
 
-                                //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
-                                if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
+                                $('.btn-lov-plu').hide();
+
+                                if($('#m_lov_rak').is(':visible'))
+                                    $('#m_lov_rak').modal('toggle');
+
+                                if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
+                                    $('.lks_prdcd').prop('disabled',false);
+
+                                    if($('#lks_tiperak').val() != 'S'){
+                                        $('#table-all .lks_nourut').prop('disabled',false);
+                                        $('#table-all .lks_depanbelakang').prop('disabled',false);
+                                        $('#table-all .lks_atasbawah').prop('disabled',false);
+                                        $('#table-all .lks_tirkirikanan').prop('disabled',false);
+                                        $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
+                                        $('#table-all .lkstiratasbawah').prop('disabled',false);
+                                        $('#table-all .lks_maxdisplay').prop('disabled',false);
+                                        $('#table-all .lks_minpct').prop('disabled',false);
+                                        $('#table-all .lks_maxplano').prop('disabled',false);
+                                        $('#p_tambah').show();
+                                    }
+                                    else{
+                                        $('#table-all input').prop('disabled',true);
+                                        $('#p_tambah').hide();
+                                    }
+                                }
+
+                                //if($('#lks_koderak').val().substr(0,1) == 'P'){
+                                if(true){ //selalu masuk if, untuk menyamakan dengan IAS
+                                    $('#p_tambah input').prop('disabled',false);
+                                    $('#table-tambah .lks_jenisrak').prop('disabled',true);
+                                    $('#table-tambah .desk').prop('disabled',true);
+                                    $('#table-tambah .satuan').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
+                                    $('#table-tambah .lks_mindisplay').prop('disabled',true);
+                                    $('#table-tambah .pkm').prop('disabled',true);
+
+                                    $('.lks_prdcd').each(function(){
+                                        $(this).prop('disabled',false);
+                                    });
+
+                                    //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
+                                    if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
+                                        $('.btn-delete').prop('disabled',true);
+                                    }
+                                    else $('.btn-delete').prop('disabled',false);
+
+                                }
+                                else{
+                                    $('#p_tambah input').prop('disabled',true);
+                                    $('.lks_prdcd').each(function(){
+                                        if($(this).val() != ''){
+                                            $(this).prop('disabled',true);
+                                        }
+                                    });
                                     $('.btn-delete').prop('disabled',true);
                                 }
-                                else $('.btn-delete').prop('disabled',false);
 
-                            }
-                            else{
-                                $('#p_tambah input').prop('disabled',true);
+
                                 $('.lks_prdcd').each(function(){
-                                    if($(this).val() != ''){
-                                        $(this).prop('disabled',true);
-                                    }
+                                    $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
                                 });
-                                $('.btn-delete').prop('disabled',true);
                             }
-
-
-                            $('.lks_prdcd').each(function(){
-                                $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
-                            });
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -899,7 +913,7 @@
         tempprdcd = '';
         tempnoid = '';
         tempdpd = '';
-        isDPD = 'false';
+        isDPD = false;
 
         nourutOk = false;
         dbOk = false;
@@ -915,7 +929,7 @@
 
 
         $('#m_input_noid').on('shown.bs.modal',function(){
-            isDPD = 'true';
+            isDPD = true;
 
             $('#dpd_koderak').val('');
             $('#dpd_kodesubrak').val('');
@@ -928,7 +942,7 @@
         });
 
         $('#m_input_noid').on('hide.bs.modal',function() {
-            isDPD = 'false';
+            isDPD = false;
         });
 
         $('input').parent().find('button').each(function(){
@@ -989,10 +1003,10 @@
                         },
                         data: {koderak: this.value.toUpperCase()},
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
                             $('#table_lov_rak tbody tr').remove();
 
@@ -1030,10 +1044,10 @@
                         },
                         data: {data: value},
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
                             // console.log(response);
                             $('#table_lov_plu tbody tr').remove();
@@ -1080,14 +1094,12 @@
                 },
                 data: {data},
                 beforeSend: function () {
-                    if(!$('#modal-loader').is(':visible'))
-                        $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    if($('#modal-loader').is(':visible'))
-                        $('#modal-loader').modal('toggle');
-                    if($('#m_lov_plu').is(':visible'))
-                        $('#m_lov_plu').modal('toggle');
+                    $('#modal-loader').modal('hide');
+                    $('#m_lov_plu').modal('hide');
+
                     // console.log(response);
 
                     if(response.status == 'error'){
@@ -1159,11 +1171,10 @@
                 },
                 data: {data},
                 beforeSend: function () {
-                    $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    if($('#modal-loader').is(':visible'))
-                        $('#modal-loader').modal('toggle');
+                    $('#modal-loader').modal('hide');
 
                     if(response.status == 'error'){
                         swal({
@@ -1195,11 +1206,10 @@
                     },
                     data: {noid: $(this).val().toUpperCase()},
                     beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('show');
                     },
                     success: function (response) {
-                        if($('#modal-loader').is(':visible'))
-                            $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('hide');
 
                         if(typeof response.dpd_noid === "undefined"){
                             tempdpd = '';
@@ -1302,11 +1312,10 @@
                     },
                     data: {data},
                     beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('show');
                     },
                     success: function (response) {
-                        if($('#modal-loader').is(':visible'))
-                            $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('hide');
 
                         swal({
                             title: response.message,
@@ -1319,7 +1328,12 @@
                             $('#dpd_noid').val('');
                             $('#dpd_nourut').val('');
 
-                            $('#dpd_noid').select();
+                            $('#m_input_noid').modal('hide');
+
+                            var e = jQuery.Event("keypress");
+                            e.which = 13; //choose the one you want
+                            e.keyCode = 13;
+                            $("#lks_shelvingrak").trigger(e);
                         });
                     },  error : function (err) {
                         $('#modal-loader').modal('hide');
@@ -1354,11 +1368,10 @@
                         },
                         data: {data},
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
-                            if($('#modal-loader').is(':visible'))
-                                $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
                             swal({
                                 title: response.message,
@@ -1419,12 +1432,9 @@
                             },
                             data: {data},
                             beforeSend: function () {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                if($('#modal-loader').is(':visible'))
-                                    $('#modal-loader').modal('toggle');
-
                                 if(response.status == 'success'){
                                     $('#row_'+row).find('input').each(function(){
                                         if(!$(this).hasClass('lks_nourut'))
@@ -1435,6 +1445,12 @@
                                 swal({
                                     title: response.message,
                                     icon: response.status,
+                                }).then(function(){
+                                    $('#modal-loader').modal('hide');
+                                    var e = jQuery.Event("keypress");
+                                    e.which = 13; //choose the one you want
+                                    e.keyCode = 13;
+                                    $("#lks_shelvingrak").trigger(e);
                                 });
                             },  error : function (err) {
                                 $('#modal-loader').modal('hide');
@@ -1452,11 +1468,10 @@
                             },
                             data: {data},
                             beforeSend: function () {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                if($('#modal-loader').is(':visible'))
-                                    $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('hide');
 
                                 if(response.status == 'success'){
                                     $('#row_'+row).remove();
@@ -1465,6 +1480,12 @@
                                 swal({
                                     title: response.message,
                                     icon: response.status,
+                                }).then(function(){
+                                    $('#modal-loader').modal('hide');
+                                    var e = jQuery.Event("keypress");
+                                    e.which = 13; //choose the one you want
+                                    e.keyCode = 13;
+                                    $("#lks_shelvingrak").trigger(e);
                                 });
                             },  error : function (err) {
                                 $('#modal-loader').modal('hide');
@@ -1612,22 +1633,43 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    data: {prdcd},
+                    data: {
+                        prdcd: prdcd,
+                        koderak: $('#lks_koderak').val(),
+                        kodesubrak: $('#lks_kodesubrak').val(),
+                        tiperak: $('#lks_tiperak').val(),
+                        shelving: $('#lks_shelvingrak').val(),
+                        nourut: $('#lks_nourut').val()
+                    },
                     beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('show');
                     },
                     success: function (response) {
-                        if(response == 'tidak-ada'){
-                            lov_plu_select(prdcd);
+                        $('#modal-loader').modal('hide');
+
+                        data = response.data;
+
+                        $('#table-tambah .lks_nourut').val(data.nourut);
+                        $('#table-tambah .lks_jenisrak').val(data.jenisrak);
+                        $('#table-tambah .t_lks_prdcd').val(data.prdcd);
+                        $('#table-tambah .desk').val(data.deskripsi);
+                        $('#table-tambah .satuan').val(data.satuan);
+                        $('#table-tambah .lks_noid').val(data.noid);
+                        $('#table-tambah .lks_dimensipanjangproduk').val(data.panjang);
+                        $('#table-tambah .lks_dimensilebarproduk').val(data.lebar);
+                        $('#table-tambah .lks_dimensitinggiproduk').val(data.tinggi);
+                        $('#table-tambah .lks_pkm').val(data.pkm);
+
+                        if($('#lks_tiperak').val() != 'S'){
+                            $('#table-tambah .lks_tirkirikanan').select();
                         }
                         else{
-                            swal({
-                                title: 'PLU sudah terdaftar!',
-                                icon: 'error'
-                            }).then(function(){
-                                $('#row_tambah').find('.t_lks_prdcd').select();
-                            })
+                            $('#table-tambah-s .s_maxpalet').select();
                         }
+                    },
+                    error: function(error){
+                        $('#modal-loader').modal('hide');
+                        alertError(error.responseJSON.message, '');
                     }
                 });
             }
@@ -1874,7 +1916,7 @@
                 data['lks_tirdepanbelakang'] = $('#table-tambah').find('.lks_tirdepanbelakang').val();
                 data['lks_tiratasbawah'] = $('#table-tambah').find('.lks_tiratasbawah').val();
                 data['lks_maxdisplay'] = $('#table-tambah').find('.lks_maxdisplay').val();
-                data['lks_noid'] = $('#table-tambah').find('.lks_noid').val();
+                data['lks_noid'] = $('#table-tambah').find('.t_lks_noid').val();
                 data['lks_minpct'] = $('#table-tambah').find('.lks_minpct').val();
                 data['lks_maxplano'] = $('#table-tambah').find('.lks_maxplano').val();
                 data['lks_jenisrak'] = $('#table-tambah').find('.lks_jenisrak').val();
@@ -1894,16 +1936,21 @@
                     },
                     data: {data},
                     beforeSend: function () {
-                        $('#modal-loader').modal('toggle');
+                        $('#modal-loader').modal('show');
                     },
                     success: function (response) {
-                        $('#modal-loader').modal('toggle');
                         swal({
                             title: response.message,
                             icon: response.status
                         }).then(function(){
+                            $('#modal-loader').modal('hide');
                             $('#table-tambah input').val('');
-                            lov_rak_select('input');
+                            // lov_rak_select('input');
+
+                            var e = jQuery.Event("keypress");
+                            e.which = 13; //choose the one you want
+                            e.keyCode = 13;
+                            $("#lks_shelvingrak").trigger(e);
                         })
                     },  error : function (err) {
                         $('#modal-loader').modal('hide');
@@ -1941,12 +1988,7 @@
                         $('#table-tambah').find('.lks_maxplano').select();
                 });
             }
-
-
         }
-
-
-
     </script>
 
 @endsection

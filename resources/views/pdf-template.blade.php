@@ -134,6 +134,11 @@
         vertical-align: top;
         padding: 0.20rem 0;
     }
+
+    .table tfoot tr td{
+        font-weight: bold;
+    }
+
     .judul, .table-borderless{
         text-align: center;
     }

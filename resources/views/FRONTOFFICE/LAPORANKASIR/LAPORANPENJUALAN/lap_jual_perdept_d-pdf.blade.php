@@ -77,18 +77,34 @@ function percent($angka){
 }
 ?>
 <?php
-$counterDiv = 0;
-$headeromikod = '';
-$omikod = $data[0]->omikod;
-$divisi = '';
-$divisiFooter = $data[0]->div_namadivisi;
+    if(sizeof($data)!=0){
+        $counterDiv = 0;
+        $headeromikod = '';
+        $omikod = $data[0]->omikod;
+        $divisi = '';
+        $divisiFooter = $data[0]->div_namadivisi;
 
-$grossSbu = 0;
-$taxSbu = 0;
-$netSbu = 0;
-$hppSbu = 0;
-$marginSbu = 0;
-$percentageSbu = 0;
+        $grossSbu = 0;
+        $taxSbu = 0;
+        $netSbu = 0;
+        $hppSbu = 0;
+        $marginSbu = 0;
+        $percentageSbu = 0;
+    }else{
+        $counterDiv = 0;
+        $headeromikod = '';
+        $omikod = '';
+        $divisi = '';
+        $divisiFooter = '';
+
+        $grossSbu = 0;
+        $taxSbu = 0;
+        $netSbu = 0;
+        $hppSbu = 0;
+        $marginSbu = 0;
+        $percentageSbu = 0;
+    }
+
 ?>
 
 {{--            <header>--}}

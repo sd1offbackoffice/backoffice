@@ -1,13 +1,19 @@
 @extends('html-template')
 
-@section('table_font_size','7 px')
+{{--@section('table_font_size','7 px')--}}
 
-{{--@section('paper_size','842pt 595pt')--}}
 @section('paper_size','842pt 595pt')
+{{--@section('paper_size','1200pt 595pt')--}}
 
 @section('page_title')
     LAPORAN-PENJUALAN PER DIVISI
 @endsection
+
+{{--@section('custom_style')--}}
+{{--    body{--}}
+{{--    font-size: 7px;--}}
+{{--    }--}}
+{{--@endsection--}}
 
 @section('title')
     LAPORAN PENJUALAN
@@ -103,19 +109,19 @@ function rupiah($angka){
 {{--        margin-left: -78px;--}}
 {{--    }--}}
 {{--</style>--}}
-<table style="border-collapse: collapse;">
+<table style="border-collapse: collapse; font-size: 7px">
     <thead style="font-weight: bold; vertical-align: center; text-align: center; border-top: 2px solid black; border-bottom: 2px solid black">
         <tr>
             <td colspan="2" rowspan="3" style="border-right: 1px solid black">------- P  R  O  D  U  K---------</td>
             <td rowspan="3" style="width: 5%; border-right: 1px solid black">UNIT</td>
             <td colspan="12" style="border-right: 1px solid black">SATUAN JUAL</td>
-            <td rowspan="3" style="width: 4%; border-right: 1px solid black">KWAN<br>TUM</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PENJUALAN KOTOR</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PAJAK</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">PENJUALAN BERSIH</td>
-            <td rowspan="3" style="width: 12%; border-right: 1px solid black">HPP RATA-RATA</td>
+            <td rowspan="3" style="width: 5%; border-right: 1px solid black">KWAN<br>TUM</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">PENJUALAN KOTOR</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">PAJAK</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">PENJUALAN BERSIH</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">HPP RATA-RATA</td>
             <td rowspan="3" colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
-            <td rowspan="3" style="width: 5%">T<br>A<br>G</td>
+            <td rowspan="3" style="width: 2%">T<br>A<br>G</td>
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)

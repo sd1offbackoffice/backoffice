@@ -65,11 +65,6 @@
             <td class="right" style="border-top: 1px solid black"><strong>{{ number_format($total, 0, '.', ',') }}</strong></td>
             <td colspan="2" class="left" style="border-top: 1px solid black"></td>
         </tr>
-        <tr>
-            <td colspan="10" style="border-top: 1px solid black" class="right">
-                <strong>** Akhir dari laporan **</strong>
-            </td>
-        </tr>
         </tfoot>
     </table>
 @endsection

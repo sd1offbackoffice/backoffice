@@ -671,6 +671,7 @@ class CetakDokumenController extends Controller
         $f_docbkp = '';
 
         $file= [];
+        $laporan = [];
         $doc = $request->doc;
         $lap = $request->lap;
         $reprint = $request->reprint;
@@ -1388,8 +1389,10 @@ class CetakDokumenController extends Controller
             if (isset($temp)) {
                 //sini
 //                return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
-
+//                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+                $func = 'print-doc';
+                $kdigr = $_SESSION['kdigr'];
+                $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
 
                 if ($nrfp == 1) {
                     if (isset($nofp)) {
@@ -1428,6 +1431,8 @@ class CetakDokumenController extends Controller
 
                                         if ($tmp) {
                                             array_push($file, Self::CETAK_BARU($nonota,$reprint));
+                                            $func = 'cetak-baru';
+                                            $laporan[] = compact(['func','nonota','reprint']);
                                         }
                                     }
                                 }
@@ -1449,7 +1454,8 @@ class CetakDokumenController extends Controller
 
                                     if ($tmp > 0) {
                                         array_push($file, Self::CETAK_BARU($nodoc,$reprint));
-
+                                        $func = 'cetak-baru';
+                                        $laporan[] = compact(['func','nodoc','reprint']);
                                     }
                                 }
                             }
@@ -1778,7 +1784,10 @@ class CetakDokumenController extends Controller
 
                 if (isset($temp)) {
 //                    return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+//                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+                    $func = 'print-doc';
+                    $kdigr = $_SESSION['kdigr'];
+                    $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
 //sini
                     if ($lap == 'L') {
                         if ($reprint == '0') {
@@ -1810,7 +1819,7 @@ class CetakDokumenController extends Controller
 
 //          SHOW_DATA($doc, $lap, $reprint);
         }
-        return $file;
+        return $laporan;
     }
 
     public function PRD_CUR(string $plu)
@@ -1819,17 +1828,26 @@ class CetakDokumenController extends Controller
         return $result;
     }
 
-    public function PRINT_DOC(string $KodeIGR, string $NoDoc, string $TypeDoc, string $TypeLap, string $JNSKERTAS, string $REPRINT, string $tgl1, string $tgl2)
+    public function PRINT_DOC(Request $request)
     {
+        $kodeigr = $request->kodeigr;
+        $nodoc = $request->nodoc;
+        $typedoc = $request->typedoc;
+        $typelap = $request->typelap;
+        $jnskertas = $request->jnskertas;
+        $reprint = $request->reprint;
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+
         try{
             $data1 = '';
             $data2 = '';
             $filename = '';
             $cw = '';
             $ch = '';
-            if ($TypeLap == 'L') {
+            if ($typelap == 'L') {
                 // L = List  N = Nota
-                switch ($TypeDoc) {
+                switch ($typedoc) {
                     case  'B' :      // Penerimaan
                         null;
                         break;
@@ -1837,11 +1855,11 @@ class CetakDokumenController extends Controller
                         $cw = 700;
                         $ch = 45;
                         $filename = 'list-pengeluaran';
-                        $P_PN = "AND trbo_nodoc IN (" . $NoDoc . ") AND trbo_typetrn='K'";
+                        $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='K'";
                         $data1 = DB::select("SELECT   trbo_nodoc, trbo_tgldoc, trbo_kodesupplier, trbo_istype, trbo_invno, trbo_tglinv,
                                  trbo_prdcd, trbo_hrgsatuan, trbo_keterangan, trbo_gross, trbo_discrph, trbo_ppnrph,
                                  CASE
-                                     WHEN '" . $REPRINT . "' = '1'
+                                     WHEN '" . $reprint . "' = '1'
                                          THEN 'RE-PRINT'
                                      ELSE ''
                                  END AS STATUS, trbo_qty, FLOOR (trbo_qty / BTB_FRAC) AS CTN,
@@ -1875,7 +1893,7 @@ class CetakDokumenController extends Controller
                         $cw = 700;
                         $ch = 45;
                         $filename = 'cetak-list';
-                        $P_PN = "AND trbo_noreff IN (" . $NoDoc . ")";
+                        $P_PN = "AND trbo_noreff IN (" . $nodoc . ")";
                         $data1 = DB::select("SELECT trbo_noreff trbo_nodoc, trbo_tglreff  trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_isibeli trbo_frac,                                    trbo_hrgsatuan, trbo_keterangan,
                                 CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                 trbo_qty, FLOOR(trbo_qty/prd_isibeli) AS CTN, MOD(trbo_qty,prd_isibeli) AS PCS, (trbo_qty * trbo_hrgsatuan) AS total ,
@@ -1902,7 +1920,7 @@ class CetakDokumenController extends Controller
                         $cw = 700;
                         $ch = 45;
                         $filename = 'list-baranghilang';
-                        $P_PN = "AND trbo_nodoc IN (" . $NoDoc . ") AND trbo_typetrn='H'";
+                        $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='H'";
                         $data1 = DB::select("SELECT trbo_nodoc,trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
                                     CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                  trbo_qty, FLOOR(trbo_qty/prd_frac) AS CTN, MOD(trbo_qty,prd_frac) AS PCS, (trbo_qty * (trbo_hrgsatuan/prd_frac)) AS total ,
@@ -1932,13 +1950,13 @@ class CetakDokumenController extends Controller
                         null;
                 }
             } else {
-                switch ($TypeDoc) {
+                switch ($typedoc) {
 
                     case  'K' :
 
-                        $P_PN = "AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
+                        $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
                         $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
-                                  CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                  CASE WHEN '" . $reprint . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
                                   mstd_gross, mstd_discrph, mstd_ppnrph, (NVL(mstd_gross,0) - NVL(mstd_discrph,0) + NVL(mstd_ppnrph,0)) AS TOTAL, msth_kodesupplier, msth_istype || msth_invno nofp, msth_tglinv,
@@ -1975,7 +1993,7 @@ class CetakDokumenController extends Controller
                                                     AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
                                                     " . $P_PN . "
                                         ) a");
-                        if ($JNSKERTAS == 'B') {
+                        if ($jnskertas == 'B') {
                             $cw = 700;
                             $ch = 45;
                             $filename = 'cetak-nota-pengeluaran-biasa';
@@ -1986,10 +2004,10 @@ class CetakDokumenController extends Controller
                         }
                         break;
                     case  'H' :      // Barang Hilang
-                        if ($JNSKERTAS == 'B') {
+                        if ($jnskertas == 'B') {
                             $cw = 700;
                             $ch = 45;
-                            $P_PN = "AND MSTD_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                            $P_PN = "AND MSTD_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
                             $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                                     CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                     mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
@@ -2018,7 +2036,7 @@ class CetakDokumenController extends Controller
                         } else {
                             $cw = 700;
                             $ch = 45;
-                            $P_PN = "AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                            $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
                             $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
                                       mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                       FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/prd_frac)) AS total, mstd_keterangan,
@@ -2052,6 +2070,8 @@ class CetakDokumenController extends Controller
                     'tgl2' => $tgl2
                 ];
 
+                dd($data);
+
                 $dompdf = new PDF();
 
                 $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
@@ -2065,6 +2085,8 @@ class CetakDokumenController extends Controller
                 $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
                 $dompdf = $pdf;
+
+                return $dompdf->stream('Nota Pengeluaran Barang (Retur Pembelian).pdf');
 
                 file_put_contents($filename.'.pdf',$pdf->output());
 

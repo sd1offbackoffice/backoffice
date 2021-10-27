@@ -2881,10 +2881,7 @@
                             $('#segment').show();
                         else $('#segment').hide();
 
-                        if(nvl(member.cus_modify_dt, 'x') != 'x'){
-                            jam = member.cus_modify_dt.substr(-8);
-                        }
-                        $('#i_updateterakhir').val(member.cus_modify_by + ' ' + formatDate(member.cus_modify_dt) + ' ' + jam);
+                        $('#i_updateterakhir').val(member.cus_modify_by == null ? '' : member.cus_modify_by + ' ' + member.cus_modify_dt);
 
                         if(member.cus_flagmemberkhusus == 'Y' && member.cus_recordid == null){
                             $('#btn-quisioner').show();
@@ -2917,13 +2914,18 @@
                         $('#cus_alamatmember6').val(member.cus_alamatmember6);
                         $('#cus_alamatmember7').val(member.cus_alamatmember7);
                         $('#cus_tlpmember').val(member.cus_tlpmember);
-                        $('#cus_hpmember').val(member.cus_hpmember).prop('disabled',true);
+                        if(member.cus_namamember == 'NEW'){
+                            $('#cus_hpmember').val(member.cus_hpmember).prop('disabled',false);
+                        }
+                        else{
+                            $('#cus_hpmember').val(member.cus_hpmember).prop('disabled',true);
+                        }
                         $('#crm_tmptlahir').val(member.crm_tmptlahir);
                         $('#cus_tgllahir').val(formatDate(member.cus_tgllahir));
                         $('#cus_jenismember').val(jenismember.jm_kode);
                         $('#i_jeniscustomer2').val(jenismember.jm_keterangan);
-                        $('#cus_kodeoutlet').val(outlet.out_kodeoutlet);
-                        $('#i_jenisoutlet2').val(outlet.out_namaoutlet);
+                        $('#cus_kodeoutlet').val(outlet == null ? '' : outlet.out_kodeoutlet);
+                        $('#i_jenisoutlet2').val(outlet == null ? '' : outlet.out_namaoutlet);
                         if($('#cus_kodeoutlet').val() == 6){
                             $('#cus_kodesuboutlet').val('').prop('disabled',true);
                             $('#i_suboutlet2').val('').prop('disabled',true);

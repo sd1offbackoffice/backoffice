@@ -7,7 +7,11 @@
 @endsection
 
 @section('title')
-    {{$data[0]->title}} PER DEPARTEMEN
+    @if(sizeof($data) != 0)
+        {{$data[0]->title}} PER DEPARTEMEN
+    @else
+        PENJUALAN
+    @endif
 @endsection
 
 @section('subtitle')

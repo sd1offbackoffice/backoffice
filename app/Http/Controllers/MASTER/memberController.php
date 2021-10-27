@@ -98,107 +98,18 @@ class memberController extends Controller
     public function lov_member_select(Request $request){
         $member = DB::table('tbmaster_customer')
             ->leftJoin('tbmaster_customercrm','crm_kodemember','=','cus_kodemember')
-            ->select('cus_kodeigr',
-                'cus_recordid',
-                'cus_kodemember',
-                'cus_namamember',
-                'cus_alamatmember1',
-                'cus_alamatmember2',
-                'cus_alamatmember3',
-                'cus_alamatmember4',
-                'cus_tlpmember',
-                'cus_alamatmember5',
-                'cus_alamatmember6',
-                'cus_alamatmember7',
-                'cus_alamatmember8',
-                'cus_jenismember',
-                'cus_flagmemberkhusus',
-                'cus_jarak',
-                'cus_cfk',
-                'cus_kodeoutlet',
-                'cus_kodesuboutlet',
-                'cus_kodearea',
-                'cus_tglmulai',
-                'cus_tglregistrasi',
-                'cus_npwp',
-                'cus_flagpkp',
-                'cus_creditlimit',
-                'cus_top',
-                'cus_keterangan',
-                'cus_tglpajak',
-                'cus_nosalesman',
-                'cus_flaggantikartu',
-                'cus_nokartumember',
-                'cus_flagkredit',
-                'cus_flagblockingpengiriman',
-                'cus_flagbebasiuran',
-                'cus_tgllahir',
-                'cus_costcenter',
-                'cus_noaccount',
-                'cus_alamatemail',
-                'cus_hpmember',
-                'cus_flaginstitusipemerintah',
-                'cus_create_by',
-                'cus_create_dt',
-                'cus_modify_by',
-                'cus_modify_dt',
-                'cus_getpoint',
-                'cus_flagkirimsms',
-                'cus_flag_uptodate',
-                'cus_nonaktif_dt',
-                'cus_flag_ina',
-                'cus_tglmulai_va',
-                'cus_noacc_va',
-                'cus_noktp',
-                'cus_flag_verifikasi',
-                'cus_flag_mypoin',
-                'cus_flag_isaku',
-                'cus_mypoin_dt',
-                'cus_isaku_dt',
-                'crm_recordid',
-                'crm_kodeigr',
-                'crm_kodemember',
-                'crm_jenisanggota',
-                'crm_jeniskelamin',
-                'crm_pic1',
-                'crm_nohppic1',
-                'crm_pic2',
-                'crm_nohppic2',
-                'crm_agama',
-                'crm_namapasangan',
-                'crm_tgllhrpasangan',
-                'crm_jmlanak',
-                'crm_pendidikanakhir',
-                'crm_nofax',
-                'crm_koordinat',
-                'crm_namabank',
-                'crm_jenisbangunan',
-                'crm_lamatmpt',
-                'crm_statusbangunan',
-                'crm_internet',
-                'crm_tipehp',
-                'crm_metodekirim',
-                'crm_kreditusaha',
-                'crm_bankkredit',
-                'crm_email',
-                'crm_group',
-                'crm_subgroup',
-                'crm_kategori',
-                'crm_subkategori',
-                'crm_pekerjaan',
-                'crm_tmptlahir',
-                'crm_alamatusaha1',
-                'crm_alamatusaha2',
-                'crm_alamatusaha3',
-                'crm_alamatusaha4',
-                'crm_idgroupkat',
-                'crm_idsegment',
-                'crm_motor',
-                'crm_mobil',
-                'crm_create_by',
-                'crm_create_dt',
-                'crm_modify_by',
-                'crm_modify_dt')
+            ->selectRaw("cus_kodeigr, cus_recordid, cus_kodemember, cus_namamember, cus_alamatmember1, cus_alamatmember2, cus_alamatmember3, cus_alamatmember4,
+                cus_tlpmember, cus_alamatmember5, cus_alamatmember6, cus_alamatmember7, cus_alamatmember8, cus_jenismember, cus_flagmemberkhusus, cus_jarak,
+                cus_cfk, cus_kodeoutlet, cus_kodesuboutlet, cus_kodearea, cus_tglmulai, cus_tglregistrasi, cus_npwp, cus_flagpkp, cus_creditlimit, cus_top,
+                cus_keterangan, cus_tglpajak, cus_nosalesman, cus_flaggantikartu, cus_nokartumember, cus_flagkredit, cus_flagblockingpengiriman, cus_flagbebasiuran,
+                cus_tgllahir, cus_costcenter, cus_noaccount, cus_alamatemail, cus_hpmember, cus_flaginstitusipemerintah, cus_create_by, cus_create_dt, cus_modify_by,
+                to_char(cus_modify_dt, 'dd/mm/yyyy hh24:mi:ss') cus_modify_dt, cus_getpoint, cus_flagkirimsms, cus_flag_uptodate, cus_nonaktif_dt, cus_flag_ina, cus_tglmulai_va, cus_noacc_va, cus_noktp,
+                cus_flag_verifikasi, cus_flag_mypoin, cus_flag_isaku, cus_mypoin_dt, cus_isaku_dt, crm_recordid, crm_kodeigr, crm_kodemember, crm_jenisanggota,
+                crm_jeniskelamin, crm_pic1, crm_nohppic1, crm_pic2, crm_nohppic2, crm_agama, crm_namapasangan, crm_tgllhrpasangan, crm_jmlanak, crm_pendidikanakhir,
+                crm_nofax, crm_koordinat, crm_namabank, crm_jenisbangunan, crm_lamatmpt, crm_statusbangunan, crm_internet, crm_tipehp, crm_metodekirim,
+                crm_kreditusaha, crm_bankkredit, crm_email, crm_group, crm_subgroup, crm_kategori, crm_subkategori, crm_pekerjaan, crm_tmptlahir,
+                crm_alamatusaha1, crm_alamatusaha2, crm_alamatusaha3, crm_alamatusaha4, crm_idgroupkat, crm_idsegment, crm_motor, crm_mobil,
+                crm_create_by, crm_create_dt, crm_modify_by, crm_modify_dt")
             ->where('cus_kodemember',$request->value)
             ->first();
 
@@ -267,11 +178,14 @@ class memberController extends Controller
             ->where('out_kodeoutlet','=',$member->cus_kodeoutlet)
             ->first();
 
-        $arrsuboutlet = $data = DB::table('tbmaster_suboutlet')
-            ->select('sub_kodesuboutlet','sub_namasuboutlet')
-            ->where('sub_kodeoutlet','=',$outlet->out_kodeoutlet)
-            ->orderBy('sub_kodesuboutlet')
-            ->get();
+        if($outlet){
+            $arrsuboutlet = DB::table('tbmaster_suboutlet')
+                ->select('sub_kodesuboutlet','sub_namasuboutlet')
+                ->where('sub_kodeoutlet','=',$outlet->out_kodeoutlet)
+                ->orderBy('sub_kodesuboutlet')
+                ->get();
+        }
+        else $arrsuboutlet = [];
 
         $suboutlet = DB::table('tbmaster_suboutlet')
             ->select('*')
