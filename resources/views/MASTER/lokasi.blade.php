@@ -1649,7 +1649,7 @@
 
                         data = response.data;
 
-                        $('#table-tambah .lks_nourut').val(data.nourut);
+                        // $('#table-tambah .lks_nourut').val(data.nourut);
                         $('#table-tambah .lks_jenisrak').val(data.jenisrak);
                         $('#table-tambah .t_lks_prdcd').val(data.prdcd);
                         $('#table-tambah .desk').val(data.deskripsi);

@@ -322,7 +322,7 @@
         body {
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
-            overflow-y: hidden;
+            /*overflow-y: hidden;*/
         }
         label {
             color: #232443;

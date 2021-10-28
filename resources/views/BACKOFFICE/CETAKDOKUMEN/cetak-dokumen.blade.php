@@ -285,6 +285,7 @@
                 }
             });
         });
+
         $(document).on('change', '.cekbox', function () {
             val = $(this).val();
             if ($(this).prop('checked') == true) {

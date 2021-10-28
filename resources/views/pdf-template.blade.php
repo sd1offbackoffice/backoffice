@@ -28,6 +28,7 @@
         <p>
             Hal. :
         </p>
+        @yield('header_right')
     </div>
     <div style="float: center">
         <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">

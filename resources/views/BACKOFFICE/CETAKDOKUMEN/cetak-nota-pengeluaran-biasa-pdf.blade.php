@@ -1,45 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ strtoupper($data1[0]->judul) }}</title>
-</head>
-<body>
+@extends('html-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
+@if($jnskertas == 'K')
+    @section('paper_size', '595pt 442pt')
+@endif
+
+@section('table_font_size','7 px')
+
+@section('page_title')
+    {{ strtoupper($data1[0]->judul) }}
+@endsection
+
+@section('title')
+    NOTA PENGELUARAN BARANG
+@endsection
+
+@section('subtitle')
+    {{ strtoupper($data1[0]->judul) }}
+@endsection
+
+@section('header_left')
+    <p>
+        <b>{{ $data1[0]->status }}</b>
+    </p>
+@endsection
+
+@section('custom_style')
+    header {
+        height: 6cm;
+    }
+@endsection
+
+@section('content')
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br><br>
-            {{$data1[0]->status}}<br><br>
-            NPWP : {{ $perusahaan->prs_npwp }}<br><br>
-            NOMOR : {{ $data1[0]->msth_nodoc }} <br>TGL NPB : {{ substr($data1[0]->msth_tgldoc,0,10) }}<br><br>
-            FAKTUR PAJAK : {{ $data2[0]->nofp }} <br>TGL FP : {{ substr($data2[0]->mstd_date3,0,10) }}
+            NOMOR : {{ $data1[0]->msth_nodoc }}<br>
+            TGL NPB : {{ substr($data1[0]->msth_tgldoc,0,10) }}<br>
+            FAKTUR PAJAK : {{ $data2[0]->nofp }}<br>
+            TGL FP : {{ substr($data2[0]->mstd_date3,0,10) }}
         </p>
     </div>
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>
-            {{ $perusahaan->prs_namacabang }}<br>
-            {{ $perusahaan->prs_alamat1 }}<br>
-            {{ $perusahaan->prs_alamat3 }}
-        </p>
-        <p>
-            SUPPLIER : {{ $data1[0]->msth_kodesupplier }}<br>
-            NPWP : {{ $data1[0]->sup_npwp }}<br>
-            ALAMAT : {{ $data1[0]->sup_alamatsupplier1 }}<br>
-            {{ $data1[0]->sup_alamatsupplier2 }}<br>
-            {{ $data1[0]->sup_kotasupplier3 }}<br>
-            TELP : {{ $data1[0]->sup_telpsupplier }}<br>
-            CP : {{ $data1[0]->sup_contactperson }}
+            NOMOR : {{ $data1[0]->msth_nodoc }}<br>
+            TGL NPB : {{ substr($data1[0]->msth_tgldoc,0,10) }}<br>
+            FAKTUR PAJAK : {{ $data2[0]->nofp }}<br>
+            TGL FP : {{ substr($data2[0]->mstd_date3,0,10) }}
         </p>
     </div>
-    <h2 style="text-align: center"> NOTA PENGELUARAN BARANG <br>{{ strtoupper($data1[0]->judul) }}</h2>
-</header>
 
-<main style="margin-top: 50px;">
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
@@ -148,146 +156,4 @@ $datetime->setTimezone($timezone);
         </tr>
         </tfoot>
     </table>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 750pt 500pt;
-    }
-
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-
-    td {
-        display: table-cell;
-    }
-
-    thead {
-        text-align: center;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tfoot {
-        border-top: 1px solid black;
-    }
-
-    .keterangan {
-        text-align: left;
-    }
-
-    .table {
-        width: 100%;
-        font-size: 7px;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table-ttd {
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-
-    .table th {
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-
-    .judul, .table-borderless {
-        text-align: center;
-    }
-
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .left {
-        text-align: left;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid {
-        page-break-inside: avoid;
-    }
-
-    .table-header td {
-        white-space: nowrap;
-    }
-
-    .tengah {
-        vertical-align: middle !important;
-    }
-
-    .blank-row {
-        line-height: 70px !important;
-        color: white;
-    }
-
-    .border-top {
-        border-bottom: 1px solid black;
-    }
-
-</style>
-</html>
+@endsection

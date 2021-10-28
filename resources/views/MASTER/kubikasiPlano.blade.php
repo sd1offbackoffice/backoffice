@@ -18,7 +18,7 @@
                                                 :</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_koderak" placeholder="..."
-                                                       value="">
+                                                       value="" readonly>
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov p-0"
                                                         data-toggle="modal" data-target="#m_koderak">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -35,7 +35,7 @@
                                                 :</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_subrak" placeholder="..."
-                                                       value="">
+                                                       value="" readonly>
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov p-0"
                                                         data-toggle="modal" data-target="#m_subrak">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -47,7 +47,7 @@
                                                 :</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_shelving"
-                                                       placeholder="..." value="">
+                                                       placeholder="..." value="" readonly>
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov p-0"
                                                         data-toggle="modal" data-target="#m_shelving">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -308,6 +308,14 @@
         var kubikasi;
         var data;
         var count_data = 0;
+
+        var arr = {};
+        arr.koderak = [];
+        arr.kodesubrak = [];
+        arr.shelvingrak = [];
+        arr.volume = [];
+        arr.allowance = [];
+
         $(document).ready(function () {
             $('#table_lovkoderak').DataTable({
                 "lengthChange": false,
@@ -693,6 +701,9 @@
         });
 
         $(document).on('keyup', '.num', function (e) {
+            if($(this).val().substr(0,1) == '0'){
+                $(this).val($(this).val().substr(1,1))
+            }
             $(this).val(addDotInNumber(replaceDotInNumber($(this).val())));
         });
 
@@ -819,9 +830,10 @@
                     });
                 } else {
                     $('.baris').remove();
+
                     for (var i = 0; i < kubikasi.length; i++) {
                         var vbtb = replaceDotInNumber($('#i_volume').val()) * replaceDotInNumber($('#i_qty').val());
-                        var vsisa = replaceDotInNumber(kubikasi[i].vreal) - (replaceDotInNumber(kubikasi[i].vexists) + replaceDotInNumber(kubikasi[i].vbook) + vbtb);
+                        var vsisa = parseFloat(replaceDotInNumber(nvl(kubikasi[i].vreal,0))) - (parseFloat(replaceDotInNumber(nvl(kubikasi[i].vexists,0))) + parseFloat(replaceDotInNumber(nvl(kubikasi[i].vbook,0))) + vbtb);
                         if (vsisa <= 0) {
                             tr = '<tr class="baris red">';
                         } else {
@@ -857,11 +869,11 @@
                 kodesubrak = $('.ksr-' + i).text();
                 shelvingrak = $('.sr-' + i).text();
                 if (data[i].kbp_volumeshell != volume || data[i].kbp_allowance != allow) {
-                    arr.koderak.push(koderak);
-                    arr.kodesubrak.push(kodesubrak);
-                    arr.shelvingrak.push(shelvingrak);
-                    arr.volume.push(replaceDotInNumber(volume));
-                    arr.allowance.push(allow);
+                    this.arr.koderak.push(koderak);
+                    this.arr.kodesubrak.push(kodesubrak);
+                    this.arr.shelvingrak.push(shelvingrak);
+                    this.arr.volume.push(replaceDotInNumber(volume));
+                    this.arr.allowance.push(allow);
                     if (volume == 0 && allow > 0) {
                         swal({
                             title: 'Volume tidak boleh 0!',
@@ -888,6 +900,7 @@
                         return;
                     }
                 }
+                console.log(arr);
             }
         }
 
@@ -900,6 +913,8 @@
             arr.allowance = [];
 
             cek_data();
+
+            // console.log(arr);
             ajaxSetup();
             $.ajax({
                 url: '/BackOffice/public/master/kubikasiplano/save_kubikasi',

@@ -184,7 +184,7 @@
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
                                             </div>
 
-                                            <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">Jenis Outlet</label>
+                                            <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">Jenis Outlet<span class="wajib">*</span></label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_kodeoutlet">
                                                 <button id="btn-modal-outlet" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_jenisoutletHelp">
@@ -201,7 +201,7 @@
                                                 <input type="number" min="0" class="form-control" id="cus_jarak">
                                             </div>
 
-                                            <label for="i_suboutlet" class="col-sm-2 offset-sm-2 col-form-label">Sub Outlet</label>
+                                            <label for="i_suboutlet" class="col-sm-2 offset-sm-2 col-form-label">Sub Outlet<span class="wajib">*</span></label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control " id="cus_kodesuboutlet">
                                                 <button id="btn-modal-suboutlet" type="button" class="btn btn-lov p-0"  onclick="view_sub_outlet()">
@@ -788,33 +788,33 @@
                                     <div class="col-sm-6">
                                         <input type="text" class="form-control" id="i_updateterakhir">
                                     </div>
-                                    <label for="i_harusdiisi" class="col-sm-3 text-right"><span class="wajib">*Harus diisi</span></label>
+                                    <label for="i_harusdiisi" class="col-sm-4 text-right"><span class="wajib">*Harus diisi / ( - ) bila memang tidak memiliki data</span></label>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <div class="col-sm-2 offset-sm-2">
-                                        <button id="btn-rekam" class="btn btn-primary btn-block" disabled>REKAM</button>
+                                    <div class="col-sm-2 offset-sm-4">
+                                        <button id="btn-rekam" class="btn btn-success btn-block" disabled>SIMPAN</button>
                                     </div>
-                                    <div class="col-sm-2 pl-0">
+                                    <div class="col-sm-2">
                                         <button id="btn-aktif-nonaktif" class="btn btn-primary btn-block" disabled>AKTIF / NONAKTIF</button>
                                     </div>
-                                    <div class="col-sm-2 pl-0">
-                                        <button id="btn-hapus" class="btn btn-danger btn-block" disabled>HAPUS</button>
-                                    </div>
-                                    <div class="col-sm-2 pl-0">
+                                    <div class="col-sm-2">
                                         <button id="btn-quisioner" class="btn btn-info btn-block" style="display:none">QUISIONER</button>
                                     </div>
-                                    <div class="col-sm-2 pl-0">
+                                    <div class="col-sm-2">
                                         <button id="btn-export-crm" class="btn btn-success btn-block" disabled>EXPORT KE CRM</button>
                                     </div>
                                 </div>
-                                <div class="form-group row mb-0">
-                                    <div class="col-sm-3 offset-sm-5 mt-2">
+                                <div class="form-group row mt-2">
+                                    <div class="col-sm-2">
+                                        <button id="btn-hapus" class="btn btn-danger btn-block" disabled>HAPUS</button>
+                                    </div>
+                                    <div class="col-sm-4 offset-sm-2">
                                         <button id="btn-download-mktho" class="btn btn-primary btn-block" disabled>DOWNLOAD CUSTOMER DR MKTHO</button>
                                     </div>
-                                    <div class="col-sm-2 mt-2 pl-0">
+                                    <div class="col-sm-2">
                                         <button id="btn-check-registrasi" class="btn btn-primary btn-block" disabled>CEK TGL REGISTRASI</button>
                                     </div>
-                                    <div class="col-sm-2 mt-2">
+                                    <div class="col-sm-2">
                                         <p>Last Edited : {{ max([date("d-m-Y", filemtime(resource_path('views\MASTER\member.blade.php'))),date("d-m-Y", filemtime(app_path('Http\Controllers\MASTER\MemberController.php')))]) }}
                                         </p>
                                     </div>

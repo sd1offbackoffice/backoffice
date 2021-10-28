@@ -79,7 +79,7 @@
 </head>
 <body>
 
-@if (!$result)
+@if (!$data)
     <h1 style="text-align: center">Data Tidak Ada</h1>
 @else
     <?php
@@ -90,12 +90,12 @@
     <header>
     </header>
     <p style="text-align: left">
-        {{$result[0]->prs_namaperusahaan}}<br>
-        {{$result[0]->prs_namacabang}}<br>
+        {{$data[0]->prs_namaperusahaan}}<br>
+        {{$data[0]->prs_namacabang}}<br>
     </p>
     <p style="text-align: center">
         ** STRUK RESET KASIR ** <br>
-        {{$result[0]->nomor}}
+        {{$data[0]->nomor}}
     </p>
     <main>
         <hr>
@@ -103,19 +103,19 @@
             <tbody>
             <tr>
                 <td>KODE CABANG</td>
-                <td>: {{$result[0]->prs_kodecabang}}</td>
+                <td>: {{$data[0]->prs_kodecabang}}</td>
             </tr>
             <tr>
                 <td>TANGGAL</td>
-                <td>: {{$result[0]->tgl}}</td>
+                <td>: {{$data[0]->tgl}}</td>
             </tr>
             <tr>
                 <td>JAM SELESAI</td>
-                <td>: {{$result[0]->jam}}</td>
+                <td>: {{$data[0]->jam}}</td>
             </tr>
             <tr>
                 <td>NOMOR STATION</td>
-                <td>: {{$result[0]->js_cashierstation}}</td>
+                <td>: {{$data[0]->js_cashierstation}}</td>
             </tr>
             <tr>
                 <td>KASIR</td>
@@ -126,23 +126,23 @@
 
             <tr>
                 <td>DI RESET OLEH</td>
-                <td>: {{$result[0]->userid}} - {{$result[0]->username}}</td>
+                <td>: {{$data[0]->userid}} - {{$data[0]->username}}</td>
 
             </tr>
             <tr>
                 <td>TANGGAL</td>
-                <td>: {{$result[0]->tgl}}</td>
+                <td>: {{$data[0]->tgl}}</td>
             </tr>
             <tr>
                 <td>JAM</td>
-                <td>: {{$result[0]->jam}}</td>
+                <td>: {{$data[0]->jam}}</td>
             </tr>
 
             <tr><td style="height: 10px" colspan="4"> </td></tr>
 
             <tr>
                 <td>RP. KREDIT</td>
-                <td>: {{number_format($result[0]->js_totcreditsalesamt,0,'.',',')}}</td>
+                <td>: {{number_format($data[0]->js_totcreditsalesamt,0,'.',',')}}</td>
             </tr>
 
             <tr><td style="height: 10px" colspan="4"> </td></tr>
@@ -150,11 +150,11 @@
 
             <tr>
                 <td>PENJUALAN</td>
-                <td>: {{number_format($result[0]->js_totcreditsalesamt,0,'.',',')}}</td>
+                <td>: {{number_format($data[0]->js_totcreditsalesamt,0,'.',',')}}</td>
             </tr>
             <tr>
                 <td>TOTAL TRANSAKSI</td>
-                <td>: {{number_format($result[0]->js_totcreditsalesamt,0,'.',',')}}</td>
+                <td>: {{number_format($data[0]->js_totcreditsalesamt,0,'.',',')}}</td>
             </tr>
 
             <tr><td style="height: 10px" colspan="4"> </td></tr>
@@ -162,11 +162,11 @@
 
             <tr>
                 <td>JUMLAH TRANSAKSI</td>
-                <td>: {{$result[0]->jmlh_trans}}</td>
+                <td>: {{$data[0]->jmlh_trans}}</td>
             </tr>
             <tr>
                 <td>JUMLAH VOID </td>
-                <td>: {{$result[0]->void}}</td>
+                <td>: {{$data[0]->void}}</td>
             </tr>
 
             </tbody>

@@ -76,6 +76,7 @@ class cabangController extends Controller
             oci_bind_by_name($exec, ':filecmo', $filecmo,1000);
             oci_bind_by_name($exec, ':errm', $errm,1000);
             oci_execute($exec);
+
             if (!$errm){
                 $s = oci_parse($connection, "BEGIN  sp_trf_cmo_cabang_web(:filecmo,:sukses,:value); END;"); /*PROCEDURE ASLI sp_trf_cmo_cabang  DENGAN PARAMETER BOOL DAN DIUBAH MENJADI VARCHAR*/
                 oci_bind_by_name($s, ':filecmo',$filecmo,100);

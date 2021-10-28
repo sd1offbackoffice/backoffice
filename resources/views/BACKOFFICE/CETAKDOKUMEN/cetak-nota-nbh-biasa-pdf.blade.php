@@ -1,64 +1,66 @@
-<!DOCTYPE html>
-<html>
+@extends('pdf-template')
 
-<head>
-        <title>{{ strtoupper($data1[0]->judul) }}</title>
+@if($jnskertas == 'K')
+    @section('paper_size', '595pt 442pt')
+@endif
 
-    </head>
-    <body>
+@section('table_font_size','7 px')
 
-    <?php
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-    <header>
-        <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                <b>{{ $perusahaan->prs_namaperusahaan }}</b><br><br>
-                NPWP : {{ $perusahaan->prs_npwp }}<br><br>
-                NOMOR : {{ $data1[0]->msth_nodoc }} <br>TANGGAL : {{ substr($data1[0]->msth_tgldoc,0,10) }}<br><br>
-                NO. REF : {{ $data1[0]->msth_nopo }} <br>TGL. REF : {{ substr($data1[0]->msth_tglpo,0,10) }}<br><br>
-                KETERANGAN : {{ $data1[0]->ket }} <br><br>
-            </p>
-        </div>
-        <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-            <p>
-                {{ $perusahaan->prs_namacabang }}<br>
-                {{ $perusahaan->prs_alamat1 }}<br>
-                {{ $perusahaan->prs_alamat3 }}
-            </p><br><br>
-            <p>
-                {{ $data1[0]->status }}
-            </p>
-        </div>
-        <h2 style="text-align: center"> NOTA PENGELUARAN BARANG <br>{{ strtoupper($data1[0]->judul) }}</h2>
-    </header>
+@section('page_title')
+    {{ strtoupper($data1[0]->judul) }}
+@endsection
 
-    <main style="margin-top: 50px;">
-        <table class="table">
-            <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+@section('title')
+    NOTA PENGELUARAN BARANG
+@endsection
+
+@section('subtitle')
+    {{ strtoupper($data1[0]->judul) }}
+@endsection
+
+@section('header_left')
+    <p>
+        <b>{{ $data1[0]->status }}</b>
+    </p>
+@endsection
+
+@section('content')
+    <table>
+        <tbody>
             <tr>
-                <th rowspan="2">NO</th>
-                <th rowspan="2">PLU</th>
-                <th rowspan="2">NAMA BARANG</th>
-                <th colspan="2">KEMASAN</th>
-                <th colspan="2">KWANTUM</th>
-                <th rowspan="2">HARGA<br>SATUAN</th>
-                <th rowspan="2">TOTAL</th>
-                <th rowspan="2">KETERANGAN</th>
+                <td>NOMOR : {{ $data1[0]->msth_nodoc }}</td>
+                <td>TANGGAL : {{ substr($data1[0]->msth_tgldoc,0,10) }}</td>
             </tr>
             <tr>
-                <th>UNIT</th>
-                <th>FRAC</th>
-                <th>CTN</th>
-                <th>PCs</th>
+                <td>NO. REF : {{ $data1[0]->msth_nopo }}</td>
+                <td>TGL. REF : {{ substr($data1[0]->msth_tglpo,0,10) }}</td>
             </tr>
-            </thead>
-            <tbody>
-            @php
-                $total = 0;
-                $i=1;
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <tr>
+            <th rowspan="2">NO</th>
+            <th rowspan="2">PLU</th>
+            <th rowspan="2">NAMA BARANG</th>
+            <th colspan="2">KEMASAN</th>
+            <th colspan="2">KWANTUM</th>
+            <th rowspan="2">HARGA<br>SATUAN</th>
+            <th rowspan="2">TOTAL</th>
+            <th rowspan="2">KETERANGAN</th>
+        </tr>
+        <tr>
+            <th>UNIT</th>
+            <th>FRAC</th>
+            <th>CTN</th>
+            <th>PCs</th>
+        </tr>
+        </thead>
+        <tbody>
+        @php
+            $total = 0;
+            $i=1;
         @endphp
 
         @if(sizeof($data1)!=0)
@@ -119,148 +121,4 @@
         </tr>
         </tfoot>
     </table>
-</main>
-
-<br>
-</body>
-
-
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 750pt 500pt;
-    }
-
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-
-    td {
-        display: table-cell;
-    }
-
-    thead {
-        text-align: center;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tfoot {
-        border-top: 1px solid black;
-    }
-
-    .keterangan {
-        text-align: left;
-    }
-
-    .table {
-        width: 100%;
-        font-size: 7px;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table-ttd {
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-
-    .table th {
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-
-    .judul, .table-borderless {
-        text-align: center;
-    }
-
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .left {
-        text-align: left;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid {
-        page-break-inside: avoid;
-    }
-
-    .table-header td {
-        white-space: nowrap;
-    }
-
-    .tengah {
-        vertical-align: middle !important;
-    }
-
-    .blank-row {
-        line-height: 70px !important;
-        color: white;
-    }
-
-    .border-top {
-        border-bottom: 1px solid black;
-    }
-
-</style>
-</html>
+@endsection

@@ -1955,6 +1955,7 @@ class CetakDokumenController extends Controller
                     case  'K' :
 
                         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
+
                         $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
                                   CASE WHEN '" . $reprint . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
@@ -1993,6 +1994,7 @@ class CetakDokumenController extends Controller
                                                     AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
                                                     " . $P_PN . "
                                         ) a");
+
                         if ($jnskertas == 'B') {
                             $cw = 700;
                             $ch = 45;
@@ -2004,40 +2006,8 @@ class CetakDokumenController extends Controller
                         }
                         break;
                     case  'H' :      // Barang Hilang
-                        if ($jnskertas == 'B') {
-                            $cw = 700;
-                            $ch = 45;
-                            $P_PN = "AND MSTD_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
-                            $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
-                                    CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
-                                    mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
-                                    FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/mstd_frac)) AS total, mstd_keterangan,
-                                    CASE WHEN msth_typetrn = 'H' THEN
-                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
-                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'BARANG RETUR' ELSE
-                                     'BARANG RUSAK' END END
-                                    ELSE
-                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'SELISIH STOK OPNAME' ELSE
-                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'TERTUKAR JENIS' ELSE
-                                     'GANTI PLU' END END
-                                    END
-                                    AS KET,
-                                    prd_deskripsipanjang,
-                                    prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3,
-                                    CASE WHEN msth_typetrn = 'H' THEN 'NOTA BARANG HILANG' ELSE CASE WHEN msth_typetrn = 'X' THEN 'MEMO PENYESUAIAN PERSEDIAAN' ELSE '' END END AS JUDUL
-                                    FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                                    WHERE msth_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                    " . $P_PN . "
-                                    AND mstd_kodeigr = msth_kodeigr AND mstd_nodoc = msth_nodoc
-                                    AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
-                                    AND prs_kodeigr = msth_kodeigr
-                                    ORDER BY msth_NODOC,MSTD_SEQNO");
-                            $filename = 'cetak-nota-nbh-biasa';
-                        } else {
-                            $cw = 700;
-                            $ch = 45;
-                            $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
-                            $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
+                        $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
+                        $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
                                       mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                       FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/prd_frac)) AS total, mstd_keterangan,
                                       CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
@@ -2051,6 +2021,16 @@ class CetakDokumenController extends Controller
                                      AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
                                      AND prs_kodeigr = msth_kodeigr
                         ORDER BY msth_NODOC,mstd_seqno");
+
+                        if ($jnskertas == 'B') {
+                            $cw = 700;
+                            $ch = 45;
+
+                            $filename = 'cetak-nota-nbh-biasa';
+                        } else {
+                            $cw = 700;
+                            $ch = 45;
+
                             $filename = 'cetak-nota-nbh-kecil';
                         }
                         break;
@@ -2063,14 +2043,20 @@ class CetakDokumenController extends Controller
 
             if (sizeof($data1) != 0) {
                 $data = [
+                    'data' => ['dummy'],
                     'perusahaan' => $perusahaan,
                     'data1' => $data1,
                     'data2' => $data2,
                     'tgl1' => $tgl1,
-                    'tgl2' => $tgl2
+                    'tgl2' => $tgl2,
+                    'jnskertas' => $jnskertas
                 ];
 
-                dd($data);
+//                dd($filename);
+
+//                dd($data);
+
+                return view('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
 
                 $dompdf = new PDF();
 
@@ -2082,15 +2068,15 @@ class CetakDokumenController extends Controller
                 $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
                 $canvas = $dompdf ->get_canvas();
-                $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
                 $dompdf = $pdf;
 
                 return $dompdf->stream('Nota Pengeluaran Barang (Retur Pembelian).pdf');
 
-                file_put_contents($filename.'.pdf',$pdf->output());
-
-                return $filename.'.pdf';
+//                file_put_contents($filename.'.pdf',$pdf->output());
+//
+//                return $filename.'.pdf';
             }
             else {
                 return "TIDAK ADA DATA!";
