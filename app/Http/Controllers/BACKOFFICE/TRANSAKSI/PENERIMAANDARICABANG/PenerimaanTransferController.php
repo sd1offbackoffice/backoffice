@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -159,7 +160,7 @@ class PenerimaanTransferController extends Controller
                             if(count($jum) == 0){
                                 $step = 11;
 
-                                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $c = loginController::getConnectionProcedure();
                                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','TSJ','Nomor Terima SJ','4' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $ndoc, 32);
                                 oci_execute($s);
@@ -725,13 +726,13 @@ class PenerimaanTransferController extends Controller
                                                 THEN ".$nacostx."
                                              ELSE ".$nacostx."* prd_frac
                                           END,
-                                       prd_lastcost = 
+                                       prd_lastcost =
                                           CASE
                                             WHEN NVL(prd_lastcost,0) = 0 THEN
                                                 CASE
                                                     WHEN SUBSTR (prd_prdcd, -1, 1) = '1' OR prd_unit = 'KG'
                                                       THEN ".$nacostx."
-                                                    ELSE ".$nacostx." * prd_frac                     	
+                                                    ELSE ".$nacostx." * prd_frac
                                                 END
                                             ELSE prd_lastcost
                                           END
@@ -1118,7 +1119,7 @@ class PenerimaanTransferController extends Controller
                             else{
                                 $step = 11;
 
-                                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $c = loginController::getConnectionProcedure();
                                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','TSJ','Nomor Terima SJ','4' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $docnoa, 32);
                                 oci_execute($s);

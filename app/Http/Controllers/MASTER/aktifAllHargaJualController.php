@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use App\AllModel;
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,7 @@ class aktifAllHargaJualController extends Controller
         $ppn            = ($getData[0]->prs_nilaippn < 1) ? '1.1' : $getData[0]->prs_nilaippn;
         $errm  = '';
 
-//        dd([$kodeigr,$jenistimbangan,$ppn,$errm]);
-
-        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+        $connection = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_allitem(:kodeigr,:jtim, :ppn, :user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);

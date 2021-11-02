@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\OMI;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -190,7 +191,7 @@ class rubahstatusomiController extends Controller
             if((int)$temp[0]->result != 0){
                 $pajak = 0;
                 //get_no_faktur
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
                 $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
                 oci_bind_by_name($query, ':taxnum', $pajak, 32);
                 oci_execute($query);
@@ -224,7 +225,7 @@ class rubahstatusomiController extends Controller
                     return response()->json(['error' => 'Nomor FP Tidak Cukup, Nomor FP Harus 2 Nomor !!']);
                 }
                 $pajak = 0;
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
                 $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
                 oci_bind_by_name($query, ':taxnum', $pajak, 32);
                 oci_execute($query);
@@ -235,7 +236,7 @@ class rubahstatusomiController extends Controller
                 $invno1 = (int)$pajak;
             }
             $pajak = 0;
-            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $connect = loginController::getConnectionProcedure();
             $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
             oci_bind_by_name($query, ':taxnum', $pajak, 32);
             oci_execute($query);

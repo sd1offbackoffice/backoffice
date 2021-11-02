@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PEMUSNAHAN;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -89,7 +90,7 @@ class beritaAcaraPemusnahanController extends Controller
     public function getNewNmrDoc(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PMN','Nomor Pemusnahan Barang',
                             '8' || TO_CHAR (SYSDATE, 'YY'),
@@ -114,7 +115,7 @@ class beritaAcaraPemusnahanController extends Controller
         $getDoc    = DB::table('tbtr_bpb_barangrusak')->where('brsk_nodoc', $noDoc)->get()->toArray();
 
 //        Get No DOC
-        $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PMN','Nomor Pemusnahan Barang',
                             '8' || TO_CHAR (SYSDATE, 'YY'),
@@ -200,7 +201,7 @@ class beritaAcaraPemusnahanController extends Controller
                                                 ");
 
 //                Call Procedure Update Stock
-                $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $connect = loginController::getConnectionProcedure();
                 $kode1   = '03';
                 $kode2   = 'TRFOUT';
                 $v_lok   = '';

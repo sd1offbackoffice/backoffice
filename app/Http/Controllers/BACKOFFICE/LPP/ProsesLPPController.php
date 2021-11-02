@@ -29,7 +29,7 @@ class ProsesLPPController extends Controller
         $err_txt = '';
 
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_PROSES_LPP2('" . $_SESSION['kdigr'] . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),false,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 

@@ -174,7 +174,7 @@ class omiController extends Controller
 //                                        WHERE tko_kodesbu = '$kodeSBU'
 //                                            and tko_kodeomi = '$kodeomiEditExpand' and tko_kodeigr = '$kodeigr'");
 //
-//                    $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+//                    $connection = loginController::getConnectionProcedure();
 //                    $exec = oci_parse($connection, "BEGIN  sp_upd_df_omi_web(:kodeomi,:kodeigr,:sukses,:errm); END;"); //Diganti karna proc yg asli pakai boolean
 //                    oci_bind_by_name($exec, ':kodeomi',$kodeomiEditExpand,100);
 //                    oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);

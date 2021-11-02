@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\FRONTOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,7 @@ class PromosiHoKeCabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $p_sukses = "false";
         $err_txt = "";
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
         $query = oci_parse($connect, "BEGIN IGR_IMPORT_DATA_PROMOSI2 (
        '$kodeigr',
        :err_txt,
@@ -45,7 +46,7 @@ class PromosiHoKeCabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $p_sukses = "false";
         $err_txt = "";
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
         $query = oci_parse($connect, "BEGIN IGR_UPDATE_DATA_PROMOSI2 (
        '$kodeigr',
        :err_txt,

@@ -1091,6 +1091,13 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/tabelmain', 'TABEL\hrgpromoController@ModalMain');
             Route::get('/modalplu', 'TABEL\hrgpromoController@ModalPlu');
             Route::get('/checkplu', 'TABEL\hrgpromoController@CheckPlu');
+            Route::get('/print', 'TABEL\hrgpromoController@print');
+        });
+        /*Ryan*/
+        Route::prefix('/superpromo')->group(function () {
+            //SUPER Promosi (IGR_TAB_SUPERPROMO) (ryanOrder = 34)
+            Route::get('/', 'TABEL\superpromoController@index');
+            Route::get('/checkplu', 'TABEL\superpromoController@CheckPlu');
         });
 
         /*Ryan*/
@@ -1215,6 +1222,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-monitoring', 'TABEL\PLUMROMonitoringController@getMonitoring');
             Route::get('/get-data', 'TABEL\PLUMROMonitoringController@getData');
             Route::get('/print', 'TABEL\PLUMROMonitoringController@print');
+        });
+
+        /*Leo*/
+        Route::prefix('/monitoring-produk')->group(function () {
+            Route::get('/', 'TABEL\MonitoringProdukController@index');
         });
 
         //Denni

@@ -98,7 +98,7 @@ class CetakSJPacklistController extends Controller
                             if(Self::nvl($trbodoc,' ') != Self::nvl($rec->trbo_nodoc,' ')){
                                 $trbodoc = Self::nvl($rec->trbo_nodoc,' ');
 
-                                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $c = loginController::getConnectionProcedure();
                                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan','SJK' || ".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yy'),3,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $v_nodoc, 32);
                                 oci_execute($s);
@@ -158,14 +158,14 @@ class CetakSJPacklistController extends Controller
                         }
                         else{
                             if(Self::nvl($unitp,' ') == 'KG'){
-                                DB::update("UPDATE TBMASTER_STOCK 
+                                DB::update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty." / 1000)),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty." / 1000))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
                             AND ST_LOKASI = '01';");
                             }
                             else{
-                                DB::update("UPDATE TBMASTER_STOCK 
+                                DB::update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty.")),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty."))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
@@ -253,14 +253,14 @@ class CetakSJPacklistController extends Controller
                 }
             }
 
-            $data = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, 
+            $data = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                     msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
-                    prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat3,prs_npwp, 
+                    prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat3,prs_npwp,
                     mstd_loc||' '||cab_namacabang cabang,
                     mstd_gdg gudang, MSTD_SEQNO,
                     mstd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
                     mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_gross,
-                    nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0), 
+                    nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0),
                     nvl(mstd_qtybonus2,0), mstd_keterangan
                     from tbtr_mstran_h, tbmaster_perusahaan, tbtr_mstran_d, tbmaster_prodmast, tbmaster_cabang
                     where msth_kodeigr='".$_SESSION['kdigr']."'

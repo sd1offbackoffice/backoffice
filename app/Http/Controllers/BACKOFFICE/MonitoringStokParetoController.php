@@ -117,7 +117,7 @@ class MonitoringStokParetoController extends Controller
                 AND TRANSLATE (MPL_KODEMONITORING, ' ', '_') = '".$kodemon."')
     ORDER BY kdsup, PRD_PRDCD");
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
             $temp = DB::table('tbtr_konversiplu')
@@ -274,7 +274,7 @@ class MonitoringStokParetoController extends Controller
          AND TRANSLATE (MPL_KODEMONITORING, ' ', '_') = '".$kodemon."'
     ORDER BY PRD_KODEDIVISI, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_DESKRIPSIPENDEK, MPL_PRDCD");
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
             $temp = DB::table('tbtr_konversiplu')

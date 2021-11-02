@@ -155,17 +155,17 @@ class CetakController extends Controller
             else{
                 if($reprint == 0){
                     foreach($_SESSION['kkc_nodoc'] as $knodoc){
-                        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                        $c = loginController::getConnectionProcedure();
                         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan','3' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                         oci_bind_by_name($s, ':ret', $vnodoc, 32);
                         oci_execute($s);
 
                         $data = DB::select("SELECT aa.*,
-															      prd_unit, prd_frac, prd_flagbkp1,prd_flagbkp2,prd_kodedivisi, 
-															      prd_kodedepartement, prd_kodekategoribarang,prd_kodetag,															
+															      prd_unit, prd_frac, prd_flagbkp1,prd_flagbkp2,prd_kodedivisi,
+															      prd_kodedepartement, prd_kodekategoribarang,prd_kodetag,
 															      sup_pkp, prd_kodesupplier,sup_top,st_saldoakhir,st_lastcost,st_avgcost
 													   FROM tbtr_backoffice aa, tbmaster_prodmast bb, tbmaster_supplier, tbmaster_stock
-                             WHERE trbo_nodoc = '".$knodoc."' and trbo_typetrn='O' 
+                             WHERE trbo_nodoc = '".$knodoc."' and trbo_typetrn='O'
                           		     and prd_prdcd=trbo_prdcd
                                      and prd_kodeigr=trbo_kodeigr
                                      and sup_kodesupplier(+)=prd_kodesupplier
@@ -223,7 +223,7 @@ class CetakController extends Controller
                             $vlok = '';
                             $vmessage = '';
 
-                            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $c = loginController::getConnectionProcedure();
                             $s = oci_parse($c, "BEGIN SP_IGR_UPDATE_STOCK('".$_SESSION['kdigr']."','01','".$d->trbo_prdcd."','".$d->trbo_kodesupplier."','TRFOUT','".$d->trbo_qty."','".$d->st_lastcost."','".$d->st_avgcost."','".$_SESSION['usid']."',:vlok,:vmessage); END;");
                             oci_bind_by_name($s,':vlok',$vlok);
                             oci_bind_by_name($s,':vmessage',$vmessage);
@@ -292,7 +292,7 @@ class CetakController extends Controller
                 $perusahaan = DB::table('tbmaster_perusahaan')
                     ->first();
 
-                $data = DB::select("SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, 
+                $data = DB::select("SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                         msth_nofaktur, msth_tglfaktur,
                         msth_noref3,msth_tgref3,msth_cterm, msth_flagdoc,
                         mstd_flagdisc1,msth_loc,cab_namacabang,msth_loc2,gdg_namagudang,

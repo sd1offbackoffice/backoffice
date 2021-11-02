@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSFER;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class TransferPLUController extends Controller
         $err_txt = '';
         $filedta = '';
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN sp_downloaddta('" . $_SESSION['kdigr'] . "',:filedta,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -68,7 +69,7 @@ class TransferPLUController extends Controller
 
         DB::table('DIR_LIST_TMP')->where('REQ_ID', '=', $N_REQ_ID)->delete();
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN GET_DIR_LIST(:pathdta,:n_req_id); END;";
         $s = oci_parse($c, $sql);
 
@@ -122,7 +123,7 @@ class TransferPLUController extends Controller
             if ($PROSES == TRUE || $PROSES == 'true') {
 //        -------->>>>>>>> TRARNSFER PLU <<<<<<<<--------
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_PLU(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 
@@ -152,7 +153,7 @@ class TransferPLUController extends Controller
 
 //            -------->>>>>>>> TRANSFER HARGA BELI <<<<<<<<--------
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_HGBELI(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 
@@ -174,7 +175,7 @@ class TransferPLUController extends Controller
 //            -------->>>>>>>> TRANSFER SUPPLIER <<<<<<<<--------
 //            --menu sendiri
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_SUPP(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 
@@ -189,7 +190,7 @@ class TransferPLUController extends Controller
 
 //            -------->>>>>>>> TRANSFER HARGA PROMO <<<<<<<<--------
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_DISC(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 
@@ -206,7 +207,7 @@ class TransferPLUController extends Controller
 
 //            -------->>>>>>>> TRANSFER MARGIN <<<<<<<<--------
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_MGN(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 
@@ -221,7 +222,7 @@ class TransferPLUController extends Controller
 
 //            -------->>>>>>>> TRANSFER PLU OMI <<<<<<<<--------
                 DB::beginTransaction();
-                $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+                $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_PLU_OMI(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
 

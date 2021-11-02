@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\OMI;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use FontLib\Table\Table;
 use Illuminate\Database\QueryException;
@@ -67,7 +68,7 @@ class ReturController extends Controller
     }
 
     public function getNewNodoc(){
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :nodoc := f_igr_get_nomor('" . $_SESSION['kdigr'] . "','RTO','Nomor Retur OMI','O'|| to_char(sysdate, 'yy'),4,true); END;");
         oci_bind_by_name($query, ':nodoc', $nodoc, 7);
@@ -735,7 +736,7 @@ class ReturController extends Controller
                                         if($lambilret){
                                             $step = 9;
 
-                                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                            $connect = loginController::getConnectionProcedure();
 
                                             $query = oci_parse($connect,
                                                 "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "',
@@ -755,7 +756,7 @@ class ReturController extends Controller
                                         if($lambilrus){
                                             $step = 10;
 
-                                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                            $connect = loginController::getConnectionProcedure();
 
                                             $query = oci_parse($connect,
                                                 "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "',
@@ -1261,12 +1262,12 @@ class ReturController extends Controller
                         if(self::nvl($request->hitungSelisih,0) != 0){
                             $step = 26;
 
-                            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $c = loginController::getConnectionProcedure();
                             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' ||  TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                             oci_bind_by_name($s, ':ret', $noreset, 32);
                             oci_execute($s);
 
-                            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $c = loginController::getConnectionProcedure();
                             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SOS','Nomor Struk Beban Driver','SOS',5,TRUE); END;");
                             oci_bind_by_name($s, ':ret', $dokdriver, 32);
                             oci_execute($s);
@@ -2845,7 +2846,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                 ];
                             }
                             else{
-                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $connect = loginController::getConnectionProcedure();
                                 $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'RTO',
                                  'Nomor Retur OMI',

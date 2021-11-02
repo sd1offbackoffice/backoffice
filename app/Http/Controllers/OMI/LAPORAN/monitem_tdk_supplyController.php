@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\OMI\LAPORAN;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +53,7 @@ class monitem_tdk_supplyController extends Controller
 //            ->selectRaw("*")
 //            ->get();
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
         $query = oci_parse($connect, "BEGIN FILL_TEMP_LAP211('$sDate','$eDate','$kdMon'); END;");
 
         oci_execute($query);

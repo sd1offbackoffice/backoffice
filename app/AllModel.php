@@ -28,6 +28,7 @@ class AllModel extends Model
     }
 
     public function connectionProcedure(){
+        //yang ini jangan diganti punya JEFRI
         return oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
     }
 

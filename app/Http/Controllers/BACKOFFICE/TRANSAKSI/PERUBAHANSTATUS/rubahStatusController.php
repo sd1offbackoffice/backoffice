@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS;
 
+use App\Http\Controllers\Auth\loginController;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,7 +32,7 @@ class rubahStatusController extends Controller
             ->orderBy('nomorawal')
             ->first();
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','RSN',
                              'Nomor Rubah Status New',
@@ -564,7 +565,7 @@ class rubahStatusController extends Controller
                                 ->orderBy('nomorawal')
                                 ->first();
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $connect = loginController::getConnectionProcedure();
 
                             $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','BTN',
                          'Nomor Barang Retur New',
@@ -597,7 +598,7 @@ class rubahStatusController extends Controller
                                 ->orderBy('nomorawal')
                                 ->first();
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $connect = loginController::getConnectionProcedure();
 
 
                             $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','BRN',
@@ -631,7 +632,7 @@ class rubahStatusController extends Controller
                                 ->orderBy('nomorawal')
                                 ->first();
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $connect = loginController::getConnectionProcedure();
 
                             $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','BPN',
                          'Nomor Barang Putus New',
@@ -842,7 +843,7 @@ class rubahStatusController extends Controller
                         ->where('nomordoc','<',100000)
                         ->orderBy('nomorawal')
                         ->first();
-                    $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                    $connect = loginController::getConnectionProcedure();
 
                     $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','RSN',
                      'Nomor Rubah Status New',

@@ -21,10 +21,10 @@ class barangHilangInputController extends Controller
 
         $result = DB::table('tbtr_backoffice')
             ->selectRaw("trbo_nodoc,
-               CASE WHEN TRBO_FLAGDISC1='1' THEN 'Barang Baik' 
+               CASE WHEN TRBO_FLAGDISC1='1' THEN 'Barang Baik'
                                       ELSE 'Barang Retur' End trbo_tipe,
-               CASE 
-                      WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA 
+               CASE
+                      WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA
                       ELSE 'Belum Cetak Nota' END NOTA")
             ->where('trbo_typetrn', '=', 'H')
             ->whereRaw("nvl(trbo_recordid,'0') <> '1'")
@@ -99,7 +99,7 @@ class barangHilangInputController extends Controller
         $result = DB::select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST as hrgsatuan,
                 ST_AVGCOST,NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD,Nvl(ST_SALDOAKHIR,0) as ST_SALDOAKHIR, PRD_KODESUPPLIER
                 FROM TBMASTER_PRODMAST tp
-                LEFT JOIN TBMASTER_STOCK ts ON prd_prdcd = st_prdcd and st_lokasi = '01' 
+                LEFT JOIN TBMASTER_STOCK ts ON prd_prdcd = st_prdcd and st_lokasi = '01'
                 where  PRD_PRDCD = '$noplu'");
 
         if (!$result) {
@@ -133,7 +133,7 @@ class barangHilangInputController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $ip = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
 
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
 
         $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
                             " .$ip. " || '7', 6, FALSE); END;");
@@ -154,7 +154,7 @@ class barangHilangInputController extends Controller
         //get new no trn
         $ip = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
 
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
 
         $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
                             " .$ip. " || '7', 6, TRUE); END;");

@@ -66,7 +66,7 @@ class BatalController extends Controller
                     else $vacostbaru = (((Self::nvl($sj->st_saldoakhir,0)*Self::nvl($sj->st_avgcost,0))+(Self::nvl($ncost,0)*Self::nvl($nqtt,0)))/ ((Self::nvl($sj->st_saldoakhir,0)+$nqtt)));
 
                     DB::update("	UPDATE tbmaster_prodmast
-  							     set prd_avgcost=".$vacostbaru." * case when prd_unit='KG' then 1 else 
+  							     set prd_avgcost=".$vacostbaru." * case when prd_unit='KG' then 1 else
   							                                case when prd_frac <= 0 then 1 else nvl(prd_frac,1) end end
   						WHERE substr(prd_prdcd,1,6)= substr('".$sj->mstd_prdcd."',1,6)
   							    and prd_kodeigr='".$_SESSION['kdigr']."'");
@@ -85,7 +85,7 @@ class BatalController extends Controller
 //                $lcost = (float) $sj->st_lastcost;
 //                $acost = (float) $vacostbaru;
 //
-//                $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+//                $connect = loginController::getConnectionProcedure();
 //                $exec = oci_parse($connect, "BEGIN  sp_igr_update_stock(:kodeigr,:kode1,:prdcd,:sup,:kode2,:qty,:st_lastcost,:st_avgcost,:user,:v_lok,:v_message); END;"); //Procedure asli diganti ke varchar
 //                oci_bind_by_name($exec, ':kodeigr',$kodeigr);
 //                oci_bind_by_name($exec, ':kode1',$kode1);

@@ -73,7 +73,7 @@ class PBGudangPusatController extends Controller
 
             foreach($recs as $rec){
                 if($p_nodok == ''){
-                    $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                    $c = loginController::getConnectionProcedure();
                     $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PB','Nomor Permintaan Barang','PB' || ".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yy'),3,FALSE); END;");
                     oci_bind_by_name($s, ':ret', $r, 32);
                     oci_execute($s);

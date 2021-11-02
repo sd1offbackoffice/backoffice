@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MASTER;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -760,7 +761,7 @@ class memberController extends Controller
     }
 
     public function download_mktho(Request $request){
-        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+        $connection = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connection, "BEGIN  sp_download_customer_mktho_web(:sukses,:errm); END;"); //Diganti karna proc yg asli pakai boolean
         oci_bind_by_name($exec, ':sukses',$sukses,100);

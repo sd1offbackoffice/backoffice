@@ -150,7 +150,7 @@ class KKEIController extends Controller
                     $x2 = '0'.$x2;
 
 
-                $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+                $connection = loginController::getConnectionProcedure();
                 $exec = oci_parse($connection, "BEGIN  SP_SLTREND (:kodeigr, :x2, :x1, :n, :prdcd, :sales01, :sales02, :sales03); END;");
                 oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
                 oci_bind_by_name($exec, ':x2',$x2,100);

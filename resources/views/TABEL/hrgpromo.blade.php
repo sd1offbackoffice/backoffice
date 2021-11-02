@@ -34,12 +34,6 @@
                             </div>
                             <label class="col-sm-3 col-form-label text-left">[T] Turun Langsung&nbsp;&nbsp;&nbsp;&nbsp;[D] Diskon</label>
                         </div>
-{{--                        <div class="row">--}}
-{{--                            <label class="col-sm-3 col-form-label text-right">Tanggal</label>--}}
-{{--                            <div class="col-sm-4">--}}
-{{--                                <input class="text-center form-control" type="text" id="daterangepicker" disabled>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
                         <div class="row">
                             <label class="col-sm-3 col-form-label text-right">Tanggal Mulai</label>
                             <div class="col-sm-2">
@@ -154,12 +148,6 @@
     <script>
         let tableMain;
         let tablePlu;
-
-        $('#daterangepicker').daterangepicker({
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
 
         $(document).ready(function () {
             PluModal('');
@@ -371,40 +359,9 @@
             return false;
         }
 
-        function isNumberKey(evt){
-            let charCode = (evt.which) ? evt.which : evt.keyCode
-            if (charCode > 31 && (charCode < 48 || charCode > 57))
-                return false;
-            return true;
-        }
 
-
-        function addRow() {
-            $('#bodyProdukSponsor').append(tempTable());
-        }
-
-        function deleteRow(e) {
-            $(e).parents("tr").remove();
-        }
-
-        function tempTable() {
-            var temptbl =  ` <tr class="baris"">
-                                                <td class="text-center">
-                                                    <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header" class="icon fas fa-times" onclick="deleteRow(this)">X</button>
-                                                </td>
-                                                <td class="buttonInside" style="width: 150px;">
-                                                    <input onclick="PluClick(this)" onchange="PluChange(this)" type="text" class="form-control plu" value="">
-                                                    <button id="btnPlu" type="button" class="btn btn-lov ml-3 btnPlu" onclick="ToggleData(this)">
-                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <input disabled class="form-control deskripsi" value=""
-                                                           type="text">
-                                                </td>
-                                            </tr>`
-
-            return temptbl;
+        function print(){
+            window.open('{{ url()->current() }}/print','_blank');
         }
 
     </script>

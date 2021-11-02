@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENGELUARAN;
 
+use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Connection;
 use Carbon\Carbon;
 use Dompdf\Exception;
@@ -69,7 +70,7 @@ class InputController extends Controller
 
             $pIP = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
 
-            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . $_SESSION['kdigr'] . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 6, FALSE); END;");
             oci_bind_by_name($s, ':ret', $no, 32);
             oci_execute($s);
@@ -130,7 +131,7 @@ class InputController extends Controller
         } else {
             $errm = '';
 //
-            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN SP_FILLTEMPRETUR_164(:sup,:pkp,'9999999',:errm); END;");
             oci_bind_by_name($s, ':sup', $supplier);
             oci_bind_by_name($s, ':pkp', $pkp);
@@ -330,7 +331,7 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
         $errm = '';
-        $connect = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $connect = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connect, "BEGIN  SP_FILLTEMPRETUR_164(:kodesup,:pkp,'9999999',:errm); END;"); //Procedure asli diganti ke varchar
         oci_bind_by_name($exec, ':kodesup', $result->sup_kodesupplier);
@@ -994,7 +995,7 @@ class InputController extends Controller
         $tgldoc = $request->tgldoc;
         $kdigr = $_SESSION['kdigr'];
         $errm = '';
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN sp_usulanretur(:kodeigr,:nodoc,to_date('" . $tgldoc . "','dd/mm/yyyy'),:supplier,:otp,:userid,:errm); END;");
         oci_bind_by_name($s, ':kodeigr', $kdigr);
         oci_bind_by_name($s, ':nodoc', $nodoc);

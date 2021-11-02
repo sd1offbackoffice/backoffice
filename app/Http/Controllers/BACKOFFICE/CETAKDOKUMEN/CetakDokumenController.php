@@ -265,8 +265,7 @@ class CetakDokumenController extends Controller
                                and trbo_invno = '" . $rec->invno . "'
                                and trbo_nofaktur is not null")[0]->count;
                     } else {
-                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-
+                        $connect = loginController::getConnectionProcedure();
                         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "','NRB','Nomor Retur Barang','Z',7,true); END;");
                         oci_bind_by_name($query, ':ret', $nofak, 32);
                         oci_execute($query);
@@ -776,8 +775,7 @@ class CetakDokumenController extends Controller
                         if ($tmp > 0) {
                             $f_docbkp = 'Y';
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-
+                            $connect = loginController::getConnectionProcedure();
                             $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
@@ -799,8 +797,7 @@ class CetakDokumenController extends Controller
                         if ($tmp) {
                             $f_docbtkp = 'Y';
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
-
+                            $connect = loginController::getConnectionProcedure();
                             $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
@@ -833,7 +830,7 @@ class CetakDokumenController extends Controller
                                 $nofak = $rec->trbo_nofaktur;
                             } else {
 
-                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $connect = loginController::getConnectionProcedure();
 
                                 $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NRB',
@@ -1100,7 +1097,7 @@ class CetakDokumenController extends Controller
 
 
 
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $connect = loginController::getConnectionProcedure();
 
                             $query = oci_parse($connect, "BEGIN  sp_igr_update_stock('" . $_SESSION['kdigr'] . "',
                             '02',
@@ -1500,7 +1497,7 @@ class CetakDokumenController extends Controller
 
 
                         if ($reprint == '0') {
-                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $connect = loginController::getConnectionProcedure();
 
                             $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR( '" . $_SESSION['kdigr'] . "',
                              'NBH',
@@ -1674,28 +1671,28 @@ class CetakDokumenController extends Controller
                                  SYSDATE);");
 
                                     if ($doc == 'B') {
-                                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                        $connect = loginController::getConnectionProcedure();
 
                                         $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                         oci_execute($query);
 
                                     } else {
                                         if ($doc == 'K') {
-                                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                            $connect = loginController::getConnectionProcedure();
 
                                             $query = oci_parse($connect, "BEGIN SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','02','" . $rec->trbo_prdcd . "',' ','TRFOUT',$rec->trbo_qty,'" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                             oci_execute($query);
 
                                         } else {
                                             if ($doc == 'F') {
-                                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                $connect = loginController::getConnectionProcedure();
 
                                                 $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','03','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                 oci_execute($query);
 
                                             } else {
                                                 if ($doc == 'X') {
-                                                    $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                    $connect = loginController::getConnectionProcedure();
 
                                                     $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc2 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','ADJ','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                     oci_execute($query);
@@ -1703,7 +1700,7 @@ class CetakDokumenController extends Controller
 
                                                 } else {
                                                     if ($doc == 'H') {
-                                                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                        $connect = loginController::getConnectionProcedure();
 
                                                         $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc1 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                         oci_execute($query);
@@ -1712,13 +1709,13 @@ class CetakDokumenController extends Controller
                                                     } else {
                                                         if ($doc == 'P') {
                                                             if ($rec->trbo_flagdisc1 == 'P') {
-                                                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                                $connect = loginController::getConnectionProcedure();
 
                                                                 $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
                                                             } else {
-                                                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                                $connect = loginController::getConnectionProcedure();
 
                                                                 $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
@@ -1726,7 +1723,7 @@ class CetakDokumenController extends Controller
                                                             }
                                                         } else {
                                                             if ($doc == 'O') {
-                                                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                                                $connect = loginController::getConnectionProcedure();
 
                                                                 $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);

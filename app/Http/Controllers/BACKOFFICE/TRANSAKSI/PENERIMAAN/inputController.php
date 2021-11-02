@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use App\AllModel;
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
@@ -119,7 +120,7 @@ class inputController extends Controller
         $typeTrn = $request->typeTrn;
         $kodeigr = $_SESSION['kdigr'];
         $IP = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         if ($typeTrn == 'B') {
             $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','RTB','Nomor Reff BTB','$IP' || '0' ,6,FALSE); END;");

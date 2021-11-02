@@ -14,7 +14,7 @@
                                     <label for="cus_kodemember" class="col-sm-2 col-form-label">Nomor Anggota</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control diisi" id="cus_kodemember">
-                                        <button id="btn-modal-member" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodememberHelp">
+                                        <button id="btn-modal-member" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_kodememberHelp">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
@@ -1309,7 +1309,7 @@
             $('#table_lov_jenismember').DataTable();
             $('#table_lov_jenisoutlet').DataTable();
             $('#table_lov_group').DataTable();
-            // lov_member_select(898361,false);
+            lov_member_select(1,false);
 
             initQuisionerArea();
         });

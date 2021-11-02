@@ -47,7 +47,7 @@ class pembatalanNBHController extends Controller
         $nonbh = $request->nonbh;
         $kodeigr = $_SESSION['kdigr'];
 
-        $result = DB::select(" select mstd_nodoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac, 
+        $result = DB::select(" select mstd_nodoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
 											mstd_qty, mstd_hrgsatuan, mstd_gross
 									from tbtr_mstran_d, tbmaster_prodmast
 									where mstd_nodoc = '$nonbh'
@@ -77,10 +77,10 @@ class pembatalanNBHController extends Controller
             return response()->json(['kode' => 0, 'msg' => "Data Tidak Ada"]);
         }
 
-        $result = DB::select(" select mstd_prdcd, mstd_nodoc, mstd_tgldoc, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, 
-                                      mstd_flagdisc1 fdisc1, mstd_hrgsatuan price, mstd_frac frac, mstd_unit unit, prd_frac, mstd_kodedivisi div, 
-                                      mstd_kodedepartement, mstd_kodekategoribrg kat, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, 
-                                      mstd_qty, mstd_hrgsatuan, mstd_gross, prd_avgcost acost, 
+        $result = DB::select(" select mstd_prdcd, mstd_nodoc, mstd_tgldoc, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan,
+                                      mstd_flagdisc1 fdisc1, mstd_hrgsatuan price, mstd_frac frac, mstd_unit unit, prd_frac, mstd_kodedivisi div,
+                                      mstd_kodedepartement, mstd_kodekategoribrg kat, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk,
+                                      mstd_qty, mstd_hrgsatuan, mstd_gross, prd_avgcost acost,
                                       Case When nvl(st_saldoakhir,0)<=0 Then 0 Else st_saldoakhir End st_saldoakhir,
 									  nvl(st_lastcost,0) st_lastcost, nvl(st_avgcost,0) st_avgcost
 									  from tbtr_mstran_d, tbmaster_prodmast, tbmaster_stock
@@ -126,7 +126,7 @@ class pembatalanNBHController extends Controller
                 ]);
 
 //            // Update Data tbMaster_Stock
-//                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+//                $connect = loginController::getConnectionProcedure();
 //
 //                $query = oci_parse($connect, "sp_igr_update_stock_2 ('$kodeigr', lpad($data->fdisc1,2,'0'), $data->mstd_prdcd, '',
 //						 													'TRFOUT', -1*$data->mstd_qty, $data->st_lastcost, $nAcostBaru,

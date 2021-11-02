@@ -27,7 +27,7 @@ class inquerySuppProdController extends Controller
         $kodeigr    = $getKodeigr->prd_kodeigr;
         $kodeplu = $request->kodeplu;
 
-        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+        $connection = loginController::getConnectionProcedure();
 
         $s = oci_parse($connection, "BEGIN  sp_inqsupprod(:kodeigr,:kodeplu,:value); END;");
         oci_bind_by_name($s, ':kodeigr',$kodeigr,100);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +34,7 @@ class restoreController extends Controller
             if($year.$month != $parameterPeriode){
                 return response()->json(['kode' => 2, 'msg' => "Periode Restore Data Salah !!"]);
             }else{
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
                 $query = oci_parse($connect, "BEGIN SP_RESTORE_STOCK2 ('$kodeigr', '$namaf', :P_SUKSES, :ERR_TXT); END;");
                 oci_bind_by_name($query, ':P_SUKSES', $p_sukses, 32);
                 oci_bind_by_name($query, ':ERR_TXT', $errtxt, 32);

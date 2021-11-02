@@ -53,7 +53,6 @@ class MonthEndController extends Controller
 //        $p_progress = 0;
 //
 //////   ----->>>> Hitung Ulang Stock Untuk Bulan Proses <<<<-----
-//        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
 //        $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",' ','ZZZZZZZ',:p_sukses,:err_txt); END;";
 //        $s = oci_parse($c, $sql);
 //
@@ -225,7 +224,7 @@ class MonthEndController extends Controller
         $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
 
 //        ----->>>> Hitung Ulang Stock Untuk Bulan Proses <<<<-----
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",' ','ZZZZZZZ',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -256,7 +255,7 @@ class MonthEndController extends Controller
         $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
         $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -286,7 +285,7 @@ class MonthEndController extends Controller
         $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
         $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_SLREKAP2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",'" . $_SESSION['usid'] . "',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -316,7 +315,7 @@ class MonthEndController extends Controller
         $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
         $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_PROSES_LPP2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",true,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -363,7 +362,7 @@ class MonthEndController extends Controller
         $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
         $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_COPY_STOCK2('" . $_SESSION['kdigr'] . "','" . $txt_tahun . $txt_bulan . "',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -416,7 +415,7 @@ class MonthEndController extends Controller
             $p_akhir = $p_awal;
         }
 //        ----->>>> Hitung Ulang Stock Untuk Bulan Proses <<<<-----
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "'," . $p_awal . "," . $p_akhir . ",' ','ZZZZZZZ',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 

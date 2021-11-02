@@ -48,7 +48,7 @@ class ReorderPBGOController extends Controller
         }
         else $NILAIPPN = $prs->prs_nilaippn;
 
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PB','Nomor Permintaan Barang',".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yyMM'),3,FALSE); END;");
         oci_bind_by_name($s, ':ret', $r, 32);
         oci_execute($s);
@@ -372,7 +372,7 @@ class ReorderPBGOController extends Controller
             return compact(['status','message']);
         }
         else{
-            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PB','Nomor Permintaan Barang',".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yyMM'),3,TRUE); END;");
             oci_bind_by_name($s, ':ret', $r, 32);
             oci_execute($s);

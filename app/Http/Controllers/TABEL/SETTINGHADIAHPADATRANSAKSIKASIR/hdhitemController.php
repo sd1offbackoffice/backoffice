@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\TABEL\SETTINGHADIAHPADATRANSAKSIKASIR;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -200,7 +201,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
 
             if($status == 'baru'){
                 $nomor = '';
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
 
                 $query = oci_parse($connect, "BEGIN :cREG := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "','I' || TO_CHAR(SYSDATE, 'yy'),
                                'Nomor Promo InStore',

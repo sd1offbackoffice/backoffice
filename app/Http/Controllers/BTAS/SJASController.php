@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BTAS;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -182,7 +183,7 @@ class SJASController extends Controller
                     AND SJH_KODECUSTOMER = '".$request->kodecustomer."'");
 
             if($temp->sjh_nosjas == null){
-                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $c = loginController::getConnectionProcedure();
                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SJS','Surat Jalan Atas Struk', 'S'||TO_CHAR(SYSDATE, 'yy'),4,TRUE); END;");
                 oci_bind_by_name($s, ':ret', $nosj, 32);
                 oci_execute($s);

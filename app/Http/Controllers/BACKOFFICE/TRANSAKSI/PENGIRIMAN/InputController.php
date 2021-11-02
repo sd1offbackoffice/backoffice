@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENGIRIMAN;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -536,7 +537,7 @@ class InputController extends Controller
     }
 
     public function doc_new(){
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
 							|| TO_CHAR (SYSDATE, 'yy'),5,FALSE); END;");
         oci_bind_by_name($s, ':ret', $r, 32);
@@ -776,7 +777,7 @@ class InputController extends Controller
                                     ->insert($insert);
                             }
                             else{
-                                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $c = loginController::getConnectionProcedure();
                                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
 							            || TO_CHAR (SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $r, 32);
@@ -870,7 +871,7 @@ class InputController extends Controller
 
                                 $insert = $insert[0];
 
-                                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                                $c = loginController::getConnectionProcedure();
                                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
 							            || TO_CHAR (SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $r, 32);
@@ -895,7 +896,7 @@ class InputController extends Controller
                         }
 
                         if(1 == 0){//$sts == 0
-                            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $c = loginController::getConnectionProcedure();
                             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
 							|| TO_CHAR (SYSDATE, 'yy'),5,FALSE); END;");
                             oci_bind_by_name($s, ':ret', $r, 32);

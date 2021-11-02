@@ -74,7 +74,7 @@ class InputController extends Controller
 
         $arrip = explode('.',$ip);
 
-        $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,FALSE); END;");
         oci_bind_by_name($s, ':ret', $no, 32);
         oci_execute($s);
@@ -297,7 +297,7 @@ ORDER BY PRDCD,
 
                 $arrip = explode('.',$ip);
 
-                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $c = loginController::getConnectionProcedure();
                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,TRUE); END;");
                 oci_bind_by_name($s, ':ret', $no, 32);
                 oci_execute($s);

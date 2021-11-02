@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\OMI;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +96,7 @@ class ProsesBKLDalamKotaController extends Controller
 //                     FROM temp_bkl_dalamkota bkl
 //                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connect, "BEGIN  SP_PROSES_DATA_BKL_OMI_WEB(:sesiproc, :namafiler, :stat, :kodeigr, :userid, :param_proses, :result_kode, :result_msg, :param_all_kasir); END;");
         oci_bind_by_name($exec, ':sesiproc', $sesiproc,100);
@@ -174,7 +175,7 @@ class ProsesBKLDalamKotaController extends Controller
             $result     = $this->laporanStruk($kodeigr, $kasir);
             $bladeName  = "OMI.prosesBKL-struk-pdf";
         } elseif ($report_id == 4){
-            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $connect = loginController::getConnectionProcedure();
             $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
             oci_bind_by_name($execute, ':ret', $noDoc, 32);
             oci_execute($execute);

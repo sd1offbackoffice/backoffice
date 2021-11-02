@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: ryan
- * Date: 01/11/2021
- * Time: 10:26 AM
+ * Date: 02/11/2021
+ * Time: 14:08 PM
  */
 
 namespace App\Http\Controllers\TABEL;
@@ -16,35 +16,14 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class hrgpromoController extends Controller
+class superpromoController extends Controller
 {
 
     public function index()
     {
-        return view('TABEL\hrgpromo');
+        return view('TABEL\superpromo');
     }
 
-    public function ModalMain(){
-        $kodeigr = $_SESSION['kdigr'];
-
-        $datas = DB::table("TBTR_PROMOMD")
-            ->selectRaw("PRMD_PRDCD")
-            ->selectRaw("PRMD_JENISDISC")
-//            ->selectRaw("PRMD_TGLAWAL")
-//            ->selectRaw("PRMD_TGLAKHIR")
-            ->selectRaw("TO_CHAR(PRMD_TGLAWAL, 'DD/MM/YYYY') as PRMD_TGLAWAL")
-            ->selectRaw("TO_CHAR(PRMD_TGLAKHIR, 'DD/MM/YYYY') as PRMD_TGLAKHIR")
-            ->selectRaw("PRMD_HRGJUAL")
-            ->selectRaw("PRMD_POTONGANPERSEN")
-            ->selectRaw("PRMD_POTONGANRPH")
-            ->selectRaw("PRD_DESKRIPSIPANJANG")
-            ->leftJoin("TBMASTER_PRODMAST",'PRD_PRDCD','PRMD_PRDCD')
-            ->where("PRMD_KODEIGR",'=',$kodeigr)
-            ->orderBy("PRMD_PRDCD")
-            ->get();
-
-        return Datatables::of($datas)->make(true);
-    }
 
     public function ModalPlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -74,36 +53,28 @@ class hrgpromoController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $kode = $request->kode;
         $notif = '';
-        $promo = '';
+        $deskripsi = '';
+        $unit = '';
 
-        $barang = DB::table("TBMASTER_PRODMAST")
-            ->selectRaw("PRD_DESKRIPSIPANJANG as deskripsi")
-            ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
-            ->where("PRD_KODEIGR",'=',$kodeigr)
-            ->where("PRD_PRDCD",'=',$kode)
-            ->first();
-        if($barang){
-            $temp = DB::table("TBTR_PROMOMD")
-                ->selectRaw("NVL(COUNT(1),0) as result")
-                ->where("PRMD_KODEIGR",'=',$kodeigr)
-                ->where("PRMD_PRDCD",'=',$kode)
+        $datas = DB::select("SELECT prd_prdcd
+          FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
+         WHERE prd_kodeigr = '$kodeigr'
+           AND prd_prdcd = brc_prdcd(+)
+           AND (prd_prdcd = TRIM ('$kode') OR brc_barcode = TRIM ('kode'))");
+        if($datas){
+            $temp = DB::table("TBMASTER_PRODMAST")
+                ->selectRaw("PRD_DESKRIPSIPANJANG")
+                ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
+                ->where("PRD_KODEIGR",'=',$kodeigr)
+                ->where("PRD_PRDCD",'=',$kode)
                 ->first();
-            if($temp->result != '0'){
-                $promo = DB::table("TBTR_PROMOMD")
-                    ->selectRaw("PRMD_JENISDISC")
-                    ->selectRaw("PRMD_TGLAWAL")
-                    ->selectRaw("PRMD_TGLAKHIR")
-                    ->selectRaw("PRMD_HRGJUAL")
-                    ->selectRaw("PRMD_POTONGANPERSEN")
-                    ->selectRaw("PRMD_POTONGANRPH")
-                    ->where("PRMD_KODEIGR",'=',$kodeigr)
-                    ->where("PRMD_PRDCD",'=',$kode)
-                    ->first();
-            }
+            $deskripsi = $temp->prd_deskripsipanjang;
+            $unit = $temp->unit;
         }else{
             $notif = "Kode PLU ".$kode." - ".$kodeigr." Tidak Terdaftar di Master Barang  !!";
         }
-        return response()->json(['notif' => $notif, 'barang'=>$barang, 'promo'=>$promo]);
+
+        return response()->json(['notif' => $notif, 'deskripsi'=>$deskripsi, 'unit'=>$unit]);
     }
 
     public function print(){

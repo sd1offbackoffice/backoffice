@@ -50,7 +50,7 @@ class HitungUlangStockController extends Controller
 
 //        dd($plu2);
         DB::beginTransaction();
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -69,7 +69,7 @@ class HitungUlangStockController extends Controller
             $err_txt = 'Proses Hitung Stock GAGAL! --> ' . $err_txt;
         }
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . $_SESSION['kdigr'] . "', to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -98,7 +98,7 @@ class HitungUlangStockController extends Controller
         DB::beginTransaction();
         $mulai = Date('H:i:s');
 
-        $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_LPP_POINT(to_char(sysdate,'yyyyMM'),'HIT',:err_txt); END;";
         $s = oci_parse($c, $sql);
 
@@ -127,7 +127,7 @@ class HitungUlangStockController extends Controller
             $mulai = Date('H:i:s');
 
             DB::beginTransaction();
-            $c = oci_connect($_SESSION['conUser'], $_SESSION['conPassword'], $_SESSION['conString']);
+            $c = loginController::getConnectionProcedure();
             $sql = "BEGIN SP_LPP_POINT(to_char(sysdate,'yyyyMM'),'HITY',:err_txt); END;";
             $s = oci_parse($c, $sql);
 

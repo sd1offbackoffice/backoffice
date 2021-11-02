@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MASTER;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +69,7 @@ class cabangController extends Controller
         $date       = date('ymd');
         $errm       = '';
         $filecmo    = 'DCIGRIDMCMO'.$date.'.'.$kodeigr;
-        $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+        $connection = loginController::getConnectionProcedure();
 
         try{
             $exec = oci_parse($connection, "BEGIN  sp_downloadcmo_cabang(:kodeigr,:filecmo,:errm); END;");
@@ -110,7 +111,7 @@ class cabangController extends Controller
 }
 
 /*
- $c = oci_connect('SIMKMY', 'SIMKMY', '192.168.234.193:1521/SIMKMY');
+ $c = loginController::getConnectionProcedure();
 
 		$s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('18','S','Nomor Sortir Barang','S'
 							|| TO_CHAR (SYSDATE, 'yy')
@@ -120,7 +121,7 @@ class cabangController extends Controller
 		oci_execute($s);
 		return $r;
 
-$c = oci_connect('SIMKMY', 'SIMKMY', '192.168.234.193:1521/SIMKMY');
+$c = loginController::getConnectionProcedure();
 
 		$s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('18','S','Nomor Sortir Barang','S'
 							|| TO_CHAR (SYSDATE, 'yy')

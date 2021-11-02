@@ -47,7 +47,7 @@ class barangRusakController extends Controller
     public function getNewNmrTrn(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','RSK','Nomor Pengeluaran Barang',
                             'RSK' || '$kodeigr' || TO_CHAR (SYSDATE, 'YY'),
@@ -142,7 +142,7 @@ class barangRusakController extends Controller
         $today  = date('Y-m-d H:i:s');
 
 //        *** Get Doc No ***
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','RSK','Nomor Pengeluaran Barang',
                             'RSK' || '$kodeigr' || TO_CHAR (SYSDATE, 'YY'),
 							5,TRUE); END;");

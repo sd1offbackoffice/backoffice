@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class entrySortirBarangController extends Controller
     public function getNewNmrSrt(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
             'Nomor Sortir Barang',
@@ -185,7 +186,6 @@ class entrySortirBarangController extends Controller
             $today  = date('Y-m-d H:i:s');
 
 ////        *** Get Doc No ***
-//            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 //            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
 //            'Nomor Sortir Barang',
 //               'S'

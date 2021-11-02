@@ -66,7 +66,7 @@ class KirimKKEIController extends Controller
 //            ->update(['kke_upload' => 'Y']);
 
 //        foreach($request->periode as $p){
-//            $c = oci_connect('simsmg', 'simsmg', '192.168.237.190:1521/SIMSMG');
+//            $c = loginController::getConnectionProcedure();
 //            $s = oci_parse($c, "BEGIN SP_UPD_KKEI ( :kodeigr,
 //                            :periode,
 //                            :user,

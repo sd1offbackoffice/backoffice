@@ -31,7 +31,7 @@ class repackController extends Controller
         $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3)+1,'.'),3),3,'0',STR_PAD_LEFT);
 
 
-        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+        $connect = loginController::getConnectionProcedure();
 
         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PCK',
 									                       'Nomor Packing',
@@ -323,7 +323,7 @@ class repackController extends Controller
                 }
             }else{
                 //create new save data
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
                 $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3),'.')+1,3),3,'0',STR_PAD_LEFT);
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PCK',
 									                       'Nomor Packing',
@@ -580,7 +580,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 ->get();
 
             if($datas[0]->trbo_flagdoc == '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
-                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $connect = loginController::getConnectionProcedure();
 
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr',
                             'RPC',
@@ -794,7 +794,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         $qty = $datas[$i]->trbo_qty;
                         //$v_lok = '';
                         //$v_message = '';
-                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                        $connect = loginController::getConnectionProcedure();
                         $query = oci_parse($connect, "BEGIN sp_igr_update_stock2('$kodeigr',
                                     '01',
                                     '$plu',
@@ -1000,7 +1000,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         $qty = $datas[$i]->trbo_qty;
                         //$v_lok = '';
                         //$v_message = '';
-                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                        $connect = loginController::getConnectionProcedure();
                         $query = oci_parse($connect, "BEGIN sp_igr_update_stock2('$kodeigr',
                                     '01',
                                     '$plu',

@@ -39,7 +39,7 @@ class SJPacklistController extends Controller
         $recs = DB::select("SELECT * FROM TBTR_BACKOFFICE, TBTR_LISTPACKING  WHERE TRBO_TYPETRN = 'O' AND NVL(TRBO_NOFAKTUR,'ZZZZ') = '".$sesikom."' AND TRBO_KODEIGR = '".$_SESSION['kdigr']."' AND NVL(TRBO_RECORDID,' ') <> '1' AND NVL(TRBO_FLAGDOC,' ') <> '*' AND PCL_KODEIGR = TRBO_KODEIGR AND PCL_NODOKUMEN = TRBO_NOREFF AND PCL_NOREFERENSI1 = TRBO_NODOC AND NVL(PCL_NODOKUMEN,' ') <> ' ' AND PCL_NOREFERENSI = TRBO_NOPO AND PCL_PRDCD = TRBO_PRDCD ORDER BY TRBO_NODOC");
 
         foreach($recs as $rec){
-            $temp = DB::select("SELECT NVL(COUNT(1),0) FROM TBMASTER_PRODMAST 
+            $temp = DB::select("SELECT NVL(COUNT(1),0) FROM TBMASTER_PRODMAST
                               WHERE PRD_PRDCD = '".$rec->trbo_prdcd."' AND PRD_KODEIGR = '".$_SESSION['kdigr']."'");
 
             if(count($temp) != 0){
@@ -48,7 +48,7 @@ class SJPacklistController extends Controller
                         if(Self::nvl($trbodoc,' ') != Self::nvl($rec->trbo_nodoc, ' ')){
                             $trbodoc = Self::nvl($rec->trbo_nodoc,' ');
 
-                            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                            $c = loginController::getConnectionProcedure();
                             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan','SJK' || ".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yy'),3,TRUE); END;");
                             oci_bind_by_name($s, ':ret', $v_nodoc, 32);
                             oci_execute($s);
@@ -119,14 +119,14 @@ class SJPacklistController extends Controller
                             ->first()->st_saldoakhir;
 
                         if(Self::nvl($unitp,' ') == 'KG'){
-                            DB::update("UPDATE TBMASTER_STOCK 
+                            DB::update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty." / 1000)),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty." / 1000))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
                             AND ST_LOKASI = '01';");
                         }
                         else{
-                            DB::update("UPDATE TBMASTER_STOCK 
+                            DB::update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty.")),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty."))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
@@ -134,7 +134,7 @@ class SJPacklistController extends Controller
                         }
                     }
 
-                    $supcur = DB::select("SELECT SUP_PKP, SUP_TOP FROM TBMASTER_SUPPLIER 
+                    $supcur = DB::select("SELECT SUP_PKP, SUP_TOP FROM TBMASTER_SUPPLIER
                             WHERE SUP_KODEIGR = '".$_SESSION['kdigr']."' AND SUP_KODESUPPLIER = '".$rec->trbo_kodesupplier."'");
 
                     $supcur = DB::table('tbmaster_supplier')
@@ -285,7 +285,7 @@ class SJPacklistController extends Controller
 
                     $arrip = explode('.',$ip);
 
-                    $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                    $c = loginController::getConnectionProcedure();
                     $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3].",7,TRUE); END;");
                     oci_bind_by_name($s, ':ret', $nosj, 32);
                     oci_execute($s);
@@ -298,7 +298,7 @@ class SJPacklistController extends Controller
                             prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_unit, prd_frac,
                             st_avgcost
                             from tbtr_listpacking, tbmaster_prodmast, tbmaster_stock, tbmaster_hargabeli
-                            where pcl_kodecabang = '".$rec->PCL_KODECABANG."' 
+                            where pcl_kodecabang = '".$rec->PCL_KODECABANG."'
                             and PCL_NODOKUMEN = '".$rec->PCL_NODOKUMEN."'
                             and prd_prdcd = pcl_prdcd	and prd_kodeigr=pcl_kodeigr
                             and st_prdcd(+)=prd_prdcd	and st_kodeigr(+)=prd_kodeigr and st_lokasi(+)='01'
@@ -342,7 +342,7 @@ class SJPacklistController extends Controller
                         DB::insert("insert into tbtr_backoffice(trbo_typetrn, trbo_nodoc, trbo_noreff, TRBO_NOFAKTUR, trbo_prdcd, trbo_loc, trbo_kodeigr,trbo_nopo, trbo_tglpo,
 								 trbo_tgldoc, trbo_tglreff, trbo_qty, trbo_hrgsatuan, trbo_gross, trbo_ppnrph, trbo_averagecost, trbo_keterangan, trbo_gdg,
 								 trbo_create_dt, trbo_create_by, trbo_furgnt,trbo_seqno, trbo_kodesupplier)
-					values ('O', '".$nosj."', TRIM('".$rec2->pcl_nodokumen."'),  '".$sesikom."', TRIM('".$rec2->pcl_prdcd."'), TRIM('".$rec->pcl_kodecabang."'), '".$_SESSION['kdigr']."','".$rec2->pcl_noreferensi."', '".$rec2->pcl_tglreferensi."',SYSDATE, '".$rec2->pcl_tgldokumen."',  ".$qty.", ".$hrgsatuan.", 
+					values ('O', '".$nosj."', TRIM('".$rec2->pcl_nodokumen."'),  '".$sesikom."', TRIM('".$rec2->pcl_prdcd."'), TRIM('".$rec->pcl_kodecabang."'), '".$_SESSION['kdigr']."','".$rec2->pcl_noreferensi."', '".$rec2->pcl_tglreferensi."',SYSDATE, '".$rec2->pcl_tgldokumen."',  ".$qty.", ".$hrgsatuan.",
 					  		".$gross.", 0, $hrgsatuan, '".$rec2->ket."',  null, '".$rec2->pcl_create_dt."',  '".$rec2->pcl_create_by."','".$rec2->pcl_furgnt."', ".$seq.", '".$rechgb->hrg_kodesupplier."')");
                     }
                 }
@@ -364,7 +364,7 @@ class SJPacklistController extends Controller
 
                     $arrip = explode('.',$ip);
 
-                    $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                    $c = loginController::getConnectionProcedure();
                     $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3].",7,TRUE); END;");
                     oci_bind_by_name($s, ':ret', $nosj, 32);
                     oci_execute($s);
@@ -415,7 +415,7 @@ class SJPacklistController extends Controller
                         DB::insert("insert into tbtr_backoffice(trbo_typetrn, trbo_nodoc, trbo_noreff, TRBO_NOFAKTUR, trbo_prdcd, trbo_loc, trbo_kodeigr,trbo_nopo, trbo_tglpo,
 								 trbo_tgldoc, trbo_tglreff, trbo_qty, trbo_hrgsatuan, trbo_gross, trbo_ppnrph, trbo_averagecost, trbo_keterangan, trbo_gdg,
 								 trbo_create_dt, trbo_create_by, trbo_furgnt,trbo_seqno, trbo_kodesupplier)
-					values ('O', '".$nosj."', TRIM('".$rec2->pcl_nodokumen."'),  '".$sesikom."', TRIM('".$rec2->pcl_prdcd."'), TRIM('".$rec->pcl_kodecabang."'), '".$_SESSION['kdigr']."','".$rec2->pcl_noreferensi."', '".$rec2->pcl_tglreferensi."',SYSDATE, '".$rec2->pcl_tgldokumen."',  ".$qty.", ".$hrgsatuan.", 
+					values ('O', '".$nosj."', TRIM('".$rec2->pcl_nodokumen."'),  '".$sesikom."', TRIM('".$rec2->pcl_prdcd."'), TRIM('".$rec->pcl_kodecabang."'), '".$_SESSION['kdigr']."','".$rec2->pcl_noreferensi."', '".$rec2->pcl_tglreferensi."',SYSDATE, '".$rec2->pcl_tgldokumen."',  ".$qty.", ".$hrgsatuan.",
 					  		".$gross.", 0, $hrgsatuan, '".$rec2->ket."',  null, '".$rec2->pcl_create_dt."',  '".$rec2->pcl_create_by."','".$rec2->pcl_furgnt."', ".$seq.", '".$rechgb->hrg_kodesupplier."')");
                     }
                 }
@@ -429,7 +429,7 @@ class SJPacklistController extends Controller
         $recs = DB::select("select DISTINCT TRBO_LOC, TRBO_NODOC, TRBO_NONOTA, TRBO_KODESUPPLIER, SUP_NAMASUPPLIER
                                   from tbtr_backoffice, tbmaster_supplier
 							        where TRBO_KODEIGR = '".$_SESSION['kdigr']."' AND TRBO_TYPETRN = 'O' AND SUP_KODEIGR(+) = TRBO_KODEIGR
-							        AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER 
+							        AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER
 							        ORDER BY TRBO_LOC, TRBO_NODOC, TRBO_NONOTA, TRBO_KODESUPPLIER");
 
         return $recs;
@@ -445,13 +445,13 @@ class SJPacklistController extends Controller
         $perusahaan = DB::table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, 
+        $data = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                     msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
                     mstd_loc||' '||cab_namacabang cabang,
                     mstd_gdg gudang, MSTD_SEQNO,
                     mstd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
                     mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_gross,
-                    nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0), 
+                    nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0),
                     nvl(mstd_qtybonus2,0), mstd_keterangan
                     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_cabang
                     where msth_kodeigr='".$_SESSION['kdigr']."'

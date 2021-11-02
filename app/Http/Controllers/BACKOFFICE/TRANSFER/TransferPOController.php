@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSFER;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -27,9 +28,9 @@ class TransferPOController extends Controller
 
         $data = DB::select("SELECT fhkcab, fhnopo,TO_CHAR(fhtgpo,'DD/MM/YYYY') fhtgpo,nvl(tpoh_nopo,'BELUM DIPROSES') tpoh_nopo
 			       FROM mcgdata.mh_poord@mcgprod, (select tpoh_recordid, case when tpoh_flagcmo='Y' then tpoh_cab_anak else tpoh_kodeigr end tpoh_kodeigr, tpoh_nopo from tbtr_po_h)
-						 WHERE fhkcab=tpoh_kodeigr(+) and fhnopo=tpoh_nopo(+) and nvl(tpoh_recordid,' ')<>'2' 
-						 and fhksbu='4' 
-			       and ( fhkcab = '".$_SESSION['kdigr']."' or fhkcab = '".$kodeanak."' )  
+						 WHERE fhkcab=tpoh_kodeigr(+) and fhnopo=tpoh_nopo(+) and nvl(tpoh_recordid,' ')<>'2'
+						 and fhksbu='4'
+			       and ( fhkcab = '".$_SESSION['kdigr']."' or fhkcab = '".$kodeanak."' )
 			       AND (   TRUNC (fhtgup) BETWEEN TRUNC ( TO_DATE('".$request->tgl1."','DD/MM/YYYY')) AND TRUNC (TO_DATE('".$request->tgl2."','DD/MM/YYYY'))
               OR TRUNC (fhtgpo) BETWEEN TRUNC (TO_DATE('".$request->tgl1."','DD/MM/YYYY')) AND TRUNC (TO_DATE('".$request->tgl2."','DD/MM/YYYY')))
 			       and nvl(fhrcid,'zzz')<>'1'
@@ -65,7 +66,7 @@ class TransferPOController extends Controller
                     ->select('prs_kodewilayah')
                     ->first()->prs_kodewilayah;
 
-                $connection = oci_connect('simsmg', 'simsmg','(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.237.193)(PORT=1521)) (CONNECT_DATA=(SERVER=DEDICATED) (SERVICE_NAME = simsmg)))');
+                $connection = loginController::getConnectionProcedure();
                 $exec = oci_parse($connection, "BEGIN  sp_transfer_po_migrasi('4',
                                     :p_wil,:kdcab,:nodoc,:v_new,'".$_SESSION['usid']."',
                                     :v_errm); END;");

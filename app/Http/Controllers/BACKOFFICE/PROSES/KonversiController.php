@@ -20,9 +20,9 @@ class KonversiController extends Controller
     }
 
     public function getDataLovPluUtuh(){
-        $lov = DB::select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk, 
-            prd1.prd_prdcd utuh_prdcd, 
-            trim(prd2.prd_deskripsipanjang) || '-' || prd2.prd_unit || '-' || to_char(prd2.prd_frac, '9999') olah_desk, 
+        $lov = DB::select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
+            prd1.prd_prdcd utuh_prdcd,
+            trim(prd2.prd_deskripsipanjang) || '-' || prd2.prd_unit || '-' || to_char(prd2.prd_frac, '9999') olah_desk,
             prd2.prd_prdcd olah_prdcd, was_persen
             from tbmaster_prodmast prd1, tbtr_mix_waste, tbmaster_prodmast prd2
             where was_prdcd_konv = prd2.prd_prdcd and was_prdcd= prd1.prd_prdcd and was_kodeigr = '".$_SESSION['kdigr']."'");
@@ -105,7 +105,7 @@ class KonversiController extends Controller
             return (['status' => 'error', 'alert' => 'Qty Stock tidak cukup!']);
 
         if(true){
-            $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+            $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','KNV','Nomor Konversi','B'||TO_CHAR(SYSDATE,'yy'),5,TRUE); END;");
             oci_bind_by_name($s, ':ret', $no_knv, 32);
             oci_execute($s);
@@ -432,7 +432,7 @@ class KonversiController extends Controller
                     }
                 }
 
-                $c = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+                $c = loginController::getConnectionProcedure();
                 $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','KNV','Nomor Konversi','B'||TO_CHAR(SYSDATE,'yy'),5,TRUE); END;");
                 oci_bind_by_name($s, ':ret', $no_knv, 32);
                 oci_execute($s);
@@ -459,7 +459,7 @@ class KonversiController extends Controller
 
                     $data = DB::select("SELECT NVL (st_avgcost, 0) oldacost,
                         NVL (st_lastcost, 0) oldlcost,
-                        case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock 
+                        case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock
                    FROM tbmaster_stock
                   WHERE st_prdcd = '".$o['plu']."' AND st_lokasi = '01'");
 
@@ -539,7 +539,7 @@ class KonversiController extends Controller
 
                 $data = DB::select("SELECT NVL (st_avgcost, 0) oldacost,
                         NVL (st_lastcost, 0) oldlcost,
-                        case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock 
+                        case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock
                    FROM tbmaster_stock
                   WHERE st_prdcd = '".$mix_plu."' AND st_lokasi = '01'");
 
@@ -694,25 +694,25 @@ class KonversiController extends Controller
         else
             $where = "AND msth_tgldoc between TO_DATE('".$request->periode1."','DD/MM/YYYY') AND TO_DATE('".$request->periode2."','DD/MM/YYYY')";
 
-        $rec = DB::select("Select 
+        $rec = DB::select("Select
             msth_recordid, msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc, msth_nopo, msth_tglpo,
             msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
-            msth_loc||' '||cab_namacabang cabang,mstd_prdcd, prd_deskripsipanjang, 
+            msth_loc||' '||cab_namacabang cabang,mstd_prdcd, prd_deskripsipanjang,
             prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
                         mstd_seqno,
-            mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, 
+            mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph,
             case when nvl(mstd_flagdisc1, 'A') = 'U' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'O') then mstd_qty else 0 end qty_out,
             case when nvl(mstd_flagdisc1, 'A') = 'M' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'I') then mstd_qty else 0 end qty_in,
             case when nvl(mstd_flagdisc1, 'A') = 'U' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'O') then mstd_gross else 0 end gross_out,
             case when nvl(mstd_flagdisc1, 'A') = 'M' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'I') then mstd_gross else 0 end gross_in,
-            nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), 
+            nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0),
             nvl(mstd_qtybonus1,0), nvl(mstd_qtybonus2,0),  mstd_keterangan
-        From 
-            tbtr_mstran_h, 
-            tbtr_mstran_d, 
-            tbmaster_prodmast, 
+        From
+            tbtr_mstran_h,
+            tbtr_mstran_d,
+            tbmaster_prodmast,
             tbmaster_cabang
-        Where 
+        Where
             msth_kodeigr='22'
             and msth_typetrn = 'A'
             and mstd_nodoc=msth_nodoc
@@ -722,7 +722,7 @@ class KonversiController extends Controller
             and cab_kodecabang(+)=msth_loc
             and cab_kodeigr(+)=msth_kodeigr
             ".$where."
-        ORDER BY 
+        ORDER BY
            msth_nodoc, MSTD_SEQNO");
 
         if(count($rec) == 0)
@@ -784,7 +784,7 @@ class KonversiController extends Controller
                    mstd_prdcd,
                    mstd_flagdisc1,
                    mstd_flagdisc2,
-                   mstd_gross,                 
+                   mstd_gross,
                    NVL (mstd_discrph * case when nvl(mstd_flagdisc1, 'A') = 'U' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'O') then -1 else 1 end, 0) mstd_pot,
                    NVL (mstd_ppnrph * case when nvl(mstd_flagdisc1, 'A') = 'U' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'O') then -1 else 1 end, 0) mstd_ppn,
                    NVL (mstd_ppnbmrph * case when nvl(mstd_flagdisc1, 'A') = 'U' or (nvl(mstd_flagdisc1, 'A') = 'O' and nvl(mstd_flagdisc2, 'A') = 'O') then -1 else 1 end, 0) mstd_bm,
