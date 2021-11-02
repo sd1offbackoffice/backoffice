@@ -210,6 +210,10 @@ display: inline-block;
         padding-right: 10px !important;
     }
 
+    .table tbody td.padding-left, .table thead th.padding-left{
+        padding-left: 10px !important;
+    }
+
     .center{
         text-align: center;
     }
@@ -254,6 +258,10 @@ display: inline-block;
 
     .nowrap{
         white-space: nowrap;
+    }
+
+    .overline{
+        text-decoration: overline;
     }
 
     @yield('custom_style')

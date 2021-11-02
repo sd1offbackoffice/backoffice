@@ -105,7 +105,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-3">Monitoring Data PB Tolakan</legend>
+                    <legend class="w-auto ml-3">Monitoring Data PB Tolakan <span class="text-danger">(Masih belum berfungsi / Gapaham alurnya)</span></legend>
                     <div class="card-body pt-0">
                         <div class="row mb-1">
 

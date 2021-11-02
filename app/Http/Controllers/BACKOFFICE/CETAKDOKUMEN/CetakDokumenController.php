@@ -1956,7 +1956,7 @@ class CetakDokumenController extends Controller
 
                         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
 
-                        $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
+                        $data1 = DB::select("SELECT msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                                   CASE WHEN '" . $reprint . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
@@ -1977,8 +1977,8 @@ class CetakDokumenController extends Controller
 
                         $data2 = DB::select("select rownum, a.*
                                         from
-                                        (SELECT DISTINCT MSTH_NODOC NODOC, MSTH_TGLDOC, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
-                                                        MSTD_DATE3
+                                        (SELECT DISTINCT MSTH_NODOC NODOC, to_char(MSTH_TGLDOC, 'dd/mm/yyyy') MSTH_TGLDOC, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
+                                                        to_char(MSTD_DATE3, 'dd/mm/yyyy') MSTD_DATE3
                                                    FROM TBTR_MSTRAN_H,
                                                         TBTR_MSTRAN_D,
                                                         TBMASTER_PRODMAST,
@@ -1993,6 +1993,7 @@ class CetakDokumenController extends Controller
                                                     AND MSTH_KODEIGR = SUP_KODEIGR(+)
                                                     AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
                                                     " . $P_PN . "
+                                                    ORDER BY MSTH_NODOC
                                         ) a");
 
                         if ($jnskertas == 'B') {
@@ -2042,11 +2043,41 @@ class CetakDokumenController extends Controller
 
 
             if (sizeof($data1) != 0) {
+                $arrData = [];
+                $arrTemp = [];
+                $head = [];
+                $detail = [];
+                $temp = null;
+
+                for($i=0;$i<count($data1);$i++){
+                    if($data1[$i]->msth_nodoc != $temp){
+                        if($temp != null){
+                            $arrTemp['head'] = $head;
+                            $arrTemp['detail'] = $detail;
+                            $arrData[] = $arrTemp;
+                        }
+
+                        $temp = $data1[$i]->msth_nodoc;
+                        $arrTemp = [];
+                        $head = [];
+                        $detail = [];
+                    }
+
+                    $head[] = $data2[$i];
+                    $detail[] = $data1[$i];
+                }
+                $arrTemp['head'] = $head;
+                $arrTemp['detail'] = $detail;
+                $arrData[] = $arrTemp;
+
+//                dd($arrData);
+
                 $data = [
                     'data' => ['dummy'],
                     'perusahaan' => $perusahaan,
                     'data1' => $data1,
                     'data2' => $data2,
+                    'arrData' => $arrData,
                     'tgl1' => $tgl1,
                     'tgl2' => $tgl2,
                     'jnskertas' => $jnskertas

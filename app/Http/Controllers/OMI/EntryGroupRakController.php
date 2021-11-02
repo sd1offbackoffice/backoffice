@@ -10,7 +10,7 @@ use PDF;
 use Yajra\DataTables\DataTables;
 use File;
 
-class EnrtyGroupRakController extends Controller
+class EntryGroupRakController extends Controller
 {
     public function index()
     {

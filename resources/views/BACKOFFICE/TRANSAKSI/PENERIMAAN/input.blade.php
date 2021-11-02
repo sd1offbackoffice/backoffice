@@ -23,7 +23,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl BTB</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control nullPermission" id="tglBTB" placeholder="dd/mm/yyyy">
+                                                   <input type="text" class="form-control nullPermission" id="tglBTB" placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
@@ -37,7 +37,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl PO</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control" id="tglPO" disabled placeholder="dd/mm/yyyy">
+                                                   <input type="text" class="form-control" id="tglPO" disabled placeholder="dd/mm/yyyy">
                                                </div>
                                            </div>
 
@@ -61,7 +61,7 @@
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">Tgl Faktur</label>
                                                <div class="col-sm-2">
-                                                   <input type="date" class="form-control nullPermission" id="tglFaktur" placeholder="dd/mm/yyyy">
+                                                   <input type="text" class="form-control nullPermission" id="tglFaktur" placeholder="dd/mm/yyyy">
                                                </div>
                                                <label class="col-sm-1 col-form-label text-right">TOP</label>
                                                <div class="col-sm-1">
@@ -460,7 +460,7 @@
                                         <form class="mt-3">
                                             <div class="form-group row mb-0 mt-5">
                                                 <div class="col-sm-3 offset-sm-1 text-center">
-                                                    <button type="button" class="btn btn-primary btn-block" onclick="closeCardInput2()">Tutup Daftar</button>
+                                                    <button type="button" class="btn btn-primary btn-block" id="btnCloseCardInput2" onclick="closeCardInput2()">Tutup Daftar</button>
                                                 </div>
                                                 {{--<div class="col-sm-3 offset-sm-1 text-center">--}}
                                                     {{--<button type="button" class="btn btn-primary btn-block">Koreksi</button>--}}
@@ -744,6 +744,7 @@
 
     <script>
         let typeTrn;
+        let flagRecordId    = 'N';
         let flagNewBTB      = 'N';
         let tempPlu         = [];
         let tempDataBTB     = [];
@@ -826,15 +827,25 @@
         $(document).ready(function () {
             startAlert();
             $('#cardInput2').hide();
+            isiBeliForm.hide()
+
             // typeTrn = 'B'
             // showPO('');
-            // chooseBTB('0420000613', 'GH6H71400')
+            // chooseBTB('0420000612', 'GH6H71391')
             // choosePO('UH1L08295')
             // choosePO('5H1L79346')
             // showPlu('');
-            isiBeliForm.hide()
 
-            // deletePlu('123')
+
+            tglBTB.datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
+            tglPO.datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
+            tglFaktur.datepicker({
+                "dateFormat" : "dd/mm/yy",
+            });
 
         });
 
@@ -931,6 +942,8 @@
                     $('.rowTbodyTableDetail').remove();
                     modalHelp.modal('hide');
                     tempDataBTB = [];
+                    flagRecordId    = 'N';
+                    $('#btnCloseCardInput2').show();
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
@@ -977,10 +990,8 @@
 
                         noBTB.val(result.data[0].trbo_nodoc);
                         noPO.val(result.data[0].trbo_nopo);
-                        // tglBTB.val(formatDate(result.data[0].trbo_tgldoc));
-                        // tglPO.val(formatDate(result.data[0].trbo_tglpo));
-                        tglBTB.val((result.data[0].trbo_tgldoc.substr(0,10)));
-                        tglPO.val((result.data[0].trbo_tglpo).substr(0,10));
+                        tglBTB.val(formatDate((result.data[0].trbo_tgldoc.substr(0,10))));
+                        tglPO.val(formatDate((result.data[0].trbo_tglpo).substr(0,10)));
                         kodeSupp.val(result.data[0].trbo_kodesupplier);
                         namaSupp.val(result.data[0].sup_namasupplier);
                         noFaktur.val(result.data[0].trbo_nofaktur);
@@ -1028,6 +1039,8 @@
                            clearLeftFirstField();
                            clearRightFirstField();
                            clearSecondField();
+                           flagRecordId    = 'N';
+                           $('#btnCloseCardInput2').show();
                        },
                        success: function (result) {
                            $('#modal-loader').modal('hide');
@@ -1130,8 +1143,7 @@
                         let data = result['data'][0];
 
                         noPO.val(data.tpoh_nopo);
-                        tglPO.val(data.tpoh_tglpo.substr(0,10));
-                        // tglPO.val(formatDate(data.tpoh_tglpo));
+                        tglPO.val(formatDate(data.tpoh_tglpo.substr(0,10)));
                         kodeSupp.val(data.tpoh_kodesupplier);
                         namaSupp.val(data.sup_namasupplier);
                         pkp.val(data.sup_pkp);
@@ -1272,7 +1284,7 @@
                         tempPlu = result;
 
                         $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
+                        for (let i = 0; i< result.length; i++){
                             $('#tbodyModalHelpPluDetail').append("<tr onclick=choosePlu('"+ result[i].tpod_prdcd +"') class='modalRow text-right'><td class='text-left'>"+ result[i].prd_deskripsipanjang +"</td><td class='text-left'>"+ result[i].tpod_prdcd+"</td><td class='text-left'>"+ result[i].kemasan +"</td><td>"+ result[i].qty+"</td>" +
                                 "<td>"+ result[i].qtyk+"</td><td>"+ result[i].bonus1+"</td><td>"+ result[i].bonus2+"</td><td>"+ result[i].tpod_persentasedisc1+"</td><td>"+ result[i].tpod_rphdisc1+"</td><td>"+ result[i].tpod_persentasedisc2+"</td>" +
                                 "<td>"+ result[i].tpod_rphdisc2+"</td><td>"+ result[i].tpod_persentasedisc3+"</td><td>"+ result[i].tpod_rphdisc3+"</td><td>"+ result[i].tpod_rphdisc4+"</td><td class='text-left'>"+ result[i].tpod_nopo+"</td> </tr>")
@@ -1281,7 +1293,7 @@
                         modalHelpPluDetail.modal('show');
                     } else {
                         $('.modalRow').remove();
-                        for (i = 0; i< result.length; i++){
+                        for (let i = 0; i< result.length; i++){
                             $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
                         }
 
@@ -1614,6 +1626,10 @@
         }
 
         function editDeletePlu(plu){
+            if (flagRecordId == 'Y'){
+                swalWithTime("Nomor Transaksi Ini sudah Dibuatkan Nota", " ", "warning", 2000);
+                return  false;
+            }
             swal("Koreksi atau Hapus Plu "+plu+" ?", {
                 icon: "warning",
                 buttons: {
@@ -1662,11 +1678,12 @@
 
         async function koreksiPlu(plu){
             let data;
+            let tempData = (tempDataSave.length > 0) ? tempDataSave : tempDataBTB
 
             await new Promise(next => {
-                for(let i=0; i < tempDataSave.length; i++){
-                    if (tempDataSave[i].trbo_prdcd == plu){
-                        data = tempDataSave[i];
+                for(let i=0; i < tempData.length; i++){
+                    if (tempData[i].trbo_prdcd == plu){
+                        data = tempData[i];
                         break;
                     }
                 }
@@ -1682,6 +1699,7 @@
                 $('#cardInput2').hide();
             } else {
                 alertError("Error", "Data tidak ada !");
+                swalWithTime("Data tidak ditemukan!",' ', 'warning','2000')
             }
 
 
@@ -1906,8 +1924,33 @@
 
         function setValueTableDetail(data){
             $('.rowTbodyTableDetail').remove();
+
+            if (data[0].trbo_recordid == 2){
+                flagRecordId = 'Y';
+                $('#btnCloseCardInput2').hide();
+            }
+
+            //--------- Untuk menampilkan data di right side
+            let gross = 0;
+            let discount = 0;
+            let ppn = 0;
+            let ppbbm = 0;
+            let ppnbotol = 0;
+            let grantTotal = 0;
+
             for (let i = 0; i< data.length; i++){
                 let value = data[i];
+
+                gross   = parseInt(gross) + parseInt(value.trbo_gross);
+                discount= parseInt(discount) + parseInt(unconvertToRupiah(value.total_disc));
+                ppn     = parseInt(ppn) +  parseInt(value.trbo_ppnrph);
+                ppbbm   = parseInt(ppbbm) +  parseInt(value.trbo_ppnbmrph);
+                ppnbotol = parseInt(ppnbotol) +  parseInt(value.trbo_ppnbtlrph);
+                // grantTotal = parseInt(grantTotal) + parseInt(value.total_rph);
+                grantTotal = parseInt(grantTotal) + (gross + ppn);
+
+                console.log(grantTotal)
+
 
                 $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail"  onclick="editDeletePlu('`+ value.trbo_prdcd +`')">
                                                                 <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
@@ -1938,6 +1981,15 @@
                                                                 <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
                                                             </tr>`);
             }
+
+            sum_item.val(data.length);
+            i_totalpo.val(convertToRupiah(grantTotal));
+            v_gross.val(convertToRupiah(gross));
+            v_discount.val(convertToRupiah(discount));
+            v_ppn.val(convertToRupiah(ppn));
+            v_ppbBm.val(convertToRupiah(ppbbm));
+            v_ppnBotol.val(convertToRupiah(ppnbotol));
+            v_grantTotal.val(convertToRupiah(grantTotal));
         }
 
         function clearSecondField(){

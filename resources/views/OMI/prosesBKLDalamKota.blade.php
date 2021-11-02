@@ -152,19 +152,12 @@
                 success: function (result) {
                     $('#modal-loader').modal('hide');
 
-                    if (result.kode == 1){
-                        swal(result.msg, '', 'success')
-                    } else {
-                        swal(result.msg, '', 'warning')
-                        return  false
-                    }
-
-                    filename = result.data.namafiler
-                    sesiproc = result.data.sesiproc
-                    kasir = result.data.param_all_kasir
+                    filename = result.data.namafiler ?? "0000000" ;
+                    sesiproc = result.data.sesiproc ?? "0000000";
+                    kasir = result.data.param_all_kasir ?? "0000000" ;
                     kasir = kasir.substr(1,6);
 
-                    let idButtonCetak = result.data.report_id;
+                    let idButtonCetak = result.data.report_id ?? "0000000" ;
                     if (idButtonCetak) {
                         for(let i = 0; i < idButtonCetak.length; i++){
                             if (idButtonCetak[i] == 1) {
@@ -176,6 +169,13 @@
                                 $('#btnCetakTolakan').show();
                             }
                         }
+                    }
+
+                    if (result.kode == 1){
+                        swal(result.msg, '', 'success')
+                    } else {
+                        swal(result.msg, '', 'warning')
+                        return  false
                     }
                 }, error: function (error) {
                     errorHandlingforAjax(error)

@@ -89,7 +89,12 @@ class inputController extends Controller
 
         }
 
-        $data = DB::select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier, c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
+//      Program Unit "Check_btb" Tidak di pakai karena Pembuatan nomor dokumen baru sudah ada function tersendiri,
+//      dan kondisi dimana nomor dokumen tidak ada di tbtr_backoffice tidak bisa terpenuhi (Tidak ada inputan manual dari user),
+//      sehingga langsung menampilkan data dari tbtr_backoffice dengan query yang sepertinya buatan sendiri
+
+        $data = DB::select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
+                                    c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
                                       FROM tbtr_backoffice a
                                            LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
                                            LEFT JOIN tbmaster_supplier c ON a.trbo_kodesupplier = c.sup_kodesupplier and a.trbo_kodeigr = c.sup_kodeigr
@@ -167,7 +172,7 @@ class inputController extends Controller
 
         $temp = DB::select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TEMP_GO
-                                     WHERE KODEIGR = '$kodeigr' AND ISI_TOKO = 'Y' 
+                                     WHERE KODEIGR = '$kodeigr' AND ISI_TOKO = 'Y'
                                        AND TRUNC (SYSDATE) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
 
         if ($temp[0]->temp > 0) {
@@ -414,7 +419,7 @@ class inputController extends Controller
 
         } elseif ($typeLov == 'PLU_PO') {
             $data = DB::select("select prd_deskripsipanjang, tpod_prdcd, prd_unit||'/'||prd_frac kemasan,
-                                            floor(tpod_qtypo/prd_frac) qty,mod(tpod_qtypo,prd_frac) qtyk, 
+                                            floor(tpod_qtypo/prd_frac) qty,mod(tpod_qtypo,prd_frac) qtyk,
                                             tpod_bonuspo1 bonus1, tpod_bonuspo2 bonus2,
                                             TPOD_PERSENTASEDISC1, TPOD_RPHDISC1,
                                             TPOD_PERSENTASEDISC2, TPOD_RPHDISC2,

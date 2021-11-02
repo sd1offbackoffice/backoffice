@@ -109,11 +109,11 @@ class ProsesBKLDalamKotaController extends Controller
         oci_bind_by_name($exec, ':param_all_kasir', $param_all_kasir,1000);
         oci_execute($exec);
 
+//        Testing report
 //        $param_proses = 1;
 //        $res_kode = 1;
-//        $res_msg = "OKe";
-
-//        dd([$param_proses,$res_kode,$res_msg]);
+//        $res_msg = 'oke';
+//        $param_all_kasir = "000015";
 
         if ($param_proses == 1){
             $temp = DB::table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
@@ -131,7 +131,6 @@ class ProsesBKLDalamKotaController extends Controller
             }
         }
 
-//        dd($tempReportId);
 //        DB::table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
 
         $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId, 'param_all_kasir' => $param_all_kasir];
@@ -197,8 +196,8 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = "OMI.prosesBKL-reset-pdf";
         } elseif ($report_id == 5){
             $result     = $this->laporanTolakan($filename,$sesiproc,$kodeigr);
-            $pageNum1   = 508;
-            $pageNum2   = 38;
+            $pageNum1   = 507;
+            $pageNum2   = 77.75;
             $bladeName  = "OMI.prosesBKL-tolakan-pdf";
         }
 

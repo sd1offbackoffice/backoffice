@@ -1,131 +1,61 @@
-<html>
-<head>
-    <title>Tolakan - BKL</title>
-    <style>
-        @page {
-            /*margin: 130px 25px 25px 25px;*/
-            /*margin: 25px 25px 25px 25px;*/
-        }
+@extends('pdf-template')
 
-        .header {
-            position:fixed;
-            top: 0px;
-            left: 0px;
-            right: 0px;
-            height: 1cm;
-            line-height: 0.1px !important;
-            border-bottom: 1px solid grey;
-        }
+@section('table_font_size','7 px')
 
-        .sp {
-            page-break-after: always;
-        }
+@section('page_title')
+    Listing Tolakan BKL OMI
+@endsection
 
-        .sp:last-child {
-            page-break-after: never;
-        }
+@section('title')
+    LISTING TOLAKAN BKL OMI
+@endsection
 
-        body {
-            font-size: 9px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            font-weight: bold;
-            margin-top: 50px;
-        }
+{{--@section('subtitle')--}}
+{{--    {{ $tgl_start }} - {{ $tgl_end }}--}}
+{{--@endsection--}}
 
-        .page-break {
-            page-break-after: always;
-        }
-
-        table{
-            border-collapse: collapse;
-        }
-        tbody {
-            display: table-row-group;
-            vertical-align: middle;
-            border-color: inherit;
-        }
-        tr {
-            display: table-row;
-            vertical-align: inherit;
-            border-color: inherit;
-        }
-        th, td {
-            /*border: 1px solid black;*/
-            line-height: 12px;
-        }
-
-    </style>
-</head>
-<body>
-
-{{--@if (isset($query))--}}
-@if (!$result)
-    <h1 style="text-align: center">Data Tidak Ada</h1>
-@else
-
-    <?php
-    $i = 1;
-    $datetime = new DateTime();
-    $timezone = new DateTimeZone('Asia/Jakarta');
-    $datetime->setTimezone($timezone);
-    ?>
-
-    <div class="header">
-        <div style="float:left; margin-top: -20px; line-height: 5px !important;">
-            <p>{{$result[0]->prs_namaperusahaan ?? '..'}}</p>
-            <p>{{$result[0]->prs_namacabang ?? '..'}}</p>
-            <p>{{$result[0]->prs_namawilayah ?? '..'}}</p>
-        </div>
-        <div style="float:right; margin-top: -20px; line-height: 5px !important;">
-            <p> Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-                Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-                Hal. :
-        </div>
-        <div style="clear: right"></div>
-        <h1 style="text-align: center">LISTING TOLAKAN BKL OMI</h1>
-    </div>
-
-
-    <table class="body" style="line-height: 10px">
-        <thead style="border-bottom: 1px solid black; text-align: center">
-        <tr style="text-align: center;">
-            <th style="width: 20px">NO</th>
-            <th style="width: 25px">CAB</th>
-            <th style="width: 100px">NAMA</th>
-            <th style="width: 20px">NO</th>
-            <th style="width: 50px">TGL</th>
-            <th style="width: 40px">SUPPLIER</th>
-            <th style="width: 40px">PLU</th>
-            <th style="width: 120px">NAMA</th>
-            <th style="width: 40px">SATUAN</th>
-            <th style="width: 30px">QTY</th>
-            <th style="width: 30px">BONUS</th>
-            <th style="width: 150px">KETERANGAN</th>
+@section('content')
+    <table class="table">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+        <tr>
+            <th class="center">NO</th>
+            <th class="left">CAB</th>
+            <th class="left">NAMA</th>
+            <th class="right padding-right">NO DOC</th>
+            <th class="left">TGL DOC</th>
+            <th class="left">SUPPLIER</th>
+            <th class="right padding-right">PLU</th>
+            <th class="left">NAMA BARANG</th>
+            <th class="left">SATUAN</th>
+            <th class="right">QTY</th>
+            <th class="right padding-right">BONUS</th>
+            <th class="left">KETERANGAN</th>
         </tr>
         </thead>
-        <tbody style="border-bottom: 1px solid black">
-        @php $no = 1; @endphp
-        @foreach($result as $data)
+        <tbody>
+        @php
+            $number     = 1;
+        @endphp
+        @foreach($data as $value)
             <tr>
-                <th style="width: 20px">{{$no}}</th>
-                <th style="width: 25px">{{$data->kodetoko}}</th>
-                <th style="width: 100px; text-align: left">{{$data->tko_namaomi}}</th>
-                <th style="width: 20px">{{$data->no_bukti}}</th>
-                <th style="width: 50px">{{date('d/m/Y', strtotime($data->tgl_bukti))}}</th>
-                <th style="width: 40px">{{$data->kodesupplier}}</th>
-                <th style="width: 40px">{{$data->prdcd}}</th>
-                <th style="width: 120px; text-align: left">{{$data->prd_deskripsipendek}}</th>
-                <th style="width: 40px">{{$data->satuan}}</th>
-                <th style="width: 30px">{{$data->qty}}</th>
-                <th style="width: 30px">{{$data->bonus}}</th>
-                <th style="width: 150px; text-align: left">{{$data->keterangan}}</th>
+                <td class="center">{{$number}}</td>
+                <td class="left">{{$value->kodetoko}}</td>
+                <td class="left">{{$value->tko_namaomi}}</td>
+                <td class="right padding-right">{{$value->no_bukti}}</td>
+                <td class="left">{{date('d/m/Y', strtotime($value->tgl_bukti))}}</td>
+                <td class="left">{{$value->kodesupplier}}</td>
+                <td class="right padding-right">{{$value->prdcd}}</td>
+                <td class="left">{{$value->prd_deskripsipendek}}</td>
+                <td class="left">{{$value->satuan}}</td>
+                <td class="right">{{$value->qty}}</td>
+                <td class="right padding-right">{{$value->bonus}}</td>
+                <td class="left">{{$value->keterangan}}</td>
             </tr>
+            @php
+                $number++;
+            @endphp
         @endforeach
         </tbody>
+        <tfoot></tfoot>
     </table>
-    <br><br>
-    <p style="text-align: right">**Akhir dari Laporan **</p>
-@endif
-
-</body>
-</html>
+@endsection

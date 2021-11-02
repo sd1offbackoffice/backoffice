@@ -1,0 +1,3 @@
+- No BTB tidak bisa di input manual
+- Ketika No BTB memiliki record id 2, flagRecordId menjadi Y, dan tombol close card 2 akan di hide dan plu tidak bisa di edit/hapus
+- Ketika No BTB memiliki record id selain 2,flagRecordId menjadi N, dan tombol close card 2 akan di munculkan dan bisa edit atau hapus
