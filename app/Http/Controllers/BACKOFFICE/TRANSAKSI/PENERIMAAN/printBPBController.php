@@ -11,7 +11,7 @@ use PDF;
 class printBPBController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.printBPB');
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.printBPB');
     }
 
     public function viewData(Request $request){
@@ -222,14 +222,14 @@ class printBPBController extends Controller
 
         $datas = "1";
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi');
+        return $pdf->stream('igr_bo_ctklokasi.pdf');
 
     }
 
@@ -268,14 +268,14 @@ class printBPBController extends Controller
                                                  AND trbo_nodoc in ($document)
                                         ORDER BY trbo_nodoc, trbo_prdcd", (['p_kodeigr' => $kodeigr]));
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listbtb_full', ['datas' => $datas]);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb_full', ['datas' => $datas]);
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listbtb_full');
+            return $pdf->stream('igr_bo_listbtb_full.pdf');
         } elseif ($report == 'IGR_BO_LISTBTB'){
             $datas = DB::select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
@@ -309,14 +309,14 @@ class printBPBController extends Controller
                 }
             }
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listbtb', ['datas' => $datas]);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb', ['datas' => $datas]);
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listbtb');
+            return $pdf->stream('igr_bo_listbtb.pdf');
         } elseif ($report == 'IGR_BO_CTBTBNOTA'){
             $datas = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -343,11 +343,11 @@ class printBPBController extends Controller
                                         and msth_nodoc in ($document)
                                         order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print])->setPaper('a5', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota');
+            return $pdf->stream('igr_bo_ctbtbnota.pdf');
         } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL'){
             $datas = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -374,11 +374,11 @@ class printBPBController extends Controller
                                         and msth_nodoc in ($document)
                                         order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctbtbnota_full');
+            return $pdf->stream('igr_bo_ctbtbnota_full.pdf');
         } elseif ($report == 'lokasi'){
             $datas = DB::select("SELECT trbo_prdcd,
                                        SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
@@ -407,14 +407,14 @@ class printBPBController extends Controller
                                        AND prd_prdcd = trbo_prdcd
                                        AND prd_kodeigr = trbo_kodeigr");
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_ctklokasi');
+            return $pdf->stream('igr_bo_ctklokasi.pdf');
         }
 
         dd($report);

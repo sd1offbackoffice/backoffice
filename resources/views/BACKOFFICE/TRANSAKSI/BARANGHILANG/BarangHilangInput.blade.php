@@ -320,7 +320,7 @@
                     if(confirm){
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/bo/transaksi/barang-hilang/input/nmrBaruTrn',
+                            url: '{{ url()->current() }}/nmrBaruTrn',
                             type: 'post',
                             data: {nodoc: nodoc},
                             beforeSend: function () {
@@ -355,7 +355,7 @@
             $('#search-modal-1').val('')
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_trn',
+                url: '{{ url()->current() }}/lov_trn',
                 type: 'post',
                 data: {},
                 success: function (result) {
@@ -381,7 +381,7 @@
                 let search = $('#search-modal-1').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_trn',
+                    url: '{{ url()->current() }}/lov_trn',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
@@ -409,7 +409,7 @@
                 let index = this['attributes'][4]['value'];
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_plu',
+                    url: '{{ url()->current() }}/lov_plu',
                     type: 'POST',
                     data: {search: search},
                     success: function (result) {
@@ -436,7 +436,7 @@
             // console.log(index)
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/lov_plu',
+                url: '{{ url()->current() }}/lov_plu',
                 type: 'post',
                 data: {index:index},
                 success: function (result) {
@@ -459,7 +459,7 @@
             let tempgross = 0;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/showTrn',
+                url: '{{ url()->current() }}/showTrn',
                 type: 'post',
                 data: {nodoc: nodoc},
                 beforeSend: function () {
@@ -580,7 +580,7 @@
             let temp = 0;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/showPlu',
+                url: '{{ url()->current() }}/showPlu',
                 type: 'post',
                 data: {noplu:noplu}, //noplu sebelah kiri buat panggil noplu di controller, sebelah kanan yg dari parameter
                 beforeSend: function () {
@@ -743,7 +743,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/saveDoc',
+                url: '{{ url()->current() }}/saveDoc',
                 type: 'post',
                 data: {
                     data:data,
@@ -785,7 +785,7 @@
         function deleteDoc() {
             let nodoc = $('#no-trn').val();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/input/deleteDoc',
+                url: '{{ url()->current() }}/deleteDoc',
                 type: 'post',
                 data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
                 beforeSend: function () {

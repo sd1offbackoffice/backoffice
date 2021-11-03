@@ -10,7 +10,7 @@ class LaporanServiceLevelController extends Controller
 {
     public function index(){
 
-        return view('BACKOFFICE/LAPORAN/LaporanServiceLevel');
+        return view('BACKOFFICE.LAPORAN.LaporanServiceLevel');
     }
 
     public function lov_supplier(Request $request){
@@ -60,7 +60,7 @@ class LaporanServiceLevelController extends Controller
             ->first();
 
         $data = DB::select("SELECT sup_kodesupplier, sup_namasupplier, msu_kodemonitoring, msu_kodesupplier
-        FROM 
+        FROM
             tbmaster_supplier, tbtr_monitoringsupplier
         WHERE
               sup_kodeigr = '$kodeigr'
@@ -70,13 +70,13 @@ class LaporanServiceLevelController extends Controller
               AND msu_kodemonitoring = '$mtrSup'
         ");
 
-        $pdf = PDF::loadview('BACKOFFICE/LAPORAN/laporanservicelevel-cetak-pdf', compact(['perusahaan', 'supplier', 'mtrSup']));
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.laporanservicelevel-cetak-pdf', compact(['perusahaan', 'supplier', 'mtrSup']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/LAPORAN/laporanservicelevel-cetak-pdf');
+        return $pdf->stream('laporanservicelevel-cetak.pdf');
     }
 }

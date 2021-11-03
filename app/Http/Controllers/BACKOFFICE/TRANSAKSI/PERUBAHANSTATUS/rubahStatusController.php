@@ -20,7 +20,7 @@ class rubahStatusController extends Controller
     private $nomor_putus;
 
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.rubahStatus');
+        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.rubahStatus');
     }
 
     public function getNewNmrRsn(){
@@ -979,14 +979,14 @@ class rubahStatusController extends Controller
 
         DB::table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatus-laporan', ['datas' => $datas, 'today' => $today]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.RubahStatus-laporan', ['datas' => $datas, 'today' => $today]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatus-laporan');
+        return $pdf->stream('RubahStatus-laporan.pdf');
     }
 
     public function checkRak(Request $request){
@@ -1017,7 +1017,7 @@ class rubahStatusController extends Controller
                                 WHERE KODEIGR = '$kodeigr' AND NODOC = '$noDoc'
                                 AND PRS_KODEIGR = KODEIGR
 ");
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatusRak-laporan', ['datas' => $datas, 'today' => $today]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.RubahStatusRak-laporan', ['datas' => $datas, 'today' => $today]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -1025,7 +1025,7 @@ class rubahStatusController extends Controller
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.RubahStatusRak-laporan');
+        return $pdf->stream('RubahStatusRak-laporan.pdf');
 
     }
 }

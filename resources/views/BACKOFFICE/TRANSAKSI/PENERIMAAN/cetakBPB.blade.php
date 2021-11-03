@@ -175,7 +175,7 @@
 
         function getNoPO(){
             $('#tableModalPO').DataTable({
-                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/cetakbpb/showpo/',
+                "ajax": '{{ url()->current() }}/showpo/',
                 "columns": [
                     {data: 'tpoh_nopo', name: 'No PO'},
                     {data: 'supplier', name: 'Supplier'},
@@ -224,7 +224,7 @@
             ajaxSetup();
             $.ajax({
                 method : 'POST',
-                url: '/BackOffice/public/bo/transaksi/penerimaan/cetakbpb/cetaklaporan',
+                url: '{{ url()->current() }}/cetaklaporan',
                 data: {
                     startDate:startDate,
                     endDate :endDate,
@@ -239,7 +239,7 @@
                     if (result.kode == '0'){
                         swal(result.msg, '', 'info');
                     } else {
-                        window.open('/BackOffice/public/bo/transaksi/penerimaan/cetakbpb/viewreport/');
+                        window.open('{{ url()->current() }}/viewreport/');
                     }
 
 
@@ -299,7 +299,7 @@
                 ajaxSetup();
                 $.ajax({
                     method : 'POST',
-                    url: '/BackOffice/public/bo/transaksi/penerimaan/cetakbpb/searchpo',
+                    url: '{{ url()->current() }}/searchpo',
                     data: {value },
                     beforeSend : () => {
                         // $('#modal-loader').modal('show');

@@ -286,7 +286,7 @@ ORDER BY pbh_nopb,supplier, departement, kategori asc
             ->whereRaw("nvl(pbh_flagdoc,' ')=' '")
             ->update(["pbh_flagdoc" => 1]);
 
-        return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
+        return $pdf->stream('PBOtomatis-laporan.pdf');
     }
 
 }

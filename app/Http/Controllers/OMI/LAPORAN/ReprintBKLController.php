@@ -11,7 +11,7 @@ use PDF;
 class ReprintBKLController extends Controller
 {
     public function index(){
-        return view('OMI/LAPORAN.ReprintBKL');
+        return view('OMI.LAPORAN.ReprintBKL');
     }
 
     public function checkKodeOmi(Request $request){
@@ -69,6 +69,7 @@ class ReprintBKLController extends Controller
         $kodeigr    = $_SESSION['kdigr'];
         $bladeName  = '';
         $result     = '';
+        $pdfName    = '';
 
         $data = DB::table('TBHISTORY_BKL')
                 ->where('BKL_KODEOMI', $kodeOmi)
@@ -78,7 +79,8 @@ class ReprintBKLController extends Controller
 
         if ($report_id == 1){
             $result     = $this->laporanBpb($kodeigr, $data[0]->bkl_nodoc ?? '00000');
-            $bladeName  = "OMI/LAPORAN.ReprintBKL-bpb-pdf";
+            $bladeName  = "OMI.LAPORAN.ReprintBKL-bpb-pdf";
+            $pdfName    = "ReprintBKL-bpb.pdf";
         } elseif ($report_id == 2){
             $noBukti = $data[0]->bkl_nobukti;
             $noDoc = $data[0]->bkl_nodoc;
@@ -91,7 +93,8 @@ class ReprintBKLController extends Controller
                                         and bkl_kodesupplier = '$supplier'");
 
             $result     = $this->laporanStruk($kodeigr, $temp[0]->all_kasir, $temp[0]->bkl_kodeomi);
-            $bladeName  = "OMI/LAPORAN.ReprintBKL-struk-pdf";
+            $bladeName  = "OMI.LAPORAN.ReprintBKL-struk-pdf";
+            $pdfName    = "ReprintBKL-struk.pdf";
         }
 
         $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
@@ -99,7 +102,7 @@ class ReprintBKLController extends Controller
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        return $pdf->stream("$bladeName");
+        return $pdf->stream("$pdfName");
     }
 
     public function laporanBpb($kodeigr, $no_po){

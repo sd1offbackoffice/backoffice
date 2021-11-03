@@ -16,7 +16,7 @@ class PembatalanController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/PENGELUARAN.pembatalan');
+        return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.pembatalan');
     }
 
     public function getDataLovNPB()

@@ -350,7 +350,7 @@
                                 console.log(response);
                                 $('#mulai').val(response.mulai);
                                 $('#akhir').val(response.akhir);
-                                window.open('/BackOffice/public/bo/proses/hitungulangstock/cetak');
+                                window.open('{{ url()->current() }}/cetak');
                                 swal(response.status, response.err_txt, response.status);
                             }
                             else {

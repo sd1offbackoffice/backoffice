@@ -20,7 +20,7 @@ class ServiceLevelItemParetoController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/LAPORAN/ServiceLevelItemPareto');
+        return view('BACKOFFICE.LAPORAN.ServiceLevelItemPareto');
     }
 
     public function ModalNmr(Request $request)
@@ -325,7 +325,7 @@ GROUP BY TPOD_KODEDIVISI,
 ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD");
 
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\LAPORAN\ServiceLevelItemParetoDDK-pdf',
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.ServiceLevelItemParetoDDK-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,'today' => $today, 'time' => $time, 'p_kdmon' => $kdmon, 'p_nmon'=> $nmon]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -334,7 +334,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(546, 10, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\LAPORAN\ServiceLevelItemParetoDDK-pdf');
+        return $pdf->stream('ServiceLevelItemParetoDDK.pdf');
     }
 
     public function printDocumentSupplier(Request $request){
@@ -426,7 +426,7 @@ GROUP BY TPOD_PRDCD,
 ORDER BY TPOH_KODESUPPLIER, TPOD_PRDCD");
 
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\LAPORAN\ServiceLevelItemParetoSupplier-pdf',
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.ServiceLevelItemParetoSupplier-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,'today' => $today, 'time' => $time, 'p_kdmon' => $kdmon, 'p_nmon'=> $nmon]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -435,6 +435,6 @@ ORDER BY TPOH_KODESUPPLIER, TPOD_PRDCD");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(546, 10, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\LAPORAN\ServiceLevelItemParetoSupplier-pdf');
+        return $pdf->stream('ServiceLevelItemParetoSupplier.pdf');
     }
 }

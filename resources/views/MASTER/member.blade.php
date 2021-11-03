@@ -815,7 +815,7 @@
                                         <button id="btn-check-registrasi" class="btn btn-primary btn-block" disabled>CEK TGL REGISTRASI</button>
                                     </div>
                                     <div class="col-sm-2">
-                                        <p>Last Edited : {{ max([date("d-m-Y", filemtime(resource_path('views\MASTER\member.blade.php'))),date("d-m-Y", filemtime(app_path('Http\Controllers\MASTER\MemberController.php')))]) }}
+{{--                                        <p>Last Edited : {{ max([date("d-m-Y", filemtime(resource_path('views\MASTER\member.blade.php'))),date("d-m-Y", filemtime(app_path('Http\Controllers\MASTER\MemberController.php')))]) }}--}}
                                         </p>
                                     </div>
                                 </div>
@@ -2581,7 +2581,7 @@
                 else if(this.value.length >= 4) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/master/member/lov_member_search',
+                        url: '{{ url()->current() }}/lov_member_search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){
@@ -2636,7 +2636,7 @@
                 else if(this.value.length >= 4) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/master/member/lov_kodepos_search',
+                        url: '{{ url()->current() }}/lov_kodepos_search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){
@@ -2807,7 +2807,7 @@
 
         function lov_member_select(value, load){
             $.ajax({
-                url: '/BackOffice/public/master/member/lov_member_select',
+                url: '{{ url()->current() }}/lov_member_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -3152,7 +3152,7 @@
         function lov_kodepos_select(kode, kecamatan, kelurahan, kabupaten){
             success = false;
             $.ajax({
-                url: '/BackOffice/public/master/member/lov_kodepos_select',
+                url: '{{ url()->current() }}/lov_kodepos_select',
                 type: 'GET',
                 data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
                 beforeSend: function(){
@@ -3295,7 +3295,7 @@
 
         function getLovSubOutlet(){
             $.ajax({
-                url: '/BackOffice/public/master/member/lov_sub_outlet',
+                url: '{{ url()->current() }}/lov_sub_outlet',
                 type: 'post',
                 data: {
                     "_token":"{{ csrf_token() }}",
@@ -3546,7 +3546,7 @@
                         console.log(data);
 
                         $.ajax({
-                            url: '/BackOffice/public/master/member/update_member',
+                            url: '{{ url()->current() }}/update_member',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3646,7 +3646,7 @@
             }).then((createData) => {
                 if (createData) {
                     $.ajax({
-                        url: '/BackOffice/public/master/member/export_crm',
+                        url: '{{ url()->current() }}/export_crm',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3760,7 +3760,7 @@
                 }).then((createData) => {
                     if (createData) {
                         $.ajax({
-                            url: '/BackOffice/public/master/member/save_quisioner',
+                            url: '{{ url()->current() }}/save_quisioner',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3836,7 +3836,7 @@
                         // }).then((password) => {
                         //     if (password) {
                         //         $.ajax({
-                        //             url: '/BackOffice/public/master/member/check_password',
+                        //             url: '{{ url()->current() }}/check_password',
                         //             type: 'POST',
                         //             headers: {
                         //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3848,7 +3848,7 @@
                         //             success: function (response) {
                         //                 if(response == 'ok'){
                         //                     $.ajax({
-                        //                         url: '/BackOffice/public/master/member/hapus_member',
+                        //                         url: '{{ url()->current() }}/hapus_member',
                         //                         type: 'POST',
                         //                         headers: {
                         //                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3893,7 +3893,7 @@
 
         $('#btn-download-mktho').on('click',function(){
             $.ajax({
-                url: '/BackOffice/public/master/member/download_mktho',
+                url: '{{ url()->current() }}/download_mktho',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3919,7 +3919,7 @@
 
         $('#btn-check-registrasi').on('click',function(){
             $.ajax({
-                url: '/BackOffice/public/master/member/check_registrasi',
+                url: '{{ url()->current() }}/check_registrasi',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3972,7 +3972,7 @@
 
         function aktif_nonaktif(user, pass){
             $.ajax({
-                url: '/BackOffice/public/master/member/check_password',
+                url: '{{ url()->current() }}/check_password',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3985,7 +3985,7 @@
                     if(response == 'ok'){
                         if(approvalMode == 'aktif-nonaktif'){
                             $.ajax({
-                                url: '/BackOffice/public/master/member/set_status_member',
+                                url: '{{ url()->current() }}/set_status_member',
                                 type: 'GET',
                                 data: {"_token": "{{ csrf_token() }}", kode: member.cus_kodemember, status: status},
                                 success: function (response) {
@@ -4056,7 +4056,7 @@
         function hapus(user,password){
             console.log('hapus');
             $.ajax({
-                url: '/BackOffice/public/master/member/check_password',
+                url: '{{ url()->current() }}/check_password',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -4068,7 +4068,7 @@
                 success: function (response) {
                     if(response == 'ok'){
                         $.ajax({
-                            url: '/BackOffice/public/master/member/hapus_member',
+                            url: '{{ url()->current() }}/hapus_member',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

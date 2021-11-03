@@ -12,7 +12,7 @@ class inqueryBAPBController extends Controller
     public function index(){
         $noDoc = DB::table('tbtr_mstran_d')->whereNull(['mstd_recordid'])->whereRaw("mstd_nodoc like '8%'")->orderByDesc('mstd_nodoc')->distinct()->limit(100)->get(['mstd_nodoc', 'mstd_tgldoc'])->toArray();
 
-        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.inqueryBAPB', compact('noDoc'));
+        return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.inqueryBAPB', compact('noDoc'));
     }
 
     public function getDocument(Request $request){

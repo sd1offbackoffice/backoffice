@@ -58,7 +58,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/restore/restorenow',
+                url: '{{ url()->current() }}/restorenow',
                 type: 'post',
                 data: {
                     month:month,

@@ -302,7 +302,7 @@
             if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/cetak-dokumen/CSVeFaktur',
+                    url: '{{ url()->current() }}/CSVeFaktur',
                     type: 'post',
                     data: {
                         doc: $('#dokumen').val(),
@@ -336,7 +336,7 @@
             if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/cetak-dokumen/cetak',
+                    url: '{{ url()->current() }}/cetak',
                     type: 'post',
                     data: {
                         nrfp: $('#cetaknotareturfp:checked').val(),

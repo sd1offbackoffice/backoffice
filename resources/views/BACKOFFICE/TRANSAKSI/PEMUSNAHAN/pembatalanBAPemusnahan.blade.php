@@ -170,7 +170,7 @@
         function chooseDoc(noDoc) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapbatal/getdetaildoc',
+                url: '{{ url()->current() }}/getdetaildoc',
                 type: 'post',
                 data: {noDoc:noDoc},
                 beforeSend: function (){
@@ -218,7 +218,7 @@
                 if (confirm){
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/transaksi/pemusnahan/bapbatal/deletedoc',
+                        url: '{{ url()->current() }}/deletedoc',
                         type: 'post',
                         data: {doc: doc},
                         beforeSend: function () {

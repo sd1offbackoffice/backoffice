@@ -1026,7 +1026,7 @@ class rubahstatusomiController extends Controller
 
 
 
-        $pdf = PDF::loadview('OMI\rubahstatusomi_fp-pdf',
+        $pdf = PDF::loadview('OMI.rubahstatusomi_fp-pdf',
             ['kodeigr' => $kodeigr, 'datas' => $datas,'nama' => $nama, 'jabatan1' => $jabatan1, 'jabatan2' => $jabatan2, 'p_jmlstruk' => $jmlstruk, 'admfee' => $admfee]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -1035,6 +1035,6 @@ class rubahstatusomiController extends Controller
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(509, 33, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('OMI\rubahstatusomi_fp-pdf');
+        return $pdf->stream('rubahstatusomi_fp.pdf');
     }
 }

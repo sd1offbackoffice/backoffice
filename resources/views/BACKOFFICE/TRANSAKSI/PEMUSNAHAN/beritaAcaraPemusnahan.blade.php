@@ -315,7 +315,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/choosedoc',
+                url: '{{ url()->current() }}/choosedoc',
                 type: 'post',
                 data: {
                     val:val
@@ -385,7 +385,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/choosepbbr',
+                url: '{{ url()->current() }}/choosepbbr',
                 type: 'post',
                 data: {
                     val:val
@@ -448,7 +448,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/getnewnmrdoc',
+                                url: '{{ url()->current() }}/getnewnmrdoc',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -552,7 +552,7 @@
 
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/savedata',
+                    url: '{{ url()->current() }}/savedata',
                     type: 'post',
                     data: {
                         datas:datas,
@@ -568,7 +568,7 @@
                         $('#modal-loader').modal('hide');
                         if(result.kode == '1'){
                             if (status == 'cetak'){
-                                window.open('/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/printdoc/'+result.msg+'/');
+                                window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
                                 // clearField();
                             } else {
                                 swal('Dokumen Berhasil disimpan','','success')
@@ -600,7 +600,7 @@
             if(doc && keterangan === '* TAMBAH *' || doc && keterangan === '* KOREKSI *'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/printdoc/'+doc+'/');
+                window.open('{{ url()->current() }}/printdoc/'+doc+'/');
                 clearField();
             }
 

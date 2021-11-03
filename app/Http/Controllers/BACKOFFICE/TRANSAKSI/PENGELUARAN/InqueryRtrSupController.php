@@ -18,7 +18,7 @@ class InqueryRtrSupController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/PENGELUARAN.inqueryrtrsup');
+        return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.inqueryrtrsup');
     }
 
     public function getDataLov()
@@ -105,14 +105,14 @@ class InqueryRtrSupController extends Controller
             ->orderBy('HGB_PRDCD')
             ->get();
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENGELUARAN/cetakrtrsup', compact(['data', 'perusahaan']));
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakrtrsup', compact(['data', 'perusahaan']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PENGELUARAN/cetakrtrsup');
+        return $pdf->stream('cetakrtrsup.pdf');
     }
 
 }

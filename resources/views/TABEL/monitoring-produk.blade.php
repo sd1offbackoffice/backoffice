@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','TABEL | PLU MRO Monitoring')
+@section('title','TABEL | Monitoring Produk')
 
 @section('content')
 
@@ -9,8 +9,8 @@
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
                     <div class="card-body pt-0">
-                        <fieldset class="card border-secondary mt-0">
-                            <legend  class="w-auto ml-3">Kode Monitoring</legend>
+                        <fieldset class="card border-secondary mt-0" id="data-field">
+                            <legend  class="w-auto ml-3">Tabel Monitoring Produk</legend>
                             <div class="card-body py-0" id="top_field">
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Kode Monitoring</label>
@@ -35,9 +35,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                        <fieldset class="card border-secondary mt-0" id="data-field">
-                            <legend  class="w-auto ml-3">Tabel PLU MRO (Monitoring)</legend>
                             <div class="card-body pt-0">
                                 <table class="table table bordered table-sm mt-3" id="table_data">
                                     <thead class="theadDataTables">
@@ -58,15 +55,15 @@
                             <div class="card-body py-0" id="top_field">
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
-                                    <div class="col-sm-2">
-                                        <input type="text" class="form-control text-left" id="plu">
+{{--                                    <div class="col-sm-2">--}}
+{{--                                        <input type="text" class="form-control text-left" id="plu">--}}
+{{--                                    </div>--}}
+                                    <div class="col-sm-2 buttonInside">
+                                        <input type="text" class="form-control text-left" id="plu" disabled>
+                                        <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu">
+                                            <i class="fas fa-question"></i>
+                                        </button>
                                     </div>
-                                    {{--                                    <div class="col-sm-2 buttonInside">--}}
-                                    {{--                                        <input type="text" class="form-control text-left" id="plu">--}}
-                                    {{--                                        <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu" disabled>--}}
-                                    {{--                                            <i class="fas fa-question"></i>--}}
-                                    {{--                                        </button>--}}
-                                    {{--                                    </div>--}}
                                 </div>
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Deskripsi</label>
@@ -80,10 +77,10 @@
                                         <input type="text" class="form-control text-left" id="satuan" disabled>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button class="col-sm btn btn-danger" id="" onclick="deleteData()">DELETE</button>
+                                        <button class="col-sm btn btn-danger" id="btn-delete" onclick="deleteData()" disabled>DELETE</button>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button class="col-sm btn btn-success" id="" onclick="save()">SAVE</button>
+                                        <button class="col-sm btn btn-success" id="btn-add" onclick="add()" disabled>TAMBAH</button>
                                     </div>
                                 </div>
                             </div>
@@ -109,6 +106,37 @@
                                     <tr>
                                         <th>Kode Monitoring</th>
                                         <th>Nama Monitoring</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">LOV PLU</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-striped table-bordered" id="table_lov_plu">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Deskripsi</th>
+                                        <th>PLU</th>
+                                        <th>Satuan</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -195,8 +223,91 @@
                 "responsive": true,
             });
 
+            getModalData('');
+
             $('#mon_kode').focus();
         });
+
+        $('#m_lov_plu').on('shown.bs.modal',function(){
+            $('#table_lov_plu_filter input').val('');
+            $('#table_lov_plu_filter input').select();
+        });
+
+        function getModalData(value){
+            if ($.fn.DataTable.isDataTable('#table_lov_plu')) {
+                $('#table_lov_plu').DataTable().destroy();
+                $("#table_lov_plu tbody [role='row']").remove();
+            }
+
+            if(!$.isNumeric(value)){
+                search = value.toUpperCase();
+            }
+            else search = value;
+
+            $('#table_lov_plu').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current() }}/get-lov-plu',
+                    "data" : {
+                        'plu' : search
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'satuan', name: 'satuan'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row-plu');
+                },
+                "initComplete" : function(){
+                    $('#table_lov_plu_filter input').val(value).select();
+
+                    $(".row-plu").prop("onclick", null).off("click");
+
+                    $(document).on('click', '.row-plu', function (e) {
+                        $('#plu').val($(this).find('td:eq(1)').html());
+                        $('#deskripsi').val($(this).find('td:eq(0)').html());
+                        $('#satuan').val($(this).find('td:eq(2)').html());
+
+                        found = false;
+                        for(i=0;i<dataPLUMonitoring.length;i++){
+                            if(dataPLUMonitoring[i].plu == $('#plu').val()){
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if(found){
+                            $('#btn-delete').prop('disabled',false);
+                            $('#btn-add').prop('disabled',true);
+                        }
+                        else{
+                            $('#btn-delete').prop('disabled',true);
+                            $('#btn-add').prop('disabled',false);
+                        }
+
+                        $('#m_lov_plu').modal('hide');
+                    });
+                }
+            });
+
+            $('#table_lov_plu_filter input').val(value);
+
+            $('#table_lov_plu_filter input').off().on('keypress', function (e){
+                if (e.which === 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getModalData(val);
+                }
+            });
+        }
 
         function getLovMonitoring(){
             if ($.fn.DataTable.isDataTable('#table_lov_monitoring')) {
@@ -267,6 +378,8 @@
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
+                        $('#mon_nama').val('');
+                        $('#mon_qty').val('');
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
@@ -323,13 +436,11 @@
                         {data: 'plu'},
                         {data: 'deskripsi'},
                         {data: 'satuan'},
-                        {data: 'max_ctn'},
-                        {data: 'max_pcs'},
                     ],
                     "scrollY" : '30vh',
                     "paging": false,
                     "lengthChange": false,
-                    "searching": false,
+                    "searching": true,
                     "ordering": true,
                     "info": true,
                     "autoWidth": false,
@@ -346,13 +457,15 @@
                     },
                     "order": [],
                     "initComplete": function () {
-                        lastData = dataPLUMonitoring[dataPLUMonitoring.length - 1];
+                        // lastData = dataPLUMonitoring[dataPLUMonitoring.length - 1];
+                        //
+                        // $('#plu').val(lastData.plu);
+                        // $('#deskripsi').val(lastData.deskripsi);
+                        // $('#satuan').val(lastData.satuan);
 
-                        $('#plu').val(lastData.plu);
-                        $('#deskripsi').val(lastData.deskripsi);
-                        $('#satuan').val(lastData.satuan);
+                        // $('#table_data tbody tr:eq(-1) button').focus().blur();
 
-                        $('#table_data tbody tr:eq(-1) button').focus().blur();
+                        $('#mon_qty').val(dataPLUMonitoring.length);
 
                         $('#plu').select();
                     }
@@ -440,159 +553,8 @@
             });
         }
 
-        function showLovDivisi(){
-            $('#m_divisi').modal('show');
+        function add(){
 
-            if(!$.fn.DataTable.isDataTable('#table_divisi')){
-                getLovDivisi();
-            }
-        }
-
-        function getLovDivisi(){
-            $('#table_divisi').DataTable({
-                "ajax": '{{ url()->current().'/get-lov-divisi' }}',
-                "columns": [
-                    {data: 'kode'},
-                    {data: 'nama'},
-                    {data: 'singkatan'}
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-center');
-                    $(row).find(':eq(1)').addClass('text-left');
-                    $(row).find(':eq(2)').addClass('text-left');
-                    $(row).addClass('row-div').css({'cursor': 'pointer'});
-                },
-                "order": [],
-                "initComplete": function () {
-                    $(".row-div").prop("onclick", null).off("click");
-                    $(document).on('click', '.row-div', function (e) {
-                        $('#div_kode').val($(this).find('td:eq(0)').html());
-                        $('#div_nama').val($(this).find('td:eq(1)').html());
-
-                        $('#dep_kode').val('');
-                        $('#dep_nama').val('');
-                        $('#kat_kode').val('');
-                        $('#kat_nama').val('');
-
-                        if($.fn.DataTable.isDataTable('#table_departement')){
-                            $('#table_departement').DataTable().destroy();
-                        }
-
-                        // getLovDepartement();
-
-                        $('#m_divisi').modal('hide');
-                    });
-                }
-            });
-        }
-
-        function showLovDepartement(){
-            $('#m_departement').modal('show');
-
-            if(!$.fn.DataTable.isDataTable('#table_departement')){
-                getLovDepartement();
-            }
-        }
-
-        function getLovDepartement(){
-            $('#table_departement').DataTable({
-                "ajax": {
-                    url: '{{ url()->current().'/get-lov-departement' }}',
-                    data: {
-                        div: $('#div_kode').val()
-                    }
-                },
-                "columns": [
-                    {data: 'kode'},
-                    {data: 'nama'},
-                    {data: 'singkatan'}
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-center');
-                    $(row).find(':eq(1)').addClass('text-left');
-                    $(row).find(':eq(2)').addClass('text-left');
-                    $(row).addClass('row-dep').css({'cursor': 'pointer'});
-                },
-                "order": [],
-                "initComplete": function () {
-                    $(".row-dep").prop("onclick", null).off("click");
-                    $(document).on('click', '.row-dep', function (e) {
-                        $('#dep_kode').val($(this).find('td:eq(0)').html());
-                        $('#dep_nama').val($(this).find('td:eq(1)').html());
-
-                        $('#kat_kode').val('');
-                        $('#kat_nama').val('');
-
-                        if($.fn.DataTable.isDataTable('#table_kategori')){
-                            $('#table_kategori').DataTable().destroy();
-                        }
-                        // getLovKategori();
-
-                        $('#m_departement').modal('hide');
-                    });
-                }
-            });
-        }
-
-        function showLovKategori(){
-            $('#m_kategori').modal('show');
-
-            if(!$.fn.DataTable.isDataTable('#table_kategori')){
-                getLovKategori();
-            }
-        }
-
-        function getLovKategori(){
-            $('#table_kategori').DataTable({
-                "ajax": {
-                    url: '{{ url()->current().'/get-lov-kategori' }}',
-                    data: {
-                        dep: $('#dep_kode').val()
-                    }
-                },
-                "columns": [
-                    {data: 'kode'},
-                    {data: 'nama'},
-                    {data: 'singkatan'}
-                ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-center');
-                    $(row).find(':eq(1)').addClass('text-left');
-                    $(row).find(':eq(2)').addClass('text-left');
-                    $(row).addClass('row-kat').css({'cursor': 'pointer'});
-                },
-                "order": [],
-                "initComplete": function () {
-                    $(".row-kat").prop("onclick", null).off("click");
-                    $(document).on('click', '.row-kat', function (e) {
-                        $('#kat_kode').val($(this).find('td:eq(0)').html());
-                        $('#kat_nama').val($(this).find('td:eq(1)').html());
-
-                        $('#m_kategori').modal('hide');
-                    });
-                }
-            });
         }
     </script>
 @endsection

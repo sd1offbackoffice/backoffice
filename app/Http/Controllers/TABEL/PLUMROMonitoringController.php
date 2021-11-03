@@ -113,4 +113,10 @@ class PLUMROMonitoringController extends Controller
 
         return $dompdf->stream('Daftar Harga Jual Barang per Tanggal '.date("d-m-Y").'.pdf');
     }
+
+    public function deleteData(Request $request){
+        return response()->json([
+            'message' => 'Data berhasil dihapus!'
+        ]);
+    }
 }

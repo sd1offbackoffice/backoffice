@@ -545,7 +545,7 @@
 
         function searchDocument(input, field) {
             $.ajax({
-                url: '/BackOffice/public/bocetakpb/searchdocument',
+                url: '{{ url()->current() }}/searchdocument',
                 type: 'post',
                 data: {
                     search  : input,
@@ -576,7 +576,7 @@
 
         function searchDivisi(input, field) {
             $.ajax({
-                url: '/BackOffice/public/bocetakpb/searchdivisi',
+                url: '{{ url()->current() }}/searchdivisi',
                 type: 'post',
                 data: {
                     search : input
@@ -605,7 +605,7 @@
         function searchDepartemen(input, field) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bocetakpb/searchdepartement',
+                url: '{{ url()->current() }}/searchdepartement',
                 type: 'post',
                 data: {
                     div1: $('#i_div1').val(),
@@ -640,7 +640,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bocetakpb/searchkategori',
+                url: '{{ url()->current() }}/searchkategori',
                 type: 'post',
                 data: {
                     dept1: dept1,
@@ -701,7 +701,7 @@
             } else if ((!kat1 && kat2) || (kat1 && !kat2)) {
                 swal("Kode Kategori Harus Terisi Semua!!", '', 'warning')
             } else {
-                window.open('/BackOffice/public/bocetakpb/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')
+                window.open('{{ url()->current() }}/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')
                 clearField()
             }
         }

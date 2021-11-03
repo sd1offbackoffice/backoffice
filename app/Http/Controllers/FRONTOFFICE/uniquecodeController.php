@@ -268,7 +268,7 @@ class uniquecodeController extends Controller
             ->where("prs_kodeigr",'=',$kodeigr)
             ->first();
 
-        $pdf = PDF::loadview('FRONTOFFICE\uniquecode-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.uniquecode-pdf',
             ['kodeigr' => $kodeigr, 'datas' => $datas, 'kunj' => $kunj[0]->totalk, 'banding' => $memb_banding, 'unique' => (int)$memb_unique[0]->result,
                 'persen' => $memb_persen, 'promosi' => $tempPromosi, 'tglawal' => $tglSales1, 'tglakhir' => $tglSales2,
                 'tglpromo1' => $tglPromo1, 'tglpromo2' => $tglPromo2, 'member' => strtoupper($jenisMember),
@@ -280,6 +280,6 @@ class uniquecodeController extends Controller
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(509, 33, "HAL : {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\uniquecode-pdf');
+        return $pdf->stream('uniquecode.pdf');
     }
 }

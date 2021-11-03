@@ -413,7 +413,7 @@
                     if (createData) {
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/bo/pb-manual/getDataPB',
+                            url: '{{ url()->current() }}/getDataPB',
                             type: 'POST',
                             data: {value: value},
                             beforeSend: function () {
@@ -440,7 +440,7 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/pb-manual/getDataPB',
+                    url: '{{ url()->current() }}/getDataPB',
                     type: 'POST',
                     data: {value: value},
                     beforeSend: function () {
@@ -599,7 +599,7 @@
                     $('.invalid-feedback').hide();
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/pb-manual/lov_search',
+                        url: '{{ url()->current() }}/lov_search',
                         type: 'POST',
                         data: {value: this.value.toUpperCase()},
                         beforeSend: function () {
@@ -684,7 +684,7 @@
             value = $('#no-pb').val();
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/pb-manual/hapusDokumen',
+                url: '{{ url()->current() }}/hapusDokumen',
                 type: 'POST',
                 data: {value: value},
                 beforeSend: function () {
@@ -719,7 +719,7 @@
                     $('.invalid-feedback').hide();
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/pb-manual/lov_search_plu',
+                        url: '{{ url()->current() }}/lov_search_plu',
                         type: 'POST',
                         data: {value: this.value.toUpperCase()},
                         beforeSend: function () {
@@ -879,7 +879,7 @@
                         flag = $('#flag').val();
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/bo/pb-manual/cek_plu',
+                            url: '{{ url()->current() }}/cek_plu',
                             type: 'POST',
                             data: {plu: value, tglpb: tgl, nopb: nopb, flag: flag},
                             beforeSend: function () {
@@ -1055,7 +1055,7 @@
                 } else {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/pb-manual/cek_bonus',
+                        url: '{{ url()->current() }}/cek_bonus',
                         type: 'POST',
                         data: {
 
@@ -1195,7 +1195,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/pb-manual/save_data',
+                url: '{{ url()->current() }}/save_data',
                 type: 'POST',
                 data: {
 

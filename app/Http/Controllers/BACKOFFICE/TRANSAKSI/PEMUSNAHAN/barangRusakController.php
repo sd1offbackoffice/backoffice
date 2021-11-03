@@ -11,7 +11,7 @@ use Yajra\DataTables\DataTables;
 class barangRusakController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.barangRusak');
+        return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.barangRusak');
     }
 
     public function getNmrTrn(Request $request){
@@ -244,14 +244,14 @@ class barangRusakController extends Controller
 //                Update rsk_recordid
         DB::table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->whereNull('rsk_recordid')->update(['rsk_recordid' => '9']);
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.barangRusak-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.barangRusak-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.BarangRusak-laporan');
+        return $pdf->stream('BarangRusak-laporan.pdf');
     }
 
 

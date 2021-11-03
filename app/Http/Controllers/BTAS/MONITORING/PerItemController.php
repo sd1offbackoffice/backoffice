@@ -68,7 +68,7 @@ class PerItemController extends Controller
             }
         }
 
-        return view('BTAS/MONITORING.PerItem',['datas'=>$datas,'qtysj'=>$qtysj]);
+        return view('BTAS.MONITORING.PerItem',['datas'=>$datas,'qtysj'=>$qtysj]);
     }
     public function GetData(){
         $kodeigr = $_SESSION['kdigr'];
@@ -308,17 +308,18 @@ ORDER BY TRJD_PRDCD");
         }
 
         //PRINT
-        $path = 'BTAS\MONITORING.PerItem-pdf';
+        $path = 'BTAS.MONITORING.PerItem-pdf';
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview($path,
-            ['kodeigr' => $kodeigr, 'datas' => $datas, 'sjasAll' => $sjasAll, 'sisa' => $sisa]);
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'sjasAll' => $sjasAll, 'sisa' => $sisa, 'perusahaan' => $perusahaan]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream("$path");
+        return $pdf->stream("PerItem.pdf");
     }
 }

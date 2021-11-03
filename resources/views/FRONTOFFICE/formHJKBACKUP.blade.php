@@ -194,7 +194,7 @@
             if (tempPlu == null){
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/frontoffice/formHJK/getplu',
+                    url: '{{ url()->current() }}/getplu',
                     type: 'post',
                     data: {
                         val:val
@@ -237,7 +237,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/getplu',
+                url: '{{ url()->current() }}/getplu',
                 type: 'post',
                 data: {
                     val:val
@@ -260,7 +260,7 @@
             $('#modalHelp').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/chooseplu',
+                url: '{{ url()->current() }}/chooseplu',
                 type: 'post',
                 data: {
                     kode: kode
@@ -444,7 +444,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/calculatemargin',
+                url: '{{ url()->current() }}/calculatemargin',
                 type: 'post',
                 data: {
                     kode: kode
@@ -541,7 +541,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/frontoffice/formHJK/printdocument',
+                url: '{{ url()->current() }}/printdocument',
                 type: 'get',
                 data: {
                     dateA:dateA,

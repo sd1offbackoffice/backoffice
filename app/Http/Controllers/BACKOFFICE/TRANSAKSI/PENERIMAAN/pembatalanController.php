@@ -12,7 +12,7 @@ use Yajra\DataTables\DataTables;
 class pembatalanController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.pembatalan');
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.pembatalan');
     }
 
     public function viewBTB(Request $request){
@@ -36,8 +36,8 @@ class pembatalanController extends Controller
         $typeTrn    = $request->typeTrn;
 
         $data = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
-			              mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph, 
-			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac, 
+			              mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph,
+			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac,
 										(nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,
 										sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top,
 										(((mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) ) as hpp,

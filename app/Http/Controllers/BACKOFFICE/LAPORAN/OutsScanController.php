@@ -19,7 +19,7 @@ class OutsScanController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/LAPORAN/outsscan');
+        return view('BACKOFFICE.LAPORAN.outsscan');
     }
     public function CheckData(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -71,7 +71,7 @@ SELECT   prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UN
 GROUP BY prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, periode
 order by prd_prdcd ) b");
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\LAPORAN\outsscan-pdf',
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.outsscan-pdf',
             ['kodeigr' => $kodeigr, 'p_tgl' => $date, 'datas' => $datas, 'today' => $today]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -80,6 +80,6 @@ order by prd_prdcd ) b");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(546, 10, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\LAPORAN\outsscan-pdf');
+        return $pdf->stream('outsscan.pdf');
     }
 }

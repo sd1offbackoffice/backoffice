@@ -19,7 +19,7 @@ class StoutController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/KERJASAMAIGRIDM.igridm_stout');
+        return view('BACKOFFICE.KERJASAMAIGRIDM.igridm_stout');
     }
 
     public function GetDiv(Request $request){
@@ -308,9 +308,9 @@ ORDER BY PRD_KODEDIVISI, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRC_PLUIDM
 
         //PRINT
         if($choice == 'r1'){
-            $path = 'BACKOFFICE\KERJASAMAIGRIDM.igridm_stout-pdf';
+            $path = 'BACKOFFICE.KERJASAMAIGRIDM.igridm_stout-pdf';
         }elseif ($choice == 'r2'){
-            $path = 'BACKOFFICE\KERJASAMAIGRIDM.igridm_stout2-pdf';
+            $path = 'BACKOFFICE.KERJASAMAIGRIDM.igridm_stout2-pdf';
         }
         $pdf = PDF::loadview($path,
             ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today]);

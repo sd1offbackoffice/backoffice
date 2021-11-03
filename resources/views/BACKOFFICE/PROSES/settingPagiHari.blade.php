@@ -67,8 +67,8 @@
         $("#tgl-sistemSkrg").val(today)
 
         $('#btn-proses').on('click', function () {
-            window.open('/BackOffice/public/bo/proses/setting-pagi-hari/cetak_perubahan_harga_jual/', "_blank");
-            window.open('/BackOffice/public/bo/proses/setting-pagi-hari/cetak_daftar_plu_tag/', "_blank");
+            window.open('{{ url()->current() }}/cetak_perubahan_harga_jual/', "_blank");
+            window.open('{{ url()->current() }}/cetak_daftar_plu_tag/', "_blank");
             // window.location.href="/BackOffice/public/bo/proses/setting-pagi-hari/cetak_perubahan_hrgjual/";
         });
 

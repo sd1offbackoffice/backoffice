@@ -79,7 +79,7 @@
                                         <input type="text" class="form-control text-left" id="satuan" disabled>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button class="col-sm btn btn-danger" id="" onclick="deleteData()">DELETE</button>
+                                        <button class="col-sm btn btn-danger" id="" onclick="deleteData($('#plu').val())">DELETE</button>
                                     </div>
                                     <div class="col-sm-3">
                                         <button class="col-sm btn btn-success" id="" onclick="save()">SAVE</button>
@@ -348,7 +348,7 @@
                         lastData = dataPLUMonitoring[dataPLUMonitoring.length - 1];
 
                         $('#plu').val(lastData.plu);
-                        $('#deskripsi').val(lastData.deskripsi);
+                        $('#deskripsi').val(decodeHtml(lastData.deskripsi));
                         $('#satuan').val(lastData.satuan);
 
                         $('#table_data tbody tr:eq(-1) button').focus().blur();
@@ -360,64 +360,58 @@
         }
 
         function deleteData(plu){
-            {{--if(plu == '' && $('#plu').val() == ''){--}}
-            {{--    swal({--}}
-            {{--        title: 'Inputan PLU tidak boleh kosong!',--}}
-            {{--        icon: 'error'--}}
-            {{--    }).then(() => {--}}
-            {{--        $('#plu').select();--}}
-            {{--    });--}}
-            {{--}--}}
-            {{--else{--}}
-            {{--    if(plu == ''){--}}
-            {{--        plu = $('#plu').val();--}}
-            {{--    }--}}
+            if(plu == '' && $('#plu').val() == ''){
+                swal({
+                    title: 'Inputan PLU tidak boleh kosong!',
+                    icon: 'error'
+                }).then(() => {
+                    $('#plu').select();
+                });
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin menghapus PLU '+plu+'?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/delete-data',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            data: {
+                                plu: plu
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
 
-            {{--    swal({--}}
-            {{--        title: 'Yakin ingin menghapus PLU '+plu+'?',--}}
-            {{--        icon: 'warning',--}}
-            {{--        buttons: true,--}}
-            {{--        dangerMode: true--}}
-            {{--    }).then((ok) => {--}}
-            {{--        if(ok){--}}
-            {{--            $.ajax({--}}
-            {{--                url: '{{ url()->current() }}/delete-data',--}}
-            {{--                type: 'POST',--}}
-            {{--                headers: {--}}
-            {{--                    'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-            {{--                },--}}
-            {{--                data: {--}}
-            {{--                    plu: plu--}}
-            {{--                },--}}
-            {{--                beforeSend: function () {--}}
-            {{--                    $('#modal-loader').modal('show');--}}
-            {{--                },--}}
-            {{--                success: function (response) {--}}
-            {{--                    $('#modal-loader').modal('hide');--}}
+                                swal({
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    getData();
+                                });
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
 
-            {{--                    swal({--}}
-            {{--                        title: response.message,--}}
-            {{--                        icon: 'success'--}}
-            {{--                    }).then(() => {--}}
-            {{--                        $('#top_field input').val('');--}}
-            {{--                        getData();--}}
-            {{--                        $('#plu').select();--}}
-            {{--                    });--}}
-            {{--                },--}}
-            {{--                error: function (error) {--}}
-            {{--                    $('#modal-loader').modal('hide');--}}
+                                swal({
+                                    title: error.responseJSON.message,
+                                    icon: 'error',
+                                }).then(() => {
 
-            {{--                    swal({--}}
-            {{--                        title: error.responseJSON.message,--}}
-            {{--                        icon: 'error',--}}
-            {{--                    }).then(() => {--}}
-
-            {{--                    });--}}
-            {{--                }--}}
-            {{--            });--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--}--}}
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
 
         $('#btn_print').on('click',function(){

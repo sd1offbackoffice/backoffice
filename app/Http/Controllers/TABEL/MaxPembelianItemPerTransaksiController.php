@@ -21,7 +21,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
 
     public function index()
     {
-        return view('TABEL\MAXPEMBELIANITEMPERTRANSAKSI.maxpembelianitempertransaksi');
+        return view('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.maxpembelianitempertransaksi');
     }
 
     public function modalPlu(Request $request)

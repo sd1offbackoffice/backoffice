@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','ADMINISTRATION | USER ACCESS')
+@section('title','ADMINISTRATION | SHOW / HIDE MENU')
 
 @section('content')
 
@@ -10,13 +10,7 @@
                 <fieldset class="card border-secondary" id="div-table" >
                     <div class="card-body shadow-lg cardForm">
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">USER ID</label>
-                            <div class="col-sm-3 buttonInside">
-                                <input type="text" class="form-control text-left" id="userid" style="text-transform: uppercase">
-                                <button type="button" class="btn btn-primary btn-lov p-0" onclick="showLovUser()">
-                                    <i class="fas fa-question"></i>
-                                </button>
-                            </div>
+                            <div class="col-sm"></div>
                             <button class="col-sm-2 btn btn-success" onclick="save()">SAVE</button>
                         </div>
                         <hr>
@@ -49,39 +43,39 @@
                 @for($i=0;$i<count($menu);$i++)
                     @if($temp != $menu[$i]->acc_group)
                         @if($temp != '')
-                        @php $div = false; @endphp
-                        </div>
-                        </fieldset>
-                        @endif
-                        @php
-                            $temp = $menu[$i]->acc_group;
-                            $tempsubgroup1 = '';
-                            $tempsubgroup2 = '';
-                        @endphp
-                        <fieldset class="card border-secondary {{ $menu[$i]->acc_group }}" id="field_{{ str_replace(' ','_',$menu[$i]->acc_group) }}" >
-                            <legend class="ml-3">{{ $menu[$i]->acc_group }}</legend>
-                            <div class="card-body shadow-lg cardForm">
+                            @php $div = false; @endphp
+            </div>
+            </fieldset>
+            @endif
+            @php
+                $temp = $menu[$i]->acc_group;
+                $tempsubgroup1 = '';
+                $tempsubgroup2 = '';
+            @endphp
+            <fieldset class="card border-secondary {{ $menu[$i]->acc_group }}" id="field_{{ str_replace(' ','_',$menu[$i]->acc_group) }}" >
+                <legend class="ml-3">{{ $menu[$i]->acc_group }}</legend>
+                <div class="card-body shadow-lg cardForm">
                     @endif
 
                     @if(($tempsubgroup1 != $menu[$i]->acc_subgroup1 || $tempsubgroup2 != $menu[$i]->acc_subgroup2) && $menu[$i]->acc_subgroup1 != '')
                         @if($tempsubgroup1 != '' || $tempsubgroup2 != '')
                             @php $div = false; @endphp
-                            </div><hr>
-                        @endif
-                        @if($menu[$i]->acc_subgroup2 != '')
-                            @php
-                                $tempsubgroup1 = $menu[$i]->acc_subgroup1;
-                                $tempsubgroup2 = $menu[$i]->acc_subgroup2;
-                            @endphp
-                            <div class="row">
-                                <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
-                                    <input type="checkbox" class="custom-control-input" id="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" onchange="checkAll('{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}',event)">
-                                    <label class="custom-control-label" for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}"></label>
-                                </div>
-                                <label for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }} - {{ $menu[$i]->acc_subgroup2 }}</label>
-                            </div>
-                            <div id="field_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}">
-                            @php $div = true; @endphp
+                </div><hr>
+                @endif
+                @if($menu[$i]->acc_subgroup2 != '')
+                    @php
+                        $tempsubgroup1 = $menu[$i]->acc_subgroup1;
+                        $tempsubgroup2 = $menu[$i]->acc_subgroup2;
+                    @endphp
+                    <div class="row">
+                        <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
+                            <input type="checkbox" class="custom-control-input" id="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" onchange="checkAll('{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}',event)">
+                            <label class="custom-control-label" for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}"></label>
+                        </div>
+                        <label for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }} - {{ $menu[$i]->acc_subgroup2 }}</label>
+                    </div>
+                    <div id="field_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}_{{ str_replace(' ','_',$menu[$i]->acc_subgroup2) }}">
+                        @php $div = true; @endphp
                         @elseif($menu[$i]->acc_subgroup1 != '')
                             @php
                                 $tempsubgroup1 = $menu[$i]->acc_subgroup1;
@@ -95,40 +89,40 @@
                                 <label for="ALL_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}" class="col-form-label text-left">{{ $menu[$i]->acc_subgroup1 }}</label>
                             </div>
                             <div id="field_{{ str_replace(' ','_',$menu[$i]->acc_subgroup1) }}">
-                            @php $div = true; @endphp
+                                @php $div = true; @endphp
+                                @endif
+                                @else
+                                    @if($tempsubgroup1 != 'x' && $menu[$i]->acc_subgroup1 == '')
+                                        @php $tempsubgroup1 = 'x'; @endphp
+                                        @if($div)
+                                            @php $div = false; @endphp
+                            </div><hr>
                         @endif
-                    @else
-                        @if($tempsubgroup1 != 'x' && $menu[$i]->acc_subgroup1 == '')
-                            @php $tempsubgroup1 = 'x'; @endphp
-                            @if($div)
-                                @php $div = false; @endphp
-                                </div><hr>
-                            @endif
                         @endif
-                    @endif
+                        @endif
 
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
-                                <input type="checkbox" class="custom-control-input cb-menu" id="{{ $menu[$i]->acc_id }}">
-                                <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
-                            </div>
-                        </div>
-                        <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
-                        @if($i+1 < count($menu))
-                            @if($menu[$i]->acc_group == $menu[$i+1]->acc_group && $menu[$i]->acc_subgroup1 == $menu[$i+1]->acc_subgroup1 && $menu[$i]->acc_subgroup2 == $menu[$i+1]->acc_subgroup2)
-                                <div class="col-sm-1">
-                                    <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
-                                        <input type="checkbox" class="custom-control-input cb-menu" id="{{ $menu[++$i]->acc_id }}">
-                                        <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
-                                    </div>
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
+                                    <input type="checkbox" class="custom-control-input cb-menu" id="{{ $menu[$i]->acc_id }}">
+                                    <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
                                 </div>
-                                <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
+                            </div>
+                            <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
+                            @if($i+1 < count($menu))
+                                @if($menu[$i]->acc_group == $menu[$i+1]->acc_group && $menu[$i]->acc_subgroup1 == $menu[$i+1]->acc_subgroup1 && $menu[$i]->acc_subgroup2 == $menu[$i+1]->acc_subgroup2)
+                                    <div class="col-sm-1">
+                                        <div class="custom-control custom-checkbox mt-2 ml-1 text-left">
+                                            <input type="checkbox" class="custom-control-input cb-menu" id="{{ $menu[++$i]->acc_id }}">
+                                            <label class="custom-control-label" for="{{ $menu[$i]->acc_id }}"></label>
+                                        </div>
+                                    </div>
+                                    <label for="{{ $menu[$i]->acc_id }}" class="col-sm-5 col-form-label text-left">{{ $menu[$i]->acc_name }}</label>
+                                @endif
                             @endif
-                        @endif
+                        </div>
+                        @endfor
                     </div>
-                    @endfor
-                </div>
         </div>
     </div>
 
@@ -206,7 +200,7 @@
 
     <script>
         $(document).ready(function(){
-
+            getData();
         });
 
         function checkAll(field,event){
@@ -268,7 +262,7 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 data: {
-                    userid: $('#userid').val().toUpperCase()
+
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -278,20 +272,13 @@
 
                     if(response.data.length > 0){
                         for(i=0;i<response.data.length;i++){
-                            $('#'+response.data[i].uac_acc_id).prop('checked',true);
+                            $('#'+response.data[i].acc_id).prop('checked',true);
                         }
 
                         for(i=0;i<response.checkedAll.length;i++){
                             $('#ALL_'+response.checkedAll[i]).prop('checked',true);
                         }
                     }
-
-                    swal({
-                        title: 'User '+ $('#userid').val().toUpperCase() +' memiliki akses terhadap '+ response.data.length +' menu!',
-                        icon: 'warning'
-                    }).then(function(){
-                        $('#modal-loader').modal('hide');
-                    });
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -307,65 +294,53 @@
         }
 
         function save(){
-            if(!$('#userid').val()){
-                swal({
-                    title: 'User ID belum diisi!',
-                    icon: 'error'
-                });
-            }
-            else{
-                swal({
-                    title: 'Yakin ingin menyimpan data?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then(function(ok){
-                    if(ok){
-                        menu = [];
+            swal({
+                title: 'Yakin ingin menyimpan data?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then(function(ok){
+                if(ok){
+                    menu = [];
 
-                        $('.cb-menu').each(function(){
-                            if($(this).is(':checked'))
-                                menu.push($(this).attr('id'));
-                        });
+                    $('.cb-menu').each(function(){
+                        if($(this).is(':checked'))
+                            menu.push($(this).attr('id'));
+                    });
 
-                        $.ajax({
-                            url: '{{ url()->current() }}/save',
-                            type: 'GET',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            data: {
-                                userid: $('#userid').val().toUpperCase(),
-                                menu: menu
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
+                    $.ajax({
+                        url: '{{ url()->current() }}/save',
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            menu: menu
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
 
-                                swal({
-                                    title: response.title,
-                                    icon: 'success'
-                                }).then(function(){
-                                    $('#modal-loader').modal('hide');
-                                });
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
+                            swal({
+                                title: response.title,
+                                icon: 'success'
+                            }).then();
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: error.responseJSON.title,
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            }).then(() => {
 
-                                swal({
-                                    title: error.responseJSON.title,
-                                    text: error.responseJSON.message,
-                                    icon: 'error',
-                                }).then(() => {
-                                    $('#modal-loader').modal('hide');
-                                });
-                            }
-                        });
-                    }
-                });
-            }
+                            });
+                        }
+                    });
+                }
+            });
         }
 
     </script>

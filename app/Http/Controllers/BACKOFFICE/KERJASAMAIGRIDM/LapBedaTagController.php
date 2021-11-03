@@ -18,7 +18,7 @@ class LapBedaTagController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/KERJASAMAIGRIDM.LapBedaTag');
+        return view('BACKOFFICE.KERJASAMAIGRIDM.LapBedaTag');
     }
     public function CheckData(Request $request){
         $tag = $request->tag;
@@ -109,6 +109,6 @@ ORDER BY NVL (trim (PRD_PRDCD), 'zzzzzzz'), IDM_PLUIDM");
 //        return $pdf->stream('BACKOFFICE\KERJASAMAIGRIDM.LapBedaTag-pdf');
 
 
-        return view("BACKOFFICE\KERJASAMAIGRIDM.LapBedaTag-pdf", ['kodeigr' => $kodeigr, 'tag' => $tag, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        return view("BACKOFFICE.KERJASAMAIGRIDM.LapBedaTag-pdf", ['kodeigr' => $kodeigr, 'tag' => $tag, 'datas' => $datas, 'today' => $today, 'time' => $time]);
     }
 }

@@ -444,7 +444,7 @@
                                 <li><a href="{{url("/administration/access")}}">Access Menu</a></li>
                             </ul>
                         </li>
-                        <li><a href="{{url("template/index")}}">Template</a></li>
+{{--                        <li><a href="{{url("template/index")}}">Template</a></li>--}}
 
                         <li class="dropdown" style="position: relative; right:0px;">
                             <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -557,7 +557,7 @@
                     </ul>
                     </li>
                     @endif
-                    <li><a href="{{url("template/index")}}">Template</a></li>
+{{--                    <li><a href="{{url("template/index")}}">Template</a></li>--}}
 
                     <li class="dropdown" style="position: relative; right:0px;">
                         <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"

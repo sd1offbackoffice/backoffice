@@ -19,7 +19,7 @@ class SalesHBVController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/LAPORAN/SalesHBV');
+        return view('BACKOFFICE.LAPORAN.SalesHBV');
     }
     public function CheckData(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -119,7 +119,7 @@ GROUP BY HBV_PRDCD_BRD, PRD_DESKRIPSIPANJANG, PRD_UNIT, HRG_DASAR
 ORDER BY HBV_PRDCD_BRD");
 
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\LAPORAN\SalesHBV-pdf',
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.SalesHBV-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'datas2' => $datas2,'today' => $today]);
         $pdf->setPaper('A4', 'landscape');
         $pdf->output();
@@ -128,6 +128,6 @@ ORDER BY HBV_PRDCD_BRD");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(780, 24, "PAGE {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\LAPORAN\SalesHBV-pdf');
+        return $pdf->stream('SalesHBV.pdf');
     }
 }

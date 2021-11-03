@@ -476,7 +476,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstomi/updatetokoomi',
+                url: '{{ url()->current() }}/updatetokoomi',
                 type: 'post',
                 data:{
                     kodeOmi:$('#kodeOmi').val(),
@@ -546,7 +546,7 @@
             }
 
             $.ajax({
-                url: '/BackOffice/public/mstomi/tambahtokoomi',
+                url: '{{ url()->current() }}/tambahtokoomi',
                 type: 'post',
                 data:{
                     kodeSBU:$('#chooseTypeOmi').val(),
@@ -583,7 +583,7 @@
                 $('#namaCust').val('');
             } else {
                 $.ajax({
-                    url: '/BackOffice/public/mstomi/getcustomername',
+                    url: '{{ url()->current() }}/getcustomername',
                     type: 'POST',
                     data: {member:member},
                     success: function (result) {
@@ -614,7 +614,7 @@
                 swal("Error","Kode Indogrosir Tidak boleh Kosong", "error");
             } else {
                 $.ajax({
-                    url: '/BackOffice/public/mstomi/getbranchname',
+                    url: '{{ url()->current() }}/getbranchname',
                     type: 'POST',
                     data: {kodeIgr: kodeIgr},
                     success: function (result) {
@@ -651,7 +651,7 @@
             tableModal.destroy();
             tableModal =  $('#tableTokoOmi').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstomi/gettokoomi') }}',
+                    'url' : '{{url()->current()}}/gettokoomi',
                     "data" : {
                         'kodeSBU' : kodeSBU
                     },
@@ -721,7 +721,7 @@
             clearField();
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstomi/detailtokoomi',
+                url: '{{ url()->current() }}/detailtokoomi',
                 type: 'POST',
                 data:{kodeOmi:kodeOmi},
                 success: function (result) {
@@ -938,7 +938,7 @@
         function callFuncEditExpand(confirmUser, confirmPass, updateMKTHO){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstomi/confirmedit',
+                url: '{{ url()->current() }}/confirmedit',
                 type: 'POST',
                 data: {
                     confirmUser:confirmUser,

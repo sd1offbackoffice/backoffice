@@ -19,7 +19,7 @@ class ceiController extends Controller
 
     public function index()
     {
-        return view('FRONTOFFICE\LAPORANKASIR.cei');
+        return view('FRONTOFFICE.LAPORANKASIR.cei');
     }
 
     public function getNmr(Request $request)
@@ -212,6 +212,6 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
 
-        return view('FRONTOFFICE\LAPORANKASIR\cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas,'perusahaan' => $perusahaan ,'today' => $today, 'time' => $time]);
+        return view('FRONTOFFICE.LAPORANKASIR.cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas,'perusahaan' => $perusahaan ,'today' => $today, 'time' => $time]);
     }
 }

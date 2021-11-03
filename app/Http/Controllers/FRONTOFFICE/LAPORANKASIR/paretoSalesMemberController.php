@@ -16,7 +16,7 @@ class paretoSalesMemberController extends Controller
 
         $outlet = DB::table('tbmaster_outlet')->where('out_kodeigr', $kodeigr)->orderBy('out_kodeoutlet')->get();
 
-        return view('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember', compact('outlet'));
+        return view('FRONTOFFICE.LAPORANKASIR.laporanParetoSalesMember', compact('outlet'));
     }
 
     public function getLovMember(Request  $request){
@@ -156,7 +156,7 @@ class paretoSalesMemberController extends Controller
                     WHERE ROWNUM <= '$rank_member' ");
 
 
-        $pdf = PDF::loadview('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember-pdf',['perusahaan' => $perusahaan, 'data' => $query, 'tgl_start' => $tgl_start, 'tgl_end' => $tgl_end]);
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.laporanParetoSalesMember-pdf',['perusahaan' => $perusahaan, 'data' => $query, 'tgl_start' => $tgl_start, 'tgl_end' => $tgl_end]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -164,7 +164,7 @@ class paretoSalesMemberController extends Controller
         $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
 
-        return $pdf->stream('FRONTOFFICE/LAPORANKASIR.laporanParetoSalesMember-pdf');
+        return $pdf->stream('laporanParetoSalesMember.pdf');
     }
 
 }

@@ -13,7 +13,7 @@ class entrySortirBarangController extends Controller
     //
 
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.entrySortirBarang');
+        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entrySortirBarang');
     }
 
     public function getNewNmrSrt(){
@@ -334,13 +334,13 @@ class entrySortirBarangController extends Controller
         DB::beginTransaction();
         DB::table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
         DB::commit();
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.EntrySortirBarang-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.EntrySortirBarang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS.EntrySortirBarang-laporan');
+        return $pdf->stream('EntrySortirBarang-laporan.pdf');
     }
 }

@@ -22,7 +22,7 @@ class hdhitemController extends Controller
 
     public function index()
     {
-        return view('TABEL\SETTINGHADIAHPADATRANSAKSIKASIR.hdhitem');
+        return view('TABEL.SETTINGHADIAHPADATRANSAKSIKASIR.hdhitem');
     }
 
     public function ModalPlu(Request $request){

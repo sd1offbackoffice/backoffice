@@ -119,7 +119,7 @@
         function getDataProdmast(value){
             let tableModal =  $('#tableModalProdmast').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstaktifhrgjual/getprodmast') }}',
+                    'url' : '{{ url()->current()}}/getprodmast',
                     "data" : {
                         'value' : value
                     },
@@ -174,7 +174,7 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/mstaktifhrgjual/aktifkanhrg',
+                    url: '{{ url()->current() }}/aktifkanhrg',
                     type: 'post',
                     data:({plu:plu}),
                     beforeSend: function(){
@@ -205,7 +205,7 @@
 
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/mstaktifhrgjual/getdetailplu',
+                    url: '{{ url()->current() }}/getdetailplu',
                     type: 'post',
                     data:({plu:plu}),
                     beforeSend: function () {

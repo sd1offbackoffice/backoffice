@@ -16,11 +16,13 @@ class AccessController extends Controller
     public function index(){
         $group = DB::table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
+            ->where('acc_status','=',0)
             ->orderBy('acc_group')
             ->groupBy('acc_group')
             ->get();
 
         $menu = DB::table('tbmaster_access_migrasi')
+            ->where('acc_status','=',0)
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')
@@ -55,10 +57,12 @@ class AccessController extends Controller
                 ->join('tbmaster_access_migrasi','uac_acc_id','=','acc_id')
                 ->select('uac_acc_id','acc_group')
                 ->where('uac_userid','=',$request->userid)
+                ->where('acc_status','=',0)
                 ->get();
 
             $group = DB::table('tbmaster_access_migrasi')
                 ->selectRaw('acc_group, count(1) total')
+                ->where('acc_status','=',0)
                 ->orderBy('acc_group')
                 ->groupBy('acc_group')
                 ->get();
@@ -153,6 +157,7 @@ class AccessController extends Controller
             ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
             ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
             ->where('uac_userid','=',$usid)
+            ->where('acc_status','=',0)
 //            ->orderBy('acc_id')
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')

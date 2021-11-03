@@ -210,7 +210,7 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/laporan/laporan-service-level/lov_supplier',
+                    url: '{{ url()->current() }}/lov_supplier',
                     type: 'post',
                     data: {},
                     success: function (result) {
@@ -236,7 +236,7 @@
         function searchSupp(input, field) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/laporan/laporan-service-level/lov_supplier',
+                url: '{{ url()->current() }}/lov_supplier',
                 type: 'post',
                 data: {
                     search:input
@@ -270,7 +270,7 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/laporan/laporan-service-level/lov_monitoring',
+                    url: '{{ url()->current() }}/lov_monitoring',
                     type: 'post',
                     data: {
                         supp1: supp1,
@@ -308,7 +308,7 @@
         function searchMtrSupp(input, field) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/laporan/laporan-service-level/lov_monitoring',
+                url: '{{ url()->current() }}/lov_monitoring',
                 type: 'post',
                 data: {
                     search: input
@@ -353,7 +353,7 @@
             } else if ( !ranking ) {
                 swal("Ranking Harus Terisi !!", '', 'warning')
             } else {
-                window.open('/BackOffice/public/bo/laporan/laporan-service-level/cetak_laporan/'+tgl1+'/'+tgl2+'/'+supp1+'/'+supp2+'/'+kodeMonitoring+'/'+ranking+'/')
+                window.open('{{ url()->current() }}/cetak_laporan/'+tgl1+'/'+tgl2+'/'+supp1+'/'+supp2+'/'+kodeMonitoring+'/'+ranking+'/')
                 clearField()
             }
         }

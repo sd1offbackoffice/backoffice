@@ -63,7 +63,7 @@
             tableData.destroy();
             tableData =  $('#tableAktifkanAll').DataTable({
                 "ajax": {
-                    'url' : '{{ url('mstaktifallhrgjual/getdata') }}',
+                    'url' : '{{url()->current()}}/getdata',
                 },
                 "columns": [
                     {data: 'prd_prdcd', name: 'prd_prdcd', width : '10%'},
@@ -90,7 +90,7 @@
         function aktifkanAllItem() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstaktifallhrgjual/aktifallitem',
+                url: '{{ url()->current() }}/aktifallitem',
                 type:'post',
                 beforeSend: function(){
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});

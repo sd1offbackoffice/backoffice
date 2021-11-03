@@ -19,7 +19,7 @@ class KunjunganBKLController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/LAPORAN/KunjunganBKL');
+        return view('BACKOFFICE.LAPORAN.KunjunganBKL');
     }
     public function CheckData(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -466,7 +466,7 @@ AND supp1 = supp
 ORDER BY mstd_kodesupplier ) hasil
 ) hasil2");
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\LAPORAN\KunjunganBKL-pdf',
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.KunjunganBKL-pdf',
             ['kodeigr' => $kodeigr, 'date' => $periode, 'datas' => $datas,'hari' =>$p_hari ,'today' => $today]);
         $pdf->setPaper('A4', 'landscape');
         $pdf->output();
@@ -475,6 +475,6 @@ ORDER BY mstd_kodesupplier ) hasil
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(780, 24, "PAGE {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\LAPORAN\KunjunganBKL-pdf');
+        return $pdf->stream('KunjunganBKL.pdf');
     }
 }

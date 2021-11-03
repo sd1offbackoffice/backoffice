@@ -278,7 +278,7 @@
                     <div class="card-body cardForm">
                         <p>13. Format laporan PDF</p>
                         <p>Format laporan pdf yang dipakai diseragamkan dengan laporan FrontOffice / Point Reward Member Merah / Perolehan Point Reward Per Tanggal :<br>
-                            -Link Contoh Laporan : <a href="http://172.20.28.17/BackOffice/public/fo/point-reward-member-merah/perolehan-point-reward-per-tanggal/cetak?menu=rekap&tgl1=04/10/2021&tgl2=05/10/2021"><b>http://172.20.28.17/BackOffice/public/fo/point-reward-member-merah/perolehan-point-reward-per-tanggal/cetak?menu=rekap&tgl1=04/10/2021&tgl2=05/10/2021</b></a><br>
+                            -Link Contoh Laporan : <a href="{{ url() }}/fo/point-reward-member-merah/perolehan-point-reward-per-tanggal/cetak?menu=rekap&tgl1=04/10/2021&tgl2=05/10/2021"><b>http://172.20.28.17/BackOffice/public/fo/point-reward-member-merah/perolehan-point-reward-per-tanggal/cetak?menu=rekap&tgl1=04/10/2021&tgl2=05/10/2021</b></a><br>
                             -Format Page  : <b>$pdf->setPaper('A4', 'potrait');</b><br> (potrait/landscape disesuaikan dengan laporan ias lama)
                             -Text bold  : <b>Judul, Header(nama kolom), Footer</b><br>
                             -Align Left : <b>TEXT</b>(termasuk kolom)<br>

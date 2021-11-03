@@ -18,91 +18,20 @@
     {{$keterangan}}<br>{{$periode}}
 @endsection
 
+@php
+    //rupiah formatter (no Rp or .00)
+    function rupiah($angka){
+    //    $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        $hasil_rupiah = number_format($angka,2,'.',',');
+        return $hasil_rupiah;
+    }
+    function percent($angka){
+        $hasil_rupiah = number_format($angka,2,'.',',');
+        return $hasil_rupiah;
+    }
+@endphp
+
 @section('content')
-{{--<html>--}}
-{{--<head>--}}
-{{--    <title>LAPORAN-PENJUALAN PER DEPARTEMEN</title>--}}
-{{--</head>--}}
-{{--<style>--}}
-{{--    /**--}}
-{{--        Set the margins of the page to 0, so the footer and the header--}}
-{{--        can be of the full height and width !--}}
-{{--     **/--}}
-{{--    @page {--}}
-{{--        margin: 25px 25px;--}}
-{{--    }--}}
-
-{{--    /** Define now the real margins of every page in the PDF **/--}}
-{{--    body {--}}
-{{--        margin-top: 75px;--}}
-{{--        margin-bottom: 10px;--}}
-{{--        font-size: 9px;--}}
-{{--        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;--}}
-{{--        font-weight: 400;--}}
-{{--        line-height: 1.8;--}}
-{{--        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/--}}
-{{--    }--}}
-
-{{--    /** Define the header rules **/--}}
-{{--    header {--}}
-{{--        position: fixed;--}}
-{{--        top: 0cm;--}}
-{{--        left: 0cm;--}}
-{{--        right: 0cm;--}}
-{{--        height: 2cm;--}}
-{{--    }--}}
-{{--    table{--}}
-{{--        border: 1px;--}}
-{{--    }--}}
-{{--    .page-break {--}}
-{{--        page-break-after: always;--}}
-{{--    }--}}
-{{--    .page-numbers:after { content: counter(page); }--}}
-{{--</style>--}}
-{{--<body>--}}
-{{--<!-- Define header and footer blocks before your content -->--}}
-
-{{--<header>--}}
-{{--    <div style="float:left; margin-top: 0px; line-height: 8px !important;">--}}
-{{--        <p>--}}
-{{--            {{ $data[0]->prs_namaperusahaan }}--}}
-{{--        </p>--}}
-{{--        <p>--}}
-{{--            {{ $data[0]->prs_namacabang }}--}}
-{{--        </p>--}}
-{{--    </div>--}}
-{{--    <div style="margin-top: -20px; line-height: 0.1px !important;">--}}
-{{--        <p>{{$data[0]->prs_namaperusahaan}}</p>--}}
-{{--        <p>{{$data[0]->prs_namacabang}}</p>--}}
-{{--    </div>--}}
-{{--    <div style="position: absolute; top: -13px; left: 580px">--}}
-{{--        <span>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TGL : {{$today}} <br> PRG  : IDGP69E</span>--}}
-{{--    </div>--}}
-{{--    <div style="float:right; margin-top: 0px;">--}}
-{{--        Tgl. Cetak : {{ e(date("d/m/Y")) }}<br>--}}
-{{--        Jam. Cetak : {{ $datetime->format('H:i:s') }}<br>--}}
-{{--        <i>User ID</i> : {{ $_SESSION['usid'] }}<br>--}}
-{{--    </div>--}}
-{{--    <div style="float: center; line-height: 0.1 !important;">--}}
-{{--        <h2 style="text-align: center">{{$data[0]->title}}</h2>--}}
-{{--        <h2 style="text-align: center">PER DEPARTEMEN</h2>--}}
-{{--        <h4 style="text-align: center">{{$keterangan}}</h4>--}}
-{{--        <h4 style="text-align: center">{{$periode}}</h4>--}}
-{{--    </div>--}}
-{{--</header>--}}
-
-<?php
-//rupiah formatter (no Rp or .00)
-function rupiah($angka){
-//    $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,2,'.',',');
-    return $hasil_rupiah;
-}
-function percent($angka){
-    $hasil_rupiah = number_format($angka,2,'.',',');
-    return $hasil_rupiah;
-}
-?>
 
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
         <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
@@ -341,8 +270,4 @@ function percent($angka){
         </tr>
         </tbody>
     </table>
-{{--    <p style="float: right">**Akhir dari Laporan**</p>--}}
-
-{{--</body>--}}
-{{--</html>--}}
 @endsection

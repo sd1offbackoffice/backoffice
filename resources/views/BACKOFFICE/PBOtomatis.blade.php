@@ -368,7 +368,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bopbotomatis/prosesdata',
+                url: '{{ url()->current() }}/prosesdata',
                 type: 'post',
                 data: {
                     tipePB  : tipePB,
@@ -396,7 +396,7 @@
                         let param4 = result.param[3];
                         let param5 = result.param[4];
 
-                        window.open('/BackOffice/public/bopbotomatis/cetakreport/'+param1 +'/'+param2 +'/'+param3 +'/'+param4 +'/'+param5 +'/')
+                        window.open('{{ url()->current() }}/cetakreport/'+param1 +'/'+param2 +'/'+param3 +'/'+param4 +'/'+param5 +'/')
                     } else {
                         swal('Failed', result.msg, 'error');
                     }

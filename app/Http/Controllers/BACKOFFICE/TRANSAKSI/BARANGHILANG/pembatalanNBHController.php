@@ -21,7 +21,7 @@ class pembatalanNBHController extends Controller
             ->limit('100')
             ->get();
 
-        return view('BACKOFFICE/TRANSAKSI/BARANGHILANG.pembatalanNBH', compact('result'));
+        return view('BACKOFFICE.TRANSAKSI.BARANGHILANG.pembatalanNBH', compact('result'));
     }
 
     public function lovNBH(Request $request){

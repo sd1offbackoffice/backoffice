@@ -273,7 +273,8 @@
                                 text: "Isi Data IP Server Grosir Terlebih Dahulu !!",
                                 icon: 'error',
                             }).then(() => {
-                                location.replace("/BackOffice/public");
+                                location.replace("{{ url()->to('/') }}");
+                                // location.replace("/BackOffice/public");
                             });
                         }
                     }

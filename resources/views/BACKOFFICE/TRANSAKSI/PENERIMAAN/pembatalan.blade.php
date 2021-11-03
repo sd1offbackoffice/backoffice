@@ -162,7 +162,7 @@
             ajaxSetup();
             tableModalHelp = $('#tableModalHelp').DataTable({
                 "ajax": {
-                    'url' : '/BackOffice/public/bo/transaksi/penerimaan/pembatalan/viewbtp',
+                    'url' : '{{ url()->current() }}/viewbtp',
                     'data' : {typeTrn:typeTrn},
                     'method' : 'post'
                 },
@@ -193,7 +193,7 @@
         function viewData(noDoc) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/pembatalan/viewdata',
+                url: '{{ url()->current() }}/viewdata',
                 type: 'post',
                 data: {
                     noDoc:noDoc,
@@ -260,7 +260,7 @@
         function batalBPB() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/pembatalan/batalbpb',
+                url: '{{ url()->current() }}/batalbpb',
                 type: 'post',
                 data: {
                     noDoc:$('#noBTB').val(),

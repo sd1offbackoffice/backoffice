@@ -200,7 +200,7 @@ class PBOtomatisController extends Controller
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(490, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE.PBOtomatis-laporan');
+        return $pdf->stream('PBOtomatis-laporan.pdf');
 
     }
 }

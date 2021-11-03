@@ -57,7 +57,7 @@
             ajaxSetup();
             $('#tableBOMaxpalet').dataTable({
                 "ajax": {
-                    url:'/BackOffice/public/bomaxpalet/loaddata',
+                    url:'{{ url()->current() }}/loaddata',
                     type:'Post',
                 },
 
@@ -103,7 +103,7 @@
 
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/bomaxpalet/savedata',
+                url:'{{ url()->current() }}/savedata',
                 type:'Post',
                 data: {
                     kodePlu:kodePlu
@@ -137,7 +137,7 @@
                 if (confirm) {
                     ajaxSetup();
                     $.ajax({
-                        url:'/BackOffice/public/bomaxpalet/deletedata',
+                        url:'{{ url()->current() }}/deletedata',
                         type:'Post',
                         data: {
                             kodePlu:kodePlu
@@ -194,7 +194,7 @@
 
                     ajaxSetup();
                     $.ajax({
-                        url:'/BackOffice/public/bomaxpalet/getmaxpalet',
+                        url:'{{ url()->current() }}/getmaxpalet',
                         type:'Post',
                         data: {
                             kodePlu:kodePlu

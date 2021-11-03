@@ -20,7 +20,7 @@ class csiController extends Controller
 
     public function index()
     {
-        return view('FRONTOFFICE\LAPORANKASIR.csi');
+        return view('FRONTOFFICE.LAPORANKASIR.csi');
     }
 
     public function getNmr(Request $request)
@@ -331,7 +331,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
 
         //PRINT
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        return view('FRONTOFFICE\LAPORANKASIR\csi-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+        return view('FRONTOFFICE.LAPORANKASIR.csi-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function printDocumentK(Request $request){
@@ -401,7 +401,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('FRONTOFFICE\LAPORANKASIR\csik-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+        return view('FRONTOFFICE.LAPORANKASIR.csik-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function printDocumentR(Request $request){
@@ -471,6 +471,6 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('FRONTOFFICE\LAPORANKASIR\csir-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+        return view('FRONTOFFICE.LAPORANKASIR.csir-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 }

@@ -182,7 +182,7 @@
         function trfDataAnakCab() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstcabang/trfdataanakcab',
+                url: '{{ url()->current() }}/trfdataanakcab',
                 type: 'post',
                 data: {},
                 beforeSend : () => {
@@ -223,7 +223,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstcabang/getdetailcabang',
+                url: '{{ url()->current() }}/getdetailcabang',
                 type: 'post',
                 data:{kodeigr:kodeigr},
                 beforeSend : function (){
@@ -299,7 +299,7 @@
                 if (editData) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/mstcabang/editdatacabang',
+                        url: '{{ url()->current() }}/editdatacabang',
                         type: 'post',
                         data:{
                             kodeigr     : $('#i_kodeCabang').val(),

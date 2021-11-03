@@ -32,14 +32,11 @@
 <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="loader" id="loader"></div>
-                        <div class="col-sm-12 text-center">
-                            <label for="">LOADING...</label>
-                        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+                        <span class="sr-only"></span>
                     </div>
                 </div>
             </div>
@@ -57,7 +54,8 @@
                         <p>* Untuk ukuran layar 1920px * 1080px dapat menggunakan browser di ukuran 80%</p>
                         <p>* Untuk ukuran layar 1360px * 768x dapat menggunakan browser di ukuran 67%</p>
                         <br>
-                        <p>* Pada bagian "Scale and Layout' di 'Display Settings' dapat memilih ukuran 100% atau 125%  </p>
+                        <p>* Pada bagian "Scale and Layout' di 'Display Settings' dapat memilih ukuran 100% atau
+                            125% </p>
                     </div>
                 </div>
             </div>
@@ -69,27 +67,27 @@
             <span class="login100-form-title p-b-32 text-center">
 						Login BACKOFFICE
             </span>
-{{--            @if($allcabang)--}}
-{{--                <span class="txt1 p-b-11">Cabang</span>--}}
-{{--                <div class="wrap-input100 validate-input ">--}}
-{{--                    <select class="input100" id="cabang" data-validate="user" style="text-transform: uppercase;" required>--}}
-{{--                        @foreach($cabang as $c)--}}
-{{--                            <option value="{{ $c->kode }}">{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                    <span class="focus-input100"></span>--}}
-{{--                </div>--}}
-{{--                <br>--}}
-{{--                <span class="txt1 p-b-11">Koneksi</span>--}}
-{{--                <div class="wrap-input100 validate-input ">--}}
-{{--                    <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>--}}
-{{--                        <option value="igr" selected>PRODUCTION</option>--}}
-{{--                        <option value="sim">SIMULASI</option>--}}
-{{--                    </select>--}}
-{{--                    <span class="focus-input100"></span>--}}
-{{--                </div>--}}
-{{--                <br>--}}
-{{--            @endif--}}
+            {{--            @if($allcabang)--}}
+            {{--                <span class="txt1 p-b-11">Cabang</span>--}}
+            {{--                <div class="wrap-input100 validate-input ">--}}
+            {{--                    <select class="input100" id="cabang" data-validate="user" style="text-transform: uppercase;" required>--}}
+            {{--                        @foreach($cabang as $c)--}}
+            {{--                            <option value="{{ $c->kode }}">{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>--}}
+            {{--                        @endforeach--}}
+            {{--                    </select>--}}
+            {{--                    <span class="focus-input100"></span>--}}
+            {{--                </div>--}}
+            {{--                <br>--}}
+            {{--                <span class="txt1 p-b-11">Koneksi</span>--}}
+            {{--                <div class="wrap-input100 validate-input ">--}}
+            {{--                    <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>--}}
+            {{--                        <option value="igr" selected>PRODUCTION</option>--}}
+            {{--                        <option value="sim">SIMULASI</option>--}}
+            {{--                    </select>--}}
+            {{--                    <span class="focus-input100"></span>--}}
+            {{--                </div>--}}
+            {{--                <br>--}}
+            {{--            @endif--}}
             <span class="txt1 p-b-11">
 						Username
 					</span>
@@ -114,7 +112,6 @@
                     Login
                 </button>
             </div>
-
 
 
             <div class="container justify-content-center pt-5">
@@ -151,7 +148,7 @@
 
         @isset($msg)
         console.log('{{$msg}}');
-        if('{{ $msg }}' != ''){
+        if ('{{ $msg }}' != '') {
             swal({
                 title: '{{ $msg }}',
                 icon: 'warning'
@@ -190,55 +187,54 @@
             $('#lbl-validate-password').text('');
             $('#lbl-validate-username').text('Username Belum Diisi!');
             $('#username').select();
-        }
-        else if (password == '') {
+        } else if (password == '') {
             $('#lbl-validate-username').text('');
             $('#lbl-validate-password').text('Password Belum Diisi!');
             $('#password').select();
-        }
-        else {
+        } else {
             $('#lbl-validate-password').text('');
             $('#lbl-validate-username').text('');
             ajaxSetup();
 
             $.ajax({
-                url: '/BackOffice/public/api/login',
+                url: '{{ url()->current() }}',
                 type: 'POST',
-                data: {username: username, password: password},
+                data: {"_token": "{{ csrf_token() }}", username: username, password: password},
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     console.log(response);
                     if (response['message']) {
                         swal({
-                            title:  response['status'],
+                            title: response['status'],
                             text: response['message'],
-                            icon:  response['status']
+                            icon: response['status']
                         }).then((value) => {
+                            $('#modal-loader').modal('hide');
                             if (value) {
                                 clear();
                             }
                         });
-                    }
-                    else if (response['userstatus'] == 'ADM') {
+                    } else if (response['userstatus'] == 'ADM') {
                         swal({
                             text: 'Login sebagai Admin sukses!',
                             icon: 'info'
                         }).then((value) => {
-                            if(value) {
+                            $('#modal-loader').modal('hide');
+                            if (value) {
                                 clear();
                                 window.location.replace("{{url("/")}}");
                             }
                         });
-                    }
-                    else if (response['userstatus'] != 'ADM') {
+                    } else if (response['userstatus'] != 'ADM') {
                         swal({
                             text: 'Login Sukses!',
                             icon: 'info'
                         }).then((value) => {
-                            if(value) {
+                            $('#modal-loader').modal('hide');
+                            if (value) {
                                 clear();
                                 window.location.replace("{{url("/")}}");
                             }
@@ -251,25 +247,31 @@
     });
 
     $('#btn-insert').on('click', function () {
-            $.ajax({
-                url: '/BackOffice/public/api/insertip',
-                type: 'POST',
-                data: {"_token": "{{ csrf_token() }}"},
-                beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
-                success: function (response) {
+        $.ajax({
+            url: '{{ url()->current() }}/insertip',
+            type: 'POST',
+            data: {"_token": "{{ csrf_token() }}"},
+            beforeSend: function () {
+                $('#modal-loader').modal('show');
+            },
+            success: function (response) {
+                $('#modal-loader').modal('hide');
+                swal({
+                    text: response['message'],
+                    icon: response['status'],
+                }).then((value) => {
+                    console.log(value)
                     $('#modal-loader').modal('hide');
-                    swal({
-                            text: response['message'],
-                            icon: response['status'],
-                        });
-                },
-                error: function (response) {
+                    if (value) {
                         $('#modal-loader').modal('hide');
-                        errorHandlingforAjax(response);
                     }
-            });
+                });
+            },
+            error: function (response) {
+                $('#modal-loader').modal('hide');
+                errorHandlingforAjax(response);
+            }
+        });
 
     });
 

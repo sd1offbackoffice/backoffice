@@ -20,7 +20,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
 
     public function index()
     {
-        return view('OMI\TRANSFERORDERDARIOMIIDM\kredit-limit-dan-monitoring-pb-omi');
+        return view('OMI.TRANSFERORDERDARIOMIIDM.kredit-limit-dan-monitoring-pb-omi');
     }
 
     public function getLovKodeOMI()

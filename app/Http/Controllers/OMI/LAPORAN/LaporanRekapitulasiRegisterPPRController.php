@@ -21,7 +21,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.LAPORANREKAPITULASIREGISTERPPR.laporan-rekapitulasi-register-ppr');
+        return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.laporan-rekapitulasi-register-ppr');
     }
     public function lovNodoc(Request $request)
     {

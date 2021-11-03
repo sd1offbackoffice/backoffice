@@ -35,7 +35,7 @@ class PerCusController extends Controller
             ->whereRaw("NVL(SJH_FLAGSELESAI,'N') = 'N'")
             ->where('sjh_kodeigr','=',$kodeigr)
             ->get();
-        return view('BTAS/MONITORING.PerCus',['datas'=>$datas]);
+        return view('BTAS.MONITORING.PerCus',['datas'=>$datas]);
     }
     public function GetData(){
         $kodeigr = $_SESSION['kdigr'];
@@ -227,17 +227,18 @@ ORDER BY cus_namamember, sjh_tglstruk, sjh_nostruk, trjd_seqno");
             $sisa[$i] = ($datas[$i]->trjd_quantity)-($qty->qty);
         }
         //PRINT
-        $path = 'BTAS\MONITORING.PerCus-pdf';
+        $path = 'BTAS.MONITORING.PerCus-pdf';
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview($path,
-            ['kodeigr' => $kodeigr, 'datas' => $datas, 'p_custinfo' => $p_custinfo, 'sisa' => $sisa]);
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'p_custinfo' => $p_custinfo, 'sisa' => $sisa, 'perusahaan' => $perusahaan]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream("$path");
+        return $pdf->stream("PerCus.pdf");
     }
 }

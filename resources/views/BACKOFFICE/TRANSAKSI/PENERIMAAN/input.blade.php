@@ -896,7 +896,7 @@
             tableModalHelp.clear().destroy();
 
             tableModalHelp = $('#tableModalHelp').DataTable({
-                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showbtb/'+typeTrn,
+                "ajax": '{{ url()->current() }}/showbtb/'+typeTrn,
                 "columns": [
                     {data: 'trbo_nodoc', name: 'No Dokumen'},
                     {data: 'trbo_nopo', name: 'No Po'},
@@ -930,7 +930,7 @@
         function chooseBTB(noDoc, noPo) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/choosebtb',
+                url: '{{ url()->current() }}/choosebtb',
                 type: 'post',
                 data: {
                     noDoc:noDoc,
@@ -1030,7 +1030,7 @@
                if (confirm){
                    ajaxSetup();
                    $.ajax({
-                       url: '/BackOffice/public/bo/transaksi/penerimaan/input/getnewnobtb',
+                       url: '{{ url()->current() }}/getnewnobtb',
                        type: 'post',
                        data: {
                            typeTrn: typeTrn
@@ -1083,7 +1083,7 @@
             tableModalHelp.clear().destroy();
 
             tableModalHelp = $('#tableModalHelp').DataTable({
-                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showpo/',
+                "ajax": '{{ url()->current() }}/showpo/',
                 "columns": [
                     {data: 'tpoh_nopo', name: 'No PO'},
                     {data: 'tpoh_tglpo', name: 'Tgl PO'},
@@ -1114,7 +1114,7 @@
         function choosePO(noPo) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/choosepo',
+                url: '{{ url()->current() }}/choosepo',
                 type: 'post',
                 data: {
                     typeTrn : typeTrn,
@@ -1178,7 +1178,7 @@
             tableModalHelp.clear().destroy();
 
             tableModalHelp = $('#tableModalHelp').DataTable({
-                "ajax": '/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
+                "ajax": '{{ url()->current() }}/showsupplier',
                 "columns": [
                     {data: 'sup_namasupplier', name: 'Nama Supplier'},
                     {data: 'sup_kodesupplier', name: 'Kode Supplier'},
@@ -1263,7 +1263,7 @@
             ajaxSetup();
 
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/showplu',
+                url: '{{ url()->current() }}/showplu',
                 type: 'post',
                 data: {
                     typeTrn : typeTrn,
@@ -1319,7 +1319,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/chooseplu',
+                url: '{{ url()->current() }}/chooseplu',
                 type: 'post',
                 data: {
                     typeTrn : typeTrn,
@@ -1405,7 +1405,7 @@
 
            ajaxSetup();
            $.ajax({
-               url: '/BackOffice/public/bo/transaksi/penerimaan/input/changehargabeli',
+               url: '{{ url()->current() }}/changehargabeli',
                type: 'post',
                data: {hargaBeli : unconvertToRupiah(hrgBeli), qty:qty, qtyk:qtyk, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
                beforeSend : () =>{
@@ -1447,7 +1447,7 @@
             } else {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/penerimaan/input/changeqty',
+                    url: '{{ url()->current() }}/changeqty',
                     type: 'post',
                     data: {hargaBeli : hrgbeli, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), qty:qty, qtyk : qtyk, tempDataPLU : tempDataPLU},
                     beforeSend : () =>{
@@ -1490,7 +1490,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/changebonus1',
+                url: '{{ url()->current() }}/changebonus1',
                 type: 'post',
                 data: {bonus1 : bonus1, prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
                 beforeSend : () =>{
@@ -1519,7 +1519,7 @@
         function changeRphDisc(next) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/changerphdisc',
+                url: '{{ url()->current() }}/changerphdisc',
                 type: 'post',
                 data: {prdcd : i_plu.val(), supplier: kodeSupp.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU},
                 beforeSend : () =>{
@@ -1561,7 +1561,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/rekamdata',
+                url: '{{ url()->current() }}/rekamdata',
                 type: 'post',
                 data: {prdcd : i_plu.val(), noBTB: noBTB.val(), noPo : noPO.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
                 beforeSend : () =>{
@@ -1727,7 +1727,7 @@
         function transferPO(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/transferpo',
+                url: '{{ url()->current() }}/transferpo',
                 type: 'post',
                 data: {noPo : noPO.val(), supplier:kodeSupp.val(), tempDataPLU : tempDataPLU, tempDataSave:tempDataSave},
                 beforeSend : () =>{
@@ -1761,7 +1761,7 @@
         function saveData(){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/penerimaan/input/savedata',
+                url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {noBTB:noBTB.val(), tglBTB:tglBTB.datepicker({ dateFormat: 'mm-dd-yy' }).val(), noPO : noPO.val(), tglPO:tglPO.val(), supplier:kodeSupp.val(), noFaktur:noFaktur.val(), tglFaktur:tglFaktur.val(), tempDataSave:tempDataSave},
                 beforeSend : () =>{

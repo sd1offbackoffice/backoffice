@@ -335,7 +335,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getnewnmrtrn',
+                                url: '{{ url()->current() }}/getnewnmrtrn',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -378,7 +378,7 @@
             if (type === 'A'){
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/showall',
+                    url: '{{ url()->current() }}/showall',
                     type: 'post',
                     data: {},
                     beforeSend: function () {
@@ -428,7 +428,7 @@
             let tempNilai = 0;
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/choosetrn',
+                url: '{{ url()->current() }}/choosetrn',
                 type: 'post',
                 data: {
                     kode:kode
@@ -535,7 +535,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/chooseplu',
+                url: '{{ url()->current() }}/chooseplu',
                 type: 'post',
                 data: {
                     kode: kode,
@@ -714,7 +714,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/savedata',
+                url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -729,7 +729,7 @@
                     console.log(result.kode)
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/printdoc/'+result.msg+'/');
+                            window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
                             clearField();
                         } else {
                             swal('Dokumen Berhasil disimpan','','success')
@@ -762,7 +762,7 @@
                 if (confirm){
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/deletedoc',
+                        url: '{{ url()->current() }}/deletedoc',
                         type: 'post',
                         data: {docNum:docNum},
                         beforeSend: function () {
@@ -796,7 +796,7 @@
             if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/printdoc/'+doc+'/');
+                window.open('{{ url()->current() }}/printdoc/'+doc+'/');
                 clearField();
             }
         }

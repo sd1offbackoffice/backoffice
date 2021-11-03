@@ -737,7 +737,7 @@
             $('#modal_pluOmi').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/barang/showBarang',
+                url: '{{ url()->current() }}/showBarang',
                 type: 'post',
                 data: {kodeplu: kodeplu},
                 beforeSend: function () {

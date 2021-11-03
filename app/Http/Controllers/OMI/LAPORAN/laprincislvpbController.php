@@ -20,7 +20,7 @@ class laprincislvpbController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.laprincislvpb');
+        return view('OMI.LAPORAN.laprincislvpb');
     }
 
     public function tagModal(Request $request){
@@ -201,7 +201,7 @@ ORDER BY pbo_kodeomi, pbo_pluigr");
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('OMI\LAPORAN\laprincislvpb-pdf',
+        return view('OMI.LAPORAN.laprincislvpb-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time, 'prsq' => $prsq, 'prsr' => $prsr]);
     }
 }

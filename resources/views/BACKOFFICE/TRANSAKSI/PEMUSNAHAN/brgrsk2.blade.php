@@ -141,7 +141,7 @@
         function  getNmrTRN(val) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getnmrtrn',
+                url: '{{ url()->current() }}/getnmrtrn',
                 type: 'post',
                 data: {
                     val:val
@@ -167,7 +167,7 @@
         function getPlu() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/brgrusak/getplu',
+                url: '{{ url()->current() }}/getplu',
                 type: 'post',
                 data: {},
                 success: function (result) {

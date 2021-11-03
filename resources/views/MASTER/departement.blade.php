@@ -98,7 +98,7 @@
             for(let i=0;i<counter;i++){
                 kodeDivisi = $('#row_divisi_'+i).find(':nth-child(1)').text()
                 $.when($.ajax({
-                    url: '/BackOffice/public/master/departement/divisi_select',
+                    url: '{{ url()->current() }}/divisi_select',
                     type:'GET',
                     data:{"_token":"{{ csrf_token() }}", value: kodeDivisi},
                     success: function(response){

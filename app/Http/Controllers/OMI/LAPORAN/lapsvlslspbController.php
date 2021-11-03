@@ -20,7 +20,7 @@ class lapsvlslspbController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.lapsvlslspb');
+        return view('OMI.LAPORAN.lapsvlslspb');
     }
 
     public function pbModal(Request $request){
@@ -194,10 +194,10 @@ ORDER BY kodemember, pbo_kodeomi");
         $time = date('H:i:s');
 
         if($pilihan == 'D'){
-            return view('OMI\LAPORAN\lapsvlslspb_detail-pdf',
+            return view('OMI.LAPORAN.lapsvlslspb_detail-pdf',
                 ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val]);
         }else{
-            $pdf = PDF::loadview('OMI\LAPORAN\lapsvlslspb-pdf',
+            $pdf = PDF::loadview('OMI.LAPORAN.lapsvlslspb-pdf',
                 ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val]);
             $pdf->setPaper('A4', 'potrait');
             $pdf->output();
@@ -206,7 +206,7 @@ ORDER BY kodemember, pbo_kodeomi");
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(524, 12, "HAL {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-            return $pdf->stream('OMI\LAPORAN\lapsvlslspb-pdf');
+            return $pdf->stream('lapsvlslspb.pdf');
         }
     }
 }

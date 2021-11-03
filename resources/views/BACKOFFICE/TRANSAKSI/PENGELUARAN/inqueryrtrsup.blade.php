@@ -279,7 +279,7 @@
                 swal('Info', 'Pilih Kode Supplier terlebih dahulu!', 'info');
             }
             else {
-                window.open('/BackOffice/public/bo/transaksi/pengeluaran/inqueryrtrsup/cetak?kdsup='+kdsup);
+                window.open('{{ url()->current() }}/cetak?kdsup='+kdsup);
             }
         });
     </script>

@@ -14,68 +14,20 @@
     {{$keterangan}}
 @endsection
 
+@php
+    //rupiah formatter (no Rp or .00)
+    function rupiah($angka){
+    //    $hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        $hasil_rupiah = number_format($angka,2,'.',',');
+        return $hasil_rupiah;
+    }
+    function percent($angka){
+        $hasil_rupiah = number_format($angka,2,'.',',');
+        return $hasil_rupiah;
+    }
+@endphp
+
 @section('content')
-{{--<html>--}}
-{{--<head>--}}
-{{--    <title>LAPORAN-PENJUALAN PER DEPARTEMEN</title>--}}
-{{--</head>--}}
-{{--<style>--}}
-{{--    /**--}}
-{{--        Set the margins of the page to 0, so the footer and the header--}}
-{{--        can be of the full height and width !--}}
-{{--     **/--}}
-{{--    @page {--}}
-{{--        margin: 25px 25px;--}}
-{{--    }--}}
-
-{{--    /** Define now the real margins of every page in the PDF **/--}}
-{{--    body {--}}
-{{--        margin-top: 10px;--}}
-{{--        margin-bottom: 0px;--}}
-{{--        font-size: 9px;--}}
-{{--        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;--}}
-{{--        font-weight: 400;--}}
-{{--        line-height: 1.8;--}}
-{{--        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/--}}
-{{--    }--}}
-
-{{--    /** Define the header rules **/--}}
-{{--    header {--}}
-{{--        /*position: fixed;*/--}}
-{{--        top: 0cm;--}}
-{{--        left: 0cm;--}}
-{{--        right: 0cm;--}}
-{{--        height: 2cm;--}}
-{{--    }--}}
-{{--    table{--}}
-{{--        border: 1px;--}}
-{{--    }--}}
-{{--    .page-break {--}}
-{{--        page-break-after: always;--}}
-{{--    }--}}
-{{--    .page-numbers:after { content: counter(page); }--}}
-{{--</style>--}}
-{{--<script src={{asset('/js/jquery.js')}}></script>--}}
-{{--<script src={{asset('/js/sweetalert.js')}}></script>--}}
-{{--<script>--}}
-{{--    $(document).ready(function() {--}}
-{{--        swal('Information', 'Tekan Ctrl+P untuk print!', 'info');--}}
-{{--    });--}}
-{{--</script>--}}
-{{--<body>--}}
-<!-- Define header and footer blocks before your content -->
-<?php
-//rupiah formatter (no Rp or .00)
-function rupiah($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,2,'.',',');
-    return $hasil_rupiah;
-}
-function percent($angka){
-    $hasil_rupiah = number_format($angka,2,'.',',');
-    return $hasil_rupiah;
-}
-?>
 <?php
     if(sizeof($data)!=0){
         $counterDiv = 0;
@@ -106,21 +58,6 @@ function percent($angka){
     }
 
 ?>
-
-{{--            <header>--}}
-{{--                <div style="font-size: 12px ;line-height: 0.1px !important;">--}}
-{{--                    <p>{{$data[0]->prs_namaperusahaan}}</p>--}}
-{{--                    <p>{{$data[0]->prs_namacabang}}</p>--}}
-{{--                </div>--}}
-{{--                <div style="float: right; margin-top: -38px">--}}
-{{--                    <span>Tgl. Cetak : {{$today}}<br>Jam. Cetak : {{$time}}<br><i>User ID</i> : {{ $_SESSION['usid'] }}</span>--}}
-{{--                </div>--}}
-{{--                <div style="margin-top: 35px; line-height: 0.1 !important;">--}}
-{{--                    <h2 style="text-align: center">LAPORAN PENJUALAN</h2>--}}
-{{--                    <h2 style="text-align: center">PER DEPARTEMEN</h2>--}}
-{{--                    <h4 style="text-align: center">{{$keterangan}}</h4>--}}
-{{--                </div>--}}
-{{--            </header>--}}
         @for($i=0;$i<sizeof($data);$i++)
             @if($headeromikod != $data[$i]->omikod)
                 <?php
@@ -255,7 +192,6 @@ function percent($angka){
                 ?>
                 </tbody>
                 </table><br>
-{{--            <div class="page-break">  </div>--}}
             @endif
         @endif
     @endfor
@@ -344,9 +280,5 @@ function percent($angka){
     </table>
 
     <hr>
-{{--    <p style="float: right">**Akhir dari Laporan**</p>--}}
-
-{{--</body>--}}
-{{--</html>--}}
 @endsection
 

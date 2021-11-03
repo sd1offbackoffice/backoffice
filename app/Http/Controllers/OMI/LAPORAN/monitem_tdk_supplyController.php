@@ -21,7 +21,7 @@ class monitem_tdk_supplyController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.monitem_tdk_supply');
+        return view('OMI.LAPORAN.monitem_tdk_supply');
     }
 
     public function monModal(){
@@ -142,7 +142,7 @@ ORDER BY STOCK ");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('OMI\LAPORAN\monitem_tdk_supply-pdf',
+        $pdf = PDF::loadview('OMI.LAPORAN.monitem_tdk_supply-pdf',
             ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -151,6 +151,6 @@ ORDER BY STOCK ");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(524, 24, "HAL {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('OMI\LAPORAN\monitem_tdk_supply_pdf-pdf');
+        return $pdf->stream('monitem_tdk_supply_pdf.pdf');
     }
 }

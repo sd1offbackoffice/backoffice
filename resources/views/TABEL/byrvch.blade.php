@@ -4,13 +4,33 @@
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-5">
+            <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Tabel Super Promo</legend>
+                    <legend class="w-auto ml-5 text-left">Tabel Pembayaran Voucher ( Supplier )</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
-                        <div class="row" style="padding-bottom: 20px">
-                            <label class="col-sm-4 col-form-label text-right">Tanggal</label>
+                        <div class="row">
+                            <label class="col-sm-3 col-form-label text-right">Supplier</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="inputSupp">
+                                <button id="btnSupp" type="button" class="btn btn-lov p-0">
+                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                </button>
+                            </div>
+                            <input type="text" class="col-sm-4 form-control" id="deskSupp" disabled>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-3 col-form-label text-right">Singkatan Supplier</label>
+                            <div class="col-sm-2 buttonInside">
+                                <input type="text" class="form-control" id="inputSingkatan">
+                                <button id="btnSingkatan" type="button" class="btn btn-lov p-0">
+                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                </button>
+                            </div>
+                            <label class="col-sm-4 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-3 col-form-label text-right">Tanggal</label>
                             <div class="col-sm-5">
                                 <input class="text-center form-control" type="text" id="daterangepicker">
                             </div>
@@ -20,7 +40,6 @@
             </div>
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Detail Tabel Super Promo</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="p-0 tableFixedHeader" style="height: 400px;">
                             <table class="table table-sm table-striped table-bordered"
@@ -29,10 +48,9 @@
                                 <tr class="table-sm text-center">
                                     <th width="3%" class="text-center small">&nbsp;&nbsp;</th>
                                     <th width="17%" class="text-center small">PLU</th>
-                                    <th width="20%" class="text-center small">Harga Jual</th>
-                                    <th width="20%" class="text-center small">Target Qty</th>
-                                    <th width="20%" class="text-center small">Target Sales</th>
-                                    <th width="20%" class="text-center small">Target Gross Margin</th>
+                                    <th width="50%" class="text-center small">Deskripsi</th>
+                                    <th width="20%" class="text-center small">Max Voucher</th>
+                                    <th width="10%" class="text-center small">Pilihan</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyMain" style="height: 400px;">
@@ -41,56 +59,40 @@
                                         <td class="text-center">
                                             <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header" class="icon fas fa-times">X</button>
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control plu" value="" onchange="CheckPlu(this)"
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control hrgjual text-right" value="" onkeypress="return isNumberKey(event)"
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control qty text-right" value=""
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control sales text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td onclick="ChangeDesk(this)">
-                                            <input class="form-control grossmargin text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td hidden>
-                                            <input class="form-control hiddenDeskripsi text-right" value=""
-                                                   type="text" hidden>
-                                        </td>
-                                        <td hidden>
-                                            <input class="form-control hiddenUnit text-right" value=""
-                                                   type="text" hidden>
+                                                   type="checkbox">
                                         </td>
                                     </tr>
                                 @endfor
                                 </tbody>
                             </table>
                         </div>
+                        <br>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Deskripsi</label>
-                            <div class="col-sm-5">
-                                <input class="text-left form-control" type="text" id="deskripsiTable" readonly>
+                            <div class="col-sm-4">
+                                <input id="checkAll" value="" style=""
+                                       type="checkbox">
+                                <label class="col-form-label text-left">SELECT ALL</label>
                             </div>
-                            <div class="col-sm-2">
-                                <input class="text-left form-control" type="text" id="unitMini" readonly>
-                            </div>
-                            <div class="col-sm-3 d-flex justify-content-end">
-                                <button class="btn btn-primary col-sm-10 add-btn" type="button" onclick="addRow()">ADD ROW</button>&nbsp;
+                            <div class="col-sm-8 d-flex justify-content-end">
+                                <button class="btn btn-primary col-sm-2 add-btn" type="button" onclick="addRow()">ADD ROW</button>&nbsp;
                             </div>
                         </div>
                     </div>
                 </fieldset>
-                <div class="row">
-                    <label class="col-sm-2 col-form-label">Ctrl + S --> Simpan Data</label>
-                </div>
             </div>
         </div>
     </div>

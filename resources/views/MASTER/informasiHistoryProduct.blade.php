@@ -1298,7 +1298,7 @@
             $('.page2').show();
             ajaxSetup();
             $.ajax({
-                    url: '/BackOffice/public/master/informasihistoryproduct/lov_select',
+                    url: '{{ url()->current() }}/lov_select',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", value: value},
                     beforeSend: function () {
@@ -1944,7 +1944,7 @@
                 if (event.which == 34) { // Page Down
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/master/informasihistoryproduct/getNextPLU',
+                        url: '{{ url()->current() }}/getNextPLU',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {
@@ -1958,7 +1958,7 @@
                 } else if (event.which == 33) { // Page Up
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/master/informasihistoryproduct/getPrevPLU',
+                        url: '{{ url()->current() }}/getPrevPLU',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {

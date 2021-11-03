@@ -58,7 +58,7 @@
         function viewSubOutlet(outlet){
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/mstsuboutlet/getsuboutlet',
+                url: '{{ url()->current() }}/getsuboutlet',
                 type: 'post',
                 data:{outlet:outlet},
                 beforeSend : function (){

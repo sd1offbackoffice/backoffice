@@ -64,12 +64,12 @@
                             <div class="col-sm-2">
                                 <button class="btn btn-primary" id="btn-search-user">SEARCH</button>
                             </div>
-                            <div class="col-sm-6">
-                                <button class="btn btn-primary float-right" id="btn-user-access" data-toggle="modal"
-                                        data-target="#m_useraccess" disabled
-                                        tooltip="Klik Salah satu user untuk mengaktifkan tombol!">USER ACCESS
-                                </button>
-                            </div>
+{{--                            <div class="col-sm-6">--}}
+{{--                                <button class="btn btn-primary float-right" id="btn-user-access" data-toggle="modal"--}}
+{{--                                        data-target="#m_useraccess" disabled--}}
+{{--                                        tooltip="Klik Salah satu user untuk mengaktifkan tombol!">USER ACCESS--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
                         </div>
                     </div>
                     <div class="card-body shadow-lg cardForm" id="tab-master-computer">
@@ -396,7 +396,7 @@
         function searchUser(value) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/administration/user/searchUser',
+                url: '{{ url()->current() }}/searchUser',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
@@ -507,7 +507,7 @@
             if (valid_password == true && status == 1) {
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/administration/user/saveUser',
+                    url: '{{ url()->current() }}/saveUser',
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -604,7 +604,7 @@
             aksesgroupselected = $("#acc-group").val();
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/administration/user/userAccess',
+                url: '{{ url()->current() }}/userAccess',
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -765,7 +765,7 @@
                 if (createData) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/administration/user/updateUser',
+                        url: '{{ url()->current() }}/updateUser',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -871,7 +871,7 @@
                 if (createData) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/administration/user/saveAccess',
+                        url: '{{ url()->current() }}/saveAccess',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -962,7 +962,7 @@
         function searchIp(value) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/administration/user/searchIp',
+                url: '{{ url()->current() }}/searchIp',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
@@ -1039,7 +1039,7 @@
                 if (valid) {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/administration/user/saveIp',
+                        url: '{{ url()->current() }}/saveIp',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -1125,7 +1125,7 @@
                     if (createData) {
                         ajaxSetup();
                         $.ajax({
-                            url: '/BackOffice/public/administration/user/updateIp',
+                            url: '{{ url()->current() }}/updateIp',
                             type: 'POST',
                             data: {
                                 "_token": "{{ csrf_token() }}",

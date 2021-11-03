@@ -65,7 +65,7 @@
         function getHariLibur(){
             tablehariLibur.destroy();
             tablehariLibur =  $('#tableHariLibur').DataTable({
-                "ajax": '{{ url('mstharilibur/getharilibur') }}',
+                "ajax": '{{url()->current()}}/getharilibur',
                 "columns": [
                     {data: 'lib_tgllibur'},
                     {data: 'lib_keteranganlibur'},
@@ -147,7 +147,7 @@
         }
 
         function saveHariLibur() {
-            actionHariLibur( '/BackOffice/public/mstharilibur/insert')
+            actionHariLibur( '{{ url()->current() }}/insert')
         }
 
         function deleteHariLibur() {
@@ -158,7 +158,7 @@
                 dangerMode: true
             }).then((response) =>{
                 if (response){
-                    actionHariLibur( '/BackOffice/public/mstharilibur/delete')
+                    actionHariLibur( '{{ url()->current() }}/delete')
                 }
                 });
         }

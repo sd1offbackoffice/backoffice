@@ -464,7 +464,7 @@ class loginController extends Controller
                     $status = 'error';
                     return compact(['message', 'status']);
                 } else {
-                    if ($user->userpassword != strtoupper($request->password)) {
+                    if ($user->userpassword != $request->password) {
                         $message = 'User / Password Salah!';
                         $status = 'error';
                         return compact(['message', 'status']);

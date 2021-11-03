@@ -11,7 +11,7 @@ use Yajra\DataTables\DataTables;
 class pembatalanBAPemusnahanController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.pembatalanBAPemusnahan');
+        return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.pembatalanBAPemusnahan');
     }
 
     public function getDocument(Request $request){

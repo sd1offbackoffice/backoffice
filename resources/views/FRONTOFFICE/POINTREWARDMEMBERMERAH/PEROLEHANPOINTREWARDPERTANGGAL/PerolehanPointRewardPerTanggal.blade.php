@@ -36,7 +36,6 @@
                 "dateFormat": "dd/mm/yy",
             });
             $('.tanggal').datepicker('setDate', new Date());
-            getModalData('');
         });
 
         function cekTanggal(event) {

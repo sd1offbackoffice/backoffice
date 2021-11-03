@@ -380,7 +380,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnewnmrrsn',
+                                url: '{{ url()->current() }}/getnewnmrrsn',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -434,7 +434,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrrsn',
+                url: '{{ url()->current() }}/getnmrrsn',
                 type: 'post',
                 data: {
                     val:val
@@ -464,7 +464,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/getnmrsrt',
+                url: '{{ url()->current() }}/getnmrsrt',
                 type: 'post',
                 data: {
                     val:val
@@ -489,7 +489,7 @@
         function chooseRsn(kode) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/choosersn',
+                url: '{{ url()->current() }}/choosersn',
                 type: 'post',
                 data: {
                     kode:kode
@@ -535,7 +535,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/choosesrt',
+                url: '{{ url()->current() }}/choosesrt',
                 type: 'post',
                 data: {
                     kode:kode
@@ -709,11 +709,11 @@
                 ajaxSetup();
                 $.ajax({
                     type: "post",
-                    url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                    url: "{{ url()->current() }}/checkrak",
                     data: {noDoc:doc},
                     success: function (result) {
                         if(result.rak == '1'){
-                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+doc+'/','_blank');
+                            window.open('{{ url()->current() }}/printdocrak/'+doc+'/','_blank');
                         }
                     }
                 });
@@ -830,7 +830,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/savedata',
+                url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -850,14 +850,14 @@
                 success: function (result) {
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/','_blank');
+                            window.open('{{ url()->current() }}/printdoc/'+result.msg+'/','_blank');
                             $.ajax({
                                 type: "post",
-                                url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                                url: "{{ url()->current() }}/checkrak",
                                 data: {noDoc:noDoc},
                                 success: function (result) {
                                     if(result.rak == '1'){
-                                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+result.msg+'/','_blank');
+                                        window.open('{{ url()->current() }}/printdocrak/'+result.msg+'/','_blank');
                                     }
                                 }
                             });
@@ -869,14 +869,14 @@
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
                         swal('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!');
-                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdoc/'+result.msg+'/','_blank');
+                        window.open('{{ url()->current() }}/printdoc/'+result.msg+'/','_blank');
                         $.ajax({
                             type: "post",
-                            url: "/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/checkrak",
+                            url: "{{ url()->current() }}/checkrak",
                             data: {noDoc:noDoc},
                             success: function (result) {
                                 if(result.rak == '1'){
-                                    window.open('/BackOffice/public/bo/transaksi/perubahanstatus/rubahStatus/printdocrak/'+result.msg+'/','_blank');
+                                    window.open('{{ url()->current() }}/printdocrak/'+result.msg+'/','_blank');
                                 }
                             }
                         });

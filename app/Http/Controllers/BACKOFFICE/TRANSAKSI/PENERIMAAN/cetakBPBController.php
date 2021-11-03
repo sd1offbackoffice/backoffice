@@ -11,7 +11,7 @@ use Yajra\DataTables\DataTables;
 
 class cetakBPBController extends Controller {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.cetakBPB');
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.cetakBPB');
     }
 
     public function showPO(){
@@ -128,13 +128,13 @@ class cetakBPBController extends Controller {
         if ($report == 'IGR_BO_BLMPRSBPB'){
             $datas = $this->IGR_BO_BLMPRSBPB($data);
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_blmprsbpb', ['datas' => $datas])->setPaper('a4', 'landscape');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_blmprsbpb', ['datas' => $datas])->setPaper('a4', 'landscape');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(764, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_blmprsbpb');
+            return $pdf->stream('igr_bo_blmprsbpb.pdf');
         }   else if ($report == 'IGR_BO_MONITORBPB'){
             $datas = $this->IGR_BO_MONITORBPB($data);
 
@@ -155,13 +155,13 @@ class cetakBPBController extends Controller {
                 }
             }
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_monitorbpb', ['datas' => $datas])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_monitorbpb', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_monitorbpb');
+            return $pdf->stream('igr_bo_monitorbpb.pdf');
         }  else if ($report == 'CETAK_LIFTDRAF_PO1'){
             $datas = $this->IGR_BO_LISTDRAFT_PO1($data);
 
@@ -174,13 +174,13 @@ class cetakBPBController extends Controller {
                 $value->satjual = $satjual[0]->satjual;
             }
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po1', ['datas' => $datas])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po1', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po1');
+            return $pdf->stream('igr_bo_listdraft_po1.pdf');
         } else if ($report == 'CETAK_LIFTDRAF_PO2'){
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
@@ -193,13 +193,13 @@ class cetakBPBController extends Controller {
                 $value->satjual = $satjual[0]->satjual;
             }
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po2', ['datas' => $datas])->setPaper('a5', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po2', ['datas' => $datas])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po2');
+            return $pdf->stream('igr_bo_listdraft_po2.pdf');
         } else if ($report == 'CETAK_LIFTDRAF_PO3'){
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
@@ -212,13 +212,13 @@ class cetakBPBController extends Controller {
                 $value->satjual = $satjual[0]->satjual;
             }
 
-            $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po3', ['datas' => $datas])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po3', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('BACKOFFICE/TRANSAKSI/PENERIMAAN.igr_bo_listdraft_po3');
+            return $pdf->stream('igr_bo_listdraft_po3.pdf');
         }
 
         return 0;

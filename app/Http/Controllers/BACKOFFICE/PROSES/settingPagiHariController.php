@@ -12,7 +12,7 @@ class settingPagiHariController extends Controller
 {
     public function index(){
 
-        return view('BACKOFFICE/PROSES/settingPagiHari');
+        return view('BACKOFFICE.PROSES.settingPagiHari');
     }
 
     public function tanggal(){
@@ -130,14 +130,14 @@ class settingPagiHariController extends Controller
 
 //            dd($data);
 
-        $pdf = PDF::loadview('BACKOFFICE/PROSES/settingpagihari-cetak-hrgjual', compact(['perusahaan', 'data', 'nActMargin']));
+        $pdf = PDF::loadview('BACKOFFICE.PROSES.settingpagihari-cetak-hrgjual', compact(['perusahaan', 'data', 'nActMargin']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/PROSES/settingpagihari-cetak-hrgjual');
+        return $pdf->stream('settingpagihari-cetak-hrgjual.pdf');
 
     }
 
@@ -160,7 +160,7 @@ class settingPagiHariController extends Controller
 		       prd_deskripsipendek,
 		       replace(prd_deskripsipanjang,'''','`') AS PRD_DESKRIPSIPANJANG,
 		       prd_frac,
-		       prd_kodetag,		       
+		       prd_kodetag,
 		       st_saldoakhir,
 		       CASE
 		           WHEN prc_pluigr IS NOT NULL
@@ -193,14 +193,14 @@ class settingPagiHariController extends Controller
 		   AND kat_kodekategori(+) = prd_kodekategoribarang
 		 ORDER BY PRD_KODEDIVISI,PRD_KODEDEPARTEMENT,PRD_KODEKATEGORIBARANG,PRD_PRDCD");
 
-        $pdf = PDF::loadview('BACKOFFICE/PROSES/settingpagihari-cetak-daftar-plu-tag', compact(['data', 'perusahaan']));
+        $pdf = PDF::loadview('BACKOFFICE.PROSES.settingpagihari-cetak-daftar-plu-tag', compact(['data', 'perusahaan']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/PROSES/settingpagihari-cetak-daftar-plu-tag');
+        return $pdf->stream('settingpagihari-cetak-daftar-plu-tag.pdf');
 
     }
 }

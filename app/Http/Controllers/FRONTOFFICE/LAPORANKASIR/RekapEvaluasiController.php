@@ -248,8 +248,6 @@ class RekapEvaluasiController extends Controller
 	GROUP BY out_namaoutlet, sub_namasuboutlet, cus_kodeoutlet, cus_kodesuboutlet
 	ORDER BY cus_kodeoutlet, cus_kodesuboutlet");
 
-//        dd($data);
-
         $total_kunj = 0;
         $total_rupiah = 0;
         $total_margin = 0;
@@ -259,6 +257,8 @@ class RekapEvaluasiController extends Controller
             $total_rupiah += $this->nvl($d->otamt, 0) + $this->nvl($d->qtamt, 0);
             $total_margin += ($this->nvl($d->otamt,0) - $this->nvl($d->otcost,0)) + ($this->nvl($d->qtamt,0) - $this->nvl($d->qtcost,0));
         }
+
+//        dd($data);
 
         $dompdf = new PDF();
 

@@ -182,7 +182,7 @@
                                 confirm: false,
                             },
                         }).then(() => {
-                            location.replace("/BackOffice/public/");
+                            location.replace("{{ url()->to('/') }}");
                         });
                     }else if(response == 2){
                         swal({
@@ -194,7 +194,7 @@
                                 confirm: false,
                             },
                         }).then(() => {
-                            location.replace("/BackOffice/public/");
+                            location.replace("{{ url()->to('/') }}");
                         });
                     }else{
                         $('#invoice1').val(response[0].nofp1);
@@ -763,7 +763,7 @@
                                     text: response.error,
                                     icon:'error'
                                 }).then(function(){
-                                    location.replace("/BackOffice/public/");
+                                    location.replace("{{ url()->to('/') }}");
                                 })
                             }
                             if(response.cetak == 'yes'){
@@ -782,7 +782,7 @@
                                 text: 'Perubahan Member PTKP '+$('#kodePTKP').val()+' Menjadi Member PKP '+$('#kodePKP').val()+' Sudah Selesai Dilakukan !!',
                                 icon:'info'
                             }).then(function(){
-                                //location.replace("/BackOffice/public/");
+                                //location.replace("{{ url()->to('/') }}");
                             })
                         },
                         error: function (error) {
@@ -797,12 +797,12 @@
                     });
                     //clear form
                 }else if(click == 'no'){
-                    location.replace("/BackOffice/public/");
+                    location.replace("{{ url()->to('/') }}");
                 }
             });
 
             //exit form(no_validate) note, napain clear form kalau setelah yes no exit form? hahahaha
-            //location.replace("/BackOffice/public/");
+            //location.replace("{{ url()->to('/') }}");
         }
     </script>
 @endsection

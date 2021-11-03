@@ -157,7 +157,7 @@
             <td class="right">{{ number_format($tot_kont2, 2, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_margin, 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kont3, 2, '.', ',') }}</td>
-            <td class="right">{{ number_format(($tot_rupiah - $tot_cost) / $tot_rupiah * 100, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format(($tot_rupiah - $tot_cost) / ($tot_rupiah ? $tot_rupiah : 1) * 100, 2, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_mbr, 0, '.', ',') }}</td>
         </tr>
         <tr class="bold">
@@ -171,7 +171,7 @@
             <td class="right">{{ number_format($tot_kont2_lain, 2, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_margin_lain, 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kont3_lain, 2, '.', ',') }}</td>
-            <td class="right">{{ number_format(($tot_rupiah_lain - $tot_cost_lain) / $tot_rupiah_lain * 100, 2, '.', ',') }}</td>
+            <td class="right">{{ number_format(($tot_rupiah_lain - $tot_cost_lain) / ($tot_rupiah_lain ? $tot_rupiah_lain : 1) * 100, 2, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_mbr_lain, 0, '.', ',') }}</td>
         </tr>
         <tr class="bold">

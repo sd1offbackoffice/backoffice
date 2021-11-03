@@ -192,7 +192,7 @@
             tableModal.destroy();
             tableModal =  $('#tableModalMember').DataTable({
                 "ajax": {
-                    'url' : '{{ url('/frontoffice/laporankasir/laporan-pareto-sales-by-member/get-lov-member') }}',
+                    'url' : '{{url()->current() }}/get-lov-member',
                     "data" : {search},
                 },
                 "columns": [

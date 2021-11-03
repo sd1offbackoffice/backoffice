@@ -20,7 +20,7 @@ class laplvlpbController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.laplvlpb');
+        return view('OMI.LAPORAN.laplvlpb');
     }
 
     public function pbModal(Request $request){
@@ -204,7 +204,7 @@ ORDER BY nopb, tglpb, pbo_pluigr");
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        return view('OMI\LAPORAN\laplvlpb-pdf',
+        return view('OMI.LAPORAN.laplvlpb-pdf',
             ['title' => $title, 'kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time]);
     }
 }

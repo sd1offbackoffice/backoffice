@@ -20,7 +20,7 @@ class transaksivoucherController extends Controller
 
     public function index()
     {
-        return view('FRONTOFFICE\LAPORANKASIR.transaksivoucher');
+        return view('FRONTOFFICE.LAPORANKASIR.transaksivoucher');
     }
 
     public function print(Request $request)
@@ -115,7 +115,7 @@ ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\lap_trn_vcr-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.lap_trn_vcr-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan ,'val' => $val,
                 'periode' => $periode, 'today' => $today, 'time' => $time]);
         $pdf->setPaper('A4', 'potrait');
@@ -125,7 +125,7 @@ ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\lap_trn_vcr-pdf');
+        return $pdf->stream('lap_trn_vcr.pdf');
 
     }
 

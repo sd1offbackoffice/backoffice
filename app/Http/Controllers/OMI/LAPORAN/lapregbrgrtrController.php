@@ -20,7 +20,7 @@ class lapregbrgrtrController extends Controller
 
     public function index()
     {
-        return view('OMI\LAPORAN.lapregbrgrtr');
+        return view('OMI.LAPORAN.lapregbrgrtr');
     }
 
 
@@ -68,7 +68,7 @@ GROUP BY rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi, rom_t
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        return view('OMI\LAPORAN\lapregbrgrtr-pdf',
+        return view('OMI.LAPORAN.lapregbrgrtr-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'datas' => $datas, 'today' => $today, 'time' => $time]);
     }
 }

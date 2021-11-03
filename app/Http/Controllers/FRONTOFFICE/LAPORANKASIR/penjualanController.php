@@ -20,7 +20,7 @@ class penjualanController extends Controller
 
     public function index()
     {
-        return view('FRONTOFFICE\LAPORANKASIR.penjualan');
+        return view('FRONTOFFICE.LAPORANKASIR.penjualan');
     }
 
     public function getNmr(Request $request)
@@ -527,7 +527,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'qty' => $qty, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
@@ -538,7 +538,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkategory_t-pdf');
+        return $pdf->stream('lap_jual_perkategory_t.pdf');
     }
 
     public function printDocumentMenu2(Request $request){
@@ -897,7 +897,7 @@ ORDER BY cdiv,cdept");
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
@@ -908,7 +908,7 @@ ORDER BY cdiv,cdept");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept-pdf');
+        return $pdf->stream('lap_jual_perdept.pdf');
     }
 
     public function printDocumentDMenu2(Request $request){
@@ -1088,7 +1088,7 @@ ORDER BY omikod");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_cd-pdf');
 
-        return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_d-pdf',['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
+        return view('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept_d-pdf',['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
             'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
             'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
     }
@@ -1329,7 +1329,7 @@ ORDER BY omidiv, omidep");
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_c-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept_c-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'namaomi' => $namaomi, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'marginpersen' => $marginpersen]);
@@ -1340,7 +1340,7 @@ ORDER BY omidiv, omidep");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_c-pdf');
+        return $pdf->stream('lap_jual_perdept_c.pdf');
 
 //        return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_d-pdf',['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'today' => $today, 'time' => $time,
 //            'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
@@ -1716,7 +1716,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $today = date('d-m-Y');
         $time = date('H:i:s');
         if($pluall == 'N'){
-            $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf',
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdiv-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'mon' =>$mon, 'margin1' => $margin1,'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                     'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
             $pdf->setPaper('A4', 'landscape');
@@ -1726,9 +1726,9 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(759, 78, "{PAGE_NUM}/{PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-            return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv-pdf');
+            return $pdf->stream('lap_jual_perdiv.pdf');
         }else{
-            return view('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdiv_all-pdf',
+            return view('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdiv_all-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'margin1' => $margin1,'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                     'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         }
@@ -1813,7 +1813,7 @@ ORDER BY sls_periode");
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perhari-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'val' => $val, 'today' => $today, 'time' => $time, 'periode' => $periode]);
         $pdf->setPaper('A4', 'potrait');
@@ -1823,7 +1823,7 @@ ORDER BY sls_periode");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perhari-pdf');
+        return $pdf->stream('lap_jual_perhari.pdf');
     }
 
     public function printDocumentMenu5(Request $request){
@@ -2228,7 +2228,7 @@ ORDER BY FDKDIV, FDKDEP");
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
 //        $today = date('d-m-Y');
 //        $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf',
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkasir-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'nmarginp' => $nmarginp , 'kasir' =>$kasir, 'station' => $station, 'perusahaan' => $perusahaan,
                 'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp,'margin' => $margin, 'margp' => $margp]);
         $pdf->setPaper('A4', 'potrait');
@@ -2238,6 +2238,6 @@ ORDER BY FDKDIV, FDKDEP");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perkasir-pdf');
+        return $pdf->stream('lap_jual_perkasir.pdf');
     }
 }

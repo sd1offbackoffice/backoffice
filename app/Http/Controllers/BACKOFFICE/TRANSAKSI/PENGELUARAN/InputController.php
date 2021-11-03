@@ -16,7 +16,7 @@ class InputController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/PENGELUARAN.input');
+        return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.input');
     }
 
     public function getDataLovTrn()

@@ -21,7 +21,7 @@ class PendaftaranVoucherBelanjaController extends Controller
 
     public function index()
     {
-        return view('tabel\PENDAFTARANVOUCHERBELANJA.pendaftaranvoucherbelanja');
+        return view('tabel.PENDAFTARANVOUCHERBELANJA.pendaftaranvoucherbelanja');
     }
 
     public function modalSupplier(Request $request)

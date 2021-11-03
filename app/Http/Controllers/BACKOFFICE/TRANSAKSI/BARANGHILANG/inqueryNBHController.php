@@ -21,7 +21,7 @@ class inqueryNBHController extends Controller
             ->orderBy('msth_nodoc')
             ->get();
 
-        return view('BACKOFFICE/TRANSAKSI/BARANGHILANG.inqueryNBH', compact('result'));
+        return view('BACKOFFICE.TRANSAKSI.BARANGHILANG.inqueryNBH', compact('result'));
     }
 
     public function lov_NBH(Request $request){
@@ -48,7 +48,7 @@ class inqueryNBHController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $nonbh = $request->nonbh;
 
-        $result = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac, 
+        $result = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
 										mstd_qty, mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo
 									from tbtr_mstran_d, tbmaster_prodmast
 									where mstd_nodoc='$nonbh'
@@ -69,7 +69,7 @@ class inqueryNBHController extends Controller
 
         $result = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit unit, mstd_frac frac,
 									prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp,
-									st_lastcost*case when prd_unit='KG' then 1 else nvl(prd_frac,1) end lcost, 
+									st_lastcost*case when prd_unit='KG' then 1 else nvl(prd_frac,1) end lcost,
 									nvl(st_avgcost,0) st_avgcost ,  nvl(st_saldoakhir,0) st_qty,
 									mstd_hrgsatuan hrgsatuan, mstd_qty qty, mstd_gross gross, mstd_keterangan keter
 							from tbtr_mstran_d, tbmaster_prodmast, tbmaster_stock

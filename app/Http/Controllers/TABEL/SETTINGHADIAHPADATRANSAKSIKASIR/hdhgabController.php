@@ -22,7 +22,7 @@ class hdhgabController extends Controller
 
     public function index()
     {
-        return view('TABEL\SETTINGHADIAHPADATRANSAKSIKASIR.hdhgab');
+        return view('TABEL.SETTINGHADIAHPADATRANSAKSIKASIR.hdhgab');
     }
 
     public function ModalGabungan(){

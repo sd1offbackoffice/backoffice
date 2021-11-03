@@ -12,7 +12,7 @@ use Yajra\DataTables\DataTables;
 class beritaAcaraPemusnahanController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.beritaAcaraPemusnahan');
+        return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.beritaAcaraPemusnahan');
     }
 
     public function getNoDocument(Request $request){
@@ -257,14 +257,14 @@ class beritaAcaraPemusnahanController extends Controller
             ->orderBy('brsk_seqno')
             ->get()->toArray();
 
-        $pdf = PDF::loadview('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.BAPemusnahan-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE/TRANSAKSI/PEMUSNAHAN.BApemusnahan-laporan');
+        return $pdf->stream('BApemusnahan-laporan.pdf');
     }
 
 }

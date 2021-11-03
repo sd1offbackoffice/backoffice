@@ -349,7 +349,7 @@
             $('#i_koderak').val(koderak);
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kubikasiplano/lov_subrak',
+                url: '{{ url()->current() }}/lov_subrak',
                 type: 'POST',
                 data: { koderak: koderak},
                 beforeSend: function () {
@@ -384,7 +384,7 @@
             $('#i_subrak').val(subrak);
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kubikasiplano/lov_shelving',
+                url: '{{ url()->current() }}/lov_shelving',
                 type: 'POST',
                 data: { koderak: koderak, subrak: subrak},
                 beforeSend: function () {
@@ -474,7 +474,7 @@
                 if ($('#i_koderak').val() != "" && $('#i_subrak').val() != "" && $('#i_shelving').val() != "") {
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/master/kubikasiplano/dataRakKecilParam',
+                        url: '{{ url()->current() }}/dataRakKecilParam',
                         type: 'POST',
                         data: {
 
@@ -566,7 +566,7 @@
         function getdatarakkecil() {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kubikasiplano/dataRakKecil',
+                url: '{{ url()->current() }}/dataRakKecil',
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}"},
                 beforeSend: function () {
@@ -741,7 +741,7 @@
                     $('.invalid-feedback').hide();
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/master/kubikasiplano/lov_search',
+                        url: '{{ url()->current() }}/lov_search',
                         type: 'POST',
                         data: { value: this.value.toUpperCase()},
                         success: function (response) {
@@ -768,7 +768,7 @@
         function lov_select(value) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kubikasiplano/lov_search',
+                url: '{{ url()->current() }}/lov_search',
                 type: 'POST',
                 data: { value: value},
                 beforeSend: function () {
@@ -917,7 +917,7 @@
             // console.log(arr);
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/master/kubikasiplano/save_kubikasi',
+                url: '{{ url()->current() }}/save_kubikasi',
                 type: 'POST',
                 data: { value: arr},
                 beforeSend: function () {

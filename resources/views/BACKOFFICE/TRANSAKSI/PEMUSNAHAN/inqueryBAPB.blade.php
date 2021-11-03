@@ -289,7 +289,7 @@
         function chooseDoc(noDoc) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/inquerybapb/getdetaildoc',
+                url: '{{ url()->current() }}/getdetaildoc',
                 type: 'post',
                 data: {noDoc:noDoc},
                 beforeSend: function (){
@@ -351,7 +351,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/pemusnahan/inquerybapb/detailplu',
+                url: '{{ url()->current() }}/detailplu',
                 type: 'post',
                 data: {plu:plu[0], doc:doc},
                 success: function (result) {

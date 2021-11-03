@@ -19,7 +19,7 @@ class LapRepackController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/REPACKING.laprepack');
+        return view('BACKOFFICE.TRANSAKSI.REPACKING.laprepack');
     }
     public function CheckData(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -88,7 +88,7 @@ Where msth_kodeigr=mstd_kodeigr
   and nvl(msth_recordid,'9') <> '1'
 Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE\TRANSAKSI\REPACKING.laprepack-laporan',
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.laprepack-laporan',
             ['kodeigr' => $kodeigr, 'p_tgl1' => $sDate, 'p_tgl2' => $eDate, 'p_prog' => $p_prog, 'datas' => $datas, 'today' => $today, 'time' => $time]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -97,6 +97,6 @@ Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Hal {PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\TRANSAKSI\REPACKING.laprepack-laporan');
+        return $pdf->stream('laprepack-laporan.pdf');
     }
 }

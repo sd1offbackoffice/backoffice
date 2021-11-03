@@ -548,7 +548,7 @@
 
         function get_data(value) {
             $.ajax({
-                url: '/BackOffice/public/master/jenisitem/lov_select',
+                url: '{{ url()->current() }}/lov_select',
                 type:'POST',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -668,7 +668,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/master/jenisitem/lov_search',
+                        url: '{{ url()->current() }}/lov_search',
                         type: 'POST',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {
@@ -706,7 +706,7 @@
                 var jenisrak = $('#i_jenisrak').val();
                 var prdcd = $('#i_pluplanogram').val();
                 $.ajax({
-                    url: '/BackOffice/public/master/jenisitem/savedata',
+                    url: '{{ url()->current() }}/savedata',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", prdcd:prdcd,jenisrak:jenisrak},
                     success: function (response) {

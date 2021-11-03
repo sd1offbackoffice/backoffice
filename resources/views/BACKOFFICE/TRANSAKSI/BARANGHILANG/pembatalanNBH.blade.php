@@ -147,7 +147,7 @@
             $('#modal-NBH').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/showData',
+                url: '{{ url()->current() }}/showData',
                 type: 'post',
                 data: {nonbh: nonbh},
                 beforeSend: function () {
@@ -187,7 +187,7 @@
                 let search = $('#searchModal').val();
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/lovNBH',
+                    url: '{{ url()->current() }}/lovNBH',
                     type: 'post',
                     data: {search:search},
                     success: function (result) {
@@ -223,7 +223,7 @@
                 if (confirm){
                     ajaxSetup();
                     $.ajax({
-                        url: '/BackOffice/public/bo/transaksi/barang-hilang/pembatalan-nbh/deleteData',
+                        url: '{{ url()->current() }}/deleteData',
                         type: 'post',
                         data: {"_token": "{{ csrf_token() }}", nonbh: nonbh},
                         beforeSend: function () {

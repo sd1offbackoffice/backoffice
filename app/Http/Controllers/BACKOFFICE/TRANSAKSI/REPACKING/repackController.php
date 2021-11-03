@@ -19,7 +19,7 @@ class repackController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/REPACKING.repack');
+        return view('BACKOFFICE.TRANSAKSI.REPACKING.repack');
     }
 
     public function getNewNmrTrn(){
@@ -487,14 +487,14 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         //dd($datas);
 
                 //-------------------------PRINT-----------------------------
-        $pdf = PDF::loadview('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan');
+        return $pdf->stream('repack-laporan.pdf');
 
     }
     public function printDocumentKecil(Request $request){
@@ -535,14 +535,14 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         //dd($datas);
 
         //-------------------------PRINT-----------------------------
-        $pdf = PDF::loadview('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan-kecil', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan-kecil', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('BACKOFFICE\TRANSAKSI\REPACKING.repack-laporan-kecil');
+        return $pdf->stream('repack-laporan-kecil.pdf');
 
     }
 

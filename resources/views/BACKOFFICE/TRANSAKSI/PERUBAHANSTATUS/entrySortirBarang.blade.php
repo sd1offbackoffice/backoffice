@@ -331,7 +331,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnewnmrsrt',
+                                url: '{{ url()->current() }}/getnewnmrsrt',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -436,7 +436,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/savedata',
+                url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -490,7 +490,7 @@
             if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+doc+'/');
+                window.open('{{ url()->current() }}/printdoc/'+doc+'/');
                 clearField();
             }
         }
@@ -554,7 +554,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/savedata',
+                url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -570,7 +570,7 @@
                     console.log(result.kode)
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+result.msg+'/');
+                            window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
                             clearField();
                         } else {
                             swal('Dokumen Berhasil disimpan','','success')
@@ -579,7 +579,7 @@
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
                         swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!')
-                        window.open('/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/printdoc/'+result.msg+'/');
+                        window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
                         clearField();
                     }else {
                         swal('ERROR', "Something's Error", 'error')
@@ -623,7 +623,7 @@
         function chooseSrt(kode) {
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/choosesrt',
+                url: '{{ url()->current() }}/choosesrt',
                 type: 'post',
                 data: {
                     kode:kode
@@ -747,7 +747,7 @@
             if(val!=''){
                 ajaxSetup();
                 $.ajax({
-                    url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/getnmrsrt',
+                    url: '{{ url()->current() }}/getnmrsrt',
                     type: 'post',
                     data: {
                         val:val
@@ -775,7 +775,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/bo/transaksi/perubahanstatus/entrySortirBarang/chooseplu',
+                url: '{{ url()->current() }}/chooseplu',
                 type: 'post',
                 data: {
                     kode: kode

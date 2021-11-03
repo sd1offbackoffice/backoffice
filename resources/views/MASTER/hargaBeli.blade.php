@@ -682,7 +682,7 @@
 
         function lov_select(value){
             $.ajax({
-                url: '/BackOffice/public/master/hargabeli/lov_select',
+                url: '{{ url()->current() }}/lov_select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -1021,7 +1021,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '/BackOffice/public/master/hargabeli/lov_search',
+                        url: '{{ url()->current() }}/lov_search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){

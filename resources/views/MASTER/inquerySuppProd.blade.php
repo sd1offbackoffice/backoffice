@@ -204,7 +204,7 @@
             $('#modal_plu').modal('hide');
             ajaxSetup();
             $.ajax({
-                url: '/BackOffice/public/inquery/supp-prod/suppProd',
+                url: '{{ url()->current() }}/suppProd',
                 type: 'post',
                 data: {kodeplu: kodeplu},
                 beforeSend: function () {

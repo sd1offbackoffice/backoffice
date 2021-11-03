@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: ryan
- * Date: 02/11/2021
- * Time: 14:08 PM
+ * Date: 03/11/2021
+ * Time: 11:54 AM
  */
 
 namespace App\Http\Controllers\TABEL;
@@ -16,12 +16,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class superpromoController extends Controller
+class byrvchController extends Controller
 {
 
     public function index()
     {
-        return view('TABEL.superpromo');
+        return view('TABEL.byrvch');
     }
 
 

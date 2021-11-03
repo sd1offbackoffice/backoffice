@@ -12,7 +12,7 @@ class barangHilangInputController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/BARANGHILANG.BarangHilangInput');
+        return view('BACKOFFICE.TRANSAKSI.BARANGHILANG.BarangHilangInput');
     }
 
     public function lov_trn(Request $request)

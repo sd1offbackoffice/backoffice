@@ -21,7 +21,7 @@ class hrgpromoController extends Controller
 
     public function index()
     {
-        return view('TABEL\hrgpromo');
+        return view('TABEL.hrgpromo');
     }
 
     public function ModalMain(){
@@ -129,6 +129,6 @@ class hrgpromoController extends Controller
             ->get();
         //PRINT
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        return view('TABEL\hrgpromo-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+        return view('TABEL.hrgpromo-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
 }

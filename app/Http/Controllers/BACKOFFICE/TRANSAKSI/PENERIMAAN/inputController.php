@@ -26,7 +26,7 @@ class inputController extends Controller
 
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/PENERIMAAN.input');
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input');
     }
 
     public function showBTB(Request $request){

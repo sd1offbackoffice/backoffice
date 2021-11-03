@@ -165,7 +165,7 @@
 
             ajaxSetup();
             $.ajax({
-                method : 'POST',url: '/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewdata',
+                method : 'POST',url: '{{ url()->current() }}/viewdata',
                 data: {
                     startDate:startDate,
                     endDate :endDate,
@@ -233,7 +233,7 @@
 
             $.ajax({
                 method : 'POST',
-                url: '/BackOffice/public/bo/transaksi/penerimaan/printbpb/cetakdata',
+                url: '{{ url()->current() }}/cetakdata',
                 data: {
                     startDate:startDate,
                     endDate :endDate,
@@ -250,7 +250,7 @@
 
                     if (result.kode == 1){
                         documentTemp = document;
-                        window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+result.data+'/'+documentTemp);
+                        window.open('{{ url()->current() }}/viewreport/'+checked+'/'+result.data+'/'+documentTemp);
                         // window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+'lokasi'+'/'+documentTemp);
                     }
                 }, error: function (err) {

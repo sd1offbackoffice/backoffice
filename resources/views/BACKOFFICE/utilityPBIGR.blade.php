@@ -48,7 +48,7 @@
         function callProc1(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/boutilitypbigr/callproc1',
+                url:'{{ url()->current() }}/callproc1',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -70,7 +70,7 @@
         function callProc2(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/boutilitypbigr/callproc2',
+                url:'{{ url()->current() }}/callproc2',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -92,7 +92,7 @@
         function callProc3(){
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/boutilitypbigr/callproc3',
+                url:'{{ url()->current() }}/callproc3',
                 type:'Post',
                 data: {},
                 beforeSend: function () {
@@ -125,7 +125,7 @@
 
             ajaxSetup();
             $.ajax({
-                url:'/BackOffice/public/boutilitypbigr/chekproc4',
+                url:'{{ url()->current() }}/chekproc4',
                 type:'Post',
                 data: {date:date},
                 beforeSend: function () {
@@ -138,7 +138,7 @@
                     } else {
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
-                        window.open('/BackOffice/public/boutilitypbigr/callproc4/'+date+'');
+                        window.open('{{ url()->current() }}/callproc4/'+date+'');
                     }
                     console.log(result);
                 }, error: function (error) {

@@ -700,7 +700,7 @@
 
                     if(!ada){
                         $.ajax({
-                            url: '/BackOffice/public/bo/pb/kkei/get_detail_produk',
+                            url: '{{ url()->current() }}/get_detail_produk',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -832,7 +832,7 @@
 
 
             $.ajax({
-                url: '/BackOffice/public/bo/pb/kkei/get_detail_kkei',
+                url: '{{ url()->current() }}/get_detail_kkei',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1316,7 +1316,7 @@
             });
 
             $.ajax({
-                url: '/BackOffice/public/bo/pb/kkei/save',
+                url: '{{ url()->current() }}/save',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

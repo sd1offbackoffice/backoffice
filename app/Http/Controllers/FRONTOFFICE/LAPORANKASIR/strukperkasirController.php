@@ -20,7 +20,7 @@ class strukperkasirController extends Controller
 
     public function index()
     {
-        return view('FRONTOFFICE\LAPORANKASIR.strukperkasir');
+        return view('FRONTOFFICE.LAPORANKASIR.strukperkasir');
     }
 
     public function printstruk(Request $request)
@@ -66,11 +66,11 @@ ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno")
         $time = date('H:i:s');
 
         if($typeTransaksi == 'S') {
-            return view('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_s-pdf',
+            return view('FRONTOFFICE.LAPORANKASIR.lap_strk_perkasir_s-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                     'today' => $today, 'time' => $time]);
         }else{ //type R dan lain lain
-            $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_r-pdf',
+            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.lap_strk_perkasir_r-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                     'today' => $today, 'time' => $time]);
             $pdf->setPaper('A4', 'potrait');
@@ -80,7 +80,7 @@ ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno")
             $canvas = $dompdf ->get_canvas();
             $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-            return $pdf->stream('FRONTOFFICE\LAPORANKASIR\lap_strk_perkasir_r-pdf');
+            return $pdf->stream('lap_strk_perkasir_r.pdf');
         }
     }
 
@@ -122,7 +122,7 @@ ORDER BY jh_transactiondate,
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        return view('FRONTOFFICE\LAPORANKASIR\lap_strk_waktu-pdf',
+        return view('FRONTOFFICE.LAPORANKASIR.lap_strk_waktu-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' =>$perusahaan,
                 'periode' => $periode, 'today' => $today, 'time' => $time]);
     }

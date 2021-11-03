@@ -16,7 +16,7 @@ class InqueryController extends Controller
 {
     public function index()
     {
-        return view('BACKOFFICE/TRANSAKSI/PENGELUARAN.inquery');
+        return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.inquery');
     }
 
     public function getDataLovNPB()

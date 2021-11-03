@@ -156,7 +156,7 @@ class utilityPBIGRController extends Controller
         $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
 
-        return $pdf->stream('BACKOFFICE.utilityPBIGR-laporan');
+        return $pdf->stream('utilityPBIGR-laporan.pdf');
 
     }
 
