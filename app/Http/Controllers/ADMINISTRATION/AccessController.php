@@ -14,14 +14,14 @@ use Yajra\DataTables\DataTables;
 class AccessController extends Controller
 {
     public function index(){
-        $group = DB::table('tbmaster_access_migrasi')
+        $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
             ->where('acc_status','=',0)
             ->orderBy('acc_group')
             ->groupBy('acc_group')
             ->get();
 
-        $menu = DB::table('tbmaster_access_migrasi')
+        $menu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->where('acc_status','=',0)
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
@@ -34,7 +34,7 @@ class AccessController extends Controller
     }
 
     public function getLovUser(){
-        $data = DB::table('tbmaster_user')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_user')
             ->whereRaw("recordid is null")
             ->orderBy('userid')
             ->get();
@@ -43,7 +43,7 @@ class AccessController extends Controller
     }
 
     public function getData(Request $request){
-        $temp = DB::table('tbmaster_user')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_user')
             ->where('userid','=',$request->userid)
             ->first();
 
@@ -53,14 +53,14 @@ class AccessController extends Controller
             ], 500);
         }
         else{
-            $data = DB::table('tbmaster_useraccess_migrasi')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
                 ->join('tbmaster_access_migrasi','uac_acc_id','=','acc_id')
                 ->select('uac_acc_id','acc_group')
                 ->where('uac_userid','=',$request->userid)
                 ->where('acc_status','=',0)
                 ->get();
 
-            $group = DB::table('tbmaster_access_migrasi')
+            $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->selectRaw('acc_group, count(1) total')
                 ->where('acc_status','=',0)
                 ->orderBy('acc_group')
@@ -84,7 +84,7 @@ class AccessController extends Controller
     }
 
     public function save(Request $request){
-        $temp = DB::table('tbmaster_user')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_user')
             ->where('userid','=',$request->userid)
             ->first();
 
@@ -94,27 +94,13 @@ class AccessController extends Controller
             ], 500);
         }
         else{
-            DB::table('tbmaster_useraccess_migrasi')
-                ->where('uac_userid','=',$request->userid)
-                ->delete();
-
-            DB::connection('igrsmg')
-                ->table('tbmaster_useraccess_migrasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
                 ->where('uac_userid','=',$request->userid)
                 ->delete();
 
             if($request->menu){
                 foreach($request->menu as $m){
-                    DB::table('tbmaster_useraccess_migrasi')
-                        ->insert([
-                            'uac_userid' => $request->userid,
-                            'uac_acc_id' => $m,
-                            'uac_create_by' => $_SESSION['usid'],
-                            'uac_create_dt' => DB::RAW("SYSDATE")
-                        ]);
-
-                    DB::connection('igrsmg')
-                        ->table('tbmaster_useraccess_migrasi')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
                         ->insert([
                             'uac_userid' => $request->userid,
                             'uac_acc_id' => $m,
@@ -131,31 +117,13 @@ class AccessController extends Controller
     }
 
     public function clone(){
-//        $menu = DB::table('tbmaster_access_migrasi')->get();
-//        $access = DB::table('tbmaster_useraccess_migrasi')->get();
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_access_migrasi')
-//            ->delete();
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_useraccess_migrasi')
-//            ->delete();
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_access_migrasi')
-//            ->insert(json_decode(json_encode($menu), true));
-//
-//        DB::connection('igrsmg')
-//            ->table('tbmaster_useraccess_migrasi')
-//            ->insert(json_decode(json_encode($access), true));
         dd('sudah otomatis, tidak perlu clone manual lagi :)');
     }
 
     public static function getListMenu($usid){
 
         if(in_array($usid, ['DEV','SUP'])){
-            return DB::table('tbmaster_access_migrasi')
+            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')
@@ -165,7 +133,7 @@ class AccessController extends Controller
                 ->get();
         }
         else{
-            return DB::table('tbmaster_access_migrasi')
+            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->where('uac_userid','=',$usid)
@@ -191,7 +159,7 @@ class AccessController extends Controller
 
         return false;
 
-//        $data = DB::table('tbmaster_access_migrasi')
+//        $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
 //            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
 //            ->where('uac_userid','=',$_SESSION['usid'])
 //            ->where('acc_url','=',$url)

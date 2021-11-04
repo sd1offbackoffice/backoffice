@@ -24,7 +24,7 @@ class PenyesuaianController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->select('div_kodedivisi','div_namadivisi')
             ->where('div_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw('div_kodedivisi >= '.$div)
@@ -34,7 +34,7 @@ class PenyesuaianController extends Controller
     }
 
     public function getDataLovDep(Request $request){
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
             ->where('dep_kodeigr','=',$_SESSION['kdigr'])
             ->where('dep_kodedivisi','=',$request->div)
@@ -44,7 +44,7 @@ class PenyesuaianController extends Controller
     }
 
     public function getDataLovKat(Request $request){
-        $data = DB::table("tbmaster_kategori")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
             ->join('tbmaster_departement','dep_kodedepartement','=','kat_kodedepartement')
             ->select('kat_namakategori','kat_kodekategori','kat_kodedepartement','dep_kodedivisi')
             ->where('kat_kodeigr','=',$_SESSION['kdigr'])
@@ -68,62 +68,62 @@ class PenyesuaianController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
         if($tipe === '1'){
-            $data = DB::select("SELECT 
+            $data = DB::connection($_SESSION['connection'])->select("SELECT
                 prd_kodedivisi, div_namadivisi,
                 prd_kodedepartement, dep_namadepartement,
                 prd_kodekategoribarang, kat_namakategori,
                 sum(mstd_gross) total
             FROM
                 (
-                    SELECT 
+                    SELECT
                         mstd_tgldoc, prd_kodedivisi, div_namadivisi,
                         prd_kodedepartement, dep_namadepartement,
                         prd_kodekategoribarang, kat_namakategori,
-                        mstd_prdcd, mstd_gross, 
+                        mstd_prdcd, mstd_gross,
                         nvl(mstd_discrph,0) mstd_pot,
-                        nvl(mstd_ppnrph,0) mstd_ppn, 
-                        nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl, 
+                        nvl(mstd_ppnrph,0) mstd_ppn,
+                        nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
                         nvl(mstd_gross,0 ) total,
                         prs_namaperusahaan, prs_namacabang
-                    FROM 
-                        tbmaster_divisi, tbmaster_departement, tbmaster_kategori, 
+                    FROM
+                        tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
                         tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan,
                         tbmaster_prodmast
-                    WHERE   
+                    WHERE
                         msth_kodeigr='".$_SESSION['kdigr']."'
-                        and nvl(msth_recordid, '0') <> '1'        
+                        and nvl(msth_recordid, '0') <> '1'
                         and nvl(mstd_recordid, '0') <> '1'
                         and mstd_tgldoc between TO_DATE('".$tgl1."','DD/MM/YYYY') and TO_DATE('".$tgl2."','DD/MM/YYYY')
                         and mstd_nodoc = msth_nodoc
-                        and msth_typetrn='X'            
+                        and msth_typetrn='X'
                         and prs_kodeigr= msth_kodeigr
                         and div_kodeigr(+)='".$_SESSION['kdigr']."'
                         and dep_kodeigr(+)='".$_SESSION['kdigr']."'
                         and kat_kodeigr(+)='".$_SESSION['kdigr']."'
                         and prd_prdcd = mstd_prdcd
-                        and div_kodedivisi(+)=prd_kodedivisi            
+                        and div_kodedivisi(+)=prd_kodedivisi
                         and dep_kodedepartement(+) = prd_kodedepartement
                         and dep_kodedivisi (+) = prd_kodedivisi
                         and kat_kodekategori (+) = prd_kodekategoribarang
-                        and kat_kodedepartement (+) = prd_kodedepartement            
-                        and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang 
+                        and kat_kodedepartement (+) = prd_kodedepartement
+                        and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang
                         between '".$div1."'||'".$dep1."'||'".$kat1."' and '".$div2."'||'".$dep2."'||'".$kat2."'
-                    ORDER BY 
-                        prd_kodedivisi, 
-                        prd_kodedepartement, 
+                    ORDER BY
+                        prd_kodedivisi,
+                        prd_kodedepartement,
                         prd_kodekategoribarang
                 )
-            GROUP BY 
+            GROUP BY
                 prd_kodedivisi, div_namadivisi,
                 prd_kodedepartement, dep_namadepartement,
                 prd_kodekategoribarang, kat_namakategori,
                 prs_namaperusahaan, prs_namacabang
-            ORDER BY  
+            ORDER BY
                 prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
 //            dd($data);
@@ -145,28 +145,28 @@ class PenyesuaianController extends Controller
             return $dompdf->stream('LAPORAN PENYESUAIAN PERSEDIAAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         }
         else{
-            $data = DB::select("SELECT 
+            $data = DB::connection($_SESSION['connection'])->select("SELECT
                 msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc, kemasan,keterangan,
-                plu, barang, mstd_qty qty, harga, total, 
+                plu, barang, mstd_qty qty, harga, total,
                 prd_kodedivisi, div_namadivisi,
                 prd_kodedepartement, dep_namadepartement,
                 prd_kodekategoribarang, kat_namakategori,
                 prs_namaperusahaan, prs_namacabang
-            FROM 
+            FROM
                 (
                     SELECT msth_nodoc, msth_tgldoc, mstd_prdcd plu, mstd_keterangan keterangan,
                         prd_deskripsipanjang barang, prd_unit||'/'||prd_frac kemasan,
                         mstd_hrgsatuan harga, NVL (mstd_GROSS,0) total,
-                        nvl(mstd_qty,0) mstd_qty, 
+                        nvl(mstd_qty,0) mstd_qty,
                         prd_kodedivisi, div_namadivisi,
                         prd_kodedepartement, dep_namadepartement,
                         prd_kodekategoribarang, kat_namakategori,
-                        mstd_prdcd, prd_deskripsipanjang, mstd_gross, 
-                        prs_namaperusahaan, prs_namacabang			
+                        mstd_prdcd, prd_deskripsipanjang, mstd_gross,
+                        prs_namaperusahaan, prs_namacabang
                     FROM
                         tbmaster_divisi, tbmaster_departement, tbmaster_kategori, tbmaster_prodmast,
                         tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan
-                    WHERE 
+                    WHERE
                         msth_kodeigr='".$_SESSION['kdigr']."'
                         and mstd_recordid is null
                         and mstd_tgldoc between TO_DATE('".$tgl1."','DD/MM/YYYY') and TO_DATE('".$tgl2."','DD/MM/YYYY')
@@ -184,19 +184,19 @@ class PenyesuaianController extends Controller
                         and dep_kodedivisi (+) = prd_kodedivisi
                         and kat_kodekategori (+) = prd_kodekategoribarang
                         and kat_kodedepartement (+) = prd_kodedepartement
-                        and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang 
+                        and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang
                         between '".$div1."'||'".$dep1."'||'".$kat1."' and '".$div2."'||'".$dep2."'||'".$kat2."'
-                    ORDER BY  
+                    ORDER BY
                             prd_kodedivisi,  prd_kodedepartement,  prd_kodekategoribarang, plu
                 )
-            GROUP BY 
+            GROUP BY
                 msth_nodoc, msth_tgldoc,kemasan,keterangan,
                 plu, barang, harga, mstd_qty, total,
                 prd_kodedivisi, div_namadivisi,
                 prd_kodedepartement, dep_namadepartement,
                 prd_kodekategoribarang, kat_namakategori,
                 prs_namaperusahaan, prs_namacabang
-            ORDER BY  
+            ORDER BY
                 prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, msth_nodoc, plu");
 
             $dompdf = new PDF();

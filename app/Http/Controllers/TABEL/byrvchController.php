@@ -28,7 +28,7 @@ class byrvchController extends Controller
     public function GetSupp(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("tbmaster_hargabeli")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_hargabeli")
             ->selectRaw("DISTINCT hgb_kodesupplier as hgb_kodesupplier")
             ->selectRaw("sup_namasupplier")
 
@@ -49,7 +49,7 @@ class byrvchController extends Controller
     public function GetSingkatan(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->selectRaw("VCS_NAMASUPPLIER")
             ->selectRaw("VCS_NILAIVOUCHER")
 
@@ -68,7 +68,7 @@ class byrvchController extends Controller
         $tglAwal = '';
         $tglAkhir = '';
 
-        $temp = DB::table("TBTABEL_PEMBAYARANVOUCHER")
+        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
             ->selectRaw("DISTINCT TO_CHAR(BYR_TGLAWAL, 'DD/MM/YYYY') as BYR_TGLAWAL")
             ->selectRaw("TO_CHAR(BYR_TGLAKHIR, 'DD/MM/YYYY') as BYR_TGLAKHIR")
             ->where("BYR_KODEIGR",'=',$kodeigr)
@@ -82,6 +82,81 @@ class byrvchController extends Controller
         return response()->json(['tglAwal' => $tglAwal, 'tglAkhir' => $tglAkhir]);
     }
 
+    public function CheckDBTable(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $usid = $_SESSION['usid'];
+        $supp = $request->supp;
+        $sing = $request->sing;
+        $dateA = $request->date1;
+        $dateB = $request->date2;
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        try{
+            DB::beginTransaction();
+
+            $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                ->selectRaw("NVL (COUNT (1), 0) as result")
+                ->where("BYR_KODEIGR",'=',$kodeigr)
+                ->where("BYR_KODESUPPLIER",'=',$supp)
+                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+                ->first();
+            if($temp->result == '0'){
+                $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_HARGABELI")
+                    ->selectRaw("HGB_PRDCD")
+
+                    ->leftJoin('TBMASTER_PRODMAST',function($join){
+                        $join->on('PRD_PRDCD','HGB_PRDCD');
+                        $join->on('PRD_KODEIGR','HGB_KODEIGR');
+                    })
+                    ->where("HGB_KODEIGR",'=',$kodeigr)
+                    ->where("HGB_TIPE",'=','2')
+                    ->where("HGB_KODESUPPLIER",'=',$supp)
+                    ->whereRaw("PRD_KODETAG NOT IN ('N', 'H', 'X')")
+
+                    ->get();
+                for($i=0;$i<sizeof($datas);$i++){
+                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                        ->insert([
+                            'BYR_KODEIGR'=>$kodeigr,
+                            'BYR_KODESUPPLIER'=>$supp,
+                            'BYR_SINGKATANSUPPLIER'=>$sing,
+                            'BYR_PRDCD'=>$datas[$i]->hgb_prdcd,
+                            'BYR_QTYMAXVOUCHER'=>0,
+                            'BYR_TGLAWAL'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
+                            'BYR_TGLAKHIR'=>DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                            'BYR_CREATE_BY'=>$usid,
+                            'BYR_CREATE_DT'=>DB::RAW("trunc(SYSDATE)"),
+                            'BYR_RECORDID'=>0,
+                        ]);
+                }
+            }
+            $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                ->selectRaw("BYR_PRDCD")
+                ->selectRaw("prd_deskripsipanjang")
+                ->selectRaw("byr_qtymaxvoucher")
+//            ->selectRaw("byr_recordid")
+
+                ->leftJoin("TBMASTER_PRODMAST",'PRD_PRDCD','BYR_PRDCD')
+
+                ->where("BYR_KODEIGR",'=',$kodeigr)
+                ->where("BYR_KODESUPPLIER",'=',$supp)
+                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+                ->get();
+            dd($datas);
+            DB::commit();
+
+            return response()->json($datas);
+        }catch(QueryException $e){
+            DB::rollBack();
+
+            $status = 'error';
+            $message = $e->getMessage();
+
+            return compact(['status' => $status,'message' => $message]);
+        }
+
+    }
+
     public function save(Request $request){
         $kodeigr = $_SESSION['kdigr'];
         $datas  = $request->datas;
@@ -90,7 +165,7 @@ class byrvchController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         for($i=1;$i<sizeof($datas);$i++){
-            DB::table("tbtr_hadiahkejutan")
+            DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
                 ->insert([
                     'spot_kodeigr'=>$kodeigr,
                     'spot_periodeawal'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),

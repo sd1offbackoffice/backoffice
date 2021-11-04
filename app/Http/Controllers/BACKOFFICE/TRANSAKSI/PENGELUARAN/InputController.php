@@ -21,7 +21,7 @@ class InputController extends Controller
 
     public function getDataLovTrn()
     {
-        $data = DB::table('TBTR_BACKOFFICE')
+        $data = DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
             ->select('trbo_nodoc', DB::raw('TO_CHAR(TRBO_TGLDOC, \'DD/MM/YYYY\') TRBO_TGLDOC'), DB::raw('CASE
                                             WHEN TRBO_FLAGDOC=\'*\' THEN TRBO_NONOTA
                                             ELSE \'Belum Cetak Nota\' END NOTA'))
@@ -34,7 +34,7 @@ class InputController extends Controller
 
     public function getDataLovSupplier()
     {
-        $data = DB::table('tbmaster_supplier')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier', 'sup_pkp')
             ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
             ->orderBy('sup_namasupplier', 'asc')
@@ -50,11 +50,11 @@ class InputController extends Controller
         $status = '';
 
         $model = "*TAMBAH*";
-//        DB::select("delete from tbtr_usul_returlebih where usl_status <> 'SUDAH CETAK NOTA' and not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc) ");
-        DB::table('tbtr_usul_returlebih')
+//        DB::connection($_SESSION['connection'])->select("delete from tbtr_usul_returlebih where usl_status <> 'SUDAH CETAK NOTA' and not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc) ");
+        DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->whereRaw('usl_status <> \'SUDAH CETAK NOTA\' and not exists (select 1 from tbtr_backoffice where usl_trbo_nodoc = trbo_nodoc)')
             ->delete();
-        $count = DB::table('tbtr_usul_returlebih')
+        $count = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->where('usl_status', '!=', 'SUDAH CETAK NOTA')
             ->count();
 
@@ -76,7 +76,7 @@ class InputController extends Controller
             oci_execute($s);
 
 
-            DB::table('tbtr_tac')
+            DB::connection($_SESSION['connection'])->table('tbtr_tac')
                 ->where('tac_kodeigr', $_SESSION['kdigr'])
                 ->where('tac_nodoc', $no)
                 ->delete();
@@ -102,7 +102,7 @@ class InputController extends Controller
         $status = '';
         $notrn = $request->notrn;
 
-        $datas = DB::table('TBTR_BACKOFFICE ')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE ')
             ->leftJoin('TBMASTER_SUPPLIER', 'TRBO_KODESUPPLIER', 'SUP_KODESUPPLIER')
             ->where('TRBO_KODEIGR', '=', $_SESSION['kdigr'])
             ->where('TRBO_NODOC', '=', $notrn)
@@ -140,7 +140,7 @@ class InputController extends Controller
 
 //    -->>> alert untuk PLu BKP yg belum keluar tax3 nya <<<--
 
-            $cek = DB::Select("SELECT DISTINCT BTB_PRDCD PLU, BTB_NODOC NODOC
+            $cek = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT BTB_PRDCD PLU, BTB_NODOC NODOC
                       FROM TBTR_MSTRAN_BTB, TBMASTER_PRODMAST
                      WHERE BTB_PRDCD = PRD_PRDCD
                        AND PRD_FLAGBKP1 = 'Y'
@@ -159,7 +159,7 @@ class InputController extends Controller
                 $status = 'info';
             }
 
-            $cek2 = DB::table('TEMP_URUT_RETUR ')->count();
+            $cek2 = DB::connection($_SESSION['connection'])->table('TEMP_URUT_RETUR ')->count();
 
             if ($cek2 == 0) {
                 $message = 'Tidak ada data history penerimaan untuk Supplier ' . $supplier;
@@ -169,7 +169,7 @@ class InputController extends Controller
 
         }
 
-        $dh = DB::table("TBTR_BACKOFFICE")
+        $dh = DB::connection($_SESSION['connection'])->table("TBTR_BACKOFFICE")
             ->leftJoin('TBMASTER_PRODMAST', function ($join) {
                 $join->on('TBMASTER_PRODMAST.PRD_KODEIGR', '=', 'TBTR_BACKOFFICE.TRBO_KODEIGR')
                     ->on('TBMASTER_PRODMAST.PRD_PRDCD', '=', 'TBTR_BACKOFFICE.TRBO_PRDCD');
@@ -304,7 +304,7 @@ class InputController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         }
-        $temp = DB::table('tbtr_backoffice')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
             ->select('sup_namasupplier', 'sup_kodesupplier', 'sup_pkp')
             ->where('trbo_kodeigr', '=', $_SESSION['kdigr'])
             ->where('trbo_kodesupplier', '=', $request->kdsup)
@@ -319,7 +319,7 @@ class InputController extends Controller
         }
 
 
-        $result = DB::table('tbmaster_supplier')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier', 'sup_pkp')
             ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
             ->where('sup_kodesupplier', '=', $request->kdsup)
@@ -341,7 +341,7 @@ class InputController extends Controller
 //        dd($errm);
 
         //    -->>> alert untuk PLu BKP yg belum keluar tax3 nya <<<--
-        $cek = DB::Select("SELECT DISTINCT BTB_PRDCD PLU, BTB_NODOC NODOC
+        $cek = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT BTB_PRDCD PLU, BTB_NODOC NODOC
                       FROM TBTR_MSTRAN_BTB, TBMASTER_PRODMAST
                      WHERE BTB_PRDCD = PRD_PRDCD
                        AND PRD_FLAGBKP1 = 'Y'
@@ -361,7 +361,7 @@ class InputController extends Controller
             $status = 'info';
         }
 
-        $cek2 = DB::table('TEMP_URUT_RETUR ')->count();
+        $cek2 = DB::connection($_SESSION['connection'])->table('TEMP_URUT_RETUR ')->count();
 
         if ($cek2 == 0) {
             $message = 'Tidak ada data history penerimaan untuk Supplier ' . $result->sup_kodesupplier;
@@ -374,7 +374,7 @@ class InputController extends Controller
 
     public function getDataLovPLU()
     {
-        $result = DB::table('tbmaster_prodmast')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
@@ -397,7 +397,7 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
 
-        $result = DB::table('TBMASTER_PRODMAST')
+        $result = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
             ->leftJoin('TBMASTER_STOCK', function ($join) {
                 $join->on('TBMASTER_STOCK.ST_PRDCD', '=', 'TBMASTER_PRODMAST.PRD_PRDCD')
                     ->on('TBMASTER_STOCK.ST_LOKASI', '=', DB::raw('02'));
@@ -428,7 +428,7 @@ class InputController extends Controller
             $result->satuan = $result->prd_unit . '/' . $result->prd_frac;
         }
 
-        $cekRetur = DB::table('tbmaster_prodmast')
+        $cekRetur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->join('tbhistory_retursupplier', 'PRD_PRDCD', '=', 'hsr_prdcd')
             ->where('prd_kodedivisi', '=', '3')
             ->where('prd_kodedepartement', '=', '29')
@@ -449,14 +449,14 @@ class InputController extends Controller
         $kdsup = $request->kdsup;
 
         try {
-            $qtypb = DB::table('TEMP_URUT_RETUR')
+            $qtypb = DB::connection($_SESSION['connection'])->table('TEMP_URUT_RETUR')
                 ->selectRaw('SUM (qtypb - (qtyretur + qtyhistretur)) AS qtypb')
                 ->where('prdcd', '=', $plu)
                 ->first();
 
             $qtypb = (int)$qtypb->qtypb;
 
-            $qtyretur = DB::table('TEMP_URUT_RETUR')
+            $qtyretur = DB::connection($_SESSION['connection'])->table('TEMP_URUT_RETUR')
                 ->selectRaw('SUM (qtypb - qtyhistretur) AS qtyretur')
                 ->where('prdcd', '=', $plu)
                 ->first();
@@ -464,7 +464,7 @@ class InputController extends Controller
             $qtyretur = (int)$qtyretur->qtyretur;
 
 
-            $qtybpb = DB::table('tbtr_mstran_btb')
+            $qtybpb = DB::connection($_SESSION['connection'])->table('tbtr_mstran_btb')
                 ->whereNotNull('btb_istype')
                 ->whereNotNull('btb_invno')
                 ->where('btb_kodesupplier', '=', $kdsup)
@@ -472,7 +472,7 @@ class InputController extends Controller
                 ->sum('btb_qty');
             $qtybpb = (int)$qtybpb;
 
-            $qtyhretur = DB::table('tbhistory_retursupplier')
+            $qtyhretur = DB::connection($_SESSION['connection'])->table('tbhistory_retursupplier')
                 ->selectRaw('nvl(sum (case when hsr_qtyretur > hsr_qtypb then hsr_qtypb else hsr_qtyretur end),0) qtyhretur')
                 ->where('hsr_kodesupplier', '=', $kdsup)
                 ->where('hsr_prdcd', '=', $plu)
@@ -502,15 +502,15 @@ class InputController extends Controller
         $qtyretur = $request->qtyretur;
 
         try {
-            $temp = DB::table('tbtr_usul_returlebih')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
                 ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
                 ->where('usl_trbo_nodoc', '=', $nodoc)
                 ->where('usl_prdcd', '=', $plu)
                 ->count();
             if ($temp == 0) {
-                DB::table('tbtr_usul_returlebih')->insert(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_kodesupplier' => $kdsup, 'usl_prdcd' => $plu, 'usl_flagbkp' => $bkp, 'usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_status' => 'USULAN', 'usl_create_by' => $_SESSION['usid'], 'usl_create_dt' => Carbon::now()]);
+                DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')->insert(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_kodesupplier' => $kdsup, 'usl_prdcd' => $plu, 'usl_flagbkp' => $bkp, 'usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_status' => 'USULAN', 'usl_create_by' => $_SESSION['usid'], 'usl_create_dt' => Carbon::now()]);
             } else {
-                DB::table('tbtr_usul_returlebih')->where(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_prdcd' => $plu])
+                DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')->where(['usl_kodeigr' => $_SESSION['kdigr'], 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_prdcd' => $plu])
                     ->update(['usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_modify_by' => $_SESSION['usid'], 'usl_modify_dt' => Carbon::now()]);
             }
             return 'Cek PCS 2 OK';
@@ -529,7 +529,7 @@ class InputController extends Controller
         $plu = $request->plu;
         $nodoc = $request->nodoc;
 
-        $temp = DB::table('tbtr_usul_returlebih')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
             ->where('usl_trbo_nodoc', '=', $nodoc)
             ->where('usl_prdcd', '=', $plu)
@@ -550,7 +550,7 @@ class InputController extends Controller
         $nodoc = $request->nodoc;
 
         try {
-            DB::table('tbtr_usul_returlebih')
+            DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
                 ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
                 ->where('usl_trbo_nodoc', '=', $nodoc)
                 ->where('usl_prdcd', '=', $plu)
@@ -593,12 +593,12 @@ class InputController extends Controller
         $trbo_noreff = '';
 
         try {
-            $temp = DB::table('temp_urut_retur')
+            $temp = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                 ->where('prdcd', '=', $plu)
                 ->count(1);
 
             if ($temp > 0) {
-                $minmax = DB::table('temp_urut_retur')
+                $minmax = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                     ->selectRaw('MIN (TRN) min, MAX (TRN) max')
                     ->where('prdcd', '=', $plu)
                     ->first();
@@ -607,11 +607,11 @@ class InputController extends Controller
                 $maxtrn = $minmax->max;
             }
             $ke = $mintrn;
-//        DB::table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
+//        DB::connection($_SESSION['connection'])->table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
 //            ->update(['nodoc_bo' => $nodoc]);
 
             for ($i = $mintrn; $i < $maxtrn; $i++) {
-                $trbo = DB::table('tbtr_backoffice')
+                $trbo = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                     ->where('trbo_prdcd', '=', $plu)
                     ->where('trbo_typetrn', '=', 'K')
                     ->first();
@@ -621,7 +621,7 @@ class InputController extends Controller
                     $trbo_discrph = $trbo->trbo_discrph;
                 }
 
-                $res = DB::table('temp_urut_retur')
+                $res = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                     ->selectRaw("QTYPB, QTYHISTRETUR, NVL (NODOC_BPB, 'zz') NO_BPB, TGLINV, HRGSATUAN, NODOC_BO")
                     ->where('PRDCD', '=', $plu)
                     ->where('trn', '=', $ke)
@@ -658,13 +658,13 @@ class InputController extends Controller
                     $max_qty = $res->qtypb;
 
 //                --++get unit from mstran btb
-                    $temp = DB::table('tbtr_mstran_btb')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_btb')
                         ->where('btb_prdcd', '=', $plu)
                         ->where('btb_nodoc', '=', $no_bpb)
                         ->count(1);
 
                     if ($temp > 0) {
-                        $unit = DB::table('tbtr_mstran_btb')
+                        $unit = DB::connection($_SESSION['connection'])->table('tbtr_mstran_btb')
                             ->select('btb_unit')
                             ->where('btb_prdcd', '=', $plu)
                             ->where('btb_nodoc', '=', $no_bpb)
@@ -673,7 +673,7 @@ class InputController extends Controller
                     }
                     $satuan = $unit . '/' . $frac;
 
-                    $trbo_qty = db::table('temp_urut_retur')
+                    $trbo_qty = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                         ->select('qtyretur')
                         ->where('prdcd', '=', $plu)
                         ->where('trn', '=', $ke)
@@ -699,7 +699,7 @@ class InputController extends Controller
                         $ppn = 0;
                     }
 
-                    $temp = DB::table('temp_urut_retur')
+                    $temp = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                         ->selectRaw('istype, invno, tglinv, qtypb, hrgsatuan, nodoc_bpb, nodoc_bo')
                         ->where('prdcd', '=', $plu)
                         ->where('trn', '=', $ke)
@@ -719,7 +719,7 @@ class InputController extends Controller
                         return compact(['message', 'status']);
                     }
 
-                    $trbo_discrph = DB::table('temp_urut_retur')
+                    $trbo_discrph = DB::connection($_SESSION['connection'])->table('temp_urut_retur')
                         ->selectRaw('(discrphperpcs) * ((' . $qtyctn . ' * ' . $frac . ') + ' . $qtypcs . ') discrph')
                         ->where('prdcd', '=', $plu)
                         ->whereRaw("nvl(nodoc_bpb, 'zz') = nvl(" . $trbo_noreff . ", 'zz')")
@@ -802,7 +802,7 @@ class InputController extends Controller
     public function delete(Request $request)
     {
         $nodoc = $request->nodoc;
-        DB::table('TBTR_BACKOFFICE')
+        DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
             ->where('TRBO_NODOC', '=', $nodoc)
             ->where('TRBO_TYPETRN', '=', 'K')
             ->delete();
@@ -821,21 +821,21 @@ class InputController extends Controller
         $trbo_create_dt = Carbon::now()->format('Y-m-d');
         DB::beginTransaction();
         foreach ($request->datas as $data)
-            $temp = DB::table('TBTR_BACKOFFICE')
+            $temp = DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
                     'trbo_nodoc' => $data['nodoc'],
                     'trbo_prdcd' => $data['plu']
                 ])
                 ->count();
-        $avg_cost = DB::table('tbmaster_prodmast')
+        $avg_cost = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_avgcost')
             ->where('prd_prdcd', '=', $data['plu'])
             ->first();
 //        dd( Carbon::parse($data['tgldoc']));
         $avg_cost = $avg_cost->prd_avgcost;
         if ($temp > 0) {
-            DB::table('TBTR_BACKOFFICE')
+            DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
                     'trbo_nodoc' => $data['nodoc'],
@@ -862,7 +862,7 @@ class InputController extends Controller
                     'trbo_create_dt' => $trbo_create_dt
                 ]);
         } else {
-            DB::table('TBTR_BACKOFFICE')->insert([
+            DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')->insert([
                 'trbo_kodeigr' => $trbo_kodeigr,
                 'trbo_nodoc' => $data['nodoc'],
                 'trbo_prdcd' => $data['plu'],
@@ -898,7 +898,7 @@ class InputController extends Controller
         $nodoc = $request->nodoc;
         $kdsup = $request->kdsup;
 
-        $temp = DB::table('tbtr_usul_returlebih')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->where('usl_trbo_nodoc', '=', $nodoc)
             ->where('usl_kodesupplier', '=', $kdsup)
             ->count();
@@ -909,7 +909,7 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
 
-        $dataUsulan = DB::table('tbtr_usul_returlebih')
+        $dataUsulan = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
             ->selectRaw('usl_kodeigr, usl_trbo_nodoc, usl_kodesupplier, usl_prdcd, prd_deskripsipanjang,
                         usl_qty_retur, usl_qty_sisaretur, usl_status')
@@ -941,7 +941,7 @@ class InputController extends Controller
         $doc = (int)(substr($request->nodoc, 5));
         $nodoc = $doc;
         $kdigr = (int)($_SESSION['kdigr']);
-        $select = DB::Select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
+        $select = DB::connection($_SESSION['connection'])->select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
         $kdsup = (int)$select[0]->ret;
         $splitted_tgldoc = explode('/', $request->tgldoc);
         $dd = (int)$splitted_tgldoc[0];
@@ -1016,7 +1016,7 @@ class InputController extends Controller
             $status = 'info';
         }
 
-        $status_usul = DB::table('tbtr_usul_returlebih')
+        $status_usul = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
             ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
             ->select('usl_status')
             ->where('usl_trbo_nodoc', '=', $nodoc)
@@ -1050,7 +1050,7 @@ class InputController extends Controller
         $doc = (int)(substr($request->nodoc, 5));
         $nodoc = $doc;
         $kdigr = (int)($_SESSION['kdigr']);
-        $select = DB::Select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
+        $select = DB::connection($_SESSION['connection'])->select("Select TO_NUMBER ( TRANSLATE ('" . $request->kdsup . "','0123456789' || TRANSLATE ( '" . $request->kdsup . "', 'x123456789', 'x'),'0123456789')) ret from dual");
         $kdsup = (int)$select[0]->ret;
         $splitted_tgldoc = explode('/', $request->tgldoc);
         $dd = (int)$splitted_tgldoc[0];
@@ -1098,7 +1098,7 @@ class InputController extends Controller
 //   --otp
         $otp = $digit1 . $digit2 . $digit3 . $digit4 . $digit5 . $digit6;
         if ($request->otp == $otp) {
-            $usuls = DB::table('tbtr_usul_returlebih')
+            $usuls = DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
                 ->join('tbmaster_prodmast', 'usl_prdcd', '=', 'prd_prdcd')
                 ->selectRaw('usl_prdcd, usl_qty_retur')
                 ->where('usl_trbo_nodoc', '=', $request->nodoc)
@@ -1133,13 +1133,13 @@ class InputController extends Controller
                     }
                 }
 
-                DB::Select('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
+                DB::connection($_SESSION['connection'])->select('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
 
                 //====
 
                 $PLU = $usul->usl_prdcd;
 
-                $data_usuls = DB::table('temp_usul_retur')
+                $data_usuls = DB::connection($_SESSION['connection'])->table('temp_usul_retur')
                     ->where('prdcd', '=', $PLU)
                     ->orderBy('trn')
                     ->get();
@@ -1150,7 +1150,7 @@ class InputController extends Controller
                     $NO_BPB = $data_usul->nodoc_bpb;
                     $data->prdcd = $PLU;
 
-                    $res = DB::select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
+                    $res = DB::connection($_SESSION['connection'])->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
 
                     $data->deskripsi = $res[0]->prd_deskripsipanjang;
                     $data->desk = $res[0]->prd_deskripsipendek;
@@ -1162,14 +1162,14 @@ class InputController extends Controller
                     $data->trbo_hrgsatuan = $res[0]->hrgsatuan;
                     $data->max_qty = $res[0]->qtypb;
 //            --++Get Unit From mstran BTB
-                    $temp = DB::table('tbtr_mstran_btb')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_btb')
                         ->select('btb_unit')
                         ->where('btb_prdcd', '=', $PLU)
                         ->where('btb_nodoc', '=', $NO_BPB)
                         ->count();
 
                     if ($temp > 0) {
-                        $unit = DB::table('tbtr_mstran_btb')
+                        $unit = DB::connection($_SESSION['connection'])->table('tbtr_mstran_btb')
                             ->select('btb_unit')
                             ->where('btb_prdcd', '=', $PLU)
                             ->where('btb_nodoc', '=', $NO_BPB)
@@ -1219,7 +1219,7 @@ class InputController extends Controller
                 }
 
 
-                DB::table('tbtr_usul_returlebih')
+                DB::connection($_SESSION['connection'])->table('tbtr_usul_returlebih')
                     ->where('usl_kodeigr', '=', $_SESSION['kdigr'])
                     ->where('usl_trbo_nodoc', '=', $request->nodoc)
                     ->update(['usl_status' => 'USULAN DISETUJUI']);

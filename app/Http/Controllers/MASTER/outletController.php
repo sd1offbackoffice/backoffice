@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class outletController extends Controller
 {
     public function index(){
-        $outlet   = DB::table('tbmaster_outlet')->orderBy('out_kodeoutlet')->get()->toArray();
+        $outlet   = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')->orderBy('out_kodeoutlet')->get()->toArray();
 
         return view('MASTER.outlet', compact('outlet'));
     }

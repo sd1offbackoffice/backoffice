@@ -24,7 +24,7 @@ class PenerimaanController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->select('div_kodedivisi','div_namadivisi')
             ->where('div_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw('div_kodedivisi >= '.$div)
@@ -34,7 +34,7 @@ class PenerimaanController extends Controller
     }
 
     public function getDataLovDep(Request $request){
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
             ->where('dep_kodeigr','=',$_SESSION['kdigr'])
             ->where('dep_kodedivisi','=',$request->div)
@@ -44,7 +44,7 @@ class PenerimaanController extends Controller
     }
 
     public function getDataLovKat(Request $request){
-        $data = DB::table("tbmaster_kategori")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
             ->join('tbmaster_departement','dep_kodedepartement','=','kat_kodedepartement')
             ->select('kat_namakategori','kat_kodekategori','kat_kodedepartement','dep_kodedivisi')
             ->where('kat_kodeigr','=',$_SESSION['kdigr'])
@@ -68,19 +68,19 @@ class PenerimaanController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
         if($tipe === '1'){
-            $data = DB::select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
                     mstd_kodedepartement, dep_namadepartement,
                     mstd_kodekategoribrg, kat_namakategori,
                     mstd_nodoc, mstd_tgldoc, unit,
                     hg_beli, ctn, pcs, mstd_keterangan,
                     mstd_prdcd, prd_deskripsipanjang,
                     sum(mstd_gross) gross, sum(mstd_ocost) lcost , sum(mstd_avgcost) acost ,sum(mstd_pot) pot,
-                    sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,  
+                    sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
                     sum(total) total,
                     sum(GROSS_BKP) subgross, sum(GROSS_BTKP) bgross,
                     sum(POT_BKP) subpot, sum(POT_BTKP) bpot,
@@ -90,7 +90,7 @@ class PenerimaanController extends Controller
                     sum(TOTAL_BKP) subtotal, sum(TOTAL_BTKP)
             from (
                     select  mstd_kodedivisi, div_namadivisi,
-                            mstd_kodedepartement, dep_namadepartement, MSTD_FRAC FRAC, 
+                            mstd_kodedepartement, dep_namadepartement, MSTD_FRAC FRAC,
                             mstd_kodekategoribrg, kat_namakategori,mstd_keterangan,MSTD_QTYBONUS1 BONUS,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_gross,0)
@@ -103,19 +103,19 @@ class PenerimaanController extends Controller
                             END POT_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
                                     nvl(mstd_discrph,0)
-                            END POT_BTKP,        
+                            END POT_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_ppnrph,0)  
+                                    nvl(mstd_ppnrph,0)
                             END PPN_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_ppnrph,0) 
-                            END PPN_BTKP,        
+                                    nvl(mstd_ppnrph,0)
+                            END PPN_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_ppnbmrph,0)
                             END BM_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
                                     nvl(mstd_ppnbmrph,0)
-                            END BM_BTKP,        
+                            END BM_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_ppnbtlrph,0)
                             END BTL_BKP,
@@ -132,10 +132,10 @@ class PenerimaanController extends Controller
                             mstd_hrgsatuan hg_beli, floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs,
                             mstd_prdcd, prd_deskripsipanjang, mstd_gross,  mstd_ocost, mstd_avgcost,
                             nvl(mstd_discrph,0) mstd_pot,
-                            nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl, 
-                            (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - 
-                            (nvl(mstd_discrph,0)) total                          
-                from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast, 
+                            nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
+                            (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) -
+                            (nvl(mstd_discrph,0)) total
+                from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast,
                     tbmaster_divisi, tbmaster_departement,tbmaster_kategori
                 where msth_typetrn='I'
                     and nvl(msth_recordid,'9') <>'1'
@@ -182,7 +182,7 @@ class PenerimaanController extends Controller
             return $dompdf->stream('LAPORAN PENERIMAAN ANTAR CABANG RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         }
         else{
-            $data = DB::select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
                     mstd_kodedepartement, dep_namadepartement,
                     mstd_kodekategoribrg, kat_namakategori,
                     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -190,7 +190,7 @@ class PenerimaanController extends Controller
                     hg_beli, ctn, pcs, mstd_keterangan,
                     mstd_prdcd, prd_deskripsipanjang,
                     sum(mstd_gross) gross, sum(mstd_ocost) lcost , sum(mstd_avgcost) acost ,sum(mstd_pot) pot,
-                    sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,  
+                    sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
                     sum(total) total,
                     sum(GROSS_BKP) grossbkp, sum(GROSS_BTKP) grossbtkp,
                     sum(POT_BKP) potbkp, sum(POT_BTKP) potbtkp,
@@ -200,7 +200,7 @@ class PenerimaanController extends Controller
                     sum(TOTAL_BKP) totalbkp, sum(TOTAL_BTKP) totalbtkp
             from (
                     select  mstd_kodedivisi, div_namadivisi,
-                            mstd_kodedepartement, dep_namadepartement, MSTD_FRAC FRAC, 
+                            mstd_kodedepartement, dep_namadepartement, MSTD_FRAC FRAC,
                             mstd_kodekategoribrg, kat_namakategori,mstd_keterangan,MSTD_QTYBONUS1 BONUS,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_gross,0)
@@ -213,19 +213,19 @@ class PenerimaanController extends Controller
                             END POT_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
                                     nvl(mstd_discrph,0)
-                            END POT_BTKP,        
+                            END POT_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_ppnrph,0)  
+                                    nvl(mstd_ppnrph,0)
                             END PPN_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_ppnrph,0) 
-                            END PPN_BTKP,        
+                                    nvl(mstd_ppnrph,0)
+                            END PPN_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_ppnbmrph,0)
                             END BM_BKP,
                             CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
                                     nvl(mstd_ppnbmrph,0)
-                            END BM_BTKP,        
+                            END BM_BTKP,
                             CASE WHEN mstd_bkp = 'Y' THEN
                                     nvl(mstd_ppnbtlrph,0)
                             END BTL_BKP,
@@ -242,11 +242,11 @@ class PenerimaanController extends Controller
                             mstd_hrgsatuan hg_beli, floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs,
                             mstd_prdcd, prd_deskripsipanjang, mstd_gross,  mstd_ocost, mstd_avgcost,
                             nvl(mstd_discrph,0) mstd_pot,
-                            nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl, 
-                            (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - 
+                            nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
+                            (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) -
                             (nvl(mstd_discrph,0)) total,
                             prs_namaperusahaan, prs_namacabang, prs_namawilayah
-                from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast, 
+                from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast,
                     tbmaster_divisi, tbmaster_departement,tbmaster_kategori,
                     tbmaster_perusahaan
                 where msth_typetrn='I'
@@ -265,7 +265,7 @@ class PenerimaanController extends Controller
                     and kat_kodeigr = mstd_kodeigr
                     and kat_kodedepartement = mstd_kodedepartement
                     and kat_kodekategori= mstd_kodekategoribrg
-                    and div_kodedivisi||dep_kodedepartement||kat_kodekategori 
+                    and div_kodedivisi||dep_kodedepartement||kat_kodekategori
                     between '".$div1."'||'".$dep1."'||'".$kat1."' and '".$div2."'||'".$dep2."'||'".$kat2."'
                     and prs_kodeigr=msth_kodeigr)
             group by mstd_kodedivisi, div_namadivisi,

@@ -18,7 +18,7 @@ class PLUMROMonitoringController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::table('tbtr_monitoringplu')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
             ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
             ->whereNotNull('mpl_kodemonitoring')
             ->distinct()
@@ -28,7 +28,7 @@ class PLUMROMonitoringController extends Controller
     }
 
     public function getMonitoring(Request $request){
-        $data = DB::table('tbtr_monitoringplu')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
             ->select('mpl_namamonitoring')
             ->where('mpl_kodeigr','=',$_SESSION['kdigr'])
             ->where('mpl_kodemonitoring','=',$request->kode)
@@ -47,7 +47,7 @@ class PLUMROMonitoringController extends Controller
     }
 
     public function getData(Request $request){
-        $data = DB::select("SELECT mpl_prdcd plu, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN, MPT_MAXQTY max_ctn, (mpt_maxqty * prd_frac) max_pcs
+        $data = DB::connection($_SESSION['connection'])->select("SELECT mpl_prdcd plu, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN, MPT_MAXQTY max_ctn, (mpt_maxqty * prd_frac) max_pcs
 					FROM TBMASTER_PRODMAST, tbtr_monitoringplu, tbmaster_maxpalet
 					WHERE PRD_PRDCD(+) = mpl_prdcd AND MPT_PRDCD(+) = PRD_PRDCD
 					AND mpl_kodemonitoring = '".$request->kode."'
@@ -57,13 +57,13 @@ class PLUMROMonitoringController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         if($request->orderBy == 'plu')
             $orderBy = 'ORDER BY MPL_PRDCD ASC';
         else $orderBy = 'ORDER BY PRD_DESC ASC';
 
-        $data = DB::select("SELECT DISTINCT MPL_PRDCD, PRD_DESC, PRD_KODETAG, SATUAN,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MPL_PRDCD, PRD_DESC, PRD_KODETAG, SATUAN,
                 HRG_1, HRG_D, HRG_C, HRG_B, HRG_E, HRG_A, ST_SALDOAKHIR, ' ' KET
                 FROM TBTR_MONITORINGPLU, (SELECT ST_PRDCD, ST_SALDOAKHIR FROM TBMASTER_STOCK WHERE ST_LOKASI=01 ),
                 (

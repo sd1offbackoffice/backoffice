@@ -20,7 +20,7 @@ use File;
 class RekapEvaluasiController extends Controller
 {
     public function index(){
-        $monitoring = DB::table('tbtr_monitoringmember')
+        $monitoring = DB::connection($_SESSION['connection'])->table('tbtr_monitoringmember')
             ->select('mem_kodemonitoring','mem_namamonitoring')
             ->where('mem_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('mem_kodemonitoring')
@@ -33,7 +33,7 @@ class RekapEvaluasiController extends Controller
     public function getLovLangganan(Request $request){
         $where = "(cus_kodemember like '%".$request->search."%' OR cus_namamember like '%".$request->search."%')";
 
-        $data = DB::table('tbmaster_customer')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
             ->select('cus_kodemember','cus_namamember')
             ->whereRaw("(cus_recordid IS NULL OR cus_recordid <> 1)")
             ->whereRaw($where)
@@ -45,7 +45,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function checkLangganan(Request $request){
-        $data = DB::table('tbmaster_customer')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
             ->where('cus_kodemember','=',$request->value)
             ->whereRaw("(cus_recordid IS NULL OR cus_recordid <> 1)")
             ->first();
@@ -54,7 +54,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function getLovOutlet(){
-        $data = DB::table('tbmaster_outlet')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
             ->select('out_kodeoutlet','out_namaoutlet')
             ->where('out_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('out_kodeoutlet')
@@ -64,7 +64,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function checkOutlet(Request $request){
-        $data = DB::table('tbmaster_outlet')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
             ->where('out_kodeoutlet','=',$request->value)
             ->where('out_kodeigr','=',$_SESSION['kdigr'])
             ->first();
@@ -73,7 +73,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function getLovSubOutlet(){
-        $data = DB::table('tbmaster_suboutlet')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
             ->select('sub_kodeoutlet','sub_kodesuboutlet','sub_namasuboutlet')
             ->where('sub_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('sub_kodesuboutlet')
@@ -83,7 +83,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function checkSubOutlet(Request $request){
-        $data = DB::table('tbmaster_suboutlet')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
             ->where('sub_kodesuboutlet','=',$request->value)
             ->where('sub_kodeigr','=',$_SESSION['kdigr'])
             ->first();
@@ -92,7 +92,7 @@ class RekapEvaluasiController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::table('tbtr_monitoringmember')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringmember')
             ->select('mem_kodemonitoring','mem_namamonitoring')
             ->where('mem_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('mem_kodemonitoring')
@@ -143,7 +143,7 @@ class RekapEvaluasiController extends Controller
         else $where_monitoring = " AND exists (SELECT 1 FROM TBTR_MONITORINGMEMBER WHERE mem_kodemonitoring = '".$request->monitoring."' and trjd_cus_kodemember = mem_kodemember)";
 
 //        if($request->jenis_customer == 'MERAH' || $request->jenis_customer == 'ALL')
-//            $poin = DB::select("SELECT nvl(sum(  POR_PEROLEHANPOINT * 1000), 0) nilai FROM TBTR_PEROLEHANPOIN, tbmaster_customer
+//            $poin = DB::connection($_SESSION['connection'])->select("SELECT nvl(sum(  POR_PEROLEHANPOINT * 1000), 0) nilai FROM TBTR_PEROLEHANPOIN, tbmaster_customer
 //		WHERE substr(POR_KODETRANSAKSI, 1, 8) >= to_char('".$tgl1."', 'yyyyMMdd') and substr(POR_KODETRANSAKSI, 1, 8) <= to_char('".$tgl2."', 'yyyyMMdd')
 //		AND POR_KODETRANSAKSI LIKE '%S' AND por_deskripsi LIKE 'RETAILER%' and por_kodeigr = '".$_SESSION['kdigr']."'
 //            and cus_kodemember = por_kodemember
@@ -153,10 +153,10 @@ class RekapEvaluasiController extends Controller
 
         $counter = $request->counter;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT out_namaoutlet out_namaoutlet, sub_namasuboutlet,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT out_namaoutlet out_namaoutlet, sub_namasuboutlet,
 		   cus_kodeoutlet AS fOutlt, cus_kodesuboutlet AS fsoutl,
 		   SUM(CASE WHEN cus_kodeigr = '".$_SESSION['kdigr']."' THEN fwSlip END ) oTslip,
 		   SUM(CASE WHEN cus_kodeigr = '".$_SESSION['kdigr']."' THEN fwProd END ) oTprod,
@@ -387,10 +387,10 @@ class RekapEvaluasiController extends Controller
                 $order = ' order by fcusno';
             else $order = ' order by fwamt desc';
 
-            $perusahaan = DB::table('tbmaster_perusahaan')
+            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->first();
 
-            $data = DB::select("SELECT out_namaoutlet, sub_namasuboutlet, cus_namamember fNama, subnumb,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT out_namaoutlet, sub_namasuboutlet, cus_namamember fNama, subnumb,
 		   cus_kodeoutlet AS fOutlt, upper(cus_kodesuboutlet) AS fsoutl, cusNo AS fCusNo, wFreq AS fwFreq, fwSlip, fbmemb, fwProd, wAmt AS fwAmt,lCost AS flCost, (wamt-lcost) AS fGrsMargn
 	FROM TBMASTER_OUTLET, (SELECT sub_kodesuboutlet, rownum subnumb,  sub_namasuboutlet FROM TBMASTER_SUBOUTLET WHERE sub_kodeigr = '".$_SESSION['kdigr']."'),
 	(	SELECT cusnoA no_cusno, COUNT(TRJD_TRANSACTIONNO) fwSlip, CASE WHEN COUNT(TRJD_TRANSACTIONNO) = 1 THEN 1 ELSE 0 END fbmemb

@@ -19,7 +19,7 @@ class PerCusController extends Controller
     public function index()
     {
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table('TBTR_SJAS_H')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_H')
             ->selectRaw('SJH_NOSTRUK')
             ->selectRaw('SJH_TGLSTRUK')
             ->selectRaw('SJH_KODECUSTOMER')
@@ -39,7 +39,7 @@ class PerCusController extends Controller
     }
     public function GetData(){
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table('TBTR_SJAS_H')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_H')
             ->selectRaw('SJH_NOSTRUK')
             ->selectRaw('SJH_TGLSTRUK')
             ->selectRaw('SJH_KODECUSTOMER')
@@ -60,7 +60,7 @@ class PerCusController extends Controller
     }
     public function SortCust(){
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table('TBTR_SJAS_H')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_H')
             ->selectRaw('SJH_NOSTRUK')
             ->selectRaw('SJH_TGLSTRUK')
             ->selectRaw('SJH_KODECUSTOMER')
@@ -82,7 +82,7 @@ class PerCusController extends Controller
     }
     public function SortTgl(){
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table('TBTR_SJAS_H')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_H')
             ->selectRaw('SJH_NOSTRUK')
             ->selectRaw('SJH_TGLSTRUK')
             ->selectRaw('SJH_KODECUSTOMER')
@@ -112,7 +112,7 @@ class PerCusController extends Controller
         $noStruk = $request->noStruk;
         $partStruk = explode(" . ",$noStruk);
 
-        $datas = DB::table('TBTR_JUALDETAIL')
+        $datas = DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
             ->selectRaw('TRJD_SEQNO')
             ->selectRaw('TRJD_PRDCD')
             ->selectRaw('TRJD_QUANTITY')
@@ -135,7 +135,7 @@ class PerCusController extends Controller
             $qty = null;
         }else{
             for($i = 0; $i < sizeof($datas); $i++){
-                $qty[$i] = DB::table('TBTR_SJAS_D')
+                $qty[$i] = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_D')
                     ->selectRaw("SUM(SJD_QTYSJAS) QTY")
                     ->where('SJD_KODEIGR','=',$kodeigr)
                     ->where('SJD_NOSJAS','=',$noSJAS)
@@ -159,7 +159,7 @@ class PerCusController extends Controller
             $p_and = " AND SJH_KODECUSTOMER = '".$kodeMem."' AND SJH_NOSTRUK = '".$struk."'";
         }
 
-        $cursor = DB::select("SELECT prs_namaperusahaan, prs_namacabang, 'Print: ' || TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info,
+        $cursor = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, 'Print: ' || TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info,
 sjh_kodecustomer, sjh_tglstruk, SUBSTR(sjh_nostruk,1,2) || '.' || SUBSTR(sjh_nostruk,3,3) || '.' || SUBSTR(sjh_nostruk,6,5) struk, sjh_tglpenitipan,
 CASE WHEN NVL(sjh_nosjas, '1234567') = '1234567' THEN 'Blm Pernah Diambil' ELSE 'Sdh ' || TO_CHAR(sjh_frektahapan,'999') || 'x Srt Jalan' END status,
 cus_namamember,  SJH_NOSJAS,
@@ -188,7 +188,7 @@ ORDER BY cus_namamember, sjh_tglstruk, sjh_nostruk, trjd_seqno");
         $p_custinfo = "";
         if($all == 'Y'){
             $p_and = '';
-            $counter = DB::table("TBTR_SJAS_H")
+            $counter = DB::connection($_SESSION['connection'])->table("TBTR_SJAS_H")
                 ->selectRaw("distinct SJH_KODECUSTOMER as SJH_KODECUSTOMER")
                 ->where('SJH_KODEIGR','=',$kodeigr)
                 ->whereRaw("NVL(SJH_FLAGSELESAI, 'N') <> 'Y'")
@@ -200,7 +200,7 @@ ORDER BY cus_namamember, sjh_tglstruk, sjh_nostruk, trjd_seqno");
             $p_and = " AND SJH_KODECUSTOMER = '".$kodeMem."' AND SJH_NOSTRUK = '".$struk."'";
         }
 
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, 'Print: ' || TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, 'Print: ' || TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info,
 sjh_kodecustomer, sjh_tglstruk, SUBSTR(sjh_nostruk,1,2) || '.' || SUBSTR(sjh_nostruk,3,3) || '.' || SUBSTR(sjh_nostruk,6,5) struk, sjh_tglpenitipan,
 CASE WHEN NVL(sjh_nosjas, '1234567') = '1234567' THEN 'Blm Pernah Diambil' ELSE 'Sdh ' || TO_CHAR(sjh_frektahapan,'999') || 'x Srt Jalan' END status,
 cus_namamember,  SJH_NOSJAS,
@@ -217,7 +217,7 @@ AND prs_kodeigr = sjh_kodeigr
 ORDER BY cus_namamember, sjh_tglstruk, sjh_nostruk, trjd_seqno");
 
         for($i = 0; $i < sizeof($datas); $i++){
-            $qty = DB::table('TBTR_SJAS_D')
+            $qty = DB::connection($_SESSION['connection'])->table('TBTR_SJAS_D')
                 ->selectRaw("SUM(SJD_QTYSJAS) QTY")
                 ->where('SJD_KODEIGR','=',$kodeigr)
                 ->where('SJD_NOSJAS','=',$datas[$i]->sjh_nosjas)
@@ -228,7 +228,7 @@ ORDER BY cus_namamember, sjh_tglstruk, sjh_nostruk, trjd_seqno");
         }
         //PRINT
         $path = 'BTAS.MONITORING.PerCus-pdf';
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview($path,
             ['kodeigr' => $kodeigr, 'data' => $datas, 'p_custinfo' => $p_custinfo, 'sisa' => $sisa, 'perusahaan' => $perusahaan]);

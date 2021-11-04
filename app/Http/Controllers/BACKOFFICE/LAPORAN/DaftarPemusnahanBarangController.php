@@ -26,7 +26,7 @@ class DaftarPemusnahanBarangController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->select('div_kodedivisi', 'div_namadivisi')
             ->where('div_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw('div_kodedivisi >= ' . $div)
@@ -37,7 +37,7 @@ class DaftarPemusnahanBarangController extends Controller
 
     public function getDataLovDep(Request $request)
     {
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement', 'dep_namadepartement', 'dep_kodedivisi')
             ->where('dep_kodeigr', '=', $_SESSION['kdigr'])
             ->where('dep_kodedivisi', '=', $request->div)
@@ -48,7 +48,7 @@ class DaftarPemusnahanBarangController extends Controller
 
     public function getDataLovKat(Request $request)
     {
-        $data = DB::table("tbmaster_kategori")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
             ->join('tbmaster_departement', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('kat_namakategori', 'kat_kodekategori', 'kat_kodedepartement', 'dep_kodedivisi')
             ->where('kat_kodeigr', '=', $_SESSION['kdigr'])
@@ -67,7 +67,7 @@ class DaftarPemusnahanBarangController extends Controller
             $sup = 1;
         else $sup = $request->sup;
 
-        $data = DB::table('tbmaster_supplier')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
             ->where('sup_kodesupplier', '>=', $sup)
@@ -90,12 +90,12 @@ class DaftarPemusnahanBarangController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
         if ($tipe === '1') {
-            $data = DB::select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang,
@@ -150,7 +150,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
-            $data = DB::select("select plu, barang, kemasan,
+            $data = DB::connection($_SESSION['connection'])->select("select plu, barang, kemasan,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
@@ -212,7 +212,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, mstd_prdcd
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
-            $data = DB::select("select plu, barang, kemasan,
+            $data = DB::connection($_SESSION['connection'])->select("select plu, barang, kemasan,
         mstd_nodoc, mstd_tgldoc,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,

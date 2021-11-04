@@ -21,7 +21,7 @@ class PenerimaanTransferController extends Controller
     }
 
     public function getDataTSJ(){
-        $datatsj = DB::table('tbtr_tolakansj')
+        $datatsj = DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
             ->selectRaw("tsj_nodokumen no, TO_CHAR(tsj_tgldokumen,'DD/MM/YYYY') tgl, count(1) as jum")
             ->whereRaw("NVL(tsj_recordid,'0') <> '1'")
             ->where('tsj_kodeigr','=',$_SESSION['kdigr'])
@@ -34,7 +34,7 @@ class PenerimaanTransferController extends Controller
     }
 
     public function getDetailTSJ(Request $request){
-        $detail = DB::table('tbtr_tolakansj')
+        $detail = DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('prd_prdcd','=','tsj_prdcd');
                 $join->on('prd_kodeigr','=','tsj_kodeigr');
@@ -53,7 +53,7 @@ class PenerimaanTransferController extends Controller
         try{
             $docs = $request->docs;
 
-            $recs = DB::table('tbtr_tolakansj')
+            $recs = DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                 ->whereRaw("nvl(tsj_recordid,' ') <> '1'")
                 ->where('tsj_lokasiterima','=',$_SESSION['kdigr'])
                 ->where('tsj_kodeigr','=',$_SESSION['kdigr'])
@@ -82,7 +82,7 @@ class PenerimaanTransferController extends Controller
 
                 $step = 1;
 
-                $jum = DB::table('tbmaster_prodmast')
+                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->selectRaw("nvl(prd_recordid,'0') recid, prd_deskripsipendek, prd_kodecabang, prd_kategoritoko")
                     ->where('prd_prdcd','=',$rec->tsj_prdcd)
                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -111,7 +111,7 @@ class PenerimaanTransferController extends Controller
                 }
 
                 if($keterx != ''){
-                    DB::table('tbtr_tolakansj')
+                    DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                         ->where('tsj_kodeigr','=',$_SESSION['kdigr'])
                         ->where('tsj_nodokumen','=',$rec->tsj_nodokumen)
                         ->where('tsj_prdcd','=',$rec->tsj_prdcd)
@@ -131,7 +131,7 @@ class PenerimaanTransferController extends Controller
 
                     foreach($docs as $doc){
                         if($rec->tsj_nodokumen == $doc){
-                            $jum = DB::table('tbmaster_stock')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                 ->select('st_saldoakhir','st_avgcost')
                                 ->where('st_kodeigr','=',$_SESSION['kdigr'])
                                 ->where('st_lokasi','=','01')
@@ -149,7 +149,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 9;
 
-                            $jum = DB::table('tbtr_mstran_h')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                 ->where('msth_typetrn','=','I')
                                 ->whereRaw("TRIM(msth_nopo) = TRIM('".$rec->tsj_nodokumen."')")
                                 ->where('msth_kodeigr','=',$_SESSION['kdigr'])
@@ -174,7 +174,7 @@ class PenerimaanTransferController extends Controller
 
                                 $alert[] = 'DATA DI TABLE TBTR_TOLAKANSJ DENGAN NOMOR DOKUMEN '.$rec->tsj_nodokumen.' SUDAH PERNAH DIPROSES';
 
-                                DB::table('tbtr_tolakansj')
+                                DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                                     ->where('tsj_prdcd','=',$rec->tsj_prdcd)
                                     ->where('tsj_nodokumen','=',$rec->tsj_nodokumen)
                                     ->where('tsj_kodeigr','=',$rec->tsj_kodeigr)
@@ -183,13 +183,13 @@ class PenerimaanTransferController extends Controller
 
                             $step = 120;
 
-                            $jum = DB::table('temp_tolakansj')
+                            $jum = DB::connection($_SESSION['connection'])->table('temp_tolakansj')
                                 ->where('docno','=',$rec->tsj_nodokumen)
                                 ->where('prdcd','=',$rec->tsj_prdcd)
                                 ->get();
 
                             if(count($jum) == 0) {
-                                DB::insert("INSERT INTO TEMP_TOLAKANSJ
+                                DB::connection($_SESSION['connection'])->insert("INSERT INTO TEMP_TOLAKANSJ
 									VALUES(
 									'" . $rec->tsj_recordid . "',
                                     '" . $rec->tsj_recordtype . "',
@@ -249,13 +249,13 @@ class PenerimaanTransferController extends Controller
 									)");
                             }
 
-                            $jum = DB::table('tbmaster_barangbaru')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                 ->where('pln_kodeigr','=',$_SESSION['kdigr'])
                                 ->where('pln_prdcd','=',$rec->tsj_prdcd)
                                 ->first();
 
                             if($jum){
-                                DB::table('tbmaster_barangbaru')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                     ->where('pln_kodeigr','=',$_SESSION['kdigr'])
                                     ->where('pln_prdcd','=',$rec->tsj_prdcd)
                                     ->update([
@@ -265,7 +265,7 @@ class PenerimaanTransferController extends Controller
                                     ]);
                             }
 
-                            $jum = DB::table('tbtr_ipb')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_ipb')
                                 ->where('ipb_noipb','=',$rec->tsj_noreferensi1)
                                 ->where('ipb_tglipb','=',$rec->tsj_tglreferensi1)
                                 ->where('ipb_prdcd','=',substr($rec->tsj_prdcd,0,6).'0')
@@ -275,7 +275,7 @@ class PenerimaanTransferController extends Controller
                             if(count($jum) > 0){
                                 $step = 16;
 
-                                DB::table('tbtr_ipb')
+                                DB::connection($_SESSION['connection'])->table('tbtr_ipb')
                                     ->where('ipb_noipb','=',$rec->tsj_noreferensi1)
                                     ->where('ipb_tglipb','=',$rec->tsj_tglreferensi1)
                                     ->where('ipb_prdcd','=',substr($rec->tsj_prdcd,0,6).'0')
@@ -288,7 +288,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 17;
 
-                            $jum = DB::table('tbtr_mstran_d')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->select('mstd_fobkp')
                                 ->where('mstd_typetrn','=','I')
                                 ->where('mstd_nopo','=',$rec->tsj_nodokumen)
@@ -303,7 +303,7 @@ class PenerimaanTransferController extends Controller
 
                                 $stmastb = 0;
 
-                                DB::table('tbtr_mstran_d')
+                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->where('mstd_typetrn','=','I')
                                     ->where('mstd_nopo','=',$rec->tsj_nodokumen)
                                     ->where('mstd_prdcd','=',$rec->tsj_prdcd)
@@ -366,7 +366,7 @@ class PenerimaanTransferController extends Controller
                                 $step = 22;
                                 $stmastb = 1;
 
-                                DB::table('tbtr_mstran_d')
+                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->insert([
                                         'mstd_recordid' => $rec->tsj_recordid,
                                         'mstd_nodoc' => $ndoc,
@@ -422,14 +422,14 @@ class PenerimaanTransferController extends Controller
                                         'mstd_create_dt' => DB::RAW("SYSDATE")
                                     ]);
 
-                                $jum = DB::table('tbtr_mstran_h')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                     ->where('msth_kodeigr','=',$_SESSION['kdigr'])
                                     ->where('msth_nodoc','=',$rec->tsj_nodokumen)
                                     ->where('msth_typetrn','=','I')
                                     ->first();
 
                                 if(!$jum){
-                                    DB::table('tbtr_mstran_h')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                         ->insert([
                                             'msth_kodeigr' => $_SESSION['kdigr'],
                                             'msth_recordid' => $rec->tsj_recordid,
@@ -455,14 +455,14 @@ class PenerimaanTransferController extends Controller
                                 }
                             }
 
-                            $jum = DB::table('temp_hstdok')
+                            $jum = DB::connection($_SESSION['connection'])->table('temp_hstdok')
                                 ->where('nodokumen','=',$rec->tsj_nodokumen)
                                 ->first();
 
                             if(!$jum){
                                 $step = 24;
 
-                                DB::table('temp_hstdok')
+                                DB::connection($_SESSION['connection'])->table('temp_hstdok')
                                     ->insert([
                                         'dokref' => $rec->tsj_nodokumen,
                                         'tglref' => $rec->tsj_tgldokumen,
@@ -473,7 +473,7 @@ class PenerimaanTransferController extends Controller
                             }
 
                             if($rec->tsj_lokasikirim){
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->select('prd_frac','prd_unit','prd_lastcost','prd_avgcost')
                                     ->where('prd_prdcd','=',$rec->tsj_prdcd)
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -490,7 +490,7 @@ class PenerimaanTransferController extends Controller
                                         $q = 1000;
                                     else $q = 1;
 
-                                    $jum = DB::table('tbmaster_prodmast')
+                                    $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                         ->where('prd_prdcd','=',$rec->tsj_prdcd)
                                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                                         ->where('prd_kodesupplier','=',$rec->tsj_lokasikirim)
@@ -499,7 +499,7 @@ class PenerimaanTransferController extends Controller
                                     if(!$jum){
                                         $step = 30;
 
-                                        DB::table('tbmaster_spd')
+                                        DB::connection($_SESSION['connection'])->table('tbmaster_spd')
                                             ->insert([
                                                 'spd_kodeigr' => $_SESSION['kdigr'],
                                                 'spd_prdcd' => $rec->tsj_prdcd,
@@ -517,7 +517,7 @@ class PenerimaanTransferController extends Controller
                                             ]);
                                     }
                                     else{
-                                        DB::table('tbmaster_spd')
+                                        DB::connection($_SESSION['connection'])->table('tbmaster_spd')
                                             ->where('prd_prdcd','=',$rec->tsj_prdcd)
                                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                                             ->where('prd_kodesupplier','=',$rec->tsj_lokasikirim)
@@ -548,14 +548,14 @@ class PenerimaanTransferController extends Controller
                             $step = 32;
 
                             if($stmastb == 1){
-                                $jum = DB::table('tbmaster_stock')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->whereRaw("substr(st_prdcd,1,6)||'0' = substr('".$rec->tsj_prdcd."',1,6)||'0'")
                                     ->where('st_lokasi','=','01')
                                     ->where('st_kodeigr','=',$_SESSION['kdigr'])
                                     ->first();
 
                                 if(!$jum){
-                                    DB::table('tbmaster_stock')
+                                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->insert([
                                             'st_kodeigr' => $_SESSION['kdigr'],
                                             'st_prdcd' => substr($rec->tsj_prdcd,0,6).'0',
@@ -582,7 +582,7 @@ class PenerimaanTransferController extends Controller
                                 $ckcost = 1;
                                 $step = 36;
 
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->select('prd_frac','prd_unit','prd_lastcost','prd_avgcost')
                                     ->where('prd_prdcd','=',$rec->tsj_prdcd)
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -598,7 +598,7 @@ class PenerimaanTransferController extends Controller
                                         $ckcost = 0;
                                 }
 
-                                $jum = DB::table('tbtr_mstran_d')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->select('mstd_ocost','mstd_posqty')
                                     ->where('mstd_typetrn','=','I')
                                     ->where('mstd_nopo','=',$rec->tsj_nodokumen)
@@ -612,7 +612,7 @@ class PenerimaanTransferController extends Controller
 
                                     $step = 42;
 
-                                    $stacost = DB::table('tbmaster_stock')
+                                    $stacost = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->select('st_avgcost')
                                         ->where('st_prdcd','=',substr($rec->tsj_prdcd,0,6).'0')
                                         ->where('st_lokasi','=','01')
@@ -625,7 +625,7 @@ class PenerimaanTransferController extends Controller
                                         $q = 1;
                                     else $q = $nfrac;
 
-                                    DB::table('tbtr_mstran_d')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                         ->where('mstd_typetrn','=','I')
                                         ->where('mstd_nopo','=',$rec->tsj_nodokumen)
                                         ->where('mstd_prdcd','=',$rec->tsj_prdcd)
@@ -719,7 +719,7 @@ class PenerimaanTransferController extends Controller
                                         $nacostx = $noldacostx;
                                     }
 
-                                    DB::update("UPDATE tbmaster_prodmast
+                                    DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_prodmast
                                    SET prd_avgcost =
                                           CASE
                                              WHEN SUBSTR (prd_prdcd, -1, 1) = '1' OR prd_unit = 'KG'
@@ -745,7 +745,7 @@ class PenerimaanTransferController extends Controller
                                         $q = 1000;
                                     else $q = 1;
 
-                                    DB::table('tbtr_mstran_d')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                         ->where('mstd_typetrn','=','I')
                                         ->where('mstd_nopo','=',$rec->tsj_nodokumen)
                                         ->where('mstd_prdcd','=',$rec->tsj_prdcd)
@@ -756,7 +756,7 @@ class PenerimaanTransferController extends Controller
 
                                     $step = 63;
 
-                                    $old = DB::table('tbmaster_stock')
+                                    $old = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->select('st_saldoakhir','st_trfin','st_lastcost')
                                         ->where('st_prdcd','=',substr($rec->tsj_prdcd,0,6).'0')
                                         ->where('st_lokasi','=','01')
@@ -767,7 +767,7 @@ class PenerimaanTransferController extends Controller
                                         $lc = $nacostx;
                                     else $lc = 0;
 
-                                    DB::table('tbmaster_stock')
+                                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->where('st_prdcd','=',substr($rec->tsj_prdcd,0,6).'0')
                                         ->where('st_lokasi','=','01')
                                         ->where('st_kodeigr','=',$_SESSION['kdigr'])
@@ -782,7 +782,7 @@ class PenerimaanTransferController extends Controller
 
                                     $step = 64;
 
-                                    $jum = DB::table('tbhistory_cost')
+                                    $jum = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                                         ->where('hcs_prdcd','=',$rec->tsj_prdcd)
                                         ->where('hcs_tglbpb','=',$rec->tsj_tgldokumen)
                                         ->where('hcs_nodocbpb','=',$rec->tsj_nodokumen)
@@ -790,7 +790,7 @@ class PenerimaanTransferController extends Controller
                                         ->first();
 
                                     if(!$jum){
-                                        DB::table('tbhistory_cost')
+                                        DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                                             ->insert([
                                                 'hcs_kodeigr' => $_SESSION['kdigr'],
                                                 'hcs_typetrn' => 'I',
@@ -813,7 +813,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 66;
 
-                            DB::table('tbtr_tolakansj')
+                            DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                                 ->where('tsj_prdcd','=',$rec->tsj_prdcd)
                                 ->where('tsj_nodokumen','=',$rec->tsj_nodokumen)
                                 ->where('tsj_kodeigr','=',$_SESSION['kdigr'])
@@ -835,10 +835,10 @@ class PenerimaanTransferController extends Controller
     }
 
     public function getDataTO(){
-        DB::table('temp_to')
+        DB::connection($_SESSION['connection'])->table('temp_to')
             ->delete();
 
-        $recs = DB::table('tbtr_to')
+        $recs = DB::connection($_SESSION['connection'])->table('tbtr_to')
             ->selectRaw("docno, trim(dateo) as dateo, count(1) as jum")
             ->where('loc2','=',$_SESSION['kdigr'])
             ->groupBy(['docno','dateo'])
@@ -846,7 +846,7 @@ class PenerimaanTransferController extends Controller
             ->get();
 
         foreach($recs as $rec){
-            DB::table('temp_to')
+            DB::connection($_SESSION['connection'])->table('temp_to')
                 ->insert([
                     'to_flag' => 0,
                     'to_nomr' => $rec->docno,
@@ -855,7 +855,7 @@ class PenerimaanTransferController extends Controller
                 ]);
         }
 
-        $data = DB::table('temp_to')
+        $data = DB::connection($_SESSION['connection'])->table('temp_to')
             ->selectRaw('to_nomr as docno, to_tagl as tgl, to_item as jml')
             ->orderBy('to_nomr','asc')
             ->get();
@@ -906,7 +906,7 @@ class PenerimaanTransferController extends Controller
 
             $result = [];
 
-            DB::table('tbtr_to')
+            DB::connection($_SESSION['connection'])->table('tbtr_to')
                 ->whereIn('docno',$nodoc)
                 ->delete();
 
@@ -934,10 +934,10 @@ class PenerimaanTransferController extends Controller
                     fclose($handle);
                 }
 
-                DB::table('tbtr_to')
+                DB::connection($_SESSION['connection'])->table('tbtr_to')
                     ->insert($data);
 
-                DB::table('temp_to')
+                DB::connection($_SESSION['connection'])->table('temp_to')
                     ->insert([
                         'to_flag' => 0,
                         'to_nomr' => $data[0]['DOCNO'],
@@ -960,7 +960,7 @@ class PenerimaanTransferController extends Controller
     }
 
     public function getDetailTO(Request $request){
-        $detail = DB::table('tbtr_to')
+        $detail = DB::connection($_SESSION['connection'])->table('tbtr_to')
             ->select('prdcd','desc2','qty','qtyk')
             ->where('docno','=',$request->no)
             ->orderBy('prdcd','asc')
@@ -976,12 +976,12 @@ class PenerimaanTransferController extends Controller
         try{
             DB::beginTransaction();
 
-            $jum = DB::table('tbtr_to')
+            $jum = DB::connection($_SESSION['connection'])->table('tbtr_to')
                 ->where('loc2','<>',$_SESSION['kdigr'])
                 ->first();
 
             if($jum){
-                DB::table('tbtr_to')
+                DB::connection($_SESSION['connection'])->table('tbtr_to')
                     ->whereRaw("NVL(loc2,' ') <> '".$_SESSION['kdigr']."'")
                     ->delete();
 
@@ -993,13 +993,13 @@ class PenerimaanTransferController extends Controller
 
                 $lastnodoc = null;
 
-                $recs = DB::table('tbtr_to')
+                $recs = DB::connection($_SESSION['connection'])->table('tbtr_to')
                     ->whereIn('docno',$no)
                     ->get();
 
                 $jammulai = DB::RAW("TO_CHAR(SYSDATE,'HH24:MI:SS')");
 
-                DB::table('tbtr_status')
+                DB::connection($_SESSION['connection'])->table('tbtr_status')
                     ->insert([
                         'sts_kodeigr' => $_SESSION['kdigr'],
                         'sts_program' => 'IGR_BO_TRF_SJ',
@@ -1016,7 +1016,7 @@ class PenerimaanTransferController extends Controller
                     $plu = $rec->prdcd;
                     $stmastc = '';
 
-                    $jum = DB::table('tbtr_history_bo')
+                    $jum = DB::connection($_SESSION['connection'])->table('tbtr_history_bo')
                         ->where('hbo_dokref','=',$rec->docno)
                         ->where('hbo_kodeigr','=',$_SESSION['kdigr'])
                         ->whereRaw("substr(hbo_deskripsi,9,2) = '".$rec->loc."'")
@@ -1030,7 +1030,7 @@ class PenerimaanTransferController extends Controller
                         $temp = 0;
 //                        $jammulai = DB::RAW("TO_CHAR(SYSDATE,'HH24:MI:SS')");
 //
-//                        DB::table('tbtr_status')
+//                        DB::connection($_SESSION['connection'])->table('tbtr_status')
 //                            ->insert([
 //                                'sts_kodeigr' => $_SESSION['kdigr'],
 //                                'sts_program' => 'IGR_BO_TRF_SJ',
@@ -1043,7 +1043,7 @@ class PenerimaanTransferController extends Controller
 
                         $step = 4;
 
-                        $temp = DB::table('tbmaster_prodmast')
+                        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                             ->select('prd_recordid','prd_kategoritoko','prd_kodecabang')
                             ->where('prd_prdcd','=',$rec->prdcd)
                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -1075,7 +1075,7 @@ class PenerimaanTransferController extends Controller
                             $step = 8;
                             $temp = 0;
 
-                            $jum = DB::table('tbmaster_stock')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                 ->select('st_saldoakhir','st_avgcost','st_lastcost')
                                 ->where('st_kodeigr','=',$_SESSION['kdigr'])
                                 ->where('st_lokasi','=','01')
@@ -1093,7 +1093,7 @@ class PenerimaanTransferController extends Controller
                                 $lcostlama = 0;
                             }
 
-                            $temp = DB::table('tbtr_mstran_h')
+                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                 ->where('msth_typetrn','=','I')
                                 ->where('msth_nopo','=',$rec->docno)
                                 ->where('msth_kodeigr','=',$_SESSION['kdigr'])
@@ -1104,7 +1104,7 @@ class PenerimaanTransferController extends Controller
                             $step = 9;
 
                             if($temp){
-                                $mstddocno = DB::table('tbtr_mstran_d')
+                                $mstddocno = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->select('mstd_nodoc')
                                     ->where('mstd_nopo','=',$rec->docno)
                                     ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
@@ -1127,12 +1127,12 @@ class PenerimaanTransferController extends Controller
 
                             $step = 12;
 
-                            $jum = DB::table('temp_file3')
+                            $jum = DB::connection($_SESSION['connection'])->table('temp_file3')
                                 ->where('docno','=',$rec->docno)
                                 ->first();
 
                             if(!$jum){
-                                DB::table('temp_file3')
+                                DB::connection($_SESSION['connection'])->table('temp_file3')
                                     ->insert([
                                         'docno' => $rec->docno,
                                         'dateo' => $rec->dateo,
@@ -1144,7 +1144,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 15;
 
-                            $jum = DB::table('tbtr_ipb')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_ipb')
                                 ->where('ipb_noipb','=',$rec->noref1)
                                 ->where('ipb_tglipb','=',DB::RAW("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
                                 ->where('ipb_prdcd','=',substr($rec->prdcd,0,6).'0')
@@ -1152,7 +1152,7 @@ class PenerimaanTransferController extends Controller
                                 ->first();
 
                             if($jum){
-                                DB::table('tbtr_ipb')
+                                DB::connection($_SESSION['connection'])->table('tbtr_ipb')
                                     ->where('ipb_noipb','=',$rec->noref1)
                                     ->where('ipb_tglipb','=',DB::RAW("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
                                     ->where('ipb_prdcd','=',substr($rec->prdcd,0,6).'0')
@@ -1165,7 +1165,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 17;
 
-                            $jum = DB::table('tbtr_mstran_d')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->select('mstd_fobkp')
                                 ->where('mstd_typetrn','=','I')
                                 ->where('mstd_nopo','=',$docnoa)
@@ -1183,7 +1183,7 @@ class PenerimaanTransferController extends Controller
 
                                 $step = 20;
 
-                                DB::table('tbtr_mstran_d')
+                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->select('mstd_fobkp')
                                     ->where('mstd_typetrn','=','I')
                                     ->where('mstd_nopo','=',$rec->docno)
@@ -1247,7 +1247,7 @@ class PenerimaanTransferController extends Controller
                                 $step = 23;
                                 $stmastc = 1;
 
-                                DB::table('tbtr_mstran_d')
+                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->insert([
                                         'mstd_kodeigr' => $_SESSION['kdigr'],
                                         'mstd_recordid' => $rec->recid,
@@ -1306,14 +1306,14 @@ class PenerimaanTransferController extends Controller
 
                                 $step = 24;
 
-                                $jum = DB::table('tbtr_mstran_h')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                     ->where('msth_kodeigr','=',$_SESSION['kdigr'])
                                     ->where('msth_nodoc','=',$docnoa)
                                     ->where('msth_typetrn','=','I')
                                     ->first();
 
                                 if(!$jum){
-                                    DB::table('tbtr_mstran_h')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                         ->insert([
                                             'msth_kodeigr' => $_SESSION['kdigr'],
                                             'msth_recordid' => $rec->recid,
@@ -1341,14 +1341,14 @@ class PenerimaanTransferController extends Controller
 
                             $step = 25;
 
-                            $jum = DB::table('temp_hstdok')
+                            $jum = DB::connection($_SESSION['connection'])->table('temp_hstdok')
                                 ->where('dokref','=',$rec->docno)
                                 ->get();
 
                             if(!$jum){
                                 $step = 26;
 
-                                DB::table('temp_hstdok')
+                                DB::connection($_SESSION['connection'])->table('temp_hstdok')
                                     ->insert([
                                         'dokref' => $rec->docno,
                                         'tglref' => $rec->dateo,
@@ -1362,7 +1362,7 @@ class PenerimaanTransferController extends Controller
                             if($rec->loc != null){
                                 $step = 28;
 
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->select('prd_frac','prd_unit','prd_lastcost','prd_avgcost')
                                     ->where('prd_prdcd','=',$rec->prdcd)
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -1376,7 +1376,7 @@ class PenerimaanTransferController extends Controller
                                     $nlcost = $jum->prd_lastcost;
                                     $acost = $jum->prd_avgcost;
 
-                                    $jum = DB::table('tbmaster_spd')
+                                    $jum = DB::connection($_SESSION['connection'])->table('tbmaster_spd')
                                         ->where('spd_prdcd','=',$rec->prdcd)
                                         ->where('spd_kodesupplier','=',$rec->loc)
                                         ->where('spd_kodeigr','=',$_SESSION['kdigr'])
@@ -1389,7 +1389,7 @@ class PenerimaanTransferController extends Controller
                                     if(!$jum){
                                         $step = 31;
 
-                                        DB::table('tbmaster_spd')
+                                        DB::connection($_SESSION['connection'])->table('tbmaster_spd')
                                             ->insert([
                                                 'spd_kodeigr' => $_SESSION['kdigr'],
                                                 'spd_prdcd' => $rec->prdcd,
@@ -1409,7 +1409,7 @@ class PenerimaanTransferController extends Controller
                                     else{
                                         $step = 32;
 
-                                        DB::table('tbmaster_spd')
+                                        DB::connection($_SESSION['connection'])->table('tbmaster_spd')
                                             ->where('spd_prdcd','=',$rec->prdcd)
                                             ->where('spd_kodesupplier','=',$rec->loc)
                                             ->where('spd_kodeigr','=',$_SESSION['kdigr'])
@@ -1444,7 +1444,7 @@ class PenerimaanTransferController extends Controller
                             if($stmastc == 1){
                                 $step = 34;
 
-                                $jum = DB::table('tbmaster_stock')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->select('st_saldoakhir','st_avgcost','st_trfin','st_trfout')
                                     ->where('st_prdcd','=',substr($rec->prdcd,0,6).'0')
                                     ->where('st_lokasi','=','01')
@@ -1454,7 +1454,7 @@ class PenerimaanTransferController extends Controller
                                 if(!$jum){
                                     $step = 35;
 
-                                    DB::table('tbmaster_stock')
+                                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->insert([
                                             'st_kodeigr' => $_SESSION['kdigr'],
                                             'st_prdcd' => substr($rec->prdcd,0,6).'0',
@@ -1487,7 +1487,7 @@ class PenerimaanTransferController extends Controller
                                 $ckcost = 1;
                                 $step = 37;
 
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->select('prd_frac','prd_unit','prd_lastcost','prd_avgcost')
                                     ->where('prd_prdcd','=',$rec->prdcd)
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -1587,13 +1587,13 @@ class PenerimaanTransferController extends Controller
                                     $nacostx = $noldacostx;
                                 }
 
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->whereRaw("substr(prd_prdcd,1,6) = '".substr($rec->prdcd,0,6)."'")
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                                     ->first();
 
                                 if($jum){
-                                    DB::update("UPDATE tbmaster_prodmast
+                                    DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_prodmast
                                         SET prd_avgcost =
                                                CASE
                                                   WHEN SUBSTR (prd_prdcd, -1, 1) = '1'
@@ -1623,7 +1623,7 @@ class PenerimaanTransferController extends Controller
                                     $q = 1000;
                                 else $q = 1;
 
-                                DB::table('tbtr_mstran_d')
+                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->where('mstd_typetrn','=','I')
                                     ->where('mstd_nopo','=',$rec->docno)
                                     ->where('mstd_loc2','=',$rec->loc)
@@ -1635,7 +1635,7 @@ class PenerimaanTransferController extends Controller
 
                                 $step = 53;
 
-                                DB::update("UPDATE tbmaster_stock
+                                DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
                                          SET st_avgcost = ".$nacostx.",
                                              st_saldoakhir =
                                                   st_saldoakhir
@@ -1663,7 +1663,7 @@ class PenerimaanTransferController extends Controller
 
                                 $step = 54;
 
-                                $jum = DB::table('tbhistory_cost')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                                     ->where('hcs_prdcd','=',$rec->prdcd)
                                     ->where('hcs_tglbpb','=',$rec->dateo)
                                     ->where('hcs_nodocbpb','=',$rec->docno)
@@ -1673,7 +1673,7 @@ class PenerimaanTransferController extends Controller
                                 if(!$jum){
                                     $step = 55;
 
-                                    $jum = DB::table('tbmaster_stock')
+                                    $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->select('st_lastcost')
                                         ->where('st_kodeigr','=',$_SESSION['kdigr'])
                                         ->where('st_lokasi','=','01')
@@ -1684,7 +1684,7 @@ class PenerimaanTransferController extends Controller
                                         $lcostbaru = $jum->st_lastcost;
                                     }
 
-                                    DB::table('tbhistory_cost')
+                                    DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                                         ->insert([
                                             'hcs_kodeigr' => $_SESSION['kdigr'],
                                             'hcs_typetrn' => 'I',
@@ -1705,7 +1705,7 @@ class PenerimaanTransferController extends Controller
 
                                 $step = 56;
 
-                                $jum = DB::table('tbmaster_barangbaru')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                     ->where('pln_prdcd','=',$rec->prdcd)
                                     ->where('pln_kodeigr','=',$_SESSION['kdigr'])
                                     ->first();
@@ -1713,7 +1713,7 @@ class PenerimaanTransferController extends Controller
                                 if($jum){
                                     $step = 57;
 
-                                    DB::table('tbmaster_barangbaru')
+                                    DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                         ->where('pln_prdcd','=',$rec->prdcd)
                                         ->where('pln_kodeigr','=',$_SESSION['kdigr'])
                                         ->update([
@@ -1725,7 +1725,7 @@ class PenerimaanTransferController extends Controller
                         else if(true && $prosesx == 0){
                             $step = 58;
 
-                            $jum = DB::table('tbmaster_prodmast')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                 ->select('prd_deskripsipendek','prd_recordid','prd_kategoritoko','prd_kodecabang')
                                 ->where('prd_prdcd','=',$rec->prdcd)
                                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -1761,7 +1761,7 @@ class PenerimaanTransferController extends Controller
 
                             $step = 63;
 
-                            $jum = DB::table('tbtr_tolakansj')
+                            $jum = DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                                 ->where('tsj_prdcd','=',$rec->prdcd)
                                 ->where('tsj_nodokumen','=',$rec->docno)
                                 ->first();
@@ -1769,7 +1769,7 @@ class PenerimaanTransferController extends Controller
                             if(!$jum){
                                 $step = 64;
 
-                                DB::table('tbtr_tolakansj')
+                                DB::connection($_SESSION['connection'])->table('tbtr_tolakansj')
                                     ->insert([
                                         'tsj_kodeigr' => $_SESSION['kdigr'],
                                         'tsj_recordid' => $rec->recid,
@@ -1832,7 +1832,7 @@ class PenerimaanTransferController extends Controller
                             }
                         }
 
-                        DB::table('tbtr_to')
+                        DB::connection($_SESSION['connection'])->table('tbtr_to')
                             ->where('loc2','=',$_SESSION['kdigr'])
                             ->where('docno','=',$rec->docno)
                             ->where('prdcd','=',$rec->prdcd)
@@ -1850,12 +1850,12 @@ class PenerimaanTransferController extends Controller
                         }
                         $status = 'warning';
 
-                        DB::table('tbtr_to')
+                        DB::connection($_SESSION['connection'])->table('tbtr_to')
                             ->where('docno','=',$rec->docno)
                             ->where('prdcd','=',$rec->prdcd)
                             ->delete();
 
-                        DB::table('temp_to')
+                        DB::connection($_SESSION['connection'])->table('temp_to')
                             ->where('to_nomr','=',$rec->docno)
                             ->delete();
                     }
@@ -1863,7 +1863,7 @@ class PenerimaanTransferController extends Controller
 
                 $step = 67;
 
-                DB::table('tbtr_status')
+                DB::connection($_SESSION['connection'])->table('tbtr_status')
                     ->where('sts_kodeigr','=',$_SESSION['kdigr'])
                     ->where('sts_program','=','IGR_BO_TRF_SJ')
                     ->where('sts_jammulai','=',$jammulai)
@@ -1873,15 +1873,15 @@ class PenerimaanTransferController extends Controller
                         'sts_modify_dt' => DB::RAW("SYSDATE")
                     ]);
 
-                $jum = DB::table('tbtr_to')
+                $jum = DB::connection($_SESSION['connection'])->table('tbtr_to')
                     ->where('loc2','=',$_SESSION['kdigr'])
                     ->first();
 
                 if($jum){
-                    DB::table('temp_to')
+                    DB::connection($_SESSION['connection'])->table('temp_to')
                         ->delete();
 
-                    $recs = DB::table('tbtr_to')
+                    $recs = DB::connection($_SESSION['connection'])->table('tbtr_to')
                         ->selectRaw("docno, trim(dateo) as dateo, count(1) as jum")
                         ->where('loc2','=',$_SESSION['kdigr'])
                         ->groupBy(['docno','dateo'])
@@ -1889,7 +1889,7 @@ class PenerimaanTransferController extends Controller
                         ->get();
 
                     foreach($recs as $rec){
-                        DB::table('temp_to')
+                        DB::connection($_SESSION['connection'])->table('temp_to')
                             ->insert([
                                 'to_flag' => 0,
                                 'to_nomr' => $rec->docno,
@@ -1899,12 +1899,12 @@ class PenerimaanTransferController extends Controller
                     }
                 }
                 else{
-                    $jum = DB::table('tbtr_to')
+                    $jum = DB::connection($_SESSION['connection'])->table('tbtr_to')
                         ->where('loc2','<>',$_SESSION['kdigr'])
                         ->first();
 
                     if($jum){
-                        DB::table('tbtr_to')
+                        DB::connection($_SESSION['connection'])->table('tbtr_to')
                             ->whereRaw("NVL(loc2,' ') <> '".$_SESSION['kdigr']."'")
                             ->delete();
 

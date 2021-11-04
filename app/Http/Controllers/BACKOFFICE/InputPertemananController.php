@@ -19,7 +19,7 @@ class InputPertemananController extends Controller
     }
 
     public function getLovPrdcd(){
-        $data = DB::select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac satuan from tbmaster_prodmast
+        $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac satuan from tbmaster_prodmast
             where prd_kodeigr = '".$_SESSION['kdigr']."'
             and substr(prd_Prdcd,7,1) = '0'
             order by prd_deskripsipanjang");
@@ -30,7 +30,7 @@ class InputPertemananController extends Controller
     public function getData(Request $request){
         $prdcd = $request->prdcd;
 
-        $plu = DB::table('tbmaster_prodmast')
+        $plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac satuan")
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
             ->where('prd_prdcd','=',$prdcd)
@@ -40,20 +40,20 @@ class InputPertemananController extends Controller
             return response()->json(['title' => 'PLU tidak terdaftar!'],500);
         }
 
-        $temp = DB::table('tbmaster_maxpalet')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_maxpalet')
             ->where('mpt_prdcd','=',$prdcd)
             ->first();
 
         $maxqty = $temp ? $temp->mpt_maxqty : 0;
 
-        $lokasi = DB::table('tbmaster_lokasi')
+        $lokasi = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->selectRaw("lks_tiperak, lks_koderak, lks_kodesubrak, lks_shelvingrak, lks_nourut, lks_qty, to_char(lks_expdate,'dd/mm/yyyy') lks_expdate")
             ->where('lks_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw("substr(lks_prdcd,1,6) = substr('".$prdcd."',1,6)")
             ->orderByRaw('lks_tiperak, lks_koderak, lks_kodesubrak, lks_shelvingrak, lks_nourut')
             ->get();
 
-        $temp = DB::select("SELECT *
+        $temp = DB::connection($_SESSION['connection'])->select("SELECT *
                     FROM TBMASTER_PLANO
                     WHERE PLA_PRDCD = '".$prdcd."' AND PLA_KODERAK LIKE '%C'");
 
@@ -67,7 +67,7 @@ class InputPertemananController extends Controller
             $select = "select min (pla_nourut) pla_nourut, pla_koderak, pla_prdcd, '' pla_subrak from tbmaster_plano group by pla_koderak, pla_prdcd";
         }
 
-        $plano = DB::select("select *
+        $plano = DB::connection($_SESSION['connection'])->select("select *
             from(".$select.")
             where pla_prdcd = '".$prdcd."'
             order by pla_nourut");
@@ -84,14 +84,14 @@ class InputPertemananController extends Controller
             DB::beginTransaction();
 
             if(substr($koderak, -1) == 'C'){
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_koderak','=',$koderak)
                     ->where('pla_subrak','=',$subrak)
                     ->delete();
             }
             else{
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_koderak','=',$koderak)
                     ->delete();
@@ -113,7 +113,7 @@ class InputPertemananController extends Controller
     }
 
     public function getLastNumber(Request $request){
-        $temp = DB::table('tbmaster_plano')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plano')
             ->selectRaw("max(pla_nourut) nourut")
             ->where('pla_prdcd','=',$request->prdcd)
             ->first();
@@ -133,7 +133,7 @@ class InputPertemananController extends Controller
         $isSubrak = $request->isSubrak;
 
         if($isSubrak == 'false'){
-            $temp = DB::table('tbmaster_plano')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                 ->where('pla_prdcd','=',$prdcd)
                 ->where('pla_koderak','=',$koderak)
                 ->first();
@@ -144,7 +144,7 @@ class InputPertemananController extends Controller
                 ], 500);
             }
 
-            $temp = DB::select("select *
+            $temp = DB::connection($_SESSION['connection'])->select("select *
                     from tbmaster_lokasi
                       WHERE LKS_JENISRAK LIKE 'S%'
                         AND NOT EXISTS (SELECT 1
@@ -158,7 +158,7 @@ class InputPertemananController extends Controller
                 ], 500);
             }
 
-            DB::table('tbmaster_plano')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                 ->insert([
                     'pla_prdcd' => $prdcd,
                     'pla_nourut' => $nourut,
@@ -173,7 +173,7 @@ class InputPertemananController extends Controller
             ], 200);
         }
         else{
-            $temp = DB::table('tbmaster_plano')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                 ->where('pla_prdcd','=',$prdcd)
                 ->where('pla_koderak','=',$koderak)
                 ->where('pla_subrak','=',$subrak)
@@ -185,7 +185,7 @@ class InputPertemananController extends Controller
                 ], 500);
             }
 
-            $temp = DB::table('tbmaster_lokasi')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->where('lks_koderak','=',$koderak)
                 ->where('lks_kodesubrak','=',$subrak)
                 ->first();
@@ -196,7 +196,7 @@ class InputPertemananController extends Controller
                 ], 500);
             }
 
-            DB::table('tbmaster_plano')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                 ->insert([
                     'pla_prdcd' => $prdcd,
                     'pla_nourut' => $nourut,
@@ -217,7 +217,7 @@ class InputPertemananController extends Controller
         $isSubrak = $request->isSubrak;
 
         if($isSubrak == 'true'){
-            $data = DB::select("SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK
+            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK
            FROM TBMASTER_LOKASI, (SELECT COUNT (1) JML
                                     FROM TBMASTER_PLANO
                                    WHERE PLA_PRDCD = '".$prdcd."')
@@ -250,7 +250,7 @@ class InputPertemananController extends Controller
        ORDER BY LKS_KODERAK, LKS_KODESUBRAK");
         }
         else{
-            $data = DB::select("SELECT DISTINCT LKS_KODERAK
+            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT LKS_KODERAK
                    FROM TBMASTER_LOKASI, (SELECT COUNT (1) JML
                                             FROM TBMASTER_PLANO
                                            WHERE PLA_PRDCD = '".$prdcd."')
@@ -292,7 +292,7 @@ class InputPertemananController extends Controller
             DB::beginTransaction();
 
             if(substr($plano1['pla_koderak'],-1) == 'C'){
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_nourut','=',$plano1['pla_nourut'])
                     ->update([
@@ -302,7 +302,7 @@ class InputPertemananController extends Controller
                         'pla_modify_dt' => DB::RAW("SYSDATE")
                     ]);
 
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_nourut','=',$plano2['pla_nourut'])
                     ->update([
@@ -313,7 +313,7 @@ class InputPertemananController extends Controller
                     ]);
             }
             else{
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_koderak','=',$plano1['pla_koderak'])
                     ->update([
@@ -322,7 +322,7 @@ class InputPertemananController extends Controller
                         'pla_modify_dt' => DB::RAW("SYSDATE")
                     ]);
 
-                DB::table('tbmaster_plano')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plano')
                     ->where('pla_prdcd','=',$prdcd)
                     ->where('pla_koderak','=',$plano2['pla_koderak'])
                     ->update([
@@ -331,7 +331,7 @@ class InputPertemananController extends Controller
                         'pla_modify_dt' => DB::RAW("SYSDATE")
                     ]);
 
-                DB::update("UPDATE TBMASTER_PLANO B
+                DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_PLANO B
            SET PLA_NOURUT = (SELECT RN
                                FROM (SELECT ROWNUM RN, PLA_KODERAK, PLA_SUBRAK
                                        FROM (SELECT   PLA_KODERAK, PLA_SUBRAK

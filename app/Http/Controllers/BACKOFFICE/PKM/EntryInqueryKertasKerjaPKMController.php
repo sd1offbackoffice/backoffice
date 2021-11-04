@@ -20,7 +20,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
     }
 
     public function getLovPrdcd(){
-        $data = DB::select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
+        $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
             where prd_kodeigr = '".$_SESSION['kdigr']."'
             and substr(prd_Prdcd,7,1) = '0'
             order by prd_deskripsipanjang");
@@ -29,18 +29,18 @@ class EntryInqueryKertasKerjaPKMController extends Controller
     }
 
     public function getLovDivisi(){
-        $data = DB::select("SELECT div_namadivisi, div_kodedivisi 
-                FROM TBMASTER_DIVISI 
-                WHERE div_kodeigr ='".$_SESSION['kdigr']."' 
+        $data = DB::connection($_SESSION['connection'])->select("SELECT div_namadivisi, div_kodedivisi
+                FROM TBMASTER_DIVISI
+                WHERE div_kodeigr ='".$_SESSION['kdigr']."'
                 order by div_kodedivisi");
 
         return DataTables::of($data)->make(true);
     }
 
     public function getLovDepartement(Request $request){
-        $data = DB::select("SELECT distinct dep_namadepartement, dep_kodedepartement, dep_kodedivisi 
-                FROM TBMASTER_DEPARTEMENT 
-                WHERE dep_kodeigr ='".$_SESSION['kdigr']."' 
+        $data = DB::connection($_SESSION['connection'])->select("SELECT distinct dep_namadepartement, dep_kodedepartement, dep_kodedivisi
+                FROM TBMASTER_DEPARTEMENT
+                WHERE dep_kodeigr ='".$_SESSION['kdigr']."'
                 AND dep_kodedivisi = '".$request->kodedivisi."'
                 order by dep_kodedepartement");
 
@@ -48,7 +48,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
     }
 
     public function getLovKategori(Request $request){
-        $data = DB::select("SELECT distinct kat_namakategori, kat_kodekategori, kat_kodedepartement 
+        $data = DB::connection($_SESSION['connection'])->select("SELECT distinct kat_namakategori, kat_kodekategori, kat_kodedepartement
                 FROM TBMASTER_KATEGORI
                 WHERE kat_kodeigr ='".$_SESSION['kdigr']."'
                 AND kat_kodedepartement = '".$request->kodedepartement."'
@@ -58,7 +58,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::select("SELECT DISTINCT mpl_namamonitoring, mpl_kodemonitoring
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT mpl_namamonitoring, mpl_kodemonitoring
                 FROM TBTR_MONITORINGPLU
                 WHERE mpl_kodeigr = '".$_SESSION['kdigr']."'
                 ORDER BY mpl_namamonitoring");
@@ -82,11 +82,11 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             $where = "AND substr(prd_prdcd,-1,1)='0' and EXISTS (SELECT MPL_PRDCD FROM TBTR_MONITORINGPLU WHERE MPL_KODEMONITORING = '".$request->mon."' AND MPL_PRDCD=PRD_PRDCD)";
         }
 
-        $fmprdta = DB::table('tbmaster_perusahaan')
+        $fmprdta = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_periodeterakhir')
             ->first()->prs_periodeterakhir;
 
-        $data = DB::select("SELECT pkm_prdcd,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT pkm_prdcd,
                  pkm_periode1,
                  pkm_periode2,
                  pkm_periode3,
@@ -136,8 +136,8 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                     WHEN SUBSTR (PKM_PERIODE3, 1, 2) = '10' THEN PSL_HARISALES_10
                     WHEN SUBSTR (PKM_PERIODE3, 1, 2) = '11' THEN PSL_HARISALES_11
                     WHEN SUBSTR (PKM_PERIODE3, 1, 2) = '12' THEN PSL_HARISALES_12
-                  END 
-                    + 
+                  END
+                    +
                     CASE WHEN SUBSTR (PKM_PERIODE2, 1, 2) = '01' THEN PSL_HARISALES_01
                     WHEN SUBSTR (PKM_PERIODE2, 1, 2) = '02' THEN PSL_HARISALES_02
                     WHEN SUBSTR (PKM_PERIODE2, 1, 2) = '03' THEN PSL_HARISALES_03
@@ -151,7 +151,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                     WHEN SUBSTR (PKM_PERIODE2, 1, 2) = '11' THEN PSL_HARISALES_11
                     WHEN SUBSTR (PKM_PERIODE2, 1, 2) = '12' THEN PSL_HARISALES_12
                     END
-                    + 
+                    +
                     CASE WHEN SUBSTR (PKM_PERIODE1, 1, 2) = '01' THEN PSL_HARISALES_01
                     WHEN SUBSTR (PKM_PERIODE1, 1, 2) = '02' THEN PSL_HARISALES_02
                     WHEN SUBSTR (PKM_PERIODE1, 1, 2) = '03' THEN PSL_HARISALES_03
@@ -208,7 +208,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 else $ftltima = $d->sup_jangkawaktukirimbarang;
             }
 
-            $cek = DB::table('tbtr_gondola')
+            $cek = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                 ->where('gdl_prdcd','=',$d->pkm_prdcd)
                 ->whereRaw("TRUNC (SYSDATE) BETWEEN TRUNC (gdl_tglawal) AND TRUNC (gdl_tglakhir)")
                 ->first();
@@ -222,7 +222,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 $gdl_tglakhir = null;
             }
 
-            $temp = DB::table('tbtr_gondola')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                 ->where('gdl_prdcd','=',$d->pkm_prdcd)
                 ->first();
 
@@ -231,7 +231,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             if($temp){
                 $flagmpa = false;
 
-                $gdl = DB::select("(select sum(gdl_qty) gdl_qty, gdl_prdcd from
+                $gdl = DB::connection($_SESSION['connection'])->select("(select sum(gdl_qty) gdl_qty, gdl_prdcd from
                 (SELECT gdl_qty, gdl_prdcd
                 FROM TBTR_GONDOLA, tbmaster_perusahaan
                 WHERE GDL_PRDCD = '".$d->pkm_prdcd."'
@@ -245,12 +245,12 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 }
 
                 if($flagmpa){
-                    $temp = DB::table('tbtr_pkmgondola')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                         ->where('pkmg_prdcd','=',$d->pkm_prdcd)
                         ->first();
 
                     if(!$temp){
-                        DB::table('tbtr_pkmgondola')
+                        DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                             ->insert([
                                 'PKMG_KODEIGR' => $_SESSION['kdigr'],
                                 'PKMG_KODEDIVISI' => $d->prd_kodedivisi,
@@ -269,7 +269,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                             ]);
                     }
                     else{
-                        DB::table('tbtr_pkmgondola')
+                        DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                             ->where('pkmg_prdcd','=',$d->pkm_prdcd)
                             ->where('pkmg_kodeigr','=',$_SESSION['kdigr'])
                             ->update([
@@ -308,7 +308,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                     $nminor = $d->prd_isibeli;
                 else $nminor = $d->prd_minorder;
 
-                $minor = DB::select("SELECT MIN_PRDCD, MIN_MINORDER
+                $minor = DB::connection($_SESSION['connection'])->select("SELECT MIN_PRDCD, MIN_MINORDER
                   FROM TBMASTER_MINIMUMORDER
                  WHERE SUBSTR (MIN_PRDCD, 1, 6) = SUBSTR('".$d->prd_prdcd."', 1, 6)");
 
@@ -324,7 +324,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
 
 //            $d->min = $nminor;
 
-            $temp = DB::table('tbmaster_barangbaru')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->where('pln_prdcd','=',$d->pkm_prdcd)
                 ->first();
 
@@ -337,7 +337,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             $txt_min = 0;
             $txt_min = $d->prd_minorder == 0 ? $d->prd_isibeli : $d->prd_minorder;
 
-            $minor = DB::select("SELECT MIN_PRDCD, MIN_MINORDER
+            $minor = DB::connection($_SESSION['connection'])->select("SELECT MIN_PRDCD, MIN_MINORDER
                   FROM TBMASTER_MINIMUMORDER
                  WHERE SUBSTR (MIN_PRDCD, 1, 6) = SUBSTR('".$d->prd_prdcd."', 1, 6)");
 
@@ -359,7 +359,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
             else $d->kettag = '';
 
-            $ms = DB::select("SELECT PKMP_QTYMINOR
+            $ms = DB::connection($_SESSION['connection'])->select("SELECT PKMP_QTYMINOR
                   FROM TBMASTER_PKMPLUS
                  WHERE PKMP_PRDCD = '".$d->prd_prdcd."'");
 
@@ -369,7 +369,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
 
             if($request->item == '1' || $request->prdcd || $request->mon){
-                $temp = DB::select("SELECT prc_kodetag
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT prc_kodetag
                         FROM TBMASTER_PRODCRM
                         WHERE PRC_PLUIGR = '".$d->prd_prdcd."'
                         AND NVL (PRC_KODETAG, 'z') NOT IN ('A','R','N','O','H','X')");
@@ -448,7 +448,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
 //            ];
 //        }
 
-        $recs = DB::select("SELECT PRD_PRDCD,
+        $recs = DB::connection($_SESSION['connection'])->select("SELECT PRD_PRDCD,
                  PRD_KODEDIVISI,
                  PRD_KODEDEPARTEMENT,
                  PRD_KODEKATEGORIBARANG,
@@ -494,7 +494,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
 
         foreach($recs as $rec){
             if($rec->pkm_prdcd == null){
-                DB::table('tbmaster_kkpkm')
+                DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                     ->insert([
                         'PKM_KODEIGR' => $_SESSION['kdigr'],
                         'PKM_PRDCD' => $prdcd,
@@ -508,7 +508,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
 
             $data->npkmt = ($pkmt - $rec->pkm_pkmt) * ($rec->prd_avgcost / ($rec->prd_unit == 'KG' ? 1 : $rec->prd_frac));
 
-            DB::table('tbmaster_kkpkm')
+            DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                 ->where('pkm_prdcd','=',$prdcd)
                 ->update([
                     'pkm_pkm' => $pkm,
@@ -517,7 +517,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                     'pkm_adjust_dt' => DB::RAW("SYSDATE")
                 ]);
 
-            $temp = DB::table('tbtr_gondola')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                 ->select('gdl_tglawal','gdl_tglakhir')
                 ->where('gdl_prdcd','=',$prdcd)
                 ->whereRaw("TRUNC (SYSDATE) BETWEEN TRUNC (gdl_tglawal) AND TRUNC (gdl_tglakhir)")
@@ -532,14 +532,14 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 $gdl_tglakhir = null;
             }
 
-            $temp = DB::table('tbtr_gondola')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                 ->where('gdl_prdcd','=',$prdcd)
                 ->first();
 
             if($temp){
                 $flagmpa = false;
 
-                $gdl = DB::select("(select sum(gdl_qty) gdl_qty, gdl_prdcd from
+                $gdl = DB::connection($_SESSION['connection'])->select("(select sum(gdl_qty) gdl_qty, gdl_prdcd from
                 (SELECT gdl_qty, gdl_prdcd
                 FROM TBTR_GONDOLA, tbmaster_perusahaan
                 WHERE GDL_PRDCD = '".$prdcd."'
@@ -553,12 +553,12 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 }
 
                 if($flagmpa){
-                    $temp = DB::table('tbtr_pkmgondola')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                         ->where('pkmg_prdcd','=',$prdcd)
                         ->first();
 
                     if(!$temp){
-                        DB::table('tbtr_pkmgondola')
+                        DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                             ->insert([
                                 'PKMG_KODEIGR' => $_SESSION['kdigr'],
                                 'PKMG_KODEDIVISI' => $rec->prd_kodedivisi,
@@ -576,7 +576,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                             ]);
                     }
                     else{
-                        DB::table('tbtr_pkmgondola')
+                        DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                             ->where('pkmg_prdcd','=',$prdcd)
                             ->where('pkmg_kodeigr','=',$_SESSION['kdigr'])
                             ->update([

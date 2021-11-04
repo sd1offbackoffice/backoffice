@@ -18,7 +18,7 @@ class PLUNonChargeController extends Controller
     }
 
     public function getData(){
-        $data = DB::table('tbmaster_plucharge')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
             ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
             ->where('non_kodeigr','=',$_SESSION['kdigr'])
@@ -29,7 +29,7 @@ class PLUNonChargeController extends Controller
     }
 
     public function getLovPLU(){
-        $data = DB::table('tbmaster_prodmast')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
@@ -40,7 +40,7 @@ class PLUNonChargeController extends Controller
     }
 
     public function getPLUDetail(Request $request){
-        $data = DB::select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = ".$_SESSION['kdigr']."
            AND prd_prdcd = brc_prdcd(+)
@@ -60,13 +60,13 @@ class PLUNonChargeController extends Controller
     }
 
     public function addPLU(Request $request){
-        $temp = DB::table('tbmaster_plucharge')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
             ->where('non_kodeigr','=',$_SESSION['kdigr'])
             ->where('non_prdcd','=',$request->plu)
             ->first();
 
         if(!$temp){
-            DB::table('tbmaster_plucharge')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
                 ->insert([
                     'non_kodeigr' => $_SESSION['kdigr'],
                     'non_prdcd' => $request->plu,
@@ -87,7 +87,7 @@ class PLUNonChargeController extends Controller
 
     public function deletePLU(Request $request){
         try{
-            DB::table('tbmaster_plucharge')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
                 ->where('non_kodeigr','=',$_SESSION['kdigr'])
                 ->where('non_prdcd','=',$request->plu)
                 ->delete();

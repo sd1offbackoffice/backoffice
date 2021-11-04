@@ -21,7 +21,7 @@ class InqueryController extends Controller
 
     public function getDataLovNPB()
     {
-        $data = DB::table('tbtr_mstran_h')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
             ->where('msth_typetrn', '=', 'K')
@@ -36,7 +36,7 @@ class InqueryController extends Controller
     {
         $noNPB = $request->no_npb;
 
-        $results = DB::table('tbtr_mstran_h')
+        $results = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d', 'msth_nodoc', '=', 'mstd_nodoc')
             ->join('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->rightJoin('tbmaster_supplier', 'msth_kodesupplier', '=', 'sup_kodesupplier')
@@ -72,7 +72,7 @@ class InqueryController extends Controller
         $plu = $request->plu;
         $noref3 = $request->noref3;
 
-        $data = DB::table('tbtr_mstran_d')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
             ->join('tbmaster_prodmast', function ($join) {
                 $join->on('prd_prdcd', 'mstd_prdcd');
                 $join->on('prd_kodeigr', 'mstd_kodeigr');

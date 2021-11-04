@@ -18,7 +18,7 @@ class CetakTransferController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::table('tbtr_mstran_h')
+        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') tgl")
             ->where('msth_typetrn','=','I')
             ->where('msth_kodeigr','=',$_SESSION['kdigr'])
@@ -34,10 +34,10 @@ class CetakTransferController extends Controller
         $bpb2 = $request->bpb2;
         $ukuran = $request->size;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select 
+        $data = DB::connection($_SESSION['connection'])->select("select
                     case when prs_namacabang = cab_namacabang then
                                 'BUKTI PENERIMAAN BARANG INTERN'
                     else
@@ -54,7 +54,7 @@ class CetakTransferController extends Controller
                         mstd_unit || '/' || mstd_frac
                     ) kemasan,
                     mstd_qty,
-                    trunc(mstd_qty/mstd_frac) QB, 
+                    trunc(mstd_qty/mstd_frac) QB,
                     mod(mstd_qty,mstd_frac) QK,
                     mstd_hrgsatuan,
                     mstd_gross,
@@ -62,7 +62,7 @@ class CetakTransferController extends Controller
                     (mstd_gross + nvl(mstd_ppnrph,0)) total_seluruh,
                     mstd_keterangan
                 From
-                    tbmaster_perusahaan,                
+                    tbmaster_perusahaan,
                     tbmaster_cabang,
                     tbmaster_prodmast,
                     tbtr_mstran_h,

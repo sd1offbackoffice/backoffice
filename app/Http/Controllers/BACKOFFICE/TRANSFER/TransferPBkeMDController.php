@@ -23,24 +23,24 @@ class TransferPBkeMDController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $temp = DB::table('tbkirim_status')
+        $temp = DB::connection($_SESSION['connection'])->table('tbkirim_status')
             ->whereRaw("TRIM(STS_KODE) = 'PB'")
             ->count();
 
         if($temp == 0){
-            DB::table('tbkirim_status')
+            DB::connection($_SESSION['connection'])->table('tbkirim_status')
                 ->insert([
                     'sts_kode' => 'PB',
                     'sts_status' => 'Y'
                 ]);
         }
 
-        $status = DB::table('tbkirim_status')
+        $status = DB::connection($_SESSION['connection'])->table('tbkirim_status')
             ->whereRaw("TRIM(sts_kode) = 'PB'")
             ->first()->sts_status;
 
         if($status == 'N'){
-            $temp = DB::select("SELECT *
+            $temp = DB::connection($_SESSION['connection'])->select("SELECT *
                   FROM (SELECT   PBH_NOPB, PBH_TGLPB, PBD_PRDCD, SUM (ITEM) ITEM
                             FROM (SELECT PBH_NOPB, TRUNC (PBH_TGLPB) PBH_TGLPB, PBD_PRDCD, 1 ITEM
                                     FROM TBTR_PB_H, TBTR_PB_D
@@ -52,7 +52,7 @@ class TransferPBkeMDController extends Controller
                  WHERE NVL (ITEM, 0) > 1");
 
             if(count($temp) == 0){
-                $temp = DB::select("SELECT *
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT *
               FROM TBTR_PB_H, TBTR_PB_D, TBMASTER_PRODMAST
               WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                AND PBH_TGLTRANSFER IS NULL
@@ -69,7 +69,7 @@ class TransferPBkeMDController extends Controller
                     ];
                 }
                 else{
-                    DB::insert("INSERT INTO TBKIRIM_PB
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBKIRIM_PB
                             (FDRCID, FDKCAB, FDNOUO, FDURGN, FDTGUO, FDNOUR, FDKKLP, FDDEPT,
                              FDKPLU, FDQTYB, FDQBBP, FDKSUP, FDHSAT, FDDIS1, FDDIR1, FDFDI1,
                              FDDIS2, FDDISR, FDFDIS, FDTHRG, FDTPPN, FDTPPM, FDTBTL, FDBNSB,
@@ -90,7 +90,7 @@ class TransferPBkeMDController extends Controller
                         AND PRD_KODEIGR(+) = PBD_KODEIGR
                         AND PRD_PRDCD(+) = PBD_PRDCD)");
 
-                    DB::insert("INSERT INTO TBKIRIM_PB_FULL
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBKIRIM_PB_FULL
                             (FDRCID, FDKCAB, FDNOUO, FDURGN, FDTGUO, FDNOUR, FDKKLP, FDDEPT, FDKPLU,
                              FDQTYB, FDQBBP, FDKSUP, FDHSAT, FDDIS1, FDDIR1, FDFDI1, FDDIS2, FDDISR,
                              FDFDIS, FDTHRG, FDTPPN, FDTPPM, FDTBTL, FDBNSB, FDBNSK, FDBBBP, FDBKBP,
@@ -110,13 +110,13 @@ class TransferPBkeMDController extends Controller
                         AND PRD_KODEIGR(+) = PBD_KODEIGR
                         AND PRD_PRDCD(+) = PBD_PRDCD)");
 
-                    DB::update("UPDATE TBTR_PB_H
+                    DB::connection($_SESSION['connection'])->update("UPDATE TBTR_PB_H
                         SET PBH_TGLTRANSFER = SYSDATE
                         WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                         AND PBH_TGLTRANSFER IS NULL
                         AND PBH_KODEIGR = '".$_SESSION['kdigr']."'");
 
-                    DB::table('tbkirim_status')
+                    DB::connection($_SESSION['connection'])->table('tbkirim_status')
                         ->whereRaw("TRIM(sts_kode) = 'PB'")
                         ->update([
                             'sts_status' => 'Y'
@@ -131,7 +131,7 @@ class TransferPBkeMDController extends Controller
             else{
                 $tolakan = '';
 
-                $recs = DB::select("SELECT *
+                $recs = DB::connection($_SESSION['connection'])->select("SELECT *
                           FROM (SELECT   PBH_NOPB, PBH_TGLPB, PBD_PRDCD, SUM (ITEM) ITEM
                                     FROM (SELECT PBH_NOPB, TRUNC (PBH_TGLPB) PBH_TGLPB, PBD_PRDCD,
                                                  1 ITEM

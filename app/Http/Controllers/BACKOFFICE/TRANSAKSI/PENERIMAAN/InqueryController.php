@@ -17,7 +17,7 @@ class InqueryController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $typeTrn    = $request->typeTrn;
 
-        $data = DB::select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
+        $data = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
                                     FROM tbtr_mstran_h
                                    WHERE     msth_kodeigr = '$kodeigr'
                                          AND msth_typetrn = '$typeTrn'
@@ -33,7 +33,7 @@ class InqueryController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $typeTrn    = $request->typeTrn;
 
-        $data = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
+        $data = DB::connection($_SESSION['connection'])->select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
 			              mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph,
 			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac,
 										(nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,
@@ -58,7 +58,7 @@ class InqueryController extends Controller
         $typeTrn    = $request->typeTrn;
         $prdcd  = $request->prdcd;
 
-        $data = DB::select("SELECT mstd_prdcd || ' - ' || prd_deskripsipanjang splu,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT mstd_prdcd || ' - ' || prd_deskripsipanjang splu,
                                            mstd_unit || '/' || mstd_frac skemasan, mstd_hrgsatuan shrgbeli,
                                            FLOOR (mstd_qty / mstd_frac) sqty, mstd_unit sunit,
                                            MOD (mstd_qty, mstd_frac) sqtyk, mstd_frac frac, mstd_unit unit,

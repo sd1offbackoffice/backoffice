@@ -19,7 +19,7 @@ class ReorderPBGOController extends Controller
     }
 
     public function proses_go(){
-        $cek = DB::table('temp_go')
+        $cek = DB::connection($_SESSION['connection'])->table('temp_go')
             ->select('isi_toko','per_awal_reorder','per_akhir_reorder')
             ->where('kodeigr',$_SESSION['kdigr'])
             ->first();
@@ -36,7 +36,7 @@ class ReorderPBGOController extends Controller
         $insert_temp_pbprint = [];
         $where = '';
 
-        $prs = DB::table('tbmaster_perusahaan')
+        $prs = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->selectRaw('prs_periodeterakhir, prs_nilaippn')
             ->where('prs_kodeigr',$_SESSION['kdigr'])
             ->first();
@@ -57,7 +57,7 @@ class ReorderPBGOController extends Controller
 
         $oke = false;
 
-        $pb = DB::table('tbtr_po_d')
+        $pb = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
             ->join('tbmaster_prodmast','tpod_prdcd','prd_prdcd')
             ->join('tbtr_po_h','tpod_nopo','tpoh_nopo')
             ->join('tbtr_mstran_h','tpoh_nopo','msth_nopo')
@@ -321,7 +321,7 @@ class ReorderPBGOController extends Controller
 
         $where = substr($where,0,-4);
 
-        $xya = DB::table('tbtr_po_d')
+        $xya = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
             ->where('tpod_kodeigr',$_SESSION['kdigr'])
             ->whereRaw("(NVL (TPOD_QTYPB, 0) = 0) OR ((NVL(TPOD_QTYPO, 0) - NVL(TPOD_QTYPB, 0)) <> 0)")
             ->whereRaw("NVL (TPOD_KODETAG, 'Z') <> '*'")
@@ -331,7 +331,7 @@ class ReorderPBGOController extends Controller
 
         try{
             DB::beginTransaction();
-            DB::table('temp_pbprint')
+            DB::connection($_SESSION['connection'])->table('temp_pbprint')
                 ->insert($insert_temp_pbprint);
         }
         catch (QueryException $e){
@@ -343,7 +343,7 @@ class ReorderPBGOController extends Controller
         }
 
         try{
-            DB::table('tbtr_po_d')
+            DB::connection($_SESSION['connection'])->table('tbtr_po_d')
                 ->select('tpod_nopo','tpod_prdcd')
                 ->whereRaw($where)
                 ->update([
@@ -359,7 +359,7 @@ class ReorderPBGOController extends Controller
             return compact(['status','title','message']);
         }
 
-        $pbprint = DB::table('temp_pbprint')
+        $pbprint = DB::connection($_SESSION['connection'])->table('temp_pbprint')
             ->where('recid',null)
             ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
@@ -398,7 +398,7 @@ class ReorderPBGOController extends Controller
                 }
             }
 
-            $y = DB::table('temp_pbprint')
+            $y = DB::connection($_SESSION['connection'])->table('temp_pbprint')
                 ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
                 ->where('docno',$NOPB)
                 ->whereIn('supco',$supco)
@@ -409,7 +409,7 @@ class ReorderPBGOController extends Controller
         }
 
 
-        $pbmast = DB::table('temp_pbprint')
+        $pbmast = DB::connection($_SESSION['connection'])->table('temp_pbprint')
             ->whereRaw("recid is null")
             ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
@@ -479,9 +479,9 @@ class ReorderPBGOController extends Controller
         $insert_tbtr_pb_h['pbh_create_dt'] = DB::RAW("sysdate");
 
         try{
-            DB::table('tbtr_pb_d')
+            DB::connection($_SESSION['connection'])->table('tbtr_pb_d')
                 ->insert($insert_tbtr_pb_d);
-            DB::table('tbtr_pb_h')
+            DB::connection($_SESSION['connection'])->table('tbtr_pb_h')
                 ->insert($insert_tbtr_pb_h);
         }
         catch(QueryException $e){
@@ -492,12 +492,12 @@ class ReorderPBGOController extends Controller
             return compact(['status','title','message']);
         }
 
-        $temp_tolak2 = DB::table('temp_pbprint')
+        $temp_tolak2 = DB::connection($_SESSION['connection'])->table('temp_pbprint')
             ->where('recid','2')
             ->where('docno',$NOPB)
             ->get();
 
-        $temp_tolak3 = DB::table('temp_pbprint')
+        $temp_tolak3 = DB::connection($_SESSION['connection'])->table('temp_pbprint')
             ->where('recid','3')
             ->where('docno',$NOPB)
             ->get();
@@ -531,11 +531,11 @@ class ReorderPBGOController extends Controller
             $title = '** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM RUPIAH/CARTON **';
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->where('prs_kodeigr',$_SESSION['kdigr'])
             ->first();
 
-        $tolakan = DB::table('temp_pbprint')
+        $tolakan = DB::connection($_SESSION['connection'])->table('temp_pbprint')
             ->join('tbmaster_prodmast','prdcd','prd_prdcd')
             ->selectRaw("prdcd,
             SUBSTR(PRD_DeskripsiPanjang,1,48) prd_desk,

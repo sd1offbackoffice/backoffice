@@ -14,7 +14,7 @@ use Yajra\DataTables\DataTables;
 class PBGudangPusatController extends Controller
 {
     public function index(){
-        $cabang = DB::table('tbmaster_cabang')
+        $cabang = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')
             ->select('cab_kodecabang','cab_namacabang')
             ->where('cab_kodeigr','=',$_SESSION['kdigr'])
             ->where('cab_kodecabang','!=',$_SESSION['kdigr'])
@@ -25,7 +25,7 @@ class PBGudangPusatController extends Controller
     }
 
     public function getLovDepartement(){
-        $data = DB::select("SELECT distinct dep_namadepartement, dep_kodedepartement, dep_singkatandepartement, dep_kodedivisi
+        $data = DB::connection($_SESSION['connection'])->select("SELECT distinct dep_namadepartement, dep_kodedepartement, dep_singkatandepartement, dep_kodedivisi
                 FROM TBMASTER_DEPARTEMENT
                 WHERE dep_kodeigr ='".$_SESSION['kdigr']."'
                 order by dep_kodedepartement");
@@ -34,7 +34,7 @@ class PBGudangPusatController extends Controller
     }
 
     public function getLovKategori(Request $request){
-        $data = DB::select("SELECT distinct kat_namakategori, kat_kodekategori, kat_kodedepartement
+        $data = DB::connection($_SESSION['connection'])->select("SELECT distinct kat_namakategori, kat_kodekategori, kat_kodedepartement
                 FROM TBMASTER_KATEGORI
                 WHERE kat_kodeigr ='".$_SESSION['kdigr']."'
                 AND kat_kodedepartement between '".$request->dep1."' and '".$request->dep2."'
@@ -44,7 +44,7 @@ class PBGudangPusatController extends Controller
     }
 
     public function getLovPrdcd(Request $request){
-        $data = DB::select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
+        $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
             where prd_kodeigr = '".$_SESSION['kdigr']."'
             and prd_kodedepartement between '".$request->dep1."' and '".$request->dep2."'
             and prd_kodekategoribarang between '".$request->kat1."' and '".$request->kat2."'
@@ -65,11 +65,11 @@ class PBGudangPusatController extends Controller
         $p_nodok = '';
 
         try{
-//            DB::table('tbtr_pbgdps_ok')
+//            DB::connection($_SESSION['connection'])->table('tbtr_pbgdps_ok')
 //                ->where('kodeigr','=',$_SESSION['kdigr'])
 //                ->delete();
 
-            $recs = DB::select("SELECT * FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '".$_SESSION['kdigr']."' AND PRD_KODEDEPARTEMENT || PRD_KODEKATEGORIBARANG BETWEEN '".$dep1."' || '".$kat1."' AND '".$dep2."' || '".$kat2."' AND PRD_PRDCD BETWEEN NVL('".$plu1."',' ') AND '".$plu2."' AND NVL(PRD_FLAGGUDANG,' ') = 'Y' AND SUBSTR(PRD_PRDCD,7,1) = '0'");
+            $recs = DB::connection($_SESSION['connection'])->select("SELECT * FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '".$_SESSION['kdigr']."' AND PRD_KODEDEPARTEMENT || PRD_KODEKATEGORIBARANG BETWEEN '".$dep1."' || '".$kat1."' AND '".$dep2."' || '".$kat2."' AND PRD_PRDCD BETWEEN NVL('".$plu1."',' ') AND '".$plu2."' AND NVL(PRD_FLAGGUDANG,' ') = 'Y' AND SUBSTR(PRD_PRDCD,7,1) = '0'");
 
             foreach($recs as $rec){
                 if($p_nodok == ''){
@@ -81,7 +81,7 @@ class PBGudangPusatController extends Controller
                     $p_nodok = $r;
                 }
 
-                $ksupco = DB::select("SELECT HGB_KODESUPPLIER FROM TBMASTER_HARGABELI
+                $ksupco = DB::connection($_SESSION['connection'])->select("SELECT HGB_KODESUPPLIER FROM TBMASTER_HARGABELI
                 WHERE (NVL(HGB_TIPE,' ') = '2' AND HGB_PRDCD = SUBSTR('".$rec->prd_prdcd."',1,6) || '0')
                 OR NVL(HGB_RECORDID,' ') = ' '");
 

@@ -28,7 +28,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->select("vcs_namasupplier")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
@@ -41,7 +41,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
             ->orderBy("vcs_namasupplier")
@@ -52,7 +52,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     public function getDeskripsi(Request $request)
     {
         $supp = $request->supp;
-        $data = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $data = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->selectRaw("vcs_keterangan")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
@@ -64,7 +64,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $data = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $data = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
             ->first();
@@ -77,14 +77,14 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $temp = DB::table("TBTABEL_VOUCHERSUPPLIER")
+        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->selectRaw("NVL(COUNT(1),0) count")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
             ->pluck('count')->first();
 
         if ($temp == 0) {
-            DB::table("TBTABEL_VOUCHERSUPPLIER")
+            DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
                 ->insert([
                     'vcs_kodeigr' => $_SESSION['kdigr'],
                     'vcs_namasupplier' => $supp,
@@ -102,7 +102,7 @@ class PendaftaranVoucherBelanjaController extends Controller
             $status = "success";
             return compact(['message', 'status']);
         } else {
-            DB::table("TBTABEL_VOUCHERSUPPLIER")
+            DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
                 ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
                 ->where('vcs_namasupplier', '=', $supp)
                 ->update([
@@ -126,7 +126,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     public function hapus(Request $request)
     {
         $supp = $request->supp;
-        DB::table("TBTABEL_VOUCHERSUPPLIER")
+        DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
             ->delete();
@@ -140,7 +140,7 @@ class PendaftaranVoucherBelanjaController extends Controller
         $w = 647;
         $h = 52.75;
 
-        $data = DB::table("tbtabel_vouchersupplier")
+        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->selectRaw('VCS_NAMASUPPLIER, VCS_NILAIVOUCHER, VCS_TGLMULAI, VCS_TGLAKHIR, VCS_MAXVOUCHER, VCS_JOINPROMO, VCS_KETERANGAN, VCS_MINSTRUK')
         ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
         ->orderBy('vcs_namasupplier')
@@ -148,7 +148,7 @@ class PendaftaranVoucherBelanjaController extends Controller
 
         $filename = 'igr-tab-vchsup';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();

@@ -26,7 +26,7 @@ class DaftarPembelianController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->select('div_kodedivisi', 'div_namadivisi')
             ->where('div_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw('div_kodedivisi >= ' . $div)
@@ -37,7 +37,7 @@ class DaftarPembelianController extends Controller
 
     public function getDataLovDep(Request $request)
     {
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement', 'dep_namadepartement', 'dep_kodedivisi')
             ->where('dep_kodeigr', '=', $_SESSION['kdigr'])
             ->where('dep_kodedivisi', '=', $request->div)
@@ -48,7 +48,7 @@ class DaftarPembelianController extends Controller
 
     public function getDataLovKat(Request $request)
     {
-        $data = DB::table("tbmaster_kategori")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
             ->join('tbmaster_departement', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('kat_namakategori', 'kat_kodekategori', 'kat_kodedepartement', 'dep_kodedivisi')
             ->where('kat_kodeigr', '=', $_SESSION['kdigr'])
@@ -63,7 +63,7 @@ class DaftarPembelianController extends Controller
 
     public function getDataLovMtr()
     {
-        $data = DB::table('tbtr_monitoringplu')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
             ->select('mpl_namamonitoring', 'mpl_kodemonitoring')
             ->where('mpl_kodeigr', '=', $_SESSION['kdigr'])
 //            ->where('mpl_kodemonitoring','=',$request->mtr)
@@ -79,7 +79,7 @@ class DaftarPembelianController extends Controller
             $sup = 1;
         else $sup = $request->sup;
 
-        $data = DB::table('tbmaster_supplier')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
             ->where('sup_kodesupplier', '>=', $sup)
@@ -106,7 +106,7 @@ class DaftarPembelianController extends Controller
         $mtr = $request->mtr;
         $sort = $request->sort;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
         $and_doc = '';
@@ -143,7 +143,7 @@ class DaftarPembelianController extends Controller
                 $and_plu = " and mstd_prdcd in (select mpl_prdcd from tbtr_monitoringplu
                 where mpl_kodeigr = '" . $_SESSION['kdigr'] . "' and TRIM(mpl_kodemonitoring) = TRIM('" . $mtr . "'))";
             }
-            $data = DB::select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -259,7 +259,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
             } else {
                 $and_sup = " and sup_kodeigr = '" . $_SESSION['kdigr'] . "' and sup_kodesupplier between '" . $sup1 . "' and '" . $sup2 . "'";
             }
-            $data = DB::select("select mstd_kodesupplier, sup_namasupplier,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodesupplier, sup_namasupplier,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         sum(mstd_gross) gross, sum(mstd_pot) pot,
         sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
@@ -346,7 +346,7 @@ order by mstd_kodesupplier");
 
             return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINGKASAN PER SUPPLIER.pdf');
         } else if ($tipe === '3') {
-            $data = DB::select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         sum(ctn) ctn, sum(pcs) pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -467,7 +467,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tg
 
             return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINCIAN PER DIVDEPKAT.pdf');
         } else if ($tipe === '4') {
-            $data = DB::select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodesupplier, sup_namasupplier,
         sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -575,7 +575,7 @@ order by mstd_kodesupplier, no_doc, tgl_doc");
 
             return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
         } else if ($tipe === '5') {
-            $data = DB::select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -694,7 +694,7 @@ order by tgl_doc");
 
             return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
         } else if ($tipe === '6') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         msth_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc,
         sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -794,7 +794,7 @@ group by msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanja
 
             return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
         } else if ($tipe === '7') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
         supplier,prs_namaperusahaan, prs_namacabang, prs_namawilayah, msth_kodesupplier,
         sum(gross) gross, sum(potongan) potongan, sum(bm) bm, sum(btl) btl,
         sum(dpp) dpp, sum(ppn) ppn, sum(total) total,

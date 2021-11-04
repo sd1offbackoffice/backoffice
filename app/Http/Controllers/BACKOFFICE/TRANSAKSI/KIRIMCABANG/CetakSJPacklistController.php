@@ -18,10 +18,10 @@ class CetakSJPacklistController extends Controller
     }
 
     public function getPDF(){
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_recordid, msth_nodoc, to_char(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_recordid, msth_nodoc, to_char(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
                     mstd_loc||' '||cab_namacabang cabang,
                     mstd_gdg gudang, MSTD_SEQNO,
                     mstd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
@@ -38,7 +38,7 @@ class CetakSJPacklistController extends Controller
                     and cab_kodeigr(+)=mstd_kodeigr
                     ORDER BY MSTH_NODOC, MSTH_TGLDOC, MSTH_NOFAKTUR, MSTH_TGLFAKTUR, MSTD_SEQNO");
 
-        DB::table('tbtr_backoffice')
+        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
             ->where('trbo_kodeigr','=',$_SESSION['kdigr'])
             ->where('trbo_flagdoc','=','9')
             ->where('trbo_typetrn','=','O')
@@ -46,7 +46,7 @@ class CetakSJPacklistController extends Controller
                 'trbo_flagdoc' => '*',
             ]);
 
-        DB::table('tbtr_mstran_h')
+        DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->where('msth_flagdoc','=','9')
             ->where('msth_typetrn','=','O')
             ->where('msth_kodeigr','=',$_SESSION['kdigr'])
@@ -72,7 +72,7 @@ class CetakSJPacklistController extends Controller
     }
 
     public function cetak(Request  $request){
-        $data = DB::select("SELECT * FROM TBTR_BACKOFFICE, TBTR_LISTPACKING
+        $data = DB::connection($_SESSION['connection'])->select("SELECT * FROM TBTR_BACKOFFICE, TBTR_LISTPACKING
 	        WHERE TRBO_TYPETRN = 'O' AND TRUNC(TRBO_TGLDOC) BETWEEN TRUNC(TO_DATE('".$request->tgl1."','DD/MM/YYYY')) AND TRUNC(TO_DATE('".$request->tgl2."','DD/MM/YYYY')) AND TRBO_KODEIGR = '".$_SESSION['kdigr']."' AND NVL(TRBO_FLAGDOC,' ') <> '*' AND PCL_NODOKUMEN = TRBO_NOREFF AND PCL_NOREFERENSI1 = TRBO_NODOC AND NVL(PCL_NODOKUMEN,' ') <> ' ' AND PCL_NOREFERENSI = TRBO_NOPO AND PCL_PRDCD = TRBO_PRDCD ORDER BY TRBO_NODOC");
 
         if(count($data) == 0){
@@ -87,7 +87,7 @@ class CetakSJPacklistController extends Controller
             $seq = 0;
 
             foreach($data as $rec){
-                $temp = DB::table('tbmaster_prodmast')
+                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->where('prd_prdcd','=',$rec->trbo_prdcd)
                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                     ->first();
@@ -105,7 +105,7 @@ class CetakSJPacklistController extends Controller
                             }
                         }
 
-                        $prdcur = DB::table('tbmaster_prodmast')
+                        $prdcur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                             ->selectRaw("PRD_KODEDIVISI, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_UNIT, PRD_FRAC, PRD_FLAGBKP1, PRD_FLAGBKP2")
                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                             ->where('prd_prdcd','=',$rec->trbo_prdcd)
@@ -130,13 +130,13 @@ class CetakSJPacklistController extends Controller
                             $pkp2p = '';
                         }
 
-                        $temp = DB::select("SELECT NVL(COUNT(1),0) FROM TBMASTER_STOCK
+                        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(1),0) FROM TBMASTER_STOCK
 				WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
 				AND ST_LOKASI = '01'");
 
                         if(count($temp) == 0){
                             if(Self::nvl($unitp,' ') == 'KG'){
-                                DB::table('tbmaster_stock')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->insert([
                                         'st_kodeigr' => $_SESSION['kdigr'],
                                         'st_prdcd' => substr($rec->trbo_prdcd,0,6).'0',
@@ -146,7 +146,7 @@ class CetakSJPacklistController extends Controller
                                     ]);
                             }
                             else{
-                                DB::table('tbmaster_stock')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->insert([
                                         'st_kodeigr' => $_SESSION['kdigr'],
                                         'st_prdcd' => substr($rec->trbo_prdcd,0,6).'0',
@@ -158,14 +158,14 @@ class CetakSJPacklistController extends Controller
                         }
                         else{
                             if(Self::nvl($unitp,' ') == 'KG'){
-                                DB::update("UPDATE TBMASTER_STOCK
+                                DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty." / 1000)),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty." / 1000))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
                             AND ST_LOKASI = '01';");
                             }
                             else{
-                                DB::update("UPDATE TBMASTER_STOCK
+                                DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                             SET ST_SALDOAKHIR = (ST_SALDOAKHIR - (".$rec->trbo_qty.")),
                             ST_TRFOUT = (ST_TRFOUT + (".$rec->trbo_qty."))
                             WHERE ST_KODEIGR = '".$_SESSION['kdigr']."' AND ST_PRDCD = SUBSTR('".$rec->trbo_prdcd."',1,6) || '0'
@@ -173,7 +173,7 @@ class CetakSJPacklistController extends Controller
                             }
                         }
 
-                        $temp = DB::table('tbtr_mstran_h')
+                        $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                             ->where('msth_kodeigr','=',$_SESSION['kdigr'])
                             ->where('msth_typetrn','=','O')
                             ->where('msth_nodoc','=',$v_nodoc)
@@ -182,7 +182,7 @@ class CetakSJPacklistController extends Controller
                             ->count();
 
                         if($temp == 0){
-                            DB::table('tbtr_mstran_h')
+                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                                 ->insert([
                                     'msth_kodeigr' => $_SESSION['kdigr'],
                                     'msth_typetrn' => 'O',
@@ -200,7 +200,7 @@ class CetakSJPacklistController extends Controller
                                 ]);
                         }
 
-                        $temp = DB::table('tbtr_mstran_d')
+                        $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                             ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
                             ->where('mstd_typetrn','=','O')
                             ->where('mstd_nodoc','=',$v_nodoc)
@@ -211,7 +211,7 @@ class CetakSJPacklistController extends Controller
                         if($temp == 0){
                             $seq++;
 
-                            DB::table('tbtr_mstran_d')
+                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->insert([
                                     'mstd_kodeigr' => $_SESSION['kdigr'],
                                     'mstd_nodoc' => $v_nodoc,
@@ -238,7 +238,7 @@ class CetakSJPacklistController extends Controller
                                 ]);
                         }
 
-                        DB::table('tbtr_backoffice')
+                        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                             ->where('trbo_kodeigr','=',$_SESSION['kdigr'])
                             ->where('trbo_typetrn','=','O')
                             ->where('trbo_nodoc','=',$rec->trbo_nodoc)
@@ -253,7 +253,7 @@ class CetakSJPacklistController extends Controller
                 }
             }
 
-            $data = DB::select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                     msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
                     prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat3,prs_npwp,
                     mstd_loc||' '||cab_namacabang cabang,

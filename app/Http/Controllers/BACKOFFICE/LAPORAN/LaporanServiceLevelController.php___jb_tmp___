@@ -17,7 +17,7 @@ class LaporanServiceLevelController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = strtoupper($request->search);
 
-        $supplier = DB::table('tbmaster_supplier')
+        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_namasupplier', 'LIKE', '%'.$search.'%')
             ->where('sup_kodesupplier', 'LIKE', '%'.$search.'%')
@@ -33,7 +33,7 @@ class LaporanServiceLevelController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = strtoupper($request->search);
 
-        $monitoring = DB::table('tbtr_monitoringsupplier')
+        $monitoring = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
             ->select('msu_namamonitoring', 'msu_kodemonitoring')
             ->where('msu_namamonitoring', 'LIKE', '%'.$search.'%')
             ->where('msu_kodemonitoring', 'LIKE', '%'.$search.'%')
@@ -55,7 +55,7 @@ class LaporanServiceLevelController extends Controller
         $mtrSup     = $request->mtrSup;
         $ranking    = $request->ranking;
 
-        $data = DB::select("SELECT ROWNUM NOMOR, HASIL.*
+        $data = DB::connection($_SESSION['connection'])->select("SELECT ROWNUM NOMOR, HASIL.*
   FROM (SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH, TPOH_KODESUPPLIER,
                  SUP_NAMASUPPLIER, ITEMPO, QTYPO, NILAIPO, ITEMBPBAK, ITEMBPBNA, QTYBPB, NILAIBPB,
                  NVL(ITEMOUT,0) ITEMOUT, NVL(QTYOUT,0) QTYOUT, NVL(NILAIOUT,0) NILAIOUT,  case when (ITEMPO - NVL(ITEMOUT,0) )  = 0 then 0 else ((ITEMBPBAK + ITEMBPBNA) / (ITEMPO - NVL(ITEMOUT,0) )) * 100 end SLITEM,
@@ -102,7 +102,7 @@ class LaporanServiceLevelController extends Controller
                                        AND MSTD_PRDCD(+) = TPOD_PRDCD
                                        AND MSTD_TGLDOC(+) <= trunc(sysdate)
                                        AND MSTD_TYPETRN(+) = 'B'
-                                       AND NVL(MSTD_RECORDID(+),'0') <> '1'    
+                                       AND NVL(MSTD_RECORDID(+),'0') <> '1'
                                        ) A
                           GROUP BY TPOH_KODESUPPLIER) B) C,
                  (SELECT   TPOH_KODESUPPLIER SUPOUT, SUM (ITEMOUT) ITEMOUT, SUM (QTYOUT) QTYOUT,

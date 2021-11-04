@@ -20,7 +20,7 @@ class KonversiController extends Controller
     }
 
     public function getDataLovPluUtuh(){
-        $lov = DB::select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
+        $lov = DB::connection($_SESSION['connection'])->select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
             prd1.prd_prdcd utuh_prdcd,
             trim(prd2.prd_deskripsipanjang) || '-' || prd2.prd_unit || '-' || to_char(prd2.prd_frac, '9999') olah_desk,
             prd2.prd_prdcd olah_prdcd, was_persen
@@ -31,7 +31,7 @@ class KonversiController extends Controller
     }
 
     public function getDataLovPluMix(){
-        $lov = DB::select("select distinct prd_deskripsipanjang mix_desk, prd_prdcd mix_prdcd
+        $lov = DB::connection($_SESSION['connection'])->select("select distinct prd_deskripsipanjang mix_desk, prd_prdcd mix_prdcd
             from tbmaster_prodmast, tbtr_mix_plukonversi
             where prd_kodeigr='".$_SESSION['kdigr']."'
             and knv_prdcd= prd_prdcd and knv_kodeigr = prd_kodeigr
@@ -41,7 +41,7 @@ class KonversiController extends Controller
     }
 
     public function getDataLovNodoc(){
-        $lov = DB::select("select msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc from tbtr_mstran_h
+        $lov = DB::connection($_SESSION['connection'])->select("select msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc from tbtr_mstran_h
             where msth_typetrn = 'A'
             order by msth_tgldoc desc, msth_nodoc desc");
 
@@ -49,7 +49,7 @@ class KonversiController extends Controller
     }
 
     public function getDataPluOlahan(Request $request){
-        $data = DB::select("SELECT knv_prdcd,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT knv_prdcd,
                    knv_prdcd_konv,
                       trim(prd_deskripsipanjang) || '-' || prd_unit || '-' || to_char(prd_frac, '9999')
                       deskripsi
@@ -68,7 +68,7 @@ class KonversiController extends Controller
 
         $avgcost = 0;
 
-        $temp = DB::table('tbtr_mix_waste')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtr_mix_waste')
             ->where('was_prdcd','=',$utuh_prdcd)
             ->where('was_prdcd_konv','=',$olah_prdcd)
             ->count();
@@ -76,21 +76,21 @@ class KonversiController extends Controller
         if($temp == 0)
             return (['status' => 'error', 'alert' => 'Data Konversi tidak ada!']);
 
-        $temp = DB::table('tbmaster_prodmast')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->where('prd_prdcd','=',$utuh_prdcd)
             ->count();
 
         if($temp == 0)
             return (['status' => 'error', 'alert' => 'Data Master Produk tidak ada!']);
 
-        $temp = DB::table('tbmaster_prodmast')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->where('prd_prdcd','=',$olah_prdcd)
             ->count();
 
         if($temp == 0)
             return (['status' => 'error', 'alert' => 'Data Master Produk Konversi tidak ada!']);
 
-        $temp = DB::table('tbmaster_stock')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
             ->select('st_saldoakhir')
             ->where('st_lokasi','=','01')
             ->where('st_prdcd','=',$utuh_prdcd)
@@ -110,13 +110,13 @@ class KonversiController extends Controller
             oci_bind_by_name($s, ':ret', $no_knv, 32);
             oci_execute($s);
 
-            $temp = DB::table('tbmaster_stock')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                 ->where('st_lokasi','=','01')
                 ->where('st_prdcd','=',$utuh_prdcd)
                 ->first();
 
             if(!$temp){
-                DB::table('tbmaster_stock')
+                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->insert([
                         'st_kodeigr' => $_SESSION['kdigr'],
                         'st_prdcd' => $utuh_prdcd,
@@ -126,13 +126,13 @@ class KonversiController extends Controller
                     ]);
             }
 
-            $temp = DB::table('tbmaster_stock')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                 ->where('st_lokasi','=','01')
                 ->where('st_prdcd','=',$olah_prdcd)
                 ->first();
 
             if(!$temp){
-                DB::table('tbmaster_stock')
+                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->insert([
                         'st_kodeigr' => $_SESSION['kdigr'],
                         'st_prdcd' => $olah_prdcd,
@@ -142,7 +142,7 @@ class KonversiController extends Controller
                     ]);
             }
 
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang','prd_flagbkp1','prd_flagbkp2','prd_unit','prd_frac','prd_lastcost')
                 ->where('prd_prdcd','=',$utuh_prdcd)
                 ->first();
@@ -156,7 +156,7 @@ class KonversiController extends Controller
             $frac = $data->prd_frac;
             $harga = $data->prd_lastcost;
 
-            $data = DB::table('tbmaster_stock')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                 ->selectRaw("nvl(st_avgcost,0) oldacost, nvl(st_lastcost,0) oldlcost, case when st_saldoakhir < 0 then  0 else nvl(st_saldoakhir,0) end oldstock")
                 ->where('st_prdcd','=',$utuh_prdcd)
                 ->where('st_lokasi','=','01')
@@ -168,7 +168,7 @@ class KonversiController extends Controller
 
             $harga = $oldacost;
 
-            DB::table('tbtr_mstran_d')
+            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                 ->insert([
                     'mstd_kodeigr' => $_SESSION['kdigr'],
                     'mstd_typetrn' => 'A',
@@ -198,7 +198,7 @@ class KonversiController extends Controller
 
             $newlcost = $avgcost;
 
-            DB::update("UPDATE TBMASTER_STOCK
+            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                 SET ST_SALDOAKHIR = NVL (ST_SALDOAKHIR, 0) - NVL (".$utuh_qty.", 0),
                      ST_TRFOUT = NVL (ST_TRFOUT, 0) + NVL ( ".$utuh_qty.", 0),
                      ST_MODIFY_BY = '".$_SESSION['usid']."',
@@ -207,7 +207,7 @@ class KonversiController extends Controller
                 AND ST_LOKASI = '01'
                 AND ST_KODEIGR = '".$_SESSION['kdigr']."'");
 
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang','prd_flagbkp1','prd_flagbkp2','prd_unit','prd_frac')
                 ->where('prd_prdcd','=',$olah_prdcd)
                 ->first();
@@ -220,7 +220,7 @@ class KonversiController extends Controller
             $unit = $data->prd_unit;
             $frac = $data->prd_frac;
 
-            $data = DB::table('tbmaster_stock')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                 ->selectRaw("nvl(st_avgcost,0) oldacost, nvl(st_lastcost,0) oldlcost, case when st_saldoakhir < 0 then  0 else nvl(st_saldoakhir,0) end oldstock")
                 ->where('st_prdcd','=',$olah_prdcd)
                 ->where('st_lokasi','=','01')
@@ -235,7 +235,7 @@ class KonversiController extends Controller
 
             $avgcost = ((( $oldstock * ($oldacost / 1000)) + ($olah_qty * ($harga_konv / 1000))) / ($oldstock + $olah_qty)) * 1000;
 
-            DB::table('tbtr_mstran_d')
+            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                 ->insert([
                     'mstd_kodeigr' => $_SESSION['kdigr'],
                     'mstd_typetrn' => 'A',
@@ -262,7 +262,7 @@ class KonversiController extends Controller
                     'mstd_create_dt' => DB::RAW("SYSDATE")
                 ]);
 
-            DB::update("UPDATE TBMASTER_STOCK
+            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                 SET ST_AVGCOST = ".$avgcost.",
                      ST_SALDOAKHIR = NVL (ST_SALDOAKHIR, 0) - NVL (".$olah_qty.", 0),
                      ST_TRFIN = NVL (ST_TRFIN, 0) + NVL ( ".$olah_qty.", 0),
@@ -273,7 +273,7 @@ class KonversiController extends Controller
                 AND ST_LOKASI = '01'
                 AND ST_KODEIGR = '".$_SESSION['kdigr']."'");
 
-            $rec2s = DB::select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
+            $rec2s = DB::connection($_SESSION['connection'])->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
                FROM TBMASTER_PRODMAST
               WHERE     SUBSTR (PRD_PRDCD, 1, 6) =
                            SUBSTR ( '".$olah_prdcd."', 1, 6)
@@ -281,7 +281,7 @@ class KonversiController extends Controller
 
             foreach($rec2s as $rec2){
                 if(substr($rec2->prd_prdcd,-1) == '1' || $rec2->prd_unit == 'KG'){
-                    DB::table('tbmaster_prodmast')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->where('prd_prdcd','=',$rec2->prd_prdcd)
                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                         ->update([
@@ -289,7 +289,7 @@ class KonversiController extends Controller
                         ]);
                 }
                 else{
-                    DB::table('tbmaster_prodmast')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->where('prd_prdcd','=',$rec2->prd_prdcd)
                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                         ->update([
@@ -298,14 +298,14 @@ class KonversiController extends Controller
                 }
             }
 
-            $temp = DB::table('tbhistory_cost')
+            $temp = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                 ->where('hcs_prdcd','=',$olah_prdcd)
                 ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
                 ->where('hcs_nodocbpb','=',$no_knv)
                 ->count();
 
             if($temp == 0){
-                DB::table('tbhistory_cost')
+                DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                     ->insert([
                         'hcs_kodeigr' => $_SESSION['kdigr'],
                         'hcs_lokasi' => $_SESSION['kdigr'],
@@ -323,7 +323,7 @@ class KonversiController extends Controller
                     ]);
             }
 
-            DB::table('tbhistory_cost')
+            DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                 ->where('hcs_prdcd','=',$olah_prdcd)
                 ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
                 ->where('hcs_nodocbpb','=',$no_knv)
@@ -332,21 +332,21 @@ class KonversiController extends Controller
                     'hcs_lastcostlama' => $oldlcost
                 ]);
 
-            DB::table('tbmaster_stock')
+            DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                 ->where('st_prdcd','=',$olah_prdcd)
                 ->where('st_kodeigr','=',$_SESSION['kdigr'])
                 ->update([
                     'st_lastcost' => $newlcost
                 ]);
 
-            DB::update("UPDATE TBMASTER_PRODMAST
+            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_PRODMAST
                  SET PRD_LASTCOST =
                         ".$newlcost." * CASE WHEN prd_unit = 'KG' THEN 1 ELSE prd_frac END
                WHERE     SUBSTR (PRD_PRDCD, 1, 6) =
                             SUBSTR ('".$olah_prdcd."', 1, 6)
                      AND PRD_KODEIGR = '".$_SESSION['kdigr']."'");
 
-            DB::table('tbtr_mstran_h')
+            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                 ->insert([
                     'msth_kodeigr' => $_SESSION['kdigr'],
                     'msth_typetrn' => 'A',
@@ -376,7 +376,7 @@ class KonversiController extends Controller
             DB::beginTransaction();
 
             foreach($olahan as $o){
-                $temp = DB::table('tbtr_mix_plukonversi')
+                $temp = DB::connection($_SESSION['connection'])->table('tbtr_mix_plukonversi')
                     ->where('knv_prdcd','=',$mix_plu)
                     ->where('knv_prdcd_konv','=',$o['plu'])
                     ->first();
@@ -384,14 +384,14 @@ class KonversiController extends Controller
                 if(!$temp)
                     return ['status' => 'error', 'alert' => 'Data Konversi '.$mix_plu.' tidak ada!'];
 
-                $temp = DB::table('tbmaster_prodmast')
+                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->where('prd_prdcd','=',$o['plu'])
                     ->first();
 
                 if(!$temp)
                     return ['status' => 'error', 'alert' => 'Data Master Produk Konversi '.$o['plu'].' tidak ada!'];
 
-                $temp = DB::table('tbmaster_stock')
+                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->select('st_saldoakhir')
                     ->where('st_lokasi','=','01')
                     ->where('st_prdcd','=',$o['plu'])
@@ -414,14 +414,14 @@ class KonversiController extends Controller
 
             if(true){
                 foreach($olahan as $o){
-                    $temp = DB::table('tbmaster_stock')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                         ->select('st_saldoakhir')
                         ->where('st_lokasi','=','01')
                         ->where('st_prdcd','=',$o['plu'])
                         ->first();
 
                     if(!$temp){
-                        DB::table('tbmaster_stock')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                             ->insert([
                                 'st_kodeigr' => $_SESSION['kdigr'],
                                 'st_prdcd' => $o['plu'],
@@ -444,7 +444,7 @@ class KonversiController extends Controller
                 foreach($olahan as $o){
                     $seqno++;
 
-                    $data = DB::table('tbmaster_prodmast')
+                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang','prd_flagbkp1','prd_flagbkp2','prd_unit','prd_frac')
                         ->where('prd_prdcd','=',$o['plu'])
                         ->first();
@@ -457,7 +457,7 @@ class KonversiController extends Controller
                     $unit = $data->prd_unit;
                     $frac = $data->prd_frac;
 
-                    $data = DB::select("SELECT NVL (st_avgcost, 0) oldacost,
+                    $data = DB::connection($_SESSION['connection'])->select("SELECT NVL (st_avgcost, 0) oldacost,
                         NVL (st_lastcost, 0) oldlcost,
                         case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock
                    FROM tbmaster_stock
@@ -472,7 +472,7 @@ class KonversiController extends Controller
                     $itemall += $harga_konv;
                     $beratall += $o['qty'];
 
-                    DB::table('tbtr_mstran_d')
+                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                         ->insert([
                             'mstd_kodeigr' => $_SESSION['kdigr'],
                             'mstd_typetrn' => 'A',
@@ -499,7 +499,7 @@ class KonversiController extends Controller
                             'mstd_create_dt' => DB::RAW("SYSDATE"),
                         ]);
 
-                    DB::update("UPDATE TBMASTER_STOCK
+                    DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                         SET ST_SALDOAKHIR =
                                NVL (ST_SALDOAKHIR, 0) - NVL ( ".$o['qty'].", 0),
                             ST_TRFOUT = NVL (ST_TRFOUT, 0) + NVL ( ".$o['qty'].", 0),
@@ -510,13 +510,13 @@ class KonversiController extends Controller
                             AND ST_KODEIGR = '".$_SESSION['kdigr']."'");
                 }
 
-                $temp = DB::table('tbmaster_stock')
+                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->where('st_lokasi','=','01')
                     ->where('st_prdcd','=',$mix_plu)
                     ->first();
 
                 if(!$temp){
-                    DB::table('tbmaster_stock')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                         ->insert([
                             'st_kodeigr' => $_SESSION['kdigr'],
                             'st_prdcd' => $mix_plu,
@@ -524,7 +524,7 @@ class KonversiController extends Controller
                         ]);
                 }
 
-                $data = DB::table('tbmaster_prodmast')
+                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang','prd_flagbkp1','prd_flagbkp2','prd_unit','prd_frac')
                     ->where('prd_prdcd','=',$mix_plu)
                     ->first();
@@ -537,7 +537,7 @@ class KonversiController extends Controller
                 $unit = $data->prd_unit;
                 $frac = $data->prd_frac;
 
-                $data = DB::select("SELECT NVL (st_avgcost, 0) oldacost,
+                $data = DB::connection($_SESSION['connection'])->select("SELECT NVL (st_avgcost, 0) oldacost,
                         NVL (st_lastcost, 0) oldlcost,
                         case when st_saldoakhir < 0 then 0 else NVL (st_saldoakhir, 0) end oldstock
                    FROM tbmaster_stock
@@ -553,7 +553,7 @@ class KonversiController extends Controller
 
                 $avgcost = ((($oldstock * ($oldacost / 1000)) + $itemall) / ($oldstock + $beratall)) * 1000;
 
-                DB::table('tbtr_mstran_d')
+                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                     ->insert([
                         'mstd_kodeigr' => $_SESSION['kdigr'],
                         'mstd_typetrn' => 'A',
@@ -579,7 +579,7 @@ class KonversiController extends Controller
                         'mstd_create_dt' => DB::RAW("SYSDATE"),
                     ]);
 
-                DB::update("UPDATE TBMASTER_STOCK
+                DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_STOCK
                  SET ST_AVGCOST = ".$avgcost.",
                      ST_SALDOAKHIR = NVL (ST_SALDOAKHIR, 0) + NVL ( ".$mix_qty.", 0),
                      ST_TRFIN = NVL (ST_TRFIN, 0) + NVL ( ".$mix_qty.", 0),
@@ -590,7 +590,7 @@ class KonversiController extends Controller
                      AND ST_LOKASI = '01'
                      AND ST_KODEIGR = '".$_SESSION['kdigr']."'");
 
-                $rec2s = DB::select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
+                $rec2s = DB::connection($_SESSION['connection'])->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
                FROM TBMASTER_PRODMAST
               WHERE     SUBSTR (PRD_PRDCD, 1, 6) =
                            SUBSTR ( '".$mix_plu."', 1, 6)
@@ -598,7 +598,7 @@ class KonversiController extends Controller
 
                 foreach($rec2s as $rec2){
                     if(substr($rec2->prd_prdcd,-1) == '1' || $rec2->prd_unit == 'KG'){
-                        DB::table('tbmaster_prodmast')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                             ->where('prd_prdcd','=',$rec2->prd_prdcd)
                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                             ->update([
@@ -606,7 +606,7 @@ class KonversiController extends Controller
                             ]);
                     }
                     else{
-                        DB::table('tbmaster_prodmast')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                             ->where('prd_prdcd','=',$rec2->prd_prdcd)
                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                             ->update([
@@ -615,14 +615,14 @@ class KonversiController extends Controller
                     }
                 }
 
-                $temp = DB::table('tbhistory_cost')
+                $temp = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                     ->where('hcs_prdcd','=',$mix_plu)
                     ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
                     ->where('hcs_nodocbpb','=',$no_knv)
                     ->first();
 
                 if(!$temp){
-                    DB::table('tbhistory_cost')
+                    DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                         ->insert([
                             'HCS_KODEIGR' => $_SESSION['kdigr'],
                             'HCS_LOKASI' => $_SESSION['kdigr'],
@@ -640,7 +640,7 @@ class KonversiController extends Controller
                         ]);
                 }
 
-                DB::table('tbhistory_cost')
+                DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                     ->where('hcs_prdcd','=',$mix_plu)
                     ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
                     ->where('hcs_nodocbpb','=',$no_knv)
@@ -649,20 +649,20 @@ class KonversiController extends Controller
                         'hcs_lastcostlama' => $oldlcost
                     ]);
 
-                DB::table('tbmaster_stock')
+                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->where('st_prdcd','=',$mix_plu)
                     ->where('st_kodeigr','=',$_SESSION['kdigr'])
                     ->update([
                         'st_lastcost' => $newlcost
                     ]);
 
-                DB::update("UPDATE TBMASTER_PRODMAST
+                DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_PRODMAST
                  SET PRD_LASTCOST =
                         ".$newlcost." * CASE WHEN prd_unit = 'KG' THEN 1 ELSE prd_frac END
                WHERE     SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ( '".$mix_plu."', 1, 6)
                      AND PRD_KODEIGR = '".$_SESSION['kdigr']."'");
 
-                DB::table('tbtr_mstran_h')
+                DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                     ->insert([
                         'msth_kodeigr' => $_SESSION['kdigr'],
                         'msth_typetrn' => 'A',
@@ -694,7 +694,7 @@ class KonversiController extends Controller
         else
             $where = "AND msth_tgldoc between TO_DATE('".$request->periode1."','DD/MM/YYYY') AND TO_DATE('".$request->periode2."','DD/MM/YYYY')";
 
-        $rec = DB::select("Select
+        $rec = DB::connection($_SESSION['connection'])->select("Select
             msth_recordid, msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc, msth_nopo, msth_tglpo,
             msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
             msth_loc||' '||cab_namacabang cabang,mstd_prdcd, prd_deskripsipanjang,
@@ -743,7 +743,7 @@ class KonversiController extends Controller
             $datas[] = $x;
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
@@ -767,7 +767,7 @@ class KonversiController extends Controller
     public function printLaporanRekap(Request $request){
         $where = " AND mstd_tgldoc between TO_DATE('".$request->periode1."','DD/MM/YYYY') AND TO_DATE('".$request->periode2."','DD/MM/YYYY') ";
 
-        $data = DB::select("SELECT prd_kodedivisi,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_kodedivisi,
          div_namadivisi,
          prd_kodedepartement,
          dep_namadepartement,
@@ -825,7 +825,7 @@ ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
         if(count($data) == 0)
             return 'Data tidak ditemukan!';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
@@ -849,7 +849,7 @@ ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
     public function printLaporanDetail(Request $request){
         $where = " AND mstd_tgldoc between TO_DATE('".$request->periode1."','DD/MM/YYYY') AND TO_DATE('".$request->periode2."','DD/MM/YYYY') ";
 
-        $data = DB::select("SELECT msth_nodoc,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc,
                      TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') msth_tgldoc,
                      kemasan,
                      keterangan,
@@ -934,7 +934,7 @@ ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
         if(count($data) == 0)
             return 'Data tidak ditemukan!';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 

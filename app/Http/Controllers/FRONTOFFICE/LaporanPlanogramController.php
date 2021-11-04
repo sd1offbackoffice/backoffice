@@ -22,7 +22,7 @@ class LaporanPlanogramController extends Controller
     public function lovKodeRak(Request $request)
     {
         $search = $request->value;
-        $data = DB::table('tbmaster_lokasi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->select('lks_koderak')
             ->Where('lks_koderak','LIKE', '%'.$search.'%')
             ->orderBy('lks_koderak')
@@ -60,7 +60,7 @@ class LaporanPlanogramController extends Controller
                 $p_order = 'ORDER BY LKS_QTY';
             }
 
-            $data = DB::select("SELECT prs_namacabang,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namacabang,
                                            prs_namaperusahaan,
                                            lks_koderak || '.' || lks_kodesubrak || '.'
                                            || lks_tiperak || '.' || lks_shelvingrak || '.'
@@ -93,7 +93,7 @@ class LaporanPlanogramController extends Controller
 
             $cw = 700;
             $ch = 35;
-            $data = DB::select("SELECT   ROWNUM NUMB, CASE
+            $data = DB::connection($_SESSION['connection'])->select("SELECT   ROWNUM NUMB, CASE
                                              WHEN SPB_RECORDID = '1'
                                                  THEN 'SUDAH'
                                              ELSE 'BELUM'
@@ -108,7 +108,7 @@ class LaporanPlanogramController extends Controller
                                 AND NVL(SPB_RECORDID,'ZZ') LIKE '" . $p_recid . "' " . $p_order);
             $filename = 'lap-spb-manual';
         }
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         if (sizeof($data) != 0) {

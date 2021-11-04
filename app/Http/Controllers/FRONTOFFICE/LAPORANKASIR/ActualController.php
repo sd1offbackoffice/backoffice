@@ -30,7 +30,7 @@ class ActualController extends Controller
             $margint = 0;
             $pmargint = 0;
 
-            $totalCounter = DB::SELECT("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
+            $totalCounter = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -42,7 +42,7 @@ class ActualController extends Controller
 
             $totalCounter->keterangan = 'TOTAL COUNTER';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($totalCounter), true));
 
             $nilait += $totalCounter->nilai;
@@ -52,7 +52,7 @@ class ActualController extends Controller
             $margint += $totalCounter->margin;
             $pmargint += $totalCounter->pmargin;
 
-            $kenaPajak = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
+            $kenaPajak = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -65,7 +65,7 @@ class ActualController extends Controller
 
             $kenaPajak->keterangan = 'TOTAL BARANG KENA PAJAK';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($kenaPajak), true));
 
             $nilait += $kenaPajak->nilai;
@@ -75,7 +75,7 @@ class ActualController extends Controller
             $margint += $kenaPajak->margin;
             $pmargint += $kenaPajak->pmargin;
 
-            $nonPajak = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
+            $nonPajak = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -91,7 +91,7 @@ class ActualController extends Controller
 
             $nonPajak->keterangan = 'TOTAL BARANG TIDAK KENA PAJAK';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($nonPajak), true));
 
             $nilait += $nonPajak->nilai;
@@ -101,7 +101,7 @@ class ActualController extends Controller
             $margint += $nonPajak->margin;
             $pmargint += $nonPajak->pmargin;
 
-            $cukai = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
+            $cukai = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -113,7 +113,7 @@ class ActualController extends Controller
 
             $cukai->keterangan = 'TOTAL BARANG KENA CUKAI';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($cukai), true));
 
             $nilait += $cukai->nilai;
@@ -123,7 +123,7 @@ class ActualController extends Controller
             $margint += $cukai->margin;
             $pmargint += $cukai->pmargin;
 
-            $nonPpn = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
+            $nonPpn = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -135,7 +135,7 @@ class ActualController extends Controller
 
             $nonPpn->keterangan = 'TOTAL BARANG BEBAS PPN';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($nonPpn), true));
 
             $nilait += $nonPpn->nilai;
@@ -145,7 +145,7 @@ class ActualController extends Controller
             $margint += $nonPpn->margin;
             $pmargint += $nonPpn->pmargin;
 
-            $export = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET, NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
+            $export = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET, NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
 	SELECT * FROM (
@@ -159,7 +159,7 @@ class ActualController extends Controller
 
             $export->keterangan = 'TOTAL BARANG EXPORT';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($export), true));
 
             $nilait += $export->nilai;
@@ -169,7 +169,7 @@ class ActualController extends Controller
             $margint += $export->margin;
             $pmargint += $export->pmargin;
 
-            $ppnMinyak = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
+            $ppnMinyak = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -182,7 +182,7 @@ class ActualController extends Controller
 
             $ppnMinyak->keterangan = 'TOTAL BRG PPN DIBYR PMERINTH (MINYAK)';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($ppnMinyak), true));
 
             $nilait += $ppnMinyak->nilai;
@@ -192,7 +192,7 @@ class ActualController extends Controller
             $margint += $ppnMinyak->margin;
             $pmargint += $ppnMinyak->pmargin;
 
-            $ppnTepung = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
+            $ppnTepung = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -204,7 +204,7 @@ class ActualController extends Controller
 
             $ppnTepung->keterangan = 'TOTAL BRG PPN DIBYR PMERINTH (TEPUNG)';
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert(json_decode(json_encode($ppnTepung), true));
 
             $nilait += $ppnTepung->nilai;
@@ -219,7 +219,7 @@ class ActualController extends Controller
                 $pmargint = 100;
             else $pmargint = 0;
 
-            $nilai40 = DB::select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
+            $nilai40 = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -228,7 +228,7 @@ class ActualController extends Controller
 	(SLS_MARGINOMI + SLS_MARGINNOMI + SLS_MARGINIDM) MARGIN FROM TBTR_SUMSALES
 	WHERE SLS_KODEIGR = '".$_SESSION['kdigr']."' AND TRUNC(SLS_PERIODE) = to_date('".$tanggal."','dd/mm/yyyy') AND SLS_KODEDIVISI = '5' AND SLS_KODEDEPARTEMENT IN ('40') ) A")[0];
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert([
                     'keterangan' => 'GRAND TOTAL (TANPA DEPT 40)',
                     'nilai' => $nilait,
@@ -239,7 +239,7 @@ class ActualController extends Controller
                     'pmargin' => $pmargint
                 ]);
 
-            DB::table('cetak_sums')
+            DB::connection($_SESSION['connection'])->table('cetak_sums')
                 ->insert([
                     'keterangan' => 'GRAND TOTAL (+ DEPT 40)',
                     'nilai' => $nilait + $nilai40->nilai,
@@ -260,9 +260,9 @@ class ActualController extends Controller
     }
 
     public function cetakSales(Request $request){
-        DB::table('cetak_sums')->truncate();
+        DB::connection($_SESSION['connection'])->table('cetak_sums')->truncate();
 
-        $data = DB::table('tbtr_sumsales')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_sumsales')
             ->where('sls_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw("sls_periode = to_date('".$request->tanggal."','dd/mm/yyyy')")
             ->first();
@@ -279,10 +279,10 @@ class ActualController extends Controller
 
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT js_cashierstation,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT js_cashierstation,
          js_cashierid,
             js_cashierstation
          || '.'
@@ -398,7 +398,7 @@ class ActualController extends Controller
          ORDER BY js_cashierstation, js_cashierid");
 
         foreach($data as $d){
-            $temp = DB::table('tbtr_jualheader')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualheader')
                 ->select('jh_transactionno')
                 ->where('jh_cashierid','=',$d->js_cashierid)
                 ->where('jh_cashierstation','=',$d->js_cashierstation)
@@ -410,7 +410,7 @@ class ActualController extends Controller
             $d->struk = $temp ? $temp->jh_transactionno : '00000';
 
             if(substr($d->js_cashierid,0,2) == 'OM' || $d->js_cashierid == 'BKL'){
-                $fee = DB::select("SELECT NVL((SUM(FEE) * 1.1),0) FEE FROM (
+                $fee = DB::connection($_SESSION['connection'])->select("SELECT NVL((SUM(FEE) * 1.1),0) FEE FROM (
 		SELECT TRJD_CASHIERSTATION , TRJD_CREATE_BY, (CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN 1 ELSE -1 END * TRJD_ADMFEE) FEE
 		FROM TBTR_JUALDETAIL, TBMASTER_TOKOIGR
 		WHERE TRJD_KODEIGR = '".$_SESSION['kdigr']."' AND TRUNC(TRJD_TRANSACTIONDATE) = TO_DATE('".$tanggal."','dd/mm/yyyy')
@@ -423,28 +423,28 @@ class ActualController extends Controller
             }
             else $d->distfee = 0;
 
-            $cb = DB::select("SELECT NVL(SUM(CASHBACK),0) CB FROM M_PROMOSI_H
+            $cb = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(CASHBACK),0) CB FROM M_PROMOSI_H
 	WHERE KD_IGR = '".$_SESSION['kdigr']."' AND TRUNC(TGL_TRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND KODE_STATION = '".$d->js_cashierstation."' AND CREATE_BY = '".$d->js_cashierid."'
 	AND TIPE = 'S'");
 
-            $nk = DB::select("SELECT NVL(SUM(NKH_TOTALNK),0) NK FROM M_NK_H
+            $nk = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NKH_TOTALNK),0) NK FROM M_NK_H
 	WHERE NKH_KDIGR = '".$_SESSION['kdigr']."' AND TRUNC(NKH_TGLTRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND NKH_STATION = '".$d->js_cashierstation."' AND NKH_CASHIERID = '".$d->js_cashierid."'");
 
             $d->cb = $cb[0]->cb + $nk[0]->nk;
 
-            $d->rcb = DB::select("SELECT (NVL(SUM(CASHBACK),0) * -1) CB FROM M_PROMOSI_H
+            $d->rcb = DB::connection($_SESSION['connection'])->select("SELECT (NVL(SUM(CASHBACK),0) * -1) CB FROM M_PROMOSI_H
 	WHERE KD_IGR = '".$_SESSION['kdigr']."' AND TRUNC(TGL_TRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND KODE_STATION = '".$d->js_cashierstation."' AND CREATE_BY = '".$d->js_cashierid."'
 	AND TIPE = 'R'")[0]->cb;
 
-            $vcr = DB::select("SELECT NVL(SUM(DPS_JUMLAHDEPOSIT),0) NILAI
+            $vcr = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(DPS_JUMLAHDEPOSIT),0) NILAI
               FROM TBTR_DEPOSITSIMPATINDO
               WHERE DPS_KODEIGR = '".$_SESSION['kdigr']."' AND DPS_STATIONKASIR = '".$d->js_cashierstation."' || '".$d->js_cashierid."'
               AND DPS_TGLTRANSAKSI = TO_CHAR(TO_DATE('".$tanggal."','dd/mm/yyyy'), 'YYYYMMDD')")[0]->nilai;
 
-            $topup = DB::select("SELECT NVL(SUM(DPP_JUMLAHDEPOSIT),0) NILAI
+            $topup = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(DPP_JUMLAHDEPOSIT),0) NILAI
               FROM TBTR_DEPOSIT_MITRAIGR
               WHERE DPP_KODEIGR = '".$_SESSION['kdigr']."' AND DPP_STATIONKASIR = '".$d->js_cashierstation."' || '".$d->js_cashierid."'
               AND DPP_TGLTRANSAKSI = TO_CHAR(TO_DATE('".$tanggal."','dd/mm/yyyy'), 'YYYYMMDD')")[0]->nilai;
@@ -456,7 +456,7 @@ class ActualController extends Controller
             $d->titip = $vcr + $topup;
         }
 
-        $sums = DB::table('cetak_sums')->get();
+        $sums = DB::connection($_SESSION['connection'])->table('cetak_sums')->get();
 
 //        dd($data);
 
@@ -493,10 +493,10 @@ class ActualController extends Controller
     public function cetakIsaku(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT    vir_cashierstation
+        $data = DB::connection($_SESSION['connection'])->select("SELECT    vir_cashierstation
                || '.'
                || vir_cashierid
                || '.'
@@ -600,10 +600,10 @@ class ActualController extends Controller
     public function cetakVirtual(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select vir_type, sum(vir_amount) ttl, sum(vir_fee) fee
+        $data = DB::connection($_SESSION['connection'])->select("select vir_type, sum(vir_amount) ttl, sum(vir_fee) fee
                 from tbtr_virtual
                 where vir_method = 'KLIKIGR'
                  and TRUNC (vir_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy')
@@ -645,10 +645,10 @@ class ActualController extends Controller
     public function cetakCbNk(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT   JS_CASHIERSTATION, JS_CASHIERID, SUBSTR (USERNAME, 1, 5) KASSA, NVL (SUM (CB), 0) CB, NVL (SUM (NK), 0) NK,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT   JS_CASHIERSTATION, JS_CASHIERID, SUBSTR (USERNAME, 1, 5) KASSA, NVL (SUM (CB), 0) CB, NVL (SUM (NK), 0) NK,
          (NVL (SUM (CB), 0) + NVL (SUM (NK), 0)) TOTAL
     FROM TBTR_JUALSUMMARY,
          TBMASTER_USER,
@@ -708,10 +708,10 @@ ORDER BY JS_CASHIERSTATION, JS_CASHIERID");
     public function cetakTransfer(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select trunc(rfr_transactiondate) rfr_transactiondate, rfr_transactionno || '-' || rfr_station || '-' || rfr_cashierid kassa,
+        $data = DB::connection($_SESSION['connection'])->select("select trunc(rfr_transactiondate) rfr_transactiondate, rfr_transactionno || '-' || rfr_station || '-' || rfr_cashierid kassa,
 rfr_transferamt, rfr_koderk, rfr_nilairk, rfr_paymentrk, rfr_kodemember, rfr_attr1, cus_namamember, 0 voucher, 0 nk, 0 CB
 from tbtr_rek_koran_refstruk, tbmaster_customer
 where rfr_kodeigr = '".$_SESSION['kdigr']."' and trunc(rfr_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy') and cus_kodemember = rfr_kodemember
@@ -752,10 +752,10 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
     public function cetakPlastik(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select pls_kasir, pls_station, pls_notransaksi, pls_tgltransaksi,
+        $data = DB::connection($_SESSION['connection'])->select("select pls_kasir, pls_station, pls_notransaksi, pls_tgltransaksi,
             pls_prdcd, pls_qty, pls_nominalamt
             from tbtr_pemakaianplastik
             where pls_kodeigr = '".$_SESSION['kdigr']."'
@@ -797,10 +797,10 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
     public function cetakMerchant(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select substr(DPP_STATIONKASIR, 1, 2) || '-' || substr(DPP_STATIONKASIR, 3,3 ) kasir, to_date(dpp_tgltransaksi, 'yyyyMMdd') tgl,
+        $data = DB::connection($_SESSION['connection'])->select("select substr(DPP_STATIONKASIR, 1, 2) || '-' || substr(DPP_STATIONKASIR, 3,3 ) kasir, to_date(dpp_tgltransaksi, 'yyyyMMdd') tgl,
         dpp_nohp, dpp_kodemember, cus_namamember, dpp_jumlahdeposit
         from tbtr_deposit_mitraigr, tbmaster_customer
         where to_date(dpp_tgltransaksi, 'yyyyMMdd') = TO_DATE('".$tanggal."','dd/mm/yyyy')
@@ -841,10 +841,10 @@ ORDER BY rfr_kodemember, rfr_transactionno, rfr_station, rfr_cashierid");
     public function cetakKredit(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT trpt_cus_kodemember, trpt_type, kasir, cus_namamember,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT trpt_cus_kodemember, trpt_type, kasir, cus_namamember,
           cus_alamatmember1, cus_alamatmember2, cus_alamatmember3,
           cus_alamatmember4, SUM(trpt_salesvalue) kredit
      FROM
@@ -873,7 +873,7 @@ GROUP BY trpt_cus_kodemember, trpt_type, kasir,
 ORDER BY trpt_cus_kodemember");
 
         foreach($data as $d){
-            $d->stat = DB::select("SELECT trjd_cashierstation FROM tbtr_jualdetail
+            $d->stat = DB::connection($_SESSION['connection'])->select("SELECT trjd_cashierstation FROM tbtr_jualdetail
               WHERE TRUNC(trjd_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy')
                 AND trjd_cus_kodemember = '".$d->trpt_cus_kodemember."'
                 AND trjd_kodeigr = '".$_SESSION['kdigr']."'
@@ -914,10 +914,10 @@ ORDER BY trpt_cus_kodemember");
     public function cetakOmi(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT trjd_cus_kodemember, tko_namaomi,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT trjd_cus_kodemember, tko_namaomi,
           SUM(trjd_admfee) dfee, SUM(dppomi) dppomi,
           SUM(gross) grsomi, SUM(ppnomi) ppnomi
          FROM
@@ -988,10 +988,10 @@ ORDER BY trpt_cus_kodemember");
     public function cetakStruk(Request $request){
         $tanggal = $request->tanggal;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT TO_DATE(dps_tgltransaksi,'yyyymmdd') tanggal, dps_kodemember, dps_jumlahdeposit, SUBSTR(dps_stationkasir,1,2)||'.'||SUBSTR(dps_stationkasir,3,3)||'.'||dps_notransaksi nostruk, cus_namamember
+        $data = DB::connection($_SESSION['connection'])->select("SELECT TO_DATE(dps_tgltransaksi,'yyyymmdd') tanggal, dps_kodemember, dps_jumlahdeposit, SUBSTR(dps_stationkasir,1,2)||'.'||SUBSTR(dps_stationkasir,3,3)||'.'||dps_notransaksi nostruk, cus_namamember
         FROM TBTR_DEPOSITSIMPATINDO, TBMASTER_CUSTOMER
         WHERE dps_kodeigr = '".$_SESSION['kdigr']."'
               AND to_date(dps_tgltransaksi,'yyyymmdd') = TO_DATE('".$tanggal."','dd/mm/yyyy')

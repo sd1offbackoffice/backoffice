@@ -28,7 +28,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         $search = $request->value;
         $tipe = $request->tipe;
         if ($tipe == 'OMI') {
-            $data = DB::table('TBTR_RETUROMI')
+            $data = DB::connection($_SESSION['connection'])->table('TBTR_RETUROMI')
                 ->select('rom_nodokumen as nodoc')
                 ->Where('rom_nodokumen', 'LIKE', '%' . $search . '%')
                 ->orderBy('rom_nodokumen', 'desc')
@@ -36,7 +36,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
                 ->limit(100)
                 ->get();
         } else if ($tipe == 'IDM') {
-            $data = DB::table('tbtr_piutang')
+            $data = DB::connection($_SESSION['connection'])->table('tbtr_piutang')
                 ->select('trpt_salesinvoiceno as nodoc')
                 ->Where('trpt_salesinvoiceno', 'LIKE', '%' . $search . '%')
                 ->orderBy('trpt_salesinvoiceno', 'desc')
@@ -51,7 +51,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         $search = $request->value;
         $tipe = $request->tipe;
         if ($tipe == 'IDM') {
-            $data = DB::table('tbtr_piutang')
+            $data = DB::connection($_SESSION['connection'])->table('tbtr_piutang')
                 ->join('tbmaster_customer','trpt_cus_kodemember','=','cus_kodemember')
                 ->select('trpt_cus_kodemember as kode_member', 'cus_namamember as nama_member')
                 ->Where('trpt_cus_kodemember', 'LIKE', '%' . $search . '%')
@@ -60,7 +60,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
                 ->limit(100)
                 ->get();
         } else if ($tipe == 'OMI') {
-            $data = DB::table('tbtr_returomi')
+            $data = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
                 ->join('tbmaster_customer','rom_member','=','cus_kodemember')
                 ->select('rom_member as kode_member', 'cus_namamember as nama_member')
                 ->Where('rom_member', 'LIKE', '%' . $search . '%')
@@ -95,7 +95,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
             if (isset($member1) && isset($member2)) {
                 $and_member = " and rom_member between '" . $member1 . "' and '" . $member2 . "'";
             }
-            $data = DB::select("SELECT rom_nodokumen, tgldok, rom_noreferensi, rom_tglreferensi,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, tgldok, rom_noreferensi, rom_tglreferensi,
                                 rom_member, rom_tgltransaksi, SUM(rom_qty) qty, SUM(harga) harga,
                                 SUM(hrgsat) hrgsat, SUM(item) item, SUM(rom_ttl) total, SUM(ppn) ppn,cus_namamember,
                                 prs_namaperusahaan, prs_namacabang, prs_namawilayah
@@ -149,7 +149,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
             if (isset($member1) && isset($member2)) {
                 $and_member = " and trpt_cus_kodemember between '" . $member1 . "' and '" . $member2 . "'";
             }
-            $data = DB::select("SELECT trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
                     tko_kodeomi, tko_kodesbu, CUS_NAMAMEMBER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH,
                     (trpt_cus_kodemember  || ' - ' || CUS_NAMAMEMBER) member
                     FROM tbtr_piutang, tbmaster_tokoigr, tbmaster_customer, tbmaster_perusahaan
@@ -169,7 +169,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
             $filename = 'igr-bo-rekapregppr-idm';
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();
@@ -192,7 +192,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
 
     public function cf_item($trpt_invoicetaxno, $tko_kodeomi)
     {
-        $cf_item = DB::select("SELECT nvl(COUNT(1),0) count
+        $cf_item = DB::connection($_SESSION['connection'])->select("SELECT nvl(COUNT(1),0) count
                     FROM tbtr_wt_interface WHERE docno = '" . $trpt_invoicetaxno . "' AND shop = '" . $tko_kodeomi . "'")[0]->count;
 
         return $cf_item;

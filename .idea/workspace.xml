@@ -23,39 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/listmasterController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/listmaster.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/loginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/loginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/aktifAllHargaJualController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/aktifAllHargaJualController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/aktifHargaJualController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/aktifHargaJualController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/barangController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/barangController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/hariLiburController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/hariLiburController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/informasiHistoryProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/informasiHistoryProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/byrvchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/byrvchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/file_procedure/sp_aktifkan_harga_allitem.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/file_procedure/sp_aktifkan_harga_allitem.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/file_procedure/sp_aktifkan_harga_peritem.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/file_procedure/sp_aktifkan_harga_peritem.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/login_assets/vendor/bootstrap/js/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/login_assets/vendor/bootstrap/js/bootstrap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/penjualan.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/penjualan.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/aktifAllHargaJual.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/aktifAllHargaJual.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/aktifHargaJual.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/aktifHargaJual.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/barang.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/barang.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/hargaBeli.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/hargaBeli.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/informasiHistoryProduct.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/informasiHistoryProduct.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/MASTER/member.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/MASTER/member.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/TABEL/byrvch.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/byrvch.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/monitoring-produk.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/monitoring-produk.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/navbar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/navbar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -309,7 +278,7 @@
       <workItem from="1635232079232" duration="725000" />
       <workItem from="1635239394016" duration="11184000" />
       <workItem from="1635411903457" duration="15571000" />
-      <workItem from="1636012584156" duration="988000" />
+      <workItem from="1636012584156" duration="3570000" />
     </task>
     <servers />
   </component>
@@ -364,6 +333,10 @@
     <state x="491" y="193" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1634011835427" />
     <state x="552" y="218" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.824@0.0.1536.824" timestamp="1634117544617" />
     <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1634189255459" />
+    <state x="92" y="92" width="1736" height="856" key="DirDiffDialog" timestamp="1636015970514">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DirDiffDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636015970514" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1635850162334">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -393,35 +366,37 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="294" y="0" width="1256" height="810" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1632304651727" />
-    <state x="599" y="14" width="1274" height="1012" key="find.popup" timestamp="1636012191429">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="426" y="10" width="906" height="708" key="find.popup" timestamp="1636021506973">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="399" y="9" width="660" height="662" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1630314540602" />
-    <state x="426" y="10" width="906" height="708" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1636009568173" />
+    <state x="426" y="10" width="906" height="708" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1636021506973" />
     <state x="172" y="4" width="1220" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1635937176112" />
-    <state x="599" y="14" width="1274" height="1012" key="find.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636012191429" />
+    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636015052744" />
+    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636017127983" />
     <state x="254" y="4" width="1180" height="1011" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1635993278406" />
     <state x="45" y="17" width="555" height="1225" key="find.popup/0.0.600.1260@0.0.600.1260" timestamp="1635320517190" />
     <state x="790" y="250" key="ftp.server.browser" timestamp="1636010308684">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="250" key="ftp.server.browser/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636010308684" />
-    <state x="493" y="190" width="672" height="677" key="run.anything.popup" timestamp="1635930883759">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="438" y="168" width="672" height="599" key="run.anything.popup" timestamp="1636023382114">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
+    <state x="438" y="168" width="672" height="599" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1636023382114" />
     <state x="493" y="190" width="672" height="677" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1635930883759" />
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1635925651665" />
     <state x="575" y="263" key="scopes" timestamp="1635929026825">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="575" y="263" key="scopes/0.0.1536.824@0.0.1536.824" timestamp="1635929026825" />
-    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1636014620825">
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1636017122468">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="102" y="161" width="672" height="475" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1636001514442" />
     <state x="114" y="182" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1635845920582" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636012181869" />
-    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636014620825" />
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636017122468" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1636011720161" />
   </component>
   <component name="XDebuggerManager">

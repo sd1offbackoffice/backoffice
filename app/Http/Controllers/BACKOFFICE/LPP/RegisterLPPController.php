@@ -23,7 +23,7 @@ class RegisterLPPController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbmaster_prodmast')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
             ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
             ->orderBy('prd_prdcd')
@@ -37,7 +37,7 @@ class RegisterLPPController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->join('tbmaster_departement', 'div_kodedivisi', '=', 'dep_kodedivisi')
             ->select('div_namadivisi', 'div_kodedivisi', 'dep_namadepartement',
                 'dep_kodedepartement')
@@ -57,7 +57,7 @@ class RegisterLPPController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->join('tbmaster_kategori', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('dep_namadepartement', 'dep_kodedepartement', 'kat_namakategori',
                 'kat_kodekategori')
@@ -76,7 +76,7 @@ class RegisterLPPController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbtr_monitoringplu')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
             ->select('mpl_kodemonitoring', 'mpl_namamonitoring', 'mpl_prdcd')
             ->where('mpl_namamonitoring', 'LIKE', '%' . $search . '%')
             ->orWhere('mpl_kodemonitoring', 'LIKE', '%' . $search . '%')
@@ -92,7 +92,7 @@ class RegisterLPPController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbmaster_supplier')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier')
             ->where('sup_kodesupplier', 'LIKE', '%' . $search . '%')
             ->orWhere('sup_namasupplier', 'LIKE', '%' . $search . '%')
@@ -162,7 +162,7 @@ class RegisterLPPController extends Controller
             $and_mtr = " and mpl_kodemonitoring between '" . $mtr1 . "' and '" . $mtr2 . "'";
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
             ->first();
 
@@ -171,7 +171,7 @@ class RegisterLPPController extends Controller
             $repid = 'RPT_LPP01';
             $rep_name = 'IGR_BO_LPPRDDK.jsp';
 
-            $p_nilaiidmacost = DB::select("SELECT SUM (NILAI) rph
+            $p_nilaiidmacost = DB::connection($_SESSION['connection'])->select("SELECT SUM (NILAI) rph
       FROM (SELECT BTD_PRDCD, ST_LOKASI, ((BTD_PRICE * 0.97) * BTD_QTY) NILAI
               FROM TBTR_BATOKO_H, TBTR_BATOKO_D, TBMASTER_STOCK
              WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
@@ -179,26 +179,26 @@ class RegisterLPPController extends Controller
             AND ST_PRDCD = SUBSTR (BTD_PRDCD, 1, 6) || '0'
             AND ST_LOKASI = '01') A")[0]->rph;
 
-            $p_nilaiidmprice = DB::select("SELECT SUM (NILAI) rph
+            $p_nilaiidmprice = DB::connection($_SESSION['connection'])->select("SELECT SUM (NILAI) rph
       FROM (SELECT BTD_PRDCD, ST_LOKASI, ((BTD_PRICE * BTD_QTY) + BTD_PPN) NILAI FROM TBTR_BATOKO_H, TBTR_BATOKO_D, TBMASTER_STOCK
              WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
                AND BTD_ID = BTH_ID
             AND ST_PRDCD = SUBSTR (BTD_PRDCD, 1, 6) || '0'
             AND ST_LOKASI = '01') A")[0]->rph;
 
-            $p_nilaihbvtrfin = DB::select("SELECT SUM (rph) rph FROM (SELECT trjd_PRDCD, CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN TRJD_QUANTITY ELSE TRJD_QUANTITY * -1 END QTY,
+            $p_nilaihbvtrfin = DB::connection($_SESSION['connection'])->select("SELECT SUM (rph) rph FROM (SELECT trjd_PRDCD, CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN TRJD_QUANTITY ELSE TRJD_QUANTITY * -1 END QTY,
 CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN (TRJD_QUANTITY * TRJD_BASEPRICE) ELSE (TRJD_QUANTITY * TRJD_BASEPRICE) * -1 END RPH
 FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST WHERE TRJD_KODEIGR = " . $_SESSION['kdigr'] . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
 AND (   TRJD_DIVISIONCODE <> '5' OR SUBSTR (TRJD_DIVISION, 1, 2) <> '39') AND TRJD_RECORDID IS NULL AND PRD_KODEIGR = TRJD_KODEIGR AND PRD_PRDCD = TRJD_PRDCD AND NVL (prd_flaghbv, 'N') = 'Y') aa")[0]->rph;
 
-            $p_nilaihbvtrfout = DB::select("SELECT SUM (nilai) rph FROM (SELECT trjd_prdcd, qty, hbv_prdcd_brd, hbv_qty_gram, hbv_qty_gram * qty, st_avgcost, ( (NVL (hbv_qty_gram * qty, 0) * st_avgcost) / 1000) nilai
+            $p_nilaihbvtrfout = DB::connection($_SESSION['connection'])->select("SELECT SUM (nilai) rph FROM (SELECT trjd_prdcd, qty, hbv_prdcd_brd, hbv_qty_gram, hbv_qty_gram * qty, st_avgcost, ( (NVL (hbv_qty_gram * qty, 0) * st_avgcost) / 1000) nilai
 FROM ( SELECT trjd_prdcd, SUM (trjd_quantity) qty FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST
 WHERE TRJD_KODEIGR = " . $_SESSION['kdigr'] . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
 AND ( TRJD_DIVISIONCODE <> '5' OR SUBSTR (TRJD_DIVISION, 1, 2) <> '39') AND TRJD_RECORDID IS NULL AND PRD_KODEIGR = TRJD_KODEIGR
             AND PRD_PRDCD = TRJD_PRDCD AND NVL (prd_flaghbv, 'N') = 'Y' GROUP BY trjd_prdcd) aa, tbmaster_formula_hbv, tbmaster_stock
 WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hbv_prdcd_brd AND st_lokasi = '01') bb")[0]->rph;
 
-            $datas = DB::select("SELECT lpp_kodedivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lpp_kodedivisi,
          div_namadivisi,
          lpp_kodedepartemen,
          dep_namadepartement,
@@ -349,7 +349,7 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
             $repid = 'RPT_LPP02';
             $rep_name = 'IGR_BO_LPPRCDDK.jsp';
 
-            $datas = DB::select("SELECT lpp_kodedivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lpp_kodedivisi,
          div_namadivisi,
          lpp_kodedepartemen,
          dep_namadepartement,
@@ -564,7 +564,7 @@ ORDER BY lpp_kodedivisi,
             $repid = 'RPT_LPP03';
             $rep_name = 'IGR_BO_LPPBAIKRCDDK.jsp';
 
-            $datas = DB::select("SELECT lpp_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lpp_kodedivisi, div_namadivisi,
         lpp_kodedepartemen, dep_namadepartement,
         lpp_kategoribrg, kat_namakategori, lpp_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -655,7 +655,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
             $rep_name = 'IGR_BO_LPPBAIKRCPPB.jsp';
 
 
-            $datas = DB::select("SELECT lpp_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lpp_kodedivisi, div_namadivisi,
         lpp_kodedepartemen, dep_namadepartement,
         lpp_kategoribrg, kat_namakategori, lpp_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -750,7 +750,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                 $rep_name = 'IGR_BO_LPPBAIKPKOR_MIN.jsp';
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK (MINUS)';
 
-                $datas = DB::select("SELECT   A.*
+                $datas = DB::connection($_SESSION['connection'])->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -856,7 +856,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK (PLUS)';
 
-                $datas = DB::select("SELECT   A.*
+                $datas = DB::connection($_SESSION['connection'])->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -960,7 +960,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK';
 
-                $datas = DB::select("SELECT   A.*
+                $datas = DB::connection($_SESSION['connection'])->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -1088,7 +1088,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
             return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
         }
         else if ($menu == 'LPP06') {
-            DB::table('TEMP_LPP06')->truncate();
+            DB::connection($_SESSION['connection'])->table('TEMP_LPP06')->truncate();
             Self::PROSES_LPP06();
 
             $p_prog = 'LPP06';
@@ -1097,7 +1097,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
             $title = '** REKONSILIASI SALDO AWAL VS SALDO AKHIR **';
 
-            $datas = DB::select("Select
+            $datas = DB::connection($_SESSION['connection'])->select("Select
                             prs_namaperusahaan,
                             prs_namacabang,
                             prs_namawilayah,
@@ -1147,7 +1147,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
             $repid = 'RPT_LPP07';
             $rep_name = 'IGR_BO_LPPMONP.jsp';
 
-            $datas = DB::select("SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang, kemasan,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         SUM(lpp_qtybegbal) sawalqty, SUM(lpp_rphbegbal) sawalrph, SUM(lpp_qtybeli) beliqty,
         SUM(lpp_rphbeli) belirph, SUM(lpp_qtybonus) bonusqty, SUM(lpp_rphbonus) bonusrph,
@@ -1224,7 +1224,7 @@ ORDER BY mpl_kodemonitoring, mpl_prdcd");
             $repid = 'RPT_LPP08';
             $rep_name = 'IGR_BO_LPPRETURKAT.jsp';
 
-            $datas = DB::select("SELECT lrt_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lrt_kodedivisi, div_namadivisi,
         lrt_kodedepartemen, dep_namadepartement,
         lrt_kategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1294,7 +1294,7 @@ ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg");
                     $and_plu = " and lrt_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
                 }
 
-                $datas = DB::select("SELECT lrt_kodedivisi, div_namadivisi,
+                $datas = DB::connection($_SESSION['connection'])->select("SELECT lrt_kodedivisi, div_namadivisi,
         lrt_kodedepartemen, dep_namadepartement,
         lrt_kategoribrg, kat_namakategori, lrt_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1379,7 +1379,7 @@ ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg, lrt_prdcd");
             $repid = 'RPT_LPP10';
             $rep_name = 'IGR_BO_LPPRUSAKKAT.jsp';
 
-            $datas = DB::select("SELECT lrs_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lrs_kodedivisi, div_namadivisi,
     lrs_kodedepartemen, dep_namadepartement,
     lrs_kategoribrg, kat_namakategori,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1449,7 +1449,7 @@ ORDER BY lrs_kodedivisi, lrs_kodedepartemen, lrs_kategoribrg");
             if (isset($prdcd1) && isset($prdcd2)) {
                 $and_plu = " and lrs_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
             }
-            $datas = DB::select("SELECT lrs_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lrs_kodedivisi, div_namadivisi,
     lrs_kodedepartemen, dep_namadepartement,
     lrs_kategoribrg, kat_namakategori, lrs_prdcd, prd_deskripsipanjang, kemasan,
     judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1534,7 +1534,7 @@ ORDER BY lrs_kodedivisi, lrs_kodedepartemen, lrs_kategoribrg, lrs_prdcd");
             $p_prog = 'LPP12';
             $repid = 'RPT_LPP12';
             $rep_name = 'IGR_BO_LPPGAB.jsp';
-            $datas = DB::select("SELECT lpp_kodedivisi, div_namadivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT lpp_kodedivisi, div_namadivisi,
     lpp_kodedepartemen, dep_namadepartement,
     lpp_kategoribrg, kat_namakategori,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1637,7 +1637,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg");
             $p_prog = 'LPP13';
             $repid = 'RPT_LPP13';
             $rep_name = 'IGR_BO_LPPSUPBAIK.jsp';
-            $datas = DB::select("SELECT sup_kodesupplier, sup_namasupplier, lpp_prdcd, prd_deskripsipanjang, kemasan,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT sup_kodesupplier, sup_namasupplier, lpp_prdcd, prd_deskripsipanjang, kemasan,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     SUM(lpp_qtybegbal) sawalqty, SUM(lpp_rphbegbal) sawalrph, SUM(lpp_qtybeli) beliqty,
     SUM(lpp_rphbeli) belirph, SUM(lpp_qtybonus) bonusqty, SUM(lpp_rphbonus) bonusrph,
@@ -1707,7 +1707,7 @@ ORDER BY sup_kodesupplier, lpp_prdcd");
             $p_prog = 'LPP14';
             $repid = 'RPT_LPP14';
             $rep_name = 'IGR_BO_LPPSUPRETR.jsp';
-            $datas = DB::select("SELECT sup_kodesupplier, sup_namasupplier, lrt_prdcd, prd_deskripsipanjang, kemasan,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT sup_kodesupplier, sup_namasupplier, lrt_prdcd, prd_deskripsipanjang, kemasan,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     SUM(lrt_qtybegbal) sawalqty, SUM(lrt_rphbegbal) sawalrph, SUM(lrt_qtybaik) baikqty,
     SUM(lrt_rphbaik) baikrph, SUM(lrt_qtyrusak) rusakqty, SUM(lrt_rphrusak) rusakrph,
@@ -1771,7 +1771,7 @@ ORDER BY sup_kodesupplier, lrt_prdcd");
                 $p_prog = 'LPP15';
                 $repid = 'RPT_LPP15';
                 $rep_name = 'IGR_BO_LPPSUPRUSK.jsp';
-                $datas = DB::select("SELECT sup_kodesupplier, sup_namasupplier, lrs_prdcd, prd_deskripsipanjang, kemasan,
+                $datas = DB::connection($_SESSION['connection'])->select("SELECT sup_kodesupplier, sup_namasupplier, lrs_prdcd, prd_deskripsipanjang, kemasan,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         SUM(lrs_qtybegbal) sawalqty, SUM(lrs_rphbegbal) sawalrph, SUM(lrs_qtybaik) baikqty,
         SUM(lrs_rphbaik) baikrph, SUM(lrs_qtyretur) returqty, SUM(lrs_rphretur) returrph,
@@ -1894,7 +1894,7 @@ ORDER BY sup_kodesupplier, lrs_prdcd");
             $and_mtr = " and mpl_kodemonitoring between '" . $mtr1 . "' and '" . $mtr2 . "'";
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
             ->first();
 
@@ -1902,7 +1902,7 @@ ORDER BY sup_kodesupplier, lrs_prdcd");
             $p_prog = 'LPP01';
             $repid = 'RPT_LPP01A';
             $rep_name = 'IGR_BO_LPPRDDK_SO.jsp';
-            $datas = DB::select("SELECT prd_kodedivisi,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_kodedivisi,
          div_namadivisi,
          prd_kodedepartement,
          dep_namadepartement,
@@ -2027,7 +2027,7 @@ order by prd_kodedivisi,
                 $and_plu = " and rso_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
             }
 
-            $datas = DB::select("SELECT
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT
          prd_kodedepartement,
          dep_namadepartement,
          prd_kodekategoribarang,
@@ -2157,9 +2157,9 @@ order by prd_kodedivisi,
     {
         $nrec = 0;
 
-        DB::table('TEMP_LPP06')->truncate();
+        DB::connection($_SESSION['connection'])->table('TEMP_LPP06')->truncate();
 
-        $datas = DB::SELECT("SELECT st_prdcd, prd_kodedivisi, prd_kodedepartement,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT st_prdcd, prd_kodedivisi, prd_kodedepartement,
          prd_kodekategoribarang, st_rpsaldoawal
     FROM tbmaster_stock, tbmaster_prodmast
    WHERE st_kodeigr = " . $_SESSION['kdigr'] . "
@@ -2180,7 +2180,7 @@ order by prd_kodedivisi,
 
                 $nrec = $nrec + 1;
 
-                $JUM = DB::table('TEMP_LPP06')
+                $JUM = DB::connection($_SESSION['connection'])->table('TEMP_LPP06')
                     ->selectRaw('NVL(COUNT(1),0) count')
                     ->where('Prdcd', '=', $data->st_prdcd)
                     ->Where('DIV', '=', $data->prd_kodedivisi)
@@ -2190,14 +2190,14 @@ order by prd_kodedivisi,
 
 
                 if ($JUM > 0) {
-                    DB::table('TEMP_LPP06')
+                    DB::connection($_SESSION['connection'])->table('TEMP_LPP06')
                         ->where('Prdcd', '=', $data->st_prdcd)
                         ->Where('DIV', '=', $data->prd_kodedivisi)
                         ->Where('DEPT', '=', $data->prd_kodedepartement)
                         ->Where('KATB', '=', $data->prd_kodekategoribarang)
                         ->update(['BEGBAL_RP' => DB::raw('NVL(' . $data->begbal_rp . ', 0) + NVL(' . $data->st_rpsaldoawal . ', 0)')]);
                 } else {
-                    DB::table('TEMP_LPP06')->insert([
+                    DB::connection($_SESSION['connection'])->table('TEMP_LPP06')->insert([
                         'PRDCD' => $data->st_prdcd,
                         'DIV' => $data->prd_kodedivisi,
                         'DEPT' => $data->prd_kodedepartement,
@@ -2211,7 +2211,7 @@ order by prd_kodedivisi,
 
         $NREC = 0;
 
-        $recs2 = DB::SELECT("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, lpp_rphAkhir
+        $recs2 = DB::connection($_SESSION['connection'])->select("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, lpp_rphAkhir
                 FROM tbtr_lpp, tbmaster_prodmast
                WHERE lpp_kodeigr = " . $_SESSION['kdigr'] . "
                 and prd_kodeigr = lpp_kodeigr
@@ -2228,7 +2228,7 @@ order by prd_kodedivisi,
             foreach ($recs2 as $rec2) {
                 $NREC = $NREC + 1;
 
-                $JUM = DB::Table("TEMP_LPP06")
+                $JUM = DB::connection($_SESSION['connection'])->table("TEMP_LPP06")
                     ->Select('NVL(COUNT(1), 0) count')
                     ->where('Prdcd', '=', $rec2->st_prdcd)
                     ->Where('DIV', '=', $rec2->prd_kodedivisi)
@@ -2237,14 +2237,14 @@ order by prd_kodedivisi,
                     ->first()->count;;
 
                 if ($JUM > 0) {
-                    DB::table('TEMP_LPP06')
+                    DB::connection($_SESSION['connection'])->table('TEMP_LPP06')
                         ->where('Prdcd', '=', $rec2->st_prdcd)
                         ->Where('DIV', '=', $rec2->prd_kodedivisi)
                         ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                         ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
                         ->update(['AKHIR_RP' => DB::raw('NVL(AKHIR_RP, 0) + NVL(' . $rec2->lpp_rphakhir . ', 0)')]);
                 } else {
-                    DB::table('TEMP_LPP06')->insert([
+                    DB::connection($_SESSION['connection'])->table('TEMP_LPP06')->insert([
                         'PRDCD' => $rec2->st_prdcd,
                         'DIV' => $rec2->prd_kodedivisi,
                         'DEPT' => $rec2->prd_kodedepartement,

@@ -34,7 +34,7 @@ class MonitoringStokParetoController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::select("select distinct mpl_kodemonitoring kode_mon, mpl_namamonitoring nama_mon
+        $data = DB::connection($_SESSION['connection'])->select("select distinct mpl_kodemonitoring kode_mon, mpl_namamonitoring nama_mon
             from tbtr_monitoringplu
             where mpl_kodemonitoring in('SM', 'SJMF', 'SJMNF', 'SPVF', 'SPVNF', 'SPVGMS','F1','F2','NF1','NF2','G','O')
             order by mpl_kodemonitoring");
@@ -69,11 +69,11 @@ class MonitoringStokParetoController extends Controller
 
         $hrkj++;
 
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         $data = [];
 
-        $data = DB::select("SELECT   HGB_KODESUPPLIER KDSUP, SUP_NAMASUPPLIER NMSUP,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT   HGB_KODESUPPLIER KDSUP, SUP_NAMASUPPLIER NMSUP,
          PRD_PRDCD PLU, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT UNIT, PRD_UNIT || ' / ' || PRD_FRAC SATUAN_JUAL,
          PRD_SATUANBELI || ' / ' || PRD_ISIBELI SATUAN_BELI, ST_SALDOAWAL SALDOAWAL,
          ST_SALDOAKHIR SALDOAKHIR, OUTPO, OUTQTY, SUP_JANGKAWAKTUKIRIMBARANG LT,
@@ -120,7 +120,7 @@ class MonitoringStokParetoController extends Controller
         $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
-            $temp = DB::table('tbtr_konversiplu')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
                 ->select('kvp_pluold')
                 ->where('kvp_kodetipe','=','M')
                 ->where('kvp_plunew','=',$d->plu)
@@ -230,11 +230,11 @@ class MonitoringStokParetoController extends Controller
     public function printMontok(Request $request){
         $kodemon = $request->kodemon;
 
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         $data = [];
 
-        $data = DB::select("SELECT   MPL_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT   MPL_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI,
              PRD_UNIT || '/' || PRD_FRAC SATUAN, PRD_UNIT UNIT, ST_SALDOAKHIR SALDOAKHIR, OUTPO, OUTQTY,
              PRD_MINORDER MINQTY, PKM_PKMT PKMT, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
              PRD_KODEKATEGORIBARANG KAT, DIV_NAMADIVISI NMDIV, DEP_NAMADEPARTEMENT NMDEP,
@@ -277,7 +277,7 @@ class MonitoringStokParetoController extends Controller
         $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
-            $temp = DB::table('tbtr_konversiplu')
+            $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
                 ->select('kvp_pluold')
                 ->where('kvp_kodetipe','=','M')
                 ->where('kvp_plunew','=',$d->plu)

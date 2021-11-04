@@ -16,7 +16,7 @@ use File;
 class CetakRegisterController extends Controller
 {
     public function index(){
-        $cabang = DB::table('tbmaster_cabang')
+        $cabang = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')
             ->select('cab_kodecabang','cab_namacabang')
             ->where('cab_kodeigr','=',$_SESSION['kdigr'])
             ->where('cab_kodecabang','!=',$_SESSION['kdigr'])
@@ -62,10 +62,10 @@ class CetakRegisterController extends Controller
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm , msth_typetrn,to_char(msth_top,'dd/mm/yyyy') msth_top, status, sup_pkp,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm , msth_typetrn,to_char(msth_top,'dd/mm/yyyy') msth_top, status, sup_pkp,
                     supplier,trunc(mstd_tgldoc) mstd_tgldoc,
                     sum(mstd_gross) gross, sum(discount) discount,
                     sum(ppn) mstd_ppnrph, sum(ppnbm) mstd_ppnbmrph, sum(btl) mstd_ppnbtlrph,
@@ -206,10 +206,10 @@ class CetakRegisterController extends Controller
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm, msth_top,status, msth_nofaktur, to_char(msth_tglfaktur,'dd/mm/yyyy') msth_tglfaktur,supplier, sum(nvl(mstd_gross,0)) gross, mstd_pkp, mstd_typetrn,sum(nvl(discount,0)) discount, sum(nvl(ppn,0)) mstd_ppnrph, sum(nvl(ppnbm,0)) mstd_ppnbmrph, sum(nvl(btl,0)) mstd_ppnbtlrph, sum(nvl(total,0)) total
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm, msth_top,status, msth_nofaktur, to_char(msth_tglfaktur,'dd/mm/yyyy') msth_tglfaktur,supplier, sum(nvl(mstd_gross,0)) gross, mstd_pkp, mstd_typetrn,sum(nvl(discount,0)) discount, sum(nvl(ppn,0)) mstd_ppnrph, sum(nvl(ppnbm,0)) mstd_ppnbmrph, sum(nvl(btl,0)) mstd_ppnbtlrph, sum(nvl(total,0)) total
         from
         (
         select msth_nodoc, msth_tgldoc, msth_cterm, msth_tgldoc+msth_cterm msth_top,
@@ -339,10 +339,10 @@ class CetakRegisterController extends Controller
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,msth_loc, msth_loc2, mstd_flagdisc1,mstd_ppnrph,sum(total) total
+        $data = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,msth_loc, msth_loc2, mstd_flagdisc1,mstd_ppnrph,sum(total) total
         FROM
         (
             SELECT msth_nodoc, msth_tgldoc,
@@ -395,10 +395,10 @@ class CetakRegisterController extends Controller
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT   MSTH_NODOC, to_char(MSTH_TGLDOC, 'dd/mm/yyyy') MSTH_TGLDOC, STATUS, MSTH_NOREF3, to_char(MSTH_TGREF3, 'dd/mm/yyyy') MSTH_TGREF3, MSTD_PPNRPH, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT   MSTH_NODOC, to_char(MSTH_TGLDOC, 'dd/mm/yyyy') MSTH_TGLDOC, STATUS, MSTH_NOREF3, to_char(MSTH_TGREF3, 'dd/mm/yyyy') MSTH_TGREF3, MSTD_PPNRPH, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
          CASE SUBSTR (MSTH_NOPO, 4, 2)
              WHEN 'RP'
                  THEN SUM (PREPACK)
@@ -526,7 +526,7 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         if($register == 'Z1'){
@@ -548,7 +548,7 @@ ORDER BY MSTH_NODOC");
             $where = " and mstd_flagdisc1 <> 'B' ";
         }
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_nofaktur, to_char(msth_tglfaktur, 'dd/mm/yyyy') msth_tglfaktur,mstd_flagdisc1,mstd_ppnrph,sum(total) total
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_nofaktur, to_char(msth_tglfaktur, 'dd/mm/yyyy') msth_tglfaktur,mstd_flagdisc1,mstd_ppnrph,sum(total) total
             from
             (
                     select msth_nodoc, msth_tgldoc,
@@ -605,10 +605,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT
+        $data = DB::connection($_SESSION['connection'])->select("SELECT
             msth_nodoc, TO_CHAR(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3, mstd_flagdisc1,mstd_ppnrph,sbrg, keterangan, mstd_flagdisc1, mstd_flagdisc2,
             sum(total) total, NVL(sum(NILAI_BB),0) as TOTBB, NVL(sum(NILAI_BR),0) as TOTBR, NVL(sum(NILAI_BS),0) as TOTBS
         FROM
@@ -691,10 +691,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_nopo, to_char(msth_tglpo, 'dd/mm/yyyy') msth_tglpo,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_nopo, to_char(msth_tglpo, 'dd/mm/yyyy') msth_tglpo,
                     mstd_flagdisc1,mstd_ppnrph,sum(total) total
                     from
                     (
@@ -752,10 +752,10 @@ ORDER BY MSTH_NODOC");
         $title = '** REGISTER NOTA NBH **';
         $filename = 'Register Nota NBH';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT  to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT  to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc,
             mstd_nopo, to_char(mstd_tglpo, 'dd/mm/yyyy') mstd_tglpo, cket1, status,
             sum(mstd_gross) total
             FROM
@@ -804,10 +804,10 @@ ORDER BY MSTH_NODOC");
         $title = '** REGISTER PEMBATALAN NOTA NBH **';
         $filename = 'Register Pembatalan Nota NBH';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT  to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, mstd_tgldoc,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT  to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, mstd_tgldoc,
             mstd_nopo, to_char(mstd_tglpo, 'dd/mm/yyyy') mstd_tglpo, cket1, status,
             sum(mstd_gross) total
             FROM
@@ -853,10 +853,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-            $data = DB::select("SELECT  to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc,'dd/mm/yyyy') mstd_tgldoc,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT  to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc,'dd/mm/yyyy') mstd_tgldoc,
                         mstd_nopo, to_char(mstd_tglpo, 'dd/mm/yyyy') mstd_tglpo, status,msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,
                         sum(mstd_gross) mstd_gross
                         FROM
@@ -899,10 +899,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select to_char(mstd_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc, 'dd/mm/yyyy') mstd_tgldoc, mstd_cterm, to_char(jtempo, 'dd/mm/yyyy') jtempo,
+        $data = DB::connection($_SESSION['connection'])->select("select to_char(mstd_tgldoc, 'dd/mm/yyyy') msth_tgldoc, mstd_nodoc, to_char(mstd_tgldoc, 'dd/mm/yyyy') mstd_tgldoc, mstd_cterm, to_char(jtempo, 'dd/mm/yyyy') jtempo,
         status, supplier,
         sum(gross) gross, sum(potongan) potongan, sum(ppn) ppn,
         sum(bm) bm, sum(btl) btl, sum(total) total, sum(gross_bkp) grossbkp,
@@ -1059,10 +1059,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,supplier, mstd_docno2, to_char(mstd_date2, 'dd/mm/yyyy') mstd_date2, msth_nopo, msth_tglpo,mstd_tgldoc,status, prs_namaperusahaan, prs_namacabang, sup_pkp,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,supplier, mstd_docno2, to_char(mstd_date2, 'dd/mm/yyyy') mstd_date2, msth_nopo, msth_tglpo,mstd_tgldoc,status, prs_namaperusahaan, prs_namacabang, sup_pkp,
         SUM(mstd_gross) mstd_gross, SUM(mstd_ppnrph) mstd_ppnrph, SUM(mstd_discrph) mstd_discrph
         from (select msth_nodoc, msth_tgldoc, msth_kodesupplier||'-'||sup_namasupplier SUPPLIER,
                 case when mstd_docno2 is null then '' else prs_kodemto||'.0'||mstd_docno2 end  mstd_docno2, mstd_date2, mstd_gross, mstd_ppnrph,   mstd_discrph, mstd_tgldoc, msth_nopo, msth_tglpo,
@@ -1158,10 +1158,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                     status, msth_nopo, to_char(msth_tglpo, 'dd/mm/yyyy') msth_tglpo,
                     mstd_tgldoc, mstd_flagdisc1,mstd_ppnrph,
                     sbrg, keterangan, mstd_flagdisc1,
@@ -1226,10 +1226,10 @@ ORDER BY MSTH_NODOC");
 
         $title = 'Register Transfer Antar Cabang';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                 status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
                 mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph,prs_namaperusahaan, prs_namacabang,
                 title, sum(total) total
@@ -1288,10 +1288,10 @@ ORDER BY MSTH_NODOC");
 
         $title = 'Register Pembatalan Transfer Antar Cabang';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3, mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph, title, sum(total) total
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3, mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph, title, sum(total) total
         from
         (
                 select msth_nodoc, msth_tgldoc,
@@ -1345,10 +1345,10 @@ ORDER BY MSTH_NODOC");
         $t1 = $this->formatDate($tgl1);
         $t2 = $this->formatDate($tgl2);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
         mstd_tgldoc,msth_loc2, mstd_flagdisc1,mstd_ppnrph,
         sum(total) total
         from

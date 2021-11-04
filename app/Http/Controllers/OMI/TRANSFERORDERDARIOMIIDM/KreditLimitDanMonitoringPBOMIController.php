@@ -25,7 +25,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
 
     public function getLovKodeOMI()
     {
-        $datas = DB::table("tbmaster_tokoigr")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_tokoigr")
             ->selectRaw("tko_kodeomi, tko_namaomi, tko_kodecustomer")
             ->whereRaw("tko_kodesbu  = 'O'")
             ->get();
@@ -37,7 +37,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
     {
         $value = $request->kodeomi;
 
-        $data = DB::table("tbmaster_tokoigr")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_tokoigr")
             ->select("tko_kodeomi", "tko_namaomi", "tko_kodecustomer")
             ->where("tko_kodeomi", "=", $value)
             ->first();
@@ -46,7 +46,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
 
     public function getDataMasterKreditLimitOMI()
     {
-        $datas = DB::table("tbmaster_clomi")->join("tbmaster_tokoigr", "tko_kodeomi", "=", "mcl_kodeomi")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_clomi")->join("tbmaster_tokoigr", "tko_kodeomi", "=", "mcl_kodeomi")
             ->orderBy("mcl_kodeomi")
             ->get();
         return Datatables::of($datas)->make(true);
@@ -54,7 +54,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
 
     public function getMonitoringDataPBTolakan()
     {
-        $datas = DB::table("tbmaster_clomi")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_clomi")
             ->whereRaw("nvl(mcl_recordid, '0') = '0'")
             ->orderBy("mcl_kodeomi")
             ->orderBy("mcl_kodeproxy")
@@ -72,7 +72,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
         $txt_tgltop = $request->tgltop;
         $txt_kdcus = $request->kodecustomer;
 
-        $temp = DB::table("tbmaster_tokoigr")
+        $temp = DB::connection($_SESSION['connection'])->table("tbmaster_tokoigr")
             ->where("tko_kodeomi", "=", $txt_kdomi)
             ->where("tko_kodesbu", "=", "O")
             ->count();
@@ -121,13 +121,13 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
         } else {
 
 
-            $temp = DB::table("tbmaster_clomi")
+            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_clomi")
                 ->where("mcl_kodeomi", "=", $txt_kdomi)
                 ->where("mcl_kodeproxy", "=", $txt_proxy)
                 ->count();
 
             if ($temp != 0) {
-                DB::table('tbmaster_clomi')
+                DB::connection($_SESSION['connection'])->table('tbmaster_clomi')
                     ->where('mcl_kodeomi', '=', $txt_kdomi)
                     ->where('mcl_kodeproxy', '=', $txt_proxy)
                     ->update([
@@ -135,7 +135,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                         'mcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                     ]);
             } else {
-                DB::table('tbmaster_clomi')->insert([
+                DB::connection($_SESSION['connection'])->table('tbmaster_clomi')->insert([
                     'mcl_kodeproxy' => $txt_proxy,
                     'mcl_kodemember' => $txt_kdcus,
                     'mcl_kodeomi' => $txt_kdomi,
@@ -145,7 +145,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                     'mcl_create_dt' => DB::raw('sysdate')
                 ]);
             }
-            DB::table('tbhistory_clomi')->insert([
+            DB::connection($_SESSION['connection'])->table('tbhistory_clomi')->insert([
                 'hcl_kodeproxy' => $txt_proxy,
                 'hcl_kodemember' => $txt_kdcus,
                 'hcl_kodeomi' => $txt_kdomi,
@@ -160,7 +160,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
             ]);
 
             if ($txt_proxy == '1') {
-                DB::table('tbmaster_customer')
+                DB::connection($_SESSION['connection'])->table('tbmaster_customer')
                     ->where('cus_kodemember', '=', $txt_kdcus)
                     ->update([
                         'cus_top' => $txt_top,
@@ -186,13 +186,13 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
         $txt_kdomi = $request->kodeomi;
         $txt_proxy = $request->kodeproxy;
 
-        $temp = DB::table("tbmaster_clomi")
+        $temp = DB::connection($_SESSION['connection'])->table("tbmaster_clomi")
             ->where('mcl_kodeomi', '=', $txt_kdomi)
             ->where("mcl_kodeproxy", "=", $txt_proxy)
             ->count();
 
         if ($temp <> 0) {
-            $data = DB::table("tbmaster_clomi")
+            $data = DB::connection($_SESSION['connection'])->table("tbmaster_clomi")
                 ->select('mcl_maxnilaicl', 'mcl_tgltop')
                 ->where('mcl_kodeomi', '=', $txt_kdomi)
                 ->where("mcl_kodeproxy", "=", $txt_proxy)

@@ -28,7 +28,7 @@ class formHJKController extends Controller
         $search = $request->val;
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table('tbmaster_supplier')
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
             ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
@@ -44,7 +44,7 @@ class formHJKController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table('TBMASTER_PRODMAST')
+        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_PRDCD')
             ->selectRaw('PRD_DESKRIPSIPANJANG')
             ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
@@ -66,7 +66,7 @@ class formHJKController extends Controller
 //        $kodeigr = $_SESSION['kdigr'];
 //        $search = $request->val;
 //
-//        $datas = DB::table('TBMASTER_PRODMAST')
+//        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
 //            ->selectRaw('PRD_PRDCD')
 //            ->selectRaw('PRD_DESKRIPSIPANJANG')
 //            ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
@@ -85,7 +85,7 @@ class formHJKController extends Controller
         $kode = $request->kode;
 
 
-        $cursor = DB::select("SELECT   prd_prdcd,
+        $cursor = DB::connection($_SESSION['connection'])->select("SELECT   prd_prdcd,
                              prd_deskripsipanjang deskripsi,
                              prd_unit unit,
                              prd_frac frac,
@@ -145,7 +145,7 @@ class formHJKController extends Controller
         $kode = $request->kode;
 
 
-        $cursor = DB::select("SELECT   PRD_PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT UNIT,
+        $cursor = DB::connection($_SESSION['connection'])->select("SELECT   PRD_PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT UNIT,
                          PRD_FRAC FRAC, PRD_MINJUAL MINJ, PRD_FLAGBKP1 PKP,
                          NVL (PRD_FLAGBKP2, 'xx') PKP2, PRD_HRGJUAL PRICE_A, PRD_KODETAG PTAG,
                          NVL (PRD_LASTCOST, 0) PRD_LCOST,
@@ -179,7 +179,7 @@ class formHJKController extends Controller
         $datas = $request->datas;
         $dateA = $request->dateA;
         $dateB = $request->dateB;
-        $prs = DB::table('tbmaster_perusahaan')
+        $prs = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->selectRaw("prs_namaperusahaan")
             ->selectRaw("prs_namacabang")
             ->first();

@@ -16,7 +16,7 @@ class omiController extends Controller
     public function getTokoOmi(Request $request){
         $kodeSBU    = $request->kodeSBU;
 
-        $datas      = DB::table('tbmaster_tokoigr a')
+        $datas      = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr a')
             ->select('a.*', 'b.cab_namacabang', 'c.cus_namamember')
             ->leftJoin('tbmaster_customer c', 'a.tko_kodecustomer', 'c.cus_kodemember')
             ->leftJoin('tbmaster_cabang b', 'a.TKO_KODEIGR', 'b.cab_kodecabang')
@@ -31,7 +31,7 @@ class omiController extends Controller
     public function detailTokoOmi(Request $request){
         $kodeOmi    = $request->kodeOmi;
 
-        $identity   = DB::table('tbmaster_tokoigr a')
+        $identity   = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr a')
             ->select('a.*', 'b.cab_namacabang', 'c.cus_namamember', 'c.cus_npwp', 'c.cus_tglpajak')
             ->leftJoin('tbmaster_customer c', 'a.tko_kodecustomer', 'c.cus_kodemember')
             ->leftJoin('tbmaster_cabang b', 'a.TKO_KODEIGR', 'b.cab_kodecabang')
@@ -40,7 +40,7 @@ class omiController extends Controller
             ->get()->toArray();
 
         if ($identity){
-            $detail     = DB::table('tbmaster_customer')->where('cus_kodemember', $identity[0]->tko_kodecustomer)->get()->toArray();
+            $detail     = DB::connection($_SESSION['connection'])->table('tbmaster_customer')->where('cus_kodemember', $identity[0]->tko_kodecustomer)->get()->toArray();
 
             return response()->json(['kode' => 1,'identity' => $identity, 'detail' => $detail]);
         } else {
@@ -51,7 +51,7 @@ class omiController extends Controller
     public function getBranchName(Request $request){
         $kodeigr= $request->kodeIgr;
 
-        $branch = DB::table('tbmaster_cabang')->select('cab_namacabang')->where('cab_kodecabang', $kodeigr)->get()->toArray();
+        $branch = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->select('cab_namacabang')->where('cab_kodecabang', $kodeigr)->get()->toArray();
 
         return response()->json($branch);
     }
@@ -59,7 +59,7 @@ class omiController extends Controller
     public function getCustomerName(Request $request){
         $member = $request->member;
 
-        $cust   = DB::table('tbmaster_customer')->where('cus_kodemember', $member)->get()->toArray();
+        $cust   = DB::connection($_SESSION['connection'])->table('tbmaster_customer')->where('cus_kodemember', $member)->get()->toArray();
 
         return response()->json($cust);
     }
@@ -89,7 +89,7 @@ class omiController extends Controller
 
 //        dd($request->tglTutup);
 
-        DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeOmi)
+        DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeOmi)
             ->update(['tko_namaomi' => $namaOmi, 'tko_kodeigr' => $kodeIgr, 'tko_flagdistfee' => $flagFee, 'tko_flagkph' => $flagKph,
                 'tko_flagvb' => $flagVb, 'tko_kodecustomer' => $kodeCust, 'tko_tglgo' => $tglGo,
                 'tko_tgltutup' => $tglTutup, 'tko_statustoko' => $statusToko, 'tko_jambukatoko' => $jamBuka,
@@ -126,7 +126,7 @@ class omiController extends Controller
         elseif ($kodeSBU == 'C') $namaSBU = 'IDM CONV';
         elseif ($kodeSBU == 'I') $namaSBU = 'INDOMARET';
 
-        DB::table('tbmaster_tokoigr')->insert(['TKO_KODEIGR' => $kodeigr, 'TKO_KODESBU' => $kodeSBU, 'TKO_NAMASBU' => $namaSBU, 'TKO_KODEOMI' => $kodeOmi, 'tko_namaomi' => $namaOmi,
+        DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->insert(['TKO_KODEIGR' => $kodeigr, 'TKO_KODESBU' => $kodeSBU, 'TKO_NAMASBU' => $namaSBU, 'TKO_KODEOMI' => $kodeOmi, 'tko_namaomi' => $namaOmi,
                 'TKO_KODECABANG' => $kodeCabang, 'tko_flagdistfee' => $flagFee, 'tko_flagkph' => $flagKph,
                 'tko_flagvb' => $flagVb, 'tko_kodecustomer' => $kodeCust, 'tko_tglgo' => $tglGo,
                 'tko_tgltutup' => $tglTutup, 'tko_create_by' => $user, 'tko_create_dt' => $date]);
@@ -143,7 +143,7 @@ class omiController extends Controller
         $valueEditExpand    = $request->valueEditExpand;
         $kodeSBU    = $request->kodeSBU;
 
-        $password   = DB::select("select LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),5,2)+1,2,0) ||
+        $password   = DB::connection($_SESSION['connection'])->select("select LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),5,2)+1,2,0) ||
                                                 LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),3,2)+2,2,0) ||
                                                 LPAD(SUBSTR(TO_CHAR(SYSDATE,'ddmmyy'),1,2)+1,2,0) as password
                                                 from dual");
@@ -158,17 +158,17 @@ class omiController extends Controller
         }
 
         if($columnEditExpand == 'tko_flagdistfee'){
-            DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+            DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                 ->update(['tko_flagdistfee' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
         }
         elseif($columnEditExpand == "tko_persendistributionfee"){
             if($kodeSBU != 'I'){
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)
                     ->update(['tko_persendistributionfee' => $valueEditExpand.'.00', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
 
                 if ($updateMKTHO == 'Y'){
                     // ---------------- DIKOMEN SUPAYA GK GANGGU PRODUCTION
-//                    DB::select("	UPDATE tbmaster_tokoigr@igrmktho
+//                    DB::connection($_SESSION['connection'])->select("	UPDATE tbmaster_tokoigr@igrmktho
 //                                        SET tko_persendistributionfee = '$$valueEditExpand',
 //                                        tko_MODIFY_BY = '$user', tko_MODIFY_DT = '$date'
 //                                        WHERE tko_kodesbu = '$kodeSBU'
@@ -192,7 +192,7 @@ class omiController extends Controller
         }
         elseif($columnEditExpand == "tko_persenmargin"){
             if($kodeSBU != 'O'){
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_persenMargin' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             } else {
                 return response()->json(['kode' => 0, 'msg' => " OMI Tidak Ada Nilai Margin nya !!'", 'data' => '']);
@@ -200,28 +200,28 @@ class omiController extends Controller
         }
         elseif($columnEditExpand == "tko_flagsubsidipemanjangan"){
             if($valueEditExpand == 'T'){
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_flagsubsidiPemanjangan' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             } else {
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_flagsubsidiPemanjangan' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             }
         }
         elseif($columnEditExpand == "tko_flagcreditlimitomi"){
             if($valueEditExpand == 'T'){
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_flagCreditLimitOMI' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             } else {
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_flagCreditLimitOMI' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             }
         }
         elseif($columnEditExpand == "tko_tipeomi"){
             if($valueEditExpand == 'T'){
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_tipeOMI' => '', 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             } else {
-                DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
+                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_tipeOMI' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             }
         }

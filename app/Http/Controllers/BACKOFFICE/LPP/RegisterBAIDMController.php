@@ -23,7 +23,7 @@ class RegisterBAIDMController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::table('tbmaster_prodmast')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
             ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
             ->orderBy('prd_prdcd')
@@ -40,12 +40,12 @@ class RegisterBAIDMController extends Controller
         $periode1 = $request->periode1;
         $periode2 = $request->periode2;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
             ->first();
 
         if ($menu == 'detail') {
-            $datas = DB::select("SELECT  ab.* FROM (
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT  ab.* FROM (
                     SELECT prs_namaperusahaan, prs_namacabang, bth_nonrb, bth_tglnrb, tko_kodeomi, bth_kodemember, bth_nodoc, bth_tgldoc, btd_prdcd, prd_deskripsipanjang,
             ((btd_price * btd_qty) + btd_ppn) nilai
             FROM TBTR_BATOKO_H, TBTR_BATOKO_D, TBMASTER_TOKOIGR, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
@@ -84,7 +84,7 @@ class RegisterBAIDMController extends Controller
             return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
         }
         else if ($menu == 'rekap') {
-            $datas = DB::select("SELECT ROWNUM ||  '.' nomor, ab.* FROM (
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT ROWNUM ||  '.' nomor, ab.* FROM (
                 SELECT prs_namaperusahaan, prs_namacabang, bth_nonrb, bth_tglnrb, tko_kodeomi, bth_kodemember, bth_nodoc, bth_tgldoc,
                 SUM(((btd_price * btd_qty) + btd_ppn)) nilai, SUM(((btd_price * 0.97) * btd_qty)) dpp, SUM(((btd_price * 0.03) * btd_qty) ) tigapersen,
                 SUM(btd_ppn) btd_ppn

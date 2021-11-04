@@ -40,7 +40,7 @@ class lapregbrgrtrController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::select("SELECT rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi,
     rom_tglreferensi, SUM(rom_ttlcost) total, cus_namamember, SUM(item) item,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah, (rom_member  || ' - ' || cus_namamember) member,
     sum(case when flag_bkp='Y' then rom_ttlcost else 0 end) ttl_bkp,

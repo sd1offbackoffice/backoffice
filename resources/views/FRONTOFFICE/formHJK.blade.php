@@ -330,7 +330,6 @@
                                 }
                             }else{
                                 cpromo = false;
-
                                 if((data.pkp == 'Y'&& data.pkp2 != 'P') || (data.pkp == 'Y'&& data.pkp2 != 'W') || (data.pkp == 'Y'&& data.pkp2 != 'G')){
                                     if(data.ptag == 'Q'){
                                         lcost = data.prd_lcost;
@@ -345,6 +344,9 @@
                                         marlcost = (1 - 1.1 * data.prd_lcost / data.price_a) * 100;
                                         maracost = (1 - 1.1 *(data.st_lcost * vfrac) / data.price_a) * 100;
                                     }
+                                }else{
+                                    lcost = data.prd_lcost;
+                                    acost = data.st_lcost * vfrac;
                                 }
                             }
                         }else{
@@ -373,6 +375,9 @@
                                     maracost = (1 - (data.st_lcost * vfrac) / data.price_a) * 100;
                                 }
                             }else{
+                                lcost = 0;
+                                acost = 0;
+
                                 marlcost = 0;
                                 maracost = 0;
                             }

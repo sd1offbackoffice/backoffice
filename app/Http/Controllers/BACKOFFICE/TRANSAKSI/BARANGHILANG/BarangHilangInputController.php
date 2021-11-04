@@ -19,7 +19,7 @@ class barangHilangInputController extends Controller
     {
         $search = $request->search;
 
-        $result = DB::table('tbtr_backoffice')
+        $result = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
             ->selectRaw("trbo_nodoc,
                CASE WHEN TRBO_FLAGDISC1='1' THEN 'Barang Baik'
                                       ELSE 'Barang Retur' End trbo_tipe,
@@ -41,7 +41,7 @@ class barangHilangInputController extends Controller
     {
         $search = strtoupper($request->search);
 
-        $result = DB::table('tbmaster_prodmast')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
@@ -55,7 +55,7 @@ class barangHilangInputController extends Controller
     public function showTrn(Request $request){
         $nodoc = $request->nodoc;
 
-        $result = DB::table('tbtr_backoffice')
+        $result = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
             ->leftJoin('tbmaster_prodmast', 'trbo_prdcd', '=', 'prd_prdcd')
 //            ->leftJoin('tbmaster_stock','trbo_prdcd','=','st_prdcd')
             ->selectRaw("trbo_nodoc,
@@ -96,7 +96,7 @@ class barangHilangInputController extends Controller
         $ppn = '';
         $trim = 0;
 
-        $result = DB::select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST as hrgsatuan,
+        $result = DB::connection($_SESSION['connection'])->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST as hrgsatuan,
                 ST_AVGCOST,NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD,Nvl(ST_SALDOAKHIR,0) as ST_SALDOAKHIR, PRD_KODESUPPLIER
                 FROM TBMASTER_PRODMAST tp
                 LEFT JOIN TBMASTER_STOCK ts ON prd_prdcd = st_prdcd and st_lokasi = '01'
@@ -161,21 +161,21 @@ class barangHilangInputController extends Controller
         oci_bind_by_name($s, ':ret', $docNo, 32);
         oci_execute($s);
 
-        $getDoc = DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
+        $getDoc = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
 
 
         if($getDoc){
-            DB::table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
+            DB::connection($_SESSION['connection'])->table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
 
             for ($i = 1; $i < sizeof($data); $i++){
                 $temp = $data[$i];
 
-                $prodmast = DB::table('tbmaster_prodmast')
+                $prodmast = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->where('prd_kodeigr', $kodeigr)
                     ->where('prd_prdcd', $temp['plu'])
                     ->first();
 //update
-                DB::table('tbtr_backoffice')
+                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                     ->insert([
                         'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $getDoc->trbo_nodoc,
                         'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
@@ -200,12 +200,12 @@ class barangHilangInputController extends Controller
             for ($i = 1; $i < sizeof($data); $i++) {
                 $temp = $data[$i];
 
-                $prodmast = DB::table('tbmaster_prodmast')
+                $prodmast = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->where('prd_kodeigr', $kodeigr)
                     ->where('prd_prdcd', $temp['plu'])
                     ->first();
 
-                DB::table('tbtr_backoffice')
+                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                     ->insert([
                         'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $docNo,
                         'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
@@ -230,7 +230,7 @@ class barangHilangInputController extends Controller
     public function deleteDoc(Request $request){
         $nodoc = $request->nodoc;
 
-        DB::table('tbtr_backoffice')
+        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
             ->where('trbo_nodoc', $nodoc)
             ->where('trbo_typetrn','=','H')
             ->delete();

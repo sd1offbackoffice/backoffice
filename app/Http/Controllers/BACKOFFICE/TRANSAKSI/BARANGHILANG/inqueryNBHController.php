@@ -12,7 +12,7 @@ class inqueryNBHController extends Controller
 
         $kodeigr = $_SESSION['kdigr'];
 
-        $result = DB::table('tbtr_mstran_h')
+        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_typetrn','=','H')
             ->where('msth_kodeigr','=',$kodeigr)
@@ -29,7 +29,7 @@ class inqueryNBHController extends Controller
         $search = $request->search;
         $kodeigr = $_SESSION['kdigr'];
 
-        $result = DB::table('tbtr_mstran_h')
+        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_typetrn','=','H')
             ->where('msth_kodeigr','=',$kodeigr)
@@ -48,7 +48,7 @@ class inqueryNBHController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $nonbh = $request->nonbh;
 
-        $result = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
+        $result = DB::connection($_SESSION['connection'])->select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
 										mstd_qty, mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo
 									from tbtr_mstran_d, tbmaster_prodmast
 									where mstd_nodoc='$nonbh'
@@ -67,7 +67,7 @@ class inqueryNBHController extends Controller
         $nonbh = $request->nonbh;
         $plu    = $request->plu;
 
-        $result = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit unit, mstd_frac frac,
+        $result = DB::connection($_SESSION['connection'])->select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit unit, mstd_frac frac,
 									prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp,
 									st_lastcost*case when prd_unit='KG' then 1 else nvl(prd_frac,1) end lcost,
 									nvl(st_avgcost,0) st_avgcost ,  nvl(st_saldoakhir,0) st_qty,

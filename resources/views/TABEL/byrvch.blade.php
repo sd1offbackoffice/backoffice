@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','SUPER PROMO')
+@section('title','Tabel Pembayaran Voucher ( Supplier )')
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -35,6 +35,16 @@
                                 <input class="text-center form-control" type="text" id="daterangepicker">
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-end">
+                                <button class="btn btn-primary col-sm-2" type="button" onclick="Save()">SAVE</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 d-flex justify-content-end">
+                                <button class="btn btn-danger col-sm-2" type="button" onclick="Hapus()">DELETE</button>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -61,18 +71,18 @@
                                         </td>
                                         <td>
                                             <input class="form-control plu" value=""
+                                                   type="text" disabled>
+                                        </td>
+                                        <td>
+                                            <input class="form-control deskripsi text-right" value=""
+                                                   type="text" disabled>
+                                        </td>
+                                        <td>
+                                            <input class="form-control voucher text-right" value="" onkeypress="return isNumberKey(event)"
                                                    type="text">
                                         </td>
                                         <td>
-                                            <input class="form-control deskripsi text-right" value="" onkeypress="return isNumberKey(event)"
-                                                   type="text">
-                                        </td>
-                                        <td>
-                                            <input class="form-control voucher text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td>
-                                            <input class="form-control pilihan text-right" value=""
+                                            <input class="form-control pilihan text-right" value="" onchange="CheckBoxTabel()"
                                                    type="checkbox">
                                         </td>
                                     </tr>
@@ -265,11 +275,18 @@
 
         function CheckSingkatan(val){
             for(i=0;i<tableSingkatan.data().length;i++){
-                if((tableSingkatan.row(i).data()['vcs_namasupplier']).trim == val.trim){
+                if(tableSingkatan.row(i).data()['vcs_namasupplier'] == val){
                     return i+1;
                 }
             }
             return 0;
+        }
+
+        function isNumberKey(evt){
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
         }
 
         function CheckVoucher(){
@@ -304,13 +321,74 @@
             }
         }
 
+        function CheckDBTable(){
+            if($('#inputSupp').val() != '' && $('#inputSingkatan').val() != ''){
+                let date = $('#daterangepicker').val();
+                if(date == null || date == ""){
+                    swal('Periode tidak boleh kosong','','warning');
+                    return false;
+                }
+                let dateA = date.substr(0,10);
+                let dateB = date.substr(13,10);
+                dateA = dateA.split('/').join('-');
+                dateB = dateB.split('/').join('-');
+                $.ajax({
+                    url: '{{ url()->current() }}/checkdbtable',
+                    type: 'GET',
+                    data: {
+                        supp:$('#inputSupp').val(),
+                        sing:$('#inputSingkatan').val(),
+                        date1:dateA,
+                        date2:dateB,
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+                        $('.baris').remove();
+                        for(i=0;i<response.length;i++){
+                            addRow();
+                            $('.plu')[i].value = response[i].byr_prdcd;
+                            $('.deskripsi')[i].value = response[i].prd_deskripsipanjang;
+                            $('.voucher')[i].value = response[i].byr_prdcd;
+                        }
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: error.responseJSON.title,
+                            text: error.responseJSON.message,
+                            icon: 'error',
+                        });
+                        return false;
+                    }
+                });
+            }
+        }
+
+        //fungsi checkbox
+        function CheckBoxTabel(){
+            if($('.pilihan:checked').length == $('.pilihan').length){
+                if($('#checkAll').prop("checked") == false){
+                    $('#checkAll').prop("checked",true);
+                }
+            }else{
+                if($('#checkAll').prop("checked") == true){
+                    $('#checkAll').prop("checked",false);
+                }
+            }
+        }
+
         function addRow() {
             $('#tableMain').append(tempTable());
+            CheckBoxTabel();
         }
 
         function deleteRow(e) {
             // setInterval($(e).parents("tr").remove(),10000);
             $(e).parents("tr").remove();
+            CheckBoxTabel();
         }
 
         function tempTable() {
@@ -319,19 +397,19 @@
                                             <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header" class="icon fas fa-times">X</button>
                                         </td>
                                         <td>
-                                            <input class="form-control plu" value="" onchange="CheckPlu(this)"
+                                            <input class="form-control plu" value=""
+                                                   type="text" disabled>
+                                        </td>
+                                        <td>
+                                            <input class="form-control deskripsi text-right" value=""
+                                                   type="text" disabled>
+                                        </td>
+                                        <td>
+                                            <input class="form-control voucher text-right" value="" onkeypress="return isNumberKey(event)"
                                                    type="text">
                                         </td>
                                         <td>
-                                            <input class="form-control hrgjual text-right" value="" onkeypress="return isNumberKey(event)"
-                                                   type="text">
-                                        </td>
-                                        <td>
-                                            <input class="form-control qty text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td>
-                                            <input class="form-control sales text-right" value=""
+                                            <input class="form-control pilihan text-right" value="" onchange="CheckBoxTabel()"
                                                    type="checkbox">
                                         </td>
                                     </tr>`
@@ -339,20 +417,26 @@
             return temptbl;
         }
 
-        function save(){
+        function Save(){
             let date = $('#daterangepicker').val();
-            // if(date == null || date == ""){
-            //     swal('Periode tidak boleh kosong','','warning');
-            //     return false;
-            // }
+            if(date == null || date == ""){
+                swal('Periode tidak boleh kosong','','warning');
+                return false;
+            }
             let dateA = date.substr(0,10);
             let dateB = date.substr(13,10);
             dateA = dateA.split('/').join('-');
             dateB = dateB.split('/').join('-');
-            let datas   = [{'plu' : '', 'hrg' : '', 'qty' : '', 'sales' : '', 'margin' : ''}];
+            let datas   = [{'plu' : '', 'status' : ''}];
+            let status = '';
             for(i=0;i<$('.baris').length;i++){
                 if($('.plu')[i].value != ''){
-                    datas.push({'plu':$('.plu')[i].value, 'hrg':$('.hrgjual')[i].value, 'qty':$('.qty')[i].value, 'sales':$('.sales')[i].value, 'margin':$('.grossmargin')[i].value})
+                    if($('.pilihan')[i].prop("checked")){
+                        status = 2;
+                    }else{
+                        status = 0;
+                    }
+                    datas.push({'plu':$('.plu')[i].value, 'voucher': $('.voucher')[i].value,'status' : status})
                 }
             }
             //Saving
@@ -391,6 +475,10 @@
                     return false;
                 }
             });
+        }
+
+        function Hapus(){
+
         }
 
         function ClearForm(){
@@ -446,5 +534,18 @@
                 }
             }
         });
-    </script>
-@endsection
+        $('#daterangepicker').on('change', function() {
+            CheckDBTable();
+        });
+
+        $('#checkAll').on('change', function() {
+            if($('#checkAll').prop("checked") == false){
+                if($('.pilihan:checked').length == $('.pilihan').length){
+                    $('.pilihan').prop("checked",false);
+                }
+            }else{
+                if($('.pilihan:checked').length != $('.pilihan').length){
+                    $('.pilihan').prop("checked",true);
+                }
+            }
+    

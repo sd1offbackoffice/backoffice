@@ -20,17 +20,17 @@ class MonitoringController extends Controller
     }
 
     public function getLovPrdcd(){
-        $data = DB::select("SELECT prd_deskripsipanjang deskripsi, prd_prdcd plu, prd_frac || '/' || prd_unit satuan
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_deskripsipanjang deskripsi, prd_prdcd plu, prd_frac || '/' || prd_unit satuan
             FROM TBMASTER_PRODMAST
             WHERE prd_prdcd like '%0'
-            AND prd_prdcd not in (select pln_prdcd from tbmaster_barangbaru) 
+            AND prd_prdcd not in (select pln_prdcd from tbmaster_barangbaru)
             ORDER BY prd_prdcd");
 
         return DataTables::of($data)->make(true);
     }
 
     public function getLovPrdcdNew(){
-        $data = DB::select("SELECT prd_deskripsipanjang deskripsi, PLN_prdcd plu
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_deskripsipanjang deskripsi, PLN_prdcd plu
             FROM TBMASTER_BARANGBARU, TBMASTER_PRODMAST
             WHERE PLN_PRDCD = PRD_PRDCD (+)
             ORDER BY deskripsi");
@@ -39,7 +39,7 @@ class MonitoringController extends Controller
     }
 
     public function getData(Request $request){
-        $plu = DB::table('tbmaster_barangbaru')
+        $plu = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
             ->select('pln_prdcd')
             ->whereBetween('pln_prdcd',[$request->prdcd1, $request->prdcd2])
             ->orderBy('pln_create_dt','asc')
@@ -53,13 +53,13 @@ class MonitoringController extends Controller
             ];
         }
 
-//        $recs = DB::select("SELECT PLN_PRDCD, PLN_TGLAKTIF, PRD_TGLDAFTAR
+//        $recs = DB::connection($_SESSION['connection'])->select("SELECT PLN_PRDCD, PLN_TGLAKTIF, PRD_TGLDAFTAR
 //                  FROM TBMASTER_BARANGBARU, TBMASTER_PRODMAST
 //                  WHERE PLN_PRDCD = PRD_PRDCD(+)");
 //
 //        foreach($recs as $rec){
 //            if($rec->pln_tglaktif == null){
-//                DB::table('tbmaster_barangbaru')
+//                DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
 //                    ->where('pln_prdcd','=',$rec->pln_prdcd)
 //                    ->update([
 //                        'pln_tglaktif' => $rec->prd_tgldaftar
@@ -67,7 +67,7 @@ class MonitoringController extends Controller
 //            }
 //        }
 //
-//        $recs = DB::select("SELECT PLN_PRDCD, PLN_TGLBPB, TGLBPB
+//        $recs = DB::connection($_SESSION['connection'])->select("SELECT PLN_PRDCD, PLN_TGLBPB, TGLBPB
 //                  FROM TBMASTER_BARANGBARU,
 //                       (SELECT   MSTD_PRDCD PLU, MIN (MSTD_TGLDOC) TGLBPB
 //                            FROM TBTR_MSTRAN_D
@@ -77,7 +77,7 @@ class MonitoringController extends Controller
 //
 //        foreach($recs as $rec){
 //            if($rec->pln_tglbpb == null){
-//                DB::table('tbmaster_barangbaru')
+//                DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
 //                    ->where('pln_prdcd','=',$rec->pln_prdcd)
 //                    ->update([
 //                        'pln_tglbpb' => $rec->tglbpb
@@ -85,7 +85,7 @@ class MonitoringController extends Controller
 //            }
 //        }
 
-        $data = DB::select("SELECT DISTINCT PLN_PRDCD FMKPLU, TO_CHAR(PRD_TGLDAFTAR, 'DD/MM/YYYY') FMTGLD, TO_CHAR(PLN_TGLBPB, 'DD/MM/YYYY') TGLBPB,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT PLN_PRDCD FMKPLU, TO_CHAR(PRD_TGLDAFTAR, 'DD/MM/YYYY') FMTGLD, TO_CHAR(PLN_TGLBPB, 'DD/MM/YYYY') TGLBPB,
                 CASE
                     WHEN NVL(PLN_PKMT, 0) = 0
                         THEN CASE
@@ -135,7 +135,7 @@ class MonitoringController extends Controller
         try{
             $data = new \stdClass();
 
-            $temp = DB::table('tbmaster_kkpkm')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                 ->select("pkm_pkmt")
                 ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
                 ->where('pkm_prdcd','=',$plu)
@@ -148,7 +148,7 @@ class MonitoringController extends Controller
                 $data->pkmt = 0;
             }
 
-            $temp = DB::Select("SELECT TO_CHAR(FMTGLD,'dd/mm/yyyy') FMTGLD, TGLBPB, PRD_KODETAG, MINOR, FLAG, FOMI, PRD_DESKRIPSIPANJANG, PRD_SATUAN
+            $temp = DB::connection($_SESSION['connection'])->select("SELECT TO_CHAR(FMTGLD,'dd/mm/yyyy') FMTGLD, TGLBPB, PRD_KODETAG, MINOR, FLAG, FOMI, PRD_DESKRIPSIPANJANG, PRD_SATUAN
                                 FROM (SELECT DISTINCT PRD_PRDCD PLU, PRD_TGLDAFTAR FMTGLD, PLN_TGLBPB TGLBPB,
                                         CASE
                                             WHEN NVL (PLN_PKMT, 0) = 0
@@ -205,7 +205,7 @@ class MonitoringController extends Controller
 
     public function addData(Request $request){
         try{
-            $temp = DB::table('tbmaster_barangbaru')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->where('pln_prdcd','=',$request->plu)
                 ->first();
 
@@ -216,7 +216,7 @@ class MonitoringController extends Controller
                 ];
             }
 
-            DB::table('tbmaster_barangbaru')
+            DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->insert([
                     'pln_kodeigr' => $_SESSION['kdigr'],
                     'pln_prdcd' => $request->plu,
@@ -248,20 +248,20 @@ class MonitoringController extends Controller
 
             DB::beginTransaction();
 
-            $temp = DB::table('tbmaster_kkpkm')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                 ->where('pkm_prdcd','=',$plu)
                 ->first();
 
             $date = date_format(Carbon::now(),'mY');
 
             if(!$temp){
-                $data = DB::table('tbmaster_prodmast')
+                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang')
                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                     ->where('prd_prdcd','=',$plu)
                     ->first();
 
-                DB::table('tbmaster_kkpkm')
+                DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                     ->insert([
                         'PKM_KODEIGR' => $_SESSION['kdigr'],
                         'PKM_PRDCD' => $plu,
@@ -278,7 +278,7 @@ class MonitoringController extends Controller
                     ]);
             }
             else{
-                DB::table('tbmaster_kkpkm')
+                DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                     ->where('pkm_prdcd','=',$plu)
                     ->update([
                         'PKM_PKMT' => $pkmt,
@@ -291,7 +291,7 @@ class MonitoringController extends Controller
                     ]);
             }
 
-            DB::table('tbmaster_barangbaru')
+            DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->where('pln_kodeigr','=',$_SESSION['kdigr'])
                 ->where('pln_prdcd','=',$plu)
                 ->update([
@@ -319,7 +319,7 @@ class MonitoringController extends Controller
         try{
             DB::beginTransaction();
 
-            DB::table('tbmaster_barangbaru')
+            DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->where('pln_prdcd','=',$request->plu)
                 ->delete();
 
@@ -341,10 +341,10 @@ class MonitoringController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT FMKPLU, DESKRIPSI, FMTGLD, TGLBPB, FMPKMT
+        $data = DB::connection($_SESSION['connection'])->select("SELECT FMKPLU, DESKRIPSI, FMTGLD, TGLBPB, FMPKMT
                     FROM (SELECT PLN_KODEIGR, PLN_PRDCD FMKPLU, TO_CHAR(PRD_TGLDAFTAR,'DD/MM/YYYY') FMTGLD, TO_CHAR(PLN_TGLBPB,'DD/MM/YYYY') TGLBPB,
                         CASE
                           WHEN NVL (PLN_PKMT, 0) = 0

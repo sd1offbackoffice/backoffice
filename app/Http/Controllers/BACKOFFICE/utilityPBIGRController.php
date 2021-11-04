@@ -34,7 +34,7 @@ class utilityPBIGRController extends Controller
 
     public function cekTableServieceLevel(){
         $date       = date('Ym', strtotime(date('Y-m-d') . '- 1 month'));
-        $search     = DB::table('tbtr_servicelevel')->where('slv_periode', $date)->get()->toArray();
+        $search     = DB::connection($_SESSION['connection'])->table('tbtr_servicelevel')->where('slv_periode', $date)->get()->toArray();
 
         return $search;
     }
@@ -124,7 +124,7 @@ class utilityPBIGRController extends Controller
         $date   = date('Ym', strtotime($date));
         $kodeigr= $_SESSION['kdigr'];
 
-        $search = DB::table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
+        $search = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
 
         if (!$search){
             return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
@@ -138,7 +138,7 @@ class utilityPBIGRController extends Controller
         $date   = date('Ym', strtotime($date));
         $kodeigr= $_SESSION['kdigr'];
 
-        $search = DB::table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
+        $search = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
 
         if (!$search){
             return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
@@ -161,7 +161,7 @@ class utilityPBIGRController extends Controller
     }
 
     public function isiLaporan($periode, $kodeigr){
-        $data = DB::select("SELECT prs_namaperusahaan,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
                                            prs_namacabang,
                                            thp_prdcd,
                                            prc_pluidm,
@@ -378,7 +378,7 @@ class utilityPBIGRController extends Controller
 //        return $pdf->stream('BACKOFFICE.utilityPBIGR-laporan');
 //        return $dompdf->download('laporan.pdf');
 -*-*-*-**-*-*-*-
-  $data   = DB::table('tbtr_hitung_pb a')
+  $data   = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb a')
             ->selectRaw("prs_namaperusahaan,
                                    prs_namacabang,
                                    thp_prdcd,
@@ -462,9 +462,9 @@ class utilityPBIGRController extends Controller
             ->where('prcplu','a.thp_prdcd')
             ->first();
 
-        $prcomi = DB::table('tbmaster_prodcrm')->select('prc_pluigr as prcplu', 'prc_minorder as minorder_omi')->where('prc_group', 'O')->get()->toArray();
+        $prcomi = DB::connection($_SESSION['connection'])->table('tbmaster_prodcrm')->select('prc_pluigr as prcplu', 'prc_minorder as minorder_omi')->where('prc_group', 'O')->get()->toArray();
 
-        $kphold = DB::select("SELECT pid,
+        $kphold = DB::connection($_SESSION['connection'])->select("SELECT pid,
                                            prdcd pluold,
                                            NVL (ksl_mean, 0) kphold,
                                            NVL (minor, 0) minold
@@ -479,7 +479,7 @@ class utilityPBIGRController extends Controller
                                               FROM tbmaster_kph)
                                      WHERE rn = 2");
 
-        $kph    = DB::select("SELECT pid,
+        $kph    = DB::connection($_SESSION['connection'])->select("SELECT pid,
                                     prdcd,
                                     ksl_mean,
                                     minor
@@ -496,17 +496,17 @@ class utilityPBIGRController extends Controller
                                            FROM tbmaster_kph)
                                   WHERE rn = 1");
 
-        $lokB   = DB::table('tbmaster_lokasi')->selectRaw('DISTINCT lks_prdcd prdcdB, lks_noid')->where('lks_noid', 'LIKE', '%B')->get()->toArray();
+        $lokB   = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')->selectRaw('DISTINCT lks_prdcd prdcdB, lks_noid')->where('lks_noid', 'LIKE', '%B')->get()->toArray();
 
-        $lokC   = DB::table('tbmaster_lokasi')->selectRaw('DISTINCT lks_prdcd prdcdC, lks_noid')->where('lks_noid', 'NOT LIKE', '%B')->get()->toArray();
+        $lokC   = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')->selectRaw('DISTINCT lks_prdcd prdcdC, lks_noid')->where('lks_noid', 'NOT LIKE', '%B')->get()->toArray();
 
-        $period = DB::table('tbtr_hitung_pb')->selectRaw('DISTINCT thp_periode')->where('thp_periode', '<', $periode)->orderByDesc('thp_periode')->first();
+        $period = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb')->selectRaw('DISTINCT thp_periode')->where('thp_periode', '<', $periode)->orderByDesc('thp_periode')->first();
 
-        $mplus2 = DB::table('tbtr_hitung_pb')->select('thp_prdcd as prdcdex', 'thp_mplusi as mplusiex')->where('thp_periode',$period->thp_periode)->get()->toArray();
+        $mplus2 = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb')->select('thp_prdcd as prdcdex', 'thp_mplusi as mplusiex')->where('thp_periode',$period->thp_periode)->get()->toArray();
 
-        $mplus3 = DB::table('tbtr_hitung_pb')->select('thp_prdcd as prdcdex2', 'thp_mplusi as mplusoex')->where('thp_periode',$period->thp_periode)->get()->toArray();
+        $mplus3 = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb')->select('thp_prdcd as prdcdex2', 'thp_mplusi as mplusoex')->where('thp_periode',$period->thp_periode)->get()->toArray();
 
-        $data   = DB::table('tbtr_hitung_pb a')
+        $data   = DB::connection($_SESSION['connection'])->table('tbtr_hitung_pb a')
             ->select('*')
             ->leftJoin('tbmaster_perusahaan b', 'b.prs_kodeigr', 'a.thp_kodeigr')
             ->leftJoin('tbmaster_prodcrm c','c.prc_pluigr','a.thp_prdcd')

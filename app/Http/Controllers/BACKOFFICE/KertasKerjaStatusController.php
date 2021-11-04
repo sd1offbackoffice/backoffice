@@ -18,7 +18,7 @@ class KertasKerjaStatusController extends Controller
     }
 
     public function getLovKodeRak(){
-        $data = DB::select("SELECT DISTINCT lks_koderak koderak
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT lks_koderak koderak
                 FROM tbmaster_lokasi
                 WHERE (lks_koderak LIKE 'R%' OR lks_koderak LIKE 'O%')
                 AND lks_jenisrak IN ('D','N')
@@ -33,9 +33,9 @@ class KertasKerjaStatusController extends Controller
         $rowsb = $request->rowsb;
         $rowsk = $request->rowsk;
 
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
-        $data = DB::select("SELECT LKS_KODERAK RAK, LKS_KODESUBRAK SR, LKS_TIPERAK TR,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT LKS_KODERAK RAK, LKS_KODESUBRAK SR, LKS_TIPERAK TR,
          LKS_SHELVINGRAK SH, LKS_NOURUT NU, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
          PRD_KODEKATEGORIBARANG KAT, LKS_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI, PRD_KODETAG TAG,
          PRD_FRAC FRAC, SLS_QTYIGR IGR, SLS_QTYOMI OMI, SLS_HARI, HARIIGR, HARIOMI,

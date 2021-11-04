@@ -18,7 +18,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getData(){
-        $data = DB::table('tbmaster_plunonpromo')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
             ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
             ->where('non_kodeigr','=',$_SESSION['kdigr'])
@@ -29,7 +29,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getLovPLU(){
-        $data = DB::table('tbmaster_prodmast')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
             ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
@@ -40,7 +40,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getPLUDetail(Request $request){
-        $data = DB::select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = ".$_SESSION['kdigr']."
            AND prd_prdcd = brc_prdcd(+)
@@ -60,13 +60,13 @@ class PLUNonPromoController extends Controller
     }
 
     public function addPLU(Request $request){
-        $temp = DB::table('tbmaster_plunonpromo')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
             ->where('non_kodeigr','=',$_SESSION['kdigr'])
             ->where('non_prdcd','=',$request->plu)
             ->first();
 
         if(!$temp){
-            DB::table('tbmaster_plunonpromo')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                 ->insert([
                     'non_kodeigr' => $_SESSION['kdigr'],
                     'non_prdcd' => $request->plu,
@@ -87,7 +87,7 @@ class PLUNonPromoController extends Controller
 
     public function deletePLU(Request $request){
         try{
-            $temp = DB::table('tbmaster_plunonpromo')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                 ->where('non_kodeigr','=',$_SESSION['kdigr'])
                 ->where('non_prdcd','=',$request->plu)
                 ->first();
@@ -98,7 +98,7 @@ class PLUNonPromoController extends Controller
                 ], 500);
             }
 
-            DB::table('tbmaster_plunonpromo')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                 ->where('non_kodeigr','=',$_SESSION['kdigr'])
                 ->where('non_prdcd','=',$request->plu)
                 ->delete();
@@ -115,7 +115,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getLovDivisi(){
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->selectRaw("div_kodedivisi kode, div_namadivisi nama, div_singkatannamadivisi singkatan")
             ->where('div_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('div_kodedivisi')
@@ -125,7 +125,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getLovDepartement(Request $request){
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->selectRaw("dep_kodedepartement kode, dep_namadepartement nama, dep_singkatandepartement singkatan")
             ->where('dep_kodeigr','=',$_SESSION['kdigr'])
             ->where('dep_kodedivisi','=',$request->div)
@@ -136,7 +136,7 @@ class PLUNonPromoController extends Controller
     }
 
     public function getLovKategori(Request $request){
-        $data = DB::table('tbmaster_kategori')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->selectRaw("kat_kodekategori kode, kat_namakategori nama, kat_singkatan singkatan")
             ->where('kat_kodeigr','=',$_SESSION['kdigr'])
             ->where('kat_kodedepartement','=',$request->dep)
@@ -148,7 +148,7 @@ class PLUNonPromoController extends Controller
 
     public function addBatch(Request $request){
         if($request->div != '' && $request->dep != '' && $request->div != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -160,7 +160,7 @@ class PLUNonPromoController extends Controller
             $title = 'PLU pada Divisi '.$request->div.' Departement '.$request->dep.' Kategori '.$request->kat.' berhasil ditambahkan!';
         }
         else if($request->div != '' && $request->dep != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -171,7 +171,7 @@ class PLUNonPromoController extends Controller
             $title = 'PLU pada Divisi '.$request->div.' Departement '.$request->dep.' berhasil ditambahkan!';
         }
         else if($request->div != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -183,13 +183,13 @@ class PLUNonPromoController extends Controller
         }
 
         foreach($data as $d){
-            $temp = DB::table('tbmaster_plunonpromo')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                 ->where('non_kodeigr','=',$_SESSION['kdigr'])
                 ->where('non_prdcd','=',$d->prd_prdcd)
                 ->first();
 
             if(!$temp){
-                DB::table('tbmaster_plunonpromo')
+                DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                     ->insert([
                         'non_kodeigr' => $_SESSION['kdigr'],
                         'non_prdcd' => $d->prd_prdcd,
@@ -206,7 +206,7 @@ class PLUNonPromoController extends Controller
 
     public function deleteBatch(Request $request){
         if($request->div != '' && $request->dep != '' && $request->div != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -218,7 +218,7 @@ class PLUNonPromoController extends Controller
             $title = 'PLU pada Divisi '.$request->div.' Departement '.$request->dep.' Kategori '.$request->kat.' berhasil dihapus!';
         }
         else if($request->div != '' && $request->dep != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -229,7 +229,7 @@ class PLUNonPromoController extends Controller
             $title = 'PLU pada Divisi '.$request->div.' Departement '.$request->dep.' berhasil dihapus!';
         }
         else if($request->div != ''){
-            $data = DB::table('tbmaster_prodmast')
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd')
                 ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -241,7 +241,7 @@ class PLUNonPromoController extends Controller
         }
 
         foreach($data as $d){
-            DB::table('tbmaster_plunonpromo')
+            DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
                 ->where('non_kodeigr','=',$_SESSION['kdigr'])
                 ->where('non_prdcd','=',$d->prd_prdcd)
                 ->delete();
@@ -253,9 +253,9 @@ class PLUNonPromoController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
-        $data = DB::table('tbmaster_plunonpromo')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plunonpromo')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
             ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
             ->where('non_kodeigr','=',$_SESSION['kdigr'])

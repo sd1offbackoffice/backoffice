@@ -12,7 +12,7 @@ class inqueryProdSuppController extends Controller
 {
     public function index()
     {
-//        $supplier = DB::table('tbtr_mstran_d')
+//        $supplier = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
 //            ->join('tbmaster_supplier', function ($join) {
 //                $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
 //                    ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
@@ -24,7 +24,7 @@ class inqueryProdSuppController extends Controller
 //            return 'not-found';
 //        }else{
 
-            $supplier = DB::table('tbmaster_supplier')
+            $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
                 ->select('sup_kodesupplier', 'sup_namasupplier')
                 ->where('sup_kodeigr', '=', '22')
                 ->orderBy('sup_kodesupplier')
@@ -38,7 +38,7 @@ class inqueryProdSuppController extends Controller
     {
         $kodesupp = $request->kodesupp;
 
-        $result = DB::table('tbtr_mstran_d')
+        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
             ->join('tbmaster_supplier', function ($join) {
                 $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
                     ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
@@ -89,7 +89,7 @@ class inqueryProdSuppController extends Controller
 
     public function helpSelect(Request $request)
     {
-        $result = DB::table('tbmaster_supplier')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier', $request->value)
             ->first();

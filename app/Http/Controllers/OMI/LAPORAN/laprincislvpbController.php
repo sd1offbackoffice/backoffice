@@ -25,7 +25,7 @@ class laprincislvpbController extends Controller
 
     public function tagModal(Request $request){
         $kodeigr = $_SESSION['kdigr'];
-        $datas = DB::table("tbmaster_tag")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_tag")
             ->selectRaw("tag_kodetag, tag_keterangan")
             ->where('tag_kodeigr','=',$kodeigr)
             ->get();
@@ -110,7 +110,7 @@ class laprincislvpbController extends Controller
             $and_tag = " and NVL(prd_kodetag,'b') in (".$p_tag.")";
         }
 
-        $datas  = DB::select("SELECT pbo_kodeomi, pbo_kodemember, pbo_pluigr,
+        $datas  = DB::connection($_SESSION['connection'])->select("SELECT pbo_kodeomi, pbo_kodemember, pbo_pluigr,
      pbo_kodedivisi, pbo_kodedepartemen, pbo_kodekategoribrg,
      SUM(pbo_qtyorder) qtyo, SUM(pbo_nilaiorder) nilaio,
      SUM(pbo_ppnorder) ppno, SUM(qtyr) qtyr,

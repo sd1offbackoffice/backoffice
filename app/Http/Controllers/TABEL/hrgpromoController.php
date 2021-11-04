@@ -27,7 +27,7 @@ class hrgpromoController extends Controller
     public function ModalMain(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("TBTR_PROMOMD")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
             ->selectRaw("PRMD_PRDCD")
             ->selectRaw("PRMD_JENISDISC")
 //            ->selectRaw("PRMD_TGLAWAL")
@@ -50,7 +50,7 @@ class hrgpromoController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
 
@@ -76,20 +76,20 @@ class hrgpromoController extends Controller
         $notif = '';
         $promo = '';
 
-        $barang = DB::table("TBMASTER_PRODMAST")
+        $barang = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG as deskripsi")
             ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
             ->where("PRD_KODEIGR",'=',$kodeigr)
             ->where("PRD_PRDCD",'=',$kode)
             ->first();
         if($barang){
-            $temp = DB::table("TBTR_PROMOMD")
+            $temp = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
                 ->selectRaw("NVL(COUNT(1),0) as result")
                 ->where("PRMD_KODEIGR",'=',$kodeigr)
                 ->where("PRMD_PRDCD",'=',$kode)
                 ->first();
             if($temp->result != '0'){
-                $promo = DB::table("TBTR_PROMOMD")
+                $promo = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
                     ->selectRaw("PRMD_JENISDISC")
                     ->selectRaw("PRMD_TGLAWAL")
                     ->selectRaw("PRMD_TGLAKHIR")
@@ -109,7 +109,7 @@ class hrgpromoController extends Controller
     public function print(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("TBTR_PROMOMD")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
             ->selectRaw("PRMD_PRDCD")
             ->selectRaw("PRMD_JENISDISC")
             ->selectRaw("TO_CHAR(PRMD_TGLAWAL, 'DD/MM/YYYY') as PRMD_TGLAWAL")
@@ -128,7 +128,7 @@ class hrgpromoController extends Controller
             ->orderBy("PRMD_PRDCD")
             ->get();
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         return view('TABEL.hrgpromo-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
 }

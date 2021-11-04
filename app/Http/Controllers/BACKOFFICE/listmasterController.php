@@ -28,7 +28,7 @@ class listmasterController extends Controller
         $search = $request->val;
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table('tbmaster_supplier')
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
             ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
@@ -41,7 +41,7 @@ class listmasterController extends Controller
     }
 
     public function getDiv(){
-        $datas   = DB::table('tbmaster_divisi')
+        $datas   = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->selectRaw("div_kodedivisi, div_namadivisi")
             ->orderBy('div_kodedivisi')
             ->get();
@@ -53,7 +53,7 @@ class listmasterController extends Controller
         //$search1 = $request->data1;
         //$search2 = $request->data2;
 
-        $datas   = DB::table('tbmaster_departement')
+        $datas   = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->selectRaw("dep_kodedepartement, dep_namadepartement, dep_kodedivisi")
             //->whereRaw("dep_kodedivisi between ".$search1." and ".$search2)
             ->orderBy('dep_kodedepartement')
@@ -65,7 +65,7 @@ class listmasterController extends Controller
     public function getToko(Request $request){
         //$search = $request->data;
 
-        $datas = DB::table('TBMASTER_TOKOIGR')
+        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_TOKOIGR')
             ->selectRaw("tko_kodeomi, tko_namaomi, tko_namasbu, tko_kodecustomer, tko_kodesbu")
             //->whereRaw("tko_kodesbu like ".$search)
             ->orderBy('tko_kodeomi')
@@ -78,7 +78,7 @@ class listmasterController extends Controller
         //$search1 = $request->data1;
         //$search2 = $request->data2;
 
-        $datas   = DB::table('tbmaster_kategori')
+        $datas   = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->selectRaw("kat_kodekategori, kat_namakategori, kat_kodedepartement")
             //->whereRaw("kat_kodedepartement between ".$search1." and ".$search2)
             ->orderBy('kat_kodekategori')
@@ -93,7 +93,7 @@ class listmasterController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas   = DB::select("SELECT DISTINCT mpl_kodemonitoring, mpl_namamonitoring
+        $datas   = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT mpl_kodemonitoring, mpl_namamonitoring
 	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
 	  (	SELECT sls_prdcd prdcd, 'T' cexp
 		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
@@ -138,7 +138,7 @@ class listmasterController extends Controller
             $periode = 'TANGGAL: '.$dateA;
         }
         if($elek == 'Y'){
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang,
        fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
        SUM(fdnamt + fdfnam) nGross,
        SUM(fdntax + fdftax) nTax,
@@ -184,7 +184,7 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }else{
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang,
        fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
        SUM(fdnamt + fdfnam) nGross,
        SUM(fdntax + fdftax) nTax,
@@ -248,7 +248,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         //CALCULATE GRAND TOTAL
         if($elek == 'Y'){
-            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+            $rec = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
 	   fdnamt,fdfnam,
      fdntax, fdftax,
@@ -287,7 +287,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND ( fdkdiv in ('$div1','$div2','$div3') OR fdkdep in('$dept1','$dept2','$dept3','$dept4') )
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }else{
-            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+            $rec = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp,
 	   fdjqty, fdnamt, fdntax, fdnnet, fdnhpp, fdmrgn,
 	   fdfqty, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp
@@ -524,7 +524,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf',
@@ -559,7 +559,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }else{
             $periode = 'TANGGAL: '.$dateA;
         }
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp,
        CASE WHEN '$export' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
        SUM(fdnamt + CASE WHEN '$grosirA'='T' THEN fdfnam ELSE 0 END) nGross, --fdnamt+fdfnam
        CASE WHEN '$export' <> 'Y' THEN SUM( CASE WHEN '$export' <> 'Y' THEN fdntax END + CASE WHEN '$grosirA'='T' THEN fdftax ELSE 0 END  ) END nTax, --fdntax+fdftax
@@ -838,7 +838,7 @@ ORDER BY cdiv,cdept");
 
         //MENGAMBIL ULANG DATA TANPA FDFBKP agar tidak group by fdfbkp yang menyebabkan nilai menjadi double,
         //fdfbkp sebelumnya diperlukan untuk menghitung total
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp,
        CASE WHEN '$export' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
        SUM(fdnamt + CASE WHEN '$grosirA'='T' THEN fdfnam ELSE 0 END) nGross, --fdnamt+fdfnam
        CASE WHEN '$export' <> 'Y' THEN SUM( CASE WHEN '$export' <> 'Y' THEN fdntax END + CASE WHEN '$grosirA'='T' THEN fdftax ELSE 0 END  ) END nTax, --fdntax+fdftax
@@ -894,7 +894,7 @@ ORDER BY cdiv,cdept");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept-pdf',
@@ -938,7 +938,7 @@ ORDER BY cdiv,cdept");
             $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
         }
 
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, omisbu, namasbu, omikod, namaomi, omidiv, div_namadivisi, dep_namadepartement, omidep,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, omisbu, namasbu, omikod, namaomi, omidiv, div_namadivisi, dep_namadepartement, omidep,
 	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
 	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
 	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
@@ -1072,7 +1072,7 @@ ORDER BY omikod");
         }
 
 //        //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 //        $pdf = PDF::loadview('FRONTOFFICE\LAPORANKASIR\LAPORANPENJUALAN\lap_jual_perdept_cd-pdf',
@@ -1119,7 +1119,7 @@ ORDER BY omikod");
         if($request->p_omi != 'z'){
             $p_omi = "AND tko_kodeomi = '".$request->p_omi."'";
         }
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omisbu, namasbu, omidiv, omidep,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omisbu, namasbu, omidiv, omidep,
 	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
 	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
 	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
@@ -1187,7 +1187,7 @@ GROUP BY prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement
 ORDER BY omidiv, omidep");
 
 
-        $namaomi = DB::table('tbmaster_tokoigr')
+        $namaomi = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
             ->selectRaw("tko_namaomi")
             ->where('tko_kodeomi','=',$p_omi)
             ->first();
@@ -1245,7 +1245,7 @@ ORDER BY omidiv, omidep");
         }
 
         if($p_sbu == ''){
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omidiv, omidep,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omidiv, omidep,
 	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
 	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
 	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
@@ -1326,7 +1326,7 @@ ORDER BY omidiv, omidep");
             }
         }
 //        //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept_c-pdf',
@@ -1376,7 +1376,7 @@ ORDER BY omidiv, omidep");
         $pluall = $request->pluall;
 
         if ($pluall == 'N'){
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
 	   fdsat1, fdnam1, fdntr1,
@@ -1433,7 +1433,7 @@ WHERE prs_kodeigr = '$kodeigr'
 	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }else{ //jika pluall == Y maka masuk else
-            $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
 	   fdsat1, fdnam1, fdntr1,
@@ -1502,7 +1502,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
         if($pluall == 'N'){
-            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $rec = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
 	   fdsat1, fdnam1, fdntr1,
@@ -1557,7 +1557,7 @@ WHERE prs_kodeigr = '$kodeigr'
 	    CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between ".$margin1." AND ".$margin2."
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }else{
-            $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $rec = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
 	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
 	   fdsat0, fdnam0, fdntr0,
 	   fdsat1, fdnam1, fdntr1,
@@ -1712,7 +1712,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         if($pluall == 'N'){
@@ -1748,7 +1748,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         $ekspor = $request->ekspor;
 
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang,
 	   CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
 	   sls_periode, hari,
 	   sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
@@ -1810,7 +1810,7 @@ ORDER BY sls_periode");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perhari-pdf',
@@ -1840,7 +1840,7 @@ ORDER BY sls_periode");
             $periode = 'TANGGAL: '.$dateA;
         }
 
-        $datas = DB::select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
 	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
 	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
 	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
@@ -1983,7 +1983,7 @@ ORDER BY FDKDIV, FDKDEP");
         foreach ($arrayIndex as $index){
             $gross[$index] = 0; $tax[$index] = 0; $net[$index] = 0; $hpp[$index] = 0; $margin[$index] = 0; $margp[$index] = 0;
         }
-        $rec = DB::select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
+        $rec = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
 	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
 	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
 	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
@@ -2225,7 +2225,7 @@ ORDER BY FDKDIV, FDKDEP");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 //        $today = date('d-m-Y');
 //        $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkasir-pdf',

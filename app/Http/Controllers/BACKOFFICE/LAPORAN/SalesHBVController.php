@@ -27,7 +27,7 @@ class SalesHBVController extends Controller
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        $cursor = DB::select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
+        $cursor = DB::connection($_SESSION['connection'])->select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
          PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT, TRJD_QUANTITY, HBV_QTY_GRAM,
          (TRJD_QUANTITY * HBV_QTY_GRAM) QTY, TRJD_UNITPRICE, round((ST_AVGCOST / 1000),0) HRG_DASAR,
          (TRJD_QUANTITY * TRJD_UNITPRICE) NILAI_JADI,
@@ -67,7 +67,7 @@ ORDER BY TRJD_PRDCD");
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-    $datas = DB::select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
+    $datas = DB::connection($_SESSION['connection'])->select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
          PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT, TRJD_QUANTITY, HBV_QTY_GRAM,
          (TRJD_QUANTITY * HBV_QTY_GRAM) QTY, TRJD_UNITPRICE, round((ST_AVGCOST / 1000),0) HRG_DASAR,
          (TRJD_QUANTITY * TRJD_UNITPRICE) NILAI_JADI,
@@ -93,7 +93,7 @@ ORDER BY TRJD_PRDCD");
      AND PRS_KODEIGR = '$kodeigr'
 ORDER BY TRJD_PRDCD");
 
-        $datas2 = DB::select("SELECT   HBV_PRDCD_BRD PLU_DSR, PRD_DESKRIPSIPANJANG DESC_DSR, PRD_UNIT UNIT_DSR, SUM (QTY) QTY_DSR,
+        $datas2 = DB::connection($_SESSION['connection'])->select("SELECT   HBV_PRDCD_BRD PLU_DSR, PRD_DESKRIPSIPANJANG DESC_DSR, PRD_UNIT UNIT_DSR, SUM (QTY) QTY_DSR,
          HRG_DASAR HRG_DSR, SUM (NILAI_DASAR) NILAI_DSR
     FROM (SELECT   TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD, PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT,
                    TRJD_QUANTITY, HBV_QTY_GRAM, (TRJD_QUANTITY * HBV_QTY_GRAM) QTY, TRJD_UNITPRICE,

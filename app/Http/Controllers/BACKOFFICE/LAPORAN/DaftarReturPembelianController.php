@@ -26,7 +26,7 @@ class DaftarReturPembelianController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->select('div_kodedivisi', 'div_namadivisi')
             ->where('div_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw('div_kodedivisi >= ' . $div)
@@ -37,7 +37,7 @@ class DaftarReturPembelianController extends Controller
 
     public function getDataLovDep(Request $request)
     {
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement', 'dep_namadepartement', 'dep_kodedivisi')
             ->where('dep_kodeigr', '=', $_SESSION['kdigr'])
             ->where('dep_kodedivisi', '=', $request->div)
@@ -48,7 +48,7 @@ class DaftarReturPembelianController extends Controller
 
     public function getDataLovKat(Request $request)
     {
-        $data = DB::table("tbmaster_kategori")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
             ->join('tbmaster_departement', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('kat_namakategori', 'kat_kodekategori', 'kat_kodedepartement', 'dep_kodedivisi')
             ->where('kat_kodeigr', '=', $_SESSION['kdigr'])
@@ -67,7 +67,7 @@ class DaftarReturPembelianController extends Controller
             $sup = 1;
         else $sup = $request->sup;
 
-        $data = DB::table('tbmaster_supplier')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
             ->where('sup_kodesupplier', '>=', $sup)
@@ -92,7 +92,7 @@ class DaftarReturPembelianController extends Controller
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
         $and_sup = '';
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
@@ -100,7 +100,7 @@ class DaftarReturPembelianController extends Controller
             $and_sup = " and mstd_kodesupplier(+) between '" . $sup1 . "' and '" . $sup2 . "'";
         }
         if ($tipe === '1') {
-            $data = DB::select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang,
@@ -179,7 +179,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodedivisi, div_namadivisi, frac,
     mstd_kodedepartement, dep_namadepartement,
@@ -296,7 +296,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp, frac,
     mstd_kodesupplier, sup_namasupplier,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -367,7 +367,7 @@ order by mstd_kodesupplier, msth_nodoc, plu");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
         }else if ($tipe === '4') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc, frac,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -439,7 +439,7 @@ order by mstd_kodesupplier, msth_nodoc, plu");
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER PER DOKUMEN.pdf');
         }
         else if ($tipe === '5') {
-            $data = DB::select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
+            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
 supplier,prs_namaperusahaan, prs_namacabang,  mstd_bkp,
 sum(gross) gross, sum(potongan) potongan, sum(bm) bm, sum(btl) btl,
 sum(dpp) dpp, sum(ppn) ppn, sum(total) total, sum(avgcost) avgcost

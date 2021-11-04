@@ -28,7 +28,7 @@ class hdhgabController extends Controller
     public function ModalGabungan(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("TBTR_INSTORE_HDR")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
             ->selectRaw("ISH_NAMAPROMOSI")
             ->selectRaw("ISH_KODEPROMOSI")
             ->selectRaw("TO_CHAR(ISH_TGLAWAL, 'dd-MM-yyyy') || ' s/d ' || TO_CHAR(ISH_TGLAKHIR, 'dd-MM-yyyy') BERLAKU")
@@ -43,7 +43,7 @@ class hdhgabController extends Controller
     public function ModalHadiah(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("TBMASTER_BRGPROMOSI")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_BRGPROMOSI")
             ->selectRaw("BPRP_KETPANJANG")
             ->selectRaw("BPRP_PRDCD")
             ->selectRaw("BPRP_UNIT || '/' || BPRP_FRACKONVERSI as satuan")
@@ -60,7 +60,7 @@ class hdhgabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
             ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
@@ -108,7 +108,7 @@ class hdhgabController extends Controller
     public function ModalSupp(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("tbmaster_supplier")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
             ->selectRaw("sup_namasupplier")
             ->selectRaw("sup_kodesupplier")
 
@@ -124,7 +124,7 @@ class hdhgabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $kode = $request->kode;
 
-        $datas = DB::select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = '$kodeigr'
            AND prd_prdcd = brc_prdcd(+)
@@ -137,7 +137,7 @@ class hdhgabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
             ->where('PRD_DESKRIPSIPANJANG','LIKE','%'.$search.'%')
@@ -152,7 +152,7 @@ class hdhgabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table("tbmaster_hargabeli")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_hargabeli")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
             ->leftJoin('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
@@ -168,7 +168,7 @@ class hdhgabController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $kode = $request->kode;
 
-        $datas = DB::table("TBTR_INSTORE_DTL")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
             ->selectRaw("ISD_PRDCD")
             ->selectRaw("ISD_KODEIGR")
             ->selectRaw("ISD_RECORDID")
@@ -248,7 +248,7 @@ class hdhgabController extends Controller
         $prdcd = $request->prdcd;
         $kode = $request->kode;
 
-        $datas = DB::select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
 	  	ISH_PRDCDHADIAH, ISH_JMLHADIAH, ISH_KELIPATANHADIAH, ISH_MAXJMLHARI, ISH_MAXFREKHARI, ISH_MAXOUTHARI,
 	  	ISH_QTYALOKASI, NVL(ISH_QTYALOKASIOUT,0) as pakai, ISH_REGULER, ISH_REGULERBIRUPLUS, ISH_FREEPASS, ISH_RETAILER, ISH_SILVER,
 	  	ISH_GOLD1, ISH_GOLD2, ISH_GOLD3, ISH_PLATINUM, ISH_KETERANGAN, ISH_MAXFREKEVENT, ISH_MAXJMLEVENT
@@ -316,7 +316,7 @@ class hdhgabController extends Controller
                 oci_execute($query);
                 $kodegab = $nomor;
 
-                DB::table("TBTR_INSTORE_HDR")
+                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
                     ->insert([
                         "ISH_KODEIGR" => $kodeigr,
                         "ISH_KODEPROMOSI" => $kodegab,
@@ -352,7 +352,7 @@ class hdhgabController extends Controller
                         "ISH_PLATINUM" => $platinum
                     ]);
                 if($info == "ALLITEM"){
-                    DB::table("TBTR_INSTORE_DTL")
+                    DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
                         ->insert([
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
@@ -369,7 +369,7 @@ class hdhgabController extends Controller
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
-                        DB::table("TBTR_INSTORE_DTL")
+                        DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
                             ->insert([
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,
@@ -388,7 +388,7 @@ class hdhgabController extends Controller
                 }
 
             }else{
-                $temp = DB::table("TBTR_INSTORE_HDR")
+                $temp = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
                     ->selectRaw("ISH_CREATE_BY")
                     ->selectRaw("ISH_CREATE_DT")
                     ->where("ISH_KODEPROMOSI",'=',$kodegab)
@@ -396,7 +396,7 @@ class hdhgabController extends Controller
                 $creator = $temp->ish_create_by;
                 $create_dt = $temp->ish_create_dt;
 
-                DB::table("TBTR_INSTORE_HDR")
+                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
                     ->insert([
                         "ISH_KODEIGR" => $kodeigr,
                         "ISH_KODEPROMOSI" => $kodegab,
@@ -434,7 +434,7 @@ class hdhgabController extends Controller
                         "ISH_PLATINUM" => $platinum
                     ]);
                 if($info == "ALLITEM"){
-                    DB::table("TBTR_INSTORE_DTL")
+                    DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
                         ->insert([
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
@@ -453,7 +453,7 @@ class hdhgabController extends Controller
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
-                        DB::table("TBTR_INSTORE_DTL")
+                        DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
                             ->insert([
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,

@@ -17,7 +17,7 @@ class hargaBeliController extends Controller
         $search = $request->value;
 
         if($search != ''){
-            $prodmast   = DB::table('tbmaster_prodmast')
+            $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->whereRaw("(prd_prdcd like '%".$search."%') OR (prd_deskripsipanjang like '%".$search."%')")
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
@@ -29,7 +29,7 @@ class hargaBeliController extends Controller
                 ->get();
         }
         else{
-            $prodmast   = DB::table('tbmaster_prodmast')
+            $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
 //                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
@@ -44,7 +44,7 @@ class hargaBeliController extends Controller
     }
 
     public function lov_select(Request $request){
-        $produk = DB::table('tbmaster_prodmast')
+        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('*')
             ->where('prd_prdcd','=',$request->value)
             ->orderBy('prd_deskripsipanjang')
@@ -54,24 +54,24 @@ class hargaBeliController extends Controller
             return 'not-found';
         }
 
-        $tag = DB::table('tbmaster_tag')
+        $tag = DB::connection($_SESSION['connection'])->table('tbmaster_tag')
             ->select('*')
             ->where('tag_kodeigr','=','22')
             ->where('tag_kodetag','=',$produk->prd_kodetag)
             ->first();
 
-        $hargabeli = DB::table('tbmaster_hargabeli')
+        $hargabeli = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
             ->select('*')
             ->where('hgb_prdcd','=',$request->value)
             ->first();
 
-        $supplier = DB::table('tbmaster_supplier')
+        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodeigr','=','22')
             ->where('sup_kodesupplier','=',$hargabeli->hgb_kodesupplier)
             ->first();
 
-        $hargabelibaru = DB::table('tbmaster_hargabelibaru')
+        $hargabelibaru = DB::connection($_SESSION['connection'])->table('tbmaster_hargabelibaru')
             ->select('*')
             ->where('hgn_kodeigr','=','22')
             ->where('hgn_tipe','=',$hargabeli->hgb_tipe)
@@ -85,7 +85,7 @@ class hargaBeliController extends Controller
 
     public function lov_search(Request $request){
         if(is_numeric($request->value)){
-            $result = DB::table('tbmaster_prodmast')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_prdcd','like','%'.$request->value.'%')
                 ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
@@ -95,7 +95,7 @@ class hargaBeliController extends Controller
 
 
         else{
-            $result = DB::table('tbmaster_prodmast')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_deskripsipanjang','like','%'.$request->value.'%')
                 ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')

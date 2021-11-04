@@ -6,25 +6,21 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>
-                    <div class="card-body shadow-lg cardForm">
-
+{{--                    <legend class="w-auto ml-5">Laporan Penjualan Tunai</legend>--}}
 {{--                        ### MENU UTAMA ###   --}}
                             <br>
                         <div id="mainMenu">
                             <div class="row">
                                 <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>
-                                <div class="dropdown col-sm-6">
-                                    <button class="btn btn-secondary dropdown-toggle col-sm-12" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <input readonly type="text" id="jenisLaporan" class="col-sm-11" value="">
-                                    </button>
-                                    <div id="dropDownList" class="dropdown-menu col-sm-11" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" onclick="changeInput(1)">LAPORAN PER KATEGORY</a>
-                                        <a class="dropdown-item" onclick="changeInput(2)">LAPORAN PER DEPARTEMEN</a>
-                                        <a class="dropdown-item" onclick="changeInput(3)">RINCIAN PRODUK PER DIVISI</a>
-                                        <a class="dropdown-item" onclick="changeInput(4)">LAPORAN PER HARI</a>
-                                        <a class="dropdown-item" onclick="changeInput(5)">LAPORAN PER KASIR</a>
-                                    </div>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="jenisLaporan">
+                                        <option>1. Daftar Produk</option>
+                                        <option>2. Daftar Perubahan Harga Jual</option>
+                                        <option>3. Daftar Margin Negatif</option>
+                                        <option>4. Daftar Supplier</option>
+                                        <option>5</option>
+{{--                                        <option value="Z2">DAFTAR BARANG BAIK KE RUSAK</option>--}}
+                                    </select>
                                 </div>
                             </div>
                             <br>
@@ -530,21 +526,9 @@
     </div>
 
     <style>
-        #dropDownList{
-            border: 2px black solid;
-        }
-        #dropDownList a{
-            max-height:100px;/* you can change as you need it */
-            overflow-y:auto;/* to get scroll */
-        }
         #dropDownList:hover{
             cursor: pointer;
         }
-
-        /*Jelek kalau hanya 1 kalender*/
-        /*.calendar.right {*/
-        /*    display: none !important;*/
-        /*}*/
     </style>
     <script>
         //-------------------- ### GLOBAL FUNCTION ### --------------------

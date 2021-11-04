@@ -19,7 +19,7 @@ class pembatalanController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $typeTrn    = $request->typeTrn;
 
-        $data = DB::select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
+        $data = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
                                     FROM tbtr_mstran_h
                                    WHERE     msth_kodeigr = '$kodeigr'
                                          AND msth_typetrn = '$typeTrn'
@@ -35,7 +35,7 @@ class pembatalanController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $typeTrn    = $request->typeTrn;
 
-        $data = DB::select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
+        $data = DB::connection($_SESSION['connection'])->select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
 			              mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph,
 			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac,
 										(nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,
@@ -73,12 +73,12 @@ class pembatalanController extends Controller
         $nqty       = 0;
 
 
-        $berjalan = DB::select("SELECT PRS_TAHUNBERJALAN || PRS_BULANBERJALAN as berjalan FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = '$kodeigr'");
+        $berjalan = DB::connection($_SESSION['connection'])->select("SELECT PRS_TAHUNBERJALAN || PRS_BULANBERJALAN as berjalan FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = '$kodeigr'");
 
         if (!$noDoc){
             return response()->json(['kode' => 0, 'msg' => "Nomor BPB Tidak Boleh Kosong !!", 'data' => '']);
         } else {
-            $detailBPB = DB::select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
+            $detailBPB = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
                                             FROM tbtr_mstran_h
                                            WHERE     msth_kodeigr = '$kodeigr'
                                                  AND msth_typetrn = '$typeTrn'
@@ -93,7 +93,7 @@ class pembatalanController extends Controller
             } else {
 //                Start from line 43
 
-                $temp   = DB::select("SELECT NVL (COUNT (1), 0) as temp FROM TBTR_HUTANG WHERE HTG_NODOKUMEN = '$noDoc' AND HTG_TYPE = 'J' AND NVL (HTG_RECORDID, 9) = 2");
+                $temp   = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp FROM TBTR_HUTANG WHERE HTG_NODOKUMEN = '$noDoc' AND HTG_TYPE = 'J' AND NVL (HTG_RECORDID, 9) = 2");
 
                 if($temp[0]->temp > 0){
                     return response()->json(['kode' => 0, 'msg' => "BPB sudah ditutup", 'data' => '']);
@@ -101,7 +101,7 @@ class pembatalanController extends Controller
 
                 $temp = 0;
 
-                $loop1 = DB::select("SELECT MSTD_NODOC, MSTD_TGLDOC, MSTD_PRDCD, MSTD_NOPO, MSTD_FRAC FRAC,
+                $loop1 = DB::connection($_SESSION['connection'])->select("SELECT MSTD_NODOC, MSTD_TGLDOC, MSTD_PRDCD, MSTD_NOPO, MSTD_FRAC FRAC,
                                                    MSTD_UNIT UNIT, MSTD_TYPETRN, MSTD_DISCRPH, MSTD_PPNBMRPH,
                                                    MSTD_PPNBTLRPH, MSTD_QTYBONUS1, MSTD_GROSS, MSTD_QTY,
                                                    FLOOR (MSTD_QTY / MSTD_FRAC) QTY, MOD (MSTD_QTY, MSTD_FRAC) QTYK,
@@ -123,30 +123,30 @@ class pembatalanController extends Controller
 
                 foreach ($loop1 as $data){
 //                    if ($data->mstd_typetrn == 'B') {
-                        $temp = DB::select("SELECT NVL (COUNT (1), 0) as temp
+                        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
                                                   FROM TBMASTER_STOCK
                                                  WHERE ST_PRDCD = '$data->mstd_prdcd'
                                                    AND ST_KODEIGR = '$kodeigr'
                                                    AND ST_LOKASI = '01'");
 
                         if ($temp[0]->temp == 0){
-                            DB::table('tbmaster_stock')->insert(['st_prdcd' => substr($data->mstd_prdcd, 0, 6).'0', 'st_lokasi' => '01']);
+                            DB::connection($_SESSION['connection'])->table('tbmaster_stock')->insert(['st_prdcd' => substr($data->mstd_prdcd, 0, 6).'0', 'st_lokasi' => '01']);
                         }
 
-                        $temp = DB::select("SELECT NVL (COUNT (1), 0) as temp
+                        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
                                                   FROM TBTR_PO_D
                                                  WHERE TPOD_NOPO = '$data->mstd_nopo'
                                                    AND TPOD_PRDCD = '$data->mstd_prdcd'
                                                    AND TPOD_KODEIGR = '$kodeigr'");
 
                         if ($temp[0]->temp > 0){
-                            DB::table('TBTR_PO_D')
+                            DB::connection($_SESSION['connection'])->table('TBTR_PO_D')
                                 ->where('tpod_nopo', $data->mstd_nopo)
                                 ->where('tpod_prdcd', $data->mstd_prdcd)
                                 ->where('tpod_kodeigr', $kodeigr)
                                 ->update(['tpod_recordid' => null, 'tpod_qtypb' => 0, 'tpod_bonusbpb1' => 0, 'tpod_bonusbpb2' => 0]);
 
-                            DB::table('TBTR_PO_H')
+                            DB::connection($_SESSION['connection'])->table('TBTR_PO_H')
                                 ->where('tpoh_nopo', $data->mstd_nopo)
                                 ->where('tpoh_kodeigr', $kodeigr)
                                 ->update(['tpoh_recordid' => null]);
@@ -191,14 +191,14 @@ class pembatalanController extends Controller
                             $nqty = 1;
                         }
 
-                        $temp = DB::select("SELECT NVL (COUNT (1), 0) as temp
+                        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
                                                   FROM TBTR_HAPUSPLU
                                                  WHERE DEL_NODOKUMEN = '$noDoc'
                                                    AND DEL_PRDCD = $data->mstd_prdcd
                                                    AND DEL_RTYPE = '$typeTrn'");
 
                         if ($temp[0]->temp == 0){
-                            DB::table('tbtr_hapusplu')->insert(['DEL_KODEIGR' => $kodeigr,'DEL_RTYPE' => $typeTrn,
+                            DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')->insert(['DEL_KODEIGR' => $kodeigr,'DEL_RTYPE' => $typeTrn,
                                 'DEL_NODOKUMEN' => $data->mstd_nodoc,'DEL_TGLDOKUMEN' => $data->mstd_tgldoc,'DEL_PRDCD' => $data->mstd_prdcd,'DEL_AVGCOSTNEW' => ($nnilai/$nqty),
                                 'DEL_AVGCOSTOLD' => $data->st_avgcost,'DEL_STOKQTYOLD' => $data->st_saldoakhir,
                                 'DEL_CREATE_DT' => $date,'DEL_CREATE_BY' => $userId]);
@@ -215,21 +215,21 @@ class pembatalanController extends Controller
 
 //                        ----------------------------- Line 268 -- 24/02/2021
 
-                        DB::table('tbtr_mstran_d')
+                        DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                             ->where('mstd_kodeigr', $kodeigr)->where('mstd_prdcd', $data->mstd_prdcd)->where('mstd_nodoc', $data->mstd_nodoc)->where('mstd_typetrn', $typeTrn)
                             ->update(['mstd_recordid' => 1, 'mstd_modify_dt' => $dateTime, 'mstd_modify_by' => $userId]);
 
 
-                    DB::table('tbtr_mstran_h')
+                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                         ->where('msth_kodeigr', $kodeigr)->where('msth_nodoc', $data->mstd_nodoc)->where('msth_typetrn', $typeTrn)
                         ->update(['msth_recordid' => 1, 'msth_modify_dt' => $dateTime, 'msth_modify_by' => $userId]);
 
 
-                    DB::table('tbtr_backoffice')
+                    DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                             ->where('trbo_kodeigr', $kodeigr)->where('trbo_nonota', $data->mstd_nodoc)
                             ->update(['trbo_recordid' => 1]);
 
-                        $fmlclmTemp = DB::table('TBHISTORY_COST')->selectRaw("NVL (HCS_LASTCOSTLAMA, 0) as lastcostlama")
+                        $fmlclmTemp = DB::connection($_SESSION['connection'])->table('TBHISTORY_COST')->selectRaw("NVL (HCS_LASTCOSTLAMA, 0) as lastcostlama")
                             ->where('hcs_prdcd', $data->mstd_prdcd)->where('hcs_nodocbpb', $data->mstd_nodoc)->where('hcs_tglbpb', $data->mstd_tgldoc)->get()->toArray();
 
                         $fmlclm = (!$fmlclmTemp) ? 0 : $fmlclmTemp[0]->lastcostlama;
@@ -243,24 +243,24 @@ class pembatalanController extends Controller
                                              WHERE SUBSTR (ST_PRDCD, 1, 6) = SUBSTR ('$data->mstd_prdcd', 1, 6)
                                                AND ST_KODEIGR = '$kodeigr'");
 
-                        $loop2 = DB::select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
+                        $loop2 = DB::connection($_SESSION['connection'])->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
                                                 FROM TBMASTER_PRODMAST
                                              WHERE SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ('$data->mstd_prdcd', 1, 6)
                                                AND PRD_KODEIGR = '$kodeigr'");
 
                         foreach ($loop2 as $data2){
                             if ($data2->prd_unit == 'KG'){
-                                DB::table('tbmaster_prodmast')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->where('prd_prdcd', $data2->prd_prdcd)->where('prd_kodeigr', $kodeigr)
                                     ->update(['prd_avgcost' => ($nnilai2 / $nqty), 'prd_lastcost' => $nfmlclm, 'prd_modify_by' => $userId, 'prd_modify_dt' => $dateTime]);
                             } else {
-                                DB::table('tbmaster_prodmast')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->where('prd_prdcd', $data2->prd_prdcd)->where('prd_kodeigr', $kodeigr)
                                     ->update(['prd_avgcost' => (($nnilai2 / $nqty) * $data2->prd_frac), 'prd_lastcost' => ($nfmlclm  * $data2->prd_frac), 'prd_modify_by' => $userId, 'prd_modify_dt' => $dateTime]);
                             }
                         }
 
-                        DB::table('tbhistory_cost')
+                        DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                             ->insert(['HCS_KODEIGR' => $kodeigr, 'HCS_LOKASI' => $kodeigr, 'HCS_TYPETRN' => $data->mstd_typetrn,
                                 'HCS_PRDCD' => $data->mstd_prdcd, 'HCS_TGLBPB' => $data->mstd_tgldoc, 'HCS_NODOCBPB' => $data->mstd_nodoc,
                                 'HCS_QTYBARU' => (((!$data->mstd_qty) ? 0 : $data->mstd_qty) + ((!$data->mstd_qtybonus1) ? 0 : $data->mstd_qtybonus1)),
@@ -277,7 +277,7 @@ class pembatalanController extends Controller
 //                    }
 
                     if ($supplier){
-                        DB::table('tbtr_hutang')
+                        DB::connection($_SESSION['connection'])->table('tbtr_hutang')
                             ->where('htg_nodokumen', $data->mstd_nodoc)->where('htg_type', 'J')
                             ->update(['htg_recordid' => 1, 'htg_modifydt' => $dateTime, 'htg_modifyby' => $userId]);
                     }

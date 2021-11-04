@@ -27,7 +27,7 @@ class LapRepackController extends Controller
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        $cursor = DB::select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
+        $cursor = DB::connection($_SESSION['connection'])->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,
              Case mstd_flagdisc1 When 'P' Then mstd_prdcd Else Null End prd_p,
              Case mstd_flagdisc1 When 'P' Then prd_deskripsipanjang Else Null End desk_p,
@@ -65,7 +65,7 @@ Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-    $datas = DB::select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
+    $datas = DB::connection($_SESSION['connection'])->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,
              Case mstd_flagdisc1 When 'P' Then mstd_prdcd Else Null End prd_p,
              Case mstd_flagdisc1 When 'P' Then prd_deskripsipanjang Else Null End desk_p,

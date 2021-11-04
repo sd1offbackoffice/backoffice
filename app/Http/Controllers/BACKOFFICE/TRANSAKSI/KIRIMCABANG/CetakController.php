@@ -24,7 +24,7 @@ class CetakController extends Controller
         $tgl2 = $request->tgl2;
 
         if($jenis == 1){
-            $data = DB::table('tbtr_backoffice')
+            $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                 ->selectRaw("trbo_nodoc no, trbo_tgldoc tgl")
                 ->where('trbo_typetrn','=','O')
                 ->whereRaw("trbo_recordid is null")
@@ -34,7 +34,7 @@ class CetakController extends Controller
         }
         else{
             if($reprint == 0){
-                $data = DB::table('tbtr_backoffice')
+                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                     ->selectRaw("trbo_nodoc no, trbo_tgldoc tgl")
                     ->where('trbo_typetrn','=','O')
                     ->whereRaw("nvl(trbo_flagdoc,' ') = '1'")
@@ -42,7 +42,7 @@ class CetakController extends Controller
                     ->get();
             }
             else{
-                $data = DB::table('tbtr_mstran_h')
+                $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                     ->selectRaw("msth_nodoc no, msth_tgldoc tgl")
                     ->where('msth_typetrn','=','O')
                     ->whereRaw("nvl(msth_recordid,' ') <> '1'")
@@ -76,7 +76,7 @@ class CetakController extends Controller
 
             if($_SESSION['kkc_jenis'] == 1){
                 if($_SESSION['kkc_reprint'] == 0){
-                    DB::table('tbtr_backoffice')
+                    DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                         ->whereIn('trbo_nodoc',$_SESSION['kkc_nodoc'])
                         ->update([
                             'trbo_flagdoc' => '1'
@@ -89,7 +89,7 @@ class CetakController extends Controller
                 }
                 $nodoc = substr($nodoc,0,-1).')';
 
-                $data = DB::select("SELECT   trbo_nodoc,
+                $data = DB::connection($_SESSION['connection'])->select("SELECT   trbo_nodoc,
                                              trbo_tgldoc,
                                              trbo_noreff,
                                              trbo_flagdisc1,
@@ -131,7 +131,7 @@ class CetakController extends Controller
                                          AND trbo_kodeigr || trbo_gdg = gdg_kodegudang(+)
                                     ORDER BY trbo_nodoc, trbo_seqno");
 
-                $perusahaan = DB::table('tbmaster_perusahaan')
+                $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->first();
 
 //                dd($data[0]);
@@ -160,7 +160,7 @@ class CetakController extends Controller
                         oci_bind_by_name($s, ':ret', $vnodoc, 32);
                         oci_execute($s);
 
-                        $data = DB::select("SELECT aa.*,
+                        $data = DB::connection($_SESSION['connection'])->select("SELECT aa.*,
 															      prd_unit, prd_frac, prd_flagbkp1,prd_flagbkp2,prd_kodedivisi,
 															      prd_kodedepartement, prd_kodekategoribarang,prd_kodetag,
 															      sup_pkp, prd_kodesupplier,sup_top,st_saldoakhir,st_lastcost,st_avgcost
@@ -176,7 +176,7 @@ class CetakController extends Controller
                              ORDER BY trbo_seqno");
 
                         foreach($data as $d){
-                            DB::table('tbtr_mstran_d')
+                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->insert([
                                     'mstd_kodeigr' => $_SESSION['kdigr'],
                                     'mstd_typetrn' => $d->trbo_typetrn,
@@ -236,7 +236,7 @@ class CetakController extends Controller
                             $v_tgref= $d->trbo_tglreff;
                         }
 
-                        DB::table('tbtr_mstran_h')
+                        DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                             ->insert([
                                 'MSTH_KODEIGR' => $_SESSION['kdigr'],
                                 'MSTH_RECORDID' => '',
@@ -266,7 +266,7 @@ class CetakController extends Controller
                                 'MSTH_MODIFY_DT' => DB::RAW("SYSDATE"),
                             ]);
 
-                        DB::table('tbtr_backoffice')
+                        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                             ->where('trbo_nodoc',$knodoc)
                             ->where('trbo_typetrn','=','O')
                             ->update([
@@ -289,10 +289,10 @@ class CetakController extends Controller
                 }
                 $nodoc = substr($nodoc,0,-1).')';
 
-                $perusahaan = DB::table('tbmaster_perusahaan')
+                $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->first();
 
-                $data = DB::select("SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
+                $data = DB::connection($_SESSION['connection'])->select("SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                         msth_nofaktur, msth_tglfaktur,
                         msth_noref3,msth_tgref3,msth_cterm, msth_flagdoc,
                         mstd_flagdisc1,msth_loc,cab_namacabang,msth_loc2,gdg_namagudang,

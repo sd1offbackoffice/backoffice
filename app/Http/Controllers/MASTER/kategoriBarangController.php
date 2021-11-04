@@ -11,12 +11,12 @@ class kategoriBarangController extends Controller
     //
 
     public function index(){
-        $departement = DB::table('tbmaster_departement')
+        $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->select('dep_kodedepartement','dep_namadepartement')
             ->orderBy('dep_kodedepartement')
             ->get();
 
-        $kategori = DB::table('tbmaster_kategori')
+        $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->select('kat_kodekategori', 'kat_namakategori', 'kat_singkatan')
             ->where('kat_kodedepartement','01')
             ->orderBy('kat_kodekategori')
@@ -26,7 +26,7 @@ class kategoriBarangController extends Controller
     }
 
     public function departement_select(Request $request){
-        $kategori = DB::table('tbmaster_kategori')
+        $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->select('kat_kodekategori', 'kat_namakategori', 'kat_singkatan')
             ->where('kat_kodedepartement',$request->value)
             ->orderBy('kat_kodekategori')

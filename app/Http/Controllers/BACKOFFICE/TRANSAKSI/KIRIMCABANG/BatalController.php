@@ -21,7 +21,7 @@ class BatalController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $data = DB::table('tbtr_mstran_h')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, msth_tgldoc tgl")
             ->where('msth_typetrn','=','O')
             ->whereRaw("nvl(msth_recordid,' ') <> '1'")
@@ -38,7 +38,7 @@ class BatalController extends Controller
             DB::beginTransaction();
 
             foreach($nodoc as $no){
-                $sjs = DB::select("SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
+                $sjs = DB::connection($_SESSION['connection'])->select("SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
   							          mstd_qty, mstd_avgcost,	mstd_prdcd, mstd_hrgsatuan,
   							          nvl(mstd_noref3,'xxx') mstd_noref3, mstd_tgref3,
   							          st_lastcost,st_avgcost,prd_unit, prd_frac, prd_avgcost,st_saldoakhir
@@ -65,13 +65,13 @@ class BatalController extends Controller
                     }
                     else $vacostbaru = (((Self::nvl($sj->st_saldoakhir,0)*Self::nvl($sj->st_avgcost,0))+(Self::nvl($ncost,0)*Self::nvl($nqtt,0)))/ ((Self::nvl($sj->st_saldoakhir,0)+$nqtt)));
 
-                    DB::update("	UPDATE tbmaster_prodmast
+                    DB::connection($_SESSION['connection'])->update("	UPDATE tbmaster_prodmast
   							     set prd_avgcost=".$vacostbaru." * case when prd_unit='KG' then 1 else
   							                                case when prd_frac <= 0 then 1 else nvl(prd_frac,1) end end
   						WHERE substr(prd_prdcd,1,6)= substr('".$sj->mstd_prdcd."',1,6)
   							    and prd_kodeigr='".$_SESSION['kdigr']."'");
 
-                    DB::insert("INSERT INTO tbhistory_cost (HCS_KODEIGR,HCS_TYPETRN,HCS_LOKASI,HCS_PRDCD,HCS_TGLBPB,HCS_NODOCBPB,HCS_QTYBARU,HCS_QTYLAMA,HCS_AVGLAMA,HCS_AVGBARU, HCS_LASTQTY,
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO tbhistory_cost (HCS_KODEIGR,HCS_TYPETRN,HCS_LOKASI,HCS_PRDCD,HCS_TGLBPB,HCS_NODOCBPB,HCS_QTYBARU,HCS_QTYLAMA,HCS_AVGLAMA,HCS_AVGBARU, HCS_LASTQTY,
 				HCS_CREATE_BY,HCS_CREATE_DT)
                 VALUES ('".$_SESSION['kdigr']."', 'O', '01', '".$sj->mstd_prdcd."', '".$sj->mstd_tgldoc."','".$sj->mstd_nodoc."','".$sj->mstd_qty."', '".$sj->st_saldoakhir."', ".$sj->mstd_prdcd * $sj->prd_frac.", ".$vacostbaru * $sj->prd_frac.", ". $sj->st_saldoakhir."+".$sj->mstd_qty.",'".$_SESSION['usid']."', sysdate)");
 
@@ -112,14 +112,14 @@ class BatalController extends Controller
                            and st_kodeigr=mstd_kodeigr
                            and st_lokasi='01'");
 
-                DB::table('tbtr_mstran_h')
+                DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                     ->where('msth_nodoc','=',$no)
                     ->where('msth_kodeigr','=',$_SESSION['kdigr'])
                     ->update([
                         'msth_recordid' => '1'
                     ]);
 
-                DB::table('tbtr_mstran_d')
+                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                     ->where('mstd_nodoc','=',$no)
                     ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
                     ->update([
@@ -127,7 +127,7 @@ class BatalController extends Controller
                     ]);
 
                 if($vnoipb != 'xxx'){
-                    DB::table('tbtr_ipb')
+                    DB::connection($_SESSION['connection'])->table('tbtr_ipb')
                         ->where('ipb_noipb','=',$vnoipb)
                         ->updae([
                             'ipb_recordid' => ''

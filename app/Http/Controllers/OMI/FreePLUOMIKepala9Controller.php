@@ -21,7 +21,7 @@ class FreePLUOMIKepala9Controller extends Controller
     {
         $where = "rom_nodokumen like '%" . $request->search . "%'";
 
-        $data = DB::table('tbmaster_prodmast')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_deskripsipanjang Deskripsi, prd_prdcd PLU ")
             ->whereRaw("substr(prd_prdcd,7,1)='0'")
             ->whereRaw("nvl(prd_kodetag,'_') not in ('N','H','X')")
@@ -36,7 +36,7 @@ class FreePLUOMIKepala9Controller extends Controller
     public function getDataInput(Request $request)
     {
         $plu = $request->plu;
-        $data = DB::select("SELECT fpl_freepluomi, NVL (BRG_MERK, ' ') BRG_MERK, NVL (BRG_NAMA, ' ') BRG_NAMA,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT fpl_freepluomi, NVL (BRG_MERK, ' ') BRG_MERK, NVL (BRG_NAMA, ' ') BRG_NAMA,
 		       NVL (BRG_FLAVOR, ' ') BRG_FLAVOR, NVL (BRG_KEMASAN, ' ') BRG_KEMASAN,
 		       NVL (BRG_UKURAN, ' ') BRG_UKURAN,
 		       NVL (PRD_KODEDIVISI, ' ') || ' - ' || NVL (DIV_NAMADIVISI, ' ') divisi,
@@ -65,7 +65,7 @@ class FreePLUOMIKepala9Controller extends Controller
 		   AND PRD_KODEKATEGORIBARANG = KAT_KODEKATEGORI(+)
 		   AND prd_prdcd = '" . $plu . "'");
 
-        $tempomi = DB::select("select nvl(count(1),0) count
+        $tempomi = DB::connection($_SESSION['connection'])->select("select nvl(count(1),0) count
 		from tbmaster_freeplu
 		where fpl_pluigr = '" . $plu . "'")[0]->count;
         if ($tempomi == 0) {
@@ -76,7 +76,7 @@ class FreePLUOMIKepala9Controller extends Controller
 
     public function getDatatable()
     {
-        $data = DB::select("SELECT fpl_pluigr, fpl_freepluomi,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT fpl_pluigr, fpl_freepluomi,
 					 nvl(brg_merk,' ') brg_merk,
 					 nvl(brg_nama,' ') brg_nama,
 					 nvl(brg_flavor,' ') brg_flavor,
@@ -109,7 +109,7 @@ class FreePLUOMIKepala9Controller extends Controller
     {
         $in_pluigr = $request->data['pluigr'];
         $in_pluomi = $request->data['pluomi'];
-        $temp = DB::select("SELECT COUNT (1) count
+        $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
         FROM tbmaster_prodmast
        WHERE     prd_prdcd = SUBSTR ('" . $in_pluigr . "' , 1, 6) || '1'
         AND prd_kodetag IN ('N', 'H', 'X')")[0]->count;
@@ -119,12 +119,12 @@ class FreePLUOMIKepala9Controller extends Controller
             $status = 'warning';
             return compact(['message', 'status']);
         }
-        $tempigr = DB::select("SELECT COUNT (1) count
+        $tempigr = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
         FROM tbmaster_prodmast
        WHERE     prd_prdcd = '" . $in_pluigr . "'")[0]->count;
 
         if ($tempigr != 0) {
-            $temp_prodcrm = DB::select("SELECT COUNT (1) count
+            $temp_prodcrm = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
         FROM tbmaster_prodmast
        WHERE     prd_prdcd = '" . $in_pluigr . "' AND prd_group = 'O'")[0]->count;
 
@@ -134,10 +134,10 @@ class FreePLUOMIKepala9Controller extends Controller
                 return compact(['message', 'status']);
             }
 
-            $temp_fpl = DB::select("SELECT COUNT (1) count
+            $temp_fpl = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
                         FROM TBMASTER_FREEPLU
                        WHERE     FPL_PLUIGR = '" . $in_pluigr . "'")[0]->count;
-            $temp_prc = DB::select("SELECT COUNT (1) count
+            $temp_prc = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
                             FROM TBMASTER_PRODCRM
                            WHERE     PRC_PLUIGR = '" . $in_pluigr . "' AND prc_group = 'F'")[0]->count;
 
@@ -147,10 +147,10 @@ class FreePLUOMIKepala9Controller extends Controller
                 return compact(['message', 'status']);
             } else {
                 if ($temp_prc == 0) {
-                    $v_minj = DB::select("SELECT PRD_MINJUAL FROM TBMASTER_PRODMAST
+                    $v_minj = DB::connection($_SESSION['connection'])->select("SELECT PRD_MINJUAL FROM TBMASTER_PRODMAST
                            WHERE     PRD_KODEIGR = '" . $_SESSION['kdigr'] . "' AND PRD_prdcd = '" . $in_pluigr . "'")[0]->prd_minjual;
 
-                    $temp = DB::select("SELECT COUNT (1) count
+                    $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
                         FROM TBMASTER_PRODMAST
                      WHERE PRD_KODEIGR =  '" . $_SESSION['kdigr'] . "'
                        AND PRD_PRDCD = SUBSTR ('" . $in_pluigr . "', 1, 6) || '1'")[0]->count;
@@ -158,7 +158,7 @@ class FreePLUOMIKepala9Controller extends Controller
                     $v_tag = null;
                     $v_frac = 0;
                     if ($temp > 0) {
-                        $res = DB::select("SELECT PRD_KODETAG, PRD_FRAC
+                        $res = DB::connection($_SESSION['connection'])->select("SELECT PRD_KODETAG, PRD_FRAC
                         FROM TBMASTER_PRODMAST
                      WHERE PRD_KODEIGR =  '" . $_SESSION['kdigr'] . "'
                        AND PRD_PRDCD = SUBSTR ('" . $in_pluigr . "', 1, 6) || '1'")[0];
@@ -166,7 +166,7 @@ class FreePLUOMIKepala9Controller extends Controller
                         $v_frac = $res->prd_frac;
                     }
 
-                    DB::insert("INSERT INTO TBMASTER_PRODCRM
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBMASTER_PRODCRM
                                 (PRC_KODEIGR, PRC_GROUP, PRC_PLUIGR,
                                  PRC_PLUOMI, PRC_CREATE_BY, PRC_CREATE_DT, PRC_MINORDER,
                                  PRC_HRGJUAL, PRC_PRICEB, PRC_PRICEK, PRC_PRICER, PRC_PRICEN,
@@ -181,13 +181,13 @@ class FreePLUOMIKepala9Controller extends Controller
                                 )");
 
                     if ($temp_fpl == 0) {
-                        DB::insert("INSERT INTO TBMASTER_FREEPLU
+                        DB::connection($_SESSION['connection'])->insert("INSERT INTO TBMASTER_FREEPLU
                                     (FPL_KODEIGR, FPL_PLUIGR, FPL_FREEPLUOMI, FPL_CREATE_BY,
                                      FPL_CREATE_DT)
                              VALUES ('" . $_SESSION['kdigr'] . "', '" . $in_pluigr . "', '" . $in_pluomi . "', '" . $_SESSION['usid'] . "',
                                      SYSDATE)");
                     } else {
-                        DB::update("UPDATE TBMASTER_FREEPLU
+                        DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_FREEPLU
                            SET FPL_FREEPLUOMI = '" . $in_pluomi . "',
                                FPL_MODIFY_BY = '" . $_SESSION['usid'] . "',
                                FPL_MODIFY_DT = SYSDATE,
@@ -212,14 +212,14 @@ class FreePLUOMIKepala9Controller extends Controller
     public function hapus(Request $request){
         $in_pluigr = $request->data['pluigr'];
         $in_pluomi = $request->data['pluomi'];
-        $tempomi = DB::select("SELECT NVL (COUNT (1), 0) count
+        $tempomi = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) count
                              FROM tbmaster_prodcrm
                             WHERE prc_pluigr ='" . $in_pluigr . "' and prc_group = 'F'")[0]->count;
         if($tempomi!=0){
-            DB::delete("DELETE FROM tbmaster_prodcrm
+            DB::connection($_SESSION['connection'])->delete("DELETE FROM tbmaster_prodcrm
                WHERE prc_pluigr = '" . $in_pluigr . "'AND prc_group = 'F'");
 
-            DB::update("UPDATE tbmaster_freeplu
+            DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_freeplu
             SET fpl_freepluomi = '" . $in_pluomi . "',
                 fpl_MODIFY_BY = '" . $_SESSION['usid'] . "',
                 fpl_MODIFY_DT = SYSDATE,

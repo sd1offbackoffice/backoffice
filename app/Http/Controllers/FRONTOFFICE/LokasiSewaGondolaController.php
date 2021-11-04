@@ -21,7 +21,7 @@ class LokasiSewaGondolaController extends Controller
     public function lovNoPjSewa(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("SELECT distinct thn,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT distinct thn,
                CASE
                    WHEN bln = 'I'
                        THEN '01'
@@ -64,7 +64,7 @@ Where gdl_noperjanjiansewa LIKE '%" . $search . "%'
     public function lovKodeRak(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("SELECT DISTINCT lks_koderak, lks_kodesubrak, lks_tiperak FROM TBMASTER_LOKASI
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT lks_koderak, lks_kodesubrak, lks_tiperak FROM TBMASTER_LOKASI
    WHERE lks_koderak LIKE 'X%'
    ORDER BY lks_koderak, lks_kodesubrak");
         return DataTables::of($data)->make(true);
@@ -73,7 +73,7 @@ Where gdl_noperjanjiansewa LIKE '%" . $search . "%'
     public function lovLokasi(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT,
                         LKS_KODERAK
                         || '.'
                         || LKS_KODESUBRAK
@@ -101,7 +101,7 @@ AND LKS_KODERAK
     public function lovPLU(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("SELECT PRD_DESKRIPSIPANJANG,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT PRD_DESKRIPSIPANJANG,
                             PRD_PRDCD,PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN
                             FROM TBMASTER_PRODMAST
                             WHERE SUBSTR(PRD_PRDCD,7,1)='0'
@@ -115,7 +115,7 @@ AND LKS_KODERAK
     public function lovKodeDisplay(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("select dis_kodedisplay, dis_namadisplay
+        $data = DB::connection($_SESSION['connection'])->select("select dis_kodedisplay, dis_namadisplay
                             from tbmaster_display
                             and ( dis_kodedisplay LIKE '%" . $search . "%' or dis_namadisplay LIKE '%" . $search . "%' )
                             ORDER BY dis_kodedisplay");
@@ -129,7 +129,7 @@ AND LKS_KODERAK
         $model = '';
         $property = '';
         $data = '';
-        $temp = DB::select("SELECT COUNT (1) count
+        $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) count
       FROM TBTR_GONDOLA
      WHERE GDL_NOPERJANJIANSEWA = '" . $nopjsewa . "'")[0]->count;
 
@@ -137,7 +137,7 @@ AND LKS_KODERAK
             $property = true;
             $model = 'TAMBAH';
         } else {
-            $data = DB::select("SELECT *
+            $data = DB::connection($_SESSION['connection'])->select("SELECT *
                   FROM TBTR_GONDOLA left join TBTR_GONDOLASEWA on GDL_NOPERJANJIANSEWA = GDS_NOPERJANJIANSEWA
                   AND GDL_PRDCD = GDS_PRDCD
                   AND trim(GDL_KODEPRINCIPAL) = GDS_KODEPRINCIPAL
@@ -156,7 +156,7 @@ AND LKS_KODERAK
     public function getDataLokasi(Request $request)
     {
         $plu = $request->plu;
-        $recs = DB::select("SELECT *
+        $recs = DB::connection($_SESSION['connection'])->select("SELECT *
             FROM TBMASTER_LOKASI
                  WHERE LKS_PRDCD = '" . $plu . "'
         AND LKS_KODERAK NOT LIKE 'D%'
@@ -176,7 +176,7 @@ AND LKS_KODERAK
             foreach ($data as $d) {
 
                 if ($model == 'TAMBAH') {
-                    DB::insert("INSERT INTO TBTR_GONDOLA
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_GONDOLA
  (GDL_KODEIGR, GDL_NOPERJANJIANSEWA, GDL_PRDCD, GDL_QTY, GDL_KODECABANG,
                 GDL_KODEDISPLAY, GDL_TGLAWAL, GDL_TGLAKHIR, GDL_KODEPRINCIPAL,
                 GDL_CREATE_BY, GDL_CREATE_DT)
@@ -186,17 +186,17 @@ AND LKS_KODERAK
                         )");
                 }
 
-                $temp = DB::select("SELECT COUNT(1) count
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
                           FROM TBTR_GONDOLASEWA
                          WHERE GDS_NOPERJANJIANSEWA = '" . $nopjsewa . "'
                     and GDS_PRDCD = '" . $d['plu'] . "'
                     and GDS_KODEDISPLAY = '" . $d['kodedisplay'] . "'")[0]->count;
 
-                $temp = DB::select("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','yyyy-mm-dd') and to_date('" . $d['tglakhir'] . "','yyyy-mm-dd') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan")[0]->aa;
+                $temp = DB::connection($_SESSION['connection'])->select("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','yyyy-mm-dd') and to_date('" . $d['tglakhir'] . "','yyyy-mm-dd') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan")[0]->aa;
 //dd("select case when trunc(sysdate) between to_date('" . $d['tglawal'] . "','yyyy-mm-dd') and to_date('" . $d['tglakhir'] . "','yyyy-mm-dd') and '" . $d['lokasi'] . "' is not null then 1 else 0 end aa from tbmaster_perusahaan");
                 if ($temp == 1) {
 
-                    DB::insert("INSERT INTO TBTR_GONDOLASEWA
+                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_GONDOLASEWA
  (GDS_KODEIGR, GDS_NOPERJANJIANSEWA, GDS_PRDCD, GDS_QTY, GDS_KODECABANG,
                     GDS_KODEDISPLAY, GDS_TGLAWAL, GDS_TGLAKHIR, GDS_KODEPRINCIPAL,
                     GDS_LOKASI, GDS_CREATE_BY, GDS_CREATE_DT)
@@ -205,7 +205,7 @@ AND LKS_KODERAK
                          '" . $_SESSION['usid'] . "', sysdate
                         )");
 
-                    DB::update("UPDATE TBMASTER_LOKASI
+                    DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_LOKASI
                SET LKS_MAXPLANO = LKS_MAXPLANO + " . $d['qty'] . ",
                    LKS_MODIFY_BY = '" . $_SESSION['usid'] . "',
                    LKS_MODIFY_DT = SYSDATE
@@ -216,7 +216,7 @@ AND LKS_KODERAK
                 and LKS_TIPERAK <> 'S'");
 
 
-                    DB::update("UPDATE TBMASTER_LOKASI
+                    DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_LOKASI
                SET LKS_PRDCD = '" . $d['plu'] . "',
                		 LKS_MODIFY_BY ='" . $_SESSION['usid'] . "',
                    LKS_MODIFY_DT = SYSDATE
@@ -249,7 +249,7 @@ AND LKS_KODERAK
         $subrak = $request->subrak;
         $tiperak = $request->tiperak;
 
-        $recs = DB::select("SELECT *
+        $recs = DB::connection($_SESSION['connection'])->select("SELECT *
             FROM TBMASTER_LOKASI
                  WHERE LKS_KODERAK = '" . $rak . "'
         AND LKS_KODESUBRAK = '" . $subrak . "'
@@ -260,7 +260,7 @@ AND LKS_KODERAK
     public function lovPLUPrjSewa(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("SELECT DISTINCT GDL_NOPERJANJIANSEWA, GDL_PRDCD, THN,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT GDL_NOPERJANJIANSEWA, GDL_PRDCD, THN,
                 CASE
                     WHEN BLN = 'I'
                         THEN '01'
@@ -323,7 +323,7 @@ AND LKS_KODERAK
             return compact(['message', 'status']);
         }
 
-        $temp = DB::select("SELECT COUNT(1) count
+        $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
               FROM TBMASTER_LOKASI
              WHERE LKS_KODERAK =  '" . $kdrak . "'
             and LKS_KODESUBRAK = '" . $subrak . "'
@@ -333,12 +333,12 @@ AND LKS_KODERAK
 
 
         if ($temp == 0) {
-            DB::insert("INSERT INTO TBMASTER_LOKASI (LKS_KODEIGR ,LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT)
+            DB::connection($_SESSION['connection'])->insert("INSERT INTO TBMASTER_LOKASI (LKS_KODEIGR ,LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT)
              VALUES('" . $_SESSION['kdigr'] . "','" . $kdrak . "', '" . $subrak . "', '" . $tiperak . "', '" . $shelving . "', '" . $nourut . "')");
 
         }
 
-        $temp = DB::select("SELECT COUNT(1) count
+        $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
                   FROM TBTR_GONDOLASEWA
                  WHERE GDS_NOPERJANJIANSEWA = '" . $noprjsewa . "' and GDS_PRDCD = '" . $plu . "'")[0]->count;
 
@@ -347,7 +347,7 @@ AND LKS_KODERAK
             $status = "error";
             return compact(['message', 'status']);
         } else {
-            DB::insert("INSERT INTO TBTR_GONDOLASEWA
+            DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_GONDOLASEWA
             (GDS_KODEIGR, GDS_NOPERJANJIANSEWA, GDS_PRDCD, GDS_QTY, GDS_KODECABANG,
                 GDS_KODEDISPLAY, GDS_TGLAWAL, GDS_TGLAKHIR, GDS_KODEPRINCIPAL, GDS_LOKASI,
                 GDS_CREATE_BY, GDS_CREATE_DT)
@@ -366,11 +366,11 @@ AND LKS_KODERAK
               FROM TBTR_GONDOLA
              WHERE GDL_NOPERJANJIANSEWA = '" . $noprjsewa . "' and GDL_PRDCD = '" . $plu . "'");
 
-            $gdlqty = DB::select("SELECT NVL(GDL_QTY, 0) qty
+            $gdlqty = DB::connection($_SESSION['connection'])->select("SELECT NVL(GDL_QTY, 0) qty
           FROM TBTR_GONDOLA
          WHERE GDL_NOPERJANJIANSEWA = '" . $noprjsewa . "' and GDL_PRDCD = '" . $plu . "'")[0]->qty;
 
-            DB::update("UPDATE TBMASTER_LOKASI
+            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_LOKASI
            SET LKS_MAXPLANO = LKS_MAXPLANO + '" . $gdlqty . "',
                LKS_MODIFY_BY = '" . $_SESSION['usid'] . "',
                LKS_MODIFY_DT = SYSDATE
@@ -381,7 +381,7 @@ AND LKS_KODERAK
             and LKS_TIPERAK <> 'S'");
 
 
-            DB::update("UPDATE TBMASTER_LOKASI
+            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_LOKASI
            SET LKS_PRDCD = '" . $plu . "',
                LKS_MODIFY_BY = '" . $_SESSION['usid'] . "',
                LKS_MODIFY_DT = SYSDATE

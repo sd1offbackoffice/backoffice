@@ -16,7 +16,7 @@ class cabangController extends Controller
     }
 
     public function index(){
-        $getCabang  = DB::table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
+        $getCabang  = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
 
         return view('MASTER.cabang', compact('getCabang'));
     }
@@ -24,7 +24,7 @@ class cabangController extends Controller
     public function getDetailCabang(Request $request){
         $kodeigr    = $request->kodeigr;
 
-        $getDetail  = DB::table('tbmaster_cabang')->select('*')->where('cab_kodecabang', $kodeigr)->get();
+        $getDetail  = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->select('*')->where('cab_kodecabang', $kodeigr)->get();
         return response()->json($getDetail);
     }
 
@@ -45,17 +45,17 @@ class cabangController extends Controller
         $date       = date('Y-m-d H:i:s');
         $user       = $_SESSION['usid'];
 
-        $cekKodeigr = DB::table('tbmaster_cabang')->select('cab_kodecabang')->where('cab_kodecabang', $kodeigr)->get()->toArray();
-        $getKodeigr = DB::table('tbmaster_perusahaan')->first();
+        $cekKodeigr = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->select('cab_kodecabang')->where('cab_kodecabang', $kodeigr)->get()->toArray();
+        $getKodeigr = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
 
         if (!$cekKodeigr) {
-            DB::table('tbmaster_cabang')->insert(['cab_kodeigr' => $getKodeigr->prs_kodeigr,'cab_kodecabang' => $kodeigr, 'cab_namacabang' => strtoupper($namacabang), 'cab_alamat1' => $alamat1, 'cab_alamat2' => $alamat2,
+            DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->insert(['cab_kodeigr' => $getKodeigr->prs_kodeigr,'cab_kodecabang' => $kodeigr, 'cab_namacabang' => strtoupper($namacabang), 'cab_alamat1' => $alamat1, 'cab_alamat2' => $alamat2,
                 'cab_alamat3' => $alamat3, 'cab_teleponcabang' => $telephone, 'cab_faxcabang' => $faximile, 'cab_npwpcabang' => $npwp, 'cab_nosk' => $nosk, 'cab_tglsk' => $tglsk, 'cab_kodecabang_anak' => $kodeanakcab, 'cab_namacabang_anak' => $namaanakcab,
                 'cab_create_by' => $user, 'cab_create_dt' => $date]);
 
             return response()->json("Insert Data Berhasil");
         } else {
-            DB::table('tbmaster_cabang')->where('cab_kodecabang', $kodeigr)->update(['cab_kodecabang' => $kodeigr, 'cab_namacabang' => strtoupper($namacabang), 'cab_alamat1' => $alamat1, 'cab_alamat2' => $alamat2,
+            DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->where('cab_kodecabang', $kodeigr)->update(['cab_kodecabang' => $kodeigr, 'cab_namacabang' => strtoupper($namacabang), 'cab_alamat1' => $alamat1, 'cab_alamat2' => $alamat2,
                 'cab_alamat3' => $alamat3, 'cab_teleponcabang' => $telephone, 'cab_faxcabang' => $faximile, 'cab_npwpcabang' => $npwp, 'cab_nosk' => $nosk, 'cab_tglsk' => $tglsk, 'cab_kodecabang_anak' => $kodeanakcab, 'cab_namacabang_anak' => $namaanakcab,
                 'cab_modify_by' => $user, 'cab_modify_dt' => $date]);
 

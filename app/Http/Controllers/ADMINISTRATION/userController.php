@@ -19,13 +19,13 @@ class userController extends Controller
         $message = "";
         $status = "";
         if ($request->value == '') {
-            $user = DB::table('TBMASTER_USER')
+            $user = DB::connection($_SESSION['connection'])->table('TBMASTER_USER')
                 ->select('*')
                 ->whereRaw('NVL(RECORDID,\'0\') != \'1\'')
                 ->orderBy('userid')
                 ->get();
         } else {
-            $user = DB::table('TBMASTER_USER')
+            $user = DB::connection($_SESSION['connection'])->table('TBMASTER_USER')
                 ->select('*')
                 ->whereRaw('NVL(RECORDID,\'0\') != \'1\'')
                 ->where('USERID', 'like', '%' . $request->value . '%')
@@ -44,11 +44,11 @@ class userController extends Controller
         $message = "";
         $status = "";
         if ($request->value == '') {
-            $ip = DB::table('TBMASTER_COMPUTER')
+            $ip = DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->select('*')
                 ->get();
         } else {
-            $ip = DB::table('TBMASTER_COMPUTER')
+            $ip = DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->select('*')
                 ->where('IP', 'like', '%' . $request->value . '%')
                 ->get();
@@ -62,7 +62,7 @@ class userController extends Controller
 
     public function saveUser(Request $request)
     {
-        $cek = DB::table('TBMASTER_USER')
+        $cek = DB::connection($_SESSION['connection'])->table('TBMASTER_USER')
             ->select('*')
             ->where('USERID', '=', $request->id)
             ->first();
@@ -71,7 +71,7 @@ class userController extends Controller
             $message = 'User ID Sudah Ada, Silahkan Ganti User ID!';
             $status = 'error';
         } else {
-            if (DB::table('tbmaster_user')->insert(
+            if (DB::connection($_SESSION['connection'])->table('tbmaster_user')->insert(
                 ['kodeigr' => $_SESSION['kdigr'], 'userid' => $request->id, 'userpassword' => $request->password, 'userlevel' => $request->level, 'station' => $request->station, 'username' => $request->username, 'email' => $request->email, 'create_by' => $_SESSION['usid'], 'create_dt' => DB::raw('trunc(sysdate)'), 'encryptpwd' => md5($request->password), 'jabatan' => $request->jabatan])) {
                 $message = 'User Berhasil Disimpan!';
                 $status = 'success';
@@ -86,7 +86,7 @@ class userController extends Controller
     public function updateUser(Request $request)
     {
         for ($i = 0; $i < sizeof($request->value['userid']); $i++) {
-            DB::table('tbmaster_user')
+            DB::connection($_SESSION['connection'])->table('tbmaster_user')
                 ->where('userid', '=', $request->value['userid'][$i])
                 ->update(['userpassword' => $request->value['password'][$i], 'userlevel' => $request->value['userlevel'][$i], 'station' => $request->value['station'][$i], 'username' => $request->value['username'][$i], 'email' => $request->value['email'][$i], 'jabatan' => $request->value['jabatan'][$i], 'encryptpwd' => md5($request->value['password'][$i]), 'modify_by' => $_SESSION['usid'], 'modify_dt' => DB::RAW("trunc(sysdate)")]);
         }
@@ -98,25 +98,25 @@ class userController extends Controller
     public function userAccess(Request $request)
     {
         $id = $request->value;
-        $access = DB::table('tbmaster_access')->leftJoin('tbmaster_useraccess', function ($join) use ($id) {
+        $access = DB::connection($_SESSION['connection'])->table('tbmaster_access')->leftJoin('tbmaster_useraccess', function ($join) use ($id) {
             $join->on('tbmaster_access.accessgroup', '=', 'tbmaster_useraccess.accessgroup')
                 ->on('tbmaster_access.accesscode', '=', 'tbmaster_useraccess.accesscode')
                 ->on('tbmaster_useraccess.userid', DB::RAW("'" . $id . "'"))
                 ->on('tbmaster_useraccess.kodeigr', '=', DB::raw($_SESSION['kdigr']));
         })
-            ->selectRaw('tbmaster_access.accessgroup, 
-                                    tbmaster_access.accesscode, 
+            ->selectRaw('tbmaster_access.accessgroup,
+                                    tbmaster_access.accesscode,
                                     tbmaster_access.accessname,
-                                    NVL (tbmaster_useraccess.baca, 0) baca, 
+                                    NVL (tbmaster_useraccess.baca, 0) baca,
                                     NVL (tbmaster_useraccess.tambah, 0) tambah,
-                                    NVL (tbmaster_useraccess.koreksi, 0) koreksi, 
+                                    NVL (tbmaster_useraccess.koreksi, 0) koreksi,
                                     NVL (tbmaster_useraccess.hapus, 0) hapus')
             ->where('tbmaster_access.kodeigr', '=', $_SESSION['kdigr'])
             ->where('tbmaster_access.accessgroup', 'like', $request->accessgroup . '%')
             ->orderBy('tbmaster_access.accesscode')
             ->get();
 
-        $accessgroup = DB::table('tbmaster_access')->leftJoin('tbmaster_useraccess', function ($join) use ($id) {
+        $accessgroup = DB::connection($_SESSION['connection'])->table('tbmaster_access')->leftJoin('tbmaster_useraccess', function ($join) use ($id) {
             $join->on('tbmaster_access.accessgroup', '=', 'tbmaster_useraccess.accessgroup')
                 ->on('tbmaster_access.accesscode', '=', 'tbmaster_useraccess.accesscode')
                 ->on('tbmaster_useraccess.userid', DB::RAW("'" . $id . "'"))
@@ -134,24 +134,24 @@ class userController extends Controller
     public function saveAccess(Request $request)
     {
         for ($i = 0; $i < sizeof($request->value['baca']); $i++) {
-            $cek = DB::table('tbmaster_useraccess')
+            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_useraccess')
                 ->select('*')
                 ->where('userid', '=', $request->userid)
                 ->where('accesscode', '=', $request->value['accesscode'][$i])
                 ->first();
 
             if (!is_null($cek)) {
-                DB::table('tbmaster_useraccess')
+                DB::connection($_SESSION['connection'])->table('tbmaster_useraccess')
                     ->where('userid', '=', $request->userid)
                     ->where('accesscode', '=', $request->value['accesscode'][$i])
                     ->update(['baca' => $request->value['baca'][$i], 'tambah' => $request->value['tambah'][$i], 'koreksi' => $request->value['koreksi'][$i], 'hapus' => $request->value['hapus'][$i], 'modify_by' => $_SESSION['usid'], 'modify_dt' => DB::raw('sysdate')]);
             } else {
-                $accessgroup = DB::table('tbmaster_access')
+                $accessgroup = DB::connection($_SESSION['connection'])->table('tbmaster_access')
                     ->selectRaw('accessgroup,accessname')
                     ->where('accesscode', '=', $request->value['accesscode'][$i])
                     ->first();
 
-                DB::table('tbmaster_useraccess')->insert(
+                DB::connection($_SESSION['connection'])->table('tbmaster_useraccess')->insert(
                     ['userid' => $request->userid,
                         'accessgroup' => $accessgroup->accessgroup,
                         'accesscode' => $request->value['accesscode'][$i],
@@ -172,7 +172,7 @@ class userController extends Controller
     }
     public function saveIp(Request $request)
     {
-        $cek = DB::table('TBMASTER_COMPUTER')
+        $cek = DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
             ->select('*')
             ->where('IP', '=', $request->ip)
             ->orWhere('station', '=', $request->station)
@@ -182,7 +182,7 @@ class userController extends Controller
             $message = 'IP / Station Sudah Ada, Silahkan Ganti IP / Station!';
             $status = 'error';
         } else {
-            if (DB::table('TBMASTER_COMPUTER')->insert(
+            if (DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')->insert(
                 ['ip' => $request->ip, 'station' => $request->station, 'computername' => $request->computername, 'create_by' => $_SESSION['usid'], 'create_dt' => DB::raw('sysdate'), 'kodeigr' => $_SESSION['kdigr']])) {
                 $message = 'IP Berhasil Disimpan!';
                 $status = 'success';
@@ -196,7 +196,7 @@ class userController extends Controller
     public function updateIp(Request $request)
     {
         for ($i = 0; $i < sizeof($request->value['ip']); $i++) {
-            DB::table('TBMASTER_COMPUTER')
+            DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->where('ip', '=', $request->value['ip'][$i])
                 ->update(['station' => $request->value['station'][$i], 'computername' => $request->value['computername'][$i], 'modify_by' => $_SESSION['usid'], 'modify_dt' => DB::RAW('sysdate')]);
         }

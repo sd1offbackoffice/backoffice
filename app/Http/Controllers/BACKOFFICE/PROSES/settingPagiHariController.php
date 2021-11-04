@@ -21,7 +21,7 @@ class settingPagiHariController extends Controller
         $model  = new AllModel();
         $dateTime = $model->getDateTime();
 
-        $tgltrkmrn = DB::table('tbmaster_perusahaan')
+        $tgltrkmrn = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_periodeterakhir')
             ->where('prd_kodeigr', '=', $kodeigr)
             ->get();
@@ -41,7 +41,7 @@ class settingPagiHariController extends Controller
         $ppn = '';
         $nActMargin = '';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
@@ -52,7 +52,7 @@ class settingPagiHariController extends Controller
             $ppn = 1 + ($ppn/100);
         }
 
-        $data = DB::select("SELECT temp.prdcd as prdcd,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT temp.prdcd as prdcd,
                --++ NVL BUAT DIV DEPT KAT, KEPUTUSAN SSA
                NVL(prd.prd_kodedivisi,' ') as PRD_KodeDivisi,
                NVL(div.DIV_NAMADIVISI,' ') as DIV_NamaDivisi,
@@ -145,12 +145,12 @@ class settingPagiHariController extends Controller
 
         $kodeigr = $_SESSION['kdigr'];
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
 
-        $data = DB::select("SELECT prd_prdcd,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd,
 		       prd_kodedivisi,
 		       div_namadivisi,
 		       prd_kodedepartement,

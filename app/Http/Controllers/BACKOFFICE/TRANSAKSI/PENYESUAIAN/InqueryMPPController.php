@@ -18,7 +18,7 @@ class InqueryMPPController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::table('tbtr_mstran_h')
+        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc")
             ->where('msth_kodeigr',$_SESSION['kdigr'])
             ->where('msth_typetrn','X')
@@ -32,7 +32,7 @@ class InqueryMPPController extends Controller
     public function getData(Request $request){
         $nompp = $request->nompp;
 
-        $data = DB::table('tbtr_mstran_h')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d','mstd_nodoc','=','msth_nodoc')
             ->join('tbmaster_prodmast','prd_prdcd','=','mstd_prdcd')
             ->selectRaw("mstd_tgldoc, mstd_nopo, mstd_tglpo, mstd_prdcd, prd_deskripsipanjang,
@@ -48,7 +48,7 @@ class InqueryMPPController extends Controller
         foreach($data as $d){
             $prdcd = $d->mstd_prdcd;
 
-            $detail[] = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
+            $detail[] = DB::connection($_SESSION['connection'])->select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
 										prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost,
 										st_avgcost * case when prd_unit ='KG' then 1 else prd_frac end avgcost,
 										mstd_hrgsatuan hrgsat, TRUNC(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
@@ -84,7 +84,7 @@ class InqueryMPPController extends Controller
         $nompp = $request->nompp;
         $prdcd = $request->prdcd;
 
-        $data = DB::select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
+        $data = DB::connection($_SESSION['connection'])->select("select mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac kemasan,
 										prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost,
 										st_avgcost * case when prd_unit ='KG' then 1 else prd_frac end avgcost,
 										mstd_hrgsatuan hrgsat, TRUNC(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,

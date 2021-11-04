@@ -14,7 +14,7 @@ class paretoSalesMemberController extends Controller
     public function index() {
         $kodeigr    = $_SESSION['kdigr'];
 
-        $outlet = DB::table('tbmaster_outlet')->where('out_kodeigr', $kodeigr)->orderBy('out_kodeoutlet')->get();
+        $outlet = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')->where('out_kodeigr', $kodeigr)->orderBy('out_kodeoutlet')->get();
 
         return view('FRONTOFFICE.LAPORANKASIR.laporanParetoSalesMember', compact('outlet'));
     }
@@ -23,7 +23,7 @@ class paretoSalesMemberController extends Controller
         $search = $request->search;
         $kodeigr    = $_SESSION['kdigr'];
 
-        $member = DB::table('tbmaster_customer')->select('cus_kodemember' , 'cus_namamember', 'cus_recordid')
+        $member = DB::connection($_SESSION['connection'])->table('tbmaster_customer')->select('cus_kodemember' , 'cus_namamember', 'cus_recordid')
             ->where('cus_kodeigr', $kodeigr)
             ->whereRaw("(cus_namamember LIKE '%$search%' or cus_kodemember  LIKE '%$search%' ) and (cus_recordid IS NULL OR cus_recordid <> 1)")
             ->orderBy('cus_kodemember')
@@ -65,9 +65,9 @@ class paretoSalesMemberController extends Controller
             }
         }
 
-        $perusahaan = DB::table('tbmaster_perusahaan')->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
 
-        $query = DB::select(" SELECT ROWNUM fnum, prs_namaperusahaan, prs_namacabang, out_namaoutlet, fNama,
+        $query = DB::connection($_SESSION['connection'])->select(" SELECT ROWNUM fnum, prs_namaperusahaan, prs_namacabang, out_namaoutlet, fNama,
                            fOutlt, fCusNo, fwFreq, fwSlip, fwProd, fwAmt, flCost, fGrsMargn
                     FROM
                     (    SELECT prs_namaperusahaan, prs_namacabang, out_namaoutlet, cus_namamember fNama,

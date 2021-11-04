@@ -270,7 +270,7 @@ class loginController extends Controller
         $prs = 'Indogrosir HO';
 
         foreach ($this->listCabang as $c) {
-            if ($c->segment == explode('.', $ipx)[2]) {
+            if ($c->segment == explode('.', $request->getHttpHost())[2]) {
                 $prs = 'Indogrosir '.strtoupper($c->namacabang);
 
                 $allcabang = false;
@@ -295,7 +295,6 @@ class loginController extends Controller
         $adausr = 0;
         $login = true;
         $vppn = 0;
-
         $koneksi = $request->koneksi;
         $detailCabang = '';
 
@@ -308,7 +307,7 @@ class loginController extends Controller
             }
         } else {
             foreach ($this->listCabang as $c) {
-                if ($c->segment == explode('.', $ipx)[2]) {
+                if ($c->segment == explode('.', $request->getHttpHost())[2]) {
                     $detailCabang = $c;
                     break;
                 }

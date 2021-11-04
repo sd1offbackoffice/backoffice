@@ -25,7 +25,7 @@ class MonthEndController extends Controller
         $txt_tahun = $request->tahun;
         $txt_bulan = $request->bulan;
 
-        $data = DB::table('TBMASTER_PERUSAHAAN')
+        $data = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
             ->select('prs_kodeigr', 'prs_bulanberjalan', 'prs_tahunberjalan', 'prs_fmflcs')
             ->first();
         $copyacost = $data->prs_fmflcs;
@@ -105,7 +105,7 @@ class MonthEndController extends Controller
 //        }
 //
 ////   ----->>>> Hapus Data tbTr_BackOffice <<<<-----
-//        DB::Select("delete from tbtr_backoffice where trbo_kodeigr='" . $_SESSION['kdigr'] . "' and nvl(trbo_recordid,' ')='2' and nvl(trbo_nonota,' ')<>' '");
+//        DB::connection($_SESSION['connection'])->select("delete from tbtr_backoffice where trbo_kodeigr='" . $_SESSION['kdigr'] . "' and nvl(trbo_recordid,' ')='2' and nvl(trbo_nonota,' ')<>' '");
 //        $p_progress = $p_progress + 1;
 //        loop_progress_bar('BL_INPUT.PROGRESSBAR', (p_progress / p_loop) * 419);
 //
@@ -141,7 +141,7 @@ class MonthEndController extends Controller
 //
 //        $p_awal = $p_akhir . ' + 1';
 //
-//        $re = DB::Select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");
+//        $re = DB::connection($_SESSION['connection'])->select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");
 //
 //        if ($re[0]->value == Carbon::now()->format('Ym')) {
 //            $p_akhir = 'trunc(sysdate)';
@@ -338,7 +338,7 @@ class MonthEndController extends Controller
     {
         try {
             DB::beginTransaction();
-            DB::Delete("delete from tbtr_backoffice where trbo_kodeigr='" . $_SESSION['kdigr'] . "' and nvl(trbo_recordid,' ')='2' and nvl(trbo_nonota,' ')<>' '");
+            DB::connection($_SESSION['connection'])->delete("delete from tbtr_backoffice where trbo_kodeigr='" . $_SESSION['kdigr'] . "' and nvl(trbo_recordid,' ')='2' and nvl(trbo_nonota,' ')<>' '");
 
             $status = 'success';
             $message = '';
@@ -407,7 +407,7 @@ class MonthEndController extends Controller
 
         $p_awal = $p_akhir . ' + 1';
 
-        $re = DB::Select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");
+        $re = DB::connection($_SESSION['connection'])->select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");
 
         if ($re[0]->value == Carbon::now()->format('Ym')) {
             $p_akhir = 'trunc(sysdate)';
@@ -461,7 +461,7 @@ class MonthEndController extends Controller
         }
 
 //   ----->>>> Hitung Ulang Stock Untuk Bulan Berjalan <<<<-----
-        $data = DB::table('TBMASTER_PERUSAHAAN')
+        $data = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
             ->select('prs_kodeigr', 'prs_bulanberjalan', 'prs_tahunberjalan', 'prs_fmflcs')
             ->first();
         $copyacost = $data->prs_fmflcs;

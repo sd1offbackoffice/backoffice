@@ -1169,6 +1169,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/getsupp', 'TABEL\byrvchController@GetSupp');
             Route::get('/getsingkatan', 'TABEL\byrvchController@GetSingkatan');
             Route::get('/checkvoucher', 'TABEL\byrvchController@CheckVoucher');
+            Route::get('/checkdbtable', 'TABEL\byrvchController@CheckDBTable');
         });
 
         /*Ryan*/

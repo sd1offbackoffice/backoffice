@@ -14,13 +14,13 @@ use Yajra\DataTables\DataTables;
 class DevController extends Controller
 {
     public function index(){
-        $group = DB::table('tbmaster_access_migrasi')
+        $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
             ->orderBy('acc_group')
             ->groupBy('acc_group')
             ->get();
 
-        $menu = DB::table('tbmaster_access_migrasi')
+        $menu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')
@@ -32,12 +32,12 @@ class DevController extends Controller
     }
 
     public function getData(){
-        $data = DB::table('tbmaster_access_migrasi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->select('acc_id','acc_group')
             ->where('acc_status','=',0)
             ->get();
 
-        $group = DB::table('tbmaster_access_migrasi')
+        $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
             ->orderBy('acc_group')
             ->groupBy('acc_group')
@@ -61,17 +61,8 @@ class DevController extends Controller
     public function save(Request $request){
         try{
             DB::beginTransaction();
-            DB::connection('igrsmg')->beginTransaction();
 
-            DB::table('tbmaster_access_migrasi')
-                ->update([
-                    'acc_status' => 1,
-                    'acc_modify_by' => $_SESSION['usid'],
-                    'acc_modify_dt' => DB::RAW("SYSDATE")
-                ]);
-
-            DB::connection('igrsmg')
-                ->table('tbmaster_access_migrasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->update([
                     'acc_status' => 1,
                     'acc_modify_by' => $_SESSION['usid'],
@@ -80,16 +71,7 @@ class DevController extends Controller
 
             if($request->menu){
                 foreach($request->menu as $m){
-                    DB::table('tbmaster_access_migrasi')
-                        ->where('acc_id','=',$m)
-                        ->update([
-                            'acc_status' => 0,
-                            'acc_modify_by' => $_SESSION['usid'],
-                            'acc_modify_dt' => DB::RAW("SYSDATE")
-                        ]);
-
-                    DB::connection('igrsmg')
-                        ->table('tbmaster_access_migrasi')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                         ->where('acc_id','=',$m)
                         ->update([
                             'acc_status' => 0,
@@ -100,7 +82,6 @@ class DevController extends Controller
             }
 
             DB::commit();
-            DB::connection('igrsmg')->commit();
 
             return response()->json([
                 'title' => 'Data berhasil disimpan!',
@@ -108,7 +89,6 @@ class DevController extends Controller
         }
         catch (\Exception $e){
             DB::rollBack();
-            DB::connection('igrsmg')->rollBack();
 
             return response()->json([
                 'title' => 'Terjadi kesalahan!',

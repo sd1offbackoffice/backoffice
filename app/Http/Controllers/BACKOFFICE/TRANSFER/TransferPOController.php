@@ -21,12 +21,12 @@ class TransferPOController extends Controller
     }
 
     public function getData(Request $request){
-        $kodeanak = DB::table('tbmaster_cabang')
+        $kodeanak = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')
             ->select('cab_kodecabang_anak')
             ->where('cab_kodecabang','=',$_SESSION['kdigr'])
             ->first()->cab_kodecabang_anak;
 
-        $data = DB::select("SELECT fhkcab, fhnopo,TO_CHAR(fhtgpo,'DD/MM/YYYY') fhtgpo,nvl(tpoh_nopo,'BELUM DIPROSES') tpoh_nopo
+        $data = DB::connection($_SESSION['connection'])->select("SELECT fhkcab, fhnopo,TO_CHAR(fhtgpo,'DD/MM/YYYY') fhtgpo,nvl(tpoh_nopo,'BELUM DIPROSES') tpoh_nopo
 			       FROM mcgdata.mh_poord@mcgprod, (select tpoh_recordid, case when tpoh_flagcmo='Y' then tpoh_cab_anak else tpoh_kodeigr end tpoh_kodeigr, tpoh_nopo from tbtr_po_h)
 						 WHERE fhkcab=tpoh_kodeigr(+) and fhnopo=tpoh_nopo(+) and nvl(tpoh_recordid,' ')<>'2'
 						 and fhksbu='4'
@@ -44,7 +44,7 @@ class TransferPOController extends Controller
         $vnew = $request->vnew;
 
         for($i=0;$i<count($nodoc);$i++){
-            $f_cegattrf = DB::table('igr_log_aj')
+            $f_cegattrf = DB::connection($_SESSION['connection'])->table('igr_log_aj')
                 ->where('nama_procedure','=','SP_TRANSFER_PO')
                 ->where('attribute1','=',$nodoc[$i])
                 ->first();
@@ -56,13 +56,13 @@ class TransferPOController extends Controller
                 ];
             }
             else{
-                DB::table('tb_log_aj')
+                DB::connection($_SESSION['connection'])->table('tb_log_aj')
                     ->insert([
                         'nm_procedure' => $nodoc[$i],
                         'tgl_create' => DB::RAW("TRUNC(SYSDATE)")
                     ]);
 
-                $kodewil = DB::table('tbmaster_perusahaan')
+                $kodewil = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->select('prs_kodewilayah')
                     ->first()->prs_kodewilayah;
 
@@ -77,7 +77,7 @@ class TransferPOController extends Controller
                 oci_bind_by_name($exec, ':v_errm',$v_errm,100);
                 oci_execute($exec);
 
-                DB::table('tb_log_aj')
+                DB::connection($_SESSION['connection'])->table('tb_log_aj')
                     ->where('nm_procedure','=',$nodoc[$i])
                     ->where('tgl_create','=',DB::RAW("TRUNC(SYSDATE)"))
                     ->delete();

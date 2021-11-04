@@ -21,7 +21,7 @@ class KKPerKasirController extends Controller
     }
 
     public function getLov(){
-        $data = DB::table("tbmaster_user")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_user")
             ->select('userid','username')
             ->where('kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('userid')
@@ -38,10 +38,10 @@ class KKPerKasirController extends Controller
             $kasir = '';
         else $kasir = "AND USERID BETWEEN '".$request->kasir1."' AND '".$request->kasir2."'";
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT to_char(tanggal, 'dd/mm/yyyy') tanggal, kasir, jh_cashierstation, jh_transactionno, tipekartu,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT to_char(tanggal, 'dd/mm/yyyy') tanggal, kasir, jh_cashierstation, jh_transactionno, tipekartu,
       mesin, nokartu, SUM(nilai) nilai, SUM(admfee) admfee, memb, kt_cardname
 FROM
 (    SELECT TRUNC(jh_transactiondate) tanggal, jh_cashierstation, jh_transactionno,

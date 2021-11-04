@@ -18,7 +18,7 @@ class barangController extends Controller
     {
         $search = $request->value;
 
-        $plu = DB::table('tbmaster_prodmast')
+        $plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang', 'prd_plusupplier', 'prd_deskripsipendek')
             ->where(DB::RAW('substr(prd_prdcd,7,1)'), '=', '0')
             ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
@@ -33,7 +33,7 @@ class barangController extends Controller
     public function getMasterBarangIDM(Request $request)
     {
         $search = $request->value;
-        $pluIdm = DB::table('tbmaster_prodmast')
+        $pluIdm = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->join('tbmaster_prodcrm', 'prc_pluigr', '=', 'prd_prdcd')
             ->select('prd_prdcd', 'prc_pluigr', 'prc_pluidm', 'prd_deskripsipanjang',
                 'prc_kodetag', 'PRC_HRGJUAL', 'prc_satuanrenceng',
@@ -54,7 +54,7 @@ class barangController extends Controller
     {
         $search = $request->value;
 
-        $pluOmi = DB::table('tbmaster_prodmast')
+        $pluOmi = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->join('tbmaster_prodcrm', 'prc_pluigr', '=', 'prd_prdcd')
             ->select('prd_prdcd', 'prc_pluigr', 'prc_pluidm', 'prd_deskripsipanjang',
                 'prc_kodetag', 'PRC_HRGJUAL', 'prc_satuanrenceng',
@@ -88,11 +88,11 @@ class barangController extends Controller
         $margin_n = '';
 
         if ($kodeplu == 1) {
-            $kodeplu = DB::table('tbmaster_prodmast')->select('prd_prdcd')->orderBy('prd_prdcd')->first();
+            $kodeplu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->select('prd_prdcd')->orderBy('prd_prdcd')->first();
             $kodeplu = $kodeplu->prd_prdcd;
         }
 
-        $result = DB::table('tbmaster_prodmast')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->leftJoin('tbmaster_divisi', function ($join) {
                 $join->on('div_kodedivisi', '=', 'prd_kodedivisi');
 //                    ->on('div_kodeigr', '=', 'prd_kodeigr');
@@ -153,7 +153,7 @@ class barangController extends Controller
 //        $temp = ['tglpromo' => $tglpromo,'jampromo' => $jampromo,'hrgpromo' => $hrgpromo];
 
 
-            $barcode = DB::Table('tbmaster_barcode')
+            $barcode = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')
                 ->select('brc_barcode')
                 ->where('brc_prdcd', '=', $kodeplu)
                 ->orderBy('brc_prdcd')

@@ -24,7 +24,7 @@ class uniquecodeController extends Controller
     }
 
     public function getCashBack(){
-        $datas = DB::table('tbtr_cashback_hdr')
+        $datas = DB::connection($_SESSION['connection'])->table('tbtr_cashback_hdr')
             ->selectRaw('cbh_kodepromosi')
             ->selectRaw('cbh_namapromosi')
             ->selectRaw("TO_CHAR(TRUNC(cbh_tglawal), 'dd-mm-yyyy') as cbh_tglawal")
@@ -37,7 +37,7 @@ class uniquecodeController extends Controller
     }
 
     public function getGift(){
-        $datas = DB::table('tbtr_gift_hdr')
+        $datas = DB::connection($_SESSION['connection'])->table('tbtr_gift_hdr')
             ->selectRaw('gfh_kodepromosi')
             ->selectRaw('gfh_namapromosi')
             ->selectRaw("TO_CHAR(TRUNC(gfh_tglawal), 'dd-mm-yyyy') as gfh_tglawal")
@@ -52,7 +52,7 @@ class uniquecodeController extends Controller
     public function getPembanding(){
         $kodeigr = $_SESSION['kdigr'];
 
-//        $datas = DB::table('tbmaster_prodmast')
+//        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
 //            ->selectRaw('prd_deskripsipendek')
 //            ->selectRaw('prd_prdcd')
 //
@@ -63,7 +63,7 @@ class uniquecodeController extends Controller
 //            ->get()->toArray();
 
         //NOTE, langsung menampilkan plu dari prodmast dan barcode, agar proses lebih cepat (tidak perlu request data lagi)
-        $datas = DB::select("SELECT PRD_PRDCD, PRD_DESKRIPSIPENDEK
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT PRD_PRDCD, PRD_DESKRIPSIPENDEK
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE PRD_KODEIGR = '$kodeigr'
            AND PRD_PRDCD LIKE '%0'
@@ -95,7 +95,7 @@ class uniquecodeController extends Controller
             $seg1 = 'K';
             $seg2 = 'K';
             if($kodePembanding != ''){
-                $temp = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT TRJD_CUS_KODEMEMBER
                                FROM (SELECT   TRJD_CUS_KODEMEMBER,
                                               SUM (TRJD_QUANTITY * PRD_FRAC) QTY
@@ -114,7 +114,7 @@ class uniquecodeController extends Controller
             }
 
             if($jenisPromosi == 'cashback'){
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_PROMOSI_H, TBMASTER_CUSTOMER
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -126,7 +126,7 @@ class uniquecodeController extends Controller
                                 AND CUS_KODEMEMBER = UCK_KODEMEMBER
                                 AND NVL (CUS_FLAGMEMBERKHUSUS, 'N') = 'Y') B");
             }else{
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_GIFT_H, TBMASTER_CUSTOMER
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -142,7 +142,7 @@ class uniquecodeController extends Controller
             $seg1 = 'B';
             $seg2 = 'B';
             if($kodePembanding != ''){
-                $temp = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT TRJD_CUS_KODEMEMBER
                                FROM (SELECT   TRJD_CUS_KODEMEMBER,
                                               SUM (TRJD_QUANTITY * PRD_FRAC) QTY
@@ -161,7 +161,7 @@ class uniquecodeController extends Controller
             }
 
             if($jenisPromosi == 'cashback'){
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_PROMOSI_H, TBMASTER_CUSTOMER
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -173,7 +173,7 @@ class uniquecodeController extends Controller
                                 AND CUS_KODEMEMBER = UCK_KODEMEMBER
                                 AND NVL (CUS_FLAGMEMBERKHUSUS, 'N') <> 'Y') B");
             }else{
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_GIFT_H, TBMASTER_CUSTOMER
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -190,7 +190,7 @@ class uniquecodeController extends Controller
             $seg2 = 'B';
 
             if($kodePembanding != ''){
-                $temp = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT TRJD_CUS_KODEMEMBER
                                FROM (SELECT   TRJD_CUS_KODEMEMBER,
                                               SUM (TRJD_QUANTITY * PRD_FRAC) QTY
@@ -207,7 +207,7 @@ class uniquecodeController extends Controller
             }
 
             if($jenisPromosi == 'cashback'){
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_PROMOSI_H
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -217,7 +217,7 @@ class uniquecodeController extends Controller
                                 AND KD_MEMBER = UCK_KODEMEMBER
                                 AND TGL_TRANS = TRUNC (UCK_CREATE_TIME)) B");
             }else{
-                $memb_unique = DB::select("SELECT NVL (COUNT (1), 0) as result
+                $memb_unique = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
               FROM (SELECT DISTINCT UCK_KODEMEMBER
                                FROM TBTR_UNIQUECODE_KIOSK, M_GIFT_H
                               WHERE UCK_KODEPROMOSI = '$kodePromosi'
@@ -229,7 +229,7 @@ class uniquecodeController extends Controller
             }
         }
 
-        $kunj = DB::select("SELECT TOTALK
+        $kunj = DB::connection($_SESSION['connection'])->select("SELECT TOTALK
       FROM (SELECT SUM (TOTALK) TOTALK
               FROM (SELECT   SUM (TOTALK) AS TOTALK, SEGMEN
                         FROM (SELECT   COUNT (*) AS TOTALK, LGK_SEGMENTASI,
@@ -262,7 +262,7 @@ class uniquecodeController extends Controller
             $tempPembanding = ' - ';
         }
 
-        $datas = DB::table("tbmaster_perusahaan")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")
             ->selectRaw("prs_namaperusahaan")
             ->selectRaw("prs_namacabang")
             ->where("prs_kodeigr",'=',$kodeigr)

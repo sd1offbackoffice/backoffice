@@ -17,7 +17,7 @@ class lokasiController extends Controller
 
     public function getLokasi(Request $request){ //Untuk datatables Rak
         $search = $request->value;
-        $lokasi = DB::table('tbmaster_lokasi')
+        $lokasi = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
 
             ->where('lks_koderak','LIKE', '%'.$search.'%')
@@ -42,7 +42,7 @@ class lokasiController extends Controller
 
     public function getPlu(Request $request){ //Untuk datatables PLU
         $search = $request->value;
-        $datas = DB::table('TBMASTER_PRODMAST')
+        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_DESKRIPSIPANJANG,PRD_PRDCD')
 
             ->where('PRD_PRDCD','LIKE', '%'.$search.'%')
@@ -64,7 +64,7 @@ class lokasiController extends Controller
 
 
     public function getProdmast(){ //Untuk datatables
-        $produk = DB::table('tbmaster_prodmast')
+        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang,prd_prdcd')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->orderBy('prd_deskripsipanjang')
@@ -74,7 +74,7 @@ class lokasiController extends Controller
     }
 
     public function lov_rak_search(Request $request){
-        $lokasi = DB::table('tbmaster_lokasi')
+        $lokasi = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
             ->where('lks_kodeigr','22')
             ->where('lks_koderak','like','%'.$request->koderak.'%')
@@ -87,7 +87,7 @@ class lokasiController extends Controller
     }
 
     public function lov_rak_select(Request $request){
-        $result = DB::table('tbmaster_lokasi')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->leftJoin('tbmaster_prodmast',function($join){
                 $join->on('lks_kodeigr','prd_kodeigr');
                 $join->on('lks_prdcd','prd_prdcd');
@@ -114,7 +114,7 @@ class lokasiController extends Controller
 
     public function lov_plu_search(Request $request){
         if(is_numeric($request->data)){
-            $result = DB::table('tbmaster_prodmast')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->selectRaw('prd_deskripsipanjang,prd_prdcd')
                 ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
                 ->where('prd_prdcd',$request->data)
@@ -122,7 +122,7 @@ class lokasiController extends Controller
                 ->get();
         }
         else{
-            $result = DB::table('tbmaster_prodmast')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->selectRaw('prd_deskripsipanjang,prd_prdcd')
                 ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
                 ->where('prd_deskripsipanjang','like','%'.$request->data.'%')
@@ -142,7 +142,7 @@ class lokasiController extends Controller
                     return compact(['status','message']);
                 }
 
-                $produk = DB::table('tbmaster_prodmast')
+                $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('*')
                     ->where('prd_prdcd',$request->data['lks_prdcd'])
                     ->first();
@@ -155,7 +155,7 @@ class lokasiController extends Controller
                 else{
                     if(substr($request->data['lks_koderak'],0,5) == 'DKLIK' || substr($request->data['lks_koderak'],0,1) == 'P'){
                         if($request->data['lks_noid'] != ''){
-                            $temp = DB::table('tbmaster_lokasi')
+                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                 ->selectRaw('SUBSTR (LKS_NOID, -1) as lks_noid, lks_prdcd')
                                 ->whereRaw("lks_koderak like 'D%'")
                                 ->whereRaw("(LKS_TIPERAK = 'B' OR LKS_TIPERAK = 'N' OR LKS_TIPERAK LIKE 'I%')")
@@ -176,7 +176,7 @@ class lokasiController extends Controller
                         }
 
                         if(substr($request->data['lks_koderak'],0,5) == 'DKLIK'){
-                            $temp = DB::table('tbmaster_lokasi')
+                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                 ->where('lks_koderak','like','D%')
                                 ->where('lks_tiperak','!=','S')
                                 ->where('lks_prdcd',$request->data['lks_prdcd'])
@@ -190,7 +190,7 @@ class lokasiController extends Controller
                         }
 
                         if(substr($request->data['lks_koderak'],0,1) == 'P'){
-                            $temp = DB::table('tbmaster_lokasi')
+                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                 ->where('lks_koderak','not like','D%')
                                 ->where('lks_tiperak','!=','S')
                                 ->where('lks_prdcd',$request->data['lks_prdcd'])
@@ -212,7 +212,7 @@ class lokasiController extends Controller
                         if($tipe == 'S')
                             $jenisrak = 'S';
                         else if($tipe == 'B' || $tipe == 'I' || $tipe == 'N'){
-                            $d = DB::table('tbmaster_pluplano')
+                            $d = DB::connection($_SESSION['connection'])->table('tbmaster_pluplano')
                                 ->select('pln_jenisrak')
                                 ->where('pln_prdcd',$request->data['lks_prdcd'])
                                 ->first();
@@ -227,7 +227,7 @@ class lokasiController extends Controller
                     }
 
                     DB::beginTransaction();
-                    DB::table('tbmaster_lokasi')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                         ->where('lks_kodeigr','22')
                         ->where('lks_koderak',$request->data['lks_koderak'])
                         ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
@@ -245,7 +245,7 @@ class lokasiController extends Controller
                         ]);
                     DB::commit();
 
-                    $produk = DB::table('tbmaster_prodmast')
+                    $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->leftJoin('tbmaster_kkpkm',function($join){
                             $join->on('prd_kodeigr','pkm_kodeigr');
                             $join->on('prd_prdcd','pkm_prdcd');
@@ -257,7 +257,7 @@ class lokasiController extends Controller
                         ->where('prd_prdcd',$request->data['lks_prdcd'])
                         ->first();
 
-                    $maxpalet = DB::table('tbmaster_maxpalet')
+                    $maxpalet = DB::connection($_SESSION['connection'])->table('tbmaster_maxpalet')
                         ->select('mpt_maxqty')
                         ->where('mpt_prdcd',$request->data['lks_prdcd'])
                         ->first();
@@ -280,7 +280,7 @@ class lokasiController extends Controller
                 }
 
                 DB::beginTransaction();
-                DB::table('tbmaster_lokasi')
+                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                     ->where('lks_kodeigr','22')
                     ->where('lks_koderak',$request->data['lks_koderak'])
                     ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
@@ -305,7 +305,7 @@ class lokasiController extends Controller
                 return compact(['status','message']);
             }
             else if($request->data['lks_prdcd'] != '') {
-                $produk = DB::table('tbmaster_prodmast')
+                $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('*')
                     ->where('prd_prdcd', $request->data['lks_prdcd'])
                     ->first();
@@ -318,7 +318,7 @@ class lokasiController extends Controller
             }
             else{
                 DB::beginTransaction();
-                DB::table('tbmaster_lokasi')
+                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                     ->where('lks_kodeigr','22')
                     ->where('lks_koderak',$request->data['lks_koderak'])
                     ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
@@ -340,7 +340,7 @@ class lokasiController extends Controller
 
     public function noid_enter(Request $request){
         if(substr($request->data['lks_koderak'], 0, 1) == 'D' && (substr($request->data['lks_tiperak'], 0, 1) == 'B' || substr($request->data['lks_tiperak'], 0, 1) == 'I' || substr($request->data['lks_tiperak'], 0, 1) == 'N')){
-            $noid = DB::table('tbmaster_lokasi')
+            $noid = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->select('lks_prdcd','lks_noid')
                 ->where('lks_koderak','like','D%')
                 ->whereRaw("lks_tiperak = 'B' OR lks_tiperak = 'N' OR lks_tiperak like 'I%'")
@@ -364,7 +364,7 @@ class lokasiController extends Controller
         }
 
         DB::beginTransaction();
-        DB::table('tbmaster_lokasi')
+        DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
             ->where('lks_kodeigr','22')
             ->where('lks_koderak',$request->data['lks_koderak'])
             ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
@@ -379,7 +379,7 @@ class lokasiController extends Controller
         DB::commit();
 
         if(substr($request->data['lks_koderak'],1,1) == 'D'){
-            $dpd = DB::table('tbtabel_dpd')
+            $dpd = DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                 ->where('dpd_noid',$request->data['tempnoid'])
                 ->where('dpd_recordid',null)
                 ->get();
@@ -387,7 +387,7 @@ class lokasiController extends Controller
             DB::beginTransaction();
             try {
                 if ($dpd) {
-                    DB::table('tbtabel_dpd')
+                    DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                         ->where('dpd_noid', $request->data['tempnoid'])
                         ->where('dpd_koderak', $request->data['lks_koderak'])
                         ->where('dpd_recordid', null)
@@ -398,7 +398,7 @@ class lokasiController extends Controller
                         ]);
                 }
                 else {
-                    DB::table('tbtabel_dpd')
+                    DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                         ->insert([
                             'dpd_kodeigr' => '22',
                             'dpd_noid' => $request->data['lks_noid'],
@@ -428,7 +428,7 @@ class lokasiController extends Controller
         //dd($request->data['lks_koderak']);
         try{
             DB::beginTransaction();
-            DB::table('tbmaster_lokasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 //->where($request->data)
                 ->where('lks_kodeigr','=',$_SESSION['kdigr'])
                 ->where('lks_koderak','=',$request->data['lks_koderak'])
@@ -473,7 +473,7 @@ class lokasiController extends Controller
     public function delete_lokasi(Request $request){
         try{
             DB::beginTransaction();
-            DB::table('tbmaster_lokasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->where('lks_kodeigr','=',$_SESSION['kdigr'])
                 ->where('lks_koderak','=',$request->data['lks_koderak'])
                 ->where('lks_kodesubrak','=',$request->data['lks_kodesubrak'])
@@ -496,7 +496,7 @@ class lokasiController extends Controller
     }
 
     public function cek_plu(Request $request){
-//        $cek = DB::table('tbmaster_lokasi')
+//        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
 //            ->where('lks_kodeigr','22')
 //            ->where('lks_prdcd',$request->prdcd)
 //            ->first();
@@ -526,7 +526,7 @@ class lokasiController extends Controller
                 $in['jenisrak'] = 'S';
             }
             else if($request->tiperak == 'B' || substr($request->tiperak, 0, 1) == 'I' || $request->tiperak == 'N'){
-                $plano = DB::table('tbmaster_pluplano')
+                $plano = DB::connection($_SESSION['connection'])->table('tbmaster_pluplano')
                     ->where('pln_prdcd','=',$prdcd)
                     ->first();
 
@@ -538,7 +538,7 @@ class lokasiController extends Controller
                 else{
                     if(substr($request->koderak,0,1) == 'D' && (substr($request->tiperak, 0, 1) == 'I' || $request->tiperak == 'N')){
                         if($request->noid != ''){
-                            $temp = DB::selectOne("SELECT SUBSTR (LKS_NOID, -1) data_noid
+                            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT SUBSTR (LKS_NOID, -1) data_noid
                                         FROM TBMASTER_LOKASI
                                         WHERE LKS_KODERAK LIKE 'D%'
                                         AND (LKS_TIPERAK = 'B' OR LKS_TIPERAK = 'N' OR LKS_TIPERAK LIKE 'I%')
@@ -563,7 +563,7 @@ class lokasiController extends Controller
         }
 
         if($request->tiperak != 'S'){
-            $t_pluada = DB::table('tbmaster_lokasi')
+            $t_pluada = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->where('lks_kodeigr','=',$_SESSION['kdigr'])
                 ->where('lks_koderak','=',$request->koderak)
                 ->where('lks_kodesubrak','=',$request->kodesubrak)
@@ -579,7 +579,7 @@ class lokasiController extends Controller
             }
         }
 
-        $prd = DB::selectOne("SELECT PRD_DESKRIPSIPANJANG, TO_CHAR (PRD_FRAC) || '/' || PRD_UNIT AS SATUAN,
+        $prd = DB::connection($_SESSION['connection'])->selectOne("SELECT PRD_DESKRIPSIPANJANG, TO_CHAR (PRD_FRAC) || '/' || PRD_UNIT AS SATUAN,
                NVL (PRD_DIMENSIPANJANG, 0) as panjang, NVL (PRD_DIMENSILEBAR, 0) as lebar, NVL (PRD_DIMENSITINGGI, 0) as tinggi,
                NVL (PKM_PKMT, 0) as pkm
           FROM TBMASTER_PRODMAST, TBMASTER_KKPKM                                     --,TBTABEL_DPD
@@ -602,7 +602,7 @@ class lokasiController extends Controller
             $in['tinggi'] = $prd->tinggi;
             $in['pkm'] = $prd->pkm;
 
-            $noid = DB::table('tbtabel_dpd')
+            $noid = DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                 ->select('dpd_noid')
                 ->where('dpd_kodeigr','=',$_SESSION['kdigr'])
                 ->where('dpd_koderak','=',$request->koderak)
@@ -616,7 +616,7 @@ class lokasiController extends Controller
         }
 
         if($request->tiperak == 'S'){
-            $temp = DB::table('tbmaster_maxpallet')
+            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_maxpallet')
                 ->select('mpt_maxqty')
                 ->where('mpt_prdcd','=',$prdcd)
                 ->first();
@@ -636,7 +636,7 @@ class lokasiController extends Controller
             $insert = $request->data;
 
             if($insert['lks_nourut'] == null){
-                $temp = DB::table('tbmaster_lokasi')
+                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                     ->select('lks_nourut')
                     ->where('lks_koderak','=',$request->data['lks_koderak'])
                     ->where('lks_kodesubrak','=',$request->data['lks_kodesubrak'])
@@ -648,7 +648,7 @@ class lokasiController extends Controller
                 $insert['lks_nourut'] = $temp ? intval($temp->lks_nourut)+1 : 1;
             }
 
-            DB::table('tbmaster_lokasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->insert([
                     'lks_koderak' => $insert['lks_koderak'],
                     'lks_kodesubrak' => $insert['lks_kodesubrak'],
@@ -687,7 +687,7 @@ class lokasiController extends Controller
     }
 
     public function cek_dpd(Request $request){
-        $cek = DB::table('tbtabel_dpd')
+        $cek = DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
             ->select('dpd_noid','dpd_koderak','dpd_kodesubrak','dpd_tiperak','dpd_shelvingrak','dpd_nourut')
             ->where('dpd_noid',$request->noid)
             ->first();
@@ -699,7 +699,7 @@ class lokasiController extends Controller
         try{
             DB::beginTransaction();
 
-            DB::table('tbtabel_dpd')
+            DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                 ->where($request->data)
                 ->delete();
         }
@@ -726,13 +726,13 @@ class lokasiController extends Controller
         $data = $request->data;
         unset($data['tempdpd']);
 
-        $cek = DB::table('tbtabel_dpd')
+        $cek = DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
             ->select('dpd_noid')
             ->where($where)
             ->get();
 
         try{
-            DB::table('tbmaster_lokasi')
+            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                 ->where('lks_kodeigr','=',$_SESSION['kdigr'])
                 ->where('lks_koderak','=',$request->data['dpd_koderak'])
                 ->where('lks_kodesubrak','=',$request->data['dpd_kodesubrak'])
@@ -751,7 +751,7 @@ class lokasiController extends Controller
                 ];
                 $update = array_merge($data, $temp);
 
-                DB::table('tbtabel_dpd')
+                DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                     ->where($where)
                     ->update($update);
             }
@@ -763,7 +763,7 @@ class lokasiController extends Controller
                 ];
                 $insert = array_merge($data, $temp);
 
-                DB::table('tbtabel_dpd')
+                DB::connection($_SESSION['connection'])->table('tbtabel_dpd')
                     ->insert($insert);
             }
 

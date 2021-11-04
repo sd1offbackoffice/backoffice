@@ -23,10 +23,10 @@ class KKPerNamaController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT to_char(tglt,'dd/mm/yyyy') tglt, nmcard, ccno, jh_transactionno, jh_cashierid, mesin,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT to_char(tglt,'dd/mm/yyyy') tglt, nmcard, ccno, jh_transactionno, jh_cashierid, mesin,
             sum(ccadmfee) ccadmfee, sum(ccamt) ccamt, kasir, memb
         FROM
         (

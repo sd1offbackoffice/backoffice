@@ -31,7 +31,7 @@ class rkprefundksrController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::select("SELECT tanggal, jh_transactionno,jh_referenceno, tglrefund,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT tanggal, jh_transactionno,jh_referenceno, tglrefund,
       jh_referencecashierid, username, SUM(jh_transactionamt) nilai,
       prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM
@@ -104,7 +104,7 @@ ORDER BY tglrefund, tanggal, jh_referencecashierid");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.rkprefundksr-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan, 'val' => $val,

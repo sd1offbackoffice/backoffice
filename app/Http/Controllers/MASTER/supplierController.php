@@ -13,13 +13,13 @@ class supplierController extends Controller
     public function index(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $firstsupplier = DB::table('tbmaster_supplier')
+        $firstsupplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_kodesupplier')
             ->where('sup_kodeigr','=','22')
             ->orderBy('sup_kodesupplier')
             ->first();
 
-        $supplier = DB::table('tbmaster_supplier')
+        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier')
             ->where('sup_kodeigr',$kodeigr)
             ->orderBy('sup_namasupplier')
@@ -29,7 +29,7 @@ class supplierController extends Controller
     }
 
     public function getDetail(Request $request){
-        $result = DB::table('tbmaster_supplier')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier', $request->value)
             ->first();
@@ -38,7 +38,7 @@ class supplierController extends Controller
     }
 
     public function lov_select(Request $request){
-        $result = DB::table('tbmaster_supplier')
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier',$request->value)
             ->first();
@@ -51,7 +51,7 @@ class supplierController extends Controller
 
     public function lov_search(Request $request){
         if(is_numeric(substr($request->value,1,4))){
-            $result = DB::table('tbmaster_supplier')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
                 ->select('*')
                 ->where('sup_kodesupplier','like', '%'.$request->value.'%')
                 ->orderBy('sup_namasupplier')
@@ -60,7 +60,7 @@ class supplierController extends Controller
 
 
         else{
-            $result = DB::table('tbmaster_supplier')
+            $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
                 ->select('*')
                 ->where('sup_namasupplier','like','%'.$request->value.'%')
                 ->orderBy('sup_namasupplier')

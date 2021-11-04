@@ -18,7 +18,7 @@ class InqueryController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::table('tbtr_mstran_h')
+        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') tgl")
             ->where('msth_kodeigr',$_SESSION['kdigr'])
             ->whereRaw("nvl(msth_recordid,'9') <> '1'")
@@ -46,14 +46,14 @@ class InqueryController extends Controller
 //        and st_prdcd(+)=prd_prdcd
 //        and st_lokasi(+)='01'
 
-        $data = DB::select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_istype, msth_invno, msth_noref3,msth_tgref3,
+        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_istype, msth_invno, msth_noref3,msth_tgref3,
 	                   mstd_nopo, mstd_tglpo, msth_loc,msth_loc2, msth_tglinv, mstd_unit||'/'||mstd_frac satuan,
 	                   mstd_frac,mstd_prdcd, floor(mstd_qty/case when mstd_unit='KG' then 1 else mstd_frac end) mstd_qty,
 	                   case when mstd_unit='KG' then 0 else mod(mstd_qty,mstd_frac) end mstd_qtyk, mstd_gross,
 	                   mstd_ppnrph, mstd_discrph,((mstd_gross - nvl(mstd_discrph,0)) * mstd_frac) / (floor(mstd_qty/mstd_frac) * mstd_frac + mod(mstd_qty,mstd_frac))nPrice,
                         mstd_gross - nvl(mstd_discrph,0) nAmt, prd_deskripsipanjang,
-                        sup_kodesupplier||'-'||sup_namasupplier supp, sup_pkp, cab_namacabang, 
-                        prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost, 
+                        sup_kodesupplier||'-'||sup_namasupplier supp, sup_pkp, cab_namacabang,
+                        prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_lastcost lastcost,
                         st_avgcost * case when prd_unit ='KG' then 1 else prd_frac end avgcost,
                         mstd_hrgsatuan hrgsat, floor(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
 						mstd_gross gross, nvl(mstd_discrph,0) discrph, mstd_ppnrph ppnrph, mstd_keterangan ket

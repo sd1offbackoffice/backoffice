@@ -27,7 +27,7 @@ class monitem_tdk_supplyController extends Controller
     public function monModal(){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("tbtr_monitoringplu")
+        $datas = DB::connection($_SESSION['connection'])->table("tbtr_monitoringplu")
             ->selectRaw("distinct MPL_KodeMonitoring, MPL_NamaMonitoring")
             ->where("MPL_KodeIGR",'=',$kodeigr)
             ->orderBy("MPL_KodeMonitoring")
@@ -47,7 +47,7 @@ class monitem_tdk_supplyController extends Controller
         $eDate = explode("-",$eDate);
         $eDate = $eDate[2].$eDate[1].$eDate[0];
 
-        DB::table("temp_lap211")
+        DB::connection($_SESSION['connection'])->table("temp_lap211")
             ->truncate();
 //        ("temp_lap211")
 //            ->selectRaw("*")
@@ -60,14 +60,14 @@ class monitem_tdk_supplyController extends Controller
     }
 
     public function getTable(){
-        $datas = DB::table("temp_lap211")
+        $datas = DB::connection($_SESSION['connection'])->table("temp_lap211")
             ->selectRaw("*")
             ->get();
         return Datatables::of($datas)->make(true);
     }
 
     public function checkData(){
-        $datas = DB::table("temp_lap211")
+        $datas = DB::connection($_SESSION['connection'])->table("temp_lap211")
             ->selectRaw("*")
             ->first();
         if($datas){
@@ -86,7 +86,7 @@ class monitem_tdk_supplyController extends Controller
 //        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
 //        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::select("Select PRS_NamaPerusahaan,
+        $datas = DB::connection($_SESSION['connection'])->select("Select PRS_NamaPerusahaan,
        PRS_NamaCabang,
        PRS_NamaWilayah,
        PLUIGR,

@@ -21,7 +21,7 @@ class KKPerDebitUKMController extends Controller
     }
 
     public function getLov(){
-        $data = DB::table("tbmaster_user")
+        $data = DB::connection($_SESSION['connection'])->table("tbmaster_user")
             ->select('userid','username')
             ->where('kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('userid')
@@ -38,10 +38,10 @@ class KKPerDebitUKMController extends Controller
             $kasir = '';
         else $kasir = "AND USERID BETWEEN '".$request->kasir1."' AND '".$request->kasir2."'";
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::select("SELECT to_char(TANGGAL, 'dd/mm/yyyy') TANGGAL, IDTRANS, KODE, CARDCODE, SUM (NILAI) NILAI, SUM (JH_CASHADVANCE) TUNAI, NAMAKARTU,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT to_char(TANGGAL, 'dd/mm/yyyy') TANGGAL, IDTRANS, KODE, CARDCODE, SUM (NILAI) NILAI, SUM (JH_CASHADVANCE) TUNAI, NAMAKARTU,
          JENIS
     FROM (SELECT TRUNC (JH_TRANSACTIONDATE) TANGGAL, JH_CASHADVANCE,
                  JH_CASHIERSTATION || '.' || JH_TRANSACTIONNO || '.' || JH_CASHIERID || '-' || USERNAME IDTRANS,

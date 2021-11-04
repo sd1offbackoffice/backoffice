@@ -29,7 +29,7 @@ class superpromoController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
 
@@ -56,13 +56,13 @@ class superpromoController extends Controller
         $deskripsi = '';
         $unit = '';
 
-        $datas = DB::select("SELECT prd_prdcd
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = '$kodeigr'
            AND prd_prdcd = brc_prdcd(+)
            AND (prd_prdcd = TRIM ('$kode') OR brc_barcode = TRIM ('kode'))");
         if($datas){
-            $temp = DB::table("TBMASTER_PRODMAST")
+            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
                 ->selectRaw("PRD_DESKRIPSIPANJANG")
                 ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
                 ->where("PRD_KODEIGR",'=',$kodeigr)
@@ -85,7 +85,7 @@ class superpromoController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         for($i=1;$i<sizeof($datas);$i++){
-            DB::table("tbtr_hadiahkejutan")
+            DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
                 ->insert([
                     'spot_kodeigr'=>$kodeigr,
                     'spot_periodeawal'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),

@@ -18,7 +18,7 @@ class barcodeController extends Controller
     public function getBarcode(Request $request){
         $search = $request->value;
 
-        $barcode = DB::table('TBMASTER_BARCODE')
+        $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
             ->select('*')
             ->where('BRC_BARCODE','LIKE', '%'.$search.'%')
             ->orWhere('BRC_PRDCD','LIKE', '%'.$search.'%')
@@ -29,13 +29,13 @@ class barcodeController extends Controller
 
     public function search_barcode(Request $request){
         if ($request->value == '0000000'){
-            $barcode = DB::table('TBMASTER_BARCODE')
+            $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
                 ->select('*')
                 ->limit(20)
                 ->get();
         }
         else{
-            $barcode = DB::table('TBMASTER_BARCODE')
+            $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
                 ->select('*')
                 ->where('BRC_PRDCD','LIKE',$request->value)
                 ->limit(20)

@@ -18,7 +18,7 @@ class PembatalanMPPController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::table('tbtr_mstran_h')
+        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc, TO_CHAR(msth_tgldoc,'DD/MM/YYYY') msth_tgldoc")
             ->where('msth_kodeigr',$_SESSION['kdigr'])
             ->where('msth_typetrn','X')
@@ -32,7 +32,7 @@ class PembatalanMPPController extends Controller
     public function getData(Request $request){
         $nompp = $request->nompp;
 
-        $data = DB::table('tbtr_mstran_h')
+        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d','mstd_nodoc','=','msth_nodoc')
             ->join('tbmaster_prodmast','prd_prdcd','=','mstd_prdcd')
             ->selectRaw("mstd_tgldoc, mstd_nopo, mstd_tglpo, mstd_prdcd, prd_deskripsipanjang,
@@ -49,7 +49,7 @@ class PembatalanMPPController extends Controller
     public function batal(Request $request){
         $nompp = $request->nompp;
 
-        $cek = DB::table('tbtr_mstran_h')
+        $cek = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("to_char(msth_tgldoc, 'YYYYMM') tglmpp, to_char(sysdate, 'YYYYMM') now")
             ->where('msth_nodoc',$nompp)
             ->whereRaw("NVL(msth_recordid,0) <> '1'")
@@ -80,14 +80,14 @@ class PembatalanMPPController extends Controller
                     $step = 0;
 
                     if(true){
-                        $jum = DB::table('tbtr_mstran_d')
+                        $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                             ->where('mstd_nodoc',$nompp)
                             ->where('mstd_kodeigr',$_SESSION['kdigr'])
                             ->where('mstd_typetrn','X')
                             ->get()->count();
 
                         if($jum == 2){
-                            $fppm = DB::table('tbtr_mstran_d')
+                            $fppm = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->where('mstd_nodoc',$nompp)
                                 ->where('mstd_kodeigr',$_SESSION['kdigr'])
                                 ->where('mstd_typetrn','X')
@@ -96,7 +96,7 @@ class PembatalanMPPController extends Controller
                                 ->get()->count();
 
                             if($fppm != 2){
-                                $fppm = DB::table('tbtr_mstran_d')
+                                $fppm = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                     ->where('mstd_nodoc',$nompp)
                                     ->where('mstd_kodeigr',$_SESSION['kdigr'])
                                     ->where('mstd_typetrn','X')
@@ -112,7 +112,7 @@ class PembatalanMPPController extends Controller
                         }
 
                         if($jum == 1 || $jum > 2 || $ppmm){
-                            $records = DB::select("SELECT DISTINCT MSTD_NODOC, MSTD_PRDCD, MSTD_KODEIGR,
+                            $records = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MSTD_NODOC, MSTD_PRDCD, MSTD_KODEIGR,
                                         MSTD_TGLDOC,MSTD_QTY, MSTD_UNIT, MSTD_FRAC, MSTD_AVGCOST, ST_AVGCOST,
                                         ST_SALDOAKHIR, MSTD_HRGSATUAN, PRD_AVGCOST,
                                         LPAD (MSTD_FLAGDISC2, 2, '0') AS LOKASI, MSTD_FLAGDISC1,
@@ -128,7 +128,7 @@ class PembatalanMPPController extends Controller
                                     AND ST_LOKASI = LPAD (MSTD_FLAGDISC2, 2, '0')");
 
                             foreach($records as $rec){
-                                DB::table('tbmaster_stock')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->where('st_prdcd',$rec->mstd_prdcd)
                                     ->where('st_lokasi',$rec->lokasi)
                                     ->where('st_kodeigr',$_SESSION['kdigr'])
@@ -139,14 +139,14 @@ class PembatalanMPPController extends Controller
                                         'st_modify_dt' => DB::RAW("TRUNC(SYSDATE)")
                                     ]);
 
-                                $temp = DB::table('tbtr_hapusplu')
+                                $temp = DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                     ->where('del_rtype','XXX')
                                     ->where('del_nodokumen',$nompp)
                                     ->where('del_prdcd',$rec->mstd_prdcd)
                                     ->get()->count();
 
                                 if($temp == 0){
-                                    DB::table('tbtr_hapusplu')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                         ->insert([
                                             'del_kodeigr' => $_SESSION['kdigr'],
                                             'del_rtype' => 'X',
@@ -163,7 +163,7 @@ class PembatalanMPPController extends Controller
                             }
                         }
                         else{
-                            $data = DB::table('tbtr_mstran_d')
+                            $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->select('mstd_prdcd','mstd_flagdisc2')
                                 ->where('mstd_nodoc',$nompp)
                                 ->where('mstd_kodeigr',$_SESSION['kdigr'])
@@ -177,7 +177,7 @@ class PembatalanMPPController extends Controller
                                 $v_lok1 = $data->mstd_flagdisc2;
                             }
 
-                            $data = DB::table('tbtr_mstran_d')
+                            $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                                 ->select('mstd_prdcd','mstd_flagdisc2')
                                 ->where('mstd_nodoc',$nompp)
                                 ->where('mstd_kodeigr',$_SESSION['kdigr'])
@@ -191,7 +191,7 @@ class PembatalanMPPController extends Controller
                                 $v_lok2 = $data->mstd_flagdisc2;
                             }
 
-                            $records = DB::select("SELECT DISTINCT MSTD_NODOC, MSTD_PRDCD, MSTD_KODEIGR,
+                            $records = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MSTD_NODOC, MSTD_PRDCD, MSTD_KODEIGR,
                                         MSTD_TGLDOC, MSTD_QTY,MSTD_UNIT, MSTD_FRAC, MSTD_AVGCOST, ST_AVGCOST,
                                         ST_SALDOAKHIR, MSTD_HRGSATUAN, PRD_AVGCOST,
                                         LPAD (MSTD_FLAGDISC2, 2, '0') AS LOKASI, MSTD_FLAGDISC1,
@@ -207,7 +207,7 @@ class PembatalanMPPController extends Controller
                                     AND ST_LOKASI = LPAD (MSTD_FLAGDISC2, 2, '0')");
 
                             foreach($records as $rec){
-                                $temp = DB::table('tbmaster_stock')
+                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->where('st_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                     ->where('st_kodeigr',$rec->mstd_kodeigr)
                                     ->where('st_lokasi',$rec->lokasi)
@@ -216,7 +216,7 @@ class PembatalanMPPController extends Controller
                                 $step = 1;
 
                                 if($temp == 0){
-                                    DB::table('tbmaster_stock')
+                                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                         ->insert([
                                             'st_kodeigr' => $rec->mstd_kodeigr,
                                             'st_prdcd' => substr($rec->mstd_prdcd,0,6).'0',
@@ -226,7 +226,7 @@ class PembatalanMPPController extends Controller
 
                                 $step = 5;
 
-                                $temp = DB::table('tbtr_hapusplu')
+                                $temp = DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                     ->where('del_rtype','X')
                                     ->where('del_nodokumen',$nompp)
                                     ->where('del_prdcd',$rec->mstd_prdcd)
@@ -235,7 +235,7 @@ class PembatalanMPPController extends Controller
                                 if($temp == 0){
                                     $step = 6;
 
-                                    DB::table('tbtr_hapusplu')
+                                    DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                         ->insert([
                                             'del_kodeigr' => $_SESSION['kdigr'],
                                             'del_rtype' => 'X',
@@ -260,7 +260,7 @@ class PembatalanMPPController extends Controller
 
                                 $step = 10;
 
-                                $jum = DB::table('tbmaster_prodmast')
+                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->select('prd_avgcost')
                                     ->where('prd_prdcd',substr($rec->mstd_prdcd,0,6).'1')
                                     ->where('prd_kodeigr',$rec->mstd_kodeigr)
@@ -273,7 +273,7 @@ class PembatalanMPPController extends Controller
 
                                 $step = 14;
 
-                                DB::table('tbmaster_stock')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                     ->where('st_prdcd',$rec->mstd_prdcd)
                                     ->where('st_lokasi',$rec->lokasi)
                                     ->where('st_kodeigr',$_SESSION['kdigr'])
@@ -291,7 +291,7 @@ class PembatalanMPPController extends Controller
                                         if($prdcda != null){
                                             $step = 23;
 
-                                            $data = DB::table('tbmaster_stock')
+                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                                 ->where('st_prdcd',$prdcda)
                                                 ->where('st_kodeigr',$_SESSION['kdigr'])
                                                 ->where('st_lokasi','01')
@@ -300,7 +300,7 @@ class PembatalanMPPController extends Controller
                                             if($data)
                                                 $v_plua1 = $data->st_saldoakhir;
 
-                                            $data = DB::table('tbmaster_stock')
+                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                                                 ->where('st_prdcd',$rec->mstd_prdcd)
                                                 ->where('st_kodeigr',$_SESSION['kdigr'])
                                                 ->where('st_lokasi','01')
@@ -311,7 +311,7 @@ class PembatalanMPPController extends Controller
 
                                             $step = 25;
 
-                                            DB::table('tbtr_promomd')
+                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
                                                 ->where('prmd_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                 ->where('prmd_kodeigr',$_SESSION['kdigr'])
                                                 ->update([
@@ -320,7 +320,7 @@ class PembatalanMPPController extends Controller
                                                     'prmd_modify_dt' => DB::RAW("SYSDATE")
                                                 ]);
 
-                                            DB::table('tbtr_promomd')
+                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
                                                 ->where('prmd_prdcd',substr($rec->mstd_prdcd,0,6).'1')
                                                 ->where('prmd_kodeigr',$_SESSION['kdigr'])
                                                 ->update([
@@ -329,7 +329,7 @@ class PembatalanMPPController extends Controller
                                                     'prmd_modify_dt' => DB::RAW("SYSDATE")
                                                 ]);
 
-                                            DB::table('tbtr_promomd')
+                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
                                                 ->where('prmd_prdcd',substr($rec->mstd_prdcd,0,6).'2')
                                                 ->where('prmd_kodeigr',$_SESSION['kdigr'])
                                                 ->update([
@@ -338,7 +338,7 @@ class PembatalanMPPController extends Controller
                                                     'prmd_modify_dt' => DB::RAW("SYSDATE")
                                                 ]);
 
-                                            DB::table('tbtr_promomd')
+                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
                                                 ->where('prmd_prdcd',substr($rec->mstd_prdcd,0,6).'3')
                                                 ->where('prmd_kodeigr',$_SESSION['kdigr'])
                                                 ->update([
@@ -349,7 +349,7 @@ class PembatalanMPPController extends Controller
 
                                             $step = 39;
 
-                                            $temp = DB::table('tbmaster_lokasi')
+                                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                                 ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                 ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                 ->get()->count();
@@ -357,7 +357,7 @@ class PembatalanMPPController extends Controller
                                             if($temp > 0){
                                                 $step = 40;
 
-                                                DB::table('tbmaster_lokasi')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                                     ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                     ->update([
@@ -368,41 +368,41 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 41;
 
-                                                $data = DB::table('temp_tbmaster_lokasi')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
                                                     ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                     ->where('lks_nodoc',$rec->mstd_nodoc)
                                                     ->first();
 
-                                                DB::table('tbmaster_lokasi')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                                     ->insert($data);
 
                                                 $step = 42;
 
-                                                DB::table('temp_tbmaster_lokasi')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
                                                     ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                     ->where('lks_nodoc',$rec->mstd_nodoc)
                                                     ->delete();
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbmaster_lokasi')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                                         ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 43;
 
-                                                    $data = DB::table('temp_tbmaster_lokasi')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
                                                         ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                         ->where('lks_nodoc',$rec->mstd_nodoc)
                                                         ->first();
 
-                                                    DB::table('tbmaster_lokasi')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
                                                         ->insert($data);
 
-                                                    $data = DB::table('temp_tbmaster_lokasi')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
                                                         ->where('lks_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('lks_kodeigr',$_SESSION['kdigr'])
                                                         ->where('lks_nodoc',$rec->mstd_nodoc)
@@ -412,7 +412,7 @@ class PembatalanMPPController extends Controller
 
                                             $step = 45;
 
-                                            $temp = DB::table('tbhistory_barangbaru')
+                                            $temp = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                                 ->where('hpn_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                 ->where('hpn_kodeigr',$_SESSION['kdigr'])
                                                 ->get()->count();
@@ -420,7 +420,7 @@ class PembatalanMPPController extends Controller
                                             if($temp > 0){
                                                 $step = 47;
 
-                                                $temp = DB::table('tbmaster_barangbaru')
+                                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                                     ->where('pln_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pln_kodeigr',$_SESSION['kdigr'])
                                                     ->get()->count();
@@ -428,7 +428,7 @@ class PembatalanMPPController extends Controller
                                                 if($temp == 0){
                                                     $step = 48;
 
-                                                    $pkmt = DB::table('tbhistory_barangbaru')
+                                                    $pkmt = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                                         ->select('hpn_pkmtoko')
                                                         ->where('pln_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('pln_kodeigr',$_SESSION['kdigr'])
@@ -436,7 +436,7 @@ class PembatalanMPPController extends Controller
 
                                                     $step = 49;
 
-                                                    $tag = DB::table('tbmaster_prodmast')
+                                                    $tag = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                                         ->select('prd_kodetag')
                                                         ->where('pln_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('pln_kodeigr',$_SESSION['kdigr'])
@@ -444,7 +444,7 @@ class PembatalanMPPController extends Controller
 
                                                     $step = 50;
 
-                                                    DB::table('tbmaster_barangbaru')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                                         ->insert([
                                                             'pln_kodeigr' => $_SESSION['kdigr'],
                                                             'pln_prdcd' => substr($rec->mstd_prdcd,0,6).'0',
@@ -457,7 +457,7 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 51;
 
-                                                DB::table('tbhistory_barangbaru')
+                                                DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                                     ->where('hpn_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('hpn_kodeigr',$_SESSION['kdigr'])
                                                     ->delete();
@@ -465,7 +465,7 @@ class PembatalanMPPController extends Controller
 
                                             $step = 52;
 
-                                            $temp = DB::table('tbmaster_kkpkm')
+                                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                                                 ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                 ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                 ->get()->count();
@@ -473,7 +473,7 @@ class PembatalanMPPController extends Controller
                                             if($temp > 0){
                                                 $step = 54;
 
-                                                DB::table('tbmaster_kkpkm')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                                                     ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                     ->update([
@@ -484,43 +484,43 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 55;
 
-                                                $data = DB::table('temp_tbmaster_kkpkm')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
                                                     ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkm_nodoc',$rec->mstd_nodoc)
                                                     ->first()->toArray();
 
-                                                DB::table('tbmaster_kkpkm')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                                                     ->insert($data);
 
                                                 $step = 56;
 
-                                                DB::table('temp_tbmaster_kkpkm')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
                                                     ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkm_nodoc',$rec->mstd_nodoc)
                                                     ->delete();
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbmaster_kkpkm')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                                                         ->where('pkm_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 57;
 
-                                                    $data = DB::table('temp_tbmaster_kkpkm')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
                                                         ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkm_nodoc',$rec->mstd_nodoc)
                                                         ->first()->toArray();
 
-                                                    DB::table('tbmaster_kkpkm')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                                                         ->insert($data);
 
                                                     $step = 58;
 
-                                                    DB::table('temp_tbmaster_kkpkm')
+                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
                                                         ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                         ->where('pkm_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkm_nodoc',$rec->mstd_nodoc)
@@ -529,7 +529,7 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 59;
 
-                                                DB::table('tbtr_pkmgondola')
+                                                DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                                                     ->where('pkmg_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                     ->update([
@@ -540,18 +540,18 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 60;
 
-                                                $data = DB::table('temp_tbtr_pkmgondola')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
                                                     ->where('pkmg_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkmg_nodoc',$rec->mstd_nodoc)
                                                     ->first()->toArray();
 
-                                                DB::table('tbtr_pkmgondola')
+                                                DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                                                     ->insert($data);
 
                                                 $step = 61;
 
-                                                DB::table('temp_tbtr_pkmgondola')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
                                                     ->where('pkmg_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkmg_nodoc',$rec->mstd_nodoc)
@@ -560,25 +560,25 @@ class PembatalanMPPController extends Controller
                                                 $step = 62;
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbtr_pkmgondola')
+                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 63;
 
-                                                    $data = DB::table('temp_tbtr_pkmgondola')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkmg_nodoc',$rec->mstd_nodoc)
                                                         ->first()->toArray();
 
-                                                    DB::table('tbtr_pkmgondola')
+                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                                                         ->insert($data);
 
                                                     $step = 64;
 
-                                                    DB::table('temp_tbtr_pkmgondola')
+                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmg_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkmg_nodoc',$rec->mstd_nodoc)
@@ -587,18 +587,18 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 65;
 
-                                                $data = DB::table('temp_tbmaster_pkmplus')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
                                                     ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkmp_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkmp_nodoc',$rec->mstd_nodoc)
                                                     ->first()->toArray();
 
-                                                DB::table('tbmaster_pkmplus')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
                                                     ->insert($data);
 
                                                 $step = 67;
 
-                                                DB::table('temp_tbmaster_pkmplus')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
                                                     ->where('pkm_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('pkmp_kodeigr',$_SESSION['kdigr'])
                                                     ->where('pkmp_nodoc',$rec->mstd_nodoc)
@@ -607,25 +607,25 @@ class PembatalanMPPController extends Controller
                                                 $step = 68;
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbmaster_pkmplus')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
                                                         ->where('pkmp_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmp_kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 69;
 
-                                                    $data = DB::table('temp_tbmaster_pkmplus')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
                                                         ->where('pkm_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmp_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkmp_nodoc',$rec->mstd_nodoc)
                                                         ->first()->toArray();
 
-                                                    DB::table('tbmaster_pkmplus')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
                                                         ->insert($data);
 
                                                     $step = 70;
 
-                                                    DB::table('temp_tbmaster_pkmplus')
+                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
                                                         ->where('pkm_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('pkmp_kodeigr',$_SESSION['kdigr'])
                                                         ->where('pkmp_nodoc',$rec->mstd_nodoc)
@@ -634,7 +634,7 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 71;
 
-                                                DB::table('tbtr_gondola')
+                                                DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                                                     ->where('gdl_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                     ->update([
@@ -645,16 +645,16 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 72;
 
-                                                $data = DB::table('temp_tbtr_gondola')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
                                                     ->where('gdl_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                     ->where('gdl_nodoc',$rec->mstd_nodoc)
                                                     ->first()->toArray();
 
-                                                DB::table('tbtr_gondola')
+                                                DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                                                     ->insert($data);
 
-                                                DB::table('temp_tbtr_gondola')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
                                                     ->where('gdl_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                     ->where('gdl_nodoc',$rec->mstd_nodoc)
@@ -663,25 +663,25 @@ class PembatalanMPPController extends Controller
                                                 $step = 73;
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbtr_gondola')
+                                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                                                         ->where('gdl_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 74;
 
-                                                    $data = DB::table('temp_tbtr_gondola')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
                                                         ->where('gdl_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                         ->where('gdl_nodoc',$rec->mstd_nodoc)
                                                         ->first()->toArray();
 
-                                                    DB::table('tbtr_gondola')
+                                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
                                                         ->insert($data);
 
                                                     $step = 75;
 
-                                                    DB::table('temp_tbtr_gondola')
+                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
                                                         ->where('gdl_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('gdl_kodeigr',$_SESSION['kdigr'])
                                                         ->where('gdl_nodoc',$rec->mstd_nodoc)
@@ -690,7 +690,7 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 76;
 
-                                                DB::table('tbmaster_minimumorder')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
                                                     ->where('min_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('min_Kodeigr',$_SESSION['kdigr'])
                                                     ->update([
@@ -701,18 +701,18 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 77;
 
-                                                $data = DB::table('temp_tbmaster_minimumorder')
+                                                $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
                                                     ->where('min_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('min_kodeigr',$_SESSION['kdigr'])
                                                     ->where('min_nodoc',$rec->mstd_nodoc)
                                                     ->first()->toArray();
 
-                                                DB::table('tbmaster_minimumorder')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
                                                     ->insert($data);
 
                                                 $step = 78;
 
-                                                DB::table('temp_tbmaster_minimumorder')
+                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
                                                     ->where('min_prdcd',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('min_kodeigr',$_SESSION['kdigr'])
                                                     ->where('min_nodoc',$rec->mstd_nodoc)
@@ -721,25 +721,25 @@ class PembatalanMPPController extends Controller
                                                 $step = 79;
 
                                                 if($v_plua1 > 0 && $v_plub1 > 0){
-                                                    DB::table('tbmaster_minimumorder')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
                                                         ->where('min_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('min_Kodeigr',$_SESSION['kdigr'])
                                                         ->delete();
 
                                                     $step = 80;
 
-                                                    $data = DB::table('temp_tbmaster_minimumorder')
+                                                    $data = DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
                                                         ->where('min_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('min_kodeigr',$_SESSION['kdigr'])
                                                         ->where('min_nodoc',$rec->mstd_nodoc)
                                                         ->first()->toArray();
 
-                                                    DB::table('tbmaster_minimumorder')
+                                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
                                                         ->insert($data);
 
                                                     $step = 81;
 
-                                                    DB::table('temp_tbmaster_minimumorder')
+                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
                                                         ->where('min_prdcd',substr($prdcda,0,6).'0')
                                                         ->where('min_kodeigr',$_SESSION['kdigr'])
                                                         ->where('min_nodoc',$rec->mstd_nodoc)
@@ -748,7 +748,7 @@ class PembatalanMPPController extends Controller
 
                                                 $step = 82;
 
-                                                DB::table('tbtr_konversiplu')
+                                                DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
                                                     ->where('kvp_pluold',$prdcda)
                                                     ->where('kvp_plunew',substr($rec->mstd_prdcd,0,6).'0')
                                                     ->where('kvp_kodeigr',$_SESSION['kdigr'])
@@ -759,7 +759,7 @@ class PembatalanMPPController extends Controller
                                     else{
                                         $step = 84;
 
-                                        $temp = DB::table('tbhistory_barangbaru')
+                                        $temp = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                             ->where('hpn_prdcd',$prdcda)
                                             ->where('hpn_kodeigr',$_SESSION['kdigr'])
                                             ->get()->count();
@@ -767,7 +767,7 @@ class PembatalanMPPController extends Controller
                                         if($temp > 0){
                                             $step = 85;
 
-                                            $temp = DB::table('tbmaster_barangbaru')
+                                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                                 ->where('pln_prdcd',$prdcda)
                                                 ->where('pln_kodeigr',$_SESSION['kdigr'])
                                                 ->get()->count();
@@ -775,7 +775,7 @@ class PembatalanMPPController extends Controller
                                             if($temp == 0){
                                                 $step = 86;
 
-                                                $data = DB::table('tbhistory_barangbaru')
+                                                $data = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                                     ->select('hpn_pkmtoko')
                                                     ->where('hpn_prdcd',$prdcda)
                                                     ->where('hpn_kodeigr',$_SESSION['kdigr'])
@@ -784,7 +784,7 @@ class PembatalanMPPController extends Controller
                                                 if($data)
                                                     $pkmt = $data->hpn_pkmtoko;
 
-                                                $data = DB::table('tbmaster_prodmast')
+                                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                                     ->select('prd_kodetag')
                                                     ->where('prd_prdcd',$prdcda)
                                                     ->where('prd_kodeigr',$_SESSION['kdigr'])
@@ -793,7 +793,7 @@ class PembatalanMPPController extends Controller
                                                 if($data)
                                                     $tag = $data->prd_kodetag;
 
-                                                DB::table('tbmaster_barangbaru')
+                                                DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                                                     ->insert([
                                                         'pln_kodeigr' => $_SESSION['kdigr'],
                                                         'pln_prdcd' => $prdcda,
@@ -806,7 +806,7 @@ class PembatalanMPPController extends Controller
 
                                             $step = 87;
 
-                                            DB::table('tbhistory_barangbaru')
+                                            DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
                                                 ->where('hpn_prdcd',$prdcda)
                                                 ->where('hpn_kodeigr',$_SESSION['kdigr'])
                                                 ->delete();
@@ -820,7 +820,7 @@ class PembatalanMPPController extends Controller
 
                         $step = 93;
 
-                        DB::table('tbtr_mstran_h')
+                        DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                             ->where('msth_nodoc',$nompp)
                             ->where('msth_kodeigr',$_SESSION['kdigr'])
                             ->where('msth_typetrn','X')
@@ -832,7 +832,7 @@ class PembatalanMPPController extends Controller
 
                         $step = 94;
 
-                        DB::table('tbtr_mstran_d')
+                        DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                             ->where('mstd_nodoc',$nompp)
                             ->where('mstd_kodeigr',$_SESSION['kdigr'])
                             ->where('mstd_typetrn','X')

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class AllModel extends Model
 {
     public function getKodeigr(){ // Created By : JR(10/02/2020) | Modify By :
-        $perusahaan = DB::table('tbmaster_perusahaan')->get()->toArray();
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->get()->toArray();
 
         return $perusahaan;
     }

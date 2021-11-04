@@ -18,7 +18,7 @@ class aktifHargaJualController extends Controller
     public function getProdmast(Request  $request){
         $search = $request->value;
 
-        $prodmast   = DB::table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
+        $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')
@@ -31,7 +31,7 @@ class aktifHargaJualController extends Controller
         sleep(1);
         $plu    = $request->plu;
 
-        $prod   = DB::table('tbmaster_prodmast a')
+        $prod   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast a')
             ->select('a.PRD_PRDCD', 'a.PRD_KODEDIVISI', 'a.PRD_KODEDEPARTEMENT', 'a.PRD_KODEKATEGORIBARANG', 'a.PRD_DESKRIPSIPANJANG',
                 'a.PRD_TglHrgJual3', 'a.PRD_HRGJUAL', 'a.PRD_HRGJUAL3', 'b.div_namadivisi', 'c.dep_namadepartement', 'd.kat_namakategori')
             ->leftJoin('tbmaster_divisi b', 'a.prd_kodedivisi', 'b.div_kodedivisi')

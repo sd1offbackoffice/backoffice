@@ -28,7 +28,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
+        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->select("PRD_DESKRIPSIPANJANG", "PRD_PRDCD")
             ->whereRaw('nvl(prd_recordid,9)<>1')
             ->where('prd_kodeigr', '=', $_SESSION['kdigr'])
@@ -43,7 +43,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::table("TBTABEL_MAXTRANSAKSI")
+        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
             ->where('mtr_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw("mtr_prdcd like '%" . $search . "%'")
             ->orderBy("mtr_prdcd")
@@ -55,7 +55,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
         $data = '';
-        $temp = DB::table("TBMASTER_PRODMAST")
+        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("NVL(COUNT(1),0) temp")
             ->whereRaw('nvl(prd_recordid,9)<>1')
             ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
@@ -63,7 +63,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
             ->pluck('temp')->first();
 
         if ($temp > 0) {
-            $data = DB::table("TBMASTER_PRODMAST")
+            $data = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
                 ->selectRaw("prd_deskripsipanjang || ' - ' || prd_unit || '/' || prd_frac desk")
                 ->whereRaw('nvl(prd_recordid,9)<>1')
                 ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
@@ -79,20 +79,20 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
         $data = '';
-        $info = DB::table("TBMASTER_PRODMAST")
+        $info = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC info")
             ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
             ->where('PRD_PRDCD', '=', $plu)
             ->pluck('info')->first();
 
-        $temp = DB::table("TBTABEL_MAXTRANSAKSI")
+        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
             ->selectRaw("COUNT(1) count")
             ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
             ->where('MTR_PRDCD', '=', $plu)
             ->pluck('count')->first();
 
         if ($temp > 0) {
-            $data = DB::table("TBTABEL_MAXTRANSAKSI")
+            $data = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
                 ->selectRaw("MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM")
                 ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
                 ->whereRaw("MTR_PRDCD = '" . $plu . "'")
@@ -106,14 +106,14 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
 
-        $temp = DB::table("TBTABEL_MAXTRANSAKSI")
+        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
             ->selectRaw("NVL(COUNT(1),0) count")
             ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
             ->where('MTR_PRDCD', '=', $plu)
             ->pluck('count')->first();
 
         if ($temp == 0) {
-            DB::table("TBTABEL_MAXTRANSAKSI")
+            DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
                 ->insert([
                     'mtr_kodeigr' => $_SESSION['kdigr'],
                     'mtr_prdcd' => $plu,
@@ -133,7 +133,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
             $status = "success";
             return compact(['message', 'status']);
         } else {
-            DB::table("TBTABEL_MAXTRANSAKSI")
+            DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
                 ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
                 ->where('MTR_PRDCD', '=', $plu)
                 ->update([
@@ -160,7 +160,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
 
-        DB::table("TBTABEL_MAXTRANSAKSI")
+        DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
             ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
             ->where('MTR_PRDCD', '=', $plu)
             ->delete();
@@ -174,7 +174,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
         $w = 490;
         $h = 37.75;
 
-        $data = DB::select("SELECT MTR_PRDCD, MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT MTR_PRDCD, MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM,
                 PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
                 PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH FROM TBTABEL_MAXTRANSAKSI, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
                 WHERE MTR_KODEIGR = '" . $_SESSION['kdigr'] . "'
@@ -183,7 +183,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
                 ORDER BY MTR_PRDCD");
         $filename = 'igr-tab-maxtran';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();

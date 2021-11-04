@@ -26,7 +26,7 @@ class lapsvlslspbController extends Controller
     public function pbModal(Request $request){
         $kodeigr = $_SESSION['kdigr'];
 
-        $datas = DB::table("tbmaster_pbomi")
+        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_pbomi")
             ->selectRaw("DISTINCT pbo_nopb, pbo_kodeomi, pbo_create_dt")
             ->where('pbo_kodeigr','=',$kodeigr)
             //->whereRaw("trunc(pbo_create_dt) between :tgl1 and :tgl2")
@@ -65,7 +65,7 @@ class lapsvlslspbController extends Controller
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         if($pilihan == 'D'){
-            $datas = DB::select("SELECT NVL(COUNT(*),0) itemo, pbo_nopb, tglstruk, pbo_kodeomi, kodemember,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(*),0) itemo, pbo_nopb, tglstruk, pbo_kodeomi, kodemember,
      pbo_nostruk, pbo_recordid, pbo_nokoli, tglgo, SUM(pbo_qtyorder) qtyo,
      SUM(pbo_nilaiorder) nilaio, SUM(pbo_ppnorder) ppno, SUM(qtyr) qtyr,
      SUM(nilair) nilair, SUM(itemr) itemr, tko_namaomi, namamember,
@@ -110,7 +110,7 @@ GROUP BY pbo_nopb, tglstruk, pbo_kodeomi, pbo_nostruk, kodemember,
                     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY kodemember, pbo_kodeomi, pbo_nopb, tglstruk");
         }else{
-            $datas = DB::select("SELECT pbo_kodeomi, kodemember, tglgo,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT pbo_kodeomi, kodemember, tglgo,
      SUM(pbo_qtyorder) qtyo, SUM(pbo_nilaiorder) nilaio,
      SUM(qtyr) qtyr, SUM(nilair) nilair, SUM(itemr) itemr,
      SUM(itemo) itemo, tko_namaomi, cus_namamember,

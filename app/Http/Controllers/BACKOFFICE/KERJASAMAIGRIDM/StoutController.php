@@ -24,7 +24,7 @@ class StoutController extends Controller
 
     public function GetDiv(Request $request){
 
-        $datas = DB::table('tbmaster_divisi')
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->selectRaw('distinct div_kodedivisi as div_kodedivisi')
             ->selectRaw('div_namadivisi')
             ->selectRaw('div_singkatannamadivisi')
@@ -38,7 +38,7 @@ class StoutController extends Controller
         $div1 = $request->div1;
         $div2 = $request->div2;
 
-        $datas = DB::table('tbmaster_departement')
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->selectRaw('distinct dep_kodedepartement as dep_kodedepartement')
             ->selectRaw('dep_namadepartement')
             ->selectRaw('dep_kodedivisi')
@@ -55,7 +55,7 @@ class StoutController extends Controller
         $dept1 = $request->dept1;
         $dept2 = $request->dept2;
 
-        $datas = DB::table('tbmaster_kategori')
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->selectRaw('distinct kat_kodekategori as kat_kodekategori')
             ->selectRaw('kat_namakategori')
             ->selectRaw('kat_kodedepartement')
@@ -78,7 +78,7 @@ class StoutController extends Controller
         $kat2 = $request->kat2;
         $choice = $request->choice;
         if($choice == 'r1'){
-            $cursor = DB::select("SELECT prs_namacabang, prs_namaperusahaan, prs_namawilayah,
+            $cursor = DB::connection($_SESSION['connection'])->select("SELECT prs_namacabang, prs_namaperusahaan, prs_namawilayah,
 prd_prdcd, prc_pluidm, prd_deskripsipanjang, prd_kodedivisi, div_namadivisi, prd_kodedepartement, dep_namadepartement, prd_kodekategoribarang, kat_namakategori,
 prd_kodedivisi || '-' || div_namadivisi || ' . ' || prd_kodedepartement || '-' || dep_namadepartement || ' . ' || prd_kodekategoribarang || '-' || kat_namakategori divdeptkat,  st_saldoakhir, ( ksl_mean  * 3 ) ksl_mean, PKM_PKMT
 FROM tbmaster_prodmast, tbmaster_prodcrm, tbmaster_stock, TBMASTER_KKPKM, tbmaster_kph, tbmaster_perusahaan, tbmaster_divisi, tbmaster_departement, tbmaster_kategori
@@ -109,7 +109,7 @@ AND EXISTS (
                                   || LPAD (SUBSTR (PID, 1, LENGTH (PID) - 4), 2, '0'))
 ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prc_pluidm");
         }elseif ($choice == 'r2'){
-            $cursor = DB::select("SELECT   PRS_NAMACABANG, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH, PRD_PRDCD, PRC_PLUIDM,
+            $cursor = DB::connection($_SESSION['connection'])->select("SELECT   PRS_NAMACABANG, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH, PRD_PRDCD, PRC_PLUIDM,
          PRD_DESKRIPSIPANJANG, ST_SALDOAKHIR, (KSL_MEAN * 3) KSL_MEAN, PRD_KODEDIVISI,
          PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
             PRD_KODEDIVISI
@@ -200,7 +200,7 @@ ORDER BY PRD_KODEDIVISI, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRC_PLUIDM
         $kat2 = $request->kat2;
         $choice = $request->choice;
         if($choice == 'r1'){
-            $datas = DB::select("SELECT prs_namacabang, prs_namaperusahaan, prs_namawilayah,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namacabang, prs_namaperusahaan, prs_namawilayah,
 prd_prdcd, prc_pluidm, prd_deskripsipanjang, prd_kodedivisi, div_namadivisi, prd_kodedepartement, dep_namadepartement, prd_kodekategoribarang, kat_namakategori,
 prd_kodedivisi || '-' || div_namadivisi || ' . ' || prd_kodedepartement || '-' || dep_namadepartement || ' . ' || prd_kodekategoribarang || '-' || kat_namakategori divdeptkat,  st_saldoakhir, ( ksl_mean  * 3 ) ksl_mean, PKM_PKMT
 FROM tbmaster_prodmast, tbmaster_prodcrm, tbmaster_stock, TBMASTER_KKPKM, tbmaster_kph, tbmaster_perusahaan, tbmaster_divisi, tbmaster_departement, tbmaster_kategori
@@ -231,7 +231,7 @@ AND EXISTS (
                                   || LPAD (SUBSTR (PID, 1, LENGTH (PID) - 4), 2, '0'))
 ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prc_pluidm");
         }elseif ($choice == 'r2'){
-            $datas = DB::select("SELECT   PRS_NAMACABANG, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH, PRD_PRDCD, PRC_PLUIDM,
+            $datas = DB::connection($_SESSION['connection'])->select("SELECT   PRS_NAMACABANG, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH, PRD_PRDCD, PRC_PLUIDM,
          PRD_DESKRIPSIPANJANG, ST_SALDOAKHIR, (KSL_MEAN * 3) KSL_MEAN, PRD_KODEDIVISI,
          PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
             PRD_KODEDIVISI

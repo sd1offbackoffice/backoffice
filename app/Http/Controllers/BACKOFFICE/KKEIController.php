@@ -25,7 +25,7 @@ class KKEIController extends Controller
 
         $data = array();
 
-        $produk = DB::table('tbmaster_prodmast')
+        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
             ->where('prd_kodeigr',$kodeigr)
             ->where('prd_prdcd',$prdcd)
@@ -40,7 +40,7 @@ class KKEIController extends Controller
             $data['frac'] = $produk->prd_frac;
 
             if(substr($prdcd,7,1) != '0'){
-                $cprdcd = DB::table('tbmaster_prodmast')
+                $cprdcd = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('prd_prdcd')
                     ->whereRaw("SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ('".$prdcd."', 1, 6)")
                     ->whereRaw("SUBSTR (PRD_PRDCD, 7, 1) <> '0'")
@@ -49,7 +49,7 @@ class KKEIController extends Controller
                     ->orderBy('prd_prdcd')
                     ->first();
 
-                $dimensi = DB::table('tbmaster_prodmast')
+                $dimensi = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('prd_dimensipanjang', 'prd_dimensilebar', 'prd_dimensitinggi')
                     ->where('prd_kodeigr',$kodeigr)
                     ->where('prd_prdcd',$cprdcd->prd_prdcd)
@@ -60,7 +60,7 @@ class KKEIController extends Controller
                 $data['tinggiproduk'] = $dimensi->prd_dimensitinggi;
             }
 
-            $dimensikemasan = DB::table('tbmaster_prodmast')
+            $dimensikemasan = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->select('prd_dimensipanjang', 'prd_dimensilebar', 'prd_dimensitinggi')
                 ->where('prd_kodeigr',$kodeigr)
                 ->where('prd_prdcd', substr($prdcd,0,6).'0')
@@ -79,7 +79,7 @@ class KKEIController extends Controller
                 $data['tinggikemasan'] = 0;
             }
 
-            $barang = DB::table('tbmaster_barang')
+            $barang = DB::connection($_SESSION['connection'])->table('tbmaster_barang')
                 ->select('brg_brutopcs','brg_brutoctn')
                 ->where('brg_kodeigr',$kodeigr)
                 ->where('brg_prdcd',$prdcd)
@@ -93,7 +93,7 @@ class KKEIController extends Controller
             $data['kubikasiprod'] = ($data['panjangproduk'] * $data['lebarproduk'] * $data['tinggiproduk']) / 1000000;
             $data['kubikasikemasan'] = ($data['panjangkemasan'] * $data['lebarkemasan'] * $data['tinggikemasan']) / 1000000;
 
-            $hgb = DB::table('tbmaster_hargabeli')
+            $hgb = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
                 ->where('hgb_kodeigr',$kodeigr)
                 ->where('hgb_tipe','2')
                 ->where('hgb_prdcd',$prdcd)
@@ -181,7 +181,7 @@ class KKEIController extends Controller
                     }
                 }
 
-                $stock = DB::table('tbmaster_stock')
+                $stock = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                     ->select('st_saldoakhir')
                     ->where('st_kodeigr',$kodeigr)
                     ->where('st_lokasi','01')
@@ -193,7 +193,7 @@ class KKEIController extends Controller
                     $data['saldoakhir'] = $stock->st_saldoakhir;
                 }
 
-                $supplier = DB::table('tbmaster_supplier')
+                $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
                     ->select('sup_kodesupplier','sup_namasupplier')
                     ->where('sup_kodesupplier',$hgb->hgb_kodesupplier)
                     ->first();
@@ -202,14 +202,14 @@ class KKEIController extends Controller
                 $data['namasupplier'] = $supplier->sup_namasupplier;
             }
 
-            $po = DB::table('tbtr_po_d')
+            $po = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
                 ->select('tpod_qtypo')
                 ->where('tpod_kodeigr',$kodeigr)
                 ->where('tpod_recordid',null)
                 ->where('tpod_prdcd',$prdcd)
                 ->sum('tpod_qtypo');
 
-            $kkei = DB::table('temp_kkei')
+            $kkei = DB::connection($_SESSION['connection'])->table('temp_kkei')
                 ->select(
                     'kke_estimasi',
                     'kke_breakpb01',
@@ -248,7 +248,7 @@ class KKEIController extends Controller
     }
 
     public function get_detail_kkei(Request $request){
-        $data = DB::table('temp_kkei')
+        $data = DB::connection($_SESSION['connection'])->table('temp_kkei')
             ->where('kke_periode',$request->periode)
             ->get();
 
@@ -273,7 +273,7 @@ class KKEIController extends Controller
 
         try{
             if(!empty($request->deleted)){
-                DB::table('temp_kkei')
+                DB::connection($_SESSION['connection'])->table('temp_kkei')
                     ->where('kke_periode','=',$request->periode)
                     ->whereIn('kke_prdcd',$request->deleted)
                     ->delete();
@@ -304,11 +304,11 @@ class KKEIController extends Controller
 
                     array_push($prdcd, $kkei['kke_prdcd']);
 
-                    $delete = DB::table('temp_kkei')
+                    $delete = DB::connection($_SESSION['connection'])->table('temp_kkei')
                         ->where('kke_periode',$kkei['kke_periode'])
                         ->where('kke_prdcd',$kkei['kke_prdcd'])
                         ->delete();
-                    $insert = DB::table('temp_kkei')
+                    $insert = DB::connection($_SESSION['connection'])->table('temp_kkei')
                         ->insert($kkei);
                 }
 
@@ -334,10 +334,10 @@ class KKEIController extends Controller
     }
 
     public function laporan(Request $request){
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::table('temp_kkei')
+        $data = DB::connection($_SESSION['connection'])->table('temp_kkei')
             ->where('kke_periode',$request->periode)
             ->orderBy('kke_kdsup')
             ->get();
@@ -382,10 +382,10 @@ class KKEIController extends Controller
     public function laporan_view(){
         $rperiode = $_GET['periode'];
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::table('temp_kkei')
+        $data = DB::connection($_SESSION['connection'])->table('temp_kkei')
             ->where('kke_periode',$rperiode)
             ->orderBy('kke_kdsup')
             ->get();

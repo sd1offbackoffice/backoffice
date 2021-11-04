@@ -18,7 +18,7 @@ class PLUMROController extends Controller
     }
 
     public function getData(){
-        $data = DB::select("SELECT MRO_PRDCD PLU, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN
+        $data = DB::connection($_SESSION['connection'])->select("SELECT MRO_PRDCD PLU, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN
 				FROM TBMASTER_PRODMAST, TBTABEL_PLUMRO
 				WHERE PRD_PRDCD(+) = MRO_PRDCD
 				ORDER BY MRO_PRDCD");
@@ -43,7 +43,7 @@ class PLUMROController extends Controller
             ], 500);
         }
 
-        $temp = DB::table('tbmaster_prodmast')
+        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->select('prd_kodetag')
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
             ->where('prd_prdcd','=',$plu)
@@ -64,7 +64,7 @@ class PLUMROController extends Controller
             }
         }
 
-        $data = DB::selectOne("SELECT PRD_KODEDIVISI, DIV_NAMADIVISI, PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, PRD_KODEKATEGORIBARANG, KAT_NAMAKATEGORI,
+        $data = DB::connection($_SESSION['connection'])->selectOne("SELECT PRD_KODEDIVISI, DIV_NAMADIVISI, PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, PRD_KODEKATEGORIBARANG, KAT_NAMAKATEGORI,
                         SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN
                         FROM TBMASTER_PRODMAST, TBMASTER_DIVISI,TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI
                         WHERE PRD_KODEIGR = '".$_SESSION['kdigr']."'
@@ -74,7 +74,7 @@ class PLUMROController extends Controller
                         AND PRD_KODEKATEGORIBARANG = KAT_KODEKATEGORI
                         AND PRD_PRDCD = '".$plu."'");
 
-        $temp = DB::table('tbtabel_plumro')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtabel_plumro')
             ->where('mro_kodeigr','=',$_SESSION['kdigr'])
             ->where('mro_prdcd','=',$plu)
             ->first();
@@ -90,7 +90,7 @@ class PLUMROController extends Controller
             try{
                 DB::beginTransaction();
 
-                DB::table('tbtabel_plumro')
+                DB::connection($_SESSION['connection'])->table('tbtabel_plumro')
                     ->insert([
                         'mro_kodeigr' => $_SESSION['kdigr'],
                         'mro_kodedivisi' => $data->prd_kodedivisi,
@@ -125,7 +125,7 @@ class PLUMROController extends Controller
         $search = $request->plu;
 
         if($search == ''){
-            $produk = DB::table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -134,7 +134,7 @@ class PLUMROController extends Controller
                 ->get();
         }
         else if(is_numeric($search)){
-            $produk = DB::table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -143,7 +143,7 @@ class PLUMROController extends Controller
                 ->get();
         }
         else{
-            $produk = DB::table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',$_SESSION['kdigr'])
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -161,7 +161,7 @@ class PLUMROController extends Controller
         try{
             DB::beginTransaction();
 
-            DB::table('tbtabel_plumro')
+            DB::connection($_SESSION['connection'])->table('tbtabel_plumro')
                 ->where('mro_kodeigr','=',$_SESSION['kdigr'])
                 ->where('mro_prdcd','=',$plu)
                 ->delete();
@@ -182,13 +182,13 @@ class PLUMROController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
 
         if($request->orderBy == 'plu')
             $orderBy = 'ORDER BY MRO_PRDCD ASC';
         else $orderBy = 'ORDER BY PRD_DESC ASC';
 
-        $data = DB::select("SELECT DISTINCT MRO_PRDCD, PRD_DESC, PRD_KODETAG, SATUAN,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MRO_PRDCD, PRD_DESC, PRD_KODETAG, SATUAN,
                    HRG_1, HRG_D, HRG_C, HRG_B, HRG_E, HRG_A, ST_SALDOAKHIR, ' ' KET
                 FROM TBTABEL_PLUMRO, (SELECT ST_PRDCD, ST_SALDOAKHIR FROM TBMASTER_STOCK WHERE ST_LOKASI=01 ),
                 (
@@ -239,7 +239,7 @@ class PLUMROController extends Controller
     }
 
     public function getLovDivisi(){
-        $data = DB::table('tbmaster_divisi')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
             ->selectRaw("div_kodedivisi kode, div_namadivisi nama, div_singkatannamadivisi singkatan")
             ->where('div_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('div_kodedivisi')
@@ -249,7 +249,7 @@ class PLUMROController extends Controller
     }
 
     public function getLovDepartement(Request $request){
-        $data = DB::table('tbmaster_departement')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
             ->selectRaw("dep_kodedepartement kode, dep_namadepartement nama, dep_singkatandepartement singkatan")
             ->where('dep_kodeigr','=',$_SESSION['kdigr'])
             ->where('dep_kodedivisi','=',$request->div)
@@ -260,7 +260,7 @@ class PLUMROController extends Controller
     }
 
     public function getLovKategori(Request $request){
-        $data = DB::table('tbmaster_kategori')
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
             ->selectRaw("kat_kodekategori kode, kat_namakategori nama, kat_singkatan singkatan")
             ->where('kat_kodeigr','=',$_SESSION['kdigr'])
             ->where('kat_kodedepartement','=',$request->dep)

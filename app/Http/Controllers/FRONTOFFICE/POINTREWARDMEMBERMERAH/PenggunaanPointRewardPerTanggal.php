@@ -27,7 +27,7 @@ class PenggunaanPointRewardPerTanggal extends Controller
         $tgl2 = $request->tgl2;
 
             $filename = 'igr-fo-rwd-tkr-dtl';
-            $data = DB::select("SELECT PRS_NAMAPERUSAHAAN,
+            $data = DB::connection($_SESSION['connection'])->select("SELECT PRS_NAMAPERUSAHAAN,
          PRS_NAMACABANG,
          KODEMEMBER,
          NAMAMEMBER,
@@ -62,7 +62,7 @@ class PenggunaanPointRewardPerTanggal extends Controller
                                                                                   AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
 ORDER BY TGL, KODEMEMBER");
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         if (sizeof($data) != 0) {

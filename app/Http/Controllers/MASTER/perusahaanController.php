@@ -11,7 +11,7 @@ class perusahaanController extends Controller
 {
     public function index()
     {
-        $result = DB::TABLE('tbmaster_perusahaan')->SELECT("*")->First();
+        $result = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->SELECT("*")->First();
         return view('MASTER.perusahaan')->with('result', $result);
 
     }
@@ -25,7 +25,7 @@ class perusahaanController extends Controller
         $cmo = $request->cmo;
         $tglcmo = $request->tglcmo;
 
-        $temp = DB::table('TBMASTER_USER')
+        $temp = DB::connection($_SESSION['connection'])->table('TBMASTER_USER')
             ->where('userid', '=', $username)
             ->where('userpassword', '=', $password)
             ->count();
@@ -37,7 +37,7 @@ class perusahaanController extends Controller
 
         }
 
-        $temp = DB::table('TBMASTER_USER')
+        $temp = DB::connection($_SESSION['connection'])->table('TBMASTER_USER')
             ->where('userid', '=', $username)
             ->where('userpassword', '=', $password)
             ->whereRaw("UPPER(SUBSTR(EMAIL, 1, 2)) = 'SM'")
@@ -50,7 +50,7 @@ class perusahaanController extends Controller
 
         } else {
             if ($obj == 'kph') {
-                DB::table('tbmaster_perusahaan')
+                DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->update([
                         'PRS_KPHCONST' => $kph
                     ]);
@@ -59,7 +59,7 @@ class perusahaanController extends Controller
                 return compact(['status', 'message']);
             }
             else if ($obj == 'cmo') {
-                DB::table('tbmaster_perusahaan')
+                DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->update([
                         'PRS_FLAGCMO' => $cmo
                     ]);
@@ -68,7 +68,7 @@ class perusahaanController extends Controller
                 return compact(['status', 'message']);
             }
             else if ($obj == 'tglcmo') {
-                DB::table('tbmaster_perusahaan')
+                DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->update([
                         'PRS_TGLCMO' => DB::raw("to_date('".$tglcmo."','dd/mm/yyyy')")
                     ]);

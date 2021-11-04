@@ -65,9 +65,9 @@ class TransferPLUController extends Controller
 
         $N_REQ_ID = str_replace('.', '', $request->ip());
 
-        $PATHDTA = DB::table('igr_setup_db')->select('db_harian_folder')->first()->db_harian_folder;
+        $PATHDTA = DB::connection($_SESSION['connection'])->table('igr_setup_db')->select('db_harian_folder')->first()->db_harian_folder;
 
-        DB::table('DIR_LIST_TMP')->where('REQ_ID', '=', $N_REQ_ID)->delete();
+        DB::connection($_SESSION['connection'])->table('DIR_LIST_TMP')->where('REQ_ID', '=', $N_REQ_ID)->delete();
 
         $c = loginController::getConnectionProcedure();
         $sql = "BEGIN GET_DIR_LIST(:pathdta,:n_req_id); END;";
@@ -77,7 +77,7 @@ class TransferPLUController extends Controller
         oci_bind_by_name($s, ':n_req_id', $N_REQ_ID, 200);
         oci_execute($s);
 
-        $data = DB::table('dir_list_tmp')
+        $data = DB::connection($_SESSION['connection'])->table('dir_list_tmp')
             ->select('filename as full_filename', DB::RAW("SUBSTR (filename, INSTR (filename, '/', -1) + 1) filename"))
             ->where('req_id', '=', $N_REQ_ID)
             ->orderBy('filename')
@@ -90,7 +90,7 @@ class TransferPLUController extends Controller
                 $PROSES = true;
             }
             if (substr($x->filename, 0, 4) == 'DTA4') {
-                $JUM = DB::table('TBTR_TRANSFERFILE')
+                $JUM = DB::connection($_SESSION['connection'])->table('TBTR_TRANSFERFILE')
                     ->select(DB::RAW("NVL (COUNT (1), 0) as count"))
                     ->where('TRF_KODEIGR', $_SESSION['kdigr'])
                     ->where('TRF_NAMAPROG', 'IGR_BO_TRF_PLU_CSV')
@@ -164,7 +164,7 @@ class TransferPLUController extends Controller
                 DB::commit();
 
 //                --**cetak lap**--
-                $JUM = DB::table('TEMP_HGBELI')
+                $JUM = DB::connection($_SESSION['connection'])->table('TEMP_HGBELI')
                     ->select(DB::RAW("NVL (COUNT (1), 0) count"))
                     ->first()->count;
 
@@ -231,7 +231,7 @@ class TransferPLUController extends Controller
                 oci_bind_by_name($s, ':result', $V_RESULT_OMI, 200);
                 oci_execute($s);
 
-                $JUM = DB::table('TEMP_BRX_OMI')
+                $JUM = DB::connection($_SESSION['connection'])->table('TEMP_BRX_OMI')
                     ->select(DB::RAW("NVL (COUNT (1), 0) count"))
                     ->where('SESSID', $N_REQ_ID)
                     ->first()->count;
@@ -264,14 +264,14 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::table('TEMP_PLUBARU')
+        $EOF = DB::connection($_SESSION['connection'])->table('TEMP_PLUBARU')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw("SUBSTR(fmkode,7,1) <> '4'")
             ->first()->count;
 
         if ($EOF > 0) {
-            $perusahaan = DB::table('tbmaster_perusahaan')
+            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
                 ->where('PRS_KODEIGR', $_SESSION['kdigr'])
                 ->first();
@@ -286,7 +286,7 @@ class TransferPLUController extends Controller
             $FNAME = 'TEMP_PLUBARU_' . Carbon::now()->format('d-M-Y') . '.txt';
             $file = fopen($FNAME, "w");
 
-            $plus = DB::table('TEMP_PLUBARU')
+            $plus = DB::connection($_SESSION['connection'])->table('TEMP_PLUBARU')
                 ->where('REQ_ID', $N_REQ_ID)
                 ->whereRaw("SUBSTR(fmkode,7,1) <> '4'")
                 ->orderBy('fmkode')
@@ -347,7 +347,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_PLUBARU')
+        DB::connection($_SESSION['connection'])->table('TEMP_PLUBARU')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -360,7 +360,7 @@ class TransferPLUController extends Controller
 
         $FNAME = 'TEMP_TRFPLU_' . Carbon::now()->format('d-M-Y') . '.txt';
 
-        $EOF = DB::table('temp_TRFPLU')
+        $EOF = DB::connection($_SESSION['connection'])->table('temp_TRFPLU')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->first()->count;
@@ -368,7 +368,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_TRFPLU_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -381,7 +381,7 @@ class TransferPLUController extends Controller
         $hal = 1;
         if ($EOF > 0) {
 
-            $plus = DB::table('TEMP_TRFPLU')
+            $plus = DB::connection($_SESSION['connection'])->table('TEMP_TRFPLU')
                 ->where('REQ_ID', $N_REQ_ID)
                 ->orderBy('fmkode')
                 ->get();
@@ -492,7 +492,7 @@ class TransferPLUController extends Controller
             }
             fclose($file);
 
-//            DB::table('TEMP_PLUBARU')
+//            DB::connection($_SESSION['connection'])->table('TEMP_PLUBARU')
 //                ->where('REQ_ID', $N_REQ_ID)
 //                ->delete();
         }
@@ -520,7 +520,7 @@ class TransferPLUController extends Controller
         $fname = 'TEMP_BCX_DOBEL_' . Carbon::now()->format('d-M-Y') . '.txt';
         $step = 6;
 
-        $eof = DB::table('tbbarcode_bcx_dobel')
+        $eof = DB::connection($_SESSION['connection'])->table('tbbarcode_bcx_dobel')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw('TRUNC(tgltrf) = TRUNC(SYSDATE)')
@@ -529,13 +529,13 @@ class TransferPLUController extends Controller
         if ($eof > 0) {
             $file = fopen($fname, "w");
 
-            $perusahaan = DB::table('tbmaster_perusahaan')
+            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
                 ->where('PRS_KODEIGR', $_SESSION['kdigr'])
                 ->first();
             $npers = $perusahaan->prs_namaperusahaan;
             $ncab = $perusahaan->prs_namacabang;
-            $barcodes = DB::select("SELECT SUBSTR(fmkode, 1, 6) . fmksjl AS prdcd,prd_deskripsipanjang AS desk, fmbarc AS barcode, TO_CHAR(fmtgup, 'DD-MM-RRRR') AS tanggal FROM tbbarcode_bcx_dobel, tbmaster_prodmast WHERE req_id = " . $N_REQ_ID . " AND TRUNC(tgltrf) = TRUNC(SYSDATE) AND SUBSTR(fmkode, 1, 6) . fmksjl = prd_prdcd ORDER BY fmkode");
+            $barcodes = DB::connection($_SESSION['connection'])->select("SELECT SUBSTR(fmkode, 1, 6) . fmksjl AS prdcd,prd_deskripsipanjang AS desk, fmbarc AS barcode, TO_CHAR(fmtgup, 'DD-MM-RRRR') AS tanggal FROM tbbarcode_bcx_dobel, tbmaster_prodmast WHERE req_id = " . $N_REQ_ID . " AND TRUNC(tgltrf) = TRUNC(SYSDATE) AND SUBSTR(fmkode, 1, 6) . fmksjl = prd_prdcd ORDER BY fmkode");
             if ($barcodes) {
                 foreach ($barcodes as $barcode) {
 //            -- HEADER
@@ -634,7 +634,7 @@ class TransferPLUController extends Controller
 
         $FNAME = 'TEMP_PLU_BYK_BRC_' . Carbon::now()->format('d-M-Y') . '.txt';
 
-        $EOF = DB::table('TBPLU_BANYAK_BARCODE')
+        $EOF = DB::connection($_SESSION['connection'])->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
             ->first()->count;
 
@@ -643,14 +643,14 @@ class TransferPLUController extends Controller
 
             $file = fopen($FNAME, "w");
 
-            $perusahaan = DB::table('tbmaster_perusahaan')
+            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
                 ->where('PRS_KODEIGR', $_SESSION['kdigr'])
                 ->first();
             $NPers = $perusahaan->prs_namaperusahaan;
             $NCab = $perusahaan->prs_namacabang;
 
-            $barcodes = DB::table('TBPLU_BANYAK_BARCODE')
+            $barcodes = DB::connection($_SESSION['connection'])->table('TBPLU_BANYAK_BARCODE')
                 ->orderBy('PRDCD')
                 ->get();
 
@@ -732,7 +732,7 @@ class TransferPLUController extends Controller
 
         $FNAME = 'TEMP_PLU_DMS_NOL' . Carbon::now()->format('d-M-Y') . '.txt';
 
-        $EOF = DB::table('TBPLU_BANYAK_BARCODE')
+        $EOF = DB::connection($_SESSION['connection'])->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
             ->first()->count;
 
@@ -740,14 +740,14 @@ class TransferPLUController extends Controller
 
             $file = fopen($FNAME, "w");
 
-            $perusahaan = DB::table('tbmaster_perusahaan')
+            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
                 ->where('PRS_KODEIGR', $_SESSION['kdigr'])
                 ->first();
             $NPers = $perusahaan->prs_namaperusahaan;
             $NCab = $perusahaan->prs_namacabang;
 
-            $plus = DB::table('TBMASTER_PRODMAST')
+            $plus = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
                 ->select('*', 'SUBSTR (PRD_DESKRIPSIPANJANG, 1, 70) DESK')
                 ->where('PRD_KODEIGR', $_SESSION['kdigr'])
                 ->whereRaw('(PRD_DIMENSIPANJANG = 0 OR PRD_DIMENSILEBAR = 0 OR PRD_DIMENSITINGGI = 0 )')
@@ -846,7 +846,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::select('Select NVL(count(1),0) count
+        $EOF = DB::connection($_SESSION['connection'])->select('Select NVL(count(1),0) count
                 From temp_hgbeli,
 			        tbmaster_prodmast,
 			        tbmaster_supplier
@@ -857,7 +857,7 @@ class TransferPLUController extends Controller
                     AND REQ_ID = ' . $N_REQ_ID)[0]->count;
 
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -872,7 +872,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_HGBELI_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $hgbs = DB::select("Select
+        $hgbs = DB::connection($_SESSION['connection'])->select("Select
 			    FRKODE,
 			    PRD_DESKRIPSIPANJANG AS Nama,
 			    PRD_UNIT||'/'||PRD_FRAC as Satuan,
@@ -950,7 +950,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_HGBELI')
+        DB::connection($_SESSION['connection'])->table('TEMP_HGBELI')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -960,13 +960,13 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::table('TEMP_SUPPLIER')
+        $EOF = DB::connection($_SESSION['connection'])->table('TEMP_SUPPLIER')
             ->selectRaw('NVL(count(1),0) count')
             ->where('REQ_ID', $N_REQ_ID)
             ->first()->count;
 
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -981,7 +981,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_SUPPLIER_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $sups = DB::table('TEMP_SUPPLIER')
+        $sups = DB::connection($_SESSION['connection'])->table('TEMP_SUPPLIER')
             ->selectRaw("FMKODE,
                 FMSUPP,
                 FMNAMA,
@@ -1053,7 +1053,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_SUPPLIER')
+        DB::connection($_SESSION['connection'])->table('TEMP_SUPPLIER')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -1063,14 +1063,14 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::table('TEMP_HRG_PROMO')
+        $EOF = DB::connection($_SESSION['connection'])->table('TEMP_HRG_PROMO')
             ->select('FMKODE')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw('TRUNC(FMFRTG) >=  TRUNC(sysdate)')
             ->orWhereRaw('TRUNC(FMFRTB) >= TRUNC(sysdate)')
             ->distinct()->count();
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -1085,7 +1085,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_HRGPROMO_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $hrg_promos = DB::table('TEMP_HRG_PROMO')
+        $hrg_promos = DB::connection($_SESSION['connection'])->table('TEMP_HRG_PROMO')
             ->leftJoin('tbMaster_Prodmast', 'PRD_PRDCD', '=', 'FMKODE')
             ->selectRaw("FMKODE,FMJAMA, FMJAMB,
   	       PRD_DeskripsiPendek, PRD_Unit, PRD_Frac, PRD_HrgJual,
@@ -1154,7 +1154,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_HRG_PROMO')
+        DB::connection($_SESSION['connection'])->table('TEMP_HRG_PROMO')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -1164,12 +1164,12 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::table('TEMP_BTL_PROMO')
+        $EOF = DB::connection($_SESSION['connection'])->table('TEMP_BTL_PROMO')
             ->select('FMKODE')
             ->where('REQ_ID', $N_REQ_ID)
             ->distinct()->count();
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -1184,7 +1184,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_BTLPROMO_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $bottles = DB::table('TEMP_BTL_PROMO')
+        $bottles = DB::connection($_SESSION['connection'])->table('TEMP_BTL_PROMO')
             ->leftJoin('tbMaster_Prodmast', 'PRD_PRDCD', '=', 'FMKODE')
             ->selectRaw("FMKODE,FMJAMA, FMJAMB,
   	       PRD_DeskripsiPendek, PRD_Unit, PRD_Frac, PRD_HrgJual,
@@ -1251,7 +1251,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_BTL_PROMO')
+        DB::connection($_SESSION['connection'])->table('TEMP_BTL_PROMO')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -1261,7 +1261,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::select('SELECT NVL(COUNT(1),0) count
+        $EOF = DB::connection($_SESSION['connection'])->select('SELECT NVL(COUNT(1),0) count
             FROM
 			    TEMP_MGN,
 			    TBMASTER_DEPARTEMENT,
@@ -1272,7 +1272,7 @@ class TransferPLUController extends Controller
 			    kd_kat = kat_kodekategori(+) AND
 			    kd_dept = kat_kodedepartement(+)')[0]->count;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -1287,7 +1287,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_MARGIN_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
 
-        $margins = DB::select("SELECT dc_idm,
+        $margins = DB::connection($_SESSION['connection'])->select("SELECT dc_idm,
 						kd_dept||' - '||dep_namadepartement dept,
 						kd_kat||' - '||kat_namakategori kat,
 						kd_plu pluidm, margin
@@ -1357,7 +1357,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_MGN')
+        DB::connection($_SESSION['connection'])->table('TEMP_MGN')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -1367,11 +1367,11 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::select('SELECT NVL(COUNT(1),0) count
+        $EOF = DB::connection($_SESSION['connection'])->select('SELECT NVL(COUNT(1),0) count
             FROM temp_brgdel_omi, tbmaster_prodmast
      WHERE sessid = ' . $N_REQ_ID . ' AND prd_kodeigr(+) = nkdigr AND prd_prdcd(+) = pluigr')[0]->count;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -1386,7 +1386,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_BRGEDL_OMI_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
         $rn = 0;
-        $recs = DB::select("SELECT   pluomi,
+        $recs = DB::connection($_SESSION['connection'])->select("SELECT   pluomi,
                              pluigr,
                              NVL(prd_deskripsipanjang, ' ') prd_deskripsipanjang,
                              NVL(prd_unit, ' ') prd_unit,
@@ -1450,7 +1450,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_MGN')
+        DB::connection($_SESSION['connection'])->table('TEMP_MGN')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }
@@ -1460,11 +1460,11 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::select('SELECT NVL(COUNT(1),0) count
+        $EOF = DB::connection($_SESSION['connection'])->select('SELECT NVL(COUNT(1),0) count
             FROM TEMP_BRX_OMI, tbmaster_prodmast
      WHERE sessid = ' . $N_REQ_ID . ' AND (PLUIGR IS NULL OR PLUOMI IS NULL) AND PRD_PRDCD(+) = PLUIGR')[0]->count;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
             ->where('PRS_KODEIGR', $_SESSION['kdigr'])
             ->first();
@@ -1479,7 +1479,7 @@ class TransferPLUController extends Controller
         $FNAME = 'TEMP_BRXOMINULL_' . Carbon::now()->format('d-M-Y') . '.txt';
         $file = fopen($FNAME, "w");
         $rn = 0;
-        $recs = DB::select("SELECT   pluomi,
+        $recs = DB::connection($_SESSION['connection'])->select("SELECT   pluomi,
                              pluigr,
                              NVL(prd_deskripsipanjang, ' ') prd_deskripsipanjang,
                              NVL(prd_unit, ' ') prd_unit,
@@ -1543,7 +1543,7 @@ class TransferPLUController extends Controller
 
 //  	STEP = 9;
 //        DIBUKA!!!!
-        DB::table('TEMP_MGN')
+        DB::connection($_SESSION['connection'])->table('TEMP_MGN')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
     }

@@ -17,7 +17,7 @@ class LaporanServiceLevelController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = strtoupper($request->search);
 
-        $supplier = DB::table('tbmaster_supplier')
+        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_namasupplier', 'LIKE', '%'.$search.'%')
             ->where('sup_kodesupplier', 'LIKE', '%'.$search.'%')
@@ -33,7 +33,7 @@ class LaporanServiceLevelController extends Controller
         $kodeigr = $_SESSION['kdigr'];
         $search = strtoupper($request->search);
 
-        $monitoring = DB::table('tbtr_monitoringsupplier')
+        $monitoring = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
             ->select('msu_namamonitoring', 'msu_kodemonitoring')
             ->where('msu_namamonitoring', 'LIKE', '%'.$search.'%')
             ->where('msu_kodemonitoring', 'LIKE', '%'.$search.'%')
@@ -54,13 +54,13 @@ class LaporanServiceLevelController extends Controller
         $sup2       = $request->sup2;
         $mtrSup     = $request->mtrSup;
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->select('prs_rptname', 'prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
 
-        $data = DB::select("SELECT sup_kodesupplier, sup_namasupplier, msu_kodemonitoring, msu_kodesupplier
-        FROM 
+        $data = DB::connection($_SESSION['connection'])->select("SELECT sup_kodesupplier, sup_namasupplier, msu_kodemonitoring, msu_kodesupplier
+        FROM
             tbmaster_supplier, tbtr_monitoringsupplier
         WHERE
               sup_kodeigr = '$kodeigr'

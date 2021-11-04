@@ -17,13 +17,13 @@ class ReprintBKLController extends Controller
     public function checkKodeOmi(Request $request){
         $kodeomi = strtoupper($request->kodeomi);
 
-        $cekKodeOmi = DB::table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomi)->get()->toArray();
+        $cekKodeOmi = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomi)->get()->toArray();
 
         if (!$cekKodeOmi) {
             return response()->json(['kode' => 0, 'msg' => "Kode OMI tidak terdaftar", 'data' => $kodeomi]);
         }
 
-        $temp = DB::table('TBHISTORY_BKL')->where('BKL_KODEOMI', $kodeomi)->get()->toArray();
+        $temp = DB::connection($_SESSION['connection'])->table('TBHISTORY_BKL')->where('BKL_KODEOMI', $kodeomi)->get()->toArray();
 
         if (!$temp) {
             return response()->json(['kode' => 0, 'msg' => "Tidak ada History BKL untuk OMI $kodeomi", 'data' => $kodeomi]);
@@ -36,7 +36,7 @@ class ReprintBKLController extends Controller
         $noBukti = strtoupper($request->noBukti);
         $kodeOmi = strtoupper($request->kodeomi);
 
-        $datas = DB::table('TBHISTORY_BKL')
+        $datas = DB::connection($_SESSION['connection'])->table('TBHISTORY_BKL')
             ->where('BKL_KODEOMI', $kodeOmi)
             ->where('bkl_nobukti', 'like', "%$noBukti%")
             ->orderByDesc('BKL_TGLSTRUK')
@@ -49,7 +49,7 @@ class ReprintBKLController extends Controller
         $noBukti = strtoupper($request->noBukti);
         $kodeOmi = strtoupper($request->kodeomi);
 
-        $data = DB::table('TBHISTORY_BKL')
+        $data = DB::connection($_SESSION['connection'])->table('TBHISTORY_BKL')
             ->where('BKL_KODEOMI', $kodeOmi)
             ->where('bkl_nobukti', $noBukti)
             ->orderByDesc('BKL_TGLSTRUK')
@@ -71,7 +71,7 @@ class ReprintBKLController extends Controller
         $result     = '';
         $pdfName    = '';
 
-        $data = DB::table('TBHISTORY_BKL')
+        $data = DB::connection($_SESSION['connection'])->table('TBHISTORY_BKL')
                 ->where('BKL_KODEOMI', $kodeOmi)
                 ->where('bkl_nobukti', $noBukti)
                 ->orderByDesc('BKL_TGLSTRUK')
@@ -86,7 +86,7 @@ class ReprintBKLController extends Controller
             $noDoc = $data[0]->bkl_nodoc;
             $supplier = $data[0]->bkl_kodesupplier;
 
-            $temp = DB::select("select bkl_nostruk || bkl_kodestation as all_kasir, bkl_kodeomi
+            $temp = DB::connection($_SESSION['connection'])->select("select bkl_nostruk || bkl_kodestation as all_kasir, bkl_kodeomi
                                         from tbhistory_bkl
                                         where bkl_nodoc = '$noDoc'
                                         and bkl_nobukti = '$noBukti'
@@ -106,7 +106,7 @@ class ReprintBKLController extends Controller
     }
 
     public function laporanBpb($kodeigr, $no_po){
-        return DB::select("SELECT  msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (TRUNC (mstd_tgldoc) + msth_cterm) tgljt,
+        return DB::connection($_SESSION['connection'])->select("SELECT  msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (TRUNC (mstd_tgldoc) + msth_cterm) tgljt,
                                            mstd_cterm, mstd_typetrn, prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamatfakturpajak1, prs_alamatfakturpajak2, prs_alamatfakturpajak3,
                                            sup_kodesupplier || ' ' || sup_namasupplier || '/' || sup_singkatansupplier supplier,
                                            sup_npwp,
@@ -151,7 +151,7 @@ class ReprintBKLController extends Controller
     }
 
     public function laporanStruk($kodeigr, $kasir, $kodeomi){
-        return DB::select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
+        return DB::connection($_SESSION['connection'])->select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
                                         trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
                                         trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
                                         trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,

@@ -25,7 +25,7 @@ class restoreController extends Controller
             $p_sukses = 'FALSE';
             $errtxt = "";
             $namaf = "TBMASTER_STOCK_".$year."_".$month;
-            $data = DB::SELECT("SELECT LAST_DAY(TO_DATE('01-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END , 'DD-MM-YYYY')) a, TO_CHAR( TO_DATE(CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END,'YYYY-MM'),'YYYYMM') b FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = ".$kodeigr);
+            $data = DB::connection($_SESSION['connection'])->select("SELECT LAST_DAY(TO_DATE('01-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END , 'DD-MM-YYYY')) a, TO_CHAR( TO_DATE(CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END,'YYYY-MM'),'YYYYMM') b FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = ".$kodeigr);
 
             $txtPeriode = $data[0]->a;
             $parameterPeriode = $data[0]->b;
@@ -74,7 +74,7 @@ class restoreController extends Controller
                     $query = oci_parse($connect, "CREATE TABLE TBTR_REKAPSALESBULANAN AS ( SELECT * FROM TBTR_REKAPSALESBULANAN_".$year."_".$month.")");
                     oci_execute($query);
 
-                    DB::table("TBMASTER_PERUSAHAAN")
+                    DB::connection($_SESSION['connection'])->table("TBMASTER_PERUSAHAAN")
                         ->where('PRS_KODEIGR','=',$kodeigr)
                         ->update(['PRS_BULANBERJALAN' => $month, 'PRS_TAHUNBERJALAN' => $year, 'PRS_FMFLCS' => 'Y']);
                     DB::commit();

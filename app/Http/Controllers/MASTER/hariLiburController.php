@@ -15,13 +15,13 @@ class hariLiburController extends Controller
     }
 
     public function getHariLibur(){
-        $harilibur = DB::table('TBMASTER_HARILIBUR')
+        $harilibur = DB::connection($_SESSION['connection'])->table('TBMASTER_HARILIBUR')
             ->select('lib_tgllibur', 'lib_keteranganlibur')
             ->whereRaw("to_char(lib_tgllibur,'yyyy') >= to_char(sysdate,'yyyy')" )
             ->orderBy('lib_tgllibur')
             ->get();
 
-//        $harilibur = DB::select("select * from tbmaster_harilibur where to_char(lib_tgllibur,'yyyy') >= to_char(sysdate,'yyyy') order by lib_create_dt desc");
+//        $harilibur = DB::connection($_SESSION['connection'])->select("select * from tbmaster_harilibur where to_char(lib_tgllibur,'yyyy') >= to_char(sysdate,'yyyy') order by lib_create_dt desc");
 
         return Datatables::of($harilibur)->make(true);
     }
@@ -36,15 +36,15 @@ class hariLiburController extends Controller
         $user       = $_SESSION['usid'];
         $date       = $model->getDate();
 
-        $cekData    = DB::table('tbmaster_harilibur')
+        $cekData    = DB::connection($_SESSION['connection'])->table('tbmaster_harilibur')
             ->where('lib_tgllibur', $tgllibur)
             ->get()->toArray();
 
         if (!$cekData){
-            DB::table('tbmaster_harilibur')->insert(['lib_kodeigr' => $kodeigr, 'lib_tgllibur' => $tgllibur, 'lib_keteranganlibur' => $ketlibur, 'lib_create_by' => $user, 'lib_create_dt' => $date]);
+            DB::connection($_SESSION['connection'])->table('tbmaster_harilibur')->insert(['lib_kodeigr' => $kodeigr, 'lib_tgllibur' => $tgllibur, 'lib_keteranganlibur' => $ketlibur, 'lib_create_by' => $user, 'lib_create_dt' => $date]);
             $msg = "Hari Libur Berhasil di Simpan !!";
         } else {
-            $cekData    = DB::table('tbmaster_harilibur')
+            $cekData    = DB::connection($_SESSION['connection'])->table('tbmaster_harilibur')
                 ->where('lib_tgllibur', $tgllibur)
                 ->update(['lib_keteranganlibur' => $ketlibur, 'lib_modify_by' => $user, 'lib_modify_dt' => $date]);
 
@@ -59,7 +59,7 @@ class hariLiburController extends Controller
         $tgllibur   = date('Y-m-d', strtotime($tgllibur));
         $ketlibur   = strtoupper($request->input('ketlibur'));
 
-        $cekData    = DB::table('tbmaster_harilibur')
+        $cekData    = DB::connection($_SESSION['connection'])->table('tbmaster_harilibur')
             ->where('lib_tgllibur', $tgllibur)
             ->where('lib_keteranganlibur', $ketlibur)
             ->get()->toArray();
@@ -67,7 +67,7 @@ class hariLiburController extends Controller
         if (!$cekData){
             $msg = "Hari Libur Tidak Terdaftar!!";
         } else {
-            DB::table('tbmaster_harilibur')->where('lib_tgllibur', $tgllibur)->delete();
+            DB::connection($_SESSION['connection'])->table('tbmaster_harilibur')->where('lib_tgllibur', $tgllibur)->delete();
             $msg = "Hari Libur Berhasil di Hapus !!";
         }
 

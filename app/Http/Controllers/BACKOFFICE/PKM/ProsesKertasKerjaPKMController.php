@@ -20,7 +20,7 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function getLovPrdcd(){
-        $data = DB::select("select prd_deskripsipendek desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
+        $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipendek desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
             where prd_kodeigr = '".$_SESSION['kdigr']."'
             and substr(prd_Prdcd,7,1) = '0'
             order by prd_deskripsipendek");
@@ -29,17 +29,17 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function getHistory(){
-        $data = DB::select("select * from (SELECT pkm_prdcd,
+        $data = DB::connection($_SESSION['connection'])->select("select * from (SELECT pkm_prdcd,
                    prd_deskripsipanjang,
                    pkm_mindisplay,
                    pkm_minorder,
                    prd_flaggudang,
-                   pkm_koefisien,   
+                   pkm_koefisien,
                    pkm_leadtime,
                    pkm_pkmt,
                    pkm_pkm,
                    pkm_mpkm,
-                   pkm_qtymplus,                                               
+                   pkm_qtymplus,
                    pkm_qtyaverage avgqty,
                    SUBSTR(pkm_periode1, 1, 2) || '/' || SUBSTR(pkm_periode1, 3, 4) bln1,
                    pkm_qty1 qty1,
@@ -63,8 +63,8 @@ class ProsesKertasKerjaPKMController extends Controller
                            THEN pkm_adjust_dt || ' - ' || pkm_adjust_by
                    END adjust
               FROM tbmaster_kkpkm, tbmaster_prodmast, tbmaster_supplier
-             WHERE pkm_kodeigr = '".$_SESSION['kdigr']."'      
-                and pkm_prdcd in (select pkm_prdcd from tbmaster_kkpkm where pkm_periodeproses is not null AND exists (select 1 from tbmaster_prodmast where prd_prdcd = pkm_prdcd and prd_kodedivisi IN ('1', '2', '3')))             
+             WHERE pkm_kodeigr = '".$_SESSION['kdigr']."'
+                and pkm_prdcd in (select pkm_prdcd from tbmaster_kkpkm where pkm_periodeproses is not null AND exists (select 1 from tbmaster_prodmast where prd_prdcd = pkm_prdcd and prd_kodedivisi IN ('1', '2', '3')))
                AND prd_kodeigr(+) = pkm_kodeigr
                AND prd_prdcd(+) = pkm_prdcd
                AND sup_kodeigr(+) = pkm_kodeigr
@@ -116,7 +116,7 @@ class ProsesKertasKerjaPKMController extends Controller
             ];
         }
 
-        DB::table('tbmaster_kkpkm')
+        DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
             ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
             ->where('pkm_prdcd','=',$prdcd)
             ->update([
@@ -126,15 +126,15 @@ class ProsesKertasKerjaPKMController extends Controller
                 'pkm_adjust_dt' => DB::RAW("SYSdATE")
             ]);
 
-        $temp = DB::table('tbtr_gondola')
+        $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
             ->where('gdl_prdcd','=',$prdcd)
             ->count();
 
         if($temp > 0){
             $flagmpa = false;
 
-            $gdl = DB::select("SELECT GDL_QTY FROM TBTR_GONDOLA
-                    WHERE GDL_PRDCD = '".$prdcd."' 
+            $gdl = DB::connection($_SESSION['connection'])->select("SELECT GDL_QTY FROM TBTR_GONDOLA
+                    WHERE GDL_PRDCD = '".$prdcd."'
                     AND NVL (TRUNC (GDL_TGLAWAL), TO_DATE ('01-01-1990', 'dd-mm-yyyy')) - 3 <= TRUNC (SYSDATE)
                     AND NVL (TRUNC (GDL_TGLAK HIR), TO_DATE ('31-12-2100', 'dd-mm-yyyy')) - 7 >= TRUNC (SYSDATE)
                     ORDER BY gdl_prdcd,
@@ -147,7 +147,7 @@ class ProsesKertasKerjaPKMController extends Controller
             }
 
             if($flagmpa){
-                $data = DB::table('tbmaster_prodmast')
+                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                     ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang')
                     ->where('prd_prdcd','=',$prdcd)
                     ->first();
@@ -156,13 +156,13 @@ class ProsesKertasKerjaPKMController extends Controller
                 $kddep = $data->prd_kodedepartement;
                 $kdkat = $data->prd_kodekategoribarang;
 
-                $temp = DB::table('tbtr_pkmgondola')
+                $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                     ->where('pkmg_prdcd','=',$prdcd)
                     ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
                     ->first();
 
                 if(!$temp){
-                    DB::table('tbtr_pkmgondola')
+                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                         ->insert([
                             'pkmg_kodeigr' => $_SESSION['kdigr'],
                             'pkmg_kodedivisi' => $kddiv,
@@ -178,7 +178,7 @@ class ProsesKertasKerjaPKMController extends Controller
                         ]);
                 }
                 else{
-                    DB::table('tbtr_pkmgondola')
+                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
                         ->where('pkm_prdcd','=',$prdcd)
                         ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
                         ->update([
@@ -200,7 +200,7 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function cetakStatusStorage(){
-        $datas = DB::select("SELECT 
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT
                  pkm_prdcd,
                  pkm_mindisplay,
                  pkm_minorder,
@@ -252,8 +252,8 @@ class ProsesKertasKerjaPKMController extends Controller
             select count(1) cnt, pkm_periodeproses
             from tbmaster_kkpkm
             group by pkm_periodeproses
-            order by cnt desc 
-            ) 
+            order by cnt desc
+            )
             where rownum=1)
         ORDER BY pkm_prdcd");
 

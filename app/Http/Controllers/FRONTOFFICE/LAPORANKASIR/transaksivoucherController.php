@@ -36,7 +36,7 @@ class transaksivoucherController extends Controller
             $periode = 'TANGGAL: '.$dateA;
         }
 
-        $datas = DB::select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRNDATE, KODEVOUCHER, PLATINUM, GOLD,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRNDATE, KODEVOUCHER, PLATINUM, GOLD,
          SILVER, REGULER, BIRU, GIFT_VCR*NILAIVOUCHER GIFT_VCR
     FROM (SELECT   POT_KODEIGR KODEIGR, TRNDATE, KODEVOUCHER, NILAIVOUCHER,
                    SUM (CASE
@@ -111,7 +111,7 @@ ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 

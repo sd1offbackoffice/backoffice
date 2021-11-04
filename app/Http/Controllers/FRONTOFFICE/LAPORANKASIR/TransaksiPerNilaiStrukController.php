@@ -48,7 +48,7 @@ class TransaksiPerNilaiStrukController extends Controller
 
         $p_memb='';
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         $periode = 'DARI TANGGAL: ' . $startDate . ' S/D ' . $endDate;
@@ -58,7 +58,7 @@ class TransaksiPerNilaiStrukController extends Controller
             $p_memb = " and nvl(cus_flagmemberkhusus, 'N') = 'Y'";
         }
 
-        $data = DB::select("SELECT prs_namaperusahaan, prs_namacabang, jh_transactiondate,
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, jh_transactiondate,
 	   SUM(aAmount1) sa1, SUM(aAmount2) sa2, SUM(aAmount3) sa3, SUM(aAmount4) sa4, SUM(aAmount5) sa5,
 	   SUM(aAmount6) sa6, SUM(aAmount7) sa7, SUM(aAmount8) sa8, SUM(aAmount9) sa9, SUM(aAmount10) sa10,
 	   SUM(aNum1) sn1, SUM(aNum2) sn2, SUM(aNum3) sn3, SUM(aNum4) sn4, SUM(aNum5) sn5,

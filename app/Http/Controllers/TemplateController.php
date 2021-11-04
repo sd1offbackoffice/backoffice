@@ -18,8 +18,8 @@ class TemplateController extends Controller
     }
 
     public function dataModal(){
-        $data   = DB::table('tbmaster_cabang')->orderBy('cab_kodecabang')->limit(11)->get();
-//        $data   = DB::table('tbmaster_cabang')->orderBy('cab_kodecabang')->get()->toArray();
+        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->orderBy('cab_kodecabang')->limit(11)->get();
+//        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get()->toArray();
 
 
         return Datatables::of($data)->make(true);
@@ -28,7 +28,7 @@ class TemplateController extends Controller
     public function searchDataModal(Request $request){
         $search = $request->value;
 
-        $data   = DB::table('tbmaster_prodmast')
+        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')

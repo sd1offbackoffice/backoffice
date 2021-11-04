@@ -25,7 +25,7 @@ class LapBedaTagController extends Controller
         $p_tag = "";
 
         if($tag != '_'){
-            $count = DB::table("tbmaster_tag")
+            $count = DB::connection($_SESSION['connection'])->table("tbmaster_tag")
                 ->selectRaw("count(1) hsl")
                 ->where("tag_kodetag",'=',$tag)
                 ->first();
@@ -35,7 +35,7 @@ class LapBedaTagController extends Controller
             $p_tag = "AND NVL(TRIM(PRD_KODETAG),'_') = '$tag'";
         }
 
-        $cursor = DB::select("SELECT   TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
+        $cursor = DB::connection($_SESSION['connection'])->select("SELECT   TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
          IDM_PLUIDM, IDM_PLUIGR, PRD_PRDCD, IDM_TAG, PRD_KODETAG, PRD_FLAGIDM, PRD_DESKRIPSIPENDEK,
          PRD_UNIT || ' / ' || PRD_FRAC PRD_SATUAN,
          CASE
@@ -67,7 +67,7 @@ ORDER BY NVL (trim (PRD_PRDCD), 'zzzzzzz'), IDM_PLUIDM");
         $time = date('H:i:s');
 
         if($tag != '_'){
-            $count = DB::table("tbmaster_tag")
+            $count = DB::connection($_SESSION['connection'])->table("tbmaster_tag")
                 ->selectRaw("count(1) hsl")
                 ->where("tag_kodetag",'=',$tag)
                 ->first();
@@ -77,7 +77,7 @@ ORDER BY NVL (trim (PRD_PRDCD), 'zzzzzzz'), IDM_PLUIDM");
             $p_tag = "AND NVL(TRIM(PRD_KODETAG),'_') = '$tag'";
         }
 
-        $datas = DB::select("SELECT   TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
+        $datas = DB::connection($_SESSION['connection'])->select("SELECT   TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
          IDM_PLUIDM, IDM_PLUIGR, PRD_PRDCD, IDM_TAG, PRD_KODETAG, PRD_FLAGIDM, PRD_DESKRIPSIPENDEK,
          PRD_UNIT || ' / ' || PRD_FRAC PRD_SATUAN,
          CASE

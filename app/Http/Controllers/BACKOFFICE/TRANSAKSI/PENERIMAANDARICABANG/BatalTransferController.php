@@ -18,7 +18,7 @@ class BatalTransferController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::table('tbtr_mstran_h')
+        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') tgl")
             ->where('msth_typetrn','=','I')
             ->where('msth_kodeigr','=',$_SESSION['kdigr'])
@@ -35,7 +35,7 @@ class BatalTransferController extends Controller
 
             $nosj = $request->nosj;
 
-            $cek = DB::table('tbtr_mstran_h')
+            $cek = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                 ->selectRaw("TO_CHAR(MSTH_TGLDOC,'MMYYYY') tgl, TO_CHAR(SYSDATE,'MMYYYY') tglnow")
                 ->where('msth_kodeigr','=',$_SESSION['kdigr'])
                 ->where('msth_typetrn','=','I')
@@ -51,21 +51,21 @@ class BatalTransferController extends Controller
                 return compact(['status','title']);
             }
             else{
-                $recs = DB::table('tbtr_mstran_d')
+                $recs = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                     ->where('mstd_typetrn','=','I')
                     ->where('mstd_nodoc','=',$nosj)
                     ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
                     ->get();
 
                 foreach($recs as $rec){
-                    $prdcur = DB::table('tbmaster_prodmast')
+                    $prdcur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->select('prd_unit','prd_frac','prd_avgcost')
                         ->where('prd_prdcd','=',substr($rec->mstd_prdcd,0,6).'1')
                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                         ->first();
 
                     if(!$prdcur){
-                        $prdcur = DB::table('tbmaster_prodmast')
+                        $prdcur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                             ->select('prd_unit','prd_frac','prd_avgcost')
                             ->where('prd_prdcd','=',substr($rec->mstd_prdcd,0,6).'0')
                             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -76,7 +76,7 @@ class BatalTransferController extends Controller
                     $frac = $prdcur->prd_frac;
                     $avgcost = $prdcur->prd_avgcost;
 
-                    $temp = DB::table('tbmaster_stock')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                         ->select('st_saldoakhir','st_avgcost','st_trfin')
                         ->where('st_kodeigr','=',$_SESSION['kdigr'])
                         ->where('st_prdcd','=',substr($rec->mstd_prdcd,0,6).'0')
@@ -84,7 +84,7 @@ class BatalTransferController extends Controller
                         ->first();
 
                     if(!$temp){
-                        DB::table('tbmaster_stock')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                             ->insert([
                                 'st_kodeigr' => $_SESSION['kdigr'],
                                 'st_prdcd' => substr($rec->mstd_prdcd,0,6).'0',
@@ -112,7 +112,7 @@ class BatalTransferController extends Controller
 
                     $qty = $qtystk - ($rec->mstd_qty + $rec->mstd_qtybonus1);
 
-                    $temp = DB::table('tbtr_hapusplu')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                         ->where('del_kodeigr','=',$_SESSION['kdigr'])
                         ->where('del_rtype','=',$rec->mstd_typetrn)
                         ->where('del_nodokumen','=',$rec->mstd_nodoc)
@@ -128,7 +128,7 @@ class BatalTransferController extends Controller
                                 $insqty = $nilai / $qty * 1000;
                             }
 
-                            DB::table('tbtr_hapusplu')
+                            DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                 ->insert([
                                     'del_kodeigr' => $_SESSION['kdigr'],
                                     'del_rtype' => $rec->mstd_typetrn,
@@ -150,7 +150,7 @@ class BatalTransferController extends Controller
                                 $insqty = $nilai / $qty * 1;
                             }
 
-                            DB::table('tbtr_hapusplu')
+                            DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
                                 ->insert([
                                     'del_kodeigr' => $_SESSION['kdigr'],
                                     'del_rtype' => $rec->mstd_typetrn,
@@ -174,7 +174,7 @@ class BatalTransferController extends Controller
                             $insavg = $nilai / $qty * 1000;
                         }
 
-                        DB::table('tbmaster_stock')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                             ->where('st_kodeigr','=',$_SESSION['kdigr'])
                             ->where('st_prdcd','=',substr($rec->mstd_prdcd,0,6).'0')
                             ->where('st_lokasi','=','01')
@@ -192,7 +192,7 @@ class BatalTransferController extends Controller
                             $insavg = $nilai / $qty * 1;
                         }
 
-                        DB::table('tbmaster_stock')
+                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
                             ->where('st_kodeigr','=',$_SESSION['kdigr'])
                             ->where('st_prdcd','=',substr($rec->mstd_prdcd,0,6).'0')
                             ->where('st_lokasi','=','01')
@@ -203,7 +203,7 @@ class BatalTransferController extends Controller
                             ]);
                     }
 
-                    $prdcur = DB::table('tbmaster_prodmast')
+                    $prdcur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->select('prd_unit','prd_frac','prd_avgcost')
                         ->where('prd_prdcd','=',substr($rec->mstd_prdcd,0,6).'0')
                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
@@ -215,7 +215,7 @@ class BatalTransferController extends Controller
 
                     $lcostlama = 0;
 
-                    $temp = DB::table('tbhistory_cost')
+                    $temp = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                         ->select('hcs_lastcostlama')
                         ->where('hcs_kodeigr','=',$_SESSION['kdigr'])
                         ->where('hcs_prdcd','=',$rec->mstd_prdcd)
@@ -230,7 +230,7 @@ class BatalTransferController extends Controller
                         else $lcostlama = $lcostlama / $frac;
                     }
 
-                    $recprds = DB::table('tbmaster_prodmast')
+                    $recprds = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                         ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                         ->whereRaw("substr(prd_prdcd,1,6) = substr('".$rec->mstd_prdcd."',1,6)")
                         ->get();
@@ -245,7 +245,7 @@ class BatalTransferController extends Controller
                             }
 
                             if($lcostlama != 0){
-                                DB::table('tbmaster_prodmast')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                                     ->whereRaw("substr(prd_prdcd,1,6) = substr('".$recprd->prd_prdcd."',1,6)")
                                     ->update([
@@ -254,7 +254,7 @@ class BatalTransferController extends Controller
                                     ]);
                             }
                             else{
-                                DB::table('tbmaster_prodmast')
+                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                                     ->where('prd_kodeigr','=',$_SESSION['kdigr'])
                                     ->whereRaw("substr(prd_prdcd,1,6) = substr('".$recprd->prd_prdcd."',1,6)")
                                     ->update([
@@ -265,14 +265,14 @@ class BatalTransferController extends Controller
                     }
 
                     if($temp){
-                        $rec2s = DB::table('tbhistory_cost')
+                        $rec2s = DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                             ->where('hcs_kodeigr','=',$_SESSION['kdigr'])
                             ->where('hcs_prdcd','=',$rec->mstd_prdcd)
                             ->where('hcs_nodocbpb','=',$rec->mstd_nopo)
                             ->get();
 
                         foreach($rec2s as $rec2){
-                            DB::table('tbhistory_cost')
+                            DB::connection($_SESSION['connection'])->table('tbhistory_cost')
                                 ->insert([
                                     'hcs_kodeigr' => $_SESSION['kdigr'],
                                     'hcs_recordid' => $rec2->hcs_recordid,
@@ -294,7 +294,7 @@ class BatalTransferController extends Controller
                         }
                     }
 
-                    DB::table('tbtr_mstran_d')
+                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
                         ->where('mstd_typetrn','=','I')
                         ->where('mstd_nodoc','=',$rec->mstd_nodoc)
                         ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
@@ -304,7 +304,7 @@ class BatalTransferController extends Controller
                             'mstd_modify_dt' => DB::RAW('SYSDATE')
                         ]);
 
-                    DB::table('tbtr_mstran_h')
+                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                         ->where('msth_typetrn','=','I')
                         ->where('msth_nodoc','=',$rec->mstd_nodoc)
                         ->where('msth_kodeigr','=',$_SESSION['kdigr'])

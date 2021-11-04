@@ -20,7 +20,7 @@ class RekapitulasiMutasiPointReward extends Controller
     public function lovMember(Request $request)
     {
         $search = $request->value;
-        $data = DB::select("select kode, nama, rownum num
+        $data = DB::connection($_SESSION['connection'])->select("select kode, nama, rownum num
     from
     (
     select cus_kodemember kode,cus_namamember nama
@@ -42,10 +42,10 @@ class RekapitulasiMutasiPointReward extends Controller
 
         $periode = $bln . '-' . $thn;
 
-        $jumlahMember = DB::select("select nvl(count(poc_kodemember),0) count FROM TBmaster_POINtCUSTOMER
+        $jumlahMember = DB::connection($_SESSION['connection'])->select("select nvl(count(poc_kodemember),0) count FROM TBmaster_POINtCUSTOMER
 		where poc_kodemember in (select cus_kodemember from tbmaster_customer where cus_kodeigr = '" . $_SESSION['kdigr'] . "')")[0]->count;
 
-        $dataTotal = DB::select("SELECT sum(saldo_awal_bulan) tot_saldoawal
+        $dataTotal = DB::connection($_SESSION['connection'])->select("SELECT sum(saldo_awal_bulan) tot_saldoawal
 			   , sum(NVL(perolehanpoint,0)) tot_perolehankasir
 			   , sum(NVL(penukaranpoint,0)) tot_pembayaranpoin
 			   , sum(NVL(redeempoint,0)) tot_redeempoin
@@ -95,7 +95,7 @@ class RekapitulasiMutasiPointReward extends Controller
 		  AND kdmbr = cus_kodemember(+)
 		  and kdmbr in (select cus_kodemember from tbmaster_customer where cus_kodeigr = '" . $_SESSION['kdigr'] . "')")[0];
 
-        $data = DB::select("SELECT kdmbr, cus_namamember, saldo_awal_bulan
+        $data = DB::connection($_SESSION['connection'])->select("SELECT kdmbr, cus_namamember, saldo_awal_bulan
 	   , NVL(perolehanpoint,0) perolehanpoint, NVL(penukaranpoint,0) penukaranpoint, NVL(redeempoint,0) redeempoint,
 	   saldo_awal_bulan+NVL(perolehanpoint,0)-(NVL(penukaranpoint,0)+NVL(redeempoint,0)) saldo_akhir_bulan,
 	   0 trf_kodelama, 0 trf_kodebaru
@@ -166,7 +166,7 @@ WHERE kdmbr = T_kdmbr(+)
         $tgl1 = '01-'.substr($periode,5,2).'-'.substr($periode,3,2);
         $tgl2 = substr($periode,7,2).'-'.substr($periode,5,2).'-'.substr($periode,3,2);
 
-        $data = DB::select("SELECT prs_namaperusahaan, prs_namacabang, kdmbr, cus_namamember, saldo_awal_bulan
+        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, kdmbr, cus_namamember, saldo_awal_bulan
 	   , NVL(perolehanpoint,0)perolehanpoint, NVL(penukaranpoint,0)penukaranpoint, NVL(redeempoint,0)redeempoint,
 	   saldo_awal_bulan+NVL(perolehanpoint,0)-(NVL(penukaranpoint,0)+NVL(redeempoint,0)) saldo_akhir_bulan,
 0 trf_kodelama, 0 trf_kodebaru
@@ -216,7 +216,7 @@ WHERE kdmbr = T_kdmbr(+)
   AND kdigr = '".$_SESSION['kdigr']."'
   AND kdigr = prs_kodeigr ".$p_sort);
 
-        $perusahaan = DB::table('tbmaster_perusahaan')
+        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
         if (sizeof($data) != 0) {

@@ -16,8 +16,7 @@
                                 <label class="col-sm-4 text-right col-form-label">Jenis Laporan</label>
                                 <div class="dropdown col-sm-4">
                                     <button class="btn btn-secondary dropdown-toggle col-sm-12" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <input readonly type="text" id="lstPrint" class="col-sm-11" value="">
-                                        <input hidden type="text" id="lstPrintHidden" class="col-sm-11" value="">
+                                        <input readonly type="text" id="jenisLaporan" class="col-sm-11" value="">
                                     </button>
                                     <div id="dropDownList" class="dropdown-menu col-sm-11" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" onclick="changeInput(1)">LAPORAN PER KATEGORY</a>
