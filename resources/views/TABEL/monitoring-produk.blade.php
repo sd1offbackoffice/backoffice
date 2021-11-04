@@ -382,13 +382,16 @@
                         $('#mon_qty').val('');
                     },
                     success: function (response) {
-                        $('#modal-loader').modal('hide');
 
                         $('#mon_nama').val(response.nama);
 
-                        if(type == 'get')
+                        if(type == 'get'){
                             getData();
-                        else print();
+                        }
+                        else {
+                            $('#modal-loader').modal('hide');
+                            print();
+                        }
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');
@@ -464,6 +467,8 @@
                         // $('#satuan').val(lastData.satuan);
 
                         // $('#table_data tbody tr:eq(-1) button').focus().blur();
+
+                        $('#modal-loader').modal('hide');
 
                         $('#mon_qty').val(dataPLUMonitoring.length);
 

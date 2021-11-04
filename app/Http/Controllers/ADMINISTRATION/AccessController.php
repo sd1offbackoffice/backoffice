@@ -153,18 +153,31 @@ class AccessController extends Controller
     }
 
     public static function getListMenu($usid){
-        return DB::table('tbmaster_access_migrasi')
-            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
-            ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-            ->where('uac_userid','=',$usid)
-            ->where('acc_status','=',0)
+
+        if(in_array($usid, ['DEV','SUP'])){
+            return DB::table('tbmaster_access_migrasi')
+                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+                ->orderBy('acc_group')
+                ->orderBy('acc_subgroup1')
+                ->orderBy('acc_subgroup2')
+                ->orderBy('acc_subgroup3')
+                ->orderBy('acc_name')
+                ->get();
+        }
+        else{
+            return DB::table('tbmaster_access_migrasi')
+                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+                ->where('uac_userid','=',$usid)
+                ->where('acc_status','=',0)
 //            ->orderBy('acc_id')
-            ->orderBy('acc_group')
-            ->orderBy('acc_subgroup1')
-            ->orderBy('acc_subgroup2')
-            ->orderBy('acc_subgroup3')
-            ->orderBy('acc_name')
-            ->get();
+                ->orderBy('acc_group')
+                ->orderBy('acc_subgroup1')
+                ->orderBy('acc_subgroup2')
+                ->orderBy('acc_subgroup3')
+                ->orderBy('acc_name')
+                ->get();
+        }
     }
     public static function isAccessible($url){
         if($url == '/')

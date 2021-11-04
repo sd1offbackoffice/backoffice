@@ -745,8 +745,11 @@
                     $('#modal_plu').modal('hide');
                     $('#modal_idm').modal('hide');
                     $('#modal_omi').modal('hide');
+                    $(':input').val('');
+
                 },
                 success: function (result) {
+
                     $('#modal-loader').modal('hide');
                     let data = result.datas[0];
 
@@ -826,7 +829,7 @@
                 }, error: function(err){
                     $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0,100));
-                    alertError(err.statusText, err.responseJSON.message);
+                    swal(err.responseJSON.message,'','error');
                 }
             })
         }

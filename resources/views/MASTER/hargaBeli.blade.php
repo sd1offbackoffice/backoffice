@@ -693,7 +693,7 @@
                         swal({
                             title: 'Data tidak ditemukan!',
                             icon: 'error',
-                        }).then((createData) => {
+                        }).then(function(){
                             $('#i_plu').select();
                         });
                     }
@@ -1006,7 +1006,7 @@
                         $('#table_lov').append(trlov);
                     }
                     $('#modal-loader').modal('hide');
-                    $('#i_plu').focus();
+                    // $('#i_plu').focus();
                 }
             });
         }

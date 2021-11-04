@@ -1479,7 +1479,8 @@ class CetakDokumenController extends Controller
                     }
                 }
             }
-        } else {
+        }
+        else {
             if ($lap == 'L') {
                 $sub_isi_docno = [];
 
@@ -1816,6 +1817,7 @@ class CetakDokumenController extends Controller
 
 //          SHOW_DATA($doc, $lap, $reprint);
         }
+
         return $laporan;
     }
 

@@ -819,6 +819,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             });
         });
 
+        /*Ryan*/
+        Route::prefix('/list-master')->group(function () {
+            Route::get('/', 'BACKOFFICE\listmasterController@index');
+        });
+
         Route::prefix('/proses')->group(function () {
             Route::prefix('/konversi')->group(function () {
                 Route::get('/', 'BACKOFFICE\PROSES\KonversiController@index');
@@ -1161,6 +1166,9 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/byrvch')->group(function () {
             //Total Pembayaran Voucher (IGR_TAB_BYRVCH) (ryanOrder = 35)
             Route::get('/', 'TABEL\byrvchController@index');
+            Route::get('/getsupp', 'TABEL\byrvchController@GetSupp');
+            Route::get('/getsingkatan', 'TABEL\byrvchController@GetSingkatan');
+            Route::get('/checkvoucher', 'TABEL\byrvchController@CheckVoucher');
         });
 
         /*Ryan*/

@@ -25,56 +25,61 @@ class byrvchController extends Controller
     }
 
 
-    public function ModalPlu(Request $request){
+    public function GetSupp(){
         $kodeigr = $_SESSION['kdigr'];
-        $search = $request->value;
 
-        $datas = DB::table("TBMASTER_PRODMAST")
-            ->selectRaw("PRD_DESKRIPSIPANJANG")
-            ->selectRaw("PRD_PRDCD")
+        $datas = DB::table("tbmaster_hargabeli")
+            ->selectRaw("DISTINCT hgb_kodesupplier as hgb_kodesupplier")
+            ->selectRaw("sup_namasupplier")
 
-            ->where('PRD_DESKRIPSIPANJANG','LIKE','%'.$search.'%')
-            ->whereRaw("nvl(prd_recordid,9)<>1")
-            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->leftJoin('tbmaster_supplier',function($join){
+                $join->on('sup_kodeigr','hgb_kodeigr');
+                $join->on('sup_kodesupplier','hgb_kodesupplier');
+            })
 
-            ->orWhere('PRD_PRDCD','LIKE','%'.$search.'%')
-            ->whereRaw("nvl(prd_recordid,9)<>1")
-            ->where('PRD_KODEIGR','=',$kodeigr)
+            ->where('hgb_kodeigr','=',$kodeigr)
+            ->where("hgb_tipe",'=','2')
 
-            ->orderBy("PRD_DESKRIPSIPANJANG")
-            ->limit(100)
+            ->orderBy("hgb_kodesupplier")
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function GetSingkatan(){
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::table("TBTABEL_VOUCHERSUPPLIER")
+            ->selectRaw("VCS_NAMASUPPLIER")
+            ->selectRaw("VCS_NILAIVOUCHER")
+
+            ->where('VCS_KODEIGR','=',$kodeigr)
+
             ->get();
 
         return Datatables::of($datas)->make(true);
     }
 
 
-    public function CheckPlu(Request $request){
+    public function CheckVoucher(Request $request){
         $kodeigr = $_SESSION['kdigr'];
-        $kode = $request->kode;
-        $notif = '';
-        $deskripsi = '';
-        $unit = '';
+        $supp = $request->supp;
+        $sing = $request->sing;
+        $tglAwal = '';
+        $tglAkhir = '';
 
-        $datas = DB::select("SELECT prd_prdcd
-          FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
-         WHERE prd_kodeigr = '$kodeigr'
-           AND prd_prdcd = brc_prdcd(+)
-           AND (prd_prdcd = TRIM ('$kode') OR brc_barcode = TRIM ('kode'))");
-        if($datas){
-            $temp = DB::table("TBMASTER_PRODMAST")
-                ->selectRaw("PRD_DESKRIPSIPANJANG")
-                ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
-                ->where("PRD_KODEIGR",'=',$kodeigr)
-                ->where("PRD_PRDCD",'=',$kode)
-                ->first();
-            $deskripsi = $temp->prd_deskripsipanjang;
-            $unit = $temp->unit;
-        }else{
-            $notif = "Kode PLU ".$kode." - ".$kodeigr." Tidak Terdaftar di Master Barang  !!";
+        $temp = DB::table("TBTABEL_PEMBAYARANVOUCHER")
+            ->selectRaw("DISTINCT TO_CHAR(BYR_TGLAWAL, 'DD/MM/YYYY') as BYR_TGLAWAL")
+            ->selectRaw("TO_CHAR(BYR_TGLAKHIR, 'DD/MM/YYYY') as BYR_TGLAKHIR")
+            ->where("BYR_KODEIGR",'=',$kodeigr)
+            ->where("BYR_KODESUPPLIER",'=',$supp)
+            ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+            ->first();
+        if($temp){
+            $tglAwal = $temp->byr_tglawal;
+            $tglAkhir = $temp->byr_tglakhir;
         }
-
-        return response()->json(['notif' => $notif, 'deskripsi'=>$deskripsi, 'unit'=>$unit]);
+        return response()->json(['tglAwal' => $tglAwal, 'tglAkhir' => $tglAkhir]);
     }
 
     public function save(Request $request){

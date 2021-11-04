@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7338c9e7-6e65-463a-8e7d-9dd4cd1c3875" name="igrsmg" url="http://192.168.237.220:81/">
+        <fileTransfer rootFolder="/u01/web" accessType="SFTP" host="192.168.237.220" port="22" sshConfigId="453408ec-c817-4dbd-bf75-59d5c1214566" sshConfig="root@192.168.237.220:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

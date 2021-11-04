@@ -17,9 +17,11 @@ class hariLiburController extends Controller
     public function getHariLibur(){
         $harilibur = DB::table('TBMASTER_HARILIBUR')
             ->select('lib_tgllibur', 'lib_keteranganlibur')
-            ->whereYear('lib_tgllibur', date("Y", strtotime("now")))
+            ->whereRaw("to_char(lib_tgllibur,'yyyy') >= to_char(sysdate,'yyyy')" )
             ->orderBy('lib_tgllibur')
             ->get();
+
+//        $harilibur = DB::select("select * from tbmaster_harilibur where to_char(lib_tgllibur,'yyyy') >= to_char(sysdate,'yyyy') order by lib_create_dt desc");
 
         return Datatables::of($harilibur)->make(true);
     }

@@ -266,21 +266,20 @@ class loginController extends Controller
             return redirect('/');
         }
 
-//        $allcabang = true;
-//
-//        foreach ($this->listCabang as $c) {
-//            if ($c->segment == explode('.', $ipx)[2]) {
-//                $allcabang = false;
-//                break;
-//            }
-//        }
+        $allcabang = true;
+        $prs = 'Indogrosir HO';
 
-        $prs = DB::table('TBMASTER_PERUSAHAAN')
-            ->select('PRS_NamaCabang')
-            ->first();
+        foreach ($this->listCabang as $c) {
+            if ($c->segment == explode('.', $ipx)[2]) {
+                $prs = 'Indogrosir '.strtoupper($c->namacabang);
+
+                $allcabang = false;
+                break;
+            }
+        }
 
         $cabang = $this->listCabang;
-        return view('login')->with(compact(['prs']));
+        return view('login')->with(compact(['prs', 'cabang', 'allcabang']));
     }
 
     public function login(Request $request)
@@ -297,32 +296,29 @@ class loginController extends Controller
         $login = true;
         $vppn = 0;
 
-        $koneksi = 'sim';
+        $koneksi = $request->koneksi;
         $detailCabang = '';
 
-//        if (isset($request->cabang)) {
-//            foreach ($this->listCabang as $c) {
-//                if ($c->kode == $request->cabang) {
-//                    $detailCabang = $c;
-//                    $koneksi = $request->koneksi;
-//                    break;
-//                }
-//            }
-//        } else {
-        foreach ($this->listCabang as $c) {
-            if ($c->segment == explode('.', $ipx)[2]) {
-                $detailCabang = $c;
-                $koneksi = 'igr';
-                break;
+        if (isset($request->cabang)) {
+            foreach ($this->listCabang as $c) {
+                if ($c->kode == $request->cabang) {
+                    $detailCabang = $c;
+                    break;
+                }
+            }
+        } else {
+            foreach ($this->listCabang as $c) {
+                if ($c->segment == explode('.', $ipx)[2]) {
+                    $detailCabang = $c;
+                    break;
+                }
             }
         }
-//        }
 
         if ($detailCabang == '') {
             foreach ($this->listCabang as $c) {
                 if ($c->segment == '237') {
                     $detailCabang = $c;
-                    $koneksi = 'sim';
                     break;
                 }
             }
@@ -341,7 +337,7 @@ class loginController extends Controller
 
 
         if ($request->username == 'RST' and strtoupper($request->password) == 'RST') {
-            DB::table('TBMASTER_COMPUTER')
+            DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->where('ip', $ipx)
                 ->update(['useraktif' => '']);
             $Freset = true;
@@ -350,7 +346,7 @@ class loginController extends Controller
             return compact(['message', 'status']);
         }
 
-        $jum = DB::table('tbmaster_computer')
+        $jum = DB::connection($_SESSION['connection'])->table('tbmaster_computer')
             ->select('*')
             ->where('ip', '=', $ipx)
             ->count('*');
@@ -361,7 +357,7 @@ class loginController extends Controller
             $login = false;
             return compact(['message', 'status']);
         }
-        $ipx = DB::table('tbmaster_computer')
+        $ipx = DB::connection($_SESSION['connection'])->table('tbmaster_computer')
             ->select('ip')
             ->where('useraktif', $request->username)
             ->first();
@@ -386,7 +382,7 @@ class loginController extends Controller
         } else {
             $usraktif = '';
             $ipx = $request->getClientIp();
-            $ip = DB::table('tbmaster_computer')
+            $ip = DB::connection($_SESSION['connection'])->table('tbmaster_computer')
                 ->select('*')
                 ->where('ip', $ipx)
                 ->get();
@@ -403,7 +399,7 @@ class loginController extends Controller
 
         if ($login and $Freset == false) {
             $ipx = $request->getClientIp();
-            $prs = DB::table('tbmaster_perusahaan')
+            $prs = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->selectRaw('prs_kodeigr, prs_rptname, prs_nilaippn, prs_namacabang, prs_periodeterakhir')
                 ->first();
             $vip = $request->getClientIp();
@@ -422,7 +418,7 @@ class loginController extends Controller
 
                 if ($request->password == $truepass || $request->password == 'devonly') {
                     $flagedp = 1;
-                    DB::table('tbmaster_computer')
+                    DB::connection($_SESSION['connection'])->table('tbmaster_computer')
                         ->where('ip', $ipx)
                         ->update(['useraktif' => $request->username]);
                 } else {
@@ -445,15 +441,15 @@ class loginController extends Controller
 //                $_SESSION['conPassword'] = $conPassword;
 //                $_SESSION['conString'] = $conString;
 
-                DB::table('TBMASTER_PERUSAHAAN')
+                DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
                     ->update([
-                        'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
+                        'PRS_PERIODETERAKHIR' => DB::connection($_SESSION['connection'])->Raw('trunc(sysdate)'),
                         'PRS_MODIFY_BY' => $_SESSION['usid'],
-                        'PRS_MODIFY_DT' => DB::Raw('sysdate')
+                        'PRS_MODIFY_DT' => DB::connection($_SESSION['connection'])->Raw('sysdate')
                     ]);
 
             } else {
-                $user = DB::table('tbmaster_user')
+                $user = DB::connection($_SESSION['connection'])->table('tbmaster_user')
                     ->selectRaw('userid, username, userpassword, email, encryptpwd, userlevel')
                     ->whereRaw('nvl(recordid, \'0\') <> \'1\'')
                     ->where('userid', $request->username)
@@ -491,33 +487,33 @@ class loginController extends Controller
 
                 $_SESSION['usertype'] = $usertype;
                 if (!is_null($_SESSION['usid']) and $_SESSION['usid'] != 'NUL') {
-                    $cek = DB::table('tbmaster_perusahaan')
+                    $cek = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                         ->whereRaw('prs_periodeterakhir = trunc(sysdate)')
                         ->first();
 
                     if (!$cek) {
                         if ($_SESSION['usid'] == 'ADM') {
-                            DB::table('TBMASTER_PERUSAHAAN')
+                            DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
                                 ->update([
-                                    'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
+                                    'PRS_PERIODETERAKHIR' => DB::connection($_SESSION['connection'])->Raw('trunc(sysdate)'),
                                     'PRS_MODIFY_BY' => $_SESSION['usid'],
-                                    'PRS_MODIFY_DT' => DB::Raw('sysdate')
+                                    'PRS_MODIFY_DT' => DB::connection($_SESSION['connection'])->Raw('sysdate')
                                 ]);
 
-                            DB::table('tbmaster_computer')
+                            DB::connection($_SESSION['connection'])->table('tbmaster_computer')
                                 ->where('ip', $ipx)
                                 ->update(['useraktif' => $request->username]);
                             $userstatus = 'ADM';
 
                         } else {
-                            DB::table('TBMASTER_PERUSAHAAN')
+                            DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
                                 ->update([
-                                    'PRS_PERIODETERAKHIR' => DB::Raw('trunc(sysdate)'),
+                                    'PRS_PERIODETERAKHIR' => DB::connection($_SESSION['connection'])->Raw('trunc(sysdate)'),
                                     'PRS_MODIFY_BY' => $_SESSION['usid'],
-                                    'PRS_MODIFY_DT' => DB::Raw('sysdate')
+                                    'PRS_MODIFY_DT' => DB::connection($_SESSION['connection'])->Raw('sysdate')
                                 ]);
 
-                            DB::table('tbmaster_computer')
+                            DB::connection($_SESSION['connection'])->table('tbmaster_computer')
                                 ->where('ip', $ipx)
                                 ->update(['useraktif' => $request->username]);
                             $userstatus = 'USR';
@@ -539,7 +535,7 @@ class loginController extends Controller
 
         if (isset($_SESSION['ip'])) {
             $ipx = $_SESSION['ip'];
-            DB::table('TBMASTER_COMPUTER')
+            DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->where('ip', $ipx)
                 ->update(['useraktif' => '']);
         }
@@ -562,7 +558,7 @@ class loginController extends Controller
         $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
         if (isset($_SESSION['ip'])) {
             $ipx = $_SESSION['ip'];
-            DB::table('TBMASTER_COMPUTER')
+            DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
                 ->where('ip', $ipx)
                 ->update(['useraktif' => '']);
         }
@@ -573,7 +569,7 @@ class loginController extends Controller
 //
 //        dd($message);
 
-        $prs = DB::table('TBMASTER_PERUSAHAAN')
+        $prs = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
             ->select('PRS_NamaCabang')
             ->first();
 
@@ -585,7 +581,7 @@ class loginController extends Controller
     public function insertip(Request $request)
     {
         $ipx = $request->getClientIp();
-        $temp = DB::table('TBMASTER_COMPUTER')
+        $temp = DB::connection($_SESSION['connection'])->table('TBMASTER_COMPUTER')
             ->where('ip', $ipx)
             ->first();
 
@@ -593,7 +589,7 @@ class loginController extends Controller
             $message = 'IP sudah ada! jangan pencet-pencet terus!';
             $status = 'error';
         } else {
-            DB::table('tbmaster_computer')->insert(
+            DB::connection($_SESSION['connection'])->table('tbmaster_computer')->insert(
                 ['ip' => $ipx, 'station' => rand(1, 9), 'computername' => 'SERVER', 'useraktif' => '', 'create_by' => 'WEB', 'create_dt' => '', 'modify_dt' => '', 'kodeigr' => '22', 'recordid' => '']);
             $message = 'IP berhasil didaftarkan!';
             $status = 'success';

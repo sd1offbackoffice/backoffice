@@ -181,12 +181,12 @@
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (result) {
-                        $('#modal-loader').modal('hide');
-                        swal('SUCCESS', result, 'success')
+                        swal('SUCCESS', result, 'success').then(function(){
+                            $('#modal-loader').modal('hide');
+                        });
                         console.log(result)
                         clearField()
                     }, error : function (err) {
-                        $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0,150));
                         alertError(err.statusText, err.responseJSON.message);
                     }

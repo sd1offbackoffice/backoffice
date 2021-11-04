@@ -93,7 +93,7 @@ return [
 
 
         // KONEKSI KE CABANG
-        'igrCPG' => [
+        'igrcpg' => [
             'driver' => 'oracle',
             'host' => '192.168.226.191',
             'port' => '1521',
@@ -104,18 +104,18 @@ return [
             'prefix' => '',
         ],
 
-        'igrSBY' => [ //igrsby
+        'igrsby' => [ //igrsby
             'driver' => 'oracle',
-            'host' => '192.9.220.192',
+            'host' => '192.9.220.191',
             'port' => '1521',
-            'database' => 'IGRSBY2',
+            'database' => 'IGRSBY',
             'username' => 'IGRSBY',
             'password' => 'V1s10nsby!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
 
-        'igrBDG' => [ //igrbdg
+        'igrbdg' => [ //igrbdg
             'driver' => 'oracle',
             'host' => '192.168.222.191',
             'port' => '1521',
@@ -126,7 +126,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrTGR' => [
+        'igrtgr' => [
             'driver' => 'oracle',
             'host' => '192.168.228.191',
             'port' => '1521',
@@ -137,7 +137,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrYGY' => [
+        'igrygy' => [
             'driver' => 'oracle',
             'host' => '192.168.224.191',
             'port' => '1521',
@@ -148,18 +148,18 @@ return [
             'prefix' => '',
         ],
 
-        'igrMDN' => [
+        'igrmdn' => [
             'driver' => 'oracle',
-            'host' => '192.168.229.192',
+            'host' => '192.168.229.191',
             'port' => '1521',
-            'database' => 'igrmdn2',
+            'database' => 'igrmdn',
             'username' => 'igrmdn',
             'password' => 'Sc4rl3tw1cmdn!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
 
-        'igrBKS' => [
+        'igrbks' => [
             'driver' => 'oracle',
             'host' => '192.168.225.191',
             'port' => '1521',
@@ -170,7 +170,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrPLG' => [
+        'igrplg' => [
             'driver' => 'oracle',
             'host' => '192.168.232.191',
             'port' => '1521',
@@ -181,7 +181,7 @@ return [
             'prefix' => '',
         ],
 
-        'igrKMY' => [
+        'igrkmy' => [
             'driver' => 'oracle',
             'host' => '192.168.234.191',
             'port' => '1521',
@@ -192,11 +192,22 @@ return [
             'prefix' => '',
         ],
 
-        'igrSMD' => [
+        'igrpku' => [
             'driver' => 'oracle',
-            'host' => '192.168.236.192',
+            'host' => '192.168.235.191',
             'port' => '1521',
-            'database' => 'IGRSMD2',
+            'database' => 'igrpku',
+            'username' => 'igrpku',
+            'password' => 'Bl4ckw1dowpku!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrsmd' => [
+            'driver' => 'oracle',
+            'host' => '192.168.236.191',
+            'port' => '1521',
+            'database' => 'IGRSMD',
             'username' => 'igrsmd',
             'password' => 'Furrysmd!',
             'charset' => 'AL32UTF8',
@@ -214,17 +225,6 @@ return [
             'prefix' => '',
         ],
 
-        'igrptk' => [
-            'driver' => 'oracle',
-            'host' => '192.168.238.191',
-            'port' => '1521',
-            'database' => 'IGRPTK',
-            'username' => 'igrptk',
-            'password' => 'Bp4nthptk!',
-            'charset' => 'AL32UTF8',
-            'prefix' => '',
-        ],
-
         'igrbgr' => [
             'driver' => 'oracle',
             'host' => '192.168.240.191',
@@ -236,22 +236,22 @@ return [
             'prefix' => '',
         ],
 
-        'igrpku' => [
+        'igrptk' => [
             'driver' => 'oracle',
-            'host' => '192.168.235.191',
+            'host' => '192.168.238.191',
             'port' => '1521',
-            'database' => 'igrpku',
-            'username' => 'igrpku',
-            'password' => 'Bl4ckw1dowpku!',
+            'database' => 'IGRPTK',
+            'username' => 'igrptk',
+            'password' => 'Bp4nthptk!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
 
         'igrbms' => [
             'driver' => 'oracle',
-            'host' => '192.168.239.192',
+            'host' => '192.168.239.191',
             'port' => '1521',
-            'database' => 'igrbms2',
+            'database' => 'igrbms',
             'username' => 'igrbms',
             'password' => 'Drstr4ng3bms!',
             'charset' => 'AL32UTF8',
@@ -269,13 +269,13 @@ return [
             'prefix' => '',
         ],
 
-        'igrmks' => [
+        'igrgij' => [
             'driver' => 'oracle',
-            'host' => '192.168.243.191',
+            'host' => '172.20.22.93',
             'port' => '1521',
-            'database' => 'IGRMKS',
-            'username' => 'igrmks',
-            'password' => 'C4pm4rv3lmks!',
+            'database' => 'IGRCRM',
+            'username' => 'IGRGIJ',
+            'password' => 'St4rL0rdgib!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
@@ -287,6 +287,17 @@ return [
             'database' => 'IGRJBI',
             'username' => 'igrjbi',
             'password' => 'B4bygr0otjbi!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'igrmks' => [
+            'driver' => 'oracle',
+            'host' => '192.168.243.191',
+            'port' => '1521',
+            'database' => 'IGRMKS',
+            'username' => 'igrmks',
+            'password' => 'C4pm4rv3lmks!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
@@ -352,11 +363,21 @@ return [
             'port' => '1521',
             'database' => 'IGRBDL',
             'username' => 'igrbdl',
-            'password' => 'igrbdl',
+            'password' => 'J4rv15bdl!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
 
+        'igrslo' => [
+            'driver' => 'oracle',
+            'host' => '192.168.248.191',
+            'port' => '1521',
+            'database' => 'IGRSLO',
+            'username' => 'igrslo',
+            'password' => 'Ultr0nslo!',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
 
         //KONEKSI KE PUSAT
         'igrcrm' => [
@@ -381,18 +402,106 @@ return [
             'prefix' => '',
         ],
 
-        'igrsimkrw' => [
+        'igrckl' => [
             'driver' => 'oracle',
-            'host' => '192.168.231.193',
+            'host' => '192.168.249.191',
             'port' => '1521',
-            'database' => 'SIMKRW',
-            'username' => 'SIMKRW',
-            'password' => 'SIMKRW',
+            'database' => 'IGRCKL',
+            'username' => 'IGRCKL',
+            'password' => 'Sh4ngch1ckl!',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
 
         //KONEKSI KE SIMULASI
+
+        'simcpg' => [
+            'driver' => 'oracle',
+            'host' => '192.168.226.193',
+            'port' => '1521',
+            'database' => 'SIMCPG',
+            'username' => 'SIMCPG',
+            'password' => 'SIMCPG',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simsby' => [
+            'driver' => 'oracle',
+            'host' => '192.9.220.193',
+            'port' => '1521',
+            'database' => 'SIMSBY',
+            'username' => 'SIMSBY',
+            'password' => 'SIMSBY',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simbdg' => [
+            'driver' => 'oracle',
+            'host' => '192.168.222.193',
+            'port' => '1521',
+            'database' => 'SIMBDG',
+            'username' => 'SIMBDG',
+            'password' => 'SIMBDG',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simtgr' => [
+            'driver' => 'oracle',
+            'host' => '192.168.228.193',
+            'port' => '1521',
+            'database' => 'SIMTGR',
+            'username' => 'SIMTGR',
+            'password' => 'SIMTGR',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simygy' => [
+            'driver' => 'oracle',
+            'host' => '192.168.224.193',
+            'port' => '1521',
+            'database' => 'SIMIGRYGY',
+            'username' => 'SIMYGY',
+            'password' => 'SIMYGY',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simmdn' => [
+            'driver' => 'oracle',
+            'host' => '192.168.229.193',
+            'port' => '1521',
+            'database' => 'IGRMDNSIM',
+            'username' => 'SIMMDN',
+            'password' => 'SIMMDN',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simbks' => [
+            'driver' => 'oracle',
+            'host' => '192.168.225.200',
+            'port' => '1521',
+            'database' => 'SIMBKS',
+            'username' => 'SIMBKS',
+            'password' => 'SIMBKS',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simplg' => [
+            'driver' => 'oracle',
+            'host' => '192.168.232.193',
+            'port' => '1521',
+            'database' => 'SIMPLG',
+            'username' => 'SIMPLG',
+            'password' => 'SIMPLG',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
 
         'simkmy' => [
             'driver' => 'oracle',
@@ -401,6 +510,28 @@ return [
             'database' => 'SIMKMY',
             'username' => 'SIMKMY',
             'password' => 'SIMKMY',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simpku' => [
+            'driver' => 'oracle',
+            'host' => '192.168.235.193',
+            'port' => '1521',
+            'database' => 'SIMPKU',
+            'username' => 'SIMPKU',
+            'password' => 'SIMPKU',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simsmd' => [
+            'driver' => 'oracle',
+            'host' => '192.168.236.193',
+            'port' => '1521',
+            'database' => 'SIMSMD',
+            'username' => 'SIMSMD',
+            'password' => 'SIMSMD',
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
@@ -415,6 +546,161 @@ return [
             'charset' => 'AL32UTF8',
             'prefix' => '',
         ],
+
+        'simbgr' => [
+            'driver' => 'oracle',
+            'host' => '192.168.240.193',
+            'port' => '1521',
+            'database' => 'SIMBGR',
+            'username' => 'SIMBGR',
+            'password' => 'SIMBGR',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simptk' => [
+            'driver' => 'oracle',
+            'host' => '192.168.238.193',
+            'port' => '1521',
+            'database' => 'SIMPTK',
+            'username' => 'SIMPTK',
+            'password' => 'SIMPTK',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simbms' => [
+            'driver' => 'oracle',
+            'host' => '192.168.239.193',
+            'port' => '1521',
+            'database' => 'SIMBMS',
+            'username' => 'SIMBMS',
+            'password' => 'SIMBMS',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simmdo' => [
+            'driver' => 'oracle',
+            'host' => '192.168.241.193',
+            'port' => '1521',
+            'database' => 'SIMMDO',
+            'username' => 'SIMMDO',
+            'password' => 'SIMMDO',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simjbi' => [
+            'driver' => 'oracle',
+            'host' => '192.168.242.193',
+            'port' => '1521',
+            'database' => 'SIMJBI',
+            'username' => 'SIMJBI',
+            'password' => 'SIMJBI',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simmks' => [
+            'driver' => 'oracle',
+            'host' => '192.168.243.193',
+            'port' => '1521',
+            'database' => 'SIMMKS',
+            'username' => 'SIMMKS',
+            'password' => 'SIMMKS',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simkri' => [
+            'driver' => 'oracle',
+            'host' => '192.168.244.193',
+            'port' => '1521',
+            'database' => 'SIMKRI',
+            'username' => 'SIMKRI',
+            'password' => 'SIMKRI',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simamb' => [
+            'driver' => 'oracle',
+            'host' => '192.168.230.193',
+            'port' => '1521',
+            'database' => 'SIMAMB',
+            'username' => 'SIMAMB',
+            'password' => 'SIMAMB',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simcpt' => [
+            'driver' => 'oracle',
+            'host' => '192.168.245.193',
+            'port' => '1521',
+            'database' => 'SIMCPT',
+            'username' => 'SIMCPT',
+            'password' => 'SIMCPT',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simkrw' => [
+            'driver' => 'oracle',
+            'host' => '192.168.231.193',
+            'port' => '1521',
+            'database' => 'SIMKRW',
+            'username' => 'SIMKRW',
+            'password' => 'SIMKRW',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simmlg' => [
+            'driver' => 'oracle',
+            'host' => '192.168.246.193',
+            'port' => '1521',
+            'database' => 'SIMMLG',
+            'username' => 'SIMMLG',
+            'password' => 'SIMMLG',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simbdl' => [
+            'driver' => 'oracle',
+            'host' => '192.168.247.193',
+            'port' => '1521',
+            'database' => 'SIMBDL',
+            'username' => 'SIMBDL',
+            'password' => 'SIMBDL',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simslo' => [
+            'driver' => 'oracle',
+            'host' => '192.168.248.193',
+            'port' => '1521',
+            'database' => 'SIMSLO',
+            'username' => 'SIMSLO',
+            'password' => 'SIMSLO',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
+        'simckl' => [
+            'driver' => 'oracle',
+            'host' => '192.168.249.193',
+            'port' => '1521',
+            'database' => 'SIMCKL',
+            'username' => 'SIMCKL',
+            'password' => 'SIMCKL',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
+
 
         'simsimi2' => [
             'driver' => 'pgsql',
@@ -442,6 +728,66 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'testpg' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'pgdb'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', 'pg'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
+        'logquery' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'pgdb'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', 'pg'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'logquery',
+            'sslmode' => 'prefer',
+        ],
+
+        'igrlocalhost' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'pgdb'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', 'pg'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'igrlocalhost',
+            'sslmode' => 'prefer',
+        ],
+
+        'ciputat' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'pgdb'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', 'pg'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'ciputat',
+            'sslmode' => 'prefer',
+        ],
+
         'simsimi' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
@@ -457,26 +803,20 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'simtgr' => [
-            'driver' => 'oracle',
-            'host' => '192.168.228.193',
-            'port' => '1521',
-            'database' => 'SIMTGR',
-            'username' => 'SIMTGR',
-            'password' => 'SIMTGR',
-            'charset' => 'AL32UTF8',
+        //PASSWORD GENERATOR
+        'dbsupport' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '172.31.16.55'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'postgres'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', 'postgres123'),
+            'charset' => 'utf8',
             'prefix' => '',
-        ],
-
-        'simcpt' => [
-            'driver' => 'oracle',
-            'host' => '192.168.245.193',
-            'port' => '1521',
-            'database' => 'SIMCPT',
-            'username' => 'SIMCPT',
-            'password' => 'SIMCPT',
-            'charset' => 'AL32UTF8',
-            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'dbsupport',
+            'sslmode' => 'prefer',
         ],
     ],
 

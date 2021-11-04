@@ -2601,6 +2601,7 @@
                                     $('#table_lov_member').append(html);
                                 }
                             }
+                            $('#modal-loader').modal('hide');
                         },
                         complete: function(){
                             $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: true});
@@ -2650,6 +2651,7 @@
                                 html = '<tr class="row_lov" onclick="lov_kodepos_select(\'' + response[i].pos_kode + '\',\''+ response[i].pos_kecamatan +'\',\''+ response[i].pos_kelurahan +'\',\''+ response[i].pos_kabupaten+'\')"><td>' + response[i].pos_kelurahan + '</td><td>' + response[i].pos_kecamatan + '</td><td>' + response[i].pos_kabupaten + '</td><td>' + response[i].pos_propinsi + '</td><td>' + response[i].pos_kode + '</td></tr>';
                                 $('#table_lov_kodepos').append(html);
                             }
+                            $('#modal-loader').modal('hide');
                         },
                         complete: function(){
                             $('#m_kodeposHelp').modal({backdrop: 'static', keyboard: true});
@@ -2815,7 +2817,7 @@
                         $('#m_kodememberHelp').modal({backdrop: 'static', keyboard: false});
                     }
                     $('#m_kodememberHelp').modal('hide');
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
                 success: function(response){
                     $('#modal-loader').modal('hide');
@@ -2833,6 +2835,13 @@
                         $('#cus_kodemember').val(value);
                     }
                     else {
+                        swal({
+                            title: 'Data ditemukan!',
+                            icon: 'success'
+                        }).then(function(){
+                            $('#modal-loader').modal('hide');
+                        })
+
                         ready();
 
                         arrjenissuboutlet = response['arrsuboutlet'];
@@ -3123,6 +3132,7 @@
                             $('#q_'+quisioner[i].fpm_kodeprdcd).find('.beli-lain').val(belilain);
                         }
                     }
+                    $('#modal-loader').modal('hide');
                 }, error : function (err){
                     $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0,100));
@@ -3202,6 +3212,7 @@
 
                         insert_detail_alamat(kelurahan,kecamatan,kode,kabupaten);
                     }
+                    $('#modal-loader').modal('hide');
                 },
                 error : function (err){
                     $('#modal-loader').modal('hide');
@@ -3557,11 +3568,13 @@
                                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                             },
                             success: function (response) {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('hide');
                                 if (response.status == 'success') {
                                     swal({
                                         title: response['message'],
                                         icon: "success"
+                                    }).then(function(){
+                                        $('#modal-loader').modal('hide');
                                     });
                                 }
                                 else {
@@ -3571,6 +3584,7 @@
                                     }).then(function () {
                                         $('#cus_kodemember').val(member.cus_kodemember);
                                         $('#cus_kodemember').select();
+                                        $('#modal-loader').modal('hide');
                                     });
 
                                 }
@@ -3662,6 +3676,8 @@
                                 swal({
                                     title: response['message'],
                                     icon: "success"
+                                }).then(function(){
+                                    $('#modal-loader').modal('hide');
                                 });
                             }
                             else {
@@ -3671,6 +3687,7 @@
                                 }).then(function () {
                                     $('#cus_kodemember').val(member.cus_kodemember);
                                     $('#cus_kodemember').select();
+                                    $('#modal-loader').modal('hide');
                                 });
 
                             }
@@ -3777,6 +3794,8 @@
                                     swal({
                                         title: response['message'],
                                         icon: "success"
+                                    }).then(function(){
+                                        $('#modal-loader').modal('hide');
                                     });
                                 }
                                 else {
@@ -3784,6 +3803,7 @@
                                         title: response.message,
                                         icon: "error"
                                     }).then(function () {
+                                        $('#modal-loader').modal('hide');
                                         $('#cus_kodemember').val(member.cus_kodemember);
                                         $('#cus_kodemember').select();
                                     });
@@ -3905,9 +3925,22 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide')
                     if(response.kode == 1){
-                        swal(response.msg,'','success')
+                        Swal({
+                            title: response.msg,
+                            icon: 'succcess'
+                        }).then(function(){
+                            $('#modal-loader').modal('hide');
+                        });
+                        // swal(response.msg,'','success')
                     } else {
-                        alertError('Warning', response.msg, 'warning');
+                        Swal({
+                            title: 'Warning',
+                            text: response.msg,
+                            icon: 'error',
+                        }).then(function(){
+                            $('#modal-loader').modal('hide');
+                        });
+                        // alertError('Warning', response.msg, 'warning');
                     }
                 }, error : function (err){
                     $('#modal-loader').modal('hide')
@@ -3930,14 +3963,30 @@
                 }, success: function (response) {
                     $('#modal-loader').modal('hide')
                     if (response.kode == 1) {
-                        swal(response.msg, '', 'success')
+                        swal(response.msg, '', 'success').then(function(){
+                            $('#modal-loader').modal('hide');
+                        });
                     } else {
-                        alertError('Warning', response.msg, 'warning');
+                        Swal({
+                            title: 'Warning',
+                            text: response.msg,
+                            icon: 'warning'
+                        }).then(function(){
+                            $('#modal-loader').modal('hide');
+                        });
+                        // alertError('Warning', response.msg, 'warning');
                     }
                 }, error: function (err) {
                     $('#modal-loader').modal('hide')
                     console.log(err.responseJSON.message.substr(0, 100));
-                    alertError(err.statusText, err.responseJSON.message);
+                    Swal({
+                        title: err.statusText,
+                        text: err.responseJSON.message,
+                        icon: 'error'
+                    }).then(function(){
+                        $('#modal-loader').modal('hide');
+                    });
+                    // alertError(err.statusText, err.responseJSON.message);
                 }
             })
         });
@@ -4082,6 +4131,7 @@
                                         title: response['message'],
                                         icon: "success"
                                     }).then((createData) => {
+                                        $('#modal-loader').modal('hide');
                                         initial();
                                     });
 
@@ -4104,6 +4154,7 @@
                                 title: "Anda tidak berhak melakukan approval!",
                                 icon: "error"
                             }).then(function(){
+                                $('#modal-loader').modal('hide');
                                 $('#i_password').select();
                             });
                         }
@@ -4112,6 +4163,7 @@
                                 title: "Username atau password salah!",
                                 icon: "error"
                             }).then(function(){
+                                $('#modal-loader').modal('hide');
                                 $('#i_password').select();
                             });
                         }

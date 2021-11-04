@@ -13,10 +13,11 @@
                             <br>
                         <div id="mainMenu">
                             <div class="row">
-                                <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>
-                                <div class="dropdown col-sm-6">
+                                <label class="col-sm-4 text-right col-form-label">Jenis Laporan</label>
+                                <div class="dropdown col-sm-4">
                                     <button class="btn btn-secondary dropdown-toggle col-sm-12" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <input readonly type="text" id="jenisLaporan" class="col-sm-11" value="">
+                                        <input readonly type="text" id="lstPrint" class="col-sm-11" value="">
+                                        <input hidden type="text" id="lstPrintHidden" class="col-sm-11" value="">
                                     </button>
                                     <div id="dropDownList" class="dropdown-menu col-sm-11" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" onclick="changeInput(1)">LAPORAN PER KATEGORY</a>
@@ -26,6 +27,18 @@
                                         <a class="dropdown-item" onclick="changeInput(5)">LAPORAN PER KASIR</a>
                                     </div>
                                 </div>
+{{--                                <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>--}}
+{{--                                <div class="col-sm-9">--}}
+{{--                                    <select class="form-control" id="jenisLaporan">--}}
+{{--                                        <option selected disabled>- silahkan pilih jenis Laporan -</option>--}}
+{{--                                        <option onclick="changeInput(1)">LAPORAN PER KATEGORY</option>--}}
+{{--                                        <option onclick="changeInput(2)">LAPORAN PER DEPARTEMEN</option>--}}
+{{--                                        <option onclick="changeInput(3)">RINCIAN PRODUK PER DIVISI</option>--}}
+{{--                                        <option onclick="changeInput(4)">LAPORAN PER HARI</option>--}}
+{{--                                        <option onclick="changeInput(5)">LAPORAN PER KASIR</option>--}}
+{{--                                        <option value="Z2">DAFTAR BARANG BAIK KE RUSAK</option>--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
                             </div>
                             <br>
                             <div class="d-flex justify-content-end">
@@ -198,6 +211,18 @@
                                                 <a class="dropdown-item" onclick="lstPrint(5)">GABUNGAN ALL TOKO OMI KHUSUS</a>
                                             </div>
                                         </div>
+{{--                                        <label class="col-sm-4 text-right col-form-label">Cetak untuk :</label>--}}
+{{--                                        <div class="col-sm-4">--}}
+{{--                                            <select class="form-control" id="lstPrint">--}}
+{{--                                                <option selected disabled>- silahkan pilih jenis Laporan -</option>--}}
+{{--                                                <option onclick="lstPrint(1)">LAPORAN PER KATEGORY</option>--}}
+{{--                                                <option onclick="lstPrint(2)">LAPORAN PER DEPARTEMEN</option>--}}
+{{--                                                <option onclick="lstPrint(3)">RINCIAN PRODUK PER DIVISI</option>--}}
+{{--                                                <option onclick="lstPrint(4)">LAPORAN PER HARI</option>--}}
+{{--                                                <option onclick="lstPrint(5)">LAPORAN PER KASIR</option>--}}
+{{--                                            </select>--}}
+{{--                                        </div>--}}
+{{--                                        <input hidden type="text" id="lstPrintHidden" class="col-sm-11" value="">--}}
                                     </div>
                                     <br>
                                     <div class="row" id="menu2Ext2" hidden>
@@ -957,7 +982,7 @@
 
         // fungsi pilih() dan kembali() merupakan fungsi navigasi antar menu
         function pilih(){
-            if($('#jenisLaporan').val() == ''){
+            if($('#jenisLaporan').val() == null){
                 swal('Warning', 'Belum ada yang dipilih!', 'warning');
             }else{
                 switch ($('#jenisLaporan').val()){

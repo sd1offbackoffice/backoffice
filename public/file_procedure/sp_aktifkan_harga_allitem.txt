@@ -5,7 +5,7 @@ CREATE OR REPLACE PROCEDURE SP_AKTIFKAN_HARGA_ALLITEM (
    V_CREATE_BY   IN     VARCHAR2,
    V_RESULT         OUT VARCHAR2)
 IS
-   V_FILENAME    VARCHAR2 (50) := 'UPDATE.txt';
+   V_FILENAME    VARCHAR2 (50) := 'UPDATE'||to_char(sysdate, 'ddmmyyHH24mi')||'.txt';
    ARR           NUMBER;
    V_NUM         NUMBER;
    TEMP          NUMBER;
@@ -48,6 +48,13 @@ IS
     AND PRD_PRDCD = PLU;
 
 BEGIN
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/');
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/ISHIDA/');
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/BIZERBA/');
+
     EXECUTE IMMEDIATE
       'create or replace directory LREMOTE as ''/u01/lhost/LREMOTE/''';
 

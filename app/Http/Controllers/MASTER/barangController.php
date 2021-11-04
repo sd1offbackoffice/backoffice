@@ -9,18 +9,20 @@ use Yajra\DataTables\DataTables;
 
 class barangController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('MASTER.barang');
     }
 
-    public function getMasterBarang(Request  $request){
+    public function getMasterBarang(Request $request)
+    {
         $search = $request->value;
 
         $plu = DB::table('tbmaster_prodmast')
-            ->select('prd_prdcd','prd_deskripsipanjang','prd_plusupplier','prd_deskripsipendek')
-            ->where(DB::RAW('substr(prd_prdcd,7,1)'),'=','0')
-            ->where('prd_prdcd','LIKE', '%'.$search.'%')
-            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->select('prd_prdcd', 'prd_deskripsipanjang', 'prd_plusupplier', 'prd_deskripsipendek')
+            ->where(DB::RAW('substr(prd_prdcd,7,1)'), '=', '0')
+            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
+            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
             ->orderBy('prd_prdcd')
             ->limit(100)
             ->get();
@@ -28,17 +30,18 @@ class barangController extends Controller
         return Datatables::of($plu)->make(true);
     }
 
-    public function getMasterBarangIDM(Request $request){
+    public function getMasterBarangIDM(Request $request)
+    {
         $search = $request->value;
         $pluIdm = DB::table('tbmaster_prodmast')
-            ->join('tbmaster_prodcrm','prc_pluigr', '=','prd_prdcd')
-            ->select('prd_prdcd','prc_pluigr' ,'prc_pluidm', 'prd_deskripsipanjang',
-                'prc_kodetag','PRC_HRGJUAL','prc_satuanrenceng',
-                'prc_minorder','prc_minorderomi','prc_maxorderomi',
-                'prc_datek','prc_pricek')
-            ->where('prd_prdcd','LIKE', '%'.$search.'%')
-            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
-            ->where('prc_group','=','I')
+            ->join('tbmaster_prodcrm', 'prc_pluigr', '=', 'prd_prdcd')
+            ->select('prd_prdcd', 'prc_pluigr', 'prc_pluidm', 'prd_deskripsipanjang',
+                'prc_kodetag', 'PRC_HRGJUAL', 'prc_satuanrenceng',
+                'prc_minorder', 'prc_minorderomi', 'prc_maxorderomi',
+                'prc_datek', 'prc_pricek')
+            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
+            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
+            ->where('prc_group', '=', 'I')
             ->whereNotNull('prc_pluidm')
             ->orderBy('prd_prdcd')
             ->limit(100)
@@ -47,24 +50,23 @@ class barangController extends Controller
         return Datatables::of($pluIdm)->make(true);
     }
 
-    public function getMasterBarangOmi(Request  $request){
+    public function getMasterBarangOmi(Request $request)
+    {
         $search = $request->value;
 
         $pluOmi = DB::table('tbmaster_prodmast')
-            ->join('tbmaster_prodcrm','prc_pluigr', '=','prd_prdcd')
-            ->select('prd_prdcd','prc_pluigr' ,'prc_pluidm', 'prd_deskripsipanjang',
-                'prc_kodetag','PRC_HRGJUAL','prc_satuanrenceng',
-                'prc_minorder','prc_minorderomi','prc_maxorderomi',
-                'prc_datek','prc_pricek', 'prc_pluomi') //adding prc_pluomi
+            ->join('tbmaster_prodcrm', 'prc_pluigr', '=', 'prd_prdcd')
+            ->select('prd_prdcd', 'prc_pluigr', 'prc_pluidm', 'prd_deskripsipanjang',
+                'prc_kodetag', 'PRC_HRGJUAL', 'prc_satuanrenceng',
+                'prc_minorder', 'prc_minorderomi', 'prc_maxorderomi',
+                'prc_datek', 'prc_pricek', 'prc_pluomi') //adding prc_pluomi
 
-            ->where('prd_prdcd','LIKE', '%'.$search.'%')
-            ->where('prc_group','=','O')
+            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
+            ->where('prc_group', '=', 'O')
             ->whereNotNull('prc_pluomi')
-
-            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
-            ->where('prc_group','=','O')
+            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
+            ->where('prc_group', '=', 'O')
             ->whereNotNull('prc_pluomi')
-
             ->orderBy('prc_pluigr')
             ->limit(100)
             ->get();
@@ -72,7 +74,7 @@ class barangController extends Controller
         return Datatables::of($pluOmi)->make(true);
     }
 
-    public function showBarang (Request $request)
+    public function showBarang(Request $request)
     {
         $kodeplu = $request->kodeplu;
         $tglpromo = '';
@@ -85,11 +87,9 @@ class barangController extends Controller
         $margin_a = '';
         $margin_n = '';
 
-        if ($kodeplu == 1){
+        if ($kodeplu == 1) {
             $kodeplu = DB::table('tbmaster_prodmast')->select('prd_prdcd')->orderBy('prd_prdcd')->first();
             $kodeplu = $kodeplu->prd_prdcd;
-
-//            dd($kodeplu);
         }
 
         $result = DB::table('tbmaster_prodmast')
@@ -130,57 +130,74 @@ class barangController extends Controller
             })
             ->select('*')
             ->where('prd_prdcd', '=', $kodeplu)
-            ->where('prd_kodeigr','=','22')
+            ->where('prd_kodeigr', '=', '22')
 //            ->where('prc_pluigr','=', $kodeplu)
             ->distinct()
             ->get();
 
-        $date = date('Y-m-d');
+        if(sizeof($result) != 0 ) {
+            $date = date('Y-m-d');
 
 //        dd($result);
 
-        if ($date >= $result[0]->prmd_tglawal && $date <= $result[0]->prmd_tglakhir) {
-            $tglpromo = substr($result[0]->prmd_tglawal, 0,10) . ' S/D ' . substr($result[0]->prmd_tglakhir,0,10);
-            if ($result[0]->prmd_jamawal == 0) {
-                $jampromo = ' ' . ' S/D ' . ' ';
-            } else {
-                $jampromo = $result[0]->prmd_jamawal . ' S/D ' . $result[0]->prmd_jamakhir;
+            if ($date >= $result[0]->prmd_tglawal && $date <= $result[0]->prmd_tglakhir) {
+                $tglpromo = substr($result[0]->prmd_tglawal, 0, 10) . ' S/D ' . substr($result[0]->prmd_tglakhir, 0, 10);
+                if ($result[0]->prmd_jamawal == 0) {
+                    $jampromo = ' ' . ' S/D ' . ' ';
+                } else {
+                    $jampromo = $result[0]->prmd_jamawal . ' S/D ' . $result[0]->prmd_jamakhir;
+                }
+                $hrgpromo = $result[0]->prmd_hrgjual;
             }
-            $hrgpromo = $result[0]->prmd_hrgjual;
-        }
 
 //        $temp = ['tglpromo' => $tglpromo,'jampromo' => $jampromo,'hrgpromo' => $hrgpromo];
 
 
+            $barcode = DB::Table('tbmaster_barcode')
+                ->select('brc_barcode')
+                ->where('brc_prdcd', '=', $kodeplu)
+                ->orderBy('brc_prdcd')
+                ->get();
 
-        $barcode = DB::Table('tbmaster_barcode')
-            ->select('brc_barcode')
-            ->where('brc_prdcd', '=', $kodeplu)
-            ->orderBy('brc_prdcd')
-            ->get();
+            if (sizeof($barcode) == 0) {
+                $brc1 = '';
+                $brc2 = '';
+            } else if (sizeof($barcode) == 1) {
+                $brc1 = $result[0]->brc_barcode;
+            } else {
+                $brc1 = $result[0]->brc_barcode;
+                $brc2 = $result[1]->brc_barcode;
+            }
 
-        if (sizeof($barcode) == 0) {
-            $brc1 = '';
-            $brc2 = '';
-        } else if (sizeof($barcode) == 1) {
-            $brc1 = $result[0]->brc_barcode;
-        } else {
-            $brc1 = $result[0]->brc_barcode;
-            $brc2 = $result[1]->brc_barcode;
-        }
-
-        if (!$result[0]->prd_modify_by) {
-            $userUpd = $result[0]->prd_create_by;
-            $tglUpd = $result[0]->prd_create_dt;
-        } else {
-            $userUpd = $result[0]->prd_modify_by;
-            $tglUpd = $result[0]->prd_modify_dt;
-        }
+            if (!$result[0]->prd_modify_by) {
+                $userUpd = $result[0]->prd_create_by;
+                $tglUpd = $result[0]->prd_create_dt;
+            } else {
+                $userUpd = $result[0]->prd_modify_by;
+                $tglUpd = $result[0]->prd_modify_dt;
+            }
 
 //        dd('test');
 
-        if ($result[0]->prd_flagbkp1 == 'Y' and $result[0]->prd_flagbkp2 != 'PWG') {
-            if ($result[0]->prd_kodetag == 'Q') {
+            if ($result[0]->prd_flagbkp1 == 'Y' and $result[0]->prd_flagbkp2 != 'PWG') {
+                if ($result[0]->prd_kodetag == 'Q') {
+                    if ($result[0]->prd_avgcost == 0 or $result[0]->prd_hrgjual == 0 or $result[0]->prd_hrgjual3 == 0) {
+                        $margin_a = null;
+                        $margin_n = null;
+                    } else {
+                        $margin_a = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual) * 100;
+                        $margin_n = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual3) * 100;
+                    }
+                } else {
+                    if ($result[0]->prd_avgcost == 0 or $result[0]->prd_hrgjual == 0 or $result[0]->prd_hrgjual3 == 0) {
+                        $margin_a = null;
+                        $margin_n = null;
+                    } else {
+                        $margin_a = (1 - $result[0]->prd_avgcost / ($result[0]->prd_hrgjual / 1.1)) * 100;
+                        $margin_n = (1 - $result[0]->prd_avgcost / ($result[0]->prd_hrgjual3 / 1.1)) * 100;
+                    }
+                }
+            } else {
                 if ($result[0]->prd_avgcost == 0 or $result[0]->prd_hrgjual == 0 or $result[0]->prd_hrgjual3 == 0) {
                     $margin_a = null;
                     $margin_n = null;
@@ -188,28 +205,15 @@ class barangController extends Controller
                     $margin_a = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual) * 100;
                     $margin_n = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual3) * 100;
                 }
-            } else {
-                if ($result[0]->prd_avgcost == 0 or $result[0]->prd_hrgjual == 0 or $result[0]->prd_hrgjual3 == 0) {
-                    $margin_a = null;
-                    $margin_n = null;
-                } else {
-                    $margin_a = (1 - $result[0]->prd_avgcost / ($result[0]->prd_hrgjual / 1.1)) * 100;
-                    $margin_n = (1 - $result[0]->prd_avgcost / ($result[0]->prd_hrgjual3 / 1.1)) * 100;
-                }
             }
-        } else {
-            if ($result[0]->prd_avgcost == 0 or $result[0]->prd_hrgjual == 0 or $result[0]->prd_hrgjual3 == 0) {
-                $margin_a = null;
-                $margin_n = null;
-            } else {
-                $margin_a = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual) * 100;
-                $margin_n = (1 - $result[0]->prd_avgcost / $result[0]->prd_hrgjual3) * 100;
-            }
+
+            return response()->json(['kodeplu' => $kodeplu, 'datas' => $result, 'tglpromo' => $tglpromo, 'jampromo' => $jampromo, 'hrgpromo' => $hrgpromo, 'brc1' => $brc1,
+                'brc2' => $brc2, 'userupd' => $userUpd, 'tglupd' => $tglUpd, 'margin_a' => $margin_a, 'margin_n' => $margin_n]);
         }
+        else{
+            return response()->json(['message' => 'PLU tidak ditemukan!'],500);
 
-        return response()->json(['kodeplu'=>$kodeplu, 'datas'=>$result, 'tglpromo' => $tglpromo, 'jampromo' => $jampromo, 'hrgpromo' => $hrgpromo, 'brc1'=>$brc1,
-            'brc2'=>$brc2, 'userupd'=>$userUpd, 'tglupd'=>$tglUpd, 'margin_a'=>$margin_a,'margin_n'=>$margin_n]);
-
+        }
     }
 
 }

@@ -97,7 +97,9 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    swal('SUCCESS', result, 'success')
+                    swal('SUCCESS', result, 'success').then(function(){
+                        $('#modal-loader').modal('hide');
+                    });
                     getData();
                     // setTimeout(function(){location.reload()}, 2000);
                 }, error : function (err) {

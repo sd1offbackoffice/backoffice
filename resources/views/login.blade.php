@@ -29,21 +29,7 @@
 <script src={{asset('/js/script.js')}}></script>
 <script src={{asset('/js/sweetalert.js')}}></script>
 
-<div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
-                        <span class="sr-only"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<title>{{$prs->prs_namacabang}}</title>
+<title>{{$prs}}</title>
 <div class="limiter">
     <div class="container-fluid mt-5">
         <div class="row justify-content-center">
@@ -67,27 +53,27 @@
             <span class="login100-form-title p-b-32 text-center">
 						Login BACKOFFICE
             </span>
-            {{--            @if($allcabang)--}}
-            {{--                <span class="txt1 p-b-11">Cabang</span>--}}
-            {{--                <div class="wrap-input100 validate-input ">--}}
-            {{--                    <select class="input100" id="cabang" data-validate="user" style="text-transform: uppercase;" required>--}}
-            {{--                        @foreach($cabang as $c)--}}
-            {{--                            <option value="{{ $c->kode }}">{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>--}}
-            {{--                        @endforeach--}}
-            {{--                    </select>--}}
-            {{--                    <span class="focus-input100"></span>--}}
-            {{--                </div>--}}
-            {{--                <br>--}}
-            {{--                <span class="txt1 p-b-11">Koneksi</span>--}}
-            {{--                <div class="wrap-input100 validate-input ">--}}
-            {{--                    <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>--}}
-            {{--                        <option value="igr" selected>PRODUCTION</option>--}}
-            {{--                        <option value="sim">SIMULASI</option>--}}
-            {{--                    </select>--}}
-            {{--                    <span class="focus-input100"></span>--}}
-            {{--                </div>--}}
-            {{--                <br>--}}
-            {{--            @endif--}}
+                        @if($allcabang)
+                            <span class="txt1 p-b-11">Cabang</span>
+                            <div class="wrap-input100 validate-input ">
+                                <select class="input100" id="cabang" data-validate="user" style="text-transform: uppercase;" required>
+                                    @foreach($cabang as $c)
+                                        <option value="{{ $c->kode }}">{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="focus-input100"></span>
+                            </div>
+                            <br>
+                            <span class="txt1 p-b-11">Koneksi</span>
+                            <div class="wrap-input100 validate-input ">
+                                <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>
+                                    <option value="igr" selected>PRODUCTION</option>
+                                    <option value="sim">SIMULASI</option>
+                                </select>
+                                <span class="focus-input100"></span>
+                            </div>
+                            <br>
+                        @endif
             <span class="txt1 p-b-11">
 						Username
 					</span>
@@ -128,6 +114,20 @@
             </div>
             {{--</form>--}}
 
+        </div>
+    </div>
+    <div class="modal" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -180,9 +180,9 @@
     $('#btn-login').on('click', function () {
         username = $('#username').val().toUpperCase();
         password = $('#password').val();
-        // cabang = $('#cabang').val();
-        // koneksi = $('#koneksi').val();
-        // allcabang = $('#allcabang').val();
+        cabang = $('#cabang').val();
+        koneksi = $('#koneksi').val();
+
         if (username == '') {
             $('#lbl-validate-password').text('');
             $('#lbl-validate-username').text('Username Belum Diisi!');
@@ -199,7 +199,7 @@
             $.ajax({
                 url: '{{ url()->current() }}',
                 type: 'POST',
-                data: {"_token": "{{ csrf_token() }}", username: username, password: password},
+                data: {"_token": "{{ csrf_token() }}", username: username, password: password,cabang: cabang, koneksi: koneksi},
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },

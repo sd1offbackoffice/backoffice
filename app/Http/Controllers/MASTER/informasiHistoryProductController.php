@@ -26,8 +26,8 @@ class informasiHistoryProductController extends Controller
         $search = $request->value;
 
         $data = DB::table('tbmaster_prodmast')
-            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
-            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
+            ->whereRaw("(prd_prdcd LIKE '%" . $search . "%' or prd_deskripsipanjang LIKE '%" . $search . "%')")
+            ->whereRaw("SUBSTR (PRD_PRDCD, 7, 1) = '0'")
             ->orderBy('prd_prdcd')
             ->limit(100)
             ->get();

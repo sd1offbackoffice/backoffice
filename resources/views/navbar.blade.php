@@ -52,8 +52,7 @@
 </head>
 <body>
     <div id="menu_area" class="menu-area">
-                <div class="container-fluid" style="display: flex;
-    justify-content: center">
+                <div class="container-fluid" style="display: flex;justify-content: center">
                 <div class="row">
                 <nav class="navbar navbar-light navbar-expand-lg mainmenu">
                     <a class="navbar-brand" href="{{url("/")}}">
@@ -580,7 +579,7 @@
     @yield('content')
 
     {{--NAVBAR--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true" style="vertical-align: middle;" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="container">

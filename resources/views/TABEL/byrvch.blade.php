@@ -13,7 +13,7 @@
                             <label class="col-sm-3 col-form-label text-right">Supplier</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="inputSupp">
-                                <button id="btnSupp" type="button" class="btn btn-lov p-0">
+                                <button id="btnSupp" type="button" class="btn btn-lov p-0" onclick="ToggleData(this)">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
@@ -23,11 +23,11 @@
                             <label class="col-sm-3 col-form-label text-right">Singkatan Supplier</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="inputSingkatan">
-                                <button id="btnSingkatan" type="button" class="btn btn-lov p-0">
+                                <button id="btnSingkatan" type="button" class="btn btn-lov p-0" onclick="ToggleData(this)">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
-                            <label class="col-sm-4 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
+                            <label class="col-sm-8 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
                         </div>
                         <div class="row">
                             <label class="col-sm-3 col-form-label text-right">Tanggal</label>
@@ -60,19 +60,19 @@
                                             <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header" class="icon fas fa-times">X</button>
                                         </td>
                                         <td>
-                                            <input class="form-control plu" value="" onchange="CheckPlu(this)"
+                                            <input class="form-control plu" value=""
                                                    type="text">
                                         </td>
                                         <td>
-                                            <input class="form-control hrgjual text-right" value="" onkeypress="return isNumberKey(event)"
+                                            <input class="form-control deskripsi text-right" value="" onkeypress="return isNumberKey(event)"
                                                    type="text">
                                         </td>
                                         <td>
-                                            <input class="form-control qty text-right" value=""
+                                            <input class="form-control voucher text-right" value=""
                                                    type="text">
                                         </td>
                                         <td>
-                                            <input class="form-control sales text-right" value=""
+                                            <input class="form-control pilihan text-right" value=""
                                                    type="checkbox">
                                         </td>
                                     </tr>
@@ -97,94 +97,211 @@
         </div>
     </div>
 
+    {{--Modal SUPPLIER--}}
+    <div class="modal fade" id="m_supp" tabindex="-1" role="dialog" aria-labelledby="m_supp" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Data Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableSupp">
+                                    <thead class="theadSupp">
+                                    <tr>
+                                        <th>Nama Supplier</th>
+                                        <th>Kode Supplier</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodySupp"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal SINGKATAN--}}
+    <div class="modal fade" id="m_singkatan" tabindex="-1" role="dialog" aria-labelledby="m_singkatan" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Master Voucher Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableSingkatan">
+                                    <thead class="theadSingkatan">
+                                    <tr>
+                                        <th>Nama Supplier</th>
+                                        <th>Nilai Voucher</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodySingkatan"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let tableSupp;
+        let tableSingkatan;
         $('#daterangepicker').daterangepicker({
             locale: {
                 format: 'DD/MM/YYYY'
             }
         });
 
-        // Function untuk overide tombol keyboard
-        $(window).bind('keydown', function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                if(String.fromCharCode(event.which).toLowerCase() === 's'){
-                    // Lakukan yang anda mau disini
-                    save();
-                    event.preventDefault();
-                }
-            }
+        $(document).ready(function () {
+            getModalSupp();
+            getModalSingkatan();
         });
 
-        function CheckPlu(w){
-            let crop = w.value.toUpperCase();
-            let row = w.parentNode.parentNode.rowIndex-1;
-            if(crop != ''){
-                if(crop.substr(0,1) == '#'){
-                    crop = crop.substr(1,(crop.length)-1);
-                }
-            }
-            if(crop.length < 7){
-                crop = crop.padStart(7,'0');
-            }
-            for(i=0;i<$('.baris').length;i++){
-                if(i!=row){
-                    if($('.plu')[i].value == crop){
-                        swal('', "Kode produk "+crop+" sudah ada", 'warning');
-                        w.value = "";
-                        $('.hiddenDeskripsi')[row].value = '';
-                        $('.hiddenUnit')[row].value = '';
-                        return false;
-                    }
-                }
-            }
-            w.value = crop;
-            $.ajax({
-                url: '{{ url()->current() }}/checkplu',
-                type: 'GET',
-                data: {
-                    kode:crop
+        function getModalSupp(){
+            tableSupp =  $('#tableSupp').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current() }}/getsupp',
                 },
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
+                "columns": [
+                    {data: 'sup_namasupplier', name: 'sup_namasupplier'},
+                    {data: 'hgb_kodesupplier', name: 'hgb_kodesupplier'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalSupp');
                 },
-                success: function (response) {
-                    $('#modal-loader').modal('hide');
-                    if(response.notif == ''){
-                        $('.hiddenDeskripsi')[row].value = response.deskripsi;
-                        $('.hiddenUnit')[row].value = response.unit;
-
-                        $('#deskripsiTable').val(response.deskripsi);
-                        $('#unitMini').val(response.unit);
-                    }else{
-                        swal('', response.notif, 'warning');
-                        w.value = "";
-                        $('.hiddenDeskripsi')[row].value = '';
-                        $('.hiddenUnit')[row].value = '';
-                    }
-                },
-                error: function (error) {
-                    $('#modal-loader').modal('hide');
-                    swal({
-                        title: error.responseJSON.title,
-                        text: error.responseJSON.message,
-                        icon: 'error',
-                    });
-                    return false;
-                }
+                columnDefs : [
+                ],
+                "order": []
             });
         }
 
-        function ChangeDesk(w){
-            let row = w.parentNode.rowIndex-1;
-            $('#deskripsiTable').val($('.hiddenDeskripsi')[row].value);
-            $('#unitMini').val($('.hiddenUnit')[row].value);
+        $(document).on('click', '.modalSupp', function () {
+            let currentButton = $(this);
+            let kode = currentButton.children().first().next().text();
+
+            $('#inputSupp').val(kode).change();
+            $('#m_supp').modal('toggle');
+        });
+
+        function getModalSingkatan(){
+            tableSingkatan =  $('#tableSingkatan').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current() }}/getsingkatan',
+                },
+                "columns": [
+                    {data: 'vcs_namasupplier', name: 'vcs_namasupplier'},
+                    {data: 'vcs_nilaivoucher', name: 'vcs_nilaivoucher'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalSingkatan');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
         }
 
-        function isNumberKey(evt){
-            let charCode = (evt.which) ? evt.which : evt.keyCode
-            if (charCode > 31 && (charCode < 48 || charCode > 57))
-                return false;
-            return true;
+        $(document).on('click', '.modalSingkatan', function () {
+            let currentButton = $(this);
+            let voucher = currentButton.children().first().text();
+
+            $('#inputSingkatan').val(voucher).change();
+            $('#m_singkatan').modal('toggle');
+        });
+
+        function ToggleData(val){
+            if(val.id == "btnSupp"){
+                $('#m_supp').modal('toggle');
+                CheckSupp();
+            }else if(val.id == "btnSingkatan"){
+                $('#m_singkatan').modal('toggle');
+            }
+        }
+
+        function CheckSupp(val){
+            for(i=0;i<tableSupp.data().length;i++){
+                if(tableSupp.row(i).data()['hgb_kodesupplier'] == val){
+                    return i+1;
+                }
+            }
+            return 0;
+        }
+
+        function CheckSingkatan(val){
+            for(i=0;i<tableSingkatan.data().length;i++){
+                if((tableSingkatan.row(i).data()['vcs_namasupplier']).trim == val.trim){
+                    return i+1;
+                }
+            }
+            return 0;
+        }
+
+        function CheckVoucher(){
+            if($('#inputSupp').val() != '' && $('#inputSingkatan').val() != ''){
+                $.ajax({
+                    url: '{{ url()->current() }}/checkvoucher',
+                    type: 'GET',
+                    data: {
+                        supp:$('#inputSupp').val(),
+                        sing:$('#inputSingkatan').val()
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+                        if(response.tglAwal != ''){
+                            $('#daterangepicker').data('daterangepicker').setStartDate(response.tglAwal);
+                            $('#daterangepicker').data('daterangepicker').setEndDate(response.tglAkhir);
+                        }
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: error.responseJSON.title,
+                            text: error.responseJSON.message,
+                            icon: 'error',
+                        });
+                        return false;
+                    }
+                });
+            }
         }
 
         function addRow() {
@@ -201,33 +318,21 @@
                                         <td class="text-center">
                                             <button onclick="deleteRow(this)" class="btn btn-block btn-sm btn-danger btn-delete-row-header" class="icon fas fa-times">X</button>
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control plu" value="" onchange="CheckPlu(this)"
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control hrgjual text-right" value="" onkeypress="return isNumberKey(event)"
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control qty text-right" value=""
                                                    type="text">
                                         </td>
-                                        <td onclick="ChangeDesk(this)">
+                                        <td>
                                             <input class="form-control sales text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td onclick="ChangeDesk(this)">
-                                            <input class="form-control grossmargin text-right" value=""
-                                                   type="text">
-                                        </td>
-                                        <td hidden>
-                                            <input class="form-control hiddenDeskripsi text-right" value=""
-                                                   type="text" hidden>
-                                        </td>
-                                        <td hidden>
-                                            <input class="form-control hiddenUnit text-right" value=""
-                                                   type="text" hidden>
+                                                   type="checkbox">
                                         </td>
                                     </tr>`
 
@@ -293,5 +398,53 @@
             $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
             $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
         }
+
+        $('#inputSupp').on('change', function() {
+            if($('#inputSupp').val() != ''){
+                let index = CheckSupp($('#inputSupp').val());
+                if(index){
+                    index = index - 1;
+                    $('#deskSupp').val(tableSupp.row(index).data()['sup_namasupplier']);
+                    CheckVoucher();
+                }else{
+                    swal({
+                        // title: "",
+                        text: "Data Supplier "+$('#inputSupp').val()+" Tidak Ada !!",
+                        icon: 'warning',
+                    }).then(() => {
+                        $('#inputSupp').val('').focus();
+                    });
+                }
+            }
+        });
+
+        $('#inputSingkatan').on('change', function() {
+            if($('#inputSingkatan').val() != ''){
+                if(($('#inputSingkatan').val()).substr(0,3) === 'IGR'){
+                    swal({
+                        // title: "",
+                        text: "Voucher Supplier Salah !!",
+                        icon: 'warning',
+                    }).then(() => {
+                        $('#inputSingkatan').val('').focus();
+                    });
+                }else{
+                    let index = CheckSingkatan($('#inputSingkatan').val());
+                    if(index){
+                        index = index - 1;
+                        // $('#deskSupp').val(tableSupp.row(index).data()['sup_namasupplier']);
+                        CheckVoucher();
+                    }else{
+                        swal({
+                            // title: "",
+                            text: "Voucher Supplier Tidak Terdaftar !!",
+                            icon: 'warning',
+                        }).then(() => {
+                            $('#inputSingkatan').val('').focus();
+                        });
+                    }
+                }
+            }
+        });
     </script>
 @endsection

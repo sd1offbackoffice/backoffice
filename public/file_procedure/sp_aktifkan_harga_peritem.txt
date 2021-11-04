@@ -5,7 +5,7 @@ CREATE OR REPLACE PROCEDURE sp_aktifkan_harga_peritem (
    v_create_by   IN     VARCHAR2,
    v_result         OUT VARCHAR2)
 IS
-   v_filename    VARCHAR2 (50) := 'UPDATE.txt';
+   v_filename    VARCHAR2 (50) := 'UPDATE'||to_char(sysdate, 'ddmmyyHH24mi')||'.txt';
    ARR           NUMBER;
    V_NUM         NUMBER;
    TEMP          NUMBER;
@@ -34,6 +34,13 @@ IS
    l_conn        UTL_TCP.connection;
 
 BEGIN
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/');
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/ISHIDA/');
+
+    host_command (p_command => '/bin/mkdir /u01/lhost/LREMOTE/BIZERBA/');
+
     EXECUTE IMMEDIATE
       'create or replace directory LREMOTE as ''/u01/lhost/LREMOTE/''';
 

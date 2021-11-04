@@ -28,6 +28,7 @@ class aktifHargaJualController extends Controller
     }
 
     public function getDetailPlu(Request $request){
+        sleep(1);
         $plu    = $request->plu;
 
         $prod   = DB::table('tbmaster_prodmast a')
@@ -46,6 +47,7 @@ class aktifHargaJualController extends Controller
     }
 
     public function aktifkanHarga(Request $request){
+        sleep(1);
         $plu    = $request->plu;
         $user   = $_SESSION['usid'];
         $model  = new AllModel();
@@ -54,9 +56,12 @@ class aktifHargaJualController extends Controller
 //        $jenistimbangan = 1;
         $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $errm  = '';
+
+
         $connection = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
+//        $exec = oci_parse($connection, "BEGIN  sp_transferfile_tokoigr(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
         oci_bind_by_name($exec, ':prdcd',$plu,100);
         oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);

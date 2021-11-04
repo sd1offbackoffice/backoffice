@@ -24,6 +24,7 @@ class aktifAllHargaJualController extends Controller
     }
 
     public function aktifkanAllItem(){
+        sleep(1);
         $user   = $_SESSION['usid'];
         $model  = new AllModel();
         $getData= $model->getKodeigr();

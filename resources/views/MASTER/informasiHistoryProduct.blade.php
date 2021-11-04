@@ -6,7 +6,7 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
-                    <legend class="w-auto ml-5"> Ketik PLU / Deskripsi / Scan Barcode Barang</legend>
+                    <legend class="w-auto ml-5">{{$_SESSION['connection']}} Ketik PLU / Deskripsi / Scan Barcode Barang</legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
                             <div class="col-sm-8 buttonInside">
