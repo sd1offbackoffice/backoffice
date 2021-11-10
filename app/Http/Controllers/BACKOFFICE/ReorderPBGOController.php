@@ -330,12 +330,12 @@ class ReorderPBGOController extends Controller
             ->get();
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table('temp_pbprint')
                 ->insert($insert_temp_pbprint);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $status = 'error';
             $message = $e->getMessage();
@@ -352,7 +352,7 @@ class ReorderPBGOController extends Controller
                 ]);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $message = $e->getMessage();
             $status = 'error';
@@ -485,7 +485,7 @@ class ReorderPBGOController extends Controller
                 ->insert($insert_tbtr_pb_h);
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $status = 'error';
             $message = $e->getMessage();
@@ -503,7 +503,7 @@ class ReorderPBGOController extends Controller
             ->get();
 
         if($oke == true){
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
             $status = 'success';
             $title = 'Berhasil melakukan reorder GO!';
             $message = 'No. Dokumen ini adalah : '.$NOPB;

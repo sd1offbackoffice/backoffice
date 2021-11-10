@@ -88,46 +88,46 @@ Route::get('/mst/test', 'MASTER\barcodeController@testdenni')->middleware('Check
 //Route::post('/mstharilibur/delete', 'MASTER\hariLiburController@delete')->middleware('CheckLogin');
 
 //BACKOFFICE_PB_ITEM_MAXPALET_UNTUK_PB
-Route::get('/bomaxpalet', 'BACKOFFICE\maxpaletUntukPBController@index')->middleware('CheckLogin');
-Route::post('/bomaxpalet/loaddata', 'BACKOFFICE\maxpaletUntukPBController@loadData')->middleware('CheckLogin');
-Route::post('/bomaxpalet/getmaxpalet', 'BACKOFFICE\maxpaletUntukPBController@getMaxPalet')->middleware('CheckLogin');
-Route::post('/bomaxpalet/savedata', 'BACKOFFICE\maxpaletUntukPBController@saveData')->middleware('CheckLogin');
-Route::post('/bomaxpalet/deletedata', 'BACKOFFICE\maxpaletUntukPBController@deleteData')->middleware('CheckLogin');
+//Route::get('/bomaxpalet', 'BACKOFFICE\maxpaletUntukPBController@index')->middleware('CheckLogin');
+//Route::post('/bomaxpalet/loaddata', 'BACKOFFICE\maxpaletUntukPBController@loadData')->middleware('CheckLogin');
+//Route::post('/bomaxpalet/getmaxpalet', 'BACKOFFICE\maxpaletUntukPBController@getMaxPalet')->middleware('CheckLogin');
+//Route::post('/bomaxpalet/savedata', 'BACKOFFICE\maxpaletUntukPBController@saveData')->middleware('CheckLogin');
+//Route::post('/bomaxpalet/deletedata', 'BACKOFFICE\maxpaletUntukPBController@deleteData')->middleware('CheckLogin');
 
 //BACKOFFICE_UTILITY_PB_IGR
-Route::get('/boutilitypbigr', 'BACKOFFICE\utilityPBIGRController@index')->middleware('CheckLogin');
-Route::post('/boutilitypbigr/callproc1', 'BACKOFFICE\utilityPBIGRController@callProc1')->middleware('CheckLogin');
-Route::post('/boutilitypbigr/callproc2', 'BACKOFFICE\utilityPBIGRController@callProc2')->middleware('CheckLogin');
-Route::post('/boutilitypbigr/callproc3', 'BACKOFFICE\utilityPBIGRController@callProc3')->middleware('CheckLogin');
-Route::post('/boutilitypbigr/chekproc4', 'BACKOFFICE\utilityPBIGRController@checkProc4')->middleware('CheckLogin');
-Route::get('/boutilitypbigr/callproc4/{date}', 'BACKOFFICE\utilityPBIGRController@callProc4')->middleware('CheckLogin');
-Route::get('/boutilitypbigr/test', function () {
-    return view('BACKOFFICE.utilityPBIGR-laporan');
-});
+//Route::get('/boutilitypbigr', 'BACKOFFICE\utilityPBIGRController@index')->middleware('CheckLogin');
+//Route::post('/boutilitypbigr/callproc1', 'BACKOFFICE\utilityPBIGRController@callProc1')->middleware('CheckLogin');
+//Route::post('/boutilitypbigr/callproc2', 'BACKOFFICE\utilityPBIGRController@callProc2')->middleware('CheckLogin');
+//Route::post('/boutilitypbigr/callproc3', 'BACKOFFICE\utilityPBIGRController@callProc3')->middleware('CheckLogin');
+//Route::post('/boutilitypbigr/chekproc4', 'BACKOFFICE\utilityPBIGRController@checkProc4')->middleware('CheckLogin');
+//Route::get('/boutilitypbigr/callproc4/{date}', 'BACKOFFICE\utilityPBIGRController@callProc4')->middleware('CheckLogin');
+//Route::get('/boutilitypbigr/test', function () {
+//    return view('BACKOFFICE.utilityPBIGR-laporan');
+//});
 
 //BACKOFFICE_PB_OTOMATIS
 //Route::get('/bopbotomatis/index',                                             'BACKOFFICE\PBOtomatisController@cetakReport')->middleware('CheckLogin');
-Route::get('/bopbotomatis/index', 'BACKOFFICE\PBOtomatisController@index')->middleware('CheckLogin');
-Route::get('/bopbotomatis/getdatamodalsupplier', 'BACKOFFICE\PBOtomatisController@getDataModalSupplier')->middleware('CheckLogin');
-Route::get('/bopbotomatis/getkategori', 'BACKOFFICE\PBOtomatisController@getKategori')->middleware('CheckLogin');
-Route::post('/bopbotomatis/prosesdata', 'BACKOFFICE\PBOtomatisController@prosesData')->middleware('CheckLogin');
-Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}/{sup2}', 'BACKOFFICE\PBOtomatisController@cetakReport');
+//Route::get('/bopbotomatis/index', 'BACKOFFICE\PBOtomatisController@index')->middleware('CheckLogin');
+//Route::get('/bopbotomatis/getdatamodalsupplier', 'BACKOFFICE\PBOtomatisController@getDataModalSupplier')->middleware('CheckLogin');
+//Route::get('/bopbotomatis/getkategori', 'BACKOFFICE\PBOtomatisController@getKategori')->middleware('CheckLogin');
+//Route::post('/bopbotomatis/prosesdata', 'BACKOFFICE\PBOtomatisController@prosesData')->middleware('CheckLogin');
+//Route::get('/bopbotomatis/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}/{sup2}', 'BACKOFFICE\PBOtomatisController@cetakReport');
 
 
 //BACKOFFICE_CETAK_PB
-Route::get('/bocetakpb/index', 'BACKOFFICE\cetakPBController@index')->middleware('CheckLogin');
-Route::get('/bocetakpb/getdocument', 'BACKOFFICE\cetakPBController@getDocument')->middleware('CheckLogin');
-//Route::post('/bocetakpb/getdocument', 'BACKOFFICE\cetakPBController@getDocument')->middleware('CheckLogin');
-Route::post('/bocetakpb/searchdocument', 'BACKOFFICE\cetakPBController@searchDocument')->middleware('CheckLogin');
-Route::post('/bocetakpb/getdivisi', 'BACKOFFICE\cetakPBController@getDivisi')->middleware('CheckLogin');
-Route::post('/bocetakpb/searchdivisi', 'BACKOFFICE\cetakPBController@searchDivisi')->middleware('CheckLogin');
-Route::get('/bocetakpb/getdepartement', 'BACKOFFICE\cetakPBController@getDepartement')->middleware('CheckLogin');
-//Route::post('/bocetakpb/getdepartement', 'BACKOFFICE\cetakPBController@getDepartement')->middleware('CheckLogin');
-Route::post('/bocetakpb/searchdepartement', 'BACKOFFICE\cetakPBController@searchDepartement')->middleware('CheckLogin');
-Route::get('/bocetakpb/getkategori', 'BACKOFFICE\cetakPBController@getKategori')->middleware('CheckLogin');
-//Route::post('/bocetakpb/getkategori', 'BACKOFFICE\cetakPBController@getKategori')->middleware('CheckLogin');
-Route::post('/bocetakpb/searchkategori', 'BACKOFFICE\cetakPBController@searchKategori')->middleware('CheckLogin');
-Route::get('/bocetakpb/cetakreport/{tgl1}/{tgl2}/{doc1}/{doc2}/{div1}/{div2}/{dept1}/{dept2}/{kat1}/{kat2}/{tipePB}', 'BACKOFFICE\cetakPBController@cetakReport')->middleware('CheckLogin');
+//Route::get('/bocetakpb/index', 'BACKOFFICE\cetakPBController@index')->middleware('CheckLogin');
+//Route::get('/bocetakpb/getdocument', 'BACKOFFICE\cetakPBController@getDocument')->middleware('CheckLogin');
+////Route::post('/bocetakpb/getdocument', 'BACKOFFICE\cetakPBController@getDocument')->middleware('CheckLogin');
+//Route::post('/bocetakpb/searchdocument', 'BACKOFFICE\cetakPBController@searchDocument')->middleware('CheckLogin');
+//Route::post('/bocetakpb/getdivisi', 'BACKOFFICE\cetakPBController@getDivisi')->middleware('CheckLogin');
+//Route::post('/bocetakpb/searchdivisi', 'BACKOFFICE\cetakPBController@searchDivisi')->middleware('CheckLogin');
+//Route::get('/bocetakpb/getdepartement', 'BACKOFFICE\cetakPBController@getDepartement')->middleware('CheckLogin');
+////Route::post('/bocetakpb/getdepartement', 'BACKOFFICE\cetakPBController@getDepartement')->middleware('CheckLogin');
+//Route::post('/bocetakpb/searchdepartement', 'BACKOFFICE\cetakPBController@searchDepartement')->middleware('CheckLogin');
+//Route::get('/bocetakpb/getkategori', 'BACKOFFICE\cetakPBController@getKategori')->middleware('CheckLogin');
+////Route::post('/bocetakpb/getkategori', 'BACKOFFICE\cetakPBController@getKategori')->middleware('CheckLogin');
+//Route::post('/bocetakpb/searchkategori', 'BACKOFFICE\cetakPBController@searchKategori')->middleware('CheckLogin');
+//Route::get('/bocetakpb/cetakreport/{tgl1}/{tgl2}/{doc1}/{doc2}/{div1}/{div2}/{dept1}/{dept2}/{kat1}/{kat2}/{tipePB}', 'BACKOFFICE\cetakPBController@cetakReport')->middleware('CheckLogin');
 
 
 //BACKOFFICE-TRANSAKSI-PEMUSNAHAN-BARANGRUSAK
@@ -211,9 +211,9 @@ Route::post('/bo/transaksi/penerimaan/cetakbpb/searchpo', 'BACKOFFICE\TRANSAKSI\
 Route::get('/bo/transaksi/penerimaan/cetakbpb/viewreport/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\cetakBPBController@viewReport')->middleware('CheckLogin');
 
 //OMI-PROSES BKL
-Route::get('/OMI/proses-bkl', 'OMI\ProsesBKLDalamKotaController@index')->middleware('CheckLogin');
-Route::post('/OMI/proses-bkl/proses-file', 'OMI\ProsesBKLDalamKotaController@prosesFile')->middleware('CheckLogin');
-Route::get('/OMI/proses-bkl/cetak-laporan', 'OMI\ProsesBKLDalamKotaController@cetakLaporan')->middleware('CheckLogin');
+//Route::get('/OMI/proses-bkl', 'OMI\ProsesBKLDalamKotaController@index')->middleware('CheckLogin');
+//Route::post('/OMI/proses-bkl/proses-file', 'OMI\ProsesBKLDalamKotaController@prosesFile')->middleware('CheckLogin');
+//Route::get('/OMI/proses-bkl/cetak-laporan', 'OMI\ProsesBKLDalamKotaController@cetakLaporan')->middleware('CheckLogin');
 
 //FRONT OFFICE - LAPORAN KASIR - LAPORAN PARETO SALES BY MEMBER
 //Route::get('/frontoffice/LAPORANKASIR/laporan-pareto-sales-by-member', 'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@index')->middleware('CheckLogin');
@@ -221,11 +221,11 @@ Route::get('/OMI/proses-bkl/cetak-laporan', 'OMI\ProsesBKLDalamKotaController@ce
 //Route::get('/frontoffice/LAPORANKASIR/laporan-pareto-sales-by-member/cetak-laporan', 'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@cetakLaporan')->middleware('CheckLogin');
 
 //OMI-LAPORAN - REPRINT BKL
-Route::get('/OMI/laporan/reprint-bkl', 'OMI\LAPORAN\ReprintBKLController@index')->middleware('CheckLogin');
-Route::post('/OMI/laporan/reprint-bkl/cek-omi', 'OMI\LAPORAN\ReprintBKLController@checkKodeOmi')->middleware('CheckLogin');
-Route::post('/OMI/laporan/reprint-bkl/cek-nomor', 'OMI\LAPORAN\ReprintBKLController@cekNomorBukti')->middleware('CheckLogin');
-Route::get('/OMI/laporan/reprint-bkl/get-lov', 'OMI\LAPORAN\ReprintBKLController@getDataLov')->middleware('CheckLogin');
-Route::get('/OMI/laporan/reprint-bkl/cetak-laporan', 'OMI\LAPORAN\ReprintBKLController@cetakLaporan')->middleware('CheckLogin');
+//Route::get('/OMI/laporan/reprint-bkl', 'OMI\LAPORAN\ReprintBKLController@index')->middleware('CheckLogin');
+//Route::post('/OMI/laporan/reprint-bkl/cek-omi', 'OMI\LAPORAN\ReprintBKLController@checkKodeOmi')->middleware('CheckLogin');
+//Route::post('/OMI/laporan/reprint-bkl/cek-nomor', 'OMI\LAPORAN\ReprintBKLController@cekNomorBukti')->middleware('CheckLogin');
+//Route::get('/OMI/laporan/reprint-bkl/get-lov', 'OMI\LAPORAN\ReprintBKLController@getDataLov')->middleware('CheckLogin');
+//Route::get('/OMI/laporan/reprint-bkl/cetak-laporan', 'OMI\LAPORAN\ReprintBKLController@cetakLaporan')->middleware('CheckLogin');
 
 
 //New Mode
@@ -234,55 +234,56 @@ Route::middleware(['CheckLogin'])->group(function () {
     Route::prefix('/master')->group(function () {
         /*  Jefri */
         Route::prefix('/mstcabang')->group(function () {
-            Route::get('/',                 'MASTER\cabangController@index');
-            Route::post('/getdetailcabang', 'MASTER\cabangController@getDetailCabang');
-            Route::post('/editdatacabang',  'MASTER\cabangController@editDataCabang');
-            Route::post('/trfdataanakcab',  'MASTER\cabangController@transDataAnakCab');
+            Route::get('/',                 'MASTER\CabangController@index');
+            Route::post('/getdetailcabang', 'MASTER\CabangController@getDetailCabang');
+            Route::post('/editdatacabang',  'MASTER\CabangController@editDataCabang');
+            Route::post('/trfdataanakcab',  'MASTER\CabangController@transDataAnakCab');
         });
 
         /*  Jefri */
         Route::prefix('/mstoutlet')->group(function () {
-            Route::get('/',                 'MASTER\outletController@index');
+            Route::get('/',                 'MASTER\OutletController@index');
         });
 
         /*  Jefri */
         Route::prefix('/mstsuboutlet')->group(function () {
-            Route::get('/',                 'MASTER\subOutletController@index');
-            Route::post('/getsuboutlet',    'MASTER\subOutletController@getSubOutlet');
+            Route::get('/',                 'MASTER\SubOutletController@index');
+            Route::post('/getsuboutlet',    'MASTER\SubOutletController@getSubOutlet');
         });
 
+        /*  Jefri */
         Route::prefix('/mstomi')->group(function () {
-            Route::get('/',                 'MASTER\omiController@index');
-            Route::get('/gettokoomi',       'MASTER\omiController@getTokoOmi');
-            Route::POST('/detailtokoomi',   'MASTER\omiController@detailTokoOmi');
-            Route::POST('/getbranchname',   'MASTER\omiController@getBranchName');
-            Route::POST('/getcustomername', 'MASTER\omiController@getCustomerName');
-            Route::POST('/updatetokoomi',   'MASTER\omiController@updateTokoOmi');
-            Route::POST('/tambahtokoomi',   'MASTER\omiController@tambahTokoOmi');
-            Route::POST('/confirmedit',     'MASTER\omiController@confirmEdit');
+            Route::get('/',                 'MASTER\OmiController@index');
+            Route::get('/gettokoomi',       'MASTER\OmiController@getTokoOmi');
+            Route::POST('/detailtokoomi',   'MASTER\OmiController@detailTokoOmi');
+            Route::POST('/getbranchname',   'MASTER\OmiController@getBranchName');
+            Route::POST('/getcustomername', 'MASTER\OmiController@getCustomerName');
+            Route::POST('/updatetokoomi',   'MASTER\OmiController@updateTokoOmi');
+            Route::POST('/tambahtokoomi',   'MASTER\OmiController@tambahTokoOmi');
+            Route::POST('/confirmedit',     'MASTER\OmiController@confirmEdit');
         });
 
         /*  Jefri */
         Route::prefix('/mstaktifhrgjual')->group(function () {
-            Route::get('/',                 'MASTER\aktifHargaJualController@index');
-            Route::get('/getprodmast',      'MASTER\aktifHargaJualController@getProdmast');
-            Route::post('/getdetailplu',    'MASTER\aktifHargaJualController@getDetailPlu');
-            Route::post('/aktifkanhrg',     'MASTER\aktifHargaJualController@aktifkanHarga');
+            Route::get('/',                 'MASTER\AktifkanHargaJualController@index');
+            Route::get('/getprodmast',      'MASTER\AktifkanHargaJualController@getProdmast');
+            Route::post('/getdetailplu',    'MASTER\AktifkanHargaJualController@getDetailPlu');
+            Route::post('/aktifkanhrg',     'MASTER\AktifkanHargaJualController@aktifkanHarga');
         });
 
         /*  Jefri */
         Route::prefix('/mstaktifallhrgjual')->group(function () {
-            Route::get('/',                 'MASTER\aktifAllHargaJualController@index');
-            Route::get('/getdata',          'MASTER\aktifAllHargaJualController@getData');
-            Route::post('/aktifallitem',    'MASTER\aktifAllHargaJualController@aktifkanAllItem');
+            Route::get('/',                 'MASTER\AktifkanAllHargaJualController@index');
+            Route::get('/getdata',          'MASTER\AktifkanAllHargaJualController@getData');
+            Route::post('/aktifallitem',    'MASTER\AktifkanAllHargaJualController@aktifkanAllItem');
         });
 
         /*  Jefri */
         Route::prefix('/mstharilibur')->group(function () {
-            Route::get('/',                 'MASTER\hariLiburController@index');
-            Route::get('/getharilibur',     'MASTER\hariLiburController@getHariLibur');
-            Route::post('/insert',          'MASTER\hariLiburController@insert');
-            Route::post('/delete',          'MASTER\hariLiburController@delete');
+            Route::get('/',                 'MASTER\HariLiburController@index');
+            Route::get('/getharilibur',     'MASTER\HariLiburController@getHariLibur');
+            Route::post('/insert',          'MASTER\HariLiburController@insert');
+            Route::post('/delete',          'MASTER\HariLiburController@delete');
         });
 
 
@@ -299,81 +300,71 @@ Route::middleware(['CheckLogin'])->group(function () {
 
         /*Leo*/
         Route::prefix('/member')->group(function () {
-            Route::get('/', 'MASTER\memberController@index');
-            Route::get('/getlovmember', 'MASTER\memberController@getLovMember'); //add by JR
-            Route::get('/getlovkodepos', 'MASTER\memberController@getLovKodepos'); //add by JR
-            Route::get('/lov_member_search', 'MASTER\memberController@lov_member_search');
-            Route::get('/lov_kodepos_search', 'MASTER\memberController@lov_kodepos_search');
-            Route::get('/lov_member_select', 'MASTER\memberController@lov_member_select');
-            Route::get('/lov_kodepos_select', 'MASTER\memberController@lov_kodepos_select');
-            Route::get('/set_status_member', 'MASTER\memberController@set_status_member');
-            Route::post('/check_password', 'MASTER\memberController@check_password');
-            Route::post('/update_member', 'MASTER\memberController@update_member');
-            Route::post('/download_mktho', 'MASTER\memberController@download_mktho');
-            Route::post('/check_registrasi', 'MASTER\memberController@check_registrasi');
-            Route::post('/lov_sub_outlet', 'MASTER\memberController@lov_suboutlet');
-            Route::post('/export_crm', 'MASTER\memberController@export_crm');
-            Route::post('/save_quisioner', 'MASTER\memberController@save_quisioner');
-            Route::post('/hapus_member', 'MASTER\memberController@hapus_member');
+            Route::get('/', 'MASTER\MemberController@index');
+            Route::get('/get-lov-member', 'MASTER\MemberController@getLovMember'); //add by JR
+            Route::get('/get-lov-kodepos', 'MASTER\MemberController@getLovKodepos'); //add by JR
+            Route::get('/lov-member-search', 'MASTER\MemberController@lovMemberSearch');
+            Route::get('/lov-kodepos-search', 'MASTER\MemberController@lovKodeposSearch');
+            Route::get('/lov-member-select', 'MASTER\MemberController@lovMemberSelect');
+            Route::get('/lov-kodepos-select', 'MASTER\MemberController@lovKodeposSelect');
+            Route::get('/set-status-member', 'MASTER\MemberController@setStatusMember');
+            Route::post('/check-password', 'MASTER\MemberController@checkPassword');
+            Route::post('/update-member', 'MASTER\MemberController@updateMember');
+            Route::post('/download-mktho', 'MASTER\MemberController@downloadMktho');
+            Route::post('/check-registrasi', 'MASTER\MemberController@checkRegistrasi');
+            Route::post('/lov-sub-outlet', 'MASTER\MemberController@lovSuboutlet');
+            Route::post('/export-crm', 'MASTER\MemberController@exportCRM');
+            Route::post('/save-quisioner', 'MASTER\MemberController@saveQuisioner');
+            Route::post('/delete-member', 'MASTER\MemberController@deleteMember');
         });
 
         /*Leo*/
         Route::prefix('/perusahaan')->group(function () {
-            Route::get('/', 'MASTER\perusahaanController@index');
-            Route::post('/update', 'MASTER\perusahaanController@update');
+            Route::get('/', 'MASTER\PerusahaanController@index');
+            Route::post('/update', 'MASTER\PerusahaanController@update');
         });
 
         /*Leo*/
         Route::prefix('/barcode')->group(function () {
-            Route::get('/', 'MASTER\barcodeController@index');
-            Route::get('/getbarcode', 'MASTER\barcodeController@getBarcode');
+            Route::get('/', 'MASTER\BarcodeController@index');
+            Route::get('/get-barcode', 'MASTER\BarcodeController@getBarcode');
         });
 
         /*Leo*/
-        Route::prefix('/kategoritoko')->group(function () {
-            Route::get('/', 'MASTER\kategoritokoController@index');
-            Route::post('/getDataKtk', 'MASTER\kategoritokoController@getDataKtk');
-            Route::post('/saveDataKtk', 'MASTER\kategoritokoController@saveDataKtk');
+        Route::prefix('/kategori-toko')->group(function () {
+            Route::get('/', 'MASTER\KategoriTokoController@index');
+            Route::post('/getDataKtk', 'MASTER\KategoriTokoController@getDataKtk');
+            Route::post('/saveDataKtk', 'MASTER\KategoriTokoController@saveDataKtk');
         });
 
         /*Leo*/
         Route::prefix('/approval')->group(function () {
-            Route::get('/', 'MASTER\approvalController@index');
-            Route::post('/saveData', 'MASTER\approvalController@saveData');
+            Route::get('/', 'MASTER\ApprovalController@index');
+            Route::post('/save-data', 'MASTER\ApprovalController@saveData');
         });
 
         /*Leo*/
-        Route::prefix('/jenisitem')->group(function () {
-            Route::get('/', 'MASTER\jenisItemController@index');
-            Route::get('/getprodmast', 'MASTER\jenisItemController@getProdmast');
-            Route::post('/lov_search', 'MASTER\jenisItemController@lov_search');
-            Route::post('/lov_select', 'MASTER\jenisItemController@lov_select');
-            Route::post('/savedata', 'MASTER\jenisItemController@savedata');
+        Route::prefix('/jenis-item')->group(function () {
+            Route::get('/', 'MASTER\JenisItemController@index');
+            Route::get('/get-prodmast', 'MASTER\JenisItemController@getProdmast');
+            Route::post('/lov-search', 'MASTER\JenisItemController@lovSearch');
+            Route::post('/lov-select', 'MASTER\JenisItemController@lovSelect');
+            Route::post('/save-data', 'MASTER\JenisItemController@saveData');
         });
 
         /*Leo*/
-        Route::prefix('/kubikasiplano')->group(function () {
-            Route::get('/', 'MASTER\kubikasiPlanoController@index');
-            Route::post('/lov_subrak', 'MASTER\kubikasiPlanoController@lov_subrak');
-            Route::post('/lov_shelving', 'MASTER\kubikasiPlanoController@lov_shelving');
-            Route::post('/dataRakKecil', 'MASTER\kubikasiPlanoController@dataRakKecil');
-            Route::post('/dataRakKecilParam', 'MASTER\kubikasiPlanoController@dataRakKecilParam');
-            Route::post('/lov_search', 'MASTER\kubikasiPlanoController@lov_search');
-            Route::post('/save_kubikasi', 'MASTER\kubikasiPlanoController@save_kubikasi');
+        Route::prefix('/kubikasi-plano')->group(function () {
+            Route::get('/', 'MASTER\KubikasiPlanoController@index');
+            Route::post('/lov-subrak', 'MASTER\KubikasiPlanoController@lovSubrak');
+            Route::post('/lov_shelving', 'MASTER\KubikasiPlanoController@lovShelving');
+            Route::post('/data-rak-kecil', 'MASTER\KubikasiPlanoController@dataRakKecil');
+            Route::post('/data-rak-kecil-param', 'MASTER\KubikasiPlanoController@dataRakKecilParam');
+            Route::post('/lov-search', 'MASTER\KubikasiPlanoController@lovSearch');
+            Route::post('/save-kubikasi', 'MASTER\KubikasiPlanoController@saveKubikasi');
 
         });
 
-        /*Leo*/
-        Route::prefix('/informasihistoryproduct')->group(function () {
-            Route::get('/', 'MASTER\informasiHistoryProductController@index');
-            Route::get('/lov_search', 'MASTER\informasiHistoryProductController@lov_search');
-            Route::get('/getNextPLU', 'MASTER\informasiHistoryProductController@getNextPLU');
-            Route::get('/getPrevPLU', 'MASTER\informasiHistoryProductController@getPrevPLU');
-            Route::post('/lov_search', 'MASTER\informasiHistoryProductController@lov_search');
-            Route::post('/lov_select', 'MASTER\informasiHistoryProductController@lov_select');
-            Route::post('/cetak_so', 'MASTER\informasiHistoryProductController@cetak_so');
-            Route::post('/cetak', 'MASTER\informasiHistoryProductController@cetak');
-        });
+
 
 
         /*MASTER LOKASI*/ //(nama file sebelum direvisi diubah menjadi lokasiBackUpController.php dan lokasiBackUp.blade.php
@@ -400,70 +391,125 @@ Route::middleware(['CheckLogin'])->group(function () {
 
         /*Leo*/
         Route::prefix('/lokasi')->group(function () {
-            Route::get('/', 'MASTER\lokasiController@index');
-            Route::get('/getlokasi', 'MASTER\lokasiController@getLokasi');
-            Route::get('/getplu', 'MASTER\lokasiController@getPlu');
-            Route::post('/lov_rak_select', 'MASTER\lokasiController@lov_rak_select');
+            Route::get('/', 'MASTER\LokasiController@index');
+            Route::get('/get-lokasi', 'MASTER\LokasiController@getLokasi');
+            Route::get('/get-plu', 'MASTER\LokasiController@getPlu');
+            Route::post('/lov-rak-select', 'MASTER\LokasiController@lovrakSelect');
+            Route::post('/lov-rak-search', 'MASTER\LokasiController@lovRakSearch');
 
-
-            Route::get('/getlokasi2', 'MASTER\lokasiController@getLokasi2'); //datatables rak versi 2
-            Route::get('/getprodmast', 'MASTER\lokasiController@getProdmast');
-            Route::post('/lov_rak_search', 'MASTER\lokasiController@lov_rak_search');
-
-            Route::post('/lov_plu_search', 'MASTER\lokasiController@lov_plu_search');
-            Route::post('/lov_plu_select', 'MASTER\lokasiController@lov_plu_select');
-            Route::post('/noid_enter', 'MASTER\lokasiController@noid_enter');
-            Route::post('/delete_plu', 'MASTER\lokasiController@delete_plu');
-            Route::post('/delete_lokasi', 'MASTER\lokasiController@delete_lokasi');
-            Route::post('/cek_plu', 'MASTER\lokasiController@cek_plu');
-            Route::post('/tambah', 'MASTER\lokasiController@tambah');
-            Route::post('/cek_dpd', 'MASTER\lokasiController@cek_dpd');
-            Route::post('/delete_dpd', 'MASTER\lokasiController@delete_dpd');
-            Route::post('/save_dpd', 'MASTER\lokasiController@save_dpd');
+            Route::post('/lov-plu-search', 'MASTER\LokasiController@lovPluSearch');
+            Route::post('/lov-plu-select', 'MASTER\LokasiController@lovPluSelect');
+            Route::post('/noid-enter', 'MASTER\LokasiController@noidEnter');
+            Route::post('/delete-plu', 'MASTER\LokasiController@deletePlu');
+            Route::post('/delete-lokasi', 'MASTER\LokasiController@deleteLokasi');
+            Route::post('/cek-plu', 'MASTER\LokasiController@cekPlu');
+            Route::post('/tambah', 'MASTER\LokasiController@tambah');
+            Route::post('/cek-dpd', 'MASTER\LokasiController@cekDpd');
+            Route::post('/delete-dpd', 'MASTER\LokasiController@deleteDpd');
+            Route::post('/save-dpd', 'MASTER\LokasiController@saveDpd');
         });
 
         /*Leo*/
         /*MASTER SUPPLIER*/
         Route::prefix('/supplier')->group(function () {
-            Route::get('/', 'MASTER\supplierController@index');
-            Route::get('/lov', 'MASTER\supplierController@lov');
-            Route::get('/lov_select', 'MASTER\supplierController@lov_select');
-            Route::get('/lov_search', 'MASTER\supplierController@lov_search');
+            Route::get('/', 'MASTER\SupplierController@index');
+            Route::get('/lov', 'MASTER\SupplierController@lov');
+            Route::get('/lov-select', 'MASTER\SupplierController@lovSelect');
+            Route::get('/lov-search', 'MASTER\SupplierController@lovSearch');
         });
 
         /*Leo*/
         /*MASTER DEPARTEMENT*/
         Route::prefix('/departement')->group(function () {
-            Route::get('/', 'MASTER\departementController@index');
-            Route::get('/divisi_select', 'MASTER\departementController@divisi_select');
+            Route::get('/', 'MASTER\DepartementController@index');
+            Route::get('/divisi-select', 'MASTER\DepartementController@divisiSelect');
         });
 
         /*Leo*/
         /*MASTER DIVISI*/
         Route::prefix('/divisi')->group(function () {
-            Route::get('/', 'MASTER\divisiController@index');
+            Route::get('/', 'MASTER\DivisiController@index');
         });
 
         /*Leo*/
         /*MASTER KATEGORI BARANG*/
-        Route::prefix('/kategoribarang')->group(function () {
-            Route::get('/', 'MASTER\kategoriBarangController@index');
-            Route::get('/departement_select', 'MASTER\kategoriBarangController@departement_select');
+        Route::prefix('/kategori-barang')->group(function () {
+            Route::get('/', 'MASTER\KategoriBarangController@index');
+            Route::get('/departement-select', 'MASTER\KategoriBarangController@departementSelect');
         });
 
         /*Leo*/
         /*MASTER HARGA BELI*/
         Route::prefix('/hargabeli')->group(function () {
-            Route::get('/', 'MASTER\hargaBeliController@index');
-            Route::get('/getprodmast', 'MASTER\hargaBeliController@getProdmast');
-            Route::get('/lov_search', 'MASTER\hargaBeliController@lov_search');
-            Route::get('/lov_select', 'MASTER\hargaBeliController@lov_select');
+            Route::get('/', 'MASTER\HargaBeliController@index');
+            Route::get('/get-prodmast', 'MASTER\HargaBeliController@getProdmast');
+            Route::get('/lov_search', 'MASTER\HargaBeliController@lovSearch');
+            Route::get('/lov_select', 'MASTER\HargaBeliController@lovSelect');
         });
     });
 
     Route::prefix('/bo')->group(function () {
+        /*Denni*/
+        Route::prefix('/informasihistoryproduct')->group(function () {
+            Route::get('/', 'BACKOFFICE\informasiHistoryProductController@index');
+            Route::get('/lov_search', 'BACKOFFICE\informasiHistoryProductController@lov_search');
+            Route::get('/getNextPLU', 'BACKOFFICE\informasiHistoryProductController@getNextPLU');
+            Route::get('/getPrevPLU', 'BACKOFFICE\informasiHistoryProductController@getPrevPLU');
+            Route::post('/lov_search', 'BACKOFFICE\informasiHistoryProductController@lov_search');
+            Route::post('/lov_select', 'BACKOFFICE\informasiHistoryProductController@lov_select');
+            Route::post('/cetak_so', 'BACKOFFICE\informasiHistoryProductController@cetak_so');
+            Route::post('/cetak', 'BACKOFFICE\informasiHistoryProductController@cetak');
+        });
+
         /*Leo*/
         Route::prefix('/pb')->group(function () {
+
+            /*JEFRI*/
+            Route::prefix('/bomaxpalet')->group(function () {
+                Route::get('/', 'BACKOFFICE\maxpaletUntukPBController@index');
+                Route::post('/loaddata', 'BACKOFFICE\maxpaletUntukPBController@loadData');
+                Route::post('/getmaxpalet', 'BACKOFFICE\maxpaletUntukPBController@getMaxPalet');
+                Route::post('/savedata', 'BACKOFFICE\maxpaletUntukPBController@saveData');
+                Route::post('/deletedata', 'BACKOFFICE\maxpaletUntukPBController@deleteData');
+            });
+
+            /*JEFRI*/
+            Route::prefix('/boutilitypbigr')->group(function () {
+                Route::get('/',                 'BACKOFFICE\utilityPBIGRController@index');
+                Route::post('/callproc1',       'BACKOFFICE\utilityPBIGRController@callProc1');
+                Route::post('/callproc2',       'BACKOFFICE\utilityPBIGRController@callProc2');
+                Route::post('/callproc3',       'BACKOFFICE\utilityPBIGRController@callProc3');
+                Route::post('/chekproc4',       'BACKOFFICE\utilityPBIGRController@checkProc4');
+                Route::get('/callproc4/{date}', 'BACKOFFICE\utilityPBIGRController@callProc4');
+                Route::get('/test', function () {
+                    return view('BACKOFFICE.utilityPBIGR-laporan');
+                });
+            });
+
+            /*JEFRI*/
+            Route::prefix('/bopbotomatis')->group(function () {
+                Route::get('/',                     'BACKOFFICE\PBOtomatisController@index');
+                Route::get('/getdatamodalsupplier', 'BACKOFFICE\PBOtomatisController@getDataModalSupplier');
+                Route::get('/getkategori',          'BACKOFFICE\PBOtomatisController@getKategori');
+                Route::post('/prosesdata',          'BACKOFFICE\PBOtomatisController@prosesData');
+                Route::get('/cetakreport/{kodeigr}/{date1}/{date2}/{sup1}/{sup2}', 'BACKOFFICE\PBOtomatisController@cetakReport');
+            });
+
+            /*JEFRI*/
+            Route::prefix('/cetak-pb')->group(function () {
+                Route::get('/',                     'BACKOFFICE\cetakPBController@index');
+                Route::get('/getdocument',          'BACKOFFICE\cetakPBController@getDocument');
+                Route::post('/searchdocument',      'BACKOFFICE\cetakPBController@searchDocument');
+                Route::post('/getdivisi',           'BACKOFFICE\cetakPBController@getDivisi');
+                Route::post('/searchdivisi',        'BACKOFFICE\cetakPBController@searchDivisi');
+                Route::get('/getdepartement',       'BACKOFFICE\cetakPBController@getDepartement');
+                Route::post('/searchdepartement',   'BACKOFFICE\cetakPBController@searchDepartement');
+                Route::get('/getkategori',          'BACKOFFICE\cetakPBController@getKategori');
+                Route::post('/searchkategori',      'BACKOFFICE\cetakPBController@searchKategori');
+                Route::get('/cetakreport/{tgl1}/{tgl2}/{doc1}/{doc2}/{div1}/{div2}/{dept1}/{dept2}/{kat1}/{kat2}/{tipePB}', 'BACKOFFICE\cetakPBController@cetakReport');
+            });
+
+
             /*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
             Route::prefix('/kkei')->group(function () {
                 Route::get('/', 'BACKOFFICE\KKEIController@index');
@@ -543,6 +589,12 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
 
         Route::prefix('/transaksi')->group(function () {
+
+            /*  Jefri */
+            Route::prefix('/ASD')->group(function () {
+
+            });
+
             Route::prefix('/pengeluaran')->group(function () {
                 Route::prefix('/input')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@index');
@@ -821,7 +873,11 @@ Route::middleware(['CheckLogin'])->group(function () {
 
         /*Ryan*/
         Route::prefix('/list-master')->group(function () {
-            Route::get('/', 'BACKOFFICE\listmasterController@index');
+            //BACKOFFICE-LIST MASTER (ryanOrder = 37)
+            Route::get('/', 'BACKOFFICE\ListMasterController@index');
+            Route::get('/get-lov-divisi', 'BACKOFFICE\ListMasterController@getLovDivisi');
+            Route::get('/get-lov-departemen', 'BACKOFFICE\ListMasterController@getLovDepartemen');
+            Route::get('/get-lov-kategori', 'BACKOFFICE\ListMasterController@getLovKategori');
         });
 
         Route::prefix('/proses')->group(function () {
@@ -1170,6 +1226,16 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/getsingkatan', 'TABEL\byrvchController@GetSingkatan');
             Route::get('/checkvoucher', 'TABEL\byrvchController@CheckVoucher');
             Route::get('/checkdbtable', 'TABEL\byrvchController@CheckDBTable');
+            Route::post('/save', 'TABEL\byrvchController@Save');
+            Route::post('/hapus', 'TABEL\byrvchController@Delete');
+        });
+        /*Ryan*/
+        Route::prefix('/tipe-rak-barang')->group(function () {
+            //Tipe Rak Barang (ryanOrder = 36)
+            Route::get('/', 'TABEL\TipeRakBarangController@index');
+            Route::post('/load-data', 'TABEL\TipeRakBarangController@loadData');
+            Route::post('/hapus', 'TABEL\TipeRakBarangController@hapus');
+            Route::post('/save', 'TABEL\TipeRakBarangController@save');
         });
 
         /*Ryan*/
@@ -1305,6 +1371,21 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-plu', 'TABEL\MonitoringProdukController@getLovPLU');
             Route::get('/get-data', 'TABEL\MonitoringProdukController@getData');
             Route::get('/print', 'TABEL\MonitoringProdukController@print');
+            Route::post('/add-data', 'TABEL\MonitoringProdukController@addData');
+            Route::post('/delete-data', 'TABEL\MonitoringProdukController@deleteData');
+        });
+
+        /*Leo*/
+        Route::prefix('/monitoring-member')->group(function () {
+            Route::get('/', 'TABEL\MonitoringMemberController@index');
+            Route::get('/get-lov-monitoring', 'TABEL\MonitoringMemberController@getLovMonitoring');
+            Route::get('/get-monitoring', 'TABEL\MonitoringMemberController@getMonitoring');
+            Route::get('/get-lov-member', 'TABEL\MonitoringMemberController@getLOVMember');
+            Route::get('/get-member', 'TABEL\MonitoringMemberController@getMember');
+            Route::get('/get-data', 'TABEL\MonitoringMemberController@getData');
+            Route::get('/print', 'TABEL\MonitoringMemberController@print');
+            Route::post('/add-data', 'TABEL\MonitoringMemberController@addData');
+            Route::post('/delete-data', 'TABEL\MonitoringMemberController@deleteData');
         });
 
         //Denni
@@ -1318,7 +1399,37 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/simpan', 'TABEL\MaxPembelianItemPerTransaksiController@simpan');
             Route::post('/hapus', 'TABEL\MaxPembelianItemPerTransaksiController@hapus');
         });
-
+        //Denni
+        Route::prefix('/monitoring-supplier')->group(function () {
+            Route::get('/', 'TABEL\MonitoringSupplierController@index');
+            Route::get('/cek-data', 'TABEL\MonitoringSupplierController@cekData');
+            Route::get('/get-lov-monitoring', 'TABEL\MonitoringSupplierController@getLovMonitoring');
+            Route::get('/get-monitoring', 'TABEL\MonitoringSupplierController@getMonitoring');
+            Route::get('/get-lov-supplier', 'TABEL\MonitoringSupplierController@getLovSupplier');
+            Route::get('/get-data', 'TABEL\MonitoringSupplierController@getData');
+            Route::get('/print', 'TABEL\MonitoringSupplierController@print');
+            Route::post('/tambah', 'TABEL\MonitoringSupplierController@tambah');
+            Route::post('/hapus', 'TABEL\MonitoringSupplierController@hapus');
+        });
+        //Denni
+        Route::prefix('/monitoring-sales-dan-stock')->group(function () {
+            Route::get('/', 'TABEL\MonitoringSalesDanStockController@index');
+            Route::get('/get-data', 'TABEL\MonitoringSalesDanStockController@getData');
+            Route::get('/get-lov-monitoring', 'TABEL\MonitoringSalesDanStockController@getLovMonitoring');
+            Route::get('/get-lov-plu', 'TABEL\MonitoringSalesDanStockController@getLovPLU');
+            Route::get('/print', 'TABEL\MonitoringSalesDanStockController@print');
+        });
+        /*Denni*/
+        Route::prefix('/jenis-rak-barang')->group(function () {
+            Route::get('/', 'TABEL\JenisRakBarangController@index');
+            Route::get('/get-data', 'TABEL\JenisRakBarangController@getData');
+            Route::get('/get-lov', 'TABEL\JenisRakBarangController@getLov');
+            Route::get('/get-next-kode-rak', 'TABEL\JenisRakBarangController@getNextKodeRak');
+            Route::get('/get-prev-kode-rak', 'TABEL\JenisRakBarangController@getPrevKodeRak');
+            Route::get('/get-lov', 'TABEL\JenisRakBarangController@getLov');
+            Route::post('/hapus', 'TABEL\JenisRakBarangController@hapus');
+            Route::post('/simpan', 'TABEL\JenisRakBarangController@simpan');
+        });
         //Denni
         Route::prefix('/pendaftaran-voucher-belanja')->group(function () {
             Route::get('/', 'TABEL\PendaftaranVoucherBelanjaController@index');
@@ -1372,9 +1483,9 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/laporan-kasir')->group(function () {
             /*  Jefri */
             Route::prefix('/laporan-pareto-sales-by-member')->group(function () {
-                Route::get('/',                 'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@index')->middleware('CheckLogin');
-                Route::get('/get-lov-member',   'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@getLovMember')->middleware('CheckLogin');
-                Route::get('/cetak-laporan',    'FRONTOFFICE\LAPORANKASIR\paretoSalesMemberController@cetakLaporan')->middleware('CheckLogin');
+                Route::get('/',                 'FRONTOFFICE\LAPORANKASIR\ParetoSalesMemberController@index')->middleware('CheckLogin');
+                Route::get('/get-lov-member',   'FRONTOFFICE\LAPORANKASIR\ParetoSalesMemberController@getLovMember')->middleware('CheckLogin');
+                Route::get('/cetak-laporan',    'FRONTOFFICE\LAPORANKASIR\ParetoSalesMemberController@cetakLaporan')->middleware('CheckLogin');
             });
 
             Route::prefix('/actual')->group(function () {
@@ -1592,6 +1703,13 @@ Route::middleware(['CheckLogin'])->group(function () {
     });
 
     Route::prefix('/omi')->group(function () {
+        /*  Jefri */
+        Route::prefix('/proses-bkl')->group(function () {
+            Route::get('/',                 'OMI\ProsesBKLDalamKotaController@index');
+            Route::post('/proses-file',     'OMI\ProsesBKLDalamKotaController@prosesFile');
+            Route::get('/cetak-laporan',    'OMI\ProsesBKLDalamKotaController@cetakLaporan');
+        });
+
         Route::prefix('/transfer-order-dari-omi-idm')->group(function () {
             Route::prefix('/kredit-limit-dan-monitoring-pb-omi')->group(function () {
                 Route::get('/', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@index');
@@ -1650,6 +1768,17 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
 
         Route::prefix('/laporan')->group(function () {
+
+            /*  Jefri */
+            Route::prefix('/reprint-bkl')->group(function () {
+                Route::get('/', 'OMI\LAPORAN\ReprintBKLController@index');
+                Route::post('/cek-omi', 'OMI\LAPORAN\ReprintBKLController@checkKodeOmi');
+                Route::post('/cek-nomor', 'OMI\LAPORAN\ReprintBKLController@cekNomorBukti');
+                Route::get('/get-lov', 'OMI\LAPORAN\ReprintBKLController@getDataLov');
+                Route::get('/cetak-laporan', 'OMI\LAPORAN\ReprintBKLController@cetakLaporan');
+            });
+
+
             Route::prefix('/register-ppr')->group(function () {
                 Route::get('/', 'OMI\Laporan\LaporanRegisterPPRController@index');
                 Route::get('/lov-nodoc', 'OMI\Laporan\LaporanRegisterPPRController@lovNodoc');

@@ -46,7 +46,7 @@ class TransferSJController extends Controller
         DB::statement("truncate table temp_sj");
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $data = DB::connection($_SESSION['connection'])->insert("insert into temp_sj select mstd_recordid recid , mstd_typetrn rtype, mstd_nodoc docno,
                               mstd_tgldoc DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2,
@@ -77,12 +77,12 @@ class TransferSJController extends Controller
                               set msth_flagdoc = '*'
                               where msth_nodoc in ".$nodoc." and msth_typetrn='O'");
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return 'success';
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             return 'error';
         }
     }

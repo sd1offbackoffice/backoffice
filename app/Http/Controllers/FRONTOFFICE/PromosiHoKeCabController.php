@@ -22,6 +22,7 @@ class PromosiHoKeCabController extends Controller
         return view('FRONTOFFICE.PromosiHoKeCab');
     }
     public function DownBaru(Request $request){
+        set_time_limit(0);
         $kodeigr = $_SESSION['kdigr'];
         $p_sukses = "false";
         $err_txt = "";
@@ -35,6 +36,7 @@ class PromosiHoKeCabController extends Controller
         oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
         oci_execute($query);
 
+
         if($p_sukses == "TRUE"){
             $msg = "Proses Tarik Data Berhasil";
         }else{
@@ -43,6 +45,7 @@ class PromosiHoKeCabController extends Controller
         return response()->json($msg);
     }
     public function DownEdit(Request $request){
+        set_time_limit(0);
         $kodeigr = $_SESSION['kdigr'];
         $p_sukses = "false";
         $err_txt = "";

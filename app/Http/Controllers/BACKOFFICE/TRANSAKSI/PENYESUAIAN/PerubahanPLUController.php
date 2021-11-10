@@ -52,7 +52,7 @@ class PerubahanPLUController extends Controller
         $updplu = false;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $dataplulama = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
                 ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
@@ -489,7 +489,7 @@ class PerubahanPLUController extends Controller
                 }
             }
 
-//            DB::commit();
+//            DB::connection($_SESSION['connection'])->commit();
 
             $_SESSION['pys_dataplulama'] = $dataplulama;
             $_SESSION['pys_dataplubaru'] = $dataplubaru;
@@ -502,7 +502,7 @@ class PerubahanPLUController extends Controller
             return compact(['status','title','message']);
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $title = 'Gagal melakukan perubahan PLU!';

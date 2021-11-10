@@ -269,7 +269,7 @@ class KKEIController extends Controller
         $kkeis = array();
         $prdcd = array();
 
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
 
         try{
             if(!empty($request->deleted)){
@@ -322,12 +322,12 @@ class KKEIController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }
         catch (QueryException $e){
             $status = 'failed';
             $message = 'Gagal menyimpan data!';
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
         }
 
         return compact(['status','message']);

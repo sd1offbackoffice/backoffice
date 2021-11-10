@@ -31,7 +31,7 @@ class BatalTransferController extends Controller
 
     public function batal(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $nosj = $request->nosj;
 
@@ -316,7 +316,7 @@ class BatalTransferController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $status = 'success';
             $title = 'Data Surat Jalan Nomor '.$nosj.' sudah dibatalkan!';
@@ -324,7 +324,7 @@ class BatalTransferController extends Controller
             return compact(['status','title']);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $title = 'Terjadi kesalahan!';

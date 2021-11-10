@@ -20,10 +20,12 @@ class CheckLogin
 
             $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
 
-            if(!AccessController::isAccessible(\Request::getPathInfo())){
-                abort(403);
-//                return redirect('/unauthorized');
+            if(!in_array($_SESSION['usid'], ['DEV','SUP'])) {
+                if(!AccessController::isAccessible(\Request::getPathInfo())){
+                    abort(403);
+                }
             }
+
 
 //            if(count($menu) == count($_SESSION['menu'])){
 //                for($i=0;$i<count($menu);$i++){

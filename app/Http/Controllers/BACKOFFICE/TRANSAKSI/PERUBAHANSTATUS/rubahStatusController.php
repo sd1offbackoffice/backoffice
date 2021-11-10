@@ -241,7 +241,7 @@ class rubahStatusController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $this->flagisi ='Y';
             $this->flag_retur ='N';
             $this->flag_rusak ='N';
@@ -913,7 +913,7 @@ class rubahStatusController extends Controller
                             'MSTD_CREATE_BY' => $userid, 'MSTD_CREATE_DT' => $today, 'MSTD_MODIFY_BY' => null, 'MSTD_MODIFY_DT' => null]);
 
                 }
-            }DB::commit();return response()->json(['kode' => 1, 'msg' => $noDoc]);
+            }DB::connection($_SESSION['connection'])->commit();return response()->json(['kode' => 1, 'msg' => $noDoc]);
         }
         catch(\Exception $e){
             // do task when error

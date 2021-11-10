@@ -1382,7 +1382,7 @@
         function getLovMember(value){
             let tableModalMember = $('#table_lov_member').DataTable({
                 "ajax": {
-                    'url' : '{{ url('master/member/getlovmember') }}',
+                    'url' : '{{ url()->current() }}/get-lov-member',
                     "data" : {
                         'value' : value
                     },
@@ -1436,7 +1436,7 @@
         function getLovKodepos(value){
             let tableModalKodepos = $('#table_lov_kodepos').DataTable({
                 "ajax": {
-                    'url' : '{{ url('master/member/getlovkodepos') }}',
+                    'url' : '{{ url()->current() }}/get-lov-kodepos',
                     "data" : {
                         'value' : value
                     },
@@ -2581,7 +2581,7 @@
                 else if(this.value.length >= 4) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '{{ url()->current() }}/lov_member_search',
+                        url: '{{ url()->current() }}/lov-member-search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){
@@ -2637,7 +2637,7 @@
                 else if(this.value.length >= 4) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '{{ url()->current() }}/lov_kodepos_search',
+                        url: '{{ url()->current() }}/lov-kodepos-search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         beforeSend: function(){
@@ -2809,7 +2809,7 @@
 
         function lov_member_select(value, load){
             $.ajax({
-                url: '{{ url()->current() }}/lov_member_select',
+                url: '{{ url()->current() }}/lov-member-select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -3162,7 +3162,7 @@
         function lov_kodepos_select(kode, kecamatan, kelurahan, kabupaten){
             success = false;
             $.ajax({
-                url: '{{ url()->current() }}/lov_kodepos_select',
+                url: '{{ url()->current() }}/lov-kodepos-select',
                 type: 'GET',
                 data: {"_token": "{{ csrf_token() }}", kode: kode, kecamatan: kecamatan, kelurahan: kelurahan, kabupaten: kabupaten},
                 beforeSend: function(){
@@ -3306,7 +3306,7 @@
 
         function getLovSubOutlet(){
             $.ajax({
-                url: '{{ url()->current() }}/lov_sub_outlet',
+                url: '{{ url()->current() }}/lov-sub-outlet',
                 type: 'post',
                 data: {
                     "_token":"{{ csrf_token() }}",
@@ -3557,7 +3557,7 @@
                         console.log(data);
 
                         $.ajax({
-                            url: '{{ url()->current() }}/update_member',
+                            url: '{{ url()->current() }}/update-member',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3660,7 +3660,7 @@
             }).then((createData) => {
                 if (createData) {
                     $.ajax({
-                        url: '{{ url()->current() }}/export_crm',
+                        url: '{{ url()->current() }}/export-crm',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3777,7 +3777,7 @@
                 }).then((createData) => {
                     if (createData) {
                         $.ajax({
-                            url: '{{ url()->current() }}/save_quisioner',
+                            url: '{{ url()->current() }}/save-quisioner',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3913,7 +3913,7 @@
 
         $('#btn-download-mktho').on('click',function(){
             $.ajax({
-                url: '{{ url()->current() }}/download_mktho',
+                url: '{{ url()->current() }}/download-mktho',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3952,7 +3952,7 @@
 
         $('#btn-check-registrasi').on('click',function(){
             $.ajax({
-                url: '{{ url()->current() }}/check_registrasi',
+                url: '{{ url()->current() }}/check-registrasi',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -4034,7 +4034,7 @@
                     if(response == 'ok'){
                         if(approvalMode == 'aktif-nonaktif'){
                             $.ajax({
-                                url: '{{ url()->current() }}/set_status_member',
+                                url: '{{ url()->current() }}/set-status-member',
                                 type: 'GET',
                                 data: {"_token": "{{ csrf_token() }}", kode: member.cus_kodemember, status: status},
                                 success: function (response) {
@@ -4105,7 +4105,7 @@
         function hapus(user,password){
             console.log('hapus');
             $.ajax({
-                url: '{{ url()->current() }}/check_password',
+                url: '{{ url()->current() }}/check-password',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -4117,7 +4117,7 @@
                 success: function (response) {
                     if(response == 'ok'){
                         $.ajax({
-                            url: '{{ url()->current() }}/hapus_member',
+                            url: '{{ url()->current() }}/delete-member',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

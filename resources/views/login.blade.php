@@ -47,6 +47,19 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid mt-2 mb-0">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <div class="card">
+                    <div class="card-body border-dark shadow-sm">
+                        <h4 class="text-dark">Note Buat Developer</h4>
+                        <p class="text-danger">* sekarang kalo mau edit" menu bagian administration,
+                            login di prod dulu ya biar ga ketiban lg datanya, thank you @Leo @Denni @Jefri @Ryan @Michele</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-login100">
         <div class="wrap-login100 p-l-85 p-r-85 p-t-40 p-b-40">
             {{--<form class="login100-form validate-form flex-sb flex-w">--}}

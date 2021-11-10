@@ -175,7 +175,7 @@ class entrySortirBarangController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $datas  = $request->datas;
             $keterangan  = $request->keterangan;
             $pludi  = $request->pludi;
@@ -251,7 +251,7 @@ class entrySortirBarangController extends Controller
                             'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
                             'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 return response()->json(['kode' => 1, 'msg' => $getDoc->srt_nosortir]);
             } else {
 //              *** Insert Data ***
@@ -283,7 +283,7 @@ class entrySortirBarangController extends Controller
                             'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
                             'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 return response()->json(['kode' => 1, 'msg' => $noSrt]);
             }
         }catch (\Exception $e){
@@ -331,9 +331,9 @@ class entrySortirBarangController extends Controller
 ");
 
 //                Update srt_flagdisc3
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         DB::connection($_SESSION['connection'])->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.EntrySortirBarang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

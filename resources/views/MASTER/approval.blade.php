@@ -67,7 +67,7 @@
             var kepalagudang = $('#i_kepalagudang').val().toUpperCase();
             ajaxSetup();
             $.ajax({
-                url: '{{ url('master/approval/saveData') }}',
+                url: '{{ url()->current() }}/save-data',
                 type: 'POST',
                 data: {
                     storemanager: storemanager,

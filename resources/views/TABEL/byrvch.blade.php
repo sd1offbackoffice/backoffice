@@ -351,7 +351,7 @@
                             addRow();
                             $('.plu')[i].value = response[i].byr_prdcd;
                             $('.deskripsi')[i].value = response[i].prd_deskripsipanjang;
-                            $('.voucher')[i].value = response[i].byr_prdcd;
+                            $('.voucher')[i].value = response[i].byr_qtymaxvoucher;
                         }
                     },
                     error: function (error) {
@@ -429,12 +429,17 @@
             dateB = dateB.split('/').join('-');
             let datas   = [{'plu' : '', 'status' : ''}];
             let status = '';
+            let values = $('input:checkbox:checked.pilihan').map(function () {
+                return this.parentNode.parentNode.rowIndex-1;
+            }).get();
             for(i=0;i<$('.baris').length;i++){
                 if($('.plu')[i].value != ''){
-                    if($('.pilihan')[i].prop("checked")){
-                        status = 2;
-                    }else{
-                        status = 0;
+                    status = 0;
+                    for(j=0;j<values.length;j++){
+                        if(values[j] == i){
+                            status = 2;
+                            break;
+                        }
                     }
                     datas.push({'plu':$('.plu')[i].value, 'voucher': $('.voucher')[i].value,'status' : status})
                 }
@@ -449,7 +454,9 @@
                 data: {
                     date1:dateA,
                     date2:dateB,
-                    datas:datas
+                    datas:datas,
+                    supp:$('#inputSupp').val(),
+                    sing:$('#inputSingkatan').val(),
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -478,6 +485,50 @@
         }
 
         function Hapus(){
+            swal({
+                title: 'Data Voucher Akan Didelete ?',
+                icon: 'warning',
+                dangerMode: true,
+                buttons: true,
+            }).then(function (confirm) {
+                console.log(confirm);
+                if (confirm) {
+                    $.ajax({
+                        url: '{{ url()->current() }}/hapus',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            supp:$('#inputSupp').val(),
+                            sing:$('#inputSingkatan').val(),
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.title,
+                                icon: 'success'
+                            }).then(() => {
+                                ClearForm();
+                            })
+                        },
+                        complete: function () {
+                            $('#modal-loader').modal('hide');
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: error.responseJSON.title,
+                                text: error.responseJSON.message,
+                                icon: 'error',
+                            });
+                            return false;
+                        }
+                    });
+                }
+            });
 
         }
 
@@ -485,6 +536,11 @@
             $(' input').val('');
             $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
             $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+
+            $('.baris').remove();
+            for(i=0;i<10;i++){
+                addRow();
+            }
         }
 
         $('#inputSupp').on('change', function() {
@@ -548,4 +604,6 @@
                     $('.pilihan').prop("checked",true);
                 }
             }
-    
+        });
+    </script>
+@endsection

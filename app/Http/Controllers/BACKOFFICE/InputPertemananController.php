@@ -81,7 +81,7 @@ class InputPertemananController extends Controller
         $subrak = $request->subrak;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             if(substr($koderak, -1) == 'C'){
                 DB::connection($_SESSION['connection'])->table('tbmaster_plano')
@@ -97,14 +97,14 @@ class InputPertemananController extends Controller
                     ->delete();
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'title' => 'Berhasil menghapus data!'
             ],200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'title' => 'Gagal menghapus data!'
@@ -289,7 +289,7 @@ class InputPertemananController extends Controller
         $plano2 = $request->plano2;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             if(substr($plano1['pla_koderak'],-1) == 'C'){
                 DB::connection($_SESSION['connection'])->table('tbmaster_plano')
@@ -342,12 +342,12 @@ class InputPertemananController extends Controller
          WHERE PLA_PRDCD = '".$prdcd."'");
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json(['title' => 'Berhasil menukar data pertemanan!'],200);
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json(['title' => 'Gagal menukar data pertemanan!'],500);
         }

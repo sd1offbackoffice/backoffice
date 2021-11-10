@@ -3,86 +3,26 @@
 <head>
     <title>@yield('page_title')</title>
 </head>
-<body>
-    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px">
-        <button style="float:right;    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-display: inline-block;
-    font-weight: 400;border: 1px solid transparent;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;" onclick="window.print()">CETAK</button>
-    </div>
-    <div style="margin:auto; width: @yield('paper_width','595pt')">
-        <table class="report-container">
-            <thead class="report-header">
-            <tr>
-                <th class="report-header-cell">
-                    <div class="header-info">
-                        <div class="left" style="float:left; margin-top: 0px; line-height: 8px !important;">
-                            <p>
-                                {{ $perusahaan->prs_namaperusahaan }}
-                            </p>
-                            <p>
-                                {{ $perusahaan->prs_namacabang }}
-                            </p>
-                            @yield('header_left')
-                        </div>
-                        <div class="left" style="float:right; margin-top: 0px; line-height: 8px !important;">
-                            <p>
-                                Tgl. Cetak : {{ date("d/m/Y") }}
-                            </p>
-                            <p>
-                                Jam Cetak : {{ date('H:i:s') }}
-                            </p>
-                            <p>
-                                <i>User ID</i> : {{ $_SESSION['usid'] }}
-                            </p>
-                            <p>
-{{--                                Hal. : <span id="pageNumber"></span>--}}
-                            </p>
-                        </div>
-                        <div class="center">
-                            <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
-                                @yield('title')
-                            </p>
-                            <p style="text-align: center;margin: 0;padding: 0">
-                                @yield('subtitle')
-                            </p>
-                        </div>
-                    </div>
-                </th>
-            </tr>
-            </thead>
-            <tfoot class="report-footer">
-                <tr>
-                    <td class="report-footer-cell">
-                        <div class="footer-info">
-
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-            <tbody class="report-content">
-            <tr>
-                <td class="report-content-cell">
-                    <div class="main">
-                        <div class="article">
-                            <main>
-                                @yield('content')
-                                <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
-                            </main>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</body>
-
 <style>
+    body{
+        margin: 0;
+    }
+
+    .bg-white{
+        background-color: white;
+    }
+
+    .bg-gray{
+        background-color: rgb(82, 86, 89);
+    }
+
+    .content-wrapper{
+        margin:auto;
+        min-height: @yield('paper_height','842pt');
+        width: @yield('paper_width','595pt');
+        padding: 5% 4%;
+    }
+
     table.report-container {
         page-break-after:always;
         width: 100%;
@@ -97,7 +37,20 @@ display: inline-block;
         page-break-inside: avoid;
     }
 
-
+    .btn-print{
+        float:right;
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+        display: inline-block;
+        font-weight: 400;border: 1px solid transparent;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        height: 100%;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 
     @page {
         /*margin: 25px 20px;*/
@@ -109,6 +62,10 @@ display: inline-block;
     @media print{
         #buttonArea{
             display: none;
+        }
+
+        .content-wrapper{
+            padding: 0;
         }
 
         tfoot.report-footer{
@@ -266,4 +223,75 @@ display: inline-block;
 
     @yield('custom_style')
 </style>
+<body class="bg-gray">
+    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px">
+        <button class="btn-print" onclick="window.print()">CETAK</button>
+    </div>
+    <div class="bg-white content-wrapper">
+        <table class="report-container">
+            <thead class="report-header">
+            <tr>
+                <th class="report-header-cell">
+                    <div class="header-info">
+                        <div class="left" style="float:left; margin-top: 0px; line-height: 8px !important;">
+                            <p>
+                                {{ $perusahaan->prs_namaperusahaan }}
+                            </p>
+                            <p>
+                                {{ $perusahaan->prs_namacabang }}
+                            </p>
+                            @yield('header_left')
+                        </div>
+                        <div class="left" style="float:right; margin-top: 0px; line-height: 8px !important;">
+                            <p>
+                                Tgl. Cetak : {{ date("d/m/Y") }}
+                            </p>
+                            <p>
+                                Jam Cetak : {{ date('H:i:s') }}
+                            </p>
+                            <p>
+                                <i>User ID</i> : {{ $_SESSION['usid'] }}
+                            </p>
+                            <p>
+{{--                                Hal. : <span id="pageNumber"></span>--}}
+                            </p>
+                        </div>
+                        <div class="center">
+                            <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
+                                @yield('title')
+                            </p>
+                            <p style="text-align: center;margin: 0;padding: 0">
+                                @yield('subtitle')
+                            </p>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tfoot class="report-footer">
+                <tr>
+                    <td class="report-footer-cell">
+                        <div class="footer-info">
+
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody class="report-content">
+            <tr>
+                <td class="report-content-cell">
+                    <div class="main">
+                        <div class="article">
+                            <main>
+                                @yield('content')
+                                <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
+                            </main>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
 </html>

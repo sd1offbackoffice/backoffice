@@ -60,7 +60,7 @@ class DevController extends Controller
 
     public function save(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->update([
@@ -81,14 +81,14 @@ class DevController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'title' => 'Data berhasil disimpan!',
             ], 200);
         }
         catch (\Exception $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'title' => 'Terjadi kesalahan!',

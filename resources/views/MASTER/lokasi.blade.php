@@ -16,6 +16,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
+                            <label class="col-sm-2 col-form-label" id="keterangan" style="display: none">** TAMBAH RAK **</label>
                         </div>
                         <div class="row">
                             <label for="lks_kodesubrak" class="col-sm-1 col-form-label">SUB RAK</label>
@@ -137,28 +138,6 @@
                                 <hr>
                             </div>
                         </div>
-                        {{--Untuk mengetahui last modified dari program lokasi dengan melihat last modified dari file blade/controller--}}
-                        {{--Last Edited--}}
-                        <div class="float-right">
-                            <?php
-                            $viewPath = 'MASTER\lokasi.blade.php';
-                            $controllerPath = 'MASTER\lokasiController.php';
-                            if (file_exists(resource_path('views\\'.$viewPath))){
-                                if(file_exists(app_path('Http\Controllers\\'.$controllerPath))){
-                                    if(date ("F d Y H:i:s", filemtime(app_path('Http\Controllers\\'.$controllerPath))) > date ("F d Y H:i:s", filemtime(resource_path('views\\'.$viewPath)))){
-                                        echo "Last Edited: ".date ("d-m-Y", filemtime(app_path('Http\Controllers\MASTER\lokasiController.php')));
-                                    }else{
-                                        echo "Last Edited: ".date ("d-m-Y", filemtime(resource_path('views\MASTER\lokasi.blade.php')));
-                                    }
-                                }else{
-                                    echo "Last Edited: ".date ("d-m-Y", filemtime(resource_path('views\MASTER\lokasi.blade.php')));
-                                }
-                            }else{
-                                echo 'Last Edited not found';
-                            }
-                            ?>
-                        </div>
-
                         <br>
 
                         <ul class="nav nav-tabs custom-color" role="tablist">
@@ -222,7 +201,7 @@
                                                         <td><input type="text" class="form-control lks_tiratasbawah"></td>
                                                         <td><input type="text" class="form-control lks_mindisplay"></td>
                                                         <td><input type="text" class="form-control lks_maxdisplay"></td>
-                                                        <td><input type="text" class="form-control pkm"></td>
+                                                        <td><input type="text" class="form-control lks_pkm"></td>
                                                         <td><input type="text" class="form-control lks_minpct"></td>
                                                         <td><input type="text" class="form-control lks_maxplano"></td>
                                                     </tr>
@@ -468,7 +447,7 @@
         function loadNmr(value){
             let tableNmr = $('#table_lov_rak').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/getlokasi' }}',
+                    'url' : '{{ url()->current().'/get-lokasi' }}',
                     "data" : {
                         'value' : value
                     },
@@ -511,7 +490,7 @@
         function loadPlu(value){
             let tablePlu = $('#table_lov_plu').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/getplu' }}',
+                    'url' : '{{ url()->current().'/get-plu' }}',
                     "data" : {
                         'value' : value
                     },
@@ -647,7 +626,7 @@
                     }
 
                     $.ajax({
-                        url: '{{ url()->current().'/lov_rak_select' }}',
+                        url: '{{ url()->current().'/lov-rak-select' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -667,240 +646,244 @@
                             //     $('#m_lov_rak').modal('toggle');
 
                             if(response.length == 0){
-                                swal({
-                                    title: 'Data tidak ditemukan!',
-                                    icon: 'error'
-                                }).then(function(){
-                                    $('#lks_koderak').select();
-                                })
+                                $('#keterangan').show();
+                                // swal({
+                                //     title: 'Data tidak ditemukan!',
+                                //     icon: 'error'
+                                // }).then(function(){
+                                //     $('#modal-loader').modal('hide');
+                                //     $('#lks_koderak').select();
+                                // });
                             }
                             else{
-                                if(row != 'input'){
-                                    $('#lks_koderak').val(data['lks_koderak']);
-                                    $('#lks_kodesubrak').val(data['lks_kodesubrak']);
-                                    $('#lks_tiperak').val(data['lks_tiperak']);
-                                    $('#lks_shelvingrak').val(data['lks_shelvingrak']);
+                                $('#keterangan').hide();
+                            }
+
+                            if(row != 'input'){
+                                $('#lks_koderak').val(data['lks_koderak']);
+                                $('#lks_kodesubrak').val(data['lks_kodesubrak']);
+                                $('#lks_tiperak').val(data['lks_tiperak']);
+                                $('#lks_shelvingrak').val(data['lks_shelvingrak']);
+                            }
+
+                            jumlahitem = 0;
+
+
+                            if($('#lks_tiperak').val() == 'S'){
+                                cursorIdTable = "table-s";
+
+                                $('#table-all').hide();
+                                $('#table-tambah').prop('hidden',true);
+                                $('#table-s').show();
+                                $('#table-tambah-s').prop('hidden',false);
+                                $('#table-all tbody tr').remove();
+                                $('#table-s tbody tr').remove();
+
+
+                                for(i=0;i<response.length;i++){
+                                    if(response[i].desk != null){
+                                        jumlahitem++;
+                                    }
+                                    html =
+                                        '<tr onclick="cursorRowChanger(this)" id="row_'+ i +'">' +
+                                        '<td>' +
+                                        '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
+                                        '</td>' +
+                                        '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                        '<td>' +
+                                        '<div class="buttonInside">' +
+                                        '<input readonly type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
+                                        '</div>' +
+                                        '</td>' +
+                                        '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
+                                        '<td><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
+                                        '</tr>';
+
+                                    $('#table-s tbody').append(html);
+
+                                    if(response[i].lks_prdcd == null){
+                                        //$('#table-s .lks_prdcd')[i].setAttribute("readonly", true); //memasang attribut
+                                        $('#table-s .lks_prdcd')[i].removeAttribute("readonly"); //menghapus attribut
+                                    }
+
+                                    if(response[i].lks_delete == 'Y'){
+                                        $('#cb_delete_'+i).prop('checked',true); // da heck is dis?
+                                    }
                                 }
 
-                                jumlahitem = 0;
+                                $('#table-s input').prop('disabled',true);
+                                $('#table-s .lks_nourut').prop('disabled', false);
+                                $('#table-s .lks_depanbelakang').prop('disabled',false);
+                                $('#table-s .lks_atasbawah').prop('disabled',false);
 
+                            }
+                            else{
+                                cursorIdTable = "table-all";
 
-                                if($('#lks_tiperak').val() == 'S'){
-                                    cursorIdTable = "table-s";
-
-                                    $('#table-all').hide();
-                                    $('#table-tambah').prop('hidden',true);
-                                    $('#table-s').show();
-                                    $('#table-tambah-s').prop('hidden',false);
-                                    $('#table-all tbody tr').remove();
-                                    $('#table-s tbody tr').remove();
-
-
-                                    for(i=0;i<response.length;i++){
-                                        if(response[i].desk != null){
-                                            jumlahitem++;
-                                        }
-                                        html =
-                                            '<tr onclick="cursorRowChanger(this)" id="row_'+ i +'">' +
-                                            '<td>' +
-                                            '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
-                                            '</td>' +
-                                            '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                            '<td>' +
-                                            '<div class="buttonInside">' +
-                                            '<input readonly type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                            '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
-                                            '</div>' +
-                                            '</td>' +
-                                            '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_minqty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_expdate" value="'+ formatDate(response[i].lks_expdate) +'"></td>' +
-                                            '<td><input type="text" class="form-control mpt_maxqty" value="'+ nvl(response[i].mpt_maxqty,'') +'"></td>' +
-                                            '</tr>';
-
-                                        $('#table-s tbody').append(html);
-
-                                        if(response[i].lks_prdcd == null){
-                                            //$('#table-s .lks_prdcd')[i].setAttribute("readonly", true); //memasang attribut
-                                            $('#table-s .lks_prdcd')[i].removeAttribute("readonly"); //menghapus attribut
-                                        }
-
-                                        if(response[i].lks_delete == 'Y'){
-                                            $('#cb_delete_'+i).prop('checked',true); // da heck is dis?
-                                        }
+                                $('#table-all').show();
+                                $('#table-tambah').prop('hidden',false);
+                                $('#table-s').hide();
+                                $('#table-tambah-s').prop('hidden',true);
+                                $('#table-s tbody tr').remove();
+                                $('#table-all tbody tr').remove();
+                                for(i=0;i<response.length;i++){
+                                    if(response[i].desk != null){
+                                        jumlahitem++;
                                     }
 
-                                    $('#table-s input').prop('disabled',true);
-                                    $('#table-s .lks_nourut').prop('disabled', false);
-                                    $('#table-s .lks_depanbelakang').prop('disabled',false);
-                                    $('#table-s .lks_atasbawah').prop('disabled',false);
+                                    mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
+                                    minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
 
-                                }
-                                else{
-                                    cursorIdTable = "table-all";
+                                    html =
+                                        '<tr onclick="cursorRowChanger(this)" class="text-center" id="row_'+ i +'">' +
+                                        '<td>' +
+                                        '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
+                                        '</td>' +
+                                        '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
+                                        '<td>' +
+                                        '<div class="buttonInside">' +
+                                        '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
+                                        '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
+                                        '</div>' +
+                                        '</td>' +
+                                        '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control pkm" value="'+ noTwoDigit(nvl(response[i].pkm,'')) +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
+                                        '<td><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
+                                        '<td><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
+                                        '</tr>';
 
-                                    $('#table-all').show();
-                                    $('#table-tambah').prop('hidden',false);
-                                    $('#table-s').hide();
-                                    $('#table-tambah-s').prop('hidden',true);
-                                    $('#table-s tbody tr').remove();
-                                    $('#table-all tbody tr').remove();
-                                    for(i=0;i<response.length;i++){
-                                        if(response[i].desk != null){
-                                            jumlahitem++;
-                                        }
-
-                                        mindisplay = response[i].lks_tirkirikanan * response[i].lks_tirdepanbelakang * response[i].lks_tiratasbawah;
-                                        minpctqty = response[i].lks_minpct * response[i].lks_maxplano / 100;
-
-                                        html =
-                                            '<tr onclick="cursorRowChanger(this)" class="text-center" id="row_'+ i +'">' +
-                                            '<td>' +
-                                            '<button onclick="deleteRow('+ i +')" class="col-sm btn btn-danger btn-delete">X</button>' +
-                                            '</td>' +
-                                            '<td><input type="text" class="form-control lks_nourut" value="'+ nvl(response[i].lks_nourut,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_depanbelakang" value="'+ nvl(response[i].lks_depanbelakang,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_atasbawah" value="'+ nvl(response[i].lks_atasbawah,'') +'"></td>' +
-                                            '<td>' +
-                                            '<div class="buttonInside">' +
-                                            '<input type="text" class="form-control lks_prdcd" maxlength="7" value="'+ nvl(response[i].lks_prdcd,'') +'">' +
-                                            '<button style="display: none" type="button" class="btn btn-primary btn-lov p-0 btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu"><i class="fas fa-question"></i> </button>' +
-                                            '</div>' +
-                                            '</td>' +
-                                            '<td><input type="text" class="form-control lks_jenisrak" value="'+ nvl(response[i].lks_jenisrak,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control desk" value="'+ nvl(response[i].desk,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control satuan" value="'+ nvl(response[i].satuan,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_noid" value="'+ nvl(response[i].lks_noid,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_dimensipanjangproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensipanjangproduk,'')) +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_dimensilebarproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensilebarproduk,'')) +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_dimensitinggiproduk" value="'+ convertToRupiah(nvl(response[i].lks_dimensitinggiproduk,'')) +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_tirkirikanan" value="'+ nvl(response[i].lks_tirkirikanan,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_tirdepanbelakang" value="'+ nvl(response[i].lks_tirdepanbelakang,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_tiratasbawah" value="'+ nvl(response[i].lks_tiratasbawah,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_mindisplay" value="'+ nvl(mindisplay,'')  +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_maxdisplay" value="'+ nvl(response[i].lks_maxdisplay,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control pkm" value="'+ noTwoDigit(nvl(response[i].pkm,'')) +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_qty" value="'+ nvl(response[i].lks_qty,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_minpct" value="'+ nvl(response[i].lks_minpct,'') +'"></td>' +
-                                            '<td><input type="text" class="form-control minpctqty" value="'+ nvl(minpctqty,'')  +'"></td>' +
-                                            '<td><input type="text" class="form-control lks_maxplano" value="'+ nvl(response[i].lks_maxplano,'') +'"></td>' +
-                                            '</tr>';
-
-                                        $('#table-all').append(html);
-                                    }
-
-                                    $('.lks_prdcd').on('keypress',function(e){
-                                        if(e.which == 13){
-                                            lov_plu_select(convertPlu($(this).val()));
-                                        }
-                                    });
-
-                                    $('.lks_noid').on('keypress',function(e){
-                                        if(e.which == 13){
-                                            noid_enter($(this).val());
-                                        }
-                                    });
-
-                                    $('#table-all input').prop('disabled',true);
-
+                                    $('#table-all').append(html);
                                 }
 
-                                $('#jumlahitem').val(jumlahitem);
-
-                                $('input').off('focus');
-                                $('input').on('focus',function(){
-                                    $(this).select();
-
-                                    if(typeof $(this).parent().parent().attr('id') != 'undefined'){
-                                        if($(this).parent().parent().attr('id').substr(0,3) == 'row')
-                                            idrow = $(this).parent().parent().attr('id');
-                                    }
-
-                                    if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
-                                        $('.btn-lov-plu').hide();
-                                        $(this).parent().find('.btn-lov-plu').show();
-                                        idrow = $(this).parent().parent().parent().attr('id');
-                                    }
-                                    else{
-                                        $('.btn-lov-plu').hide();
-                                    }
-
-                                    if($(this).hasClass('lks_prdcd')){
-                                        tempprdcd = $(this).val();
-                                    }
-                                    else if($(this).hasClass('lks_noid')){
-                                        tempnoid = $(this).val();
+                                $('.lks_prdcd').on('keypress',function(e){
+                                    if(e.which == 13){
+                                        lov_plu_select(convertPlu($(this).val()));
                                     }
                                 });
 
-                                $('.btn-lov-plu').hide();
-
-                                if($('#m_lov_rak').is(':visible'))
-                                    $('#m_lov_rak').modal('toggle');
-
-                                if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
-                                    $('.lks_prdcd').prop('disabled',false);
-
-                                    if($('#lks_tiperak').val() != 'S'){
-                                        $('#table-all .lks_nourut').prop('disabled',false);
-                                        $('#table-all .lks_depanbelakang').prop('disabled',false);
-                                        $('#table-all .lks_atasbawah').prop('disabled',false);
-                                        $('#table-all .lks_tirkirikanan').prop('disabled',false);
-                                        $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
-                                        $('#table-all .lkstiratasbawah').prop('disabled',false);
-                                        $('#table-all .lks_maxdisplay').prop('disabled',false);
-                                        $('#table-all .lks_minpct').prop('disabled',false);
-                                        $('#table-all .lks_maxplano').prop('disabled',false);
-                                        $('#p_tambah').show();
+                                $('.lks_noid').on('keypress',function(e){
+                                    if(e.which == 13){
+                                        noid_enter($(this).val());
                                     }
-                                    else{
-                                        $('#table-all input').prop('disabled',true);
-                                        $('#p_tambah').hide();
-                                    }
+                                });
+
+                                $('#table-all input').prop('disabled',true);
+
+                            }
+
+                            $('#jumlahitem').val(jumlahitem);
+
+                            $('input').off('focus');
+                            $('input').on('focus',function(){
+                                $(this).select();
+
+                                if(typeof $(this).parent().parent().attr('id') != 'undefined'){
+                                    if($(this).parent().parent().attr('id').substr(0,3) == 'row')
+                                        idrow = $(this).parent().parent().attr('id');
                                 }
 
-                                //if($('#lks_koderak').val().substr(0,1) == 'P'){
-                                if(true){ //selalu masuk if, untuk menyamakan dengan IAS
-                                    $('#p_tambah input').prop('disabled',false);
-                                    $('#table-tambah .lks_jenisrak').prop('disabled',true);
-                                    $('#table-tambah .desk').prop('disabled',true);
-                                    $('#table-tambah .satuan').prop('disabled',true);
-                                    $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
-                                    $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
-                                    $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
-                                    $('#table-tambah .lks_mindisplay').prop('disabled',true);
-                                    $('#table-tambah .pkm').prop('disabled',true);
-
-                                    $('.lks_prdcd').each(function(){
-                                        $(this).prop('disabled',false);
-                                    });
-
-                                    //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
-                                    if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
-                                        $('.btn-delete').prop('disabled',true);
-                                    }
-                                    else $('.btn-delete').prop('disabled',false);
-
+                                if($(this).hasClass('lks_prdcd') || $(this).hasClass('t_lks_prdcd')){
+                                    $('.btn-lov-plu').hide();
+                                    $(this).parent().find('.btn-lov-plu').show();
+                                    idrow = $(this).parent().parent().parent().attr('id');
                                 }
                                 else{
-                                    $('#p_tambah input').prop('disabled',true);
-                                    $('.lks_prdcd').each(function(){
-                                        if($(this).val() != ''){
-                                            $(this).prop('disabled',true);
-                                        }
-                                    });
-                                    $('.btn-delete').prop('disabled',true);
+                                    $('.btn-lov-plu').hide();
                                 }
 
+                                if($(this).hasClass('lks_prdcd')){
+                                    tempprdcd = $(this).val();
+                                }
+                                else if($(this).hasClass('lks_noid')){
+                                    tempnoid = $(this).val();
+                                }
+                            });
+
+                            $('.btn-lov-plu').hide();
+
+                            if($('#m_lov_rak').is(':visible'))
+                                $('#m_lov_rak').modal('toggle');
+
+                            if($('#lks_koderak').val().substr(0,3) == 'HDH' || $('#lks_koderak').val().substr(0,5) == 'DKLIK' || $('#lks_koderak').val().substr(0,5) == 'GTEMP'){
+                                $('.lks_prdcd').prop('disabled',false);
+
+                                if($('#lks_tiperak').val() != 'S'){
+                                    $('#table-all .lks_nourut').prop('disabled',false);
+                                    $('#table-all .lks_depanbelakang').prop('disabled',false);
+                                    $('#table-all .lks_atasbawah').prop('disabled',false);
+                                    $('#table-all .lks_tirkirikanan').prop('disabled',false);
+                                    $('#table-all .lks_tirdepanbelakang').prop('disabled',false);
+                                    $('#table-all .lkstiratasbawah').prop('disabled',false);
+                                    $('#table-all .lks_maxdisplay').prop('disabled',false);
+                                    $('#table-all .lks_minpct').prop('disabled',false);
+                                    $('#table-all .lks_maxplano').prop('disabled',false);
+                                    $('#p_tambah').show();
+                                }
+                                else{
+                                    $('#table-all input').prop('disabled',true);
+                                    $('#p_tambah').hide();
+                                }
+                            }
+
+                            //if($('#lks_koderak').val().substr(0,1) == 'P'){
+                            if(true){ //selalu masuk if, untuk menyamakan dengan IAS
+                                $('#p_tambah input').prop('disabled',false);
+                                $('#table-tambah .lks_jenisrak').prop('disabled',true);
+                                $('#table-tambah .desk').prop('disabled',true);
+                                $('#table-tambah .satuan').prop('disabled',true);
+                                $('#table-tambah .lks_dimensipanjangproduk').prop('disabled',true);
+                                $('#table-tambah .lks_dimensilebarproduk').prop('disabled',true);
+                                $('#table-tambah .lks_dimensitinggiproduk').prop('disabled',true);
+                                $('#table-tambah .lks_mindisplay').prop('disabled',true);
+                                $('#table-tambah .pkm').prop('disabled',true);
 
                                 $('.lks_prdcd').each(function(){
-                                    $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
+                                    $(this).prop('disabled',false);
                                 });
+
+                                //tombol delete seharusnya tidak bisa kalau (TIPERAK <> 'S' AND (KODERAK LIKE 'R%' OR KODERAK LIKE 'O%')) segera perbaiki, lihat di trigger KEY-NEXT-ITEM
+                                if($('#lks_tiperak').val() != 'S' && ($('#lks_koderak').val().substr(0,1) == 'R' || $('#lks_koderak').val().substr(0,1) == 'O')){
+                                    $('.btn-delete').prop('disabled',true);
+                                }
+                                else $('.btn-delete').prop('disabled',false);
+
                             }
+                            else{
+                                $('#p_tambah input').prop('disabled',true);
+                                $('.lks_prdcd').each(function(){
+                                    if($(this).val() != ''){
+                                        $(this).prop('disabled',true);
+                                    }
+                                });
+                                $('.btn-delete').prop('disabled',true);
+                            }
+
+
+                            $('.lks_prdcd').each(function(){
+                                $(this).parent().parent().parent().find('.lks_noid').prop('disabled',false);
+                            });
                         }
                     });
                 }
@@ -996,7 +979,7 @@
                 }
                 else{
                     $.ajax({
-                        url: '{{ url()->current().'/lov_rak_search' }}',
+                        url: '{{ url()->current().'/lov-rak-search' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1037,14 +1020,14 @@
                     }
                     else value = $(this).val().toUpperCase();
                     $.ajax({
-                        url: '{{ url()->current().'/lov_plu_search' }}',
+                        url: '{{ url()->current().'/lov-plu-search' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         data: {data: value},
                         beforeSend: function () {
-                            $('#modal-loader').modal('hide');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
                             $('#modal-loader').modal('hide');
@@ -1087,7 +1070,7 @@
             // console.log(data);
 
             $.ajax({
-                url: '{{ url()->current().'/lov_plu_select' }}',
+                url: '{{ url()->current().'/lov-plu-select' }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1107,6 +1090,8 @@
                             title: response.message,
                             icon: response.status,
                         }).then(function(){
+                            $('#modal-loader').modal('hide');
+
                             $('#'+idrow).find('.lks_prdcd').val(tempprdcd);
                             if(idrow == 'row_tambah'){
                                 $('#'+idrow).find('.t_lks_prdcd').select();
@@ -1164,7 +1149,7 @@
             data['lks_tempnoid'] = tempnoid;
 
             $.ajax({
-                url: '{{ url()->current().'/noid_enter' }}',
+                url: '{{ url()->current().'/noid-enter' }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1181,15 +1166,18 @@
                             title: response.message,
                             icon: response.status,
                         }).then(function(){
+                            $('#modal-loader').modal('hide');
                             $('#'+idrow).find('.lks_noid').val(tempnoid);
                             $('#'+idrow).find('.lks_noid').select();
                         });
                     }
                     else if(idrow == 'row_tambah'){
+                        $('#modal-loader').modal('hide');
                         // noidOk = true;
                         // $('#row_tambah').find('.lks_tirkirikanan').select();
                     }
                     else{
+                        $('#modal-loader').modal('hide');
                         $('#'+idrow).find('.lks_noid').focus();
                     }
                 }
@@ -1199,7 +1187,7 @@
         $('#dpd_noid').on('keypress',function(e){
             if(e.which == 13){
                 $.ajax({
-                    url: '{{ url()->current().'/cek_dpd' }}',
+                    url: '{{ url()->current().'/cek-dpd' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1222,6 +1210,8 @@
 
                             $('#dpd_koderak').select();
                             $('#btn_delete_dpd').prop('disabled',true);
+
+                            $('#modal-loader').modal('hide');
                         }
                         else{
                             tempdpd = response;
@@ -1235,6 +1225,8 @@
                             $('#dpd_nourut').val(response.dpd_nourut);
 
                             $('#dpd_koderak').select();
+
+                            $('#modal-loader').modal('hide');
                         }
                     }
                 });
@@ -1305,7 +1297,7 @@
                 return false;
             }else{
                 $.ajax({
-                    url: '{{ url()->current().'/save_dpd' }}',
+                    url: '{{ url()->current().'/save-dpd' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1321,6 +1313,8 @@
                             title: response.message,
                             icon: response.status,
                         }).then(function(){
+                            $('#modal-loader').modal('hide');
+
                             $('#dpd_koderak').val('');
                             $('#dpd_kodesubrak').val('');
                             $('#dpd_tiperak').val('');
@@ -1361,7 +1355,7 @@
                     data['dpd_nourut']      = $('#dpd_nourut').val();
 
                     $.ajax({
-                        url: '{{ url()->current().'/delete_dpd' }}',
+                        url: '{{ url()->current().'/delete-dpd' }}',
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1377,6 +1371,8 @@
                                 title: response.message,
                                 icon: response.status,
                             }).then(function(){
+                                $('#modal-loader').modal('hide');
+
                                 $('#dpd_koderak').val('');
                                 $('#dpd_kodesubrak').val('');
                                 $('#dpd_tiperak').val('');
@@ -1425,7 +1421,7 @@
 
                     if(click == 'plu'){
                         $.ajax({
-                            url: '{{ url()->current().'/delete_plu' }}',
+                            url: '{{ url()->current().'/delete-plu' }}',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1461,7 +1457,7 @@
                     }
                     else if(click == 'lokasi'){
                         $.ajax({
-                            url: '{{ url()->current().'/delete_lokasi' }}',
+                            url: '{{ url()->current().'/delete-lokasi' }}',
                             type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1628,7 +1624,7 @@
 
             if(pluOk && $('#lks_tiperak').val().substr(0,1) != 'S') {
                 $.ajax({
-                    url: '{{ url()->current().'/cek_plu' }}',
+                    url: '{{ url()->current().'/cek-plu' }}',
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1649,6 +1645,8 @@
 
                         data = response.data;
 
+                        console.log(data.pkm);
+
                         // $('#table-tambah .lks_nourut').val(data.nourut);
                         $('#table-tambah .lks_jenisrak').val(data.jenisrak);
                         $('#table-tambah .t_lks_prdcd').val(data.prdcd);
@@ -1666,6 +1664,7 @@
                         else{
                             $('#table-tambah-s .s_maxpalet').select();
                         }
+                        $('#modal-loader').modal('hide');
                     },
                     error: function(error){
                         $('#modal-loader').modal('hide');

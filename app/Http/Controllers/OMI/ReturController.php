@@ -237,7 +237,7 @@ class ReturController extends Controller
 
     public function deleteData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $data = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
                 ->where('rom_kodeigr','=',$_SESSION['kdigr'])
@@ -298,14 +298,14 @@ class ReturController extends Controller
                     'rom_recordid' => '1'
                 ]);
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'message' => 'Data dengan nomor dokumen '.$request->nodoc.'berhasil dihapus!'
             ], 200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -435,7 +435,7 @@ class ReturController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             if($request->hitungSelisih != 0 && $request->namadrive == ''){
                 return response()->json([
@@ -554,14 +554,14 @@ class ReturController extends Controller
 //                ->whereRaw("nvl(rom_qty,0) = 0")
 //                ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'message' => 'Data berhasil disimpan!'
             ], 200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -571,7 +571,7 @@ class ReturController extends Controller
 
     public function print(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $print = [];
 
@@ -1777,7 +1777,7 @@ class ReturController extends Controller
             ], 200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             dd($e->getMessage());
 
@@ -2390,7 +2390,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $fileR = $request->file('fileR');
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 //            $sesiproc = DB::connection($_SESSION['connection'])->selectOne("select TO_CHAR (USERENV ('SESSIONID')) userenv from dual")->userenv;
 
             $sesiproc = '9999999';
@@ -2467,7 +2467,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 ->where('SESSID','=',$sesiproc)
                 ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $lok = true;
 
@@ -2476,7 +2476,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             }
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return $e->getMessage();
         }
@@ -2486,7 +2486,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
         set_time_limit(0);
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $all_nodoc = '';
 
@@ -3196,7 +3196,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return [
                 'message' => 'Proses transfer file '.$namaFileR.' berhasil!',
@@ -3204,7 +3204,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             ];
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return [
                 'message' => $e->getMessage(),

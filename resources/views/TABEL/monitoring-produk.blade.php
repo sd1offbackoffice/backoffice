@@ -50,7 +50,7 @@
                                 </table>
                             </div>
                         </fieldset>
-                        <fieldset class="card border-secondary mt-0">
+                        <fieldset class="card border-secondary mt-0" id="plu_field">
                             <legend  class="w-auto ml-3">PLU Monitoring</legend>
                             <div class="card-body py-0" id="top_field">
                                 <div class="row form-group">
@@ -77,7 +77,7 @@
                                         <input type="text" class="form-control text-left" id="satuan" disabled>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button class="col-sm btn btn-danger" id="btn-delete" onclick="deleteData()" disabled>DELETE</button>
+                                        <button class="col-sm btn btn-danger" id="btn-delete" onclick="deleteData($('#plu').val())" disabled>DELETE</button>
                                     </div>
                                     <div class="col-sm-3">
                                         <button class="col-sm btn btn-success" id="btn-add" onclick="add()" disabled>TAMBAH</button>
@@ -212,6 +212,14 @@
         $(document).ready(function(){
             getLovMonitoring();
 
+            makeDataTable();
+
+            getModalData('');
+
+            $('#mon_kode').focus();
+        });
+
+        function makeDataTable(){
             $('#table_data').DataTable({
                 "scrollY" : '30vh',
                 "paging": false,
@@ -222,11 +230,7 @@
                 "autoWidth": false,
                 "responsive": true,
             });
-
-            getModalData('');
-
-            $('#mon_kode').focus();
-        });
+        }
 
         $('#m_lov_plu').on('shown.bs.modal',function(){
             $('#table_lov_plu_filter input').val('');
@@ -422,6 +426,10 @@
                     $('#table_data').DataTable().destroy();
                 }
 
+                $('#plu_field input').val('');
+                $('#btn-delete').prop('disabled',true);
+                $('#btn-add').prop('disabled',true);
+
                 dataPLUMonitoring = [];
 
                 $('#table_data').DataTable({
@@ -429,11 +437,26 @@
                         'url' : '{{ url()->current().'/get-data' }}',
                         'data' : {
                             'kode' : $('#mon_kode').val().toUpperCase()
+                        },
+                        error: function(error){
+                            $('#table_data').DataTable().destroy();
+                            makeDataTable();
+
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+                                $('#mon_kode').select();
+                            });
                         }
                     },
                     "columns": [
                         {data: null, render: function(data, type, full, meta){
-                                return `<td width="10%" class="align-middle"><button class="btn btn-danger btn-delete" onclick=""><i class="fas fa-times"></i></button></td>`;
+                                return `<td width="10%" class="align-middle">
+                                            <button class="btn btn-danger btn-delete" onclick="deleteData('${data.plu}')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>`;
                             }
                         },
                         {data: 'plu'},
@@ -478,88 +501,126 @@
             }
         }
 
-        function deleteData(plu){
-            {{--if(plu == '' && $('#plu').val() == ''){--}}
-            {{--    swal({--}}
-            {{--        title: 'Inputan PLU tidak boleh kosong!',--}}
-            {{--        icon: 'error'--}}
-            {{--    }).then(() => {--}}
-            {{--        $('#plu').select();--}}
-            {{--    });--}}
-            {{--}--}}
-            {{--else{--}}
-            {{--    if(plu == ''){--}}
-            {{--        plu = $('#plu').val();--}}
-            {{--    }--}}
-
-            {{--    swal({--}}
-            {{--        title: 'Yakin ingin menghapus PLU '+plu+'?',--}}
-            {{--        icon: 'warning',--}}
-            {{--        buttons: true,--}}
-            {{--        dangerMode: true--}}
-            {{--    }).then((ok) => {--}}
-            {{--        if(ok){--}}
-            {{--            $.ajax({--}}
-            {{--                url: '{{ url()->current() }}/delete-data',--}}
-            {{--                type: 'POST',--}}
-            {{--                headers: {--}}
-            {{--                    'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-            {{--                },--}}
-            {{--                data: {--}}
-            {{--                    plu: plu--}}
-            {{--                },--}}
-            {{--                beforeSend: function () {--}}
-            {{--                    $('#modal-loader').modal('show');--}}
-            {{--                },--}}
-            {{--                success: function (response) {--}}
-            {{--                    $('#modal-loader').modal('hide');--}}
-
-            {{--                    swal({--}}
-            {{--                        title: response.message,--}}
-            {{--                        icon: 'success'--}}
-            {{--                    }).then(() => {--}}
-            {{--                        $('#top_field input').val('');--}}
-            {{--                        getData();--}}
-            {{--                        $('#plu').select();--}}
-            {{--                    });--}}
-            {{--                },--}}
-            {{--                error: function (error) {--}}
-            {{--                    $('#modal-loader').modal('hide');--}}
-
-            {{--                    swal({--}}
-            {{--                        title: error.responseJSON.message,--}}
-            {{--                        icon: 'error',--}}
-            {{--                    }).then(() => {--}}
-
-            {{--                    });--}}
-            {{--                }--}}
-            {{--            });--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--}--}}
-        }
-
         $('#btn_print').on('click',function(){
-            getMonitoring('print');
+            window.open(`{{ url()->current() }}/print?mon=${$('#mon_kode').val().toUpperCase()}`,'_blank');
+            // getMonitoring('print');
         });
 
         function print(){
+            window.open(`{{ url()->current() }}/print?mon=${$('#mon_kode').val().toUpperCase()}`,'_blank');
+            {{--swal({--}}
+            {{--    title: 'Cetak by PLU / Deskripsi?',--}}
+            {{--    icon: 'warning',--}}
+            {{--    buttons: {--}}
+            {{--        plu: 'PLU',--}}
+            {{--        desk: 'Deskripsi'--}}
+            {{--    }--}}
+            {{--}).then((val) => {--}}
+            {{--    if(val){--}}
+            {{--        window.open(`{{ url()->current() }}/print?mon=${$('#mon_kode').val().toUpperCase()}&orderBy=${val}`,'_blank');--}}
+            {{--    }--}}
+            {{--});--}}
+        }
+
+        function add(){
             swal({
-                title: 'Cetak by PLU / Deskripsi?',
+                title: 'Yakin ingin menambahkan PLU '+$('#plu').val()+' ?',
                 icon: 'warning',
-                buttons: {
-                    plu: 'PLU',
-                    desk: 'Deskripsi'
-                }
-            }).then((val) => {
-                if(val){
-                    window.open(`{{ url()->current() }}/print?mon=${$('#mon_kode').val().toUpperCase()}&orderBy=${val}`,'_blank');
+                buttons: true,
+                dangerMode: true
+            }).then((value) => {
+                if(value){
+                    $.ajax({
+                        url: '{{ url()->current() }}/add-data',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            mon_kode: $('#mon_kode').val().toUpperCase(),
+                            mon_nama: $('#mon_nama').val(),
+                            plu: $('#plu').val()
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                $('#modal-loader').modal('hide');
+                                getData();
+                            });
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error',
+                            }).then(() => {
+                                $('#mon_nama').val('');
+                                $('#mon_kode').select();
+                            });
+                        }
+                    });
                 }
             });
         }
 
-        function add(){
-
+        function deleteData(plu){
+            if(plu == '' && $('#plu').val() == ''){
+                swal({
+                    title: 'Inputan PLU tidak boleh kosong!',
+                    icon: 'error'
+                }).then(() => {
+                    $('#plu').select();
+                });
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin menghapus PLU '+plu+'?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/delete-data',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            data: {
+                                mon_kode: $('#mon_kode').val().toUpperCase(),
+                                mon_nama: $('#mon_nama').val(),
+                                plu: plu
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                swal({
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    $('#modal-loader').modal('hide');
+                                    getData();
+                                });
+                            },
+                            error: function (error) {
+                                swal({
+                                    title: error.responseJSON.message,
+                                    icon: 'error',
+                                }).then(() => {
+                                    $('#modal-loader').modal('hide');
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
     </script>
 @endsection

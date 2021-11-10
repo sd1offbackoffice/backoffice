@@ -246,7 +246,7 @@ class MonitoringController extends Controller
             $plu = $request->plu;
             $pkmt = $request->pkmt;
 
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
                 ->where('pkm_prdcd','=',$plu)
@@ -298,7 +298,7 @@ class MonitoringController extends Controller
                     'pln_pkmt' => $pkmt
                 ]);
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return [
                 'status' => 'success',
@@ -306,7 +306,7 @@ class MonitoringController extends Controller
             ];
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return [
                 'status' => 'error',
@@ -317,13 +317,13 @@ class MonitoringController extends Controller
 
     public function deleteData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
                 ->where('pln_prdcd','=',$request->plu)
                 ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return [
                 'status' => 'success',
@@ -331,7 +331,7 @@ class MonitoringController extends Controller
             ];
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return [
                 'status' => 'error',

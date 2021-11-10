@@ -88,7 +88,7 @@ class PLUMROController extends Controller
         }
         else{
             try{
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
 
                 DB::connection($_SESSION['connection'])->table('tbtabel_plumro')
                     ->insert([
@@ -101,7 +101,7 @@ class PLUMROController extends Controller
                         'mro_create_dt' => DB::RAW("SYSDATE")
                     ]);
 
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
 
                 return response()->json([
                     'message' => "Berhasil menambahkan data!",
@@ -110,7 +110,7 @@ class PLUMROController extends Controller
                 ], 200);
             }
             catch (QueryException $e){
-                DB::rollBack();
+                DB::connection($_SESSION['connection'])->rollBack();
 
                 return response()->json([
                     'message' => "Gagal menambahkan data!",
@@ -159,21 +159,21 @@ class PLUMROController extends Controller
         $plu = $request->plu;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbtabel_plumro')
                 ->where('mro_kodeigr','=',$_SESSION['kdigr'])
                 ->where('mro_prdcd','=',$plu)
                 ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'message' => "Berhasil menghapus data!",
             ], 200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'message' => "Gagal menghapus data!",

@@ -354,7 +354,7 @@ class spbmanualController extends Controller
            || LKS_NOURUT = '$lks_to'")
             ->first();
         $qty_to = (int)$temp->lks_qty;
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         if($jenis == 'S'){
             $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (QTYS), 0) as result
           FROM (SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK,
@@ -830,7 +830,7 @@ class spbmanualController extends Controller
                 }
             }
         }
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
 
     }
 }

@@ -92,7 +92,7 @@ class byrvchController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
@@ -130,24 +130,29 @@ class byrvchController extends Controller
                         ]);
                 }
             }
-            $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
-                ->selectRaw("BYR_PRDCD")
-                ->selectRaw("prd_deskripsipanjang")
-                ->selectRaw("byr_qtymaxvoucher")
-//            ->selectRaw("byr_recordid")
+//            $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+//                ->selectRaw("BYR_PRDCD")
+//                ->selectRaw("prd_deskripsipanjang")
+//                ->selectRaw("byr_qtymaxvoucher")
+////            ->selectRaw("byr_recordid")
+//
+//                ->leftJoin("TBMASTER_PRODMAST",'PRD_PRDCD','BYR_PRDCD')
+//
+//                ->where("BYR_KODEIGR",'=',$kodeigr)
+//                ->where("BYR_KODESUPPLIER",'=',$supp)
+//                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+//                ->get();
 
-                ->leftJoin("TBMASTER_PRODMAST",'PRD_PRDCD','BYR_PRDCD')
-
-                ->where("BYR_KODEIGR",'=',$kodeigr)
-                ->where("BYR_KODESUPPLIER",'=',$supp)
-                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
-                ->get();
-            dd($datas);
-            DB::commit();
+            $datas = DB::connection($_SESSION['connection'])
+                ->select("select byr_prdcd, prd_deskripsipanjang, byr_qtymaxvoucher
+from TBTABEL_PEMBAYARANVOUCHER LEFT JOIN TBMASTER_PRODMAST ON trim(PRD_PRDCD) = trim(BYR_PRDCD)
+WHERE BYR_KODEIGR = '$kodeigr' AND BYR_KODESUPPLIER = '$supp'
+AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json($datas);
         }catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -157,30 +162,71 @@ class byrvchController extends Controller
 
     }
 
-    public function save(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
-        $datas  = $request->datas;
-        $dateA = $request->date1;
-        $dateB = $request->date2;
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        for($i=1;$i<sizeof($datas);$i++){
-            DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
-                ->insert([
-                    'spot_kodeigr'=>$kodeigr,
-                    'spot_periodeawal'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                    'spot_periodeakhir'=>DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
-                    'spot_prdcd'=>$datas[$i]['plu'],
-                    'spot_fmtrgq'=>$datas[$i]['qty'],
-                    'spot_fmtrgs'=>$datas[$i]['sales'],
-                    'spot_fmtrgg'=>$datas[$i]['margin'],
-                    'spot_hrgjual'=>$datas[$i]['hrg'],
-                    'spot_create_by'=>$_SESSION['usid'],
-                    'spot_create_dt'=>DB::RAW("trunc(SYSDATE)"),
-                    'spot_modify_by'=>'',
-                    'spot_modify_dt'=>'',
-                ]);
+    public function Save(Request $request){
+        try{
+            DB::connection($_SESSION['connection'])->beginTransaction();
+            $kodeigr = $_SESSION['kdigr'];
+            $datas  = $request->datas;
+            $supp = $request->supp;
+            $sing = $request->sing;
+//            $dateA = $request->date1;
+//            $dateB = $request->date2;
+//            $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+//            $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+            for($i=1;$i<sizeof($datas);$i++){
+                $tempPlu = $datas[$i]['plu'];
+                if($datas[$i]['status'] == 2){
+                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                        ->where("BYR_KODEIGR",'=',$kodeigr)
+                        ->where("BYR_KODESUPPLIER",'=',$supp)
+                        ->whereRaw("TRIM(BYR_PRDCD) = TRIM('$tempPlu')")
+                        ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+                        ->update([
+                            "BYR_RECORDID" => null,
+                            "BYR_QTYMAXVOUCHER" => $datas[$i]['voucher']
+                        ]);
+                }else{
+                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                        ->where("BYR_KODEIGR",'=',$kodeigr)
+                        ->where("BYR_KODESUPPLIER",'=',$supp)
+                        ->whereRaw("TRIM(BYR_PRDCD) = TRIM('$tempPlu')")
+                        ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+                        ->delete();
+                }
+            }
+            DB::connection($_SESSION['connection'])->commit();
+        }catch(QueryException $e){
+            DB::connection($_SESSION['connection'])->rollBack();
+            $status = 'error';
+            $message = $e->getMessage();
+
+            return compact(['status' => $status,'message' => $message]);
         }
+
+
+    }
+    public function Delete(Request $request){
+        try{
+            DB::connection($_SESSION['connection'])->beginTransaction();
+            $kodeigr = $_SESSION['kdigr'];
+            $supp = $request->supp;
+            $sing = $request->sing;
+            DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                ->where("BYR_KODEIGR",'=',$kodeigr)
+                ->where("BYR_KODESUPPLIER",'=',$supp)
+                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
+                ->delete();
+
+            DB::connection($_SESSION['connection'])->commit();
+        }catch(QueryException $e){
+            DB::connection($_SESSION['connection'])->rollBack();
+
+            $status = 'error';
+            $message = $e->getMessage();
+
+            return compact(['status' => $status,'message' => $message]);
+        }
+
 
     }
 }

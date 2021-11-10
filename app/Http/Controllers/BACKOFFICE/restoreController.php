@@ -30,7 +30,7 @@ class restoreController extends Controller
             $txtPeriode = $data[0]->a;
             $parameterPeriode = $data[0]->b;
 
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             if($year.$month != $parameterPeriode){
                 return response()->json(['kode' => 2, 'msg' => "Periode Restore Data Salah !!"]);
             }else{
@@ -77,7 +77,7 @@ class restoreController extends Controller
                     DB::connection($_SESSION['connection'])->table("TBMASTER_PERUSAHAAN")
                         ->where('PRS_KODEIGR','=',$kodeigr)
                         ->update(['PRS_BULANBERJALAN' => $month, 'PRS_TAHUNBERJALAN' => $year, 'PRS_FMFLCS' => 'Y']);
-                    DB::commit();
+                    DB::connection($_SESSION['connection'])->commit();
                     return response()->json(['kode' => 1, 'msg' => $errtxt]);
                 }else{
                     $errtxt = 'Proses Restore Data GAGAL! --> '.$errtxt;

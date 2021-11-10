@@ -819,7 +819,7 @@ class InputController extends Controller
         $trbo_flagdoc = 0;
         $trbo_create_by = $_SESSION['usid'];
         $trbo_create_dt = Carbon::now()->format('Y-m-d');
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         foreach ($request->datas as $data)
             $temp = DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
                 ->where([
@@ -886,7 +886,7 @@ class InputController extends Controller
                 'trbo_create_dt' => $trbo_create_dt
             ]);
         }
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
 
         $message = 'Nodoc ' . $request->datas[0]['nodoc'] . ' Berhasil di simpan';
         $status = 'success';

@@ -771,7 +771,7 @@ class InputController extends Controller
 
 
                         try{
-                            DB::beginTransaction();
+                            DB::connection($_SESSION['connection'])->beginTransaction();
                             if($jenisdoc == 'lama'){
                                 DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                                     ->insert($insert);
@@ -790,7 +790,7 @@ class InputController extends Controller
                             }
                         }
                         catch (QueryException $e){
-                            DB::rollBack();
+                            DB::connection($_SESSION['connection'])->rollBack();
 
                             $status = 'error';
                             $title = 'ORACLE ERROR';
@@ -798,7 +798,7 @@ class InputController extends Controller
                             return compact(['status','title','message']);
                         }
                         finally{
-                            DB::commit();
+                            DB::connection($_SESSION['connection'])->commit();
                         }
                     }
                     else{
@@ -815,7 +815,7 @@ class InputController extends Controller
                         else $trboavgcost = $avgcost;
 
                         try{
-                            DB::beginTransaction();
+                            DB::connection($_SESSION['connection'])->beginTransaction();
                             if($jenisdoc == 'lama'){
                                 DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                                     ->where('trbo_kodeigr',$kodeigr)
@@ -884,7 +884,7 @@ class InputController extends Controller
                             }
                         }
                         catch (QueryException $e){
-                            DB::rollBack();
+                            DB::connection($_SESSION['connection'])->rollBack();
 
                             $status = 'error';
                             $title = 'ORACLE ERROR';
@@ -892,7 +892,7 @@ class InputController extends Controller
                             return compact(['status','title','message']);
                         }
                         finally{
-                            DB::commit();
+                            DB::connection($_SESSION['connection'])->commit();
                         }
 
                         if(1 == 0){//$sts == 0
@@ -921,7 +921,7 @@ class InputController extends Controller
                                     try{
                                         $update = (($qty * $frac + $qtyk) * ($hrgsatuan / $frac) + ($st_acost * $st_qty)) / (($qty * $frac + $qtyk) + $st_qty) * $frac;
 
-                                        DB::beginTransaction();
+                                        DB::connection($_SESSION['connection'])->beginTransaction();
                                         DB::connection($_SESSION['connection'])->table('tbtr_backofficce')
                                             ->where('trbo_kodeigr',$kodeigr)
                                             ->where('trbo_typetrn','X')
@@ -933,7 +933,7 @@ class InputController extends Controller
                                             ]);
                                     }
                                     catch (QueryException $e){
-                                        DB::rollBack();
+                                        DB::connection($_SESSION['connection'])->rollBack();
 
                                         $status = 'error';
                                         $title = 'ORACLE ERROR';
@@ -941,7 +941,7 @@ class InputController extends Controller
                                         return compact(['status','title','message']);
                                     }
                                     finally{
-                                        DB::commit();
+                                        DB::connection($_SESSION['connection'])->commit();
                                     }
                                 }
                             }
@@ -995,7 +995,7 @@ class InputController extends Controller
             }
             else{
                 try{
-                    DB::beginTransaction();
+                    DB::connection($_SESSION['connection'])->beginTransaction();
                     DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                         ->where('trbo_kodeigr',$kodeigr)
                         ->where('trbo_nodoc',$nodoc)
@@ -1008,7 +1008,7 @@ class InputController extends Controller
                         ]);
                 }
                 catch (QueryException $e){
-                    DB::rollBack();
+                    DB::connection($_SESSION['connection'])->rollBack();
 
                     $status = 'error';
                     $title = 'ORACLE ERROR!';
@@ -1016,7 +1016,7 @@ class InputController extends Controller
                     return compact(['status','title','message']);
                 }
                 finally{
-                    DB::commit();
+                    DB::connection($_SESSION['connection'])->commit();
 
                     $status = 'success';
                     $title = 'Berhasil menghapus data!';

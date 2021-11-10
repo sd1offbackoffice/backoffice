@@ -17,12 +17,14 @@ class AccessController extends Controller
         $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
             ->where('acc_status','=',0)
+            ->where('acc_group','<>','Administration')
             ->orderBy('acc_group')
             ->groupBy('acc_group')
             ->get();
 
         $menu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
             ->where('acc_status','=',0)
+            ->where('acc_group','<>','Administration')
             ->orderBy('acc_group')
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')
@@ -122,7 +124,21 @@ class AccessController extends Controller
 
     public static function getListMenu($usid){
 
-        if(in_array($usid, ['DEV','SUP'])){
+        if($usid == 'ADM'){
+            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+                ->where('uac_userid','=',$usid)
+                ->where('acc_status','=',0)
+//            ->orderBy('acc_id')
+                ->orderBy('acc_group')
+                ->orderBy('acc_subgroup1')
+                ->orderBy('acc_subgroup2')
+                ->orderBy('acc_subgroup3')
+                ->orderBy('acc_name')
+                ->get();
+        }
+        else if(in_array($usid, ['DEV','SUP'])){
             return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
@@ -138,6 +154,7 @@ class AccessController extends Controller
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->where('uac_userid','=',$usid)
                 ->where('acc_status','=',0)
+                ->where('acc_group','<>','Administration')
 //            ->orderBy('acc_id')
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')

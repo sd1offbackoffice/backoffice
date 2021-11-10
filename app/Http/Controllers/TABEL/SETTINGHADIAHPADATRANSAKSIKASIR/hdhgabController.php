@@ -261,7 +261,7 @@ class hdhgabController extends Controller
 
     public function SaveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $kodeigr = $_SESSION['kdigr'];
             $usid = $_SESSION['usid'];
 
@@ -473,10 +473,10 @@ class hdhgabController extends Controller
                     }
                 }
             }
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
             return response()->json(['title' => 'Data Sudah Disimpan !!'],200);
         }catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
 //                'title' => $e->getMessage()

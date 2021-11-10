@@ -81,7 +81,7 @@ class CetakPenyesuaianController extends Controller
 
         $step = 0;
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->first();
@@ -96,7 +96,7 @@ class CetakPenyesuaianController extends Controller
                             'trbo_flagdoc' => '1'
                         ]);
                 }
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
 
                 $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                     ->join('tbmaster_perusahaan','prs_kodeigr','=','trbo_kodeigr')
@@ -2210,7 +2210,7 @@ class CetakPenyesuaianController extends Controller
                     }
                 }
 
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
 
                 $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                     ->select('prs_namaperusahaan','prs_namacabang')
@@ -2280,7 +2280,7 @@ class CetakPenyesuaianController extends Controller
             }
         }
         catch(\Exception $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             $message = $e->getMessage();
 
             return compact(['step','message']);

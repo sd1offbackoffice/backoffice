@@ -64,7 +64,7 @@ class PenerimaanTransferController extends Controller
             $ocost2 = 0;
             $alert = [];
 
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             foreach($recs as $rec){
                 $jum = 0;
@@ -823,13 +823,13 @@ class PenerimaanTransferController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $status = 'success';
             return compact(['status','alert']);
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             return 'error';
         }
     }
@@ -974,7 +974,7 @@ class PenerimaanTransferController extends Controller
         $alert = 'BERHASIL PROSES DATA!';
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $jum = DB::connection($_SESSION['connection'])->table('tbtr_to')
                 ->where('loc2','<>',$_SESSION['kdigr'])
@@ -1914,10 +1914,10 @@ class PenerimaanTransferController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $alert = 'TERJADI KESALAHAN!';
             $status = 'error';

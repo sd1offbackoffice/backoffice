@@ -173,7 +173,7 @@ class SJASController extends Controller
 
     public function save(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT SJH_NOSJAS, to_char(SJH_TGLSJAS, 'dd/mm/yyyy') SJH_TGLSJAS, SJH_FREKTAHAPAN
                     FROM TBTR_SJAS_H
@@ -243,7 +243,7 @@ class SJASController extends Controller
                     'sjh_modify_dt' => DB::RAW("SYSDATE")
                 ]);
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'message' => 'success',
@@ -252,7 +252,7 @@ class SJASController extends Controller
             ], 200);
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()

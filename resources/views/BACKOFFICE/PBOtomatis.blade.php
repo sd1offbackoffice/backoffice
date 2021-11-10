@@ -212,7 +212,7 @@
         function getDataModalSupplier(value){
             let tableModal =  $('#tableModalSupplier').DataTable({
                 "ajax": {
-                    'url' : '{{ url('bopbotomatis/getdatamodalsupplier') }}',
+                    'url' : '{{url()->current() }}/getdatamodalsupplier',
                     "data" : {
                         'value' : value
                     },
@@ -256,7 +256,7 @@
 
                 tableModalKategori = $('#tableModalKategori').DataTable({
                     "ajax": {
-                        'url' : '{{ url('bopbotomatis/getkategori') }}',
+                        'url' : '{{url()->current() }}/getkategori',
                         "data" : {
                             'dept1' : dept1,
                             'dept2' : dept2,

@@ -21,7 +21,7 @@ class ActualController extends Controller
 
     public function prosesSales($tanggal){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $nilait = 0;
             $taxt = 0;
@@ -250,10 +250,10 @@ class ActualController extends Controller
                     'pmargin' => $pmargint + $nilai40->pmargin
                 ]);
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return $e->getMessage();
         }

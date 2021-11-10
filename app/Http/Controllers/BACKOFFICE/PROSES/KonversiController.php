@@ -373,7 +373,7 @@ class KonversiController extends Controller
         $cekqty = 0;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             foreach($olahan as $o){
                 $temp = DB::connection($_SESSION['connection'])->table('tbtr_mix_plukonversi')
@@ -674,11 +674,11 @@ class KonversiController extends Controller
                     ]);
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
             return ['status' => 'success', 'alert' => 'Proses Konversi Berhasil dilakukan!', 'nodoc' => $no_knv];
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return ['status' => 'error', 'alert' => 'Proses Konversi Gagal dilakukan!'];
         }

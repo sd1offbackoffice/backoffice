@@ -109,7 +109,7 @@ class InputController extends Controller
 
     public function deleteTrn(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbtr_tac')
                 ->where('tac_kodeigr',$_SESSION['kdigr'])
@@ -121,13 +121,13 @@ class InputController extends Controller
                 ->where('trbo_nodoc',$request->notrn)
                 ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $status = 'success';
             $title = 'Berhasil menghapus data '.$request->notrn;
         }
         catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $title = 'Gagal menghapus data '.$request->notrn;
@@ -220,7 +220,7 @@ ORDER BY PRDCD,
         }
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbtr_tac')
                 ->where('tac_kodeigr',$_SESSION['kdigr'])
@@ -231,10 +231,10 @@ ORDER BY PRDCD,
             DB::connection($_SESSION['connection'])->table('tbtr_tac')
                 ->insert($insert);
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -248,7 +248,7 @@ ORDER BY PRDCD,
         $nodoc = $request->nodoc;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             DB::connection($_SESSION['connection'])->table('tbtr_tac')
                 ->where('tac_kodeigr',$_SESSION['kdigr'])
@@ -256,13 +256,13 @@ ORDER BY PRDCD,
                 ->where('tac_prdcd',$prdcd)
                 ->delete();
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $status = 'success';
             $message = '';
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -284,7 +284,7 @@ ORDER BY PRDCD,
         $trbo_stokqty = $request->trbo_stokqty;
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
                 ->where('trbo_nodoc',$nodoc)
@@ -439,14 +439,14 @@ ORDER BY PRDCD,
                     ->insert($insert);
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $status = 'success';
             $title = 'Berhasil menyimpan data nomor '.$nodoc;
             $message = '';
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $status = 'error';
             $title = 'Gagal menyimpan data nomor '.$nodoc;

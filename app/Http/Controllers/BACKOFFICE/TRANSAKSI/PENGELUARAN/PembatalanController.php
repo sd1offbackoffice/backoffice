@@ -91,7 +91,7 @@ class PembatalanController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         } else {
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $datas = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
                 ->join('tbtr_mstran_d', function ($join) {
                     $join->on('msth_nodoc', 'mstd_nodoc');
@@ -247,7 +247,7 @@ class PembatalanController extends Controller
                     ]
                 );
 //   ----update qty history retur----
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }
 
         $message = 'Proses Penghapusan Berhasil';

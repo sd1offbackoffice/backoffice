@@ -110,7 +110,7 @@ class ampController extends Controller
             $v_thn = $request->sgc_tahun;
             $v_periode = $request->sgc_periode;
             $rekomendasi = $request->rekomendasi;
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table("TBTR_SEGMENTASI_CUS")
                 ->where('SGC_KD_MEMBER','=',$kd_member)
                 ->where('SGC_TAHUN','=',$v_thn)
@@ -120,7 +120,7 @@ class ampController extends Controller
             DB::connection($_SESSION['connection'])->table("TBMASTER_CUSTOMERCRM")
                 ->where('CRM_KODEMEMBER','=',$kd_member)
                 ->update(['CRM_IDSEGMENT' => $rekomendasi, 'CRM_MODIFY_BY' => $usid, 'CRM_MODIFY_DT' => $today]);
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch (\Exception $e){
             dd($e->getMessage());
             //return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
@@ -135,7 +135,7 @@ class ampController extends Controller
             $kd_member = $request->kd_member;
             $v_thn = $request->sgc_tahun;
             $v_periode = $request->sgc_periode;
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table("TBTR_SEGMENTASI_CUS")
                 ->where('SGC_KD_MEMBER','=',$kd_member)
                 ->where('SGC_TAHUN','=',$v_thn)
@@ -145,7 +145,7 @@ class ampController extends Controller
             DB::connection($_SESSION['connection'])->table("TBMASTER_CUSTOMERCRM")
                 ->where('CRM_KODEMEMBER','=',$kd_member)
                 ->update(['CRM_IDSEGMENT' => '6', 'CRM_MODIFY_BY' => $usid, 'CRM_MODIFY_DT' => $today]);
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch (\Exception $e){
             dd($e->getMessage());
             //return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
@@ -159,7 +159,7 @@ class ampController extends Controller
             $kd_member = $request->kd_member;
             $v_thn = $request->sgc_tahun;
             $v_periode = $request->sgc_periode;
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table("TBTR_SEGMENTASI_CUS")
                 ->where('SGC_KD_MEMBER','=',$kd_member)
                 ->where('SGC_TAHUN','=',$v_thn)
@@ -169,7 +169,7 @@ class ampController extends Controller
             DB::connection($_SESSION['connection'])->table("TBMASTER_CUSTOMERCRM")
                 ->where('CRM_KODEMEMBER','=',$kd_member)
                 ->update(['CRM_IDSEGMENT' => '6', 'CRM_MODIFY_BY' => $usid, 'CRM_MODIFY_DT' => $today]);
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch (\Exception $e){
             dd($e->getMessage());
             //return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
@@ -184,7 +184,7 @@ class ampController extends Controller
             $v_thn = $request->sgc_tahun;
             $v_periode = $request->sgc_periode;
             $deflt = $request->deflt;
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table("TBTR_SEGMENTASI_CUS")
                 ->where('SGC_KD_MEMBER','=',$kd_member)
                 ->where('SGC_TAHUN','=',$v_thn)
@@ -194,7 +194,7 @@ class ampController extends Controller
             DB::connection($_SESSION['connection'])->table("TBMASTER_CUSTOMERCRM")
                 ->where('CRM_KODEMEMBER','=',$kd_member)
                 ->update(['CRM_IDSEGMENT' => $deflt, 'CRM_MODIFY_BY' => $usid, 'CRM_MODIFY_DT' => $today]);
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch (\Exception $e){
             dd($e->getMessage());
             //return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);

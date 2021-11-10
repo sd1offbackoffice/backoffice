@@ -16,7 +16,8 @@ class PBOtomatisController extends Controller
         $mtrsup     = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGSUPPLIER')->select('MSU_KODEMONITORING', 'MSU_NAMAMONITORING')->orderBy('MSU_KODEMONITORING')->groupBy(['MSU_KODEMONITORING', 'MSU_NAMAMONITORING'])->get();
         $departemen = DB::connection($_SESSION['connection'])->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')->orderBy('DEP_KODEDEPARTEMENT')->get();
 
-        return view('BACKOFFICE.PBOtomatis', compact('supplier', 'mtrsup', 'departemen'));
+        return view('BACKOFFICE.PBOtomatis', compact( 'mtrsup', 'departemen'));
+//        return view('BACKOFFICE.PBOtomatis', compact('supplier', 'mtrsup', 'departemen'));
     }
 
     public function getDataModalSupplier(Request  $request) {

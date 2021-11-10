@@ -318,7 +318,7 @@
 
         function lov_select(value){
             $.ajax({
-                url: '{{ url()->current() }}/lov_select',
+                url: '{{ url()->current() }}/lov-select',
                 type:'GET',
                 data:{"_token":"{{ csrf_token() }}",value: value},
                 beforeSend: function(){
@@ -411,7 +411,7 @@
                 else if(this.value.length >= 3) {
                     $('.invalid-feedback').hide();
                     $.ajax({
-                        url: '{{ url()->current() }}/lov_search',
+                        url: '{{ url()->current() }}/lov-search',
                         type: 'GET',
                         data: {"_token": "{{ csrf_token() }}", value: this.value.toUpperCase()},
                         success: function (response) {

@@ -72,7 +72,7 @@ class CetakController extends Controller
         $reprint = $_SESSION['kkc_reprint'];
 
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             if($_SESSION['kkc_jenis'] == 1){
                 if($_SESSION['kkc_reprint'] == 0){

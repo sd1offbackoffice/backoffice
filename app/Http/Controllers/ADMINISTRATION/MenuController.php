@@ -18,18 +18,33 @@ class MenuController extends Controller
     }
 
     public function getData(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
-            ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
+        if($_SESSION['usid'] == 'DEV'){
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
             acc_name, acc_url, acc_level, acc_create_by, to_char(acc_create_dt, 'dd/mm/yyyy hh24:mi:ss') acc_create_dt,
             acc_modify_by, to_char(acc_modify_dt, 'dd/mm/yyyy hh24:mi:ss') acc_modify_dt")
-            ->where('acc_status','=',0)
-            ->orderBy('acc_id')
-            ->orderBy('acc_group')
-            ->orderBy('acc_subgroup1')
-            ->orderBy('acc_subgroup2')
-            ->orderBy('acc_subgroup3')
-            ->orderBy('acc_name')
-            ->get();
+                ->orderBy('acc_id')
+                ->orderBy('acc_group')
+                ->orderBy('acc_subgroup1')
+                ->orderBy('acc_subgroup2')
+                ->orderBy('acc_subgroup3')
+                ->orderBy('acc_name')
+                ->get();
+        }
+        else{
+            $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
+            acc_name, acc_url, acc_level, acc_create_by, to_char(acc_create_dt, 'dd/mm/yyyy hh24:mi:ss') acc_create_dt,
+            acc_modify_by, to_char(acc_modify_dt, 'dd/mm/yyyy hh24:mi:ss') acc_modify_dt")
+                ->where('acc_status','=',0)
+                ->orderBy('acc_id')
+                ->orderBy('acc_group')
+                ->orderBy('acc_subgroup1')
+                ->orderBy('acc_subgroup2')
+                ->orderBy('acc_subgroup3')
+                ->orderBy('acc_name')
+                ->get();
+        }
 
         return DataTables::of($data)->make(true);
     }
@@ -77,7 +92,7 @@ class MenuController extends Controller
                     'acc_url' => $request->url,
                     'acc_create_by' => $_SESSION['usid'],
                     'acc_create_dt' => DB::RAW("SYSDATE"),
-                    'acc_status' => 0
+                    'acc_status' => 1
                 ]);
 
             return response()->json([

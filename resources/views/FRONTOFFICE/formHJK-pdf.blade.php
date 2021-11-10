@@ -74,43 +74,72 @@
         @endfor
         </tbody>
     </table>
-    <table style="font-size: 12px; margin-top: 20px">
-        <tbody>
+    <br>
+    <table style="width: 100%; font-weight: bold" class="table-ttd page-break-avoid">
         <tr>
-            <td style="width: 50px"> </td>
-            <td style="width: 120px">Diproses :</td>
-            <td style="width: 20px"> </td>
-            <td style="width: 120px">Disetujui :</td>
-            <td style="width: 20px"> </td>
-            <td style="width: 120px">Disetujui :</td>
-            <td style="width: 20px"> </td>
-            <td style="width: 120px">Dibuat :</td>
+            <td>Diproses :</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>Disetujui :</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>Disetujui :</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>Dibuat :</td>
         </tr>
-        @for($i=0; $i<10; $i++)
-            <tr><td colspan="5"></td></tr>
-        @endfor
-        <tr>
-            <td> </td>
-            <td style="border-bottom: 1px black solid"></td>
-            <td> </td>
-            <td style="border-bottom: 1px black solid"></td>
-            <td> </td>
-            <td style="border-bottom: 1px black solid"></td>
-            <td> </td>
-            <td style="border-bottom: 1px black solid"></td>
+        <tr class="blank-row">
+            <td colspan="7">.</td>
         </tr>
         <tr>
-            <td> </td>
-            <td>Merchandising Support Mgr.</td>
-            <td> </td>
-            <td>Merchandising Sr. Mgr.</td>
-            <td> </td>
-            <td>Merchandising Mgr.</td>
-            <td> </td>
-            <td>Store Mgr. / Store Jr. Mgr.</td>
+            <td class="line">Merchandising Support Mgr.</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="line">Merchandising Sr. Mgr.</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="line">Merchandising Mgr.</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="line">Store Mgr. / Store Jr. Mgr.</td>
         </tr>
-        </tbody>
     </table>
+    <style>
+        .line{
+            border-top: 1px solid black;
+        }
+    </style>
+{{--    <table style="font-size: 12px; margin-top: 20px">--}}
+{{--        <tbody>--}}
+{{--        <tr>--}}
+{{--            <td style="width: 50px"> </td>--}}
+{{--            <td style="width: 120px">Diproses :</td>--}}
+{{--            <td style="width: 20px"> </td>--}}
+{{--            <td style="width: 120px">Disetujui :</td>--}}
+{{--            <td style="width: 20px"> </td>--}}
+{{--            <td style="width: 120px">Disetujui :</td>--}}
+{{--            <td style="width: 20px"> </td>--}}
+{{--            <td style="width: 120px">Dibuat :</td>--}}
+{{--        </tr>--}}
+{{--        @for($i=0; $i<3; $i++)--}}
+{{--            <tr><td colspan="5">&nbsp;</td></tr>--}}
+{{--        @endfor--}}
+{{--        <tr>--}}
+{{--            <td> </td>--}}
+{{--            <td style="border-bottom: 1px black solid"></td>--}}
+{{--            <td> </td>--}}
+{{--            <td style="border-bottom: 1px black solid"></td>--}}
+{{--            <td> </td>--}}
+{{--            <td style="border-bottom: 1px black solid"></td>--}}
+{{--            <td> </td>--}}
+{{--            <td style="border-bottom: 1px black solid"></td>--}}
+{{--        </tr>--}}
+{{--        <tr>--}}
+{{--            <td> </td>--}}
+{{--            <td>Merchandising Support Mgr.</td>--}}
+{{--            <td> </td>--}}
+{{--            <td>Merchandising Sr. Mgr.</td>--}}
+{{--            <td> </td>--}}
+{{--            <td>Merchandising Mgr.</td>--}}
+{{--            <td> </td>--}}
+{{--            <td>Store Mgr. / Store Jr. Mgr.</td>--}}
+{{--        </tr>--}}
+{{--        </tbody>--}}
+{{--    </table>--}}
 <br>
     <p style="line-height: 0.1 !important;">*Qty. hasil deal dengan Member tertentu &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; KETERANGAN  : berlaku untuk satuan jual karton dan pcs.</p>
 

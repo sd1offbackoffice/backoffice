@@ -35,7 +35,7 @@ class BatalController extends Controller
         try{
             $nodoc = $request->nodoc;
 
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             foreach($nodoc as $no){
                 $sjs = DB::connection($_SESSION['connection'])->select("SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
@@ -135,13 +135,13 @@ class BatalController extends Controller
                 }
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             $title = 'Surat Jalan berhasil dibatalkan!';
             $status = 'success';
         }
         catch(QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             $title = 'Surat Jalan gagal dibatalkan!';
             $message = $e->getMessage();

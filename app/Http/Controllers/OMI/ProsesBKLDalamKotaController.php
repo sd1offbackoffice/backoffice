@@ -15,7 +15,7 @@ use PDF;
 class ProsesBKLDalamKotaController extends Controller
 {
     public function index(){
-        return view('OMI.prosesBKLDalamKota');
+        return view('OMI.proses-bkl-dalam-kota');
     }
 
     public function prosesFile(Request  $request){
@@ -155,7 +155,7 @@ class ProsesBKLDalamKotaController extends Controller
 
         if ($report_id == 1){
             $result     = ($size == 'K') ? $this->laporanList($filename,$sesiproc,$kodeigr) : $this->laporanListDetail($filename,$sesiproc,$kodeigr);
-            $bladeName  = ($size == 'K') ? "OMI.prosesBKL-list-pdf" : "OMI.prosesBKL-list-detail-pdf";
+            $bladeName  = ($size == 'K') ? "OMI.proses-bkl-list-pdf" : "OMI.proses-bkl-list-detail-pdf";
             $paperFormat = ($size == 'K') ? "potrait" : "landscape";
             $pageNum1   = ($size == 'K') ? 507 : 507; // list detail yg lama menggunakan landsacpe di koor : 756
             $pageNum2   = 77.75;
@@ -170,10 +170,10 @@ class ProsesBKLDalamKotaController extends Controller
                                                        AND MSTH_TGLFAKTUR = tgl_bukti) A");
 
             $result     = $this->laporanBpb($kodeigr, $noPO[0]->msth_nodoc ?? '00000');
-            $bladeName  = "OMI.prosesBKL-bpb-pdf";
+            $bladeName  = "OMI.proses-bkl-bpb-pdf";
         } elseif ($report_id == 3){
             $result     = $this->laporanStruk($kodeigr, $kasir);
-            $bladeName  = "OMI.prosesBKL-struk-pdf";
+            $bladeName  = "OMI.proses-bkl-struk-pdf";
         } elseif ($report_id == 4){
             $connect = loginController::getConnectionProcedure();
             $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
@@ -199,7 +199,7 @@ class ProsesBKLDalamKotaController extends Controller
             $result     = $this->laporanTolakan($filename,$sesiproc,$kodeigr);
             $pageNum1   = 507;
             $pageNum2   = 77.75;
-            $bladeName  = "OMI.prosesBKL-tolakan-pdf";
+            $bladeName  = "OMI.proses-bkl-tolakan-pdf";
         }
 
         $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();

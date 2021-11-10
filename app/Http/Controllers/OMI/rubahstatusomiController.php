@@ -170,7 +170,7 @@ class rubahstatusomiController extends Controller
         $tglfp = $request->tglfp;
         $tglfp = DateTime::createFromFormat('d-m-Y', $tglfp)->format('d-m-Y');
 
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
       FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                        FROM TBTR_JUALDETAIL
@@ -905,7 +905,7 @@ class rubahstatusomiController extends Controller
                 'ROM_MEMBER' => $pkp
             ]);
         //commit
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
 
         $PESAN = 'ADM Fee';
         $temp = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (FEE, 0)) FEE

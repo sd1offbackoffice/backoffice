@@ -152,12 +152,12 @@ class repackController extends Controller
     public function deleteTrn(Request $request){
         $data = $request->val;
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
                 ->where('TRBO_NODOC','=',$data)
                 ->where('TRBO_TYPETRN','=','P')
                 ->delete();
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
             return response()->json(['kode' => 1]);
         }catch(\Exception $e){
             return response()->json(['kode' => 2]);
@@ -269,7 +269,7 @@ class repackController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             //Start here
             $userid = $_SESSION['usid'];
             $kodeigr = $_SESSION['kdigr'];
@@ -356,7 +356,7 @@ class repackController extends Controller
                             'TRBO_AVERAGECOST' => $temp['averagecost'], 'TRBO_KETERANGAN' => $keterangan,'TRBO_FLAGDOC' => '0', 'TRBO_CREATE_BY' => $userid, 'TRBO_CREATE_DT' => $today, 'TRBO_STOKQTY' => $temp['stokqty']]);
                 }
             }
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch(\Exception $e){
             //dd($e);
         }
@@ -364,7 +364,7 @@ class repackController extends Controller
 
     public function print(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $userid = $_SESSION['usid'];
             $kodeigr = $_SESSION['kdigr'];
@@ -440,7 +440,7 @@ class repackController extends Controller
 //            }
 
             self::simpan($request);
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
 
         }catch(\Exception $e){
@@ -548,7 +548,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 
     public function simpan(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $nomorTrn = $request->nomorTrn;
             $noReff = $request->noReff;
@@ -1350,7 +1350,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         'trbo_flagdoc'=>'*']);
             }
             //dd("Jangan commit dulu cuy");
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
         }catch(\Exception $e){
             dd($e);
         }

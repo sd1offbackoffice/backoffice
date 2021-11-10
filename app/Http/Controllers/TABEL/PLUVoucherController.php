@@ -171,7 +171,7 @@ class PLUVoucherController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
 
             $insert = [];
             $nourut = 1;
@@ -221,14 +221,14 @@ class PLUVoucherController extends Controller
                     ->insert($insert[$i]);
             }
 
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
                 'message' => 'Berhasil menyimpan data!'
             ], 200);
         }
         catch (\Exception $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'messsage' => 'Gagal menyimpan data!',

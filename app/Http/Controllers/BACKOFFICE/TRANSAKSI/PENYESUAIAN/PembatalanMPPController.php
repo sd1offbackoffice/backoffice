@@ -73,7 +73,7 @@ class PembatalanMPPController extends Controller
             }
             else{
                 try{
-                    DB::beginTransaction();
+                    DB::connection($_SESSION['connection'])->beginTransaction();
 
                     $v_plua1 = 0;
                     $v_plub1 = 0;
@@ -842,7 +842,7 @@ class PembatalanMPPController extends Controller
                                 'mstd_modify_dt' => DB::RAW("SYSDATE")
                             ]);
 
-                        DB::commit();
+                        DB::connection($_SESSION['connection'])->commit();
 
                         $status = 'success';
                         $title = 'Berhasil melakukan pembatalan MPP!';
@@ -851,7 +851,7 @@ class PembatalanMPPController extends Controller
                     }
                 }
                 catch(QueryException $e){
-                    DB::rollBack();
+                    DB::connection($_SESSION['connection'])->rollBack();
 
                     $status = 'error';
                     $title = 'Gagal melakukan pembatalan MPP!';

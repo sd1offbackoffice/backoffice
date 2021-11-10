@@ -88,7 +88,7 @@ class PluTimbanganController extends Controller
                 //kode sudah ada
                 return response()->json(1);
             }else if((int)($tempkd->a) == 0 && (int)($temppr->a) == 0){
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
                     ->insert([
                         'tmb_kodeigr' => $_SESSION['kdigr'],
@@ -98,14 +98,14 @@ class PluTimbanganController extends Controller
                         'tmb_create_by' => $_SESSION['usid'],
                         'tmb_create_dt' => DB::RAW("SYSDATE")
                     ]);
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 return response()->json(2);
             }else if((int)($temppr->a) != 0){
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
                     ->where('tmb_prdcd', '=',substr($plu,1,6).'0')
                     ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => $_SESSION['usid'], 'tmb_MODIFY_DT' => DB::RAW("SYSDATE")]);
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 return response()->json(3);
             }
         }catch (\Exception $e){
@@ -137,7 +137,7 @@ class PluTimbanganController extends Controller
         $judul = '';
         $isi = '';
 
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         $temptmb = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) a
       FROM TBMASTER_PRODMAST, tbtabel_plutimbangan
      WHERE prd_prdcd = tmb_prdcd and tmb_PRDCD = substr('$plu',1,6)||'0'");
@@ -374,7 +374,7 @@ class PluTimbanganController extends Controller
             ->where('tmb_prdcd','=',$plu)
             ->where('tmb_kode','=',$kode)
             ->delete();
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
     }
 
     public function shareDir(){

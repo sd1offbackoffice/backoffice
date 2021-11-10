@@ -202,6 +202,10 @@
         white-space: nowrap;
     }
 
+    .overline{
+        text-decoration: overline;
+    }
+
     @yield('custom_style')
 </style>
 </html>

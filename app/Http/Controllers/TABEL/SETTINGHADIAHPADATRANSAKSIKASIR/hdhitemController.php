@@ -162,7 +162,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
 
     public function SaveData(Request $request){
         try{
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $kodeigr = $_SESSION['kdigr'];
             $usid = $_SESSION['usid'];
 
@@ -309,10 +309,10 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISD_MODIFY_DT" => DB::Raw('SYSDATE')
                     ]);
             }
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
             return response()->json(['title' => 'Data Sudah Disimpan !!'],200);
         }catch (QueryException $e){
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
 
             return response()->json([
                 'title' => 'Gagal menyimpan data!'

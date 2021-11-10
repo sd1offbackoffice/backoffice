@@ -337,17 +337,17 @@ class MonthEndController extends Controller
     public function deleteData(Request $request)
     {
         try {
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             DB::connection($_SESSION['connection'])->delete("delete from tbtr_backoffice where trbo_kodeigr='" . $_SESSION['kdigr'] . "' and nvl(trbo_recordid,' ')='2' and nvl(trbo_nonota,' ')<>' '");
 
             $status = 'success';
             $message = '';
         } catch (Exception $e) {
-            DB::rollBack();
+            DB::connection($_SESSION['connection'])->rollBack();
             $status = 'error';
             $message = $e->getMessage();
         }
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
         return compact(['status', 'message']);
     }
 

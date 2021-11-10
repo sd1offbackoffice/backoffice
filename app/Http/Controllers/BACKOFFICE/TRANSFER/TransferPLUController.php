@@ -122,7 +122,7 @@ class TransferPLUController extends Controller
         if ($ADADTA == TRUE || $ADADTA == 'true') {
             if ($PROSES == TRUE || $PROSES == 'true') {
 //        -------->>>>>>>> TRARNSFER PLU <<<<<<<<--------
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_PLU(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
@@ -131,7 +131,7 @@ class TransferPLUController extends Controller
                 oci_bind_by_name($s, ':uid', $_SESSION['usid'], 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_PLU, 200);
                 oci_execute($s);
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 $this->CETAK_HGBELI($N_REQ_ID);
 //                --**cetak lap**--
                 if (!isset($V_RESULT_PLU)) {
@@ -152,7 +152,7 @@ class TransferPLUController extends Controller
                 }
 
 //            -------->>>>>>>> TRANSFER HARGA BELI <<<<<<<<--------
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_HGBELI(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
@@ -161,7 +161,7 @@ class TransferPLUController extends Controller
                 oci_bind_by_name($s, ':uid', $_SESSION['usid'], 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_HGB, 200);
                 oci_execute($s);
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
 
 //                --**cetak lap**--
                 $JUM = DB::connection($_SESSION['connection'])->table('TEMP_HGBELI')
@@ -174,7 +174,7 @@ class TransferPLUController extends Controller
 //
 //            -------->>>>>>>> TRANSFER SUPPLIER <<<<<<<<--------
 //            --menu sendiri
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_SUPP(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
@@ -183,13 +183,13 @@ class TransferPLUController extends Controller
                 oci_bind_by_name($s, ':uid', $_SESSION['usid'], 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_SUP, 200);
                 oci_execute($s);
-                DB::commit();
+                DB::connection($_SESSION['connection'])->commit();
                 if (!isset($V_RESULT_SUP)) {
                     $this->CETAK_SUPPLIER($N_REQ_ID);
                 }
 
 //            -------->>>>>>>> TRANSFER HARGA PROMO <<<<<<<<--------
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_DISC(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
@@ -206,7 +206,7 @@ class TransferPLUController extends Controller
                 }
 
 //            -------->>>>>>>> TRANSFER MARGIN <<<<<<<<--------
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_MGN(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);
@@ -221,7 +221,7 @@ class TransferPLUController extends Controller
                 }
 
 //            -------->>>>>>>> TRANSFER PLU OMI <<<<<<<<--------
-                DB::beginTransaction();
+                DB::connection($_SESSION['connection'])->beginTransaction();
                 $c = loginController::getConnectionProcedure();
                 $sql = "BEGIN SP_TRF_PLU_OMI(:n_req_id,:uid,:result); END;";
                 $s = oci_parse($c, $sql);

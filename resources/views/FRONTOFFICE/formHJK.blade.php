@@ -239,7 +239,24 @@
             let index = no.parentNode.parentNode.rowIndex-3;
             let kode = $('.plu')[index].value;
             if(kode != ''){
-                choosePlu(kode,index);
+                let crop = kode.toUpperCase();
+                if(crop.length < 7){
+                    crop = crop.padStart(7,'0');
+                }
+                for(i=0;i<$('.plu').length;i++){
+                    if(i!=index){
+                        if($('.plu')[i].value == crop){
+                            swal.fire('', "Kode produk "+crop+" sudah ada", 'warning');
+                            deleteRow(no);
+                            tambahRow();
+                            // $('.plu')[index].value = "";
+                            return false;
+                        }
+                    }
+                }
+                $('.plu')[index].value = crop;
+
+                choosePlu(crop,index);
             }
         }
 
@@ -560,7 +577,7 @@
                                                         class="icon fas fa-times"></i></button>
                                             </td>
                                             <td class="buttonInside" style="width: 150px;">
-                                                <input type="text" class="form-control plu" value="">
+                                                <input type="text" class="form-control plu" value="" onchange="checkPlu(this)">
                                                 <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" data-toggle="modal"
                                                         data-target="#modalHelp" onclick="getIndex(this)">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -572,7 +589,7 @@
                                             <td><input disabled class="form-control lastcost" type="text"></td>
                                             <td><input disabled class="form-control avgcost" type="text"></td>
                                             <td><input disabled class="form-control normal" type="text"></td>
-                                            <td><input class="form-control usulan" onchange="calculateMargin(this)" type="text" onkeypress="return isNumberKey(event)"></td>
+                                            <td><input class="form-control usulan" onchange="calculateMargin(this)" type="text" onkeypress="return isNumberKey(event)"onkeypress="return isNumberKey(event)"></td>
                                             <td><input disabled class="form-control normalMargin" type="text"></td>
                                             <td><input disabled class="form-control lastcostMargin" type="text"></td>
                                             <td><input disabled class="form-control avgcostMargin" type="text"></td>

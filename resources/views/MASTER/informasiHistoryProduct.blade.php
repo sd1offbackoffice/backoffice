@@ -6,7 +6,9 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
-                    <legend class="w-auto ml-5">{{$_SESSION['connection']}} Ketik PLU / Deskripsi / Scan Barcode Barang</legend>
+                    <legend class="w-auto ml-5">{{$_SESSION['connection']}} Ketik PLU / Deskripsi / Scan Barcode
+                        Barang
+                    </legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
                             <div class="col-sm-8 buttonInside">
@@ -29,27 +31,39 @@
                 <fieldset class="card border-secondary card-hdr ">
                     <legend class="w-auto ml-5">Informasi & History Product</legend>
                     <div class="card-body">
-                        <input type="text" class="col-sm-3 form-control" id="cabang" disabled>
+                        <div class="row mr-2">
+                            <input type="text" class="col-sm-3 form-control" id="cabang" disabled>
+                            {{--                            <label for="plu" class="offset-5 col-sm-1 col-form-label text-center">= Promosi =</label>--}}
+                        </div>
                         <hr>
                         <div class="row mr-2">
                             <label for="plu" class="col-sm-1 col-form-label text-right">PLU</label>
                             <input type="text" class="col-sm-1 form-control" id="plu" value="" disabled>
-                            <label for="flaggdg" class="col-sm-6 col-form-label text-right">Flag Gdg</label>
+                            <label for="flaggdg" class="col-sm-2 col-form-label text-right">Flag Gdg</label>
                             <input type="text" class="col-sm-1 form-control" id="flaggdg" value="" disabled>
-                            <label for="kdcabang" class="col-sm-2 col-form-label text-right">Kd Cabang</label>
+                            <label for="kdcabang" class="col-sm-1 col-form-label text-right">Kd Cabang</label>
                             <input type="text" class="col-sm-1 form-control" id="kdcabang" value="" disabled>
+                            {{--                            <input type="text" class="offset-1 col-sm-1 form-control" id="promosi" value="" disabled>--}}
+                            <label for="tglprm" class="offset-2 col-sm-1 col-form-label text-right promo">Tgl
+                                Prm</label>
+                            <input type="text" class="col-sm-2 form-control promo" id="tglpromo" value="" disabled>
                         </div>
                         <div class="row mr-2">
                             <label for="produk" class="col-sm-1 col-form-label text-right">Produk</label>
-                            <input type="text" class="col-sm-5 form-control" id="produk" value="" disabled>
+                            <input type="text" class="col-sm-3 form-control" id="produk" value="" disabled>
                             <label for="kattoko" class="col-sm-2 col-form-label text-right">Kat. Toko</label>
                             <input type="text" class="col-sm-1 form-control" id="kattoko" value="" disabled>
+                            <label for="jamprm" class="offset-2 col-sm-1 col-form-label text-right promo">Jam
+                                Prm</label>
+                            <input type="text" class="col-sm-2 form-control promo" id="jampromo" value="" disabled>
                         </div>
                         <div class="row mr-2">
                             <label for="kat-barang" class="col-sm-1 col-form-label text-right">Kat.Brg</label>
-                            <input type="text" class="col-sm-5 form-control" id="katbarang" value="" disabled>
-                            <label for="kattoko" class="col-sm-2 col-form-label text-right">Upd.</label>
+                            <input type="text" class="col-sm-3 form-control" id="katbarang" value="" disabled>
+                            <label for="upd" class="col-sm-2 col-form-label text-right">Upd.</label>
                             <input type="text" class="col-sm-2 form-control" id="upd" value="" disabled>
+                            <label for="hrgpromo" class="col-sm-2 col-form-label text-right promo">Hrg. Promo</label>
+                            <input type="text" class="col-sm-2 form-control promo" id="hrgpromo" value="" disabled>
                         </div>
                         <br>
                         <div class="row">
@@ -1222,7 +1236,8 @@
             $('#item').hide();
             $('#input').focus();
             $('#btn-hb-prev').prop('disabled', true);
-            $('.page2').hide();
+            // $('.page2').hide();
+            $('.page2').show();
             getModalDataPLU('');
 
             var e = $.Event("keypress");
@@ -1233,7 +1248,7 @@
         function getModalDataPLU(value) {
             let tableModal = $('#tableModalPLU').DataTable({
                 "ajax": {
-                    'url': '{{ url('master/informasihistoryproduct/lov_search') }}',
+                    'url': '{{ url()->current() }}/lov_search',
                     "data": {
                         'value': value
                     },
@@ -1288,10 +1303,77 @@
                 }
                 $(this).val(plu);
                 get_data(plu);
+                console.log(plu);
                 $('#input').val('');
 
             }
         });
+
+        function getDataRekapTrendSales() {
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-rekap-trend-sales',
+                type: 'post',
+                data: {
+                    doc: $('#dokumen').val(),
+                    lap: $('#laporan').val(),
+                    reprint: $('#reprint:checked').val(),
+                    tgl1: $('#tgl1').val(),
+                    tgl2: $('#tgl2').val(),
+                    data: checked,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (result) {
+                    $('#modal-loader').modal('hide');
+                    for (i = 0; i < 12; i++) {
+                        c = i + 1;
+                        $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
+                            '                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >\n' +
+                            '                                        ' + month[i] + ' \n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['qty_igr' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['rph_igr' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['qty_omi' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['rph_omi' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['qty_omi' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['rph_omi' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['qty_mrh' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['rph_mrh' + c]) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                </tr>');
+                    }
+                    $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
+
+                    $('#avgsls-igr').val(convertToRupiah2(response['detailsales'].avgigr));
+                    $('#avgsls-idm').val(convertToRupiah2(response['detailsales'].avgidm));
+                    $('#avgsls-omi').val(convertToRupiah2(response['detailsales'].avgomi));
+                    $('#avgsls-mrh').val(convertToRupiah2(response['detailsales'].avgmrh));
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+
+
+
+        }
 
         function get_data(value) {
             $('.page1').hide();
@@ -1326,6 +1408,13 @@
                             $('#flaggdg').val(response.produk['prd_flaggudang']);
                             $('#kattoko').val(response.produk['prd_kategoritoko']);
                             $('#upd').val(formatDate(response.produk['prd_create_dt']));
+                            if (response.showpromo) {
+                                $('#hrgpromo').val(convertToRupiah2(response.produk['hrgpromo']));
+                                $('#tglpromo').val((response.produk['tglpromo']));
+                                $('#jampromo').val((response.produk['jampromo']));
+                            } else {
+                                $('.promo').hide();
+                            }
 
                             for (i = 0; i < response.sj.length; i++) {
                                 $('#table-satuan').append('<tr class="baris">\n' +
@@ -1367,6 +1456,7 @@
                                     '                                    </td>\n' +
                                     '                                </tr>');
                             }
+
                             for (i = 0; i < 12; i++) {
                                 j = i + 1;
                                 if (j < 10) {
@@ -1448,7 +1538,7 @@
                             $('#minorto').val(convertToRupiah2(response['pkmt'].min_to));
                             $('#mindisqty').val(convertToRupiah2(response['pkmt'].md_qty));
                             $('#mindisto').val(convertToRupiah2(response['pkmt'].md_to));
-                            $('#mplus').val(format_currency(response['pkmt'].mplus));
+                            $('#mplus').val(format_currency(nvl(response['pkmt'].mplus, 0)));
                             $('#minory').val(convertToRupiah2(response['pkmt'].minory));
                             $('#suppterakhir').val(response['pkmt'].sup);
                             $('#hargabeli').val(format_currency(response['pkmt'].hgb_hrgbeli));
@@ -1461,44 +1551,44 @@
                             $('#flagidm').val(response['flag'].IDM);
                             /*ITEM*/
                             $('#item').text(response['ITEM']);
-                            for (i = 0; i < 12; i++) {
-                                c = i + 1;
-                                $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
-                                    '                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >\n' +
-                                    '                                        ' + month[i] + ' \n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['qty_igr' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['rph_igr' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['qty_omi' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['rph_omi' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['qty_omi' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['rph_omi' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['qty_mrh' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['rph_mrh' + c]) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                </tr>');
-                            }
-                            $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
-
-                            $('#avgsls-igr').val(convertToRupiah2(response['detailsales'].avgigr));
-                            $('#avgsls-idm').val(convertToRupiah2(response['detailsales'].avgidm));
-                            $('#avgsls-omi').val(convertToRupiah2(response['detailsales'].avgomi));
-                            $('#avgsls-mrh').val(convertToRupiah2(response['detailsales'].avgmrh));
+                            // for (i = 0; i < 12; i++) {
+                            //     c = i + 1;
+                            //     $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
+                            //         '                                    <td class="p-0 text-center" style="padding-top: .45rem!important;" >\n' +
+                            //         '                                        ' + month[i] + ' \n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['qty_igr' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].igr['rph_igr' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['qty_omi' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].omi['rph_omi' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['qty_omi' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].idm['rph_omi' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['qty_mrh' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['detailsales'].mrh['rph_mrh' + c]) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                </tr>');
+                            // }
+                            // $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
+                            //
+                            // $('#avgsls-igr').val(convertToRupiah2(response['detailsales'].avgigr));
+                            // $('#avgsls-idm').val(convertToRupiah2(response['detailsales'].avgidm));
+                            // $('#avgsls-omi').val(convertToRupiah2(response['detailsales'].avgomi));
+                            // $('#avgsls-mrh').val(convertToRupiah2(response['detailsales'].avgmrh));
 
                             for (var i = 0; i < response['supplier'].length; i++) {
                                 $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
@@ -1876,7 +1966,7 @@
                     $('#modal-loader').modal('hide');
                 }
             };
-            xhttp.open("POST", "{{ url('master/informasihistoryproduct/cetak_so') }}");
+            xhttp.open("POST", "{{ url()->current() }}/cetak_so");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
             xhttp.responseType = 'blob';
@@ -1904,7 +1994,7 @@
                     $('#modal-loader').modal('hide');
                 }
             };
-            xhttp.open("POST", "{{ url('master/informasihistoryproduct/cetak') }}");
+            xhttp.open("POST", "{{ url()->current() }}/cetak");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
             xhttp.responseType = 'blob';

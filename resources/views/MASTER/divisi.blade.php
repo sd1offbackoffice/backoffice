@@ -48,8 +48,8 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <button class="btn btn-primary" id="btn-prev" onclick="divisi_detail('prev')">PREV</button>
-                                        <button class="btn btn-primary" id="btn-next" onclick="divisi_detail('next')">NEXT</button>
+                                        <button class="btn btn-primary" id="btn-prev" onclick="divisiDetail('prev')">PREV</button>
+                                        <button class="btn btn-primary" id="btn-next" onclick="divisiDetail('next')">NEXT</button>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
 
 
 
-        function divisi_detail(action) {
+        function divisiDetail(action) {
 
             if (action == 'next') {
                 if(i < divisi.length - 1)

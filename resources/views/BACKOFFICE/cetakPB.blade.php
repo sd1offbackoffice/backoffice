@@ -356,7 +356,7 @@
 
                 tableModalDocument = $('#tableModalHelpDocument').DataTable({
                     "ajax": {
-                        'url' : '{{ url('bocetakpb/getdocument') }}',
+                        'url' : '{{url()->current() }}/getdocument',
                         "data" : {
                             'tgl1': tgl1,
                             'tgl2': tgl2
@@ -424,7 +424,7 @@
 
                 tableModalDepartemen = $('#tableModalHelpDepartemen').DataTable({
                     "ajax": {
-                        'url' : '{{ url('bocetakpb/getdepartement') }}',
+                        'url' : '{{url()->current() }}/getdepartement',
                         "data" : {
                             'div1': div1,
                             'div2': div2
@@ -479,7 +479,7 @@
 
                 tableModalKategori = $('#tableModalHelpKategori').DataTable({
                     "ajax": {
-                        'url' : '{{ url('bocetakpb/getkategori') }}',
+                        'url' : '{{url()->current() }}/getkategori',
                         "data" : {
                             'dept1': dept1,
                             'dept2': dept2

@@ -49,7 +49,7 @@ class HitungUlangStockController extends Controller
 
 
 //        dd($plu2);
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
@@ -84,7 +84,7 @@ class HitungUlangStockController extends Controller
             $status = 'error';
             $err_txt = 'Proses Hitung Stock GAGAL! --> ' . $err_txt;
         }
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
 
         $akhir = Date('H:i:s');
         return compact(['mulai', 'akhir', 'status', 'err_txt']);
@@ -95,7 +95,7 @@ class HitungUlangStockController extends Controller
         $status = '';
         $err_txt = '';
 
-        DB::beginTransaction();
+        DB::connection($_SESSION['connection'])->beginTransaction();
         $mulai = Date('H:i:s');
 
         $c = loginController::getConnectionProcedure();
@@ -108,7 +108,7 @@ class HitungUlangStockController extends Controller
         $status = 'success';
         $err_txt = 'Data Sudah di Proses !!' . $err_txt;
 
-        DB::commit();
+        DB::connection($_SESSION['connection'])->commit();
 
         $akhir = Date('H:i:s');
         return compact(['mulai', 'akhir', 'status', 'err_txt']);
@@ -126,7 +126,7 @@ class HitungUlangStockController extends Controller
 
             $mulai = Date('H:i:s');
 
-            DB::beginTransaction();
+            DB::connection($_SESSION['connection'])->beginTransaction();
             $c = loginController::getConnectionProcedure();
             $sql = "BEGIN SP_LPP_POINT(to_char(sysdate,'yyyyMM'),'HITY',:err_txt); END;";
             $s = oci_parse($c, $sql);
@@ -139,7 +139,7 @@ class HitungUlangStockController extends Controller
             $status = 'success';
             $err_txt = 'Data Penghapusan Akhir Tahun Sudah di Lakukan !! ' . $err_txt;
             // report hapus?
-            DB::commit();
+            DB::connection($_SESSION['connection'])->commit();
 
             return compact(['mulai', 'akhir', 'status', 'err_txt']);
         }
