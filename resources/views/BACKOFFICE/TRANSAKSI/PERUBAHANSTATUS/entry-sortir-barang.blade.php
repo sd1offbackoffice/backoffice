@@ -211,7 +211,7 @@
         function srtLoad(value){
             let tableSrt = $('#tableSrt').DataTable({
                 "ajax": {
-                    'url' : '{{ url('/bo/transaksi/perubahanstatus/entrySortirBarang/modalsrt') }}',
+                    'url' : '{{ url()->current().'/modal-sortir' }}',
                     "data" : {
                         'value' : value
                     },
@@ -248,7 +248,7 @@
         function pluLoad(value){
             let tablePlu = $('#tablePlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url('/bo/transaksi/perubahanstatus/entrySortirBarang/modalplu') }}',
+                    'url' : '{{ url()->current().'/modal-plu' }}',
                     "data" : {
                         'value' : value
                     },
@@ -331,7 +331,7 @@
                         if (confirm){
                             ajaxSetup();
                             $.ajax({
-                                url: '{{ url()->current() }}/getnewnmrsrt',
+                                url: '{{ url()->current() }}/get-new-nomor-sortir',
                                 type: 'post',
                                 data: {},
                                 beforeSend: function () {
@@ -436,7 +436,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '{{ url()->current() }}/savedata',
+                url: '{{ url()->current() }}/save-data',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -490,7 +490,7 @@
             if(doc && keterangan === '* TAMBAH' || doc && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('{{ url()->current() }}/printdoc/'+doc+'/');
+                window.open('{{ url()->current() }}/print-document/'+doc+'/');
                 clearField();
             }
         }
@@ -554,7 +554,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '{{ url()->current() }}/savedata',
+                url: '{{ url()->current() }}/save-data',
                 type: 'post',
                 data: {
                     datas:datas,
@@ -570,7 +570,7 @@
                     console.log(result.kode)
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
+                            window.open('{{ url()->current() }}/print-document/'+result.msg+'/');
                             clearField();
                         } else {
                             swal('Dokumen Berhasil disimpan','','success')
@@ -579,7 +579,7 @@
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
                         swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!')
-                        window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
+                        window.open('{{ url()->current() }}/print-document/'+result.msg+'/');
                         clearField();
                     }else {
                         swal('ERROR', "Something's Error", 'error')
@@ -623,7 +623,7 @@
         function chooseSrt(kode) {
             ajaxSetup();
             $.ajax({
-                url: '{{ url()->current() }}/choosesrt',
+                url: '{{ url()->current() }}/choose-sortir',
                 type: 'post',
                 data: {
                     kode:kode
@@ -712,7 +712,7 @@
                                                     <input type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                                      <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
                                                         data-target="#pilihPlu">
-                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
+                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
                                                 </td>
                                                 <td style="width: 32%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
@@ -747,7 +747,7 @@
             if(val!=''){
                 ajaxSetup();
                 $.ajax({
-                    url: '{{ url()->current() }}/getnmrsrt',
+                    url: '{{ url()->current() }}/get-nomor-sortir',
                     type: 'post',
                     data: {
                         val:val
@@ -775,7 +775,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: '{{ url()->current() }}/chooseplu',
+                url: '{{ url()->current() }}/choose-plu',
                 type: 'post',
                 data: {
                     kode: kode

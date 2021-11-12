@@ -3428,6 +3428,7 @@
                     title: 'Butuh approval untuk perubahan credit limit, data belum disimpan!',
                     icon: 'warning'
                 }).then(function(){
+                    approvalMode = 'kredit';
                     $('#m_aktifnonaktif').modal('show');
                     $('#btn-aktifnonaktif-ok').show();
                     $('#btn-aktifnonaktif-ok').attr('disabled', false);
@@ -4021,14 +4022,14 @@
 
         function aktif_nonaktif(user, pass){
             $.ajax({
-                url: '{{ url()->current() }}/check_password',
+                url: '{{ url()->current() }}/check-password',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {username: user, password: pass},
                 beforeSend: function(){
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
                     if(response == 'ok'){
@@ -4067,18 +4068,16 @@
                         else if(approvalMode == 'kredit'){
                             isApproved = true;
 
-                            $('#modal-loader').modal('hide');
-
                             swal({
                                 title: 'Perubahan credit limit disetujui, silahkan menyimpan data!',
                                 icon: 'success'
                             }).then(function(){
                                 $('#m_aktifnonaktif').modal('hide');
+                                $('#modal-loader').modal('hide');
                             });
                         }
                     }
                     else{
-                        $('#modal-loader').modal('hide');
                         isApproved = false;
                         console.log(response);
                         if(response == 'userlevel'){
@@ -4087,6 +4086,7 @@
                                 icon: "error"
                             }).then(function(){
                                 $('#i_password').select();
+                                $('#modal-loader').modal('hide');
                             });
                         }
                         else{
@@ -4094,6 +4094,7 @@
                                 title: "Username atau password salah!",
                                 icon: "error"
                             }).then(function(){
+                                $('#modal-loader').modal('hide');
                                 $('#i_password').select();
                             });
                         }

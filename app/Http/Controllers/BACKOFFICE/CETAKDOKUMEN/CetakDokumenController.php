@@ -1838,7 +1838,7 @@ class CetakDokumenController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        try{
+//        try{
             $data1 = '';
             $data2 = '';
             $filename = '';
@@ -2040,6 +2040,8 @@ class CetakDokumenController extends Controller
             $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
                 ->first();
 
+//            dd($data2);
+
 
             if (sizeof($data1) != 0) {
                 $arrData = [];
@@ -2051,8 +2053,8 @@ class CetakDokumenController extends Controller
                 for($i=0;$i<count($data1);$i++){
                     if($data1[$i]->msth_nodoc != $temp){
                         if($temp != null){
-                            $arrTemp['head'] = $head;
-                            $arrTemp['detail'] = $detail;
+                            $arrTemp['head'][] = $head;
+                            $arrTemp['detail'][] = $detail;
                             $arrData[] = $arrTemp;
                         }
 
@@ -2062,14 +2064,22 @@ class CetakDokumenController extends Controller
                         $detail = [];
                     }
 
-                    $head[] = $data2[$i];
+                    $temp = new \stdClass();
+                    $temp->rownum = null;
+                    $temp->nodoc = null;
+                    $temp->msth_tgldoc = null;
+                    $temp->msth_kodesupplier = null;
+                    $temp->nofp = null;
+                    $temp->mstd_date3 = null;
+
+                    $head[] = $i < count($data2) ? $data2[$i] : $temp;
                     $detail[] = $data1[$i];
                 }
-                $arrTemp['head'] = $head;
-                $arrTemp['detail'] = $detail;
+                $arrTemp['head'][] = $head;
+                $arrTemp['detail'][] = $detail;
                 $arrData[] = $arrTemp;
 
-//                dd($arrData);
+                dd($arrData);
 
                 $data = [
                     'data' => ['dummy'],
@@ -2082,7 +2092,7 @@ class CetakDokumenController extends Controller
                     'jnskertas' => $jnskertas
                 ];
 
-//                dd($filename);
+                dd($filename);
 
 //                dd($data);
 
@@ -2112,13 +2122,13 @@ class CetakDokumenController extends Controller
                 return "TIDAK ADA DATA!";
 
             }
-        }
-        catch (\Exception $e){
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
+//        }
+//        catch (\Exception $e){
+//            return response()->json([
+//                'status' => 'error',
+//                'message' => $e->getMessage()
+//            ], 500);
+//        }
     }
 
     public function CETAK_BARU($nodoc, $reprint){

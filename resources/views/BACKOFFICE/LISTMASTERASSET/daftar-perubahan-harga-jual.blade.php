@@ -92,7 +92,7 @@
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
             <div class="col-sm-6">
-                <select class="form-control" id="menu2SortBy" onchange="menu2SortBy()">
+                <select class="form-control" id="menu2SortBy">
                     <option value="1">1. DIV+DEPT+KATEGORI+KODE</option>
                     <option value="2">2. DIV+DEPT+KATEGORI+NAMA</option>
                     <option value="3">3. NAMA</option>
@@ -185,20 +185,21 @@
     });
 
     $('#menu2Div1Input').on('change',function(){
+        $('#menu2Div2Input').val('').change();
+        $('#menu2Dep1Input').val('').change();
+        $('#menu2Dep2Input').val('').change();
+        $('#menu2Kat1Input').val('').change();
+        $('#menu2Kat2Input').val('').change();
+
+        $('#menu2Div1Desk').val('');
+        $('#menu2Div2Desk').val('');
+        $('#menu2Dep1Desk').val('');
+        $('#menu2Dep2Desk').val('');
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Div1Input').val() == ''){
             $('#menu2BtnDiv2').prop("hidden",true);
-            $('#menu2Div2Input').val('').change();
-            $('#menu2Dep1Input').val('').change();
-            $('#menu2Dep2Input').val('').change();
-            $('#menu2Kat1Input').val('').change();
-            $('#menu2Kat2Input').val('').change();
 
-            $('#menu2Div1Desk').val('');
-            $('#menu2Div2Desk').val('');
-            $('#menu2Dep1Desk').val('');
-            $('#menu2Dep2Desk').val('');
-            $('#menu2Kat1Desk').val('');
-            $('#menu2Kat2Desk').val('');
 
             $('#minDep').val('').change();
         }else{
@@ -215,18 +216,19 @@
         }
     });
     $('#menu2Div2Input').on('change',function(){
+        $('#menu2Dep1Input').val('').change();
+        $('#menu2Dep2Input').val('').change();
+        $('#menu2Kat1Input').val('').change();
+        $('#menu2Kat2Input').val('').change();
+
+        $('#menu2Div2Desk').val('');
+        $('#menu2Dep1Desk').val('');
+        $('#menu2Dep2Desk').val('');
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Div2Input').val() == ''){
             $('#menu2BtnDep1').prop("hidden",true);
-            $('#menu2Dep1Input').val('').change();
-            $('#menu2Dep2Input').val('').change();
-            $('#menu2Kat1Input').val('').change();
-            $('#menu2Kat2Input').val('').change();
 
-            $('#menu2Div2Desk').val('');
-            $('#menu2Dep1Desk').val('');
-            $('#menu2Dep2Desk').val('');
-            $('#menu2Kat1Desk').val('');
-            $('#menu2Kat2Desk').val('');
 
             $('#maxDep').val('').change();
         }else{
@@ -243,16 +245,17 @@
         }
     });
     $('#menu2Dep1Input').on('change',function(){
+        $('#menu2Dep2Input').val('').change();
+        $('#menu2Kat1Input').val('').change();
+        $('#menu2Kat2Input').val('').change();
+
+        $('#menu2Dep1Desk').val('');
+        $('#menu2Dep2Desk').val('');
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Dep1Input').val() == ''){
             $('#menu2BtnDep2').prop("hidden",true);
-            $('#menu2Dep2Input').val('').change();
-            $('#menu2Kat1Input').val('').change();
-            $('#menu2Kat2Input').val('').change();
 
-            $('#menu2Dep1Desk').val('');
-            $('#menu2Dep2Desk').val('');
-            $('#menu2Kat1Desk').val('');
-            $('#menu2Kat2Desk').val('');
 
             $('#minKat').val('').change();
         }else{
@@ -269,14 +272,15 @@
         }
     });
     $('#menu2Dep2Input').on('change',function(){
+        $('#menu2Kat1Input').val('').change();
+        $('#menu2Kat2Input').val('').change();
+
+        $('#menu2Dep2Desk').val('');
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Dep2Input').val() == ''){
             $('#menu2BtnKat1').prop("hidden",true);
-            $('#menu2Kat1Input').val('').change();
-            $('#menu2Kat2Input').val('').change();
 
-            $('#menu2Dep2Desk').val('');
-            $('#menu2Kat1Desk').val('');
-            $('#menu2Kat2Desk').val('');
 
             $('#maxKat').val('').change();
         }else{
@@ -293,12 +297,13 @@
         }
     });
     $('#menu2Kat1Input').on('change',function(){
+        $('#menu2Kat2Input').val('').change();
+
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Kat1Input').val() == ''){
             $('#menu2BtnKat2').prop("hidden",true);
-            $('#menu2Kat2Input').val('').change();
 
-            $('#menu2Kat1Desk').val('');
-            $('#menu2Kat2Desk').val('');
         }else{
             let index = checkKatExist($('#menu2Kat1Input').val());
             if(index){
@@ -313,8 +318,9 @@
         }
     });
     $('#menu2Kat2Input').on('change',function(){
+        $('#menu2Kat2Desk').val('');
         if($('#menu2Kat2Input').val() == ''){
-            $('#menu2Kat2Desk').val('');
+            //code here
         }else{
             //code here
             let index = checkKatExist($('#menu2Kat2Input').val());
@@ -328,7 +334,17 @@
         }
     });
 
-    function Menu2Choose(val){
+    //Tag berurutan
+    $('#menu2Tag2').on('focus',function(){
+        if($('#menu2Tag1').val() == ''){
+            $('#menu2Tag1').focus();
+        }
+    });
+    $('#menu2Tag1').on('change',function(){
+        $('#menu2Tag2').val('');
+    });
+
+    function menu2Choose(val){
         //val dan curson didapat dari "list-master.blade.php"
         let kode = val.children().first().next().text();
         // let namadivisi = val.children().first().text();
@@ -378,5 +394,24 @@
                 }, 10);
                 break;
         }
+    }
+
+    function menu2Clear(){
+        $('#menu2Div1Input').val('').change();
+        $('#menu2Div1Desk').val('');
+        $('#menu2Div2Desk').val('');
+        $('#menu2Dep1Desk').val('');
+        $('#menu2Dep2Desk').val('');
+        $('#menu2Kat1Desk').val('');
+        $('#menu2Kat2Desk').val('');
+        $('#menu2Tag1').val('').change();
+        $('#menu2SortBy').val(1);
+        $('#menu2Check').prop("checked",false);
+        $('#menu2daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+        $('#menu2daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+    }
+
+    function menu2Cetak(){
+        alert('cetak menu 2');
     }
 </script>

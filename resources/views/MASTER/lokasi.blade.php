@@ -1692,7 +1692,7 @@
         // });
 
         function cek_tkk(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_tirkirikanan').val() < 0){
                 tirkkOk = false;
                 swal({
                     title: 'Inputan tidak valid!',
@@ -1702,7 +1702,7 @@
                 })
             }
             else{
-                if(value == '')
+                if($('#row_tambah').find('.lks_tirkirikanan').val() == '')
                     $('#row_tambah').find('.lks_tirkirikanan').select();
                 else{
                     tirkkOk = true;
@@ -1724,7 +1724,7 @@
         // });
 
         function cek_tdb(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_tirdepanbelakang').val() < 0){
                 tirdbOk = false;
                 swal({
                     title: 'Inputan tidak valid!',
@@ -1734,7 +1734,7 @@
                 })
             }
             else{
-                if(value == '')
+                if($('#row_tambah').find('.lks_tirdepanbelakang').val() == '')
                     $('#row_tambah').find('.lks_tirdepanbelakang').select();
                 else{
                     tirdbOk = true;
@@ -1756,7 +1756,7 @@
         // });
 
         function cek_tab(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_tiratasbawah').val() < 0){
                 tirabOk = false;
                 swal({
                     title: 'Inputan tidak valid!',
@@ -1766,7 +1766,7 @@
                 })
             }
             else{
-                if(value == '')
+                if($('#row_tambah').find('.lks_tiratasbawah').val() == '')
                     $('#row_tambah').find('.lks_tiratasbawah').select();
                 else{
                     tirabOk = true;
@@ -1794,7 +1794,7 @@
         // });
 
         function cek_md(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_maxdisplay').val() < 0){
                 maxdisOk = false;
                 swal({
                     title: 'Inputan tidak valid!',
@@ -1826,7 +1826,7 @@
         // });
 
         function cek_minpct(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_minpct').val() < 0){
                 minpctOk = false;
                 swal({
                     title: 'Inputan harus lebih dari nol!',
@@ -1858,7 +1858,7 @@
         // });
 
         function cek_maxplano(value){
-            if(value < 0){
+            if($('#row_tambah').find('.lks_maxplano').val() < 0){
                 maxplanoOk = false;
                 swal({
                     title: 'Inputan harus lebih dari nol!',
@@ -1868,7 +1868,7 @@
                 });
             }
             else{
-                if(value == '')
+                if($('#row_tambah').find('.lks_maxplano').val() == '')
                     $('#row_tambah').find('.lks_maxplano').select();
                 else{
                     maxplanoOk = true;
@@ -1881,9 +1881,9 @@
             cek_nourut();
             cek_db();
             cek_ab();
-            cek_tkk();
-            cek_tdb();
-            cek_tab();
+            // cek_tkk();
+            // cek_tdb();
+            // cek_tab();
             cek_md();
             cek_minpct();
             cek_maxplano();
@@ -1900,7 +1900,8 @@
             // console.log('maxplanoOk : '+maxplanoOk);
 
             // if(nourutOk && dbOk && abOk && pluOk && noidOk && tirkkOk && tirdbOk && tirabOk && maxdisOk && minpctOk && maxplanoOk) {
-            if(nourutOk && dbOk && abOk && pluOk && tirkkOk && tirdbOk && tirabOk && maxdisOk && minpctOk && maxplanoOk) {
+            // if(nourutOk && dbOk && abOk && pluOk && tirkkOk && tirdbOk && tirabOk && maxdisOk && minpctOk && maxplanoOk) {
+            if(true){
                 data = {};
                 data['lks_koderak'] = $('#lks_koderak').val();
                 data['lks_kodesubrak'] = $('#lks_kodesubrak').val();

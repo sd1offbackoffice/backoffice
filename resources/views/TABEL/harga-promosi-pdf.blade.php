@@ -10,21 +10,20 @@
     TABEL HARGA PROMOSI
 @endsection
 
-@section('content')
+@php
+    function rupiah($angka){
+        //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        $hasil_rupiah = number_format($angka,0,'.',',');
+        return $hasil_rupiah;
+    }
+    function percent($angka){
+        //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        $hasil_rupiah = number_format($angka,2,'.',',');
+        return $hasil_rupiah;
+    }
+@endphp
 
-<?php
-//rupiah formatter (no Rp or .00)
-function rupiah($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,0,'.',',');
-    return $hasil_rupiah;
-}
-function percent($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,2,'.',',');
-    return $hasil_rupiah;
-}
-?>
+@section('content')
 
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
         <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">

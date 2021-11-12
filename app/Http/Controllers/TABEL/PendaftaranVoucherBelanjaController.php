@@ -21,14 +21,14 @@ class PendaftaranVoucherBelanjaController extends Controller
 
     public function index()
     {
-        return view('tabel.PENDAFTARANVOUCHERBELANJA.pendaftaranvoucherbelanja');
+        return view('TABEL.PENDAFTARANVOUCHERBELANJA.pendaftaran-voucher-belanja');
     }
 
     public function modalSupplier(Request $request)
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->select("vcs_namasupplier")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
@@ -41,7 +41,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
             ->orderBy("vcs_namasupplier")
@@ -52,7 +52,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     public function getDeskripsi(Request $request)
     {
         $supp = $request->supp;
-        $data = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->selectRaw("vcs_keterangan")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
@@ -64,7 +64,7 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $data = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
             ->first();
@@ -77,14 +77,14 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $temp = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
             ->selectRaw("NVL(COUNT(1),0) count")
             ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
             ->where('vcs_namasupplier', '=', $supp)
             ->pluck('count')->first();
 
         if ($temp == 0) {
-            DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+            DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
                 ->insert([
                     'vcs_kodeigr' => $_SESSION['kdigr'],
                     'vcs_namasupplier' => $supp,
@@ -151,21 +151,7 @@ class PendaftaranVoucherBelanjaController extends Controller
         $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $date = Carbon::now();
-        $dompdf = new PDF();
+        return view('TABEL.PENDAFTARANVOUCHERBELANJA.'.$filename.'-pdf', compact(['perusahaan', 'data']));
 
-        $pdf = PDF::loadview('TABEL.PENDAFTARANVOUCHERBELANJA.' . $filename . '-pdf', compact(['perusahaan', 'data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
     }
 }

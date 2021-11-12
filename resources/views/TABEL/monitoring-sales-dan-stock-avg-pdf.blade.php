@@ -27,8 +27,6 @@
             <th class="tengah center">AVG SALES</th>
             <th class="tengah center">AVG SALES QTY</th>
             <th class="tengah center">SALES QTY</th>
-            <th class="tengah center">MARGIN</th>
-            <th class="tengah center">%</th>
             <th class="tengah center">SALDO AKHIR</th>
             <th class="tengah center">PKMT</th>
             <th class="tengah center">PO OUTS</th>
@@ -42,8 +40,6 @@
             $total_avgsales=0;
             $total_avgqty=0;
             $total_sales_=0;
-            $total_margin=0;
-            $total_margin2=0;
             $total_saldo=0;
             $total_ftpkmt=0;
             $total_po=0;
@@ -58,8 +54,6 @@
                 <td class="center">{{ number_format($d->avgsales,0,'.',',') }}</td>
                 <td class="center">{{ number_format($d->avgqty,0,'.',',') }}</td>
                 <td class="center">{{ number_format($d->sales_,0,'.',',') }}</td>
-                <td class="center">{{ number_format($d->margin,0,'.',',') }}</td>
-                <td class="center">{{ number_format($d->margin2,0,'.',',') }}</td>
                 <td class="center">{{ number_format($d->saldo,0,'.',',') }}</td>
                 <td class="center">{{ number_format($d->ftpkmt,0,'.',',') }}</td>
                 <td class="center">{{ number_format($d->po,0,'.',',') }}</td>
@@ -70,8 +64,6 @@
                 $total_avgsales += $d->avgsales;
                 $total_avgqty += $d->avgqty;
                 $total_sales_ += $d->sales_;
-                $total_margin += $d->margin;
-                $total_margin2 += $d->margin2;
                 $total_saldo += $d->saldo;
                 $total_ftpkmt += $d->ftpkmt;
                 $total_po += $d->po;
@@ -87,8 +79,6 @@
             <th class="center">{{ number_format($total_avgsales,0,'.',',') }}</th>
             <th class="center">{{ number_format($total_avgqty,0,'.',',') }}</th>
             <th class="center">{{ number_format($total_sales_,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_margin,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_margin2,0,'.',',') }}</th>
             <th class="center">{{ number_format($total_saldo,0,'.',',') }}</th>
             <th class="center">{{ number_format($total_ftpkmt,0,'.',',') }}</th>
             <th class="center">{{ number_format($total_po,0,'.',',') }}</th>

@@ -16,12 +16,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class superpromoController extends Controller
+class SuperPromoController extends Controller
 {
 
     public function index()
     {
-        return view('TABEL.superpromo');
+        return view('TABEL.super-promo');
     }
 
 

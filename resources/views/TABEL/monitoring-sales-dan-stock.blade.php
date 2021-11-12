@@ -75,7 +75,7 @@
                                 <div class="row form-group">
                                     <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">Ranking
                                         By</label>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-1">
                                         <input type="number" class="form-control text-left"
                                                autocomplete="off" id="rank-by">
                                     </div>
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <div class="container" id="second-view">
+    <div class="container-fluid" id="second-view">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -413,13 +413,12 @@
 
         $('#bulan').on('keyup', function (e) {
             $('#bulan').removeClass('is-invalid');
-            if($(this).val() == new Date().getMonth()+1)
-            {
+            if ($(this).val() == new Date().getMonth() + 1) {
                 swal({
                     title: 'Bulan tidak boleh pada bulan yang aktif!',
                     icon: 'info'
                 }).then(() => {
-                    $(this).val($(this).val()-1);
+                    $(this).val($(this).val() - 1);
                 });
             }
             if ($(this).val() < 1 || $(this).val() > 12) {
@@ -502,8 +501,8 @@
                             kodemonitoring: $('#kode-monitoring').val(),
                             periode1: $('#periode-1').val(),
                             periode2: $('#periode-2').val(),
-                            plu1: $('#plu-1').val() == '' ? '0000000':$('#plu-1').val(),
-                            plu2: $('#plu-2').val() == '' ? '9999999':$('#plu-2').val(),
+                            plu1: $('#plu-1').val() == '' ? '0000000' : $('#plu-1').val(),
+                            plu2: $('#plu-2').val() == '' ? '9999999' : $('#plu-2').val(),
                             rankby: $('#rank-by').val(),
                         },
                     },
@@ -530,47 +529,75 @@
                     "responsive": true,
                     "createdRow": function (row, data, dataIndex) {
                         $(row).addClass('modalRow row-data');
-                        $(row).attr('data',data.deskripsi);
+                        $(row).attr('data', data.deskripsi);
                     },
                     "columnDefs": [
                         {
                             "targets": [1],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [2],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [3],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [4],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [5],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah(data);
+                            }
                         },
                         {
                             "targets": [6],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [7],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [8],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
                         {
                             "targets": [9],
-                            "className": 'text-right'
+                            "className": 'text-right',
+                            "render": function (data, type, row) {
+                                return convertToRupiah2(data);
+                            }
                         },
-                        { "targets" : [10],
-                            "render" : function (data, type, row) {
+                        {
+                            "targets": [10],
+                            "render": function (data, type, row) {
                                 return formatDate(data)
                             }
                         }
@@ -593,15 +620,14 @@
             swal({
                 title: 'Apakah NILAI MARGIN ingin di cetak? ',
                 showDenyButton: true,
-                confirmButtonText: `Ya`,
-                denyButtonText: `Tidak`,
+                buttons: ["Tidak", "Ya"],
+                icon: 'info'
             }).then((result) => {
-                margin = 'N';
-                if (result.isConfirmed) {
-                   margin = 'Y';
-                }
-                window.open(`{{ url()->current() }}/print?bulan=${$('#bulan').val()}&kodemonitoring=${$('#kode-monitoring').val().toUpperCase()}&namamonitoring=${$('#nama-monitoring').val()}&periode1=${$('#periode-1').val()}&periode2=${$('#periode-2').val()}
-                &plu1=${$('#plu-1').val()}&plu2=${$('#plu-2').val()}&rank=${$('#rank-by').val()}&margin=${margin}`, '_blank');
+                    margin = 'N';
+                    if (result) {
+                        margin = 'Y';
+                    }
+                    window.open(`{{ url()->current() }}/print?bulan=${$('#bulan').val()}&kodemonitoring=${$('#kode-monitoring').val()}&namamonitoring=${$('#nama-monitoring').val()}&periode1=${$('#periode-1').val()}&periode2=${$('#periode-2').val()}&plu1=${$('#plu-1').val()}&plu2=${$('#plu-2').val()}&rank=${$('#rank-by').val()}&margin=${margin}`, '_blank');
             })
         }
 

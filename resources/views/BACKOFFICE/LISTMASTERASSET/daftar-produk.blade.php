@@ -86,7 +86,7 @@
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
             <div class="col-sm-6">
-                <select class="form-control" id="menu1SortBy" onchange="Menu1SortBy()">
+                <select class="form-control" id="menu1SortBy">
                     <option value="1">1. DIV+DEPT+KATEGORI+KODE</option>
                     <option value="2">2. DIV+DEPT+KATEGORI+NAMA</option>
                     <option value="3">3. NAMA</option>
@@ -199,20 +199,21 @@
     });
 
     $('#menu1Div1Input').on('change',function(){
+        $('#menu1Div2Input').val('').change();
+        $('#menu1Dep1Input').val('').change();
+        $('#menu1Dep2Input').val('').change();
+        $('#menu1Kat1Input').val('').change();
+        $('#menu1Kat2Input').val('').change();
+
+        $('#menu1Div1Desk').val('');
+        $('#menu1Div2Desk').val('');
+        $('#menu1Dep1Desk').val('');
+        $('#menu1Dep2Desk').val('');
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Div1Input').val() == ''){
             $('#menu1BtnDiv2').prop("hidden",true);
-            $('#menu1Div2Input').val('').change();
-            $('#menu1Dep1Input').val('').change();
-            $('#menu1Dep2Input').val('').change();
-            $('#menu1Kat1Input').val('').change();
-            $('#menu1Kat2Input').val('').change();
 
-            $('#menu1Div1Desk').val('');
-            $('#menu1Div2Desk').val('');
-            $('#menu1Dep1Desk').val('');
-            $('#menu1Dep2Desk').val('');
-            $('#menu1Kat1Desk').val('');
-            $('#menu1Kat2Desk').val('');
 
             $('#minDep').val('').change();
         }else{
@@ -229,18 +230,19 @@
         }
     });
     $('#menu1Div2Input').on('change',function(){
+        $('#menu1Dep1Input').val('').change();
+        $('#menu1Dep2Input').val('').change();
+        $('#menu1Kat1Input').val('').change();
+        $('#menu1Kat2Input').val('').change();
+
+        $('#menu1Div2Desk').val('');
+        $('#menu1Dep1Desk').val('');
+        $('#menu1Dep2Desk').val('');
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Div2Input').val() == ''){
             $('#menu1BtnDep1').prop("hidden",true);
-            $('#menu1Dep1Input').val('').change();
-            $('#menu1Dep2Input').val('').change();
-            $('#menu1Kat1Input').val('').change();
-            $('#menu1Kat2Input').val('').change();
 
-            $('#menu1Div2Desk').val('');
-            $('#menu1Dep1Desk').val('');
-            $('#menu1Dep2Desk').val('');
-            $('#menu1Kat1Desk').val('');
-            $('#menu1Kat2Desk').val('');
 
             $('#maxDep').val('').change();
         }else{
@@ -257,16 +259,17 @@
         }
     });
     $('#menu1Dep1Input').on('change',function(){
+        $('#menu1Dep2Input').val('').change();
+        $('#menu1Kat1Input').val('').change();
+        $('#menu1Kat2Input').val('').change();
+
+        $('#menu1Dep1Desk').val('');
+        $('#menu1Dep2Desk').val('');
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Dep1Input').val() == ''){
             $('#menu1BtnDep2').prop("hidden",true);
-            $('#menu1Dep2Input').val('').change();
-            $('#menu1Kat1Input').val('').change();
-            $('#menu1Kat2Input').val('').change();
 
-            $('#menu1Dep1Desk').val('');
-            $('#menu1Dep2Desk').val('');
-            $('#menu1Kat1Desk').val('');
-            $('#menu1Kat2Desk').val('');
 
             $('#minKat').val('').change();
         }else{
@@ -283,14 +286,15 @@
         }
     });
     $('#menu1Dep2Input').on('change',function(){
+        $('#menu1Kat1Input').val('').change();
+        $('#menu1Kat2Input').val('').change();
+
+        $('#menu1Dep2Desk').val('');
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Dep2Input').val() == ''){
             $('#menu1BtnKat1').prop("hidden",true);
-            $('#menu1Kat1Input').val('').change();
-            $('#menu1Kat2Input').val('').change();
 
-            $('#menu1Dep2Desk').val('');
-            $('#menu1Kat1Desk').val('');
-            $('#menu1Kat2Desk').val('');
 
             $('#maxKat').val('').change();
         }else{
@@ -307,12 +311,13 @@
         }
     });
     $('#menu1Kat1Input').on('change',function(){
+        $('#menu1Kat2Input').val('').change();
+
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Kat1Input').val() == ''){
             $('#menu1BtnKat2').prop("hidden",true);
-            $('#menu1Kat2Input').val('').change();
 
-            $('#menu1Kat1Desk').val('');
-            $('#menu1Kat2Desk').val('');
         }else{
             let index = checkKatExist($('#menu1Kat1Input').val());
             if(index){
@@ -327,8 +332,9 @@
         }
     });
     $('#menu1Kat2Input').on('change',function(){
+        $('#menu1Kat2Desk').val('');
         if($('#menu1Kat2Input').val() == ''){
-            $('#menu1Kat2Desk').val('');
+            //code here
         }else{
             //code here
             let index = checkKatExist($('#menu1Kat2Input').val());
@@ -342,7 +348,59 @@
         }
     });
 
-    function Menu1Choose(val){
+    //Tag berurutan
+    $('#menu1Tag2').on('focus',function(){
+        if($('#menu1Tag1').val() == ''){
+            $('#menu1Tag1').focus();
+        }
+    });
+    $('#menu1Tag3').on('focus',function(){
+        if($('#menu1Tag1').val() == ''){
+            $('#menu1Tag1').focus();
+        }else if($('#menu1Tag2').val() == ''){
+            $('#menu1Tag2').focus();
+        }
+    });
+    $('#menu1Tag4').on('focus',function(){
+        if($('#menu1Tag1').val() == ''){
+            $('#menu1Tag1').focus();
+        }else if($('#menu1Tag2').val() == ''){
+            $('#menu1Tag2').focus();
+        }else if($('#menu1Tag3').val() == ''){
+            $('#menu1Tag3').focus();
+        }
+    });
+    $('#menu1Tag5').on('focus',function(){
+        if($('#menu1Tag1').val() == ''){
+            $('#menu1Tag1').focus();
+        }else if($('#menu1Tag2').val() == ''){
+            $('#menu1Tag2').focus();
+        }else if($('#menu1Tag3').val() == ''){
+            $('#menu1Tag3').focus();
+        }else if($('#menu1Tag4').val() == ''){
+            $('#menu1Tag4').focus();
+        }
+    });
+    $('#menu1Tag1').on('change',function(){
+        $('#menu1Tag2').val('');
+        $('#menu1Tag3').val('');
+        $('#menu1Tag4').val('');
+        $('#menu1Tag5').val('');
+    });
+    $('#menu1Tag2').on('change',function(){
+        $('#menu1Tag3').val('');
+        $('#menu1Tag4').val('');
+        $('#menu1Tag5').val('');
+    });
+    $('#menu1Tag3').on('change',function(){
+        $('#menu1Tag4').val('');
+        $('#menu1Tag5').val('');
+    });
+    $('#menu1Tag4').on('change',function(){
+        $('#menu1Tag5').val('');
+    });
+
+    function menu1Choose(val){
         //val dan curson didapat dari "list-master.blade.php"
         let kode = val.children().first().next().text();
         // let namadivisi = val.children().first().text();
@@ -392,5 +450,25 @@
                 }, 10);
                 break;
         }
+    }
+
+    function menu1Clear(){
+        $('#menu1Div1Input').val('').change();
+        $('#menu1Div1Desk').val('');
+        $('#menu1Div2Desk').val('');
+        $('#menu1Dep1Desk').val('');
+        $('#menu1Dep2Desk').val('');
+        $('#menu1Kat1Desk').val('');
+        $('#menu1Kat2Desk').val('');
+        $('#menu1Tag1').val('').change();
+        $('#menu1SortBy').val(1);
+        $('#menu1CheckProduk').prop("checked",false);
+        $('#menu1CheckCHP').prop("checked",false);
+        $('#menu1daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+        // $('#menu1daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+    }
+
+    function menu1Cetak(){
+        alert('cetak menu 1');
     }
 </script>

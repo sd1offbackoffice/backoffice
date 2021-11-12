@@ -27,7 +27,7 @@
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
-                            <label class="col-sm-8 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
+                            <label class="col-sm-6 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
                         </div>
                         <div class="row">
                             <label class="col-sm-3 col-form-label text-right">Tanggal</label>
@@ -190,7 +190,7 @@
         function getModalSupp(){
             tableSupp =  $('#tableSupp').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current() }}/getsupp',
+                    'url' : '{{ url()->current() }}/get-supplier',
                 },
                 "columns": [
                     {data: 'sup_namasupplier', name: 'sup_namasupplier'},
@@ -224,7 +224,7 @@
         function getModalSingkatan(){
             tableSingkatan =  $('#tableSingkatan').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current() }}/getsingkatan',
+                    'url' : '{{ url()->current() }}/get-singkatan',
                 },
                 "columns": [
                     {data: 'vcs_namasupplier', name: 'vcs_namasupplier'},
@@ -292,7 +292,7 @@
         function CheckVoucher(){
             if($('#inputSupp').val() != '' && $('#inputSingkatan').val() != ''){
                 $.ajax({
-                    url: '{{ url()->current() }}/checkvoucher',
+                    url: '{{ url()->current() }}/check-voucher',
                     type: 'GET',
                     data: {
                         supp:$('#inputSupp').val(),
@@ -333,7 +333,7 @@
                 dateA = dateA.split('/').join('-');
                 dateB = dateB.split('/').join('-');
                 $.ajax({
-                    url: '{{ url()->current() }}/checkdbtable',
+                    url: '{{ url()->current() }}/check-db-table',
                     type: 'GET',
                     data: {
                         supp:$('#inputSupp').val(),

@@ -66,6 +66,87 @@ class ListMasterController extends Controller
         return Datatables::of($datas)->make(true);
     }
 
+    public function getLovSupplier()
+    {
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            ->selectRaw('sup_namasupplier')
+            ->selectRaw('sup_kodesupplier')
+            ->where('sup_kodeigr','=',$kodeigr)
+            ->orderByRaw("sup_kodesupplier")
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function getLovMember(Request $request)
+    {
+        $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
+
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            ->selectRaw('cus_namamember')
+            ->selectRaw('cus_kodemember')
+            ->where("cus_namamember",'LIKE', '%'.$search.'%')
+            ->where('cus_kodeigr','=',$kodeigr)
+
+            ->orWhere("cus_kodemember",'LIKE', '%'.$search.'%')
+            ->where('cus_kodeigr','=',$kodeigr)
+            ->limit(1000)
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+//        return response()->json($datas);
+    }
+    public function checkMember(Request $request)
+    {
+        $kodeigr = $_SESSION['kdigr'];
+        $search = $request->value;
+
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            ->selectRaw('cus_namamember')
+            ->where("cus_kodemember",'=', $search)
+            ->where('cus_kodeigr','=',$kodeigr)
+            ->first();
+        if($data){
+            $result = $data->cus_namamember;
+        }else{
+            $result = "false";
+        }
+
+        return response()->json($result);
+    }
+
+    public function getLovOutlet()
+    {
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
+            ->selectRaw('out_namaoutlet')
+            ->selectRaw('out_kodeoutlet')
+            ->where('out_kodeigr','=',$kodeigr)
+            ->orderByRaw("out_kodeoutlet")
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function getLovSubOutlet()
+    {
+        $kodeigr = $_SESSION['kdigr'];
+
+        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+            ->selectRaw('sub_namasuboutlet')
+            ->selectRaw('sub_kodesuboutlet')
+            ->selectRaw("sub_kodeoutlet")
+            ->where('sub_kodeigr','=',$kodeigr)
+            ->orderByRaw("sub_kodeoutlet, sub_kodesuboutlet")
+            ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
     public function getDept(Request $request){
         //$search1 = $request->data1;
         //$search2 = $request->data2;

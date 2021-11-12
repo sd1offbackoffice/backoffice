@@ -21,7 +21,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
 
     public function index()
     {
-        return view('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.maxpembelianitempertransaksi');
+        return view('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.max-pembelian-item-per-transaksi');
     }
 
     public function modalPlu(Request $request)
@@ -181,26 +181,11 @@ class MaxPembelianItemPerTransaksiController extends Controller
                 AND PRD_KODEIGR = MTR_KODEIGR AND PRD_PRDCD = MTR_PRDCD
                 AND PRS_KODEIGR = '" . $_SESSION['kdigr'] . "'
                 ORDER BY MTR_PRDCD");
-        $filename = 'igr-tab-maxtran';
+        $filename = 'igr-tab-maxtran-pdf';
 
         $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
+        return view('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.' . $filename, compact(['perusahaan', 'data']));
 
-        $date = Carbon::now();
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.' . $filename . '-pdf', compact(['perusahaan', 'data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "HAL : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
     }
 }

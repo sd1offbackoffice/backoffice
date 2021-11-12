@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use App\Http\Controllers\Auth\loginController;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -297,6 +298,7 @@ class MemberController extends Controller
     }
 
     public function checkPassword(Request $request){
+        sleep(1);
         $data = DB::connection($_SESSION['connection'])->table('tbmaster_user')
             ->select('userlevel')
             ->where('userid','=',$request->username)
@@ -314,6 +316,7 @@ class MemberController extends Controller
     }
 
     public function updateMember(Request $request){
+        sleep(1);
         $resultcus = false;
         $resultcrm = false;
         $insertHobby = false;
@@ -468,6 +471,172 @@ class MemberController extends Controller
     }
 
     public function exportCRM(Request $request){
+        try{
+            $kodemember = $request->kodemember;
+
+            DB::connection('igrcrm')->beginTransaction();
+
+            DB::connection('igrcrm')
+                ->table('tbmaster_customer_interface')
+                ->where('cus_kodemember','=',$kodemember)
+                ->delete();
+
+            DB::connection('igrcrm')
+                ->table('tbmaster_customercrm_interface')
+                ->where('crm_kodemember','=',$kodemember)
+                ->delete();
+
+            $cus = DB::connection($_SESSION['connection'])
+                ->table('tbmaster_customer')
+                ->where('cus_kodemember','=',$kodemember)
+                ->first();
+
+            $tbmaster_customer = DB::connection('igrcrm')
+                ->table('tbmaster_customer_interface')
+                ->insert([
+                    'cus_kodeigr' => $cus->cus_kodeigr,
+                    'cus_recordid' => $cus->cus_recordid,
+                    'cus_kodemember' => $cus->cus_kodemember,
+                    'cus_namamember' => $cus->cus_namamember,
+                    'cus_alamatmember1' => $cus->cus_alamatmember1,
+                    'cus_alamatmember2' => $cus->cus_alamatmember2,
+                    'cus_alamatmember3' => $cus->cus_alamatmember3,
+                    'cus_alamatmember4' => $cus->cus_alamatmember4,
+                    'cus_tlpmember' => $cus->cus_tlpmember,
+                    'cus_alamatmember5' => $cus->cus_alamatmember5,
+                    'cus_alamatmember6' => $cus->cus_alamatmember6,
+                    'cus_alamatmember7' => $cus->cus_alamatmember7,
+                    'cus_alamatmember8' => $cus->cus_alamatmember8,
+                    'cus_jenismember' => $cus->cus_jenismember,
+                    'cus_flagmemberkhusus' => $cus->cus_flagmemberkhusus,
+                    'cus_jarak' => $cus->cus_jarak,
+                    'cus_cfk' => $cus->cus_cfk,
+                    'cus_kodeoutlet' => $cus->cus_kodeoutlet,
+                    'cus_kodesuboutlet' => $cus->cus_kodesuboutlet,
+                    'cus_kodearea' => $cus->cus_kodearea,
+                    'cus_tglmulai' => $cus->cus_tglmulai,
+                    'cus_tglregistrasi' => $cus->cus_tglregistrasi,
+                    'cus_npwp' => $cus->cus_npwp,
+                    'cus_flagpkp' => $cus->cus_flagpkp,
+                    'cus_creditlimit' => $cus->cus_creditlimit,
+                    'cus_top' => $cus->cus_top,
+                    'cus_keterangan' => $cus->cus_keterangan,
+                    'cus_tglpajak' => $cus->cus_tglpajak,
+                    'cus_nosalesman' => $cus->cus_nosalesman,
+                    'cus_flaggantikartu' => $cus->cus_flaggantikartu,
+                    'cus_nokartumember' => $cus->cus_nokartumember,
+                    'cus_flagkredit' => $cus->cus_flagkredit,
+                    'cus_flagblockingpengiriman' => $cus->cus_flagblockingpengiriman,
+                    'cus_flagbebasiuran' => $cus->cus_flagbebasiuran,
+                    'cus_tgllahir' => $cus->cus_tgllahir,
+                    'cus_costcenter' => $cus->cus_costcenter,
+                    'cus_noaccount' => $cus->cus_noaccount,
+                    'cus_alamatemail' => $cus->cus_alamatemail,
+                    'cus_hpmember' => $cus->cus_hpmember,
+                    'cus_flaginstitusipemerintah' => $cus->cus_flaginstitusipemerintah,
+                    'cus_create_by' => $cus->cus_create_by,
+                    'cus_create_dt' => $cus->cus_create_dt,
+                    'cus_modify_by' => $cus->cus_modify_by,
+                    'cus_modify_dt' => $cus->cus_modify_dt,
+                    'cus_getpoint' => $cus->cus_getpoint,
+                    'cus_flagkirimsms' => $cus->cus_flagkirimsms,
+                    'cus_source' => 'manual',
+                    'cus_tgl_upload' => carbon::now(),
+                    'cus_user_upload' => $_SESSION['usid'],
+                    'cus_flag_uptodate' => $cus->cus_flag_uptodate,
+                    'cus_nonaktif_dt' => $cus->cus_nonaktif_dt,
+                    'cus_flag_ina' => $cus->cus_flag_ina,
+                    'cus_tglmulai_va' => $cus->cus_tglmulai_va,
+                    'cus_noacc_va' => $cus->cus_noacc_va,
+                    'cus_noktp' => $cus->cus_noktp,
+                    'cus_flag_verifikasi' => $cus->cus_flag_verifikasi,
+                    'cus_flag_mypoin' => $cus->cus_flag_mypoin,
+                    'cus_flag_isaku' => $cus->cus_flag_isaku
+                ]);
+
+            $crm = DB::connection($_SESSION['connection'])
+                ->table('tbmaster_customercrm')
+                ->where('crm_kodemember','=',$kodemember)
+                ->first();
+
+            $tbmaster_customercrm = DB::connection('igrcrm')
+                ->table('tbmaster_customercrm_interface')
+                ->insert([
+                    'crm_recordid' => $crm->crm_recordid,
+                    'crm_kodeigr' => $crm->crm_kodeigr,
+                    'crm_kodemember' => $crm->crm_kodemember,
+                    'crm_jenisanggota' => $crm->crm_jenisanggota,
+                    'crm_jeniskelamin' => $crm->crm_jeniskelamin,
+                    'crm_pic1' => $crm->crm_pic1,
+                    'crm_nohppic1' => $crm->crm_nohppic1,
+                    'crm_pic2' => $crm->crm_pic2,
+                    'crm_nohppic2' => $crm->crm_nohppic2,
+                    'crm_agama' => $crm->crm_agama,
+                    'crm_namapasangan' => $crm->crm_namapasangan,
+                    'crm_tgllhrpasangan' => $crm->crm_tgllhrpasangan,
+                    'crm_jmlanak' => $crm->crm_jmlanak,
+                    'crm_pendidikanakhir' => $crm->crm_pendidikanakhir,
+                    'crm_nofax' => $crm->crm_nofax,
+                    'crm_koordinat' => $crm->crm_koordinat,
+                    'crm_namabank' => $crm->crm_namabank,
+                    'crm_jenisbangunan' => $crm->crm_jenisbangunan,
+                    'crm_lamatmpt' => $crm->crm_lamatmpt,
+                    'crm_statusbangunan' => $crm->crm_statusbangunan,
+                    'crm_internet' => $crm->crm_internet,
+                    'crm_tipehp' => $crm->crm_tipehp,
+                    'crm_metodekirim' => $crm->crm_metodekirim,
+                    'crm_kreditusaha' => $crm->crm_kreditusaha,
+                    'crm_bankkredit' => $crm->crm_bankkredit,
+                    'crm_email' => $crm->crm_email,
+                    'crm_group' => $crm->crm_group,
+                    'crm_subgroup' => $crm->crm_subgroup,
+                    'crm_kategori' => $crm->crm_kategori,
+                    'crm_subkategori' => $crm->crm_subkategori,
+                    'crm_pekerjaan' => $crm->crm_pekerjaan,
+                    'crm_tmptlahir' => $crm->crm_tmptlahir,
+                    'crm_alamatusaha1' => $crm->crm_alamatusaha1,
+                    'crm_alamatusaha2' => $crm->crm_alamatusaha2,
+                    'crm_alamatusaha3' => $crm->crm_alamatusaha3,
+                    'crm_alamatusaha4' => $crm->crm_alamatusaha4,
+                    'crm_create_by' => $crm->crm_create_by,
+                    'crm_create_dt' => $crm->crm_create_dt,
+                    'crm_modify_by' => $crm->crm_modify_by,
+                    'crm_modify_dt' => $crm->crm_modify_dt,
+                    'crm_idgroupkat' => $crm->crm_idgroupkat,
+                    'crm_idsegment' => $crm->crm_idsegment,
+                    'crm_source' => 'MANUAL',
+                    'crm_tgl_upload' => Carbon::now(),
+                    'crm_user_upload' => $_SESSION['usid']
+                ]);
+
+            if($tbmaster_customer && $tbmaster_customercrm){
+                DB::connection('igrcrm')->commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Berhasil export ke CRM!'
+                ], 200);
+            }
+            else{
+                DB::connection('igrcrm')->rollBack();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Gagal export ke CRM!'
+                ], 200);
+            }
+        }
+        catch(\Exception $e){
+            DB::connection('igrcrm')->rollBack();
+
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function exportCRMOld(Request $request){
         $resultcus = false;
         $resultcrm = false;
 
@@ -486,57 +655,65 @@ class MemberController extends Controller
         else {
 //            sleep(3); // Dikoemen dlu karena langsung merubah table production igrcrm
             try {
-                DB::connection($_SESSION['connection'])->beginTransaction();
+                DB::connection('igrcrm')->beginTransaction();
 //                $checkcus = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                $checkcus = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                $checkcus = DB::connection('igrcrm')
+                    ->table(DB::RAW('tbmaster_customer_testias'))
                     ->where('cus_kodemember', $kodemember)
                     ->first();
                 if ($checkcus) {
 //                    DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                    DB::connection('igrcrm')
+                        ->table(DB::RAW('tbmaster_customer_testias'))
                         ->where('cus_kodemember', $kodemember)
                         ->delete();
                 }
 
 //                $checkcrm = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                $checkcrm = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                $checkcrm = DB::connection('igrcrm')
+                    ->table(DB::RAW('tbmaster_customercrm_testias'))
                     ->where('crm_kodemember', $kodemember)
                     ->get()->toArray();
 
 //                dd($checkcrm);
                 if ($checkcrm) {
 //                    DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                    DB::connection('igrcrm')
+                        ->table(DB::RAW('tbmaster_customercrm_testias'))
                         ->where('crm_kodemember', $kodemember)
                         ->delete();
                 }
 
-                $exportcus = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                $exportcus = DB::connection($_SESSION['connection'])
+                    ->table('tbmaster_customer')
                     ->where('cus_kodemember', $kodemember)
                     ->first();
 
                 if ($exportcus) {
                     $arrexportcus = (array)$exportcus;
 //                    $resultcus = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    $resultcus = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customer_testias'))
+                    $resultcus = DB::connection('igrcrm')
+                        ->table(DB::RAW('tbmaster_customer_testias'))
                         ->insert($arrexportcus);
                 }
 
-                $exportcrm = DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')
+                $exportcrm = DB::connection($_SESSION['connection'])
+                    ->table('tbmaster_customercrm')
                     ->where('crm_kodemember', $kodemember)
                     ->first();
 
                 if ($exportcrm) {
                     $arrexportcrm = (array)$exportcrm;
 //                    $resultcrm = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    $resultcrm = DB::connection('igrcrm')->table(DB::RAW('tbmaster_customercrm_testias'))
+                    $resultcrm = DB::connection('igrcrm')
+                        ->table(DB::RAW('tbmaster_customercrm_testias'))
                         ->insert($arrexportcrm);
                 }
 
                 if ($resultcus && $resultcrm) {
                     $status = 'success';
                     $message = 'Berhasil export ke CRM!';
-                    DB::connection($_SESSION['connection'])->commit();
+//                    DB::connection('igrcrm')->commit();
                 } else {
                     $status = 'failed';
                     $message = 'Gagal export ke CRM!';
@@ -544,7 +721,7 @@ class MemberController extends Controller
                 }
             }
             catch (QueryException $e) {
-                DB::connection($_SESSION['connection'])->rollBack();
+                DB::connection('igrcrm')->rollBack();
                 $status = 'failed';
                 $message = $e->getMessage();
             }
@@ -781,11 +958,12 @@ class MemberController extends Controller
         $date   = date('Y-m-d H:i:s');
 
         try{
-            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
-                ->where('cus_kodemember', $kodeMember)
-                ->whereNotIn('cus_namamember', ['NEW'])
+            $temp = DB::connection($_SESSION['connection'])
+                ->table('tbmaster_customer')
+                ->where('cus_kodemember','=',$kodeMember)
+                ->where('cus_namamember', '<>','NEW')
                 ->whereNotNull('cus_tglregistrasi')
-                ->get();
+                ->first();
 
             $tglmulai = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
                 ->select('cus_tglmulai')
@@ -797,7 +975,8 @@ class MemberController extends Controller
             if ($temp){
                 return response()->json(['kode' => 1, "msg" => "Tgl registrasi sudah terisi", 'data' =>'']);
             } else {
-                DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                DB::connection($_SESSION['connection'])
+                    ->table('tbmaster_customer')
                     ->where('cus_kodemember', $kodeMember)
                     ->update(['cus_tglregistrasi' => $tglmulai]);
             }

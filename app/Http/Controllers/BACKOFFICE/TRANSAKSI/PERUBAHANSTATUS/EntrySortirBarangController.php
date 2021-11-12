@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
 
-class entrySortirBarangController extends Controller
+class EntrySortirBarangController extends Controller
 {
     //
 
     public function index(){
-        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entrySortirBarang');
+        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang');
     }
 
     public function getNewNmrSrt(){
@@ -115,21 +115,21 @@ class entrySortirBarangController extends Controller
         return response()->json($datas);
     }
 
-    public function getPlu(Request $request){
-        $search = $request->val;
-        $kodeigr = $_SESSION['kdigr'];
-
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-            ->select('prd_prdcd', 'prd_deskripsipanjang')
-//            ->where('prd_prdcd', '1188110')
-            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
-            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
-            ->whereRaw("(prd_deskripsipanjang LIKE '%". $search."%' or prd_prdcd LIKE '%". $search."%')")
-            ->where('PRD_KODEIGR','=',$kodeigr)
-            ->first();
-
-        return response()->json($datas);
-    }
+//    public function getPlu(Request $request){
+//        $search = $request->val;
+//        $kodeigr = $_SESSION['kdigr'];
+//
+//        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+//            ->select('prd_prdcd', 'prd_deskripsipanjang')
+////            ->where('prd_prdcd', '1188110')
+//            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+//            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
+//            ->whereRaw("(prd_deskripsipanjang LIKE '%". $search."%' or prd_prdcd LIKE '%". $search."%')")
+//            ->where('PRD_KODEIGR','=',$kodeigr)
+//            ->first();
+//
+//        return response()->json($datas);
+//    }
 
     public function ModalPlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
@@ -334,13 +334,13 @@ class entrySortirBarangController extends Controller
         DB::connection($_SESSION['connection'])->beginTransaction();
         DB::connection($_SESSION['connection'])->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
         DB::connection($_SESSION['connection'])->commit();
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.EntrySortirBarang-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        return $pdf->stream('EntrySortirBarang-laporan.pdf');
+        return $pdf->stream('entry-sortir-barang-laporan.pdf');
     }
 }

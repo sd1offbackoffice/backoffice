@@ -14,7 +14,7 @@ use Yajra\DataTables\DataTables;
 class PluTimbanganController extends Controller
 {
     public function index(){
-        return view('TABEL.plutimbangan');
+        return view('TABEL.plu-timbangan');
     }
 
     public function StartNew(){
@@ -1177,14 +1177,15 @@ $p_val
 $p_order");
 
         //-------------------------PRINT-----------------------------
-        $pdf = PDF::loadview('TABEL.plutimbangan-pdf', ['datas' => $datas, 'today' => $today, 'time' => $time]);
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $pdf = PDF::loadview('TABEL.plu-timbangan-pdf', ['data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 17, "Hal {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('TABEL.plutimbangan-pdf');
+        return $pdf->stream('Plu-Timbangan.pdf');
     }
 
     public function LovKode(Request $request){

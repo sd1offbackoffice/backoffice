@@ -512,7 +512,7 @@
                 let result = checkKodeGabunganExist(crop);
                 if(result){
                     $.ajax({
-                        url: '{{ url()->current() }}/getdetail',
+                        url: '{{ url()->current() }}/get-detail',
                         type: 'GET',
                         data: {
                             kode:crop
@@ -779,7 +779,7 @@
                 crop = crop.padStart(7,'0');
             }
             $.ajax({
-                url: '{{ url()->current() }}/checkplu',
+                url: '{{ url()->current() }}/check-plu',
                 type: 'GET',
                 data: {
                     kode:crop
@@ -819,7 +819,7 @@
             $('#gab').prop("hidden",true);
             $('.checktype').prop('checked',false);
             $.ajax({
-                url: '{{ url()->current() }}/getnew',
+                url: '{{ url()->current() }}/get-new',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -949,7 +949,7 @@
         function GabunganModal(){
             tableGabungan =  $('#tableGabungan').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalgabungan' }}',
+                    'url' : '{{ url()->current().'/modal-gabungan' }}',
                 },
                 "columns": [
                     {data: 'ish_namapromosi', name: 'ish_namapromosi'},
@@ -976,7 +976,7 @@
         function HadiahModal(){
             tableHadiah =  $('#tableHadiah').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalhadiah' }}',
+                    'url' : '{{ url()->current().'/modal-hadiah' }}',
                 },
                 "columns": [
                     {data: 'bprp_ketpanjang', name: 'bprp_ketpanjang'},
@@ -1003,7 +1003,7 @@
         function PluModal(value){
             tablePlu =  $('#tablePlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalplu' }}',
+                    'url' : '{{ url()->current().'/modal-plu' }}',
                     "data" : {
                         'value' : value
                     },
@@ -1046,7 +1046,7 @@
         function SuppModal(){
             tablePlu =  $('#tableSupp').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalsupp' }}',
+                    'url' : '{{ url()->current().'/modal-supplier' }}',
                 },
                 "columns": [
                     {data: 'sup_namasupplier', name: 'sup_namasupplier'},
@@ -1073,7 +1073,7 @@
         function MerkModal(value){
             tableMerk =  $('#tableMerk').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/choosemerk' }}',
+                    'url' : '{{ url()->current().'/choose-merk' }}',
                     "data" : {
                         'value' : value
                     },
@@ -1104,7 +1104,7 @@
         function SupplierModal(value){
             tableSupplier =  $('#tableSupplier').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/choosesupplier' }}',
+                    'url' : '{{ url()->current().'/choose-supplier' }}',
                     "data" : {
                         'value' : value
                     },

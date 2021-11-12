@@ -302,7 +302,7 @@
         function pluModal(value) {
             modalPlu = $('#pluTable').DataTable({
                 "ajax": {
-                    'url': '{{ url()->current() }}/plumodal',
+                    'url': '{{ url()->current() }}/plu-modal',
                     "data": {
                         'value': value
                     },
@@ -341,7 +341,7 @@
             function kodeModal(value){
                 modalKode =  $('#kodeTable').DataTable({
                     "ajax": {
-                        'url' : '{{ url()->current() }}/kodemodal',
+                        'url' : '{{ url()->current() }}/kode-modal',
                         "data" : {
                             'value' : value
                         },
@@ -451,7 +451,7 @@
 
         function getPLUDetail(plu){
             $.ajax({
-                url: '{{ url()->current() }}/getplu',
+                url: '{{ url()->current() }}/get-plu',
                 type: 'GET',
                 data: {
                     plu: plu
@@ -511,7 +511,7 @@
 
         function getKode(kode){
             $.ajax({
-                url: '{{ url()->current() }}/getkode',
+                url: '{{ url()->current() }}/get-kode',
                 type: 'GET',
                 data: {
                     kode: kode
@@ -615,7 +615,7 @@
             let cancel = true;
 
             $.ajax({ // mapping drive S dahulu
-                url: '{{ url()->current() }}/checkS',
+                url: '{{ url()->current() }}/check-share-directory',
                 type: 'GET',
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -642,7 +642,7 @@
 
             if(jenis_tmb != 3){
                 $.ajax({
-                    url: '{{ url()->current() }}/checkdir',
+                    url: '{{ url()->current() }}/check-directory',
                     type: 'GET',
                     data: {
                         path: "/LREMOTE/HAPUS.txt"
@@ -682,7 +682,7 @@
                 });
             }else{
                 $.ajax({
-                    url: '{{ url()->current() }}/checkdir',
+                    url: '{{ url()->current() }}/check-directory',
                     type: 'GET',
                     data: {
                         path: "/LREMOTE/ISHIDA/HAPUS.txt"
@@ -806,7 +806,7 @@
             let cancel = true;
 
             $.ajax({ // mapping drive S dahulu
-                url: '{{ url()->current() }}/checkS',
+                url: '{{ url()->current() }}/check-share-directory',
                 type: 'GET',
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -832,7 +832,7 @@
             });
             if(jenis_tmb != 3){
                 $.ajax({
-                    url: '{{ url()->current() }}/checkdir',
+                    url: '{{ url()->current() }}/check-directory',
                     type: 'GET',
                     data: {
                         path: dir1
@@ -872,7 +872,7 @@
                 });
             }else{
                 $.ajax({
-                    url: '{{ url()->current() }}/checkdir',
+                    url: '{{ url()->current() }}/check-directory',
                     type: 'GET',
                     data: {
                         path: dir2
@@ -895,7 +895,7 @@
                                     choice2 = true;
 
                                     $.ajax({
-                                        url: '{{ url()->current() }}/checkdir',
+                                        url: '{{ url()->current() }}/check-directory',
                                         type: 'GET',
                                         data: {
                                             path: dir3
@@ -953,7 +953,7 @@
                 });
                 if(choice2){
                     $.ajax({
-                        url: '{{ url()->current() }}/checkdir',
+                        url: '{{ url()->current() }}/check-directory',
                         type: 'GET',
                         data: {
                             path: dir3

@@ -137,7 +137,7 @@
             }
             w.value = crop;
             $.ajax({
-                url: '{{ url()->current() }}/checkplu',
+                url: '{{ url()->current() }}/check-plu',
                 type: 'GET',
                 data: {
                     kode:crop

@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\DataTables;
 
-class informasiHistoryProductController extends Controller
+class InformasiHistoryProductController extends Controller
 {
     public function index()
     {
 
-        return view('MASTER.informasiHistoryProduct');
+        return view('MASTER.informasi-history-product');
     }
 
-    public function lov_search(Request $request)
+    public function lovSearch(Request $request)
     {
         $search = $request->value;
 
@@ -35,7 +35,7 @@ class informasiHistoryProductController extends Controller
         return Datatables::of($data)->make(true);
     }
 
-    public function lov_select(Request $request)
+    public function lovSelect(Request $request)
     {
         $message = array();
         $lCek = 1;
@@ -197,7 +197,7 @@ class informasiHistoryProductController extends Controller
             $plu_omi = 'Y';
             $tag_omi = $pro->prc_kodetag;
         }
-        $ITEM='';
+        $ITEM = '';
         if ($produk->idm == "Y" && $produk->omi == "N") {
             $ITEM = "ITEM IDM";
             if (in_array($tag_idm, ['A', 'R', 'N', 'O', 'H', 'X'])) {
@@ -474,6 +474,7 @@ class informasiHistoryProductController extends Controller
             $sj[$i]->sj_bkl = $sj[$i]->prd_flagbarangordertoko;
         }
 
+        //trendsales
         $trendsales = DB::connection($_SESSION['connection'])->table('TBTR_SALESBULANAN')
             ->select('*')
             ->where('sls_prdcd', '=', $request->value)
@@ -733,164 +734,7 @@ class informasiHistoryProductController extends Controller
             $pkmt->minory = round($minory);
         }
 //        DETAIL SALES
-        $ds01 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
-            ->selectRaw('nvl(rsl_qty_01, 0) qty_igr1, nvl(rsl_qty_02, 0) qty_igr2, nvl(rsl_qty_03, 0) qty_igr3 ,nvl(rsl_qty_04, 0) qty_igr4, nvl(rsl_qty_05, 0) qty_igr5, nvl(rsl_qty_06, 0) qty_igr6, nvl(rsl_qty_07, 0) qty_igr7, nvl(rsl_qty_08, 0) qty_igr8,nvl(rsl_qty_09, 0) qty_igr9,nvl(rsl_qty_10, 0) qty_igr10,nvl(rsl_qty_11, 0) qty_igr11,nvl(rsl_qty_12, 0) qty_igr12, nvl(rsl_rph_01, 0) rph_igr1, nvl(rsl_rph_02, 0) rph_igr2, nvl(rsl_rph_03, 0) rph_igr3, nvl(rsl_rph_04, 0) rph_igr4, nvl(rsl_rph_05, 0) rph_igr5, nvl(rsl_rph_06, 0) rph_igr6, nvl(rsl_rph_07, 0) rph_igr7, nvl(rsl_rph_08, 0) rph_igr8, nvl(rsl_rph_09, 0) rph_igr9, nvl(rsl_rph_10, 0) rph_igr10, nvl(rsl_rph_11, 0) rph_igr11, nvl(rsl_rph_12, 0) rph_igr12')
-            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('rsl_group', '=', '01')
-            ->first();
 
-        $ds02 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
-            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09 , 0)qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10 , 0)rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
-            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('rsl_group', '=', '02')
-            ->first();
-
-        $ds03 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
-            ->selectRaw('nvl(rsl_qty_01, 0) qty_mrh1, nvl(rsl_qty_02, 0) qty_mrh2, nvl(rsl_qty_03, 0) qty_mrh3 ,nvl(rsl_qty_04, 0) qty_mrh4, nvl(rsl_qty_05, 0) qty_mrh5, nvl(rsl_qty_06, 0) qty_mrh6,nvl(rsl_qty_07, 0) qty_mrh7, nvl(rsl_qty_08, 0) qty_mrh8,nvl(rsl_qty_09, 0) qty_mrh9,nvl(rsl_qty_10, 0) qty_mrh10,nvl(rsl_qty_11, 0) qty_mrh11,nvl(rsl_qty_12, 0) qty_mrh12,nvl(rsl_rph_01, 0) rph_mrh1, nvl(rsl_rph_02, 0) rph_mrh2, nvl(rsl_rph_03, 0) rph_mrh3, nvl(rsl_rph_04, 0) rph_mrh4, nvl(rsl_rph_05, 0) rph_mrh5, nvl(rsl_rph_06, 0) rph_mrh6,nvl(rsl_rph_07, 0) rph_mrh7, nvl(rsl_rph_08, 0) rph_mrh8, nvl(rsl_rph_09 , 0)rph_mrh9, nvl(rsl_rph_10, 0) rph_mrh10, nvl(rsl_rph_11, 0) rph_mrh11, nvl(rsl_rph_12, 0) rph_mrh12')
-            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('rsl_group', '=', '03')
-            ->first();
-
-        $ds04 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
-            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09, 0) qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10, 0) rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
-            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('rsl_group', '=', '04')
-            ->first();
-
-        $ds01 = (array)$ds01;
-        $ds02 = (array)$ds02;
-        $ds03 = (array)$ds03;
-        $ds04 = (array)$ds04;
-        $avgigr = 0;
-        $avgomi = 0;
-        $avgmrh = 0;
-        $avgidm = 0;
-        if (sizeof($ds01) > 0) {
-
-            $N = 0;
-            $X = 0;
-            $X1 = 0;
-            if ($FMPBLNA - 1 < 1) {
-                $N = 12;
-                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            } else {
-                $N = $FMPBLNA - 1;
-                $avgigr = $avgigr + (int)$ds01['qty_igr' . $N];
-            }
-
-            if ($N - 1 < 1) {
-                $X = 12;
-                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            } else {
-                $X = $N - 1;
-                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X];
-            }
-
-            if ($X - 1 < 1) {
-                $X1 = 12;
-                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
-            } else {
-                $X1 = $X - 1;
-                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X1];
-            }
-        }
-        if (sizeof($ds02) > 0) {
-            $N = 0;
-            $X = 0;
-            $X1 = 0;
-            if ($FMPBLNA - 1 < 1) {
-                $N = 12;
-                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            } else {
-                $N = $FMPBLNA - 1;
-                $avgomi = $avgomi + (int)$ds02['qty_omi' . $N];
-            }
-
-            if ($N - 1 < 1) {
-                $X = 12;
-                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            } else {
-                $X = $N - 1;
-                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X];
-            }
-
-            if ($X - 1 < 1) {
-                $X1 = 12;
-                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
-            } else {
-                $X1 = $X - 1;
-                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X1];
-            }
-        }
-        if (sizeof($ds03) > 0) {
-            $N = 0;
-            $X = 0;
-            $X1 = 0;
-            if ($FMPBLNA - 1 < 1) {
-                $N = 12;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            } else {
-                $N = $FMPBLNA - 1;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $N];
-            }
-
-            if ($N - 1 < 1) {
-                $X = 12;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            } else {
-                $X = $N - 1;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X];
-            }
-
-            if ($X - 1 < 1) {
-                $X1 = 12;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
-            } else {
-                $X1 = $X - 1;
-                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X1];
-            }
-        }
-        if (sizeof($ds04) > 0) {
-            $N = 0;
-            $X = 0;
-            $X1 = 0;
-            if ($FMPBLNA - 1 < 1) {
-                $N = 12;
-                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
-            } else {
-                $N = $FMPBLNA - 1;
-                $avgidm = $avgidm + (int)$ds04['qty_omi' . $N];
-            }
-
-            if ($N - 1 < 1) {
-                $X = 12;
-                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
-            } else {
-                $X = $N - 1;
-                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X];
-            }
-
-            if ($X - 1 < 1) {
-                $X1 = 12;
-                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
-            } else {
-                $X1 = $X - 1;
-                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X1];
-            }
-        }
-        $avgigr = round(self::ceknull(round($avgigr), 0) / 3);
-        $avgomi = round(self::ceknull(round($avgomi), 0) / 3);
-        $avgmrh = round(self::ceknull(round($avgmrh), 0) / 3);
-        $avgidm = round(self::ceknull(round($avgidm), 0) / 3);
-        $detailsales = [];
-        $detailsales['igr'] = $ds01;
-        $detailsales['omi'] = $ds02;
-        $detailsales['mrh'] = $ds03;
-        $detailsales['idm'] = $ds04;
-        $detailsales['avgigr'] = $avgigr;
-        $detailsales['avgomi'] = $avgomi;
-        $detailsales['avgmrh'] = $avgmrh;
-        $detailsales['avgidm'] = $avgidm;
 
         /*PENERIMAAN*/
         $supplier = DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
@@ -1608,7 +1452,7 @@ class informasiHistoryProductController extends Controller
 //            $showpromosi = false;
 //        }
 
-        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'detailsales', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'showpromo', 'message']);
+        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'showpromo', 'message']);
     }
 
     public function ceknull($value, $ret)
@@ -1619,7 +1463,7 @@ class informasiHistoryProductController extends Controller
         return $value;
     }
 
-    public function cetak_so(Request $request)
+    public function cetakSo(Request $request)
     {
         $so = $request->cetakso['so'];
         $adjustso = $request->cetakso['adjustso'];
@@ -1827,4 +1671,175 @@ class informasiHistoryProductController extends Controller
         }
 
     }
+
+    public function getDetailSales(Request $request)
+
+    {
+        $blnberjalan = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+            ->select('PRS_BULANBERJALAN')
+            ->first();
+
+        $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
+
+        $ds01 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_igr1, nvl(rsl_qty_02, 0) qty_igr2, nvl(rsl_qty_03, 0) qty_igr3 ,nvl(rsl_qty_04, 0) qty_igr4, nvl(rsl_qty_05, 0) qty_igr5, nvl(rsl_qty_06, 0) qty_igr6, nvl(rsl_qty_07, 0) qty_igr7, nvl(rsl_qty_08, 0) qty_igr8,nvl(rsl_qty_09, 0) qty_igr9,nvl(rsl_qty_10, 0) qty_igr10,nvl(rsl_qty_11, 0) qty_igr11,nvl(rsl_qty_12, 0) qty_igr12, nvl(rsl_rph_01, 0) rph_igr1, nvl(rsl_rph_02, 0) rph_igr2, nvl(rsl_rph_03, 0) rph_igr3, nvl(rsl_rph_04, 0) rph_igr4, nvl(rsl_rph_05, 0) rph_igr5, nvl(rsl_rph_06, 0) rph_igr6, nvl(rsl_rph_07, 0) rph_igr7, nvl(rsl_rph_08, 0) rph_igr8, nvl(rsl_rph_09, 0) rph_igr9, nvl(rsl_rph_10, 0) rph_igr10, nvl(rsl_rph_11, 0) rph_igr11, nvl(rsl_rph_12, 0) rph_igr12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('rsl_group', '=', '01')
+            ->first();
+
+        $ds02 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09 , 0)qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10 , 0)rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('rsl_group', '=', '02')
+            ->first();
+
+        $ds03 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_mrh1, nvl(rsl_qty_02, 0) qty_mrh2, nvl(rsl_qty_03, 0) qty_mrh3 ,nvl(rsl_qty_04, 0) qty_mrh4, nvl(rsl_qty_05, 0) qty_mrh5, nvl(rsl_qty_06, 0) qty_mrh6,nvl(rsl_qty_07, 0) qty_mrh7, nvl(rsl_qty_08, 0) qty_mrh8,nvl(rsl_qty_09, 0) qty_mrh9,nvl(rsl_qty_10, 0) qty_mrh10,nvl(rsl_qty_11, 0) qty_mrh11,nvl(rsl_qty_12, 0) qty_mrh12,nvl(rsl_rph_01, 0) rph_mrh1, nvl(rsl_rph_02, 0) rph_mrh2, nvl(rsl_rph_03, 0) rph_mrh3, nvl(rsl_rph_04, 0) rph_mrh4, nvl(rsl_rph_05, 0) rph_mrh5, nvl(rsl_rph_06, 0) rph_mrh6,nvl(rsl_rph_07, 0) rph_mrh7, nvl(rsl_rph_08, 0) rph_mrh8, nvl(rsl_rph_09 , 0)rph_mrh9, nvl(rsl_rph_10, 0) rph_mrh10, nvl(rsl_rph_11, 0) rph_mrh11, nvl(rsl_rph_12, 0) rph_mrh12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('rsl_group', '=', '03')
+            ->first();
+
+        $ds04 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+            ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09, 0) qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10, 0) rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
+            ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('rsl_group', '=', '04')
+            ->first();
+
+        $ds01 = (array)$ds01;
+        $ds02 = (array)$ds02;
+        $ds03 = (array)$ds03;
+        $ds04 = (array)$ds04;
+        $avgigr = 0;
+        $avgomi = 0;
+        $avgmrh = 0;
+        $avgidm = 0;
+        if (sizeof($ds01) > 0) {
+
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $X = $N - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgigr = $avgigr + (int)$ds01['qty_igr12'];
+            } else {
+                $X1 = $X - 1;
+                $avgigr = $avgigr + (int)$ds01['qty_igr' . $X1];
+            }
+        }
+        if (sizeof($ds02) > 0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $X = $N - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgomi = $avgomi + (int)$ds02['qty_omi12'];
+            } else {
+                $X1 = $X - 1;
+                $avgomi = $avgomi + (int)$ds02['qty_omi' . $X1];
+            }
+        }
+        if (sizeof($ds03) > 0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $X = $N - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh12'];
+            } else {
+                $X1 = $X - 1;
+                $avgmrh = $avgmrh + (int)$ds03['qty_mrh' . $X1];
+            }
+        }
+        if (sizeof($ds04) > 0) {
+            $N = 0;
+            $X = 0;
+            $X1 = 0;
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $N];
+            }
+
+            if ($N - 1 < 1) {
+                $X = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $X = $N - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X];
+            }
+
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $avgidm = $avgidm + (int)$ds04['qty_omi12'];
+            } else {
+                $X1 = $X - 1;
+                $avgidm = $avgidm + (int)$ds04['qty_omi' . $X1];
+            }
+        }
+        $avgigr = round(self::ceknull(round($avgigr), 0) / 3);
+        $avgomi = round(self::ceknull(round($avgomi), 0) / 3);
+        $avgmrh = round(self::ceknull(round($avgmrh), 0) / 3);
+        $avgidm = round(self::ceknull(round($avgidm), 0) / 3);
+        $detailsales = [];
+        $detailsales['igr'] = $ds01;
+        $detailsales['omi'] = $ds02;
+        $detailsales['mrh'] = $ds03;
+        $detailsales['idm'] = $ds04;
+        $detailsales['avgigr'] = $avgigr;
+        $detailsales['avgomi'] = $avgomi;
+        $detailsales['avgmrh'] = $avgmrh;
+        $detailsales['avgidm'] = $avgidm;
+        return compact([ 'detailsales']);
+    }
+
 }

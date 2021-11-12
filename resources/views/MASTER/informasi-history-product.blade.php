@@ -526,7 +526,7 @@
                         <br>
                         <div class="row justify-content-md-center">
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-detailsales" data-toggle="modal"
-                                    data-target="#m-detailsales">Detail Sales
+                                    data-target="#m-detailsales" onclick="getDataDetailSales()">Detail Sales
                             </button>
                             <button class="btn btn-primary m-1" id="btn-penerimaan" data-toggle="modal"
                                     data-target="#m-penerimaan">Penerimaan
@@ -1236,8 +1236,8 @@
             $('#item').hide();
             $('#input').focus();
             $('#btn-hb-prev').prop('disabled', true);
-            // $('.page2').hide();
-            $('.page2').show();
+            $('.page2').hide();
+            // $('.page2').show();
             getModalDataPLU('');
 
             var e = $.Event("keypress");
@@ -1248,7 +1248,7 @@
         function getModalDataPLU(value) {
             let tableModal = $('#tableModalPLU').DataTable({
                 "ajax": {
-                    'url': '{{ url()->current() }}/lov_search',
+                    'url': '{{ url()->current() }}/lov-search',
                     "data": {
                         'value': value
                     },
@@ -1309,23 +1309,18 @@
             }
         });
 
-        function getDataRekapTrendSales() {
+        function getDataDetailSales() {
             ajaxSetup();
             $.ajax({
-                url: '{{ url()->current() }}/get-data-rekap-trend-sales',
-                type: 'post',
+                url: '{{ url()->current() }}/get-data-detail-sales',
+                type: 'get',
                 data: {
-                    doc: $('#dokumen').val(),
-                    lap: $('#laporan').val(),
-                    reprint: $('#reprint:checked').val(),
-                    tgl1: $('#tgl1').val(),
-                    tgl2: $('#tgl2').val(),
-                    data: checked,
+                    value: $('#plu').val()
                 },
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
-                success: function (result) {
+                success: function (response) {
                     $('#modal-loader').modal('hide');
                     for (i = 0; i < 12; i++) {
                         c = i + 1;
@@ -1380,7 +1375,7 @@
             $('.page2').show();
             ajaxSetup();
             $.ajax({
-                    url: '{{ url()->current() }}/lov_select',
+                    url: '{{ url()->current() }}/lov-select',
                     type: 'POST',
                     data: {"_token": "{{ csrf_token() }}", value: value},
                     beforeSend: function () {
@@ -1966,7 +1961,7 @@
                     $('#modal-loader').modal('hide');
                 }
             };
-            xhttp.open("POST", "{{ url()->current() }}/cetak_so");
+            xhttp.open("POST", "{{ url()->current() }}/cetak-so");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
             xhttp.responseType = 'blob';
@@ -2034,7 +2029,7 @@
                 if (event.which == 34) { // Page Down
                     ajaxSetup();
                     $.ajax({
-                        url: '{{ url()->current() }}/getNextPLU',
+                        url: '{{ url()->current() }}/get-next-plu',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {
@@ -2048,7 +2043,7 @@
                 } else if (event.which == 33) { // Page Up
                     ajaxSetup();
                     $.ajax({
-                        url: '{{ url()->current() }}/getPrevPLU',
+                        url: '{{ url()->current() }}/get-prev-plu',
                         type: 'GET',
                         data: {plu: plu},
                         beforeSend: function () {

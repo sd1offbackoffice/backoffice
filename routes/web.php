@@ -450,15 +450,16 @@ Route::middleware(['CheckLogin'])->group(function () {
 
     Route::prefix('/bo')->group(function () {
         /*Denni*/
-        Route::prefix('/informasihistoryproduct')->group(function () {
-            Route::get('/', 'BACKOFFICE\informasiHistoryProductController@index');
-            Route::get('/lov_search', 'BACKOFFICE\informasiHistoryProductController@lov_search');
-            Route::get('/getNextPLU', 'BACKOFFICE\informasiHistoryProductController@getNextPLU');
-            Route::get('/getPrevPLU', 'BACKOFFICE\informasiHistoryProductController@getPrevPLU');
-            Route::post('/lov_search', 'BACKOFFICE\informasiHistoryProductController@lov_search');
-            Route::post('/lov_select', 'BACKOFFICE\informasiHistoryProductController@lov_select');
-            Route::post('/cetak_so', 'BACKOFFICE\informasiHistoryProductController@cetak_so');
-            Route::post('/cetak', 'BACKOFFICE\informasiHistoryProductController@cetak');
+        Route::prefix('/informasi-history-product')->group(function () {
+            Route::get('/', 'BACKOFFICE\InformasiHistoryProductController@index');
+            Route::get('/lov-search', 'BACKOFFICE\InformasiHistoryProductController@lovSearch');
+            Route::get('/get-next-plu', 'BACKOFFICE\InformasiHistoryProductController@getNextPLU');
+            Route::get('/get-prev-plu', 'BACKOFFICE\InformasiHistoryProductController@getPrevPLU');
+            Route::post('/lov-search', 'BACKOFFICE\InformasiHistoryProductController@lovSearch');
+            Route::post('/lov-select', 'BACKOFFICE\InformasiHistoryProductController@lovSelect');
+            Route::post('/cetak-so', 'BACKOFFICE\InformasiHistoryProductController@cetakSo');
+            Route::post('/cetak', 'BACKOFFICE\InformasiHistoryProductController@cetak');
+            Route::get('/get-data-detail-sales', 'BACKOFFICE\InformasiHistoryProductController@getDetailSales');
         });
 
         /*Leo*/
@@ -808,20 +809,20 @@ Route::middleware(['CheckLogin'])->group(function () {
             });
 
             /*Ryan*/
-            Route::prefix('/perubahanstatus')->group(function () {
-                Route::prefix('/entrySortirBarang')->group(function () {
+            Route::prefix('/perubahan-status')->group(function () {
+                Route::prefix('/entry-sortir-barang')->group(function () {
                     //BACKOFFICE-TRANSAKSI-PERUBAHAN STATUS-ENTRY SORTIR BARANG (ryanOrder = 1)
-                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@index');
-                    Route::post('/getnewnmrsrt', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getNewNmrSrt');
-                    Route::post('/getnmrsrt', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getNmrSrt');
-                    Route::post('/choosesrt', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@chooseSrt');
-                    Route::post('/getplu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@getPlu');
-                    Route::post('/chooseplu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@choosePlu');
-                    Route::post('/savedata', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@saveData');
-                    Route::get('/printdoc/{doc}', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@printDocument');
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@index');
+                    Route::post('/get-new-nomor-sortir', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@getNewNmrSrt');
+                    Route::post('/get-nomor-sortir', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@getNmrSrt');
+                    Route::post('/choose-sortir', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@chooseSrt');
+//                    Route::post('/getplu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@getPlu');
+                    Route::post('/choose-plu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@choosePlu');
+                    Route::post('/save-data', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@saveData');
+                    Route::get('/print-document/{doc}', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@printDocument');
 
-                    Route::get('/modalsrt', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@ModalSrt');
-                    Route::get('/modalplu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\entrySortirBarangController@ModalPlu');
+                    Route::get('/modal-sortir', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@ModalSrt');
+                    Route::get('/modal-plu', 'BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS\EntrySortirBarangController@ModalPlu');
                 });
 
                 Route::prefix('/rubahStatus')->group(function () {
@@ -878,6 +879,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-divisi', 'BACKOFFICE\ListMasterController@getLovDivisi');
             Route::get('/get-lov-departemen', 'BACKOFFICE\ListMasterController@getLovDepartemen');
             Route::get('/get-lov-kategori', 'BACKOFFICE\ListMasterController@getLovKategori');
+            Route::get('/get-lov-supplier', 'BACKOFFICE\ListMasterController@getLovSupplier');
+            Route::get('/get-lov-member', 'BACKOFFICE\ListMasterController@getLovMember');
+            Route::get('/check-member', 'BACKOFFICE\ListMasterController@checkMember');
+            Route::get('/get-lov-outlet', 'BACKOFFICE\ListMasterController@getLovOutlet');
+            Route::get('/get-lov-sub-outlet', 'BACKOFFICE\ListMasterController@getLovSubOutlet');
         });
 
         Route::prefix('/proses')->group(function () {
@@ -1203,31 +1209,32 @@ Route::middleware(['CheckLogin'])->group(function () {
     Route::prefix('/tabel')->group(function () {
 
         /*Ryan*/
-        Route::prefix('/hrgpromo')->group(function () {
+        Route::prefix('/harga-promosi')->group(function () {
             //Harga Promosi (IGR_TAB_HRGPROMO) (ryanOrder = 33)
-            Route::get('/', 'TABEL\hrgpromoController@index');
-            Route::get('/tabelmain', 'TABEL\hrgpromoController@ModalMain');
-            Route::get('/modalplu', 'TABEL\hrgpromoController@ModalPlu');
-            Route::get('/checkplu', 'TABEL\hrgpromoController@CheckPlu');
-            Route::get('/print', 'TABEL\hrgpromoController@print');
+            Route::get('/', 'TABEL\HargaPromosiController@index');
+            Route::get('/tabel-main', 'TABEL\HargaPromosiController@ModalMain');
+            Route::get('/modal-plu', 'TABEL\HargaPromosiController@ModalPlu');
+            Route::get('/check-plu', 'TABEL\HargaPromosiController@CheckPlu');
+            Route::get('/print', 'TABEL\HargaPromosiController@print');
         });
         /*Ryan*/
-        Route::prefix('/superpromo')->group(function () {
+        //Standarized Path (RYAN)
+        Route::prefix('/super-promo')->group(function () {
             //SUPER Promosi (IGR_TAB_SUPERPROMO) (ryanOrder = 34)
-            Route::get('/', 'TABEL\superpromoController@index');
-            Route::get('/checkplu', 'TABEL\superpromoController@CheckPlu');
-            Route::post('/save', 'TABEL\superpromoController@save');
+            Route::get('/', 'TABEL\SuperPromoController@index');
+            Route::get('/check-plu', 'TABEL\SuperPromoController@CheckPlu');
+            Route::post('/save', 'TABEL\SuperPromoController@save');
         });
         /*Ryan*/
-        Route::prefix('/byrvch')->group(function () {
+        Route::prefix('/total-pembayaran-voucher')->group(function () {
             //Total Pembayaran Voucher (IGR_TAB_BYRVCH) (ryanOrder = 35)
-            Route::get('/', 'TABEL\byrvchController@index');
-            Route::get('/getsupp', 'TABEL\byrvchController@GetSupp');
-            Route::get('/getsingkatan', 'TABEL\byrvchController@GetSingkatan');
-            Route::get('/checkvoucher', 'TABEL\byrvchController@CheckVoucher');
-            Route::get('/checkdbtable', 'TABEL\byrvchController@CheckDBTable');
-            Route::post('/save', 'TABEL\byrvchController@Save');
-            Route::post('/hapus', 'TABEL\byrvchController@Delete');
+            Route::get('/', 'TABEL\TotalPembayaranVoucherController@index');
+            Route::get('/get-supplier', 'TABEL\TotalPembayaranVoucherController@GetSupp');
+            Route::get('/get-singkatan', 'TABEL\TotalPembayaranVoucherController@GetSingkatan');
+            Route::get('/check-voucher', 'TABEL\TotalPembayaranVoucherController@CheckVoucher');
+            Route::get('/check-db-table', 'TABEL\TotalPembayaranVoucherController@CheckDBTable');
+            Route::post('/save', 'TABEL\TotalPembayaranVoucherController@Save');
+            Route::post('/hapus', 'TABEL\TotalPembayaranVoucherController@Delete');
         });
         /*Ryan*/
         Route::prefix('/tipe-rak-barang')->group(function () {
@@ -1239,48 +1246,50 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
 
         /*Ryan*/
-        Route::prefix('/hadiahtransaksi')->group(function () {
-            Route::prefix('/hdhitem')->group(function () {
+        //Standarized Path (RYAN)
+        Route::prefix('/hadiah-transaksi')->group(function () {
+            Route::prefix('/hadiah-per-item-barang')->group(function () {
                 //hadiah per item (IGR_TAB_HDHITEM) (ryanOrder = 31)
-                Route::get('/', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@index');
-                Route::get('/modalplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalPlu');
-                Route::get('/modalhadiah', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalHadiah');
-                Route::get('/modalhistory', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@ModalHistory');
-                Route::get('/gethistory', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@GetHistory');
-                Route::get('/checkplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@CheckPlu');
-                Route::post('/save', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhitemController@SaveData');
+                Route::get('/', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@index');
+                Route::get('/modal-plu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@ModalPlu');
+                Route::get('/modal-hadiah', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@ModalHadiah');
+                Route::get('/modal-history', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@ModalHistory');
+                Route::get('/get-history', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@GetHistory');
+                Route::get('/check-plu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@CheckPlu');
+                Route::post('/save', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahPerItemBarangController@SaveData');
             });
 
-            Route::prefix('/hdhgab')->group(function () {
+            Route::prefix('/hadiah-untuk-gabungan-item')->group(function () {
                 //hadiah untuk gabungan item (IGR_TAB_HDHGAB) (ryanOrder = 32)
-                Route::get('/', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@index');
-                Route::get('/modalgabungan', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ModalGabungan');
-                Route::get('/modalhadiah', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ModalHadiah');
-                Route::get('/getdetail', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@GetDetail');
-                Route::post('/getnew', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@GetNew');
-                Route::get('/modalplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ModalPlu');
-                Route::get('/modalsupp', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ModalSupp');
-                Route::get('/checkplu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@CheckPlu');
-                Route::get('/choosemerk', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ChooseMerk');
-                Route::get('/choosesupplier', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@ChooseSupplier');
-                Route::post('/save', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\hdhgabController@SaveData');
+                Route::get('/', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@index');
+                Route::get('/modal-gabungan', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ModalGabungan');
+                Route::get('/modal-hadiah', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ModalHadiah');
+                Route::get('/get-detail', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@GetDetail');
+                Route::post('/get-new', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@GetNew');
+                Route::get('/modal-plu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ModalPlu');
+                Route::get('/modal-supplier', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ModalSupp');
+                Route::get('/check-plu', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@CheckPlu');
+                Route::get('/choose-merk', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ChooseMerk');
+                Route::get('/choose-supplier', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@ChooseSupplier');
+                Route::post('/save', 'TABEL\SETTINGHADIAHPADATRANSAKSIKASIR\HadiahUntukGabunganItemController@SaveData');
             });
         });
 
         /*Ryan*/
-        //TABLE - Table Plu Timbangan (IGR_TAB_PLU_TMBNGN) (ryanOrder = 19)
-        Route::prefix('/plutimbangan')->group(function () {
+        //Standarized Path (RYAN)
+        Route::prefix('/plu-timbangan')->group(function () {
+            //TABLE - Table Plu Timbangan (IGR_TAB_PLU_TMBNGN) (ryanOrder = 19)
             Route::get('/', 'TABEL\PluTimbanganController@index');
             Route::get('/start', 'TABEL\PluTimbanganController@StartNew');
-            Route::get('/plumodal', 'TABEL\PluTimbanganController@LovPlu');
-            Route::get('/getplu', 'TABEL\PluTimbanganController@GetPlu');
+            Route::get('/plu-modal', 'TABEL\PluTimbanganController@LovPlu');
+            Route::get('/get-plu', 'TABEL\PluTimbanganController@GetPlu');
             Route::get('/save', 'TABEL\PluTimbanganController@Save');
             //Route::get('/prehapus','TABEL\PluTimbanganController@preHapus');
             Route::get('/hapus', 'TABEL\PluTimbanganController@Hapus');
-            Route::get('/kodemodal', 'TABEL\PluTimbanganController@LovKode');
-            Route::get('/getkode', 'TABEL\PluTimbanganController@GetKode');
-            Route::get('/checkS', 'TABEL\PluTimbanganController@ShareDir');
-            Route::get('/checkdir', 'TABEL\PluTimbanganController@CheckDir');
+            Route::get('/kode-modal', 'TABEL\PluTimbanganController@LovKode');
+            Route::get('/get-kode', 'TABEL\PluTimbanganController@GetKode');
+            Route::get('/check-share-directory', 'TABEL\PluTimbanganController@ShareDir');
+            Route::get('/check-directory', 'TABEL\PluTimbanganController@CheckDir');
             Route::get('/transfer', 'TABEL\PluTimbanganController@Transfer');
             Route::get('/print', 'TABEL\PluTimbanganController@Print');
             Route::get('/debug', 'TABEL\PluTimbanganController@Debug');

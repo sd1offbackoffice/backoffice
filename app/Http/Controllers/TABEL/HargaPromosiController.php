@@ -16,12 +16,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class hrgpromoController extends Controller
+class HargaPromosiController extends Controller
 {
 
     public function index()
     {
-        return view('TABEL.hrgpromo');
+        return view('TABEL.harga-promosi');
     }
 
     public function ModalMain(){
@@ -129,6 +129,6 @@ class hrgpromoController extends Controller
             ->get();
         //PRINT
         $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
-        return view('TABEL.hrgpromo-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+        return view('TABEL.harga-promosi-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
 }

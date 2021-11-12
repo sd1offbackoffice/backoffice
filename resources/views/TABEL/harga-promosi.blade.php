@@ -180,7 +180,7 @@
                 crop = crop.padStart(7,'0');
             }
             $.ajax({
-                url: '{{ url()->current() }}/checkplu',
+                url: '{{ url()->current() }}/check-plu',
                 type: 'GET',
                 data: {
                     kode:crop
@@ -247,7 +247,7 @@
         function MainTable(){
             tableMain =  $('#tableMain').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/tabelmain' }}',
+                    'url' : '{{ url()->current().'/tabel-main' }}',
                 },
                 "columns": [
                     {data: 'prmd_prdcd', name: 'prmd_prdcd'},
@@ -279,7 +279,7 @@
         function PluModal(value){
             tablePlu =  $('#tablePlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalplu' }}',
+                    'url' : '{{ url()->current().'/modal-plu' }}',
                     "data" : {
                         'value' : value
                     },

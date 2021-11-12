@@ -379,7 +379,7 @@
                 crop = crop.padStart(7,'0');
             }
             $.ajax({
-                url: '{{ url()->current() }}/checkplu',
+                url: '{{ url()->current() }}/check-plu',
                 type: 'GET',
                 data: {
                     prd:crop
@@ -430,6 +430,8 @@
                             $('#ketTrans').val(response.deskripsi);
                             $('#pluTrans').prop('disabled',true);
                             $('#trans').prop('hidden',true);
+
+                            $('.checktype').prop('checked',false);
                         }
                     }
                 },
@@ -586,7 +588,7 @@
         function PluModal(value){
             tablePlu =  $('#tablePlu').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalplu' }}',
+                    'url' : '{{ url()->current().'/modal-plu' }}',
                     "data" : {
                         'value' : value
                     },
@@ -628,7 +630,7 @@
         function HadiahModal(){
             tableHadiah =  $('#tableHadiah').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalhadiah' }}',
+                    'url' : '{{ url()->current().'/modal-hadiah' }}',
                 },
                 "columns": [
                     {data: 'bprp_ketpanjang', name: 'bprp_ketpanjang'},
@@ -655,7 +657,7 @@
         function HistoryModal(){
             tableHistory =  $('#tableHistory').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalhistory' }}',
+                    'url' : '{{ url()->current().'/modal-history' }}',
                 },
                 "columns": [
                     {data: 'berlaku', name: 'berlaku'},
@@ -688,9 +690,8 @@
             let nama = currentButton.children().first().text();
             let kode = currentButton.children().first().next().next().next().next().next().text();
 
-            $('#pluTrans').val(kode);
+            $('#pluTrans').val(kode).change();
             $('#ketTrans').val(nama);
-            $('#pluTrans').change();
 
             $('#m_plu').modal('toggle');
         });
@@ -726,7 +727,7 @@
 
         function RetrieveHistory(prdcd, kode){
             $.ajax({
-                url: '{{ url()->current() }}/gethistory',
+                url: '{{ url()->current() }}/get-history',
                 type: 'GET',
                 data: {
                     prdcd:prdcd,
