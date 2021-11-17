@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    Periode :
+{{--    Periode :--}}
 {{--    {{ date("d/m/Y") }}--}}
 @endsection
 

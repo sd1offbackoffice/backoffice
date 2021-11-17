@@ -1526,7 +1526,7 @@ class CetakPenyesuaianController extends Controller
 //                                                            ->insert($data);
 //                                                    }
 
-                                                    DB::statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_LOKASI
                                                                 (LKS_KODEIGR, LKS_KODERAK,
                                                                  LKS_KODESUBRAK, LKS_TIPERAK,
                                                                  LKS_SHELVINGRAK, LKS_PRDCD,
@@ -1577,7 +1577,7 @@ class CetakPenyesuaianController extends Controller
 //                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
 //                                                    ->insert($data);
 
-                                                DB::statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_LOKASI
                                                             (LKS_KODEIGR, LKS_KODERAK,
                                                              LKS_KODESUBRAK, LKS_TIPERAK,
                                                              LKS_SHELVINGRAK, LKS_PRDCD, LKS_NOURUT,
@@ -1644,7 +1644,7 @@ class CetakPenyesuaianController extends Controller
 //                                                DB::connection($_SESSION['connection'])->table('temp_tbtr_promomd')
 //                                                    ->insert($data);
 
-                                                DB::statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                                DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PROMOMD
                                                         (SELECT PRO.*, '".$r->trbo_nodoc."'
                                                            FROM TBTR_PROMOMD PRO
                                                           WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
@@ -1669,7 +1669,7 @@ class CetakPenyesuaianController extends Controller
 //                                            DB::connection($_SESSION['connection'])->table('temp_tbtr_promomd')
 //                                                ->insert($data);
 
-                                            DB::statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                            DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PROMOMD
                                                     (SELECT PRO.*, '".$r->trbo_nodoc."'
                                                        FROM TBTR_PROMOMD PRO
                                                       WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
@@ -1748,7 +1748,7 @@ class CetakPenyesuaianController extends Controller
 //                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
 //                                                            ->insert($data);
 
-                                                        DB::statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_KKPKM
                                                                         (PKM_KODEIGR,
                                                                          PKM_KODEDIVISI,
                                                                          PKM_KODEDEPARTEMENT,
@@ -1811,7 +1811,7 @@ class CetakPenyesuaianController extends Controller
 //
 //                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
 //                                                        ->insert($data);
-                                                    DB::statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_KKPKM
                                                                     (PKM_KODEIGR, PKM_KODEDIVISI,
                                                                      PKM_KODEDEPARTEMENT,
                                                                      PKM_PERIODEPROSES,
@@ -1882,7 +1882,7 @@ class CetakPenyesuaianController extends Controller
 //
 //                                                        DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
 //                                                            ->insert($data);
-                                                        DB::statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
                                                                 (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                    FROM TBTR_PKMGONDOLA PKM
                                                                   WHERE PKMG_PRDCD = '".$prdcdbaru."'
@@ -1905,7 +1905,7 @@ class CetakPenyesuaianController extends Controller
 //                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
 //                                                        ->insert($data);
 
-                                                    DB::statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
                                                             (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                FROM TBTR_PKMGONDOLA PKM
                                                               WHERE PKMG_PRDCD = '".$prdcdlama."'
@@ -1947,7 +1947,7 @@ class CetakPenyesuaianController extends Controller
 //
 //                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
 //                                                            ->insert($data);
-                                                        DB::statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
                                                                 (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                    FROM TBMASTER_PKMPLUS PKM
                                                                   WHERE PKMP_PRDCD = '".$prdcdbaru."'
@@ -1970,7 +1970,7 @@ class CetakPenyesuaianController extends Controller
 //                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
 //                                                        ->insert($data);
 
-                                                    DB::statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
                                                             (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                FROM TBMASTER_PKMPLUS PKM
                                                               WHERE PKMP_PRDCD = '".$prdcdlama."'
@@ -2012,7 +2012,7 @@ class CetakPenyesuaianController extends Controller
 //                                                        DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
 //                                                            ->insert($data);
 
-                                                        DB::statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_GONDOLA
                                                                 (SELECT GDL.*, '".$r->trbo_nodoc."'
                                                                    FROM TBTR_GONDOLA GDL
                                                                   WHERE GDL_PRDCD = '".$prdcdbaru."'
@@ -2036,7 +2036,7 @@ class CetakPenyesuaianController extends Controller
 //                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
 //                                                        ->insert($data);
 
-                                                    DB::statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_GONDOLA
                                                             (SELECT GDL.*, '".$r->trbo_nodoc."'
                                                                FROM TBTR_GONDOLA GDL
                                                               WHERE GDL_PRDCD = '".$prdcdlama."'
@@ -2079,7 +2079,7 @@ class CetakPenyesuaianController extends Controller
 //                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
 //                                                            ->insert($data);
 
-                                                        DB::statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
                                                                 (SELECT ORD.*, '".$r->trbo_nodoc."'
                                                                    FROM TBMASTER_MINIMUMORDER ORD
                                                                   WHERE MIN_PRDCD = '".$prdcdbaru."'
@@ -2103,7 +2103,7 @@ class CetakPenyesuaianController extends Controller
 //                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
 //                                                        ->insert($data);
 
-                                                    DB::statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
                                                             (SELECT ORD.*, '".$r->trbo_nodoc."'
                                                                FROM TBMASTER_MINIMUMORDER ORD
                                                               WHERE MIN_PRDCD = '".$prdcdlama."'

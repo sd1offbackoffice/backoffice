@@ -32,8 +32,8 @@ class PromosiHoKeCabController extends Controller
        :err_txt,
        :p_sukses
     ); END;");
-        oci_bind_by_name($query, ':err_txt', $err_txt, 32);
-        oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
+        oci_bind_by_name($query, ':err_txt', $err_txt);
+        oci_bind_by_name($query, ':p_sukses', $p_sukses);
         oci_execute($query);
 
 
@@ -55,8 +55,8 @@ class PromosiHoKeCabController extends Controller
        :err_txt,
        :p_sukses
     ); END;");
-        oci_bind_by_name($query, ':err_txt', $err_txt, 32);
-        oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
+        oci_bind_by_name($query, ':err_txt', $err_txt);
+        oci_bind_by_name($query, ':p_sukses', $p_sukses);
         oci_execute($query);
 
         if($p_sukses == "TRUE"){

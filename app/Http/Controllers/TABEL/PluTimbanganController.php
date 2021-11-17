@@ -1173,8 +1173,8 @@ FROM TBMASTER_PERUSAHAAN, TBTABEL_PLUTIMBANGAN,
 WHERE PRS_KODEIGR = '$kodeigr'
   AND PRS_KODEIGR = TMB_KODEIGR
   AND SUBSTR(TMB_PRDCD,1,6)||'1' = PRD_PRDCD
-$p_val
-$p_order");
+".$p_val."
+".$p_order);
 
         //-------------------------PRINT-----------------------------
         $perusahaan = DB::table("tbmaster_perusahaan")->first();

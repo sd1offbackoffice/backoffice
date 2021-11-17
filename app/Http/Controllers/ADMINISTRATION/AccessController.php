@@ -29,6 +29,7 @@ class AccessController extends Controller
             ->orderBy('acc_subgroup1')
             ->orderBy('acc_subgroup2')
             ->orderBy('acc_subgroup3')
+            ->orderBy('acc_order')
             ->orderBy('acc_name')
             ->get();
 
@@ -123,7 +124,6 @@ class AccessController extends Controller
     }
 
     public static function getListMenu($usid){
-
         if($usid == 'ADM'){
             return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
@@ -135,6 +135,7 @@ class AccessController extends Controller
                 ->orderBy('acc_subgroup1')
                 ->orderBy('acc_subgroup2')
                 ->orderBy('acc_subgroup3')
+                ->orderBy('acc_order')
                 ->orderBy('acc_name')
                 ->get();
         }
@@ -145,6 +146,7 @@ class AccessController extends Controller
                 ->orderBy('acc_subgroup1')
                 ->orderBy('acc_subgroup2')
                 ->orderBy('acc_subgroup3')
+                ->orderBy('acc_order')
                 ->orderBy('acc_name')
                 ->get();
         }
@@ -160,21 +162,28 @@ class AccessController extends Controller
                 ->orderBy('acc_subgroup1')
                 ->orderBy('acc_subgroup2')
                 ->orderBy('acc_subgroup3')
+                ->orderBy('acc_order')
                 ->orderBy('acc_name')
                 ->get();
         }
     }
     public static function isAccessible($url){
+        $hasAccess = false;
+
         if($url == '/')
-            return true;
+            $hasAccess = true;
 
         foreach($_SESSION['menu'] as $m){
             if($m->acc_url == substr($url,0,strlen($m->acc_url))){
-                return true;
+                if(strlen($m->acc_url) == strlen($url)){
+                    self::insertMenuLog($m->acc_id);
+                }
+                $hasAccess = true;
+                break;
             }
         }
 
-        return false;
+        return $hasAccess;
 
 //        $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
 //            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
@@ -183,5 +192,33 @@ class AccessController extends Controller
 //            ->first();
 //
 //        return $data ? true : false;
+    }
+
+    public static function insertMenuLog($menu){
+        try{
+            DB::connection($_SESSION['connection'])->beginTransaction();
+
+            $last = DB::connection($_SESSION['connection'])
+                ->table('tblog_oracleform_migrasi')
+                ->orderBy('lom_id','desc')
+                ->first();
+
+            $id = $last ? intval($last->lom_id) + 1 : 1;
+
+            DB::connection($_SESSION['connection'])
+                ->table('tblog_oracleform_migrasi')
+                ->insert([
+                    'lom_id' => $id,
+                    'lom_kodeigr' => $_SESSION['kdigr'],
+                    'lom_userid' => $_SESSION['usid'],
+                    'lom_acc_id' => $menu,
+                    'lom_accessdate' => Carbon::now()
+                ]);
+
+            DB::connection($_SESSION['connection'])->commit();
+        }
+        catch(\Exception $e){
+            DB::connection($_SESSION['connection'])->rollBack();
+        }
     }
 }

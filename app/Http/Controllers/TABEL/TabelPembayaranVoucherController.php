@@ -16,12 +16,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class TotalPembayaranVoucherController extends Controller
+class TabelPembayaranVoucherController extends Controller
 {
 
     public function index()
     {
-        return view('TABEL.total-pembayaran-voucher');
+        return view('TABEL.tabel-pembayaran-voucher');
     }
 
 

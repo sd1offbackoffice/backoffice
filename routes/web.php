@@ -882,6 +882,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-supplier', 'BACKOFFICE\ListMasterController@getLovSupplier');
             Route::get('/get-lov-member', 'BACKOFFICE\ListMasterController@getLovMember');
             Route::get('/check-member', 'BACKOFFICE\ListMasterController@checkMember');
+            Route::get('/get-lov-member-with-date', 'BACKOFFICE\ListMasterController@getLovMemberWithDate');
             Route::get('/get-lov-outlet', 'BACKOFFICE\ListMasterController@getLovOutlet');
             Route::get('/get-lov-sub-outlet', 'BACKOFFICE\ListMasterController@getLovSubOutlet');
         });
@@ -1228,13 +1229,13 @@ Route::middleware(['CheckLogin'])->group(function () {
         /*Ryan*/
         Route::prefix('/total-pembayaran-voucher')->group(function () {
             //Total Pembayaran Voucher (IGR_TAB_BYRVCH) (ryanOrder = 35)
-            Route::get('/', 'TABEL\TotalPembayaranVoucherController@index');
-            Route::get('/get-supplier', 'TABEL\TotalPembayaranVoucherController@GetSupp');
-            Route::get('/get-singkatan', 'TABEL\TotalPembayaranVoucherController@GetSingkatan');
-            Route::get('/check-voucher', 'TABEL\TotalPembayaranVoucherController@CheckVoucher');
-            Route::get('/check-db-table', 'TABEL\TotalPembayaranVoucherController@CheckDBTable');
-            Route::post('/save', 'TABEL\TotalPembayaranVoucherController@Save');
-            Route::post('/hapus', 'TABEL\TotalPembayaranVoucherController@Delete');
+            Route::get('/', 'TABEL\TabelPembayaranVoucherController@index');
+            Route::get('/get-supplier', 'TABEL\TabelPembayaranVoucherController@GetSupp');
+            Route::get('/get-singkatan', 'TABEL\TabelPembayaranVoucherController@GetSingkatan');
+            Route::get('/check-voucher', 'TABEL\TabelPembayaranVoucherController@CheckVoucher');
+            Route::get('/check-db-table', 'TABEL\TabelPembayaranVoucherController@CheckDBTable');
+            Route::post('/save', 'TABEL\TabelPembayaranVoucherController@Save');
+            Route::post('/hapus', 'TABEL\TabelPembayaranVoucherController@Delete');
         });
         /*Ryan*/
         Route::prefix('/tipe-rak-barang')->group(function () {
@@ -1708,6 +1709,12 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/getrak2', 'FRONTOFFICE\spbmanualController@getRak2');
             Route::get('/getrakantrian', 'FRONTOFFICE\spbmanualController@getRakAntrian');
             Route::get('/save', 'FRONTOFFICE\spbmanualController@save');
+        });
+
+        Route::prefix('/faktur-pajak-standard')->group(function(){
+            Route::get('/','FRONTOFFICE\FakturPajakStandardController@index');
+            Route::post('/create-csv','FRONTOFFICE\FakturPajakStandardController@createCSV');
+            Route::get('/get-csv','FRONTOFFICE\FakturPajakStandardController@getCSV');
         });
     });
 

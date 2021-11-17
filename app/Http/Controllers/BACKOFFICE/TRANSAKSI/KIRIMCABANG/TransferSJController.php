@@ -43,7 +43,7 @@ class TransferSJController extends Controller
         }
         $nodoc = substr($nodoc,0,-1).')';
 
-        DB::statement("truncate table temp_sj");
+        DB::connection($_SESSION['connection'])->statement("truncate table temp_sj");
 
         try{
             DB::connection($_SESSION['connection'])->beginTransaction();
@@ -90,7 +90,7 @@ class TransferSJController extends Controller
     public function download(){
         $data = DB::connection($_SESSION['connection'])->select("select * from temp_sj");
 
-        DB::statement("truncate table temp_sj");
+        DB::connection($_SESSION['connection'])->statement("truncate table temp_sj");
 
 //        dd($data);
 

@@ -424,7 +424,11 @@
 
         $('#pluPrime').on('keypress',function(event){
             if(event.which == 13){
-                getPLUDetail($('#pluPrime').val());
+                let val = $('#pluPrime').val();
+                if(val.substr(val.length - 1) != '1'){
+                    val = val.substr(0,6)+'1';
+                }
+                getPLUDetail(val);
             }
         });
 
@@ -587,9 +591,9 @@
                         }else if(response == 1){
                             swal.fire('Kode Timbangan Sudah dipakai.','','warning');
                         }else if(response == 2){
-                            swal.fire('Kode Timbangan Sudah dipakai.','','success');
+                            swal.fire('Penyimpanan Berhasil','','success');
                         }else if(response == 3){
-                            swal.fire('Kode Timbangan Sudah dipakai.','','success');
+                            swal.fire('Perubahan Data Berhasil','','success');
                         }else{
                             swal.fire('Telah terjadi error!','','warning');
                         }

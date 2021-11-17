@@ -147,7 +147,12 @@
             $('#menu1Div1Input').focus();
         }
     });
-    $('#menu1Dep1Input').on('focus',function(){
+    $('#menu1Dep1Input, #menu1BtnDep1').on('focus',function(){
+
+        //limit departemen dalam divi
+        $('#minDep').val($('#menu1Div1Input').val());
+        $('#maxDep').val($('#menu1Div1Input').val()).change();
+
         if($('#menu1Div1Input').val() == ''){
             $('#menu1Div1Input').focus();
         }
@@ -220,7 +225,6 @@
             let index = checkDivExist($('#menu1Div1Input').val());
             if(index){
                 $('#menu1Div1Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#minDep').val($('#menu1Div1Input').val()).change();
                 $('#menu1BtnDiv2').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');

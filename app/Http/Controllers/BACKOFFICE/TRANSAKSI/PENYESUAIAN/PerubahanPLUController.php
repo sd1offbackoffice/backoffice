@@ -357,7 +357,7 @@ class PerubahanPLUController extends Controller
 //                                    DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
 //                                        ->insert($data);
 
-                                    DB::statement("INSERT INTO TBHISTORY_BARANGBARU
+                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TBHISTORY_BARANGBARU
                                                 (HPN_KODEIGR, HPN_PRDCD, HPN_PKMTOKO, HPN_KODETAG,
                                                  HPN_TGLPENERIMAANBRG, HPN_TGLDAFTAR, HPN_CREATE_BY,
                                                  HPN_CREATE_DT, HPN_MODIFY_BY, HPN_MODIFY_DT)
@@ -387,7 +387,7 @@ class PerubahanPLUController extends Controller
                                         ->get()->count();
 
                                     if($temp == 0){
-                                        DB::statement("INSERT INTO TBHISTORY_BARANGBARU
+                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TBHISTORY_BARANGBARU
                                             (HPN_KODEIGR, HPN_PRDCD, HPN_PKMTOKO, HPN_KODETAG,
                                              HPN_TGLPENERIMAANBRG, HPN_TGLDAFTAR, HPN_CREATE_BY,
                                              HPN_CREATE_DT, HPN_MODIFY_BY, HPN_MODIFY_DT)

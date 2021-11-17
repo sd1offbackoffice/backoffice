@@ -204,7 +204,7 @@ class pembatalanController extends Controller
                                 'DEL_CREATE_DT' => $date,'DEL_CREATE_BY' => $userId]);
                         } // Line 253
 
-                        DB::statement("UPDATE TBMASTER_STOCK
+                        DB::connection($_SESSION['connection'])->statement("UPDATE TBMASTER_STOCK
                                                SET ST_AVGCOST = '$nnilai' / '$nqty',
                                                    ST_SALDOAKHIR = ST_SALDOAKHIR - ('$data->qty' * '$data->frac' + '$data->qtyk' + '$data->mstd_qtybonus1'),
                                                    ST_TRFIN = ST_TRFIN - ('$data->qty' * '$data->frac' + '$data->qtyk' + '$data->mstd_qtybonus1'),
@@ -238,7 +238,7 @@ class pembatalanController extends Controller
                             $nfmlclm = $fmlclm / (($data->prd_unit == 'KG') ? 1 : $data->prd_frac);
                         }
 
-                        DB::statement("UPDATE TBMASTER_STOCK
+                        DB::connection($_SESSION['connection'])->statement("UPDATE TBMASTER_STOCK
                                                SET ST_LASTCOST = '$nfmlclm'
                                              WHERE SUBSTR (ST_PRDCD, 1, 6) = SUBSTR ('$data->mstd_prdcd', 1, 6)
                                                AND ST_KODEIGR = '$kodeigr'");

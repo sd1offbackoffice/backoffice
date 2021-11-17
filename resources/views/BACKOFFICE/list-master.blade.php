@@ -62,9 +62,39 @@
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member')
                     </div>
 
-                    {{--### Menu 6 === Daftar Anggota atau Member ###--}}
+                    {{--### Menu 6 === Daftar Anggota atau Type Outlet ###--}}
                     <div id="menu6" class="subMenu card-body shadow-lg cardForm" hidden>
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-type-outlet')
+                    </div>
+
+                    {{--### Menu 7 === Daftar Anggota atau Member Baru ###--}}
+                    <div id="menu7" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member-baru')
+                    </div>
+
+                    {{--### Menu 8 === Daftar Anggota atau Member Jatuh Tempo ###--}}
+                    <div id="menu8" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member-jatuh-tempo')
+                    </div>
+
+                    {{--### Menu 9 === Daftar Anggota atau Member Jatuh Tempo ###--}}
+                    <div id="menu9" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member-expired')
+                    </div>
+
+                    {{--### Menu A === Daftar Anggota atau Member Jatuh Tempo ###--}}
+                    <div id="menuA" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-harga-jual-baru')
+                    </div>
+
+                    {{--### Menu B === Daftar Perpanjangan Anggota atau Member ###--}}
+                    <div id="menuB" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-perpanjangan-anggota-or-member')
+                    </div>
+
+                    {{--### Menu C === Daftar Status Tag Bar Code ###--}}
+                    <div id="menuC" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-status-tag-bar-code')
                     </div>
                     <br>
                     <div class="d-flex justify-content-end">
@@ -120,8 +150,11 @@
                 </div>
                 {{--UNTUK FILTER DATA--}}
                 <div hidden>
-                    <input type="text" id="minDep" name="min">
-                    <input type="text" id="maxDep" name="max">
+                    <input type="text" id="minDep" name="minDep">
+                    <input type="text" id="maxDep" name="maxDep">
+                </div>
+                <div hidden>
+                    <input type="text" id="filtererDep" name="filtererDep">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -160,6 +193,10 @@
                 <div hidden>
                     <input type="text" id="minKat" name="minKat">
                     <input type="text" id="maxKat" name="maxKat">
+                </div>
+                <div hidden>
+                    <input type="text" id="filtererKat" name="filtererKat">
+                    <input type="text" id="filtererKat_Dep" name="filtererKat_Dep">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -250,6 +287,39 @@
         </div>
     </div>
 
+    {{--Modal Member With Date--}}
+    <div class="modal fade" id="memDateModal" tabindex="-1" role="dialog" aria-labelledby="memDateModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daftar Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalMemDate">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Nama Member</th>
+                                        <th>Kode Member</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalMemDate"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{--Modal Outlet--}}
     <div class="modal fade" id="outletModal" tabindex="-1" role="dialog" aria-labelledby="outletModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
@@ -328,6 +398,7 @@
         let tableKategori;
         let tableSupplier;
         let tableMember;
+        let tableMemberDate;
         let tableOutlet;
         let tableSubOutlet;
 
@@ -337,6 +408,7 @@
             getModalKategori();
             getModalSupplier();
             getModalMember('');
+            getModalMemberDate();
             getModalOutlet();
             getModalSubOutlet();
         });
@@ -363,6 +435,24 @@
                 case '6':
                     $('#menu6').prop("hidden",false)
                     break;
+                case '7':
+                    $('#menu7').prop("hidden",false)
+                    break;
+                case '8':
+                    $('#menu8').prop("hidden",false)
+                    break;
+                case '9':
+                    $('#menu9').prop("hidden",false)
+                    break;
+                case 'A':
+                    $('#menuA').prop("hidden",false)
+                    break;
+                case 'B':
+                    $('#menuB').prop("hidden",false)
+                    break;
+                case 'C':
+                    $('#menuC').prop("hidden",false)
+                    break;
             }
         }
 
@@ -373,6 +463,12 @@
             menu4Clear();
             menu5Clear();
             menu6Clear();
+            menu7Clear();
+            menu8Clear();
+            menu9Clear();
+            menuAClear();
+            menuBClear();
+            menuCClear();
         }
 
         function cetak(){
@@ -395,6 +491,24 @@
                 case '6':
                     menu5Cetak();
                     break;
+                case '7':
+                    menu7Cetak();
+                    break;
+                case '8':
+                    menu8Cetak();
+                    break;
+                case '9':
+                    menu9Cetak();
+                    break;
+                case 'A':
+                    menuACetak();
+                    break;
+                case 'B':
+                    menuACetak();
+                    break;
+                case 'C':
+                    menuCCetak();
+                    break;
             }
         }
 
@@ -416,33 +530,53 @@
                 if ( settings.nTable.id === 'tableModalDep' ) {
                     let min = parseInt( $('#minDep').val(), 10 );
                     let max = parseInt( $('#maxDep').val(), 10 );
+                    let filter = parseInt( $('#filtererDep').val(), 10 );
                     let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    let val2 = parseFloat( data[1] ) || 0;
                     //filter on table modalDept
                     if ( ( isNaN( min ) && isNaN( max ) ) ||
                         ( isNaN( min ) && val <= max ) ||
                         ( min <= val   && isNaN( max ) ) ||
                         ( min <= val   && val <= max ) )
                     {
-                        return true;
+                        if($('#filtererDep').val() != ''){
+                            if(filter <= val2){
+                                return true;
+                            }
+                        }else{
+                            return true;
+                        }
                     }
                 }
                 if ( settings.nTable.id === 'tableModalKat' ) {
                     let min = parseInt( $('#minKat').val(), 10 );
                     let max = parseInt( $('#maxKat').val(), 10 );
-                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    let filter = parseInt( $('#filtererKat').val(), 10 ); //kodekategori
+                    let filterDep = parseInt( $('#filtererKat_Dep').val(), 10 ); //kodedepartement
+                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dep
+                    let val2 = parseFloat( data[1] ) || 0;
                     //filter on table modalDept
                     if ( ( isNaN( min ) && isNaN( max ) ) ||
                         ( isNaN( min ) && val <= max ) ||
                         ( min <= val   && isNaN( max ) ) ||
                         ( min <= val   && val <= max ) )
                     {
-                        return true;
+                        if($('#filtererKat').val() != ''){
+                            if((filter <= val2 && filterDep == val) || filterDep < val){
+                                return true;
+                            }
+                        }else{
+                            return true;
+                        }
                     }
                 }
                 if ( settings.nTable.id === 'tableModalSup' ) {
                     return true; //no filtering on modal Sup
                 }
                 if ( settings.nTable.id === 'tableModalMem' ) {
+                    return true; //no filtering on modal Mem
+                }
+                if ( settings.nTable.id === 'tableModalMemDate' ) {
                     return true; //no filtering on modal Mem
                 }
                 if ( settings.nTable.id === 'tableModalOutlet' ) {
@@ -460,10 +594,10 @@
                 return false;
             }
         );
-        $('#minDep, #maxDep').change( function() {
+        $('#minDep, #maxDep, #filtererDep').change( function() {
             tableDepartemen.draw();
         } );
-        $('#minKat, #maxKat').change( function() {
+        $('#minKat, #maxKat, #filtererKat_Dep').change( function() {
             tableKategori.draw();
         } );
         $('#outletFilterer').change( function() {
@@ -614,6 +748,41 @@
                 }
             })
         }
+        //MODAL MEMBER WITH DATE
+        function getModalMemberDate(date1, date2){
+            if(date1 == null || date2 == null){
+                date1 = moment().format('DD-MM-YYYY');
+                date2 = moment().format('DD-MM-YYYY');
+            }
+
+            tableMemberDate =  $('#tableModalMemDate').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current().'/get-lov-member-with-date' }}',
+                    "data" : {
+                        'dateA' : date1,
+                        'dateB' : date2
+                    },
+                },
+                "columns": [
+                    {data: 'cus_namamember', name: 'cus_namamember'},
+                    {data: 'cus_kodemember', name: 'cus_kodemember'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalMemberDate');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+        }
         //MODAL DIVISI
         function getModalOutlet(){
             tableOutlet =  $('#tableModalOutlet').DataTable({
@@ -678,9 +847,10 @@
                 menu1Choose(currentButton);
             }else if(cursor.substr(0,5) === "menu2"){
                 menu2Choose(currentButton);
-            }
-            else if(cursor.substr(0,5) === "menu3"){
+            }else if(cursor.substr(0,5) === "menu3"){
                 menu3Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menuA"){
+                menuAChoose(currentButton);
             }
         });
         //ONCLICK DEPARTEMEN
@@ -694,6 +864,10 @@
                 menu2Choose(currentButton);
             }else if(cursor.substr(0,5) === "menu3"){
                 menu3Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menuA"){
+                menuAChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuC"){
+                menuCChoose(currentButton);
             }
         });
         //ONCLICK KATEGORI
@@ -707,6 +881,10 @@
                 menu2Choose(currentButton);
             }else if(cursor.substr(0,5) === "menu3"){
                 menu3Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menuA"){
+                menuAChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuC"){
+                menuCChoose(currentButton);
             }
         });
         //ONCLICK SUPPLIER
@@ -727,6 +905,21 @@
                 menu5Choose(currentButton);
             }else if(cursor.substr(0,5) === "menu6") {
                 menu6Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menu9") {
+                menu9Choose(currentButton);
+            }
+        });
+        //ONCLICK MEMBER WITH DATE
+        $(document).on('click', '.modalMemberDate', function () {
+            $('#memDateModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menu7") {
+                menu7Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menu8") {
+                menu8Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menuB") {
+                menuBChoose(currentButton);
             }
         });
         //ONCLICK OUTLET
@@ -762,10 +955,30 @@
 
         //Untuk periksa apakah dep ada
         function checkDepExist(val){
+            let min = 0;
+            let max = tableDepartemen.data().length;
+            let filterer = 0;
+            if($('#minDep').val() != ''){
+                min = parseInt( $('#minDep').val(), 10 );
+            }
+            if($('#maxDep').val() != ''){
+                max = parseInt( $('#maxDep').val(), 10 );
+            }
+            if($('#filtererDep').val() != ''){
+                filterer = parseInt( $('#filtererDep').val(), 10 );
+            }
             for(i=0;i<tableDepartemen.data().length;i++){
-                if(tableDepartemen.row(i).data()['dep_kodedivisi'] >= parseInt( $('#minDep').val(), 10 ) && tableDepartemen.row(i).data()['dep_kodedivisi'] <= parseInt( $('#maxDep').val(), 10 )){
-                    if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
-                        return i+1;
+                if(tableDepartemen.row(i).data()['dep_kodedivisi'] >= min && tableDepartemen.row(i).data()['dep_kodedivisi'] <= max){
+                    if($('#filtererDep').val() != ''){
+                        if(filterer <= tableDepartemen.row(i).data()['dep_kodedepartement']){
+                            if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
+                                return i+1;
+                            }
+                        }
+                    }else{
+                        if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
+                            return i+1;
+                        }
                     }
                 }
             }
@@ -773,12 +986,42 @@
         }
 
         //Untuk periksa apakah kat ada
-        function checkKatExist(val){
-            for(i=0;i<tableKategori.data().length;i++){
-                if(tableKategori.row(i).data()['kat_kodedepartement'] >= parseInt( $('#minKat').val(), 10 ) && tableKategori.row(i).data()['kat_kodedepartement'] <= parseInt( $('#maxKat').val(), 10 )){
-                    if(tableKategori.row(i).data()['kat_kodekategori'] == val){
-                        return i+1;
+        function checkKatExist(val, dep){
+            let min = 0;
+            let max = tableKategori.data().length;
+            let kodeDep = tableKategori.data().length-1;
+            let filterer = 0;
+            let filtererDep = 0;
+
+            if($('#minKat').val() != ''){
+                min = parseInt( $('#minKat').val(), 10 );
+            }
+            if($('#maxKat').val() != ''){
+                max = parseInt( $('#maxKat').val(), 10 );
+            }
+            if(dep != ''){
+                kodeDep = parseInt( dep, 10 );
+            }
+            if($('#filtererKat').val() != ''){
+                filterer = parseInt( $('#filtererKat').val(), 10 );
+                filtererDep = parseInt( $('#filtererKat_Dep').val(), 10 );
+            }
+            for(i=tableKategori.data().length-1;i>=0;i--){
+                if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
+                    if(tableKategori.row(i).data()['kat_kodedepartement'] == kodeDep){
+                        if($('#filtererKat').val() != ''){
+                            if((filterer <= tableKategori.row(i).data()['kat_kodekategori'] && filtererDep <= tableKategori.row(i).data()['kat_kodedepartement']) || filtererDep < tableKategori.row(i).data()['kat_kodedepartement']){
+                                if(tableKategori.row(i).data()['kat_kodekategori'] == val){
+                                    return i+1;
+                                }
+                            }
+                        }else{
+                            if(tableKategori.row(i).data()['kat_kodekategori'] == val){
+                                return i+1;
+                            }
+                        }
                     }
+
                 }
             }
             return 0;
@@ -828,6 +1071,16 @@
             return result;
         }
 
+        //Untuk periksa apakah Member dalam rentang waktu ada
+        function checkMemWithDateExist(val){
+            for(i=0;i<tableMemberDate.data().length;i++){
+                if(tableMemberDate.row(i).data()['cus_kodemember'] == val){
+                    return i+1;
+                }
+            }
+            return 0;
+        }
+
         //Untuk periksa apakah outlet ada
         function checkOutletExist(val){
             for(i=0;i<tableOutlet.data().length;i++){
@@ -840,10 +1093,18 @@
 
         //Untuk periksa apakah sub-outlet ada
         function checkSubOutletExist(val){
-            for(i=0;i<tableSubOutlet.data().length;i++){
-                if(tableSubOutlet.row(i).data()['sub_kodeoutlet'] == parseInt( $('#outletFilterer').val(), 10 )){
+            if($('#outletFilterer').val() == ''){
+                for(i=0;i<tableSubOutlet.data().length;i++){
                     if(tableSubOutlet.row(i).data()['sub_kodesuboutlet'] == val){
                         return i+1;
+                    }
+                }
+            }else{
+                for(i=0;i<tableSubOutlet.data().length;i++){
+                    if(tableSubOutlet.row(i).data()['sub_kodeoutlet'] == parseInt( $('#outletFilterer').val(), 10 )){
+                        if(tableSubOutlet.row(i).data()['sub_kodesuboutlet'] == val){
+                            return i+1;
+                        }
                     }
                 }
             }
