@@ -14,7 +14,7 @@
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">PLU</label>
                                     <div class="col-sm-3 buttonInside">
-                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="pluPrime">
+                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="pluPrime" onkeypress="return isNumberKey(event)">
                                         <button onclick="cursorMover(this)" id="pluPrimary" type="button" class="btn btn-lov p-0" data-toggle="modal"
                                                 data-target="#pluModal">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -53,7 +53,7 @@
                                     <div class="col-sm-4">
                                         <label class="col-sm-12 col-form-label text-center">KODE</label>
                                         <div class="col-sm-12">
-                                            <input type="text" class="form-control" id="kode">
+                                            <input type="text" class="form-control" id="kode" onkeypress="return isNumberKey(event)">
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
@@ -91,7 +91,7 @@
                                 <div class="row">
                                     <label id="changeLabel" class="col-sm-3 col-form-label text-right">PLU</label>
                                     <div class="col-sm-3 buttonInside">
-                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="val1">
+                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="val1" onkeypress="return isNumberKey(event)">
                                         <button onclick="cursorMover(this)" id="changeButton1" type="button" class="btn btn-lov p-0" data-toggle="modal"
                                                 data-target="#pluModal">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -99,7 +99,7 @@
                                     </div>
                                     <span class="col-sm-1 text-center col-form-label">S / D</span>
                                     <div class="col-sm-3 buttonInside">
-                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="val2">
+                                        <input onclick="cursorMover(this)" type="text" class="form-control" id="val2" onkeypress="return isNumberKey(event)">
                                         <button onclick="cursorMover(this)" id="changeButton2" type="button" class="btn btn-lov p-0" data-toggle="modal"
                                                 data-target="#pluModal">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -392,6 +392,7 @@
                     $('#satuanPrime').val(satuan);
                     $('#tag').val(tag);
                     $('#hrgJual').val(hrgJual);
+                    getKode(plu);
                     break;
                 case 'val1' :
                     $('#val1').val(plu);
@@ -424,31 +425,31 @@
 
         $('#pluPrime').on('keypress',function(event){
             if(event.which == 13){
-                let val = $('#pluPrime').val();
-                if(val.substr(val.length - 1) != '1'){
-                    val = val.substr(0,6)+'1';
-                }
+                let val = standarisasiPlu($('#pluPrime').val());
                 getPLUDetail(val);
+                getKode(val);
             }
         });
 
         $('#val1').on('keypress',function(event){
             if(event.which == 13){
                 if($('input[name="optSort"]:checked').val() == "plu"){
-                    getPLUDetail($('#val1').val());
+                    let val = standarisasiPlu($('#val1').val());
+                    getPLUDetail(val);
                 }
                 if($('input[name="optSort"]:checked').val() == "kodetimbangan"){
-                    getKode($('#val1').val());
+                    $('#val1').val(standarisasiKode($('#val1').val()));
                 }
             }
         });
         $('#val2').on('keypress',function(event){
             if(event.which == 13){
                 if($('input[name="optSort"]:checked').val() == "plu"){
-                    getPLUDetail($('#val2').val());
+                    let val = standarisasiPlu($('#val2').val());
+                    getPLUDetail(val);
                 }
                 if($('input[name="optSort"]:checked').val() == "kodetimbangan"){
-                    getKode($('#val2').val());
+                    $('#val2').val(standarisasiKode($('#val2').val()));
                 }
             }
         });
@@ -525,28 +526,9 @@
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
-                    if(response.tmb_kode == null){
-                        swal.fire('Kode tidak dikenali','','warning');
-                        switch (cursor) {
-                            case 'val1' :
-                                $('#val1').val('');
-                                break;
-                            case 'val2' :
-                                $('#val2').val('');
-                                break;
-                        }
-                    }else{
-                        let str = "" + kode;
-                        let pad = "0000";
-                        let ans = pad.substring(0, pad.length - str.length) + str;
-                        switch (cursor) {
-                            case 'val1' :
-                                $('#val1').val(ans);
-                                break;
-                            case 'val2' :
-                                $('#val2').val(ans);
-                                break;
-                        }
+                    if(response.tmb_kode != null){
+                        $('#kode').val(response.tmb_kode);
+                        $('#descKode').val(response.tmb_deskripsi1);
                     }
                 },
                 error: function (error) {
@@ -779,6 +761,11 @@
             $.ajax({ // mapping drive S dahulu
                 url: '{{ url()->current() }}/print',
                 type: 'GET',
+                data: {
+                    p_pil:p_pil,
+                    val1:val1,
+                    val2:val2
+                },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
@@ -1051,6 +1038,7 @@
                     .attr('data-target', '#pluModal');
                 $('#changeButton2').attr('data-toggle', 'modal')
                     .attr('data-target', '#pluModal');
+                $('#val1, #val2').val('');
             }
             else if (this.value == 'kodetimbangan') {
                 document.getElementById("changeLabel").innerHTML = "KODE TIMBANGAN";
@@ -1059,7 +1047,31 @@
                     .attr('data-target', '#kodeModal');
                 $('#changeButton2').attr('data-toggle', 'modal')
                     .attr('data-target', '#kodeModal');
+                $('#val1, #val2').val('');
             }
         });
+
+        function standarisasiPlu(val){
+            if(val.length < 7){
+                val = val.padStart(7,0);
+            }
+            if(val.substr(val.length - 1) != '1'){
+                val = val.substr(0,6)+'1';
+            }
+            return val;
+        }
+
+        function standarisasiKode(val){
+            if(val.length < 4){
+                val = val.padStart(4,0);
+            }
+            return val;
+        }
+        function isNumberKey(evt){
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
     </script>
 @endsection

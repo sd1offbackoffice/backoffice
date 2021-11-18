@@ -130,7 +130,10 @@
             $('#menu3Div1Input').focus();
         }
     });
-    $('#menu3Dep1Input').on('focus',function(){
+    $('#menu3Dep1Input, #menu3BtnDep1').on('focus',function(){
+        $('#minDep').val($('#menu3Div1Input').val());
+        $('#maxDep').val($('#menu3Div1Input').val()).change();
+
         if($('#menu3Div1Input').val() == ''){
             $('#menu3Div1Input').focus();
         }
@@ -138,7 +141,10 @@
             $('#menu3Div2Input').focus();
         }
     });
-    $('#menu3Dep2Input').on('focus',function(){
+    $('#menu3Dep2Input, #menu3BtnDep2').on('focus',function(){
+        $('#minDep').val($('#menu3Div2Input').val());
+        $('#maxDep').val($('#menu3Div2Input').val()).change();
+
         if($('#menu3Div1Input').val() == ''){
             $('#menu3Div1Input').focus();
         }
@@ -149,7 +155,10 @@
             $('#menu3Dep1Input').focus();
         }
     });
-    $('#menu3Kat1Input').on('focus',function(){
+    $('#menu3Kat1Input, #menu3BtnKat1').on('focus',function(){
+        $('#minKat').val($('#menu3Dep1Input').val());
+        $('#maxKat').val($('#menu3Dep1Input').val()).change();
+
         if($('#menu3Div1Input').val() == ''){
             $('#menu3Div1Input').focus();
         }
@@ -163,7 +172,10 @@
             $('#menu3Dep2Input').focus();
         }
     });
-    $('#menu3Kat2Input').on('focus',function(){
+    $('#menu3Kat2Input, #menu3BtnKat2').on('focus',function(){
+        $('#minKat').val($('#menu3Dep2Input').val());
+        $('#maxKat').val($('#menu3Dep2Input').val()).change();
+
         if($('#menu3Div1Input').val() == ''){
             $('#menu3Div1Input').focus();
         }
@@ -203,11 +215,11 @@
             let index = checkDivExist($('#menu3Div1Input').val());
             if(index){
                 $('#menu3Div1Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#minDep').val($('#menu3Div1Input').val()).change();
+
                 $('#menu3BtnDiv2').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#minDep').val('').change();
+                //$('#minDep').val('').change();
                 $('#menu3Div1Input').val('').change().focus();
             }
         }
@@ -232,11 +244,11 @@
             let index = checkDivExist($('#menu3Div2Input').val());
             if(index){
                 $('#menu3Div2Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#maxDep').val($('#menu3Div2Input').val()).change();
+
                 $('#menu3BtnDep1').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#maxDep').val('').change();
+
                 $('#menu3Div2Input').val('').change();
             }
         }
@@ -259,11 +271,11 @@
             let index = checkDepExist($('#menu3Dep1Input').val());
             if(index){
                 $('#menu3Dep1Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#minKat').val($('#menu3Dep1Input').val()).change();
+
                 $('#menu3BtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#minKat').val('').change();
+
                 $('#menu3Dep1Input').val('').change();
             }
         }
@@ -284,11 +296,11 @@
             let index = checkDepExist($('#menu3Dep2Input').val());
             if(index){
                 $('#menu3Dep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#maxKat').val($('#menu3Dep2Input').val()).change();
+
                 $('#menu3BtnKat1').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#maxKat').val('').change();
+
                 $('#menu3Dep2Input').val('').change();
             }
         }

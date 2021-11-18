@@ -36,8 +36,8 @@
                     $('#modal-loader').modal('hide');
                     swal('', result, 'info');
                 }, error: function (e) {
-                    console.log(e);
-                    alert('error');
+                    // console.log(e);
+                    // alert('error');
                 }
             })
         }
@@ -53,8 +53,8 @@
                     $('#modal-loader').modal('hide');
                     swal('', result, 'info');
                 }, error: function (e) {
-                    console.log(e);
-                    alert('error');
+                    // console.log(e);
+                    // alert('error');
                 }
             })
         }

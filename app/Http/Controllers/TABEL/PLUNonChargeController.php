@@ -102,4 +102,28 @@ class PLUNonChargeController extends Controller
             ], 500);
         }
     }
+
+    public function print(){
+//        SELECT NON_PRDCD,
+//PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
+//PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH FROM TBMASTER_PLUNONCHARGE, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+//WHERE NON_KODEIGR = :P_KODEIGR
+//        AND PRD_KODEIGR = NON_KODEIGR AND PRD_PRDCD = NON_PRDCD
+//        AND PRS_KODEIGR = :P_KODEIGR
+//ORDER BY NON_PRDCD
+
+        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
+            ->join('tbmaster_prodmast',function($join){
+                $join->on('prd_kodeigr','=','non_kodeigr');
+                $join->on('prd_prdcd','=','non_prdcd');
+            })
+            ->selectRaw("NON_PRDCD, PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT")
+            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            ->orderBy('non_prdcd')
+            ->get();
+
+        return view('TABEL.plu-non-charge-pdf',compact(['perusahaan','data']));
+    }
 }

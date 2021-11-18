@@ -539,13 +539,7 @@
                         ( min <= val   && isNaN( max ) ) ||
                         ( min <= val   && val <= max ) )
                     {
-                        if($('#filtererDep').val() != ''){
-                            if(filter <= val2){
-                                return true;
-                            }
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if ( settings.nTable.id === 'tableModalKat' ) {
@@ -561,13 +555,7 @@
                         ( min <= val   && isNaN( max ) ) ||
                         ( min <= val   && val <= max ) )
                     {
-                        if($('#filtererKat').val() != ''){
-                            if((filter <= val2 && filterDep == val) || filterDep < val){
-                                return true;
-                            }
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if ( settings.nTable.id === 'tableModalSup' ) {
@@ -957,28 +945,17 @@
         function checkDepExist(val){
             let min = 0;
             let max = tableDepartemen.data().length;
-            let filterer = 0;
+
             if($('#minDep').val() != ''){
                 min = parseInt( $('#minDep').val(), 10 );
             }
             if($('#maxDep').val() != ''){
                 max = parseInt( $('#maxDep').val(), 10 );
             }
-            if($('#filtererDep').val() != ''){
-                filterer = parseInt( $('#filtererDep').val(), 10 );
-            }
             for(i=0;i<tableDepartemen.data().length;i++){
                 if(tableDepartemen.row(i).data()['dep_kodedivisi'] >= min && tableDepartemen.row(i).data()['dep_kodedivisi'] <= max){
-                    if($('#filtererDep').val() != ''){
-                        if(filterer <= tableDepartemen.row(i).data()['dep_kodedepartement']){
-                            if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
-                                return i+1;
-                            }
-                        }
-                    }else{
-                        if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
-                            return i+1;
-                        }
+                    if(tableDepartemen.row(i).data()['dep_kodedepartement'] == val){
+                        return i+1;
                     }
                 }
             }
@@ -989,9 +966,6 @@
         function checkKatExist(val, dep){
             let min = 0;
             let max = tableKategori.data().length;
-            let kodeDep = tableKategori.data().length-1;
-            let filterer = 0;
-            let filtererDep = 0;
 
             if($('#minKat').val() != ''){
                 min = parseInt( $('#minKat').val(), 10 );
@@ -999,29 +973,12 @@
             if($('#maxKat').val() != ''){
                 max = parseInt( $('#maxKat').val(), 10 );
             }
-            if(dep != ''){
-                kodeDep = parseInt( dep, 10 );
-            }
-            if($('#filtererKat').val() != ''){
-                filterer = parseInt( $('#filtererKat').val(), 10 );
-                filtererDep = parseInt( $('#filtererKat_Dep').val(), 10 );
-            }
-            for(i=tableKategori.data().length-1;i>=0;i--){
-                if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
-                    if(tableKategori.row(i).data()['kat_kodedepartement'] == kodeDep){
-                        if($('#filtererKat').val() != ''){
-                            if((filterer <= tableKategori.row(i).data()['kat_kodekategori'] && filtererDep <= tableKategori.row(i).data()['kat_kodedepartement']) || filtererDep < tableKategori.row(i).data()['kat_kodedepartement']){
-                                if(tableKategori.row(i).data()['kat_kodekategori'] == val){
-                                    return i+1;
-                                }
-                            }
-                        }else{
-                            if(tableKategori.row(i).data()['kat_kodekategori'] == val){
-                                return i+1;
-                            }
-                        }
-                    }
 
+            for(i=0;i<tableKategori.data().length;i++){
+                if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
+                    if(tableKategori.row(i).data()['kat_kodekategori'] == val){
+                        return i+1;
+                    }
                 }
             }
             return 0;

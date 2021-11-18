@@ -128,22 +128,42 @@ class JenisRakBarangController extends Controller
         $koderak = $request->koderak;
         $namarak = $request->namarak;
         $mindisplay = $request->mindisplay;
-
+$message = '';
         try {
             DB::connection($_SESSION['connection'])->beginTransaction();
-
-            DB::connection($_SESSION['connection'])
+            $temp = DB::connection($_SESSION['connection'])
                 ->table('tbtabel_jenisrak')
-                ->insert([
-                    'jrak_kodejenisrak' => $koderak,
-                    'jrak_namajenisrak' => $namarak,
-                    'jrak_mindisplay' => $mindisplay
-                ]);
+                ->where('jrak_kodejenisrak',$koderak)
+                ->count();
+            if ($temp>0){
+                DB::connection($_SESSION['connection'])
+                    ->table('tbtabel_jenisrak')
+                    ->where('jrak_kodejenisrak',$koderak)
+                    ->update([
+                        'jrak_namajenisrak' => $namarak,
+                        'jrak_mindisplay' => $mindisplay,
+                        'jrak_modify_by' => $_SESSION['usid'],
+                        'jrak_modify_dt' => Carbon::now()
+                    ]);
+                $message = 'Berhasil mengupdate data!';
+            }
+            else{
+                DB::connection($_SESSION['connection'])
+                    ->table('tbtabel_jenisrak')
+                    ->insert([
+                        'jrak_kodejenisrak' => $koderak,
+                        'jrak_namajenisrak' => $namarak,
+                        'jrak_mindisplay' => $mindisplay,
+                        'jrak_create_by' => $_SESSION['usid'],
+                        'jrak_create_dt' => Carbon::now()
+                    ]);
+                $message = 'Berhasil menyimpan data!';
+            }
 
             DB::connection($_SESSION['connection'])->commit();
 
             return response()->json([
-                'message' => "Berhasil menyimpan data!",
+                'message' => $message,
             ], 200);
         } catch (QueryException $e) {
             DB::connection($_SESSION['connection'])->rollBack();

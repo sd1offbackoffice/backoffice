@@ -233,7 +233,7 @@ class MonitoringMemberController extends Controller
 
             DB::connection($_SESSION['connection'])->commit();
 
-            if($temp == 0){
+            if(!$temp){
                 return response()->json([
                     'message' => 'Kode member tidak ada dalam kode monitoring '.$request->kodemonitoring.' !'
                 ], 500);

@@ -3,15 +3,11 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    Daftar Harga Jual Barang per Tanggal {{ date("d/m/Y") }}
+    PLU Non Charge Credit Card
 @endsection
 
 @section('title')
-    ** TABEL MONITORING PRODUK **
-@endsection
-
-@section('subtitle')
-    Kode Monitoring : {{ $monitoring->kode }} - {{ $monitoring->nama }}
+    ** PLU Non Charge Credit Card **
 @endsection
 
 @section('content')
@@ -21,8 +17,7 @@
             <th width="5%" class="tengah center">No</th>
             <th width="5%" class="tengah center">PLU</th>
             <th width="80%" class="tengah padding-left">DESKRIPSI</th>
-            <th width="5%" class="tengah center">UNIT/FRAC</th>
-            <th width="5%" class="tengah">TAG</th>
+            <th width="10%" class="tengah center">UNIT/FRAC</th>
         </tr>
         </thead>
         <tbody>
@@ -30,10 +25,9 @@
         @foreach($data as $d)
             <tr>
                 <td width="5%" class="center">{{ $no++ }}</td>
-                <td width="5%" class="center">{{ $d->mpl_prdcd }}</td>
+                <td width="5%" class="center">{{ $d->non_prdcd }}</td>
                 <td width="80%" class="left padding-left">{{ $d->prd_deskripsipanjang }}</td>
-                <td width="5%" class="left">{{ $d->satuan }}</td>
-                <td width="5%" class="center">{{ $d->prd_kodetag }}</td>
+                <td width="10%" class="left">{{ $d->unit }}</td>
             </tr>
         @endforeach
         </tbody>

@@ -19,7 +19,7 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
             <th width="5%" class="tengah">NO</th>
-            <th width="10%" class="left">KODE MEMBER</th>
+            <th width="10%" class="left">KODE</th>
             <th width="40%" class="left padding-left">NAMA</th>
             <th width="40%" class="left" colspan="2">OUTLET</th>
             <th width="5%" class="tengah center">PKP</th>
@@ -29,7 +29,7 @@
         @php $no = 1; @endphp
         @foreach($data as $d)
             <tr>
-                <td width="5%" class="center">{{ substr('0000'.$no++, -4) }}</td>
+                <td width="5%" class="center">{{ $no++ }}</td>
                 <td width="10%" class="center">{{ $d->mem_kodemember }}</td>
                 <td width="40%" class="left padding-left">{{ $d->cus_namamember }}</td>
                 <td width="40%" class="left">{{ $d->cus_kodeoutlet }} - {{ $d->out_namaoutlet }}</td>

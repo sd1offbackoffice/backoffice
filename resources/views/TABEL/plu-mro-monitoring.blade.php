@@ -52,41 +52,41 @@
                                 </table>
                             </div>
                         </fieldset>
-                        <fieldset class="card border-secondary mt-0">
-                            <legend  class="w-auto ml-3">PLU Monitoring</legend>
-                            <div class="card-body py-0" id="top_field">
-                                <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
-                                    <div class="col-sm-2">
-                                        <input type="text" class="form-control text-left" id="plu">
-                                    </div>
+{{--                        <fieldset class="card border-secondary mt-0">--}}
+{{--                            <legend  class="w-auto ml-3">PLU Monitoring</legend>--}}
+{{--                            <div class="card-body py-0" id="top_field">--}}
+{{--                                <div class="row form-group">--}}
+{{--                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>--}}
+{{--                                    <div class="col-sm-2">--}}
+{{--                                        <input type="text" class="form-control text-left" id="plu">--}}
+{{--                                    </div>--}}
 {{--                                    <div class="col-sm-2 buttonInside">--}}
 {{--                                        <input type="text" class="form-control text-left" id="plu">--}}
 {{--                                        <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu" disabled>--}}
 {{--                                            <i class="fas fa-question"></i>--}}
 {{--                                        </button>--}}
 {{--                                    </div>--}}
-                                </div>
-                                <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Deskripsi</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control text-left" id="deskripsi" disabled>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Satuan</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control text-left" id="satuan" disabled>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <button class="col-sm btn btn-danger" id="" onclick="deleteData($('#plu').val())">DELETE</button>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <button class="col-sm btn btn-success" id="" onclick="save()">SAVE</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+{{--                                </div>--}}
+{{--                                <div class="row form-group">--}}
+{{--                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Deskripsi</label>--}}
+{{--                                    <div class="col-sm-10">--}}
+{{--                                        <input type="text" class="form-control text-left" id="deskripsi" disabled>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="row form-group">--}}
+{{--                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Satuan</label>--}}
+{{--                                    <div class="col-sm-4">--}}
+{{--                                        <input type="text" class="form-control text-left" id="satuan" disabled>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-3">--}}
+{{--                                        <button class="col-sm btn btn-danger" id="" onclick="deleteData($('#plu').val())">DELETE</button>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-sm-3">--}}
+{{--                                        <button class="col-sm btn btn-success" id="" onclick="save()">SAVE</button>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </fieldset>--}}
                     </div>
                 </fieldset>
             </div>

@@ -23,29 +23,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/FakturPajakStandardController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-anggota-or-member-baru.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-anggota-or-member-expired.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-anggota-or-member-jatuh-tempo.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-harga-jual-baru.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-perpanjangan-anggota-or-member.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-status-tag-bar-code.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/faktur-pajak-standard.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-non-charge-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-non-refund-pdf.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/ListMasterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/ListMasterController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/TransferSJController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/TransferSJController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalanController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENYESUAIAN/CetakPenyesuaianController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENYESUAIAN/CetakPenyesuaianController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENYESUAIAN/PerubahanPLUController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENYESUAIAN/PerubahanPLUController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/PromosiHoKeCabController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/PromosiHoKeCabController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/JenisRakBarangController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/JenisRakBarangController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/MonitoringMemberController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/MonitoringMemberController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonChargeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonChargeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonPromoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonPromoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonRefundController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PLUNonRefundController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PluTimbanganController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/PluTimbanganController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TABEL/TotalPembayaranVoucherController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TABEL/TabelPembayaranVoucherController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-harga-jual-baru.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-harga-jual-baru.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-margin-negatif.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-margin-negatif.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-perubahan-harga-jual.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-perubahan-harga-jual.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-produk.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LISTMASTERASSET/daftar-produk.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/list-master.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/list-master.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-timbangan-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-timbangan-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/PromosiHoKeCab.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/PromosiHoKeCab.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/MAXPEMBELIANITEMPERTRANSAKSI/igr-tab-maxtran-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/MAXPEMBELIANITEMPERTRANSAKSI/igr-tab-maxtran-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/monitoring-member-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/monitoring-member-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/monitoring-produk-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/monitoring-produk-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-monitoring-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-monitoring-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-monitoring.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-monitoring.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-mro-pdf.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-timbangan.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-timbangan.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/total-pembayaran-voucher.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/tabel-pembayaran-voucher.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plu-voucher.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plu-voucher.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plunoncharge.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plunoncharge.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plunonpromo-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plunonpromo-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plunonpromo.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plunonpromo.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/TABEL/plunonrefund.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/TABEL/plunonrefund.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -301,6 +306,8 @@
       <workItem from="1635239394016" duration="11184000" />
       <workItem from="1635411903457" duration="15571000" />
       <workItem from="1636012584156" duration="3570000" />
+      <workItem from="1637202202234" duration="5033000" />
+      <workItem from="1637223504345" duration="948000" />
     </task>
     <servers />
   </component>
@@ -399,20 +406,24 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="294" y="0" width="1256" height="810" key="dock-window-1/0.0.1536.824@0.0.1536.824" timestamp="1632304651727" />
-    <state x="254" y="4" width="1180" height="1011" key="find.popup" timestamp="1637138251282">
+    <state x="100" y="10" width="1274" height="1012" key="find.popup" timestamp="1637232131724">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="399" y="9" width="660" height="662" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1630314540602" />
-    <state x="426" y="10" width="906" height="708" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1636621898413" />
+    <state x="426" y="10" width="906" height="708" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1637225302584" />
     <state x="172" y="4" width="1220" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1636956607214" />
-    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636618368271" />
-    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636627284200" />
+    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1637211906329" />
+    <state x="100" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1637232131724" />
     <state x="254" y="4" width="1180" height="1011" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1637138251282" />
     <state x="45" y="17" width="555" height="1225" key="find.popup/0.0.600.1260@0.0.600.1260" timestamp="1635320517190" />
     <state x="790" y="250" key="ftp.server.browser" timestamp="1636010308684">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="250" key="ftp.server.browser/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636010308684" />
+    <state x="553" y="256" key="publish.login" timestamp="1637203215250">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="553" y="256" key="publish.login/0.0.1366.728@0.0.1366.728" timestamp="1637203215250" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1636447662841">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -423,13 +434,13 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="575" y="263" key="scopes/0.0.1536.824@0.0.1536.824" timestamp="1635929026825" />
-    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1637136780431">
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1637228406586">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="102" y="161" width="672" height="475" key="search.everywhere.popup/0.0.1366.728@0.0.1366.728" timestamp="1636001514442" />
     <state x="114" y="182" width="672" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1635845920582" />
-    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1636012181869" />
-    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1636627610252" />
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1637210322310" />
+    <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1637228406586" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1637136780431" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">

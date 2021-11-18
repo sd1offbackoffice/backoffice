@@ -149,7 +149,7 @@
     });
     $('#menu1Dep1Input, #menu1BtnDep1').on('focus',function(){
 
-        //limit departemen dalam divi
+        //limit departemen dalam divisi
         $('#minDep').val($('#menu1Div1Input').val());
         $('#maxDep').val($('#menu1Div1Input').val()).change();
 
@@ -160,7 +160,11 @@
             $('#menu1Div2Input').focus();
         }
     });
-    $('#menu1Dep2Input').on('focus',function(){
+    $('#menu1Dep2Input, #menu1BtnDep2').on('focus',function(){
+
+        //limit departemen dalam divisi
+        $('#minDep').val($('#menu1Div2Input').val());
+        $('#maxDep').val($('#menu1Div2Input').val()).change();
         if($('#menu1Div1Input').val() == ''){
             $('#menu1Div1Input').focus();
         }
@@ -171,7 +175,10 @@
             $('#menu1Dep1Input').focus();
         }
     });
-    $('#menu1Kat1Input').on('focus',function(){
+    $('#menu1Kat1Input, #menu1BtnKat1').on('focus',function(){
+        $('#minKat').val($('#menu1Dep1Input').val());
+        $('#maxKat').val($('#menu1Dep1Input').val()).change();
+
         if($('#menu1Div1Input').val() == ''){
             $('#menu1Div1Input').focus();
         }
@@ -185,7 +192,10 @@
             $('#menu1Dep2Input').focus();
         }
     });
-    $('#menu1Kat2Input').on('focus',function(){
+    $('#menu1Kat2Input, #menu1BtnKat2').on('focus',function(){
+        $('#minKat').val($('#menu1Dep2Input').val());
+        $('#maxKat').val($('#menu1Dep2Input').val()).change();
+
         if($('#menu1Div1Input').val() == ''){
             $('#menu1Div1Input').focus();
         }
@@ -253,7 +263,7 @@
             let index = checkDivExist($('#menu1Div2Input').val());
             if(index){
                 $('#menu1Div2Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#maxDep').val($('#menu1Div2Input').val()).change();
+                // $('#maxDep').val($('#menu1Div2Input').val()).change();
                 $('#menu1BtnDep1').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
@@ -274,13 +284,12 @@
         if($('#menu1Dep1Input').val() == ''){
             $('#menu1BtnDep2').prop("hidden",true);
 
-
             $('#minKat').val('').change();
         }else{
             let index = checkDepExist($('#menu1Dep1Input').val());
             if(index){
                 $('#menu1Dep1Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#minKat').val($('#menu1Dep1Input').val()).change();
+
                 $('#menu1BtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
@@ -305,7 +314,7 @@
             let index = checkDepExist($('#menu1Dep2Input').val());
             if(index){
                 $('#menu1Dep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#maxKat').val($('#menu1Dep2Input').val()).change();
+
                 $('#menu1BtnKat1').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');

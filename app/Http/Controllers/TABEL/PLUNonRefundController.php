@@ -32,7 +32,7 @@ class PLUNonRefundController extends Controller
         $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
-            ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
+            ->whereRaw("substr(prd_prdcd,7,1) = '0'")
             ->orderBy('prd_prdcd')
             ->get();
 
@@ -239,5 +239,20 @@ class PLUNonRefundController extends Controller
         return response()->json([
             'title' => $title
         ], 200);
+    }
+
+    public function print(){
+        $perusahaan = DB::connection($_SESSION['connection'])
+            ->table("tbmaster_perusahaan")
+            ->first();
+
+        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plunonrefund')
+            ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
+            ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
+            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            ->orderBy('non_prdcd')
+            ->get();
+
+        return view('TABEL.plu-non-refund-pdf',compact(['perusahaan','data']));
     }
 }

@@ -768,49 +768,57 @@
         }
 
         function saveData(){
-            swal({
-                title: 'Yakin ingin menyimpan data?',
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true
-            }).then((ok) => {
-                if(ok){
-                    $.ajax({
-                        url: '{{ url()->current() }}/save-data',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        data: {
-                            kodevoucher : $('#kodevoucher').val(),
-                            dataPLU : dataPLU
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
+            if(dataPLU.length <= 0){
+                swal({
+                    title: 'Tidak ada data yang disimpan!',
+                    icon: 'warning'
+                });
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin menyimpan data?',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/save-data',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            data: {
+                                kodevoucher : $('#kodevoucher').val(),
+                                dataPLU : dataPLU
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
 
-                            swal({
-                                title: response.message,
-                                icon: 'success',
-                            }).then(() => {
-                                getListSupplier();
-                            });
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal({
-                                title: error.responseJSON.message,
-                                text: error.responseJSON.detail,
-                                icon: 'error',
-                            }).then(() => {
+                                swal({
+                                    title: response.message,
+                                    icon: 'success',
+                                }).then(() => {
+                                    getListSupplier();
+                                });
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
+                                swal({
+                                    title: error.responseJSON.message,
+                                    text: error.responseJSON.detail,
+                                    icon: 'error',
+                                }).then(() => {
 
-                            });
-                        }
-                    });
-                }
-            })
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
 
         function getListSupplier(){

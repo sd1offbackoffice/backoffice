@@ -395,10 +395,7 @@
         }
 
         function print(){
-            swal({
-                title: 'Unable to run report!',
-                icon: 'error'
-            });
+            window.open(`{{ url()->current() }}/print`,'_blank');
         }
     </script>
 @endsection

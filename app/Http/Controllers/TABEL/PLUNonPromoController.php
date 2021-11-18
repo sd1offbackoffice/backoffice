@@ -32,7 +32,7 @@ class PLUNonPromoController extends Controller
         $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
             ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
             ->where('prd_kodeigr','=',$_SESSION['kdigr'])
-            ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
+            ->whereRaw("substr(prd_prdcd,7,1) = '0'")
             ->orderBy('prd_prdcd')
             ->get();
 
@@ -266,18 +266,6 @@ class PLUNonPromoController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('TABEL.plunonpromo-pdf',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Tabel PLU Yang Tidak Ikut Promo.pdf');
+        return view('TABEL.plunonpromo-pdf',compact(['perusahaan','data']));
     }
 }

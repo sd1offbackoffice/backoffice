@@ -1,5 +1,5 @@
 {{--ASSET LIST MASTER--}}
-{{-- DAFTAR HARGA JUAL BARU --}}
+{{-- DAFTAR PERUBAHAN HARGA JUAL --}}
 
 <div>
     <fieldset class="card border-dark">
@@ -133,7 +133,10 @@
             $('#menuADiv1Input').focus();
         }
     });
-    $('#menuADep1Input').on('focus',function(){
+    $('#menuADep1Input, #menuABtnDep1').on('focus',function(){
+        $('#minDep').val($('#menuADiv1Input').val());
+        $('#maxDep').val($('#menuADiv1Input').val()).change();
+
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
         }
@@ -141,7 +144,10 @@
             $('#menuADiv2Input').focus();
         }
     });
-    $('#menuADep2Input').on('focus',function(){
+    $('#menuADep2Input, #menuABtnDep2').on('focus',function(){
+        $('#minDep').val($('#menuADiv2Input').val());
+        $('#maxDep').val($('#menuADiv2Input').val()).change();
+
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
         }
@@ -152,7 +158,10 @@
             $('#menuADep1Input').focus();
         }
     });
-    $('#menuAKat1Input').on('focus',function(){
+    $('#menuAKat1Input, #menuABtnKat1').on('focus',function(){
+        $('#minKat').val($('#menuADep1Input').val());
+        $('#maxKat').val($('#menuADep1Input').val()).change();
+
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
         }
@@ -166,7 +175,10 @@
             $('#menuADep2Input').focus();
         }
     });
-    $('#menuAKat2Input').on('focus',function(){
+    $('#menuAKat2Input, #menuABtnKat2').on('focus',function(){
+        $('#minKat').val($('#menuADep2Input').val());
+        $('#maxKat').val($('#menuADep2Input').val()).change();
+
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
         }
@@ -206,11 +218,11 @@
             let index = checkDivExist($('#menuADiv1Input').val());
             if(index){
                 $('#menuADiv1Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#minDep').val($('#menuADiv1Input').val()).change();
+
                 $('#menuABtnDiv2').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#minDep').val('').change();
+
                 $('#menuADiv1Input').val('').change().focus();
             }
         }
@@ -235,11 +247,11 @@
             let index = checkDivExist($('#menuADiv2Input').val());
             if(index){
                 $('#menuADiv2Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#maxDep').val($('#menuADiv2Input').val()).change();
+
                 $('#menuABtnDep1').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#maxDep').val('').change();
+
                 $('#menuADiv2Input').val('').change();
             }
         }
@@ -256,17 +268,16 @@
         if($('#menuADep1Input').val() == ''){
             $('#menuABtnDep2').prop("hidden",true);
 
-
             $('#minKat').val('').change();
         }else{
             let index = checkDepExist($('#menuADep1Input').val());
             if(index){
                 $('#menuADep1Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#minKat').val($('#menuADep1Input').val()).change();
+
                 $('#menuABtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#minKat').val('').change();
+
                 $('#menuADep1Input').val('').change();
             }
         }
@@ -287,11 +298,11 @@
             let index = checkDepExist($('#menuADep2Input').val());
             if(index){
                 $('#menuADep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#maxKat').val($('#menuADep2Input').val()).change();
+
                 $('#menuABtnKat1').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#maxKat').val('').change();
+
                 $('#menuADep2Input').val('').change();
             }
         }
@@ -412,6 +423,6 @@
     }
 
     function menuACetak(){
-        alert('cetak menu a');
+        alert('cetak menu 2');
     }
 </script>

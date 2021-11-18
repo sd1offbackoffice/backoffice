@@ -1304,6 +1304,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-plu-detail', 'TABEL\PLUNonChargeController@getPLUDetail');
             Route::post('/add-plu', 'TABEL\PLUNonChargeController@addPLU');
             Route::post('/delete-plu', 'TABEL\PLUNonChargeController@deletePLU');
+            Route::get('/print', 'TABEL\PLUNonChargeController@print');
         });
 
         /*Leo*/
@@ -1319,6 +1320,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/delete-plu', 'TABEL\PLUNonRefundController@deletePLU');
             Route::post('/add-batch', 'TABEL\PLUNonRefundController@addBatch');
             Route::post('/delete-batch', 'TABEL\PLUNonRefundController@deleteBatch');
+            Route::get('/print', 'TABEL\PLUNonRefundController@print');
         });
 
         /*Leo*/

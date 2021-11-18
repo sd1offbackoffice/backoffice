@@ -133,7 +133,10 @@
             $('#menu2Div1Input').focus();
         }
     });
-    $('#menu2Dep1Input').on('focus',function(){
+    $('#menu2Dep1Input, #menu2BtnDep1').on('focus',function(){
+        $('#minDep').val($('#menu2Div1Input').val());
+        $('#maxDep').val($('#menu2Div1Input').val()).change();
+
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
         }
@@ -141,7 +144,10 @@
             $('#menu2Div2Input').focus();
         }
     });
-    $('#menu2Dep2Input').on('focus',function(){
+    $('#menu2Dep2Input, #menu2BtnDep2').on('focus',function(){
+        $('#minDep').val($('#menu2Div2Input').val());
+        $('#maxDep').val($('#menu2Div2Input').val()).change();
+
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
         }
@@ -152,7 +158,10 @@
             $('#menu2Dep1Input').focus();
         }
     });
-    $('#menu2Kat1Input').on('focus',function(){
+    $('#menu2Kat1Input, #menu2BtnKat1').on('focus',function(){
+        $('#minKat').val($('#menu2Dep1Input').val());
+        $('#maxKat').val($('#menu2Dep1Input').val()).change();
+
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
         }
@@ -166,7 +175,10 @@
             $('#menu2Dep2Input').focus();
         }
     });
-    $('#menu2Kat2Input').on('focus',function(){
+    $('#menu2Kat2Input, #menu2BtnKat2').on('focus',function(){
+        $('#minKat').val($('#menu2Dep2Input').val());
+        $('#maxKat').val($('#menu2Dep2Input').val()).change();
+
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
         }
@@ -206,11 +218,11 @@
             let index = checkDivExist($('#menu2Div1Input').val());
             if(index){
                 $('#menu2Div1Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#minDep').val($('#menu2Div1Input').val()).change();
+
                 $('#menu2BtnDiv2').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#minDep').val('').change();
+
                 $('#menu2Div1Input').val('').change().focus();
             }
         }
@@ -235,11 +247,11 @@
             let index = checkDivExist($('#menu2Div2Input').val());
             if(index){
                 $('#menu2Div2Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
-                $('#maxDep').val($('#menu2Div2Input').val()).change();
+
                 $('#menu2BtnDep1').prop("hidden",false);
             }else{
                 swal('', "Kode Divisi tidak terdaftar", 'warning');
-                $('#maxDep').val('').change();
+
                 $('#menu2Div2Input').val('').change();
             }
         }
@@ -256,17 +268,16 @@
         if($('#menu2Dep1Input').val() == ''){
             $('#menu2BtnDep2').prop("hidden",true);
 
-
             $('#minKat').val('').change();
         }else{
             let index = checkDepExist($('#menu2Dep1Input').val());
             if(index){
                 $('#menu2Dep1Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#minKat').val($('#menu2Dep1Input').val()).change();
+
                 $('#menu2BtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#minKat').val('').change();
+
                 $('#menu2Dep1Input').val('').change();
             }
         }
@@ -287,11 +298,11 @@
             let index = checkDepExist($('#menu2Dep2Input').val());
             if(index){
                 $('#menu2Dep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#maxKat').val($('#menu2Dep2Input').val()).change();
+
                 $('#menu2BtnKat1').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#maxKat').val('').change();
+
                 $('#menu2Dep2Input').val('').change();
             }
         }

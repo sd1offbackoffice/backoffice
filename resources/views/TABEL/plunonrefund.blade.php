@@ -33,8 +33,8 @@
                                 <div class="row form-group">
                                     <div class="col-sm"></div>
                                     <button class="col-sm-2 btn btn-primary mr-1" id="btn_proses" onclick="addPLU()">ADD</button>
-                                    <button class="col-sm-2 btn btn-primary" id="btn_proses" onclick="deleteByPLU()">DELETE</button>
-                                    <div class="col-sm-2"></div>
+                                    <button class="col-sm-2 btn btn-primary mr-1" id="btn_proses" onclick="deleteByPLU()">DELETE</button>
+                                    <button class="col-sm-2 btn btn-primary" id="btn_print" onclick="print()">PRINT</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -241,7 +241,6 @@
         body {
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
-            overflow-y: hidden;
         }
         label {
             color: #232443;
@@ -761,6 +760,10 @@
                     });
                 }
             });
+        }
+
+        function print(){
+            window.open(`{{ url()->current() }}/print`,'_blank');
         }
     </script>
 @endsection

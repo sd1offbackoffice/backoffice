@@ -22,48 +22,64 @@ class PromosiHoKeCabController extends Controller
         return view('FRONTOFFICE.PromosiHoKeCab');
     }
     public function DownBaru(Request $request){
-        set_time_limit(0);
-        $kodeigr = $_SESSION['kdigr'];
-        $p_sukses = "false";
-        $err_txt = "";
-        $connect = loginController::getConnectionProcedure();
-        $query = oci_parse($connect, "BEGIN IGR_IMPORT_DATA_PROMOSI2 (
-       '$kodeigr',
-       :err_txt,
-       :p_sukses
-    ); END;");
-        oci_bind_by_name($query, ':err_txt', $err_txt);
-        oci_bind_by_name($query, ':p_sukses', $p_sukses);
-        oci_execute($query);
+        try{
+//            set_time_limit(0);
+//
+//            $kodeigr = $_SESSION['kdigr'];
+//            $p_sukses = "false";
+//            $err_txt = "";
+//            $connect = loginController::getConnectionProcedure();
+//            $query = oci_parse($connect, "BEGIN IGR_IMPORT_DATA_PROMOSI2 (
+//       '$kodeigr',
+//       :err_txt,
+//       :p_sukses
+//    ); END;");
+//            oci_bind_by_name($query, ':err_txt', $err_txt,512);
+//            oci_bind_by_name($query, ':p_sukses', $p_sukses,512);
+//            oci_execute($query);
+//
+//
+//            if($p_sukses == "TRUE"){
+//                $msg = "Proses Tarik Data Berhasil";
+//            }else{
+//                $msg = "Proses Tarik Data GAGAL! --> ".$err_txt;
+//            }
+//            return response()->json($msg);
 
+//            $sql = oci_connect('igrmktho', $simulasi ? $_SESSION['connection'] : $_SESSION['dbPass'], ('172.20.28.24'. ':' . $_SESSION['dbPort'] . '/' . 'IGRMKTHO');
+//            $perusahaan = DB::connection('igrmktho')->table("tbmaster_perusahaan")->first();
+        }catch (\Exception $e){
+            $msg = "Proses Tarik Data GAGAL!!! --> ".$e->getMessage();
 
-        if($p_sukses == "TRUE"){
-            $msg = "Proses Tarik Data Berhasil";
-        }else{
-            $msg = "Proses Tarik Data GAGAL! --> ".$err_txt;
+            return response()->json($msg);
         }
-        return response()->json($msg);
     }
     public function DownEdit(Request $request){
-        set_time_limit(0);
-        $kodeigr = $_SESSION['kdigr'];
-        $p_sukses = "false";
-        $err_txt = "";
-        $connect = loginController::getConnectionProcedure();
-        $query = oci_parse($connect, "BEGIN IGR_UPDATE_DATA_PROMOSI2 (
+        try{
+            set_time_limit(0);
+            $kodeigr = $_SESSION['kdigr'];
+            $p_sukses = "false";
+            $err_txt = "";
+            $connect = loginController::getConnectionProcedure();
+            $query = oci_parse($connect, "BEGIN IGR_UPDATE_DATA_PROMOSI2 (
        '$kodeigr',
        :err_txt,
        :p_sukses
     ); END;");
-        oci_bind_by_name($query, ':err_txt', $err_txt);
-        oci_bind_by_name($query, ':p_sukses', $p_sukses);
-        oci_execute($query);
+            oci_bind_by_name($query, ':err_txt', $err_txt,512);
+            oci_bind_by_name($query, ':p_sukses', $p_sukses,512);
+            oci_execute($query);
 
-        if($p_sukses == "TRUE"){
-            $msg = "Proses Tarik Data Berhasil";
-        }else{
-            $msg = "Proses Tarik Data GAGAL! --> ".$err_txt;
+            if($p_sukses == "TRUE"){
+                $msg = "Proses Tarik Data Berhasil";
+            }else{
+                $msg = "Proses Tarik Data GAGAL! --> ".$err_txt;
+            }
+            return response()->json($msg);
+        }catch (\Exception $e){
+            $msg = "Proses Tarik Data GAGAL!!! --> ".$e->getMessage();
+
+            return response()->json($msg);
         }
-        return response()->json($msg);
     }
 }

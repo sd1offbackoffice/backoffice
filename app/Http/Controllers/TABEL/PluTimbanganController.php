@@ -92,7 +92,7 @@ class PluTimbanganController extends Controller
                 DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
                     ->insert([
                         'tmb_kodeigr' => $_SESSION['kdigr'],
-                        'tmb_prdcd' => substr($plu,1,6).'0',
+                        'tmb_prdcd' => substr($plu,0,6).'0',
                         'tmb_kode' => $kode,
                         'tmb_deskripsi1' => $desk,
                         'tmb_create_by' => $_SESSION['usid'],
@@ -103,7 +103,7 @@ class PluTimbanganController extends Controller
             }else if((int)($temppr->a) != 0){
                 DB::connection($_SESSION['connection'])->beginTransaction();
                 DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
-                    ->where('tmb_prdcd', '=',substr($plu,1,6).'0')
+                    ->where('tmb_prdcd', '=',substr($plu,0,6).'0')
                     ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => $_SESSION['usid'], 'tmb_MODIFY_DT' => DB::RAW("SYSDATE")]);
                 DB::connection($_SESSION['connection'])->commit();
                 return response()->json(3);
@@ -1230,13 +1230,10 @@ WHERE PRS_KODEIGR = '$kodeigr'
         $search = $request->kode;
 
         $datas   = DB::connection($_SESSION['connection'])->table('TBTABEL_PLUTIMBANGAN')
-            ->selectRaw("TMB_DESKRIPSI1, TMB_KODE, PRD_FRAC, PRD_HRGJUAL")
-//            ->leftJoin("TBMASTER_PRODMAST","TBTABEL_PLUTIMBANGAN.TMB_PRDCD",'=','TBMASTER_PRODMAST.PRD_PRDCD ')
-            ->LeftJoin('TBMASTER_PRODMAST',function($join){
-                $join->on('TMB_PRDCD','PRD_PRDCD');
-            })
-            ->where('TMB_KODE','=', $search)
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->selectRaw("TMB_DESKRIPSI1, TMB_KODE")
+
+            ->where('TMB_PRDCD','=', substr($search,0,6).'0')
+            ->where('tmb_kodeigr','=',$_SESSION['kdigr'])
 
             ->first();
 

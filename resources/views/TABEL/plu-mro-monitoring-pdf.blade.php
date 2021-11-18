@@ -41,7 +41,7 @@
         @php $no = 1; @endphp
         @foreach($data as $d)
             <tr>
-                <td width="6%" class="center">{{ substr('0000'.$no++, -4) }}</td>
+                <td width="6%" class="center">{{ $no++ }}</td>
                 <td width="6%" class="center">{{ $d->mpl_prdcd }}</td>
                 <td width="34%" class="left">{{ $d->prd_desc }}</td>
                 <td width="3%" class="center">{{ $d->prd_kodetag }}</td>
