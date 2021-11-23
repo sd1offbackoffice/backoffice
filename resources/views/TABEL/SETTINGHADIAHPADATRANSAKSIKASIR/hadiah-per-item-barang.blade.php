@@ -17,36 +17,38 @@
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
-                            <input class="col-sm-8 text-left form-control" type="text" id="ketTrans" disabled>
+                            <input class="col-sm-6 text-left form-control" type="text" id="ketTrans" disabled>
                         </div>
                         <br>
 
                         {{--PERIODE DAN SYARAT PEMBELIAN/STRUK--}}
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-center">PERIODE :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Tanggal</label>
-                                    <input class="col-sm-8 text-center form-control" type="text" id="daterangepicker">
+                                    <label class="col-sm-4 col-form-label text-right">Tanggal</label>
+                                    <div class="col-sm-5">
+                                        <input class="text-center form-control" type="text" id="daterangepicker">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-left">SYARAT PEMBELIAN / STRUK :</span>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">Min PCS</label>
-                                    <input class="col-sm-4 text-center form-control" type="number" id="minPcs" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <input class="col-sm-2 text-right form-control" type="number" id="minPcs" min="0" value="0" onkeypress="return isNumberKey(event)">
                                     <label class="col-sm-2 col-form-label text-right">Max PCS</label>
-                                    <input class="col-sm-4 text-center form-control" type="number" id="maxPcs" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <input class="col-sm-2 text-right form-control" type="number" id="maxPcs" min="0" value="0" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">Min Rph</label>
-                                    <input class="col-sm-4 text-center form-control" type="number" id="minRph" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                    <input class="col-sm-2 text-right form-control" type="number" id="minRph" min="0" value="1" onkeypress="return isNumberKey(event)">
                                     <label class="col-sm-2 col-form-label text-right">Max RPH</label>
-                                    <input class="col-sm-4 text-center form-control" type="number" id="maxRph" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <input class="col-sm-2 text-right form-control" type="number" id="maxRph" min="0" value="0" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                         </div>
@@ -61,68 +63,83 @@
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
-                            <input class="col-sm-8 text-left form-control" type="text" id="ketHadiah" disabled>
+                            <input class="col-sm-6 text-left form-control" type="text" id="ketHadiah" disabled>
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Jumlah yang diperoleh</label>
-                            <input class="col-sm-2 text-center form-control" type="number" id="jumlahHadiah" min="1" value="1" onkeypress="return isNumberKey(event)">
+                            <div class="col-sm-1">
+                                <input class="text-right form-control" type="number" id="jumlahHadiah" min="1" value="1" onkeypress="return isNumberKey(event)">
+                            </div>
+
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Kelipatan</label>
-                            <input class="col-sm-1 text-center form-control" type="text" id="kelipatan" onkeypress="return isYT(event)" maxlength="1">
+                            <div class="col-sm-1">
+                                <input class="text-center form-control" type="text" id="kelipatan" onkeypress="return isYT(event)" maxlength="1">
+                            </div>
                             <label class="col-sm-2 col-form-label text-left">[ Y / T ]</label>
                         </div>
                         <br>
 
                         {{--PEROLEHAN/MEMBER/HARI DAN ALOKASI PER HARI :--}}
                         <div class="row">
-                            <div class="col-sm-5">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-center">PEROLEHAN / MEMBER / HARI :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Max JML</label>
-                                    <input class="col-sm-8 text-center form-control" type="number" id="jmlPerhari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Max JML</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="jmlPerhari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Max Frek</label>
-                                    <input class="col-sm-6 text-center form-control" type="number" id="maxFrekHadiah" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Max Frek</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="maxFrekHadiah" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">x</label>
                                 </div>
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12">ALOKASI PER HARI :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-4 col-form-label text-right">Max Pengeluaran Hadiah Per Hari</label>
-                                    <input class="col-sm-6 text-center form-control" type="number" id="maxKeluar" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-5 col-form-label text-right">Max Pengeluaran Hadiah Per Hari</label>
+                                    <input class="col-sm-2 text-right form-control" type="number" id="maxKeluar" min="0" value="0" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                         </div>
 
                         {{--TOTAL ALOKASI HADIAH DAN JENIS MEMBER--}}
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-center">TOTAL ALOKASI HADIAH :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Alokasi</label>
-                                    <input class="col-sm-6 text-center form-control" type="number" id="alokasi" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Alokasi</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="alokasi" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Tersisa</label>
-                                    <input class="col-sm-6 text-center form-control" type="number" id="sisa" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Tersisa</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="sisa" min="0" value="0" onkeypress="return isNumberKey(event)" disabled>
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">PCS</label>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-2 col-form-label text-right">Terpakai</label>
-                                    <input class="col-sm-6 text-center form-control" type="number" id="pakai" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Terpakai</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="pakai" min="0" value="0" onkeypress="return isNumberKey(event)" disabled>
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">PCS</label>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12">JENIS MEMBER : &nbsp;&nbsp;[ ENTER = CHECKED / UNCHECKED]</span>
                                 </div>
@@ -167,17 +184,20 @@
 
                         {{--EVENT PROMOSI--}}
                         <div class="row">
+                            <span style="text-decoration: underline" class="col-sm-4 text-right">EVENT PROMOSI</span>
+                        </div>
+                        <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Hadiah Ini Untuk Event Promo</label>
-                            <input class="col-sm-6 text-center form-control" type="text" id="keterangan">
+                            <input class="col-sm-6 text-left form-control" type="text" id="keterangan">
                         </div>
                         <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Max Frek</label>
-                            <input class="col-sm-6 text-center form-control" type="number" id="maxFrekPrevent" min="0" value="0" onkeypress="return isNumberKey(event)">
+                            <input class="col-sm-1 text-right form-control" type="number" id="maxFrekPrevent" min="0" value="0" onkeypress="return isNumberKey(event)">
                             <label class="col-sm-2 col-form-label text-left">x</label>
                         </div>
                         <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Max PCS</label>
-                            <input class="col-sm-6 text-center form-control" type="number" id="maxJmlPrevent" min="0" value="1" onkeypress="return isNumberKey(event)">
+                            <input class="col-sm-1 text-right form-control" type="number" id="maxJmlPrevent" min="0" value="1" onkeypress="return isNumberKey(event)">
                         </div>
                         <br>
 
@@ -916,6 +936,8 @@
                 $('#pluTrans').prop('disabled', true);
                 $('#ketTrans').prop('disabled', true);
                 $('#ketHadiah').prop('disabled', true);
+                $('#sisa').prop('disabled', true);
+                $('#pakai').prop('disabled', true);
             }
         }
 

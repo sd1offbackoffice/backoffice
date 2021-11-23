@@ -6,7 +6,7 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
-                    <legend class="w-auto ml-5">{{$_SESSION['connection']}} Ketik PLU / Deskripsi / Scan Barcode
+                    <legend class="w-auto ml-5">Ketik PLU / Deskripsi / Scan Barcode
                         Barang
                     </legend>
                     <div class="card-body">
@@ -1546,6 +1546,7 @@
                             $('#flagidm').val(response['flag'].IDM);
                             /*ITEM*/
                             $('#item').text(response['ITEM']);
+
                             // for (i = 0; i < 12; i++) {
                             //     c = i + 1;
                             //     $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +

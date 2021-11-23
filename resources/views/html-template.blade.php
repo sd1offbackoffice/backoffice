@@ -67,11 +67,6 @@
         .content-wrapper{
             padding: 0;
         }
-
-        tfoot.report-footer{
-            position: fixed;
-            bottom: 0;
-        }
     }
 
     header {
@@ -163,11 +158,11 @@
         padding: 0.50rem;
     }
 
-    .table tbody td.padding-right, .table thead th.padding-right{
+    .table tbody td.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
         padding-right: 10px !important;
     }
 
-    .table tbody td.padding-left, .table thead th.padding-left{
+    .table tbody td.padding-left, .table thead th.padding-left, .table tfoot th.padding-left{
         padding-left: 10px !important;
     }
 
@@ -234,12 +229,8 @@
                 <th class="report-header-cell">
                     <div class="header-info">
                         <div class="left" style="float:left; margin-top: 0px; line-height: 8px !important;">
-                            <p>
-                                {{ $perusahaan->prs_namaperusahaan }}
-                            </p>
-                            <p>
-                                {{ $perusahaan->prs_namacabang }}
-                            </p>
+                            <p>{{ $perusahaan->prs_namaperusahaan }}</p>
+                            <p>{{ $perusahaan->prs_namacabang }}</p>
                             @yield('header_left')
                         </div>
                         <div class="left" style="float:right; margin-top: 0px; line-height: 8px !important;">
@@ -255,6 +246,7 @@
                             <p>
 {{--                                Hal. : <span id="pageNumber"></span>--}}
                             </p>
+                            @yield('header_right')
                         </div>
                         <div class="center">
                             <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
@@ -265,6 +257,9 @@
                             </p>
                         </div>
                     </div>
+                    <div class="center" style="clear:both">
+                        @yield('header_optional')
+                    </div>
                 </th>
             </tr>
             </thead>
@@ -272,7 +267,7 @@
                 <tr>
                     <td class="report-footer-cell">
                         <div class="footer-info">
-
+                            @yield('ttd')
                         </div>
                     </td>
                 </tr>
@@ -283,8 +278,13 @@
                     <div class="main">
                         <div class="article">
                             <main>
-                                @yield('content')
+                                @if(sizeof($data) == 0)
+                                    <h4 class="center">TIDAK ADA DATA</h4>
+                                @else
+                                    @yield('content')
+                                @endif
                                 <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
+
                             </main>
                         </div>
                     </div>

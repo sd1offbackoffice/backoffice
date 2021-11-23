@@ -489,6 +489,7 @@
                 $('#modal-loader').modal('show');
                 $('#kode-monitoring-2').val($('#kode-monitoring').val());
                 $('#nama-monitoring-2').val($('#nama-monitoring').val());
+
                 if ($.fn.DataTable.isDataTable('#table_data')) {
                     $('#table_data').DataTable().destroy();
                     $("#table_data tbody [role='row']").remove();
@@ -499,6 +500,7 @@
                         "data": {
                             bulan: $('#bulan').val(),
                             kodemonitoring: $('#kode-monitoring').val(),
+                            namamonitoring: $('#nama-monitoring').val(),
                             periode1: $('#periode-1').val(),
                             periode2: $('#periode-2').val(),
                             plu1: $('#plu-1').val() == '' ? '0000000' : $('#plu-1').val(),
@@ -529,8 +531,8 @@
                     "responsive": true,
                     "createdRow": function (row, data, dataIndex) {
                         $(row).addClass('modalRow row-data');
-                        $(row).attr('data', data.deskripsi);
                     },
+                    "order": [[ 2, "desc" ]],
                     "columnDefs": [
                         {
                             "targets": [1],
@@ -543,14 +545,14 @@
                             "targets": [2],
                             "className": 'text-right',
                             "render": function (data, type, row) {
-                                return convertToRupiah2(data);
+                                return convertToRupiah2(parseFloat(data));
                             }
                         },
                         {
                             "targets": [3],
                             "className": 'text-right',
                             "render": function (data, type, row) {
-                                return convertToRupiah2(data);
+                                return convertToRupiah2(parseFloat(data));
                             }
                         },
                         {
@@ -606,7 +608,22 @@
                         $('#modal-loader').modal('hide');
 
                         $(document).on('click', '.row-data', function (e) {
-                            $('#deskripsi').val($(this).attr('data'));
+                            $.ajax({
+                                url: '{{ url()->current() }}/get-data-deskripsi',
+                                data: {
+                                    plu : $(this).find('td:eq(0)').html()
+                                },
+                                type: 'GET',
+                                beforeSend: function () {
+                                    $('#modal-loader').modal('show');
+                                },
+                                success: function (response) {
+                                    $('#deskripsi').val(response);
+                                },
+                                complete: function () {
+                                    $('#modal-loader').modal('hide');
+                                }
+                            });
                         });
                     }
                 });

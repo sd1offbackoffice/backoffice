@@ -1,5 +1,5 @@
 {{--ASSET LIST MASTER--}}
-{{-- DAFTAR PRODUK --}}
+{{-- DAFTAR STATUS TAG BAR --}}
 
 <div>
     <fieldset class="card border-dark">
@@ -43,7 +43,6 @@
             <div class="col-sm-4">
                 <input id="menuCKat1Desk" class="form-control" type="text" disabled>
             </div>
-            <input id="menuCKat1HiddenVal" class="form-control" type="text" hidden>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
@@ -58,6 +57,32 @@
                 <input id="menuCKat2Desk" class="form-control" type="text" disabled>
             </div>
             <input id="menuCKat2HiddenVal" class="form-control" type="text" hidden>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right col-form-label">Mulai PLU</label>
+            <div class="col-sm-3 buttonInside">
+                <input id="menuCPlu1Input" class="form-control" type="text">
+                <button id="menuCBtnPlu1" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                        data-target="#pluModal">
+                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                </button>
+            </div>
+            <div class="col-sm-4">
+                <input id="menuCPlu1Desk" class="form-control" type="text" disabled>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right col-form-label">Sampai PLU</label>
+            <div class="col-sm-3 buttonInside">
+                <input id="menuCPlu2Input" class="form-control" type="text">
+                <button id="menuCBtnPlu2" type="button" class="btn btn-lov p-0" data-toggle="modal"
+                        data-target="#pluModal">
+                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                </button>
+            </div>
+            <div class="col-sm-4">
+                <input id="menuCPlu2Desk" class="form-control" type="text" disabled>
+            </div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Status</label>
@@ -76,19 +101,15 @@
 
 <script>
     //Fungsi isi berurutan
-    let depLimiter = 0;
-    $('#menuCDep1Input, #menuCBtnDep1').on('focus',function(){
-        $('#filtererDep').val('').change();
-    });
-    $('#menuCDep2Input, #menuCBtnDep2').on('focus',function(){
-        $('#filtererDep').val($('#menuCDep1Input').val()).change();
+    $('#menuCDep2Input').on('focus',function(){
         if($('#menuCDep1Input').val() == ''){
             $('#menuCDep1Input').focus();
         }
     });
     $('#menuCKat1Input, #menuCBtnKat1').on('focus',function(){
-        $('#filtererKat').val('');
-        $('#filtererKat_Dep').val('').change();
+        $('#minKat').val($('#menuCDep1Input').val());
+        $('#maxKat').val($('#menuCDep1Input').val()).change();
+
         if($('#menuCDep1Input').val() == ''){
             $('#menuCDep1Input').focus();
         }
@@ -97,8 +118,9 @@
         }
     });
     $('#menuCKat2Input, #menuCBtnKat2').on('focus',function(){
-        $('#filtererKat').val($('#menuCKat1Input').val());
-        $('#filtererKat_Dep').val($('#menuCKat1HiddenVal').val()).change();
+        $('#minKat').val($('#menuCDep2Input').val());
+        $('#maxKat').val($('#menuCDep2Input').val()).change();
+
         if($('#menuCDep1Input').val() == ''){
             $('#menuCDep1Input').focus();
         }
@@ -122,14 +144,12 @@
         if($('#menuCDep1Input').val() == ''){
             $('#menuCBtnDep2').prop("hidden",true);
 
-
             $('#minKat').val('').change();
         }else{
             let index = checkDepExist($('#menuCDep1Input').val());
             if(index){
                 $('#menuCDep1Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                // $('#filtererDep').val($('#menuCDep1Input').val()).change();
-                $('#minKat').val($('#menuCDep1Input').val()).change();
+
                 $('#menuCBtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
@@ -154,10 +174,10 @@
             let index = checkDepExist($('#menuCDep2Input').val());
             if(index){
                 $('#menuCDep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
-                $('#maxKat').val($('#menuCDep2Input').val()).change();
+
                 $('#menuCBtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar atau lebih kecil dari kode sebelumnya", 'warning');
+                swal('', "Kode Departement tidak terdaftar", 'warning');
                 $('#maxKat').val('').change();
                 $('#menuCDep2Input').val('').change();
             }
@@ -170,16 +190,11 @@
         $('#menuCKat2Desk').val('');
         if($('#menuCKat1Input').val() == ''){
             $('#menuCBtnKat2').prop("hidden",true);
-            $('#menuCKat1HiddenVal').val('');
+
         }else{
-            let kodeDep = '';
-            if($('#menuCKat1HiddenVal').val() != ''){
-                kodeDep = $('#menuCKat1HiddenVal').val();
-            }
-            let index = checkKatExist($('#menuCKat1Input').val(), kodeDep);
+            let index = checkKatExist($('#menuCKat1Input').val());
             if(index){
                 $('#menuCKat1Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                $('#menuCKat1HiddenVal').val(tableKategori.row(index-1).data()['kat_kodedepartement']);
                 // $('#minKat').val($('#menuCKat1Input').val()).change();
                 $('#menuCBtnKat2').prop("hidden",false);
             }else{
@@ -191,20 +206,13 @@
     });
     $('#menuCKat2Input').on('change',function(){
         $('#menuCKat2Desk').val('');
-
         if($('#menuCKat2Input').val() == ''){
             //code here
-            $('#menuCKat2HiddenVal').val('');
         }else{
             //code here
-            let kodeDep = '';
-            if($('#menuCKat2HiddenVal').val() != ''){
-                kodeDep = $('#menuCKat2HiddenVal').val();
-            }
-            let index = checkKatExist($('#menuCKat2Input').val(),kodeDep);
+            let index = checkKatExist($('#menuCKat2Input').val());
             if(index){
                 $('#menuCKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                $('#menuCKat2HiddenVal').val(tableKategori.row(index-1).data()['kat_kodedepartement']);
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
                 // $('#minKat').val('').change();
@@ -213,56 +221,39 @@
         }
     });
 
-    //Tag berurutan
-    $('#menuCTag2').on('focus',function(){
-        if($('#menuCTag1').val() == ''){
-            $('#menuCTag1').focus();
+    $('#menuCPlu1Input').on('change',function(){
+        // $('#menuCPlu2Input').val('').change();
+
+        $('#menuCPlu1Desk').val('');
+        // $('#menuCPlu2Desk').val('');
+        if($('#menuCPlu1Input').val() == ''){
+            // $('#menuCBtnPlu2').prop("hidden",true);
+        }else{
+            let deskripsi = checkPluExist($('#menuCPlu1Input').val());
+            if(deskripsi != "false"){
+                deskripsi = deskripsi.prd_deskripsipanjang;
+                $('#menuCPlu1Desk').val(deskripsi);
+                // $('#menuCBtnPlu2').prop("hidden",false);
+            }else{
+                swal('', "Kode Plu tidak terdaftar", 'warning');
+                $('#menuCPlu1Input').val('').change();
+            }
         }
     });
-    $('#menuCTag3').on('focus',function(){
-        if($('#menuCTag1').val() == ''){
-            $('#menuCTag1').focus();
-        }else if($('#menuCTag2').val() == ''){
-            $('#menuCTag2').focus();
+    $('#menuCPlu2Input').on('change',function(){
+        $('#menuCPlu2Desk').val('');
+        if($('#menuCPlu2Input').val() == ''){
+            // code here
+        }else{
+            let deskripsi = checkPluExist($('#menuCPlu2Input').val());
+            if(deskripsi != "false"){
+                deskripsi = deskripsi.prd_deskripsipanjang;
+                $('#menuCPlu2Desk').val(deskripsi);
+            }else{
+                swal('', "Kode Plu tidak terdaftar", 'warning');
+                $('#menuCPlu2Input').val('').change();
+            }
         }
-    });
-    $('#menuCTag4').on('focus',function(){
-        if($('#menuCTag1').val() == ''){
-            $('#menuCTag1').focus();
-        }else if($('#menuCTag2').val() == ''){
-            $('#menuCTag2').focus();
-        }else if($('#menuCTag3').val() == ''){
-            $('#menuCTag3').focus();
-        }
-    });
-    $('#menuCTag5').on('focus',function(){
-        if($('#menuCTag1').val() == ''){
-            $('#menuCTag1').focus();
-        }else if($('#menuCTag2').val() == ''){
-            $('#menuCTag2').focus();
-        }else if($('#menuCTag3').val() == ''){
-            $('#menuCTag3').focus();
-        }else if($('#menuCTag4').val() == ''){
-            $('#menuCTag4').focus();
-        }
-    });
-    $('#menuCTag1').on('change',function(){
-        $('#menuCTag2').val('');
-        $('#menuCTag3').val('');
-        $('#menuCTag4').val('');
-        $('#menuCTag5').val('');
-    });
-    $('#menuCTag2').on('change',function(){
-        $('#menuCTag3').val('');
-        $('#menuCTag4').val('');
-        $('#menuCTag5').val('');
-    });
-    $('#menuCTag3').on('change',function(){
-        $('#menuCTag4').val('');
-        $('#menuCTag5').val('');
-    });
-    $('#menuCTag4').on('change',function(){
-        $('#menuCTag5').val('');
     });
 
     function menuCChoose(val){
@@ -286,17 +277,29 @@
                 }, 10);
                 break;
             case "Kat1":
-                $('#menuCKat1HiddenVal').val(tableKategori.row( val ).data()['kat_kodedepartement']);
                 $('#menuCKat1Input').val(kode).change();
                 setTimeout(function() {
                     $('#menuCKat1Input').focus();
                 }, 10);
                 break;
             case "Kat2":
-                $('#menuCKat2HiddenVal').val(tableKategori.row( val ).data()['kat_kodedepartement']);
                 $('#menuCKat2Input').val(kode).change();
                 setTimeout(function() {
                     $('#menuCKat2Input').focus();
+                }, 10);
+                break;
+            case "Plu1":
+                $('#menuCPlu1Input').val(kode).change();
+                // $('#menuCDiv2Desk').val(namadivisi);
+                setTimeout(function() {
+                    $('#menuCPlu1Input').focus();
+                }, 10);
+                break;
+            case "Plu2":
+                $('#menuCPlu2Input').val(kode).change();
+                // $('#menuCDiv2Desk').val(namadivisi);
+                setTimeout(function() {
+                    $('#menuCPlu2Input').focus();
                 }, 10);
                 break;
         }
@@ -310,6 +313,8 @@
         $('#menuCDep2Desk').val('');
         $('#menuCKat1Desk').val('');
         $('#menuCKat2Desk').val('');
+        $('#menuCPlu1Input').val('').change();
+        $('#menuCPlu2Input').val('').change();
 
         $('#menuCStatus').val(0);
 

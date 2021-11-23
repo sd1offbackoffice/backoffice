@@ -12,13 +12,13 @@
                         <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Tipe Rak : </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="tipeRak">
+                                <input type="text" class="form-control" id="tipeRak" maxlength="1">
                             </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Nama Rak : </label>
                             <div class="col-sm-5">
-                                <input type="text" class="form-control" id="namaRak">
+                                <input type="text" class="form-control" id="namaRak" maxlength="20">
                             </div>
                         </div>
                         <br>
@@ -218,7 +218,6 @@
             swal({
                 title: 'DATA sudah benar ?',
                 icon: 'warning',
-                dangerMode: true,
                 buttons: true,
             }).then(function (confirm) {
                 if (confirm){
@@ -228,6 +227,20 @@
                             status = 'update';
                             break;
                         }
+                    }
+                    if($('#tipeRak').val().length > 1){
+                        swal({
+                            title: 'Tipe Rak tidak boleh lebih dari 1 character',
+                            icon: 'warning'
+                        });
+                        return false;
+                    }
+                    if($('#namaRak').val().length > 20){
+                        swal({
+                            title: 'Nama Rak tidak boleh lebih dari 20 character',
+                            icon: 'warning'
+                        });
+                        return false;
                     }
                     $.ajax({
                         url: '{{ url()->current() }}/save',
@@ -243,9 +256,14 @@
                         beforeSend: function () {
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
-                        success: function () {
+                        success: function (response) {
                             LoadData();
-                            if(status == 'insert'){
+                            if(response.status == 'error'){
+                                swal({
+                                    title: response.message,
+                                    icon: 'warning'
+                                });
+                            }else if(status == 'insert'){
                                 swal({
                                     title: 'INSERT',
                                     icon: 'info'

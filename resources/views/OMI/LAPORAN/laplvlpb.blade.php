@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <fieldset class="card border-dark">
-{{--                    <legend class="w-auto ml-5">LAPORAN SERVICE LEVEL PB</legend>--}}
+                    <legend class="w-auto ml-5">LAPORAN SERVICE LEVEL PB [GA DIPAKE!]</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">

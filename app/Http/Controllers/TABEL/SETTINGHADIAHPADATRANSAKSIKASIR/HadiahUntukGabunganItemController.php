@@ -300,6 +300,9 @@ class HadiahUntukGabunganItemController extends Controller
             $platinum = $request->platinum;
 
             $produk = $request->produksponsor;
+            if($produk == null){
+                $produk = [];
+            }
 
             if($status == 'new'){
                 $nomor = '';

@@ -26,7 +26,7 @@
 @section('content')
 
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
-        <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
+        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
             <tr>
                 <th rowspan="2" style="text-align: left; vertical-align: middle; width: 5%">PLU</th>
                 <th rowspan="2" style="text-align: left; vertical-align: middle; width: 40%">Deskripsi</th>
@@ -42,7 +42,7 @@
                 <th style="text-align: center; vertical-align: middle; width: 8%">SELESAI</th>
             </tr>
         </thead>
-        <tbody style="border-bottom: 2px solid black;">
+        <tbody>
         @for($i=0;$i<sizeof($data);$i++)
             <tr>
                 <td style="text-align: left">{{$data[$i]->prmd_prdcd}}</td>

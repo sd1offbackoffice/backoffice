@@ -265,7 +265,7 @@
                 },
                 success: function (response) {
                     swal({
-                        title: response.title,
+                        title: 'BERHASIL',
                         icon: 'success'
                     }).then(() => {
                         ClearForm();

@@ -38,7 +38,7 @@ class TipeRakBarangController extends Controller
             $status = 'error';
             $message = $e->getMessage();
 
-            return compact(['status' => $status,'message' => $message]);
+            return response()->json(['status' => $status,'message' => $message]);
         }
     }
 
@@ -74,7 +74,7 @@ class TipeRakBarangController extends Controller
             $status = 'error';
             $message = $e->getMessage();
 
-            return compact(['status' => $status,'message' => $message]);
+            return response()->json(['status' => $status,'message' => $message]);
         }
     }
     public function hapus(Request $request){
@@ -93,7 +93,7 @@ class TipeRakBarangController extends Controller
             $status = 'error';
             $message = $e->getMessage();
 
-            return compact(['status' => $status,'message' => $message]);
+            return response()->json(['status' => $status,'message' => $message]);
         }
 
 

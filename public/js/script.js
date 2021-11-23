@@ -82,7 +82,7 @@ function formatDateCustom(value,format) {
 
 
 function nvl(value,param) {
-    if(value==null || value=="" || value=="null" || value==" " || value=="NaN" ){
+    if((value==null || value=="" || value=="null" || value==" " || value=="NaN" ) && value != 0){
         return param;
     }
     else

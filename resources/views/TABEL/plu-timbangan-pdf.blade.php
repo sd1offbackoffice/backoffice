@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','8 px')
 
@@ -35,7 +35,7 @@
                 <th style="text-align: right; width: 100px;">KODE TIMBANGAN</th>
             </tr>
         </thead>
-        <tbody style="border-bottom: 2px solid black; text-align: left">
+        <tbody style="text-align: left">
         @for($i=0;$i<sizeof($data);$i++)
             <tr>
                 <td>{{$data[$i]->plu}}</td>

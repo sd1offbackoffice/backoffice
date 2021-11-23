@@ -26,14 +26,14 @@ class JenisRakBarangController extends Controller
             $data = DB::connection($_SESSION['connection'])
                 ->table("tbtabel_jenisrak")
                 ->select('jrak_kodejenisrak', 'jrak_namajenisrak', 'jrak_mindisplay')
-                ->orderBy('jrak_kodejenisrak')
+                ->orderBy(DB::raw('rownum'))
                 ->first();
         }else{
             $data = DB::connection($_SESSION['connection'])
                 ->table("tbtabel_jenisrak")
                 ->select('jrak_kodejenisrak', 'jrak_namajenisrak','jrak_mindisplay')
                 ->where('jrak_kodejenisrak','=',$koderak)
-                ->orderBy('jrak_kodejenisrak')
+                ->orderBy(DB::raw('rownum'))
                 ->first();
         }
         return compact(['data']);
@@ -85,15 +85,14 @@ class JenisRakBarangController extends Controller
                                   FROM (SELECT rownum col, jrak_kodejenisrak
                                           FROM (SELECT   jrak_kodejenisrak
                                                     FROM tbtabel_jenisrak
-                                                ORDER BY jrak_kodejenisrak))
+                                                ORDER BY rownum))
                                  WHERE jrak_kodejenisrak = '" . $currentKodeRak . "'")[0]->col;
         $nextRow = intval($currentRow) - 1;
-
         if ($nextRow != 0) {
             $data = DB::connection($_SESSION['connection'])->select("SELECT jrak_kodejenisrak, jrak_namajenisrak, jrak_mindisplay
                                           FROM (SELECT rownum col, jrak_kodejenisrak, jrak_namajenisrak, jrak_mindisplay
                                                     FROM tbtabel_jenisrak
-                                                ORDER BY jrak_kodejenisrak)
+                                                ORDER BY rownum)
                                                 WHERE col= " . $nextRow)[0];
             return compact(['data']);
         }
@@ -107,7 +106,7 @@ class JenisRakBarangController extends Controller
                                   FROM (SELECT rownum col, jrak_kodejenisrak
                                           FROM (SELECT   jrak_kodejenisrak
                                                     FROM tbtabel_jenisrak
-                                                ORDER BY jrak_kodejenisrak))
+                                                ORDER BY rownum))
                                  WHERE jrak_kodejenisrak = '" . $currentKodeRak . "'")[0]->col;
         $nextRow = intval($currentRow) + 1;
         $length = DB::connection($_SESSION['connection'])->table("tbtabel_jenisrak")->count();
@@ -116,7 +115,7 @@ class JenisRakBarangController extends Controller
             $data = DB::connection($_SESSION['connection'])->select("SELECT jrak_kodejenisrak, jrak_namajenisrak, jrak_mindisplay
                                           FROM (SELECT rownum col, jrak_kodejenisrak, jrak_namajenisrak, jrak_mindisplay
                                                     FROM tbtabel_jenisrak
-                                                ORDER BY jrak_kodejenisrak)
+                                                ORDER BY rownum)
                                                 WHERE col= " . $nextRow)[0];
             return compact(['data']);
         }

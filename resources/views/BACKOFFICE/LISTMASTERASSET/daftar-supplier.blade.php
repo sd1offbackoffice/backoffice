@@ -3,7 +3,7 @@
 
 <div>
     <fieldset class="card border-dark">
-{{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
+{{--        <legend class="w-auto ml-5">Daftar Supplier</legend>--}}
         <br>
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>

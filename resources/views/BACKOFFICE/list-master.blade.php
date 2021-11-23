@@ -77,12 +77,12 @@
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member-jatuh-tempo')
                     </div>
 
-                    {{--### Menu 9 === Daftar Anggota atau Member Jatuh Tempo ###--}}
+                    {{--### Menu 9 === Daftar Anggota atau Member Expired ###--}}
                     <div id="menu9" class="subMenu card-body shadow-lg cardForm" hidden>
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-anggota-or-member-expired')
                     </div>
 
-                    {{--### Menu A === Daftar Anggota atau Member Jatuh Tempo ###--}}
+                    {{--### Menu A === Daftar Harga Jual Baru ###--}}
                     <div id="menuA" class="subMenu card-body shadow-lg cardForm" hidden>
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-harga-jual-baru')
                     </div>
@@ -95,6 +95,26 @@
                     {{--### Menu C === Daftar Status Tag Bar Code ###--}}
                     <div id="menuC" class="subMenu card-body shadow-lg cardForm" hidden>
                         @include('BACKOFFICE.LISTMASTERASSET.daftar-status-tag-bar-code')
+                    </div>
+
+                    {{--### Menu D === Master Display ###--}}
+                    <div id="menuD" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.master-display')
+                    </div>
+
+                    {{--### Menu E === Master Display DIV/DEPT/KATB ###--}}
+                    <div id="menuE" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.master-display-div-dept-katb')
+                    </div>
+
+                    {{--### Menu F === Daftar Margin Negatif VS MCG ### Note: Menurut Ias Lama, form ini sama dengan Margin Negatif--}}
+                    <div id="menuF" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-margin-negatif-vs-mcg')
+                    </div>
+
+                    {{--### Menu G === Master Supplier By Hari Kunjungan ###--}}
+                    <div id="menuG" class="subMenu card-body shadow-lg cardForm" hidden>
+                        @include('BACKOFFICE.LISTMASTERASSET.daftar-supplier-by-hari-kunjungan')
                     </div>
                     <br>
                     <div class="d-flex justify-content-end">
@@ -391,6 +411,107 @@
         </div>
     </div>
 
+    {{--Modal PLU--}}
+    <div class="modal fade" id="pluModal" tabindex="-1" role="dialog" aria-labelledby="pluModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daftar Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalPlu">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Deskripsi Barang</th>
+                                        <th>PLU</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalPlu"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal PLU CUSTOM--}}
+    <div class="modal fade" id="pluCustomModal" tabindex="-1" role="dialog" aria-labelledby="pluCustomModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daftar Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalPluCustom">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Deskripsi Barang</th>
+                                        <th>PLU</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalPluCustom"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{--Modal Rak--}}
+    <div class="modal fade" id="rakModal" tabindex="-1" role="dialog" aria-labelledby="rakModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Daftar Rak</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalRak">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Kode Rak</th>
+                                        <th>Kode Sub Rak</th>
+                                        <th>Tipe Rak</th>
+                                        <th>Shelving</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalRak"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let cursor = '';
         let tableDivisi;
@@ -401,6 +522,9 @@
         let tableMemberDate;
         let tableOutlet;
         let tableSubOutlet;
+        let tablePlu;
+        let tablePluCustom;
+        let tableRak;
 
         $(document).ready(function () {
             getModalDivisi();
@@ -411,6 +535,8 @@
             getModalMemberDate();
             getModalOutlet();
             getModalSubOutlet();
+            getModalPlu();
+            getModalRak();
         });
 
         function jenisLaporanChange(){
@@ -453,6 +579,18 @@
                 case 'C':
                     $('#menuC').prop("hidden",false)
                     break;
+                case 'D':
+                    $('#menuD').prop("hidden",false)
+                    break;
+                case 'E':
+                    $('#menuE').prop("hidden",false)
+                    break;
+                case 'F':
+                    $('#menuF').prop("hidden",false)
+                    break;
+                case 'G':
+                    $('#menuG').prop("hidden",false)
+                    break;
             }
         }
 
@@ -469,6 +607,10 @@
             menuAClear();
             menuBClear();
             menuCClear();
+            menuDClear();
+            menuEClear();
+            menuFClear();
+            menuGClear();
         }
 
         function cetak(){
@@ -508,6 +650,18 @@
                     break;
                 case 'C':
                     menuCCetak();
+                    break;
+                case 'D':
+                    menuDCetak();
+                    break;
+                case 'E':
+                    menuECetak();
+                    break;
+                case 'F':
+                    menuFCetak();
+                    break;
+                case 'G':
+                    menuGCetak();
                     break;
             }
         }
@@ -579,13 +733,22 @@
                         return true;
                     }
                 }
+                if ( settings.nTable.id === 'tableModalPlu' ) {
+                    return true; //no filtering on modal Plu
+                }
+                if ( settings.nTable.id === 'tableModalPluCustom' ) {
+                    return true; //no filtering on modal Plu
+                }
+                if ( settings.nTable.id === 'tableModalRak' ) {
+                    return true; //no filtering on modal Rak
+                }
                 return false;
             }
         );
-        $('#minDep, #maxDep, #filtererDep').change( function() {
+        $('#minDep, #maxDep').change( function() {
             tableDepartemen.draw();
         } );
-        $('#minKat, #maxKat, #filtererKat_Dep').change( function() {
+        $('#minKat, #maxKat').change( function() {
             tableKategori.draw();
         } );
         $('#outletFilterer').change( function() {
@@ -824,6 +987,110 @@
                 "order": []
             });
         }
+        //MODAL PLU
+        function getModalPlu(value){
+            tablePlu =  $('#tableModalPlu').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current().'/get-lov-plu' }}',
+                    "data" : {
+                        'value' : value
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalPlu');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+            $('#tableModalPlu_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    tablePlu.destroy();
+                    getModalPlu(val);
+                }
+            })
+        }
+        //MODAL PLU CUSTOM
+        function getModalPluCustom(div1,div2,dep1,dep2,kat1,kat2){
+            if ( ! $.fn.DataTable.isDataTable( '#tableModalPluCustom' ) ) {
+                tablePluCustom =  $('#tableModalPluCustom').DataTable({
+                    "ajax": {
+                        'url' : '{{ url()->current().'/get-lov-plu-custom' }}',
+                        "data" : {
+                            'div1' : div1,
+                            'div2' : div2,
+                            'dep1' : dep1,
+                            'dep2' : dep2,
+                            'kat1' : kat1,
+                            'kat2' : kat2,
+                        },
+                    },
+                    "columns": [
+                        {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                        {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    ],
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).addClass('modalRow');
+                        $(row).addClass('modalPluCustom');
+                    },
+                    columnDefs : [
+                    ],
+                    "order": []
+                });
+            }else{
+                tablePluCustom.destroy();
+                getModalPluCustom(div1,div2,dep1,dep2,kat1,kat2);
+            }
+        }
+        //MODAL RAK
+        function getModalRak(){
+            tableRak =  $('#tableModalRak').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current().'/get-lov-rak' }}',
+                },
+                "columns": [
+                    {data: 'lks_koderak', name: 'lks_koderak'},
+                    {data: 'lks_tiperak', name: 'lks_tiperak'},
+                    {data: 'lks_kodesubrak', name: 'lks_kodesubrak'},
+                    {data: 'lks_shelvingrak', name: 'lks_shelvingrak'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRak');
+                },
+                columnDefs : [
+                ],
+                "order": []
+            });
+        }
 
         //ONCLICK MODAL
         //ONCLICK DIVISI
@@ -839,6 +1106,10 @@
                 menu3Choose(currentButton);
             }else if(cursor.substr(0,5) === "menuA"){
                 menuAChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuE"){
+                menuEChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuF"){
+                menuFChoose(currentButton);
             }
         });
         //ONCLICK DEPARTEMEN
@@ -856,6 +1127,10 @@
                 menuAChoose(currentButton);
             }else if(cursor.substr(0,5) === "menuC"){
                 menuCChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuE"){
+                menuEChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuF"){
+                menuFChoose(currentButton);
             }
         });
         //ONCLICK KATEGORI
@@ -873,6 +1148,10 @@
                 menuAChoose(currentButton);
             }else if(cursor.substr(0,5) === "menuC"){
                 menuCChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuE"){
+                menuEChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuF"){
+                menuFChoose(currentButton);
             }
         });
         //ONCLICK SUPPLIER
@@ -882,6 +1161,8 @@
 
             if(cursor.substr(0,5) === "menu4") {
                 menu4Choose(currentButton);
+            }else if(cursor.substr(0,5) === "menuG") {
+                menuGChoose(currentButton);
             }
         });
         //ONCLICK MEMBER
@@ -928,6 +1209,33 @@
 
             if(cursor.substr(0,5) === "menu5") {
                 menu5Choose(currentButton);
+            }
+        });
+        //ONCLICK PLU
+        $(document).on('click', '.modalPlu', function () {
+            $('#pluModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menuC") {
+                menuCChoose(currentButton);
+            }
+        });
+        //ONCLICK PLU CUSTOM
+        $(document).on('click', '.modalPluCustom', function () {
+            $('#pluCustomModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menuE") {
+                menuEChoose(currentButton);
+            }
+        });
+        //ONCLICK RAK
+        $(document).on('click', '.modalRak', function () {
+            $('#rakModal').modal('toggle');
+            let currentButton = $(this);
+
+            if(cursor.substr(0,5) === "menuD"){
+                menuDChoose(currentButton);
             }
         });
 
@@ -996,7 +1304,7 @@
 
         //Untuk periksa apakah mem ada
         function checkMemExist(val){
-            let result;
+            let result ="false";
             $.ajax({
                 url: '{{ url()->current() }}/check-member',
                 type: 'GET',
@@ -1066,6 +1374,40 @@
                 }
             }
             return 0;
+        }
+
+        //Untuk periksa apakah mem ada
+        function checkPluExist(val){
+            let result = "false";
+            $.ajax({
+                url: '{{ url()->current() }}/check-plu',
+                type: 'GET',
+                async: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    value: val
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    result = response;
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: "ERROR",
+                        text: "GAGAL CHECK PLU !!",
+                        icon: 'error',
+                    }).then(() => {
+
+                    });
+                }
+            });
+            return result;
         }
     </script>
 @endsection

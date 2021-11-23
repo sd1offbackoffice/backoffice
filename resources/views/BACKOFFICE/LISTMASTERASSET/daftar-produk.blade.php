@@ -482,6 +482,93 @@
     }
 
     function menu1Cetak(){
-        alert('cetak menu 1');
+        //Date
+        let date = $('#menu1daterangepicker').val();
+        // if(date == null || date == ""){
+        //     swal('Periode tidak boleh kosong','','warning');
+        //     return false;
+        // }
+        let dateA = date.substr(0,10);
+        let dateB = date.substr(13,10);
+        dateA = dateA.split('/').join('-');
+        dateB = dateB.split('/').join('-');
+
+        //DIV & DEP & KAT
+        let temp = '';
+        let div1 = $('#menu1Div1Input').val();
+        let div2 = $('#menu1Div2Input').val();
+        let dep1 = $('#menu1Dep1Input').val();
+        let dep2 = $('#menu1Dep2Input').val();
+        let kat1 = $('#menu1Kat1Input').val();
+        let kat2 = $('#menu1Kat2Input').val();
+        //periksa agar input tidak aneh" meski input sudah dibatasin, jaga" kalau input nya pakai f12
+        if(div1 != ''){
+            if(checkDivExist(div1) == false){
+                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(div2 != ''){
+            if(checkDivExist(div2) == false){
+                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(dep1 != ''){
+            //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minDep').val(div1);
+            $('#maxDep').val(div1);
+            if(checkDepExist(dep1) == false){
+                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(dep2 != ''){
+            //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minDep').val(div2);
+            $('#maxDep').val(div2);
+            if(checkDepExist(dep2) == false){
+                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(kat1 != ''){
+            //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minKat').val(dep1);
+            $('#maxKat').val(dep1);
+            if(checkKatExist(kat1) == false){
+                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(kat2 != ''){
+            //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minKat').val(dep2);
+            $('#maxKat').val(dep2);
+            if(checkKatExist(kat2) == false){
+                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(div1 != '' || div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
+            if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
+                temp = div1;
+                div1 = div2;
+                div2 = temp;
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+
+        // TAG
+        let tag1 = $('#menu1Tag1').val();
+        let tag2 = $('#menu1Tag2').val();
+        let tag3 = $('#menu1Tag3').val();
+        let tag4 = $('#menu1Tag4').val();
+        let tag5 = $('#menu1Tag5').val();
     }
 </script>

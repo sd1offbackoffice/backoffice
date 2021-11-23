@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -51,7 +51,7 @@
             </tr>
         @endif
         </tbody>
-        <tfoot>
+        <tfoot style="border-bottom: none">
         <tr>
             <th colspan="3" class="right">TOTAL :</th>
             <th class="right">{{ number_format($total_dpp, 0,".",",") }}</th>

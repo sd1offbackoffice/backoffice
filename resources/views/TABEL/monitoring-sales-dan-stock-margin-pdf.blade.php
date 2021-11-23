@@ -20,20 +20,20 @@
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th class="tengah center">NO.</th>
-            <th class="tengah center">PLU</th>
-            <th class="tengah center">DESKRIPSI</th>
-            <th class="tengah center">KEMASAN</th>
-            <th class="tengah center">AVG SALES</th>
-            <th class="tengah center">AVG SALES QTY</th>
-            <th class="tengah center">SALES QTY</th>
-            <th class="tengah center">MARGIN</th>
-            <th class="tengah center">%</th>
-            <th class="tengah center">SALDO AKHIR</th>
-            <th class="tengah center">PKMT</th>
-            <th class="tengah center">PO OUTS</th>
-            <th class="tengah center">PB OUTS</th>
-            <th class="tengah center">JADWAL PB</th>
+            <th class="tengah right">NO.</th>
+            <th class="tengah right padding-right">PLU</th>
+            <th class="tengah left">DESKRIPSI</th>
+            <th class="tengah left">KEMASAN</th>
+            <th class="tengah right">AVG SALES</th>
+            <th class="tengah right">AVG SALES QTY</th>
+            <th class="tengah right">SALES QTY</th>
+            <th class="tengah right">MARGIN</th>
+            <th class="tengah right">%</th>
+            <th class="tengah right">SALDO AKHIR</th>
+            <th class="tengah right">PKMT</th>
+            <th class="tengah right">PO OUTS</th>
+            <th class="tengah right padding-right">PB OUTS</th>
+            <th class="tengah left">JADWAL PB</th>
         </tr>
         </thead>
         <tbody>
@@ -110,20 +110,20 @@
                 </tr>
             @endif
             <tr>
-                <td class="center">{{ $no }}</td>
-                <td class="center">{{ $data[$i]->prdcd }}</td>
-                <td class="center">{{ $data[$i]->prd_deskripsipendek }}</td>
-                <td class="center">{{ $data[$i]->kemasan }}</td>
-                <td class="center">{{ number_format($data[$i]->avgsales,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->avgqty,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->sales_,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->margin,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->margin2,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->saldo,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->ftpkmt,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->po,0,'.',',') }}</td>
-                <td class="center">{{ number_format($data[$i]->pb,0,'.',',') }}</td>
-                <td class="center">{{ $data[$i]->cp_tglpb }}</td>
+                <td class="right padding-right">{{ $no }}</td>
+                <td class="left">{{ $data[$i]->prdcd }}</td>
+                <td class="left">{{ $data[$i]->prd_deskripsipendek }}</td>
+                <td class="left">{{ $data[$i]->kemasan }}</td>
+                <td class="right">{{ number_format($data[$i]->avgsales,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->avgqty,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->sales_,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->margin,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->margin2,2,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->saldo,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftpkmt,0,'.',',') }}</td>
+                <td class="right">{{ number_format($data[$i]->po,0,'.',',') }}</td>
+                <td class="right padding-right">{{ number_format($data[$i]->pb,0,'.',',') }}</td>
+                <td class="left">{{ $data[$i]->cp_tglpb }}</td>
             </tr>
             @php
                 $total_avgsales += $data[$i]->avgsales;
@@ -147,16 +147,17 @@
             @if((isset($data[$i+1]->katb) && $tempkat != $data[$i+1]->katb) || !(isset($data[$i+1]->katb)) )
                 <tr style="border-bottom: 1px solid black;">
                     <td class="left" colspan="3">TOTAL PER KATEGORI</td>
-                    <td class="center">{{$kat_count-1}} item</td>
-                    <td class="center">{{$st_kat_avgsales}}</td>
-                    <td class="center">{{$st_kat_avgqty}}</td>
-                    <td class="center">{{$st_kat_sales_}}</td>
-                    <td class="center">{{$st_kat_margin}}</td>
-                    <td class="center">{{$st_kat_margin2}}</td>
-                    <td class="center">{{$st_kat_saldo}}</td>
-                    <td class="center">{{$st_kat_ftpkmt}}</td>
-                    <td class="center">{{$st_kat_po}}</td>
-                    <td class="center">{{$st_kat_pb}}</td>
+                    <td class="left">{{$kat_count-1}} item</td>
+                    <td class="right">{{number_format($st_kat_avgsales,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_kat_avgqty,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_kat_sales_,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_kat_margin,0,'.',',')}}</td>
+                    <td class="right"></td>
+                    <td class="right">{{number_format($st_kat_saldo,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_kat_ftpkmt,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_kat_po,0,'.',',')}}</td>
+                    <td class="right padding-right">{{number_format($st_kat_pb,0,'.',',')}}</td>
+                    <th class="right"></th>
                 </tr>
                 @php
                     $st_kat_avgsales += $data[$i]->avgsales;
@@ -173,16 +174,17 @@
             @if( isset($data[$i+1]->dept) && $tempdep != $data[$i+1]->dept || !(isset($data[$i+1]->dept)) )
                 <tr style="border-bottom: 1px solid black;">
                     <td class="left" colspan="3">TOTAL PER DEPARTEMENT</td>
-                    <td class="center">{{$dep_count-1}} item</td>
-                    <td class="center">{{$st_dep_avgsales}}</td>
-                    <td class="center">{{$st_dep_avgqty}}</td>
-                    <td class="center">{{$st_dep_sales_}}</td>
-                    <td class="center">{{$st_dep_margin}}</td>
-                    <td class="center">{{$st_dep_margin2}}</td>
-                    <td class="center">{{$st_dep_saldo}}</td>
-                    <td class="center">{{$st_dep_ftpkmt}}</td>
-                    <td class="center">{{$st_dep_po}}</td>
-                    <td class="center">{{$st_dep_pb}}</td>
+                    <td class="left">{{$dep_count-1}} item</td>
+                    <td class="right">{{number_format($st_dep_avgsales,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_dep_avgqty,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_dep_sales_,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_dep_margin,0,'.',',')}}</td>
+                    <td class="right"></td>
+                    <td class="right">{{number_format($st_dep_saldo,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_dep_ftpkmt,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_dep_po,0,'.',',')}}</td>
+                    <td class="right padding-right">{{number_format($st_dep_pb,0,'.',',')}}</td>
+                    <th class="right"></th>
                 </tr>
                 @php
                     $st_dep_avgsales += $data[$i]->avgsales;
@@ -199,16 +201,17 @@
             @if((isset($data[$i+1]->div) && $tempdiv != $data[$i+1]->div) || !(isset($data[$i+1]->div)) )
                 <tr style="border-bottom: 1px solid black;">
                     <td class="left" colspan="3">TOTAL PER DIVISI</td>
-                    <td class="center">{{$div_count-1}} item</td>
-                    <td class="center">{{$st_div_avgsales}}</td>
-                    <td class="center">{{$st_div_avgqty}}</td>
-                    <td class="center">{{$st_div_sales_}}</td>
-                    <td class="center">{{$st_div_margin}}</td>
-                    <td class="center">{{$st_div_margin2}}</td>
-                    <td class="center">{{$st_div_saldo}}</td>
-                    <td class="center">{{$st_div_ftpkmt}}</td>
-                    <td class="center">{{$st_div_po}}</td>
-                    <td class="center">{{$st_div_pb}}</td>
+                    <td class="left">{{$div_count-1}} item</td>
+                    <td class="right">{{number_format($st_div_avgsales,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_div_avgqty,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_div_sales_,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_div_margin,0,'.',',')}}</td>
+                    <td class="right"></td>
+                    <td class="right">{{number_format($st_div_saldo,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_div_ftpkmt,0,'.',',')}}</td>
+                    <td class="right">{{number_format($st_div_po,0,'.',',')}}</td>
+                    <td class="right padding-right">{{number_format($st_div_pb,0,'.',',')}}</td>
+                    <th class="right"></th>
                 </tr>
                 @php
                    $st_div_avgsales += $data[$i]->avgsales;
@@ -224,19 +227,20 @@
             @endif
         @endfor
         </tbody>
-        <tfoot>
+        <tfoot style="border-bottom: none">
         <tr>
-            <th class="center" colspan="3"><b>TOTAL SELURUH</b></th>
-            <th class="center">{{$no-1}} item</th>
-            <th class="center">{{ number_format($total_avgsales,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_avgqty,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_sales_,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_margin,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_margin2,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_saldo,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_ftpkmt,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_po,0,'.',',') }}</th>
-            <th class="center">{{ number_format($total_pb,0,'.',',') }}</th>
+            <th class="left" colspan="3"><b>TOTAL SELURUH</b></th>
+            <th class="left">{{$no-1}} item</th>
+            <th class="right">{{ number_format($total_avgsales,0,'.',',') }}</th>
+            <th class="right">{{ number_format($total_avgqty,0,'.',',') }}</th>
+            <th class="right">{{ number_format($total_sales_,0,'.',',') }}</th>
+            <th class="right">{{ number_format($total_margin,0,'.',',') }}</th>
+            <th class="right"></th>
+            <th class="right">{{ number_format($total_saldo,0,'.',',') }}</th>
+            <th class="right">{{ number_format($total_ftpkmt,0,'.',',') }}</th>
+            <th class="right">{{ number_format($total_po,0,'.',',') }}</th>
+            <th class="right padding-right">{{ number_format($total_pb,0,'.',',') }}</th>
+            <th class="right"></th>
         </tr>
         </tfoot>
     </table>

@@ -885,6 +885,10 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-member-with-date', 'BACKOFFICE\ListMasterController@getLovMemberWithDate');
             Route::get('/get-lov-outlet', 'BACKOFFICE\ListMasterController@getLovOutlet');
             Route::get('/get-lov-sub-outlet', 'BACKOFFICE\ListMasterController@getLovSubOutlet');
+            Route::get('/get-lov-plu', 'BACKOFFICE\ListMasterController@getLovPlu');
+            Route::get('/get-lov-plu-custom', 'BACKOFFICE\ListMasterController@getLovPluCustom');
+            Route::get('/check-plu', 'BACKOFFICE\ListMasterController@checkPlu');
+            Route::get('/get-lov-rak', 'BACKOFFICE\ListMasterController@getLovRak');
         });
 
         Route::prefix('/proses')->group(function () {
@@ -1429,6 +1433,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-data', 'TABEL\MonitoringSalesDanStockController@getData');
             Route::get('/get-lov-monitoring', 'TABEL\MonitoringSalesDanStockController@getLovMonitoring');
             Route::get('/get-lov-plu', 'TABEL\MonitoringSalesDanStockController@getLovPLU');
+            Route::get('/get-data-deskripsi', 'TABEL\MonitoringSalesDanStockController@getDataDeskripsi');
             Route::get('/print', 'TABEL\MonitoringSalesDanStockController@print');
         });
         /*Denni*/
@@ -1738,6 +1743,12 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/get-data-top', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getDataTop');
                 Route::post('/simpan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@simpan');
             });
+
+            Route::prefix('/proses-tolakan-clo-pb-omi')->group(function(){
+                Route::get('/', 'OMI\TRANSFERORDERDARIOMIIDM\ProsesTolakanCLOPBOMIController@index');
+                Route::get('/get-data', 'OMI\TRANSFERORDERDARIOMIIDM\ProsesTolakanCLOPBOMIController@getData');
+                Route::post('/save-data', 'OMI\TRANSFERORDERDARIOMIIDM\ProsesTolakanCLOPBOMIController@saveData');
+            });
         });
 
         Route::prefix('/retur')->group(function () {
@@ -1845,6 +1856,13 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'OMI\LAPORAN\lapsvlslspbController@index');
                 Route::get('/getpb', 'OMI\LAPORAN\lapsvlslspbController@pbModal');
                 Route::get('/cetak', 'OMI\LAPORAN\lapsvlslspbController@cetak');
+            });
+
+            /*Leo*/
+            Route::prefix('/cetak-faktur-pajak')->group(function(){
+                Route::get('/','OMI\LAPORAN\CetakFakturPajakController@index');
+                Route::get('/get-data','OMI\LAPORAN\CetakFakturPajakController@getData');
+                Route::get('/print','OMI\LAPORAN\CetakFakturPajakController@print');
             });
         });
         /*Ryan*/

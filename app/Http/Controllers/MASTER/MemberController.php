@@ -352,6 +352,7 @@ class MemberController extends Controller
             }
             $update_crm['crm_modify_by'] = $_SESSION['usid'];
             $update_crm['crm_modify_dt'] = DB::raw('SYSDATE');
+            $update_crm['crm_kodeigr'] = $_SESSION['kdigr'];
 
             if($request->hobby != null){
                 for($i=0;$i<sizeof($request->hobby);$i++){

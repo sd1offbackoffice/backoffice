@@ -1178,14 +1178,15 @@ WHERE PRS_KODEIGR = '$kodeigr'
 
         //-------------------------PRINT-----------------------------
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        $pdf = PDF::loadview('TABEL.plu-timbangan-pdf', ['data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        return $pdf->stream('Plu-Timbangan.pdf');
+//        $pdf = PDF::loadview('TABEL.plu-timbangan-pdf', ['data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        return $pdf->stream('Plu-Timbangan.pdf');
+        return view('TABEL.plu-timbangan-pdf', ['data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function LovKode(Request $request){

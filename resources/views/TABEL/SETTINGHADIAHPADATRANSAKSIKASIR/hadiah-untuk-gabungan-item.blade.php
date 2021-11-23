@@ -20,64 +20,84 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Deskripsi Event</label>
-                            <input class="col-sm-8 text-left form-control" type="text" id="deskripsiEvent">
+                            <div class="col-sm-8">
+                                <input class="text-left form-control" type="text" id="deskripsiEvent">
+                            </div>
                         </div>
                         <div class="row">
                             <label class="col-sm-2 col-form-label text-right">Tanggal</label>
-                            <input class="col-sm-8 text-center form-control" type="text" id="daterangepicker">
+                            <div class="col-sm-4">
+                                <input class="text-center form-control" type="text" id="daterangepicker">
+                            </div>
                         </div>
                         <br>
 
                         {{--SYARAT BELANJA & HADIAH--}}
                         <div class="row">
                             {{--SYARAT BELANJA--}}
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-center font-weight-bold">SYARAT BELANJA :</span>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-4 col-form-label text-right">Minim Struk</label>
-                                    <input class="col-sm-8 text-right form-control" type="number" id="minStruk" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <div class="col-sm-4">
+                                        <input class="text-right form-control" type="number" id="minStruk" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-4 col-form-label text-right">Minim Sponsor</label>
-                                    <input class="col-sm-8 text-right form-control" type="number" id="minSponsor" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                    <div class="col-sm-4">
+                                        <input class="text-right form-control" type="number" id="minSponsor" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-4 col-form-label text-right">Maxim Sponsor</label>
-                                    <input class="col-sm-8 text-right form-control" type="number" id="maxSponsor" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <div class="col-sm-4">
+                                        <input class="text-right form-control" type="number" id="maxSponsor" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 {{--HADIAH--}}
                                 <div class="row">
-                                    <span style="text-decoration: underline" class="col-sm-12 text-left font-weight-bold">HADIAH :</span>
+                                    <span style="text-decoration: underline" class="col-sm-4 text-right font-weight-bold">HADIAH :</span>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">PLU Hadiah</label>
-                                    <div class="col-sm-2 buttonInside">
+                                    <div class="col-sm-3 buttonInside">
                                         <input type="text" class="form-control" id="pluHadiah">
                                         <button id="hadiah" type="button" class="btn btn-lov p-0" onclick="ToggleData(this)">
                                             <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                         </button>
                                     </div>
-                                    <input class="col-sm-8 text-left form-control" type="text" id="ketHadiah" disabled>
+                                    <input class="col-sm-6 text-left form-control" type="text" id="ketHadiah" disabled>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">Jumlah</label>
-                                    <input class="col-sm-2 text-center form-control" type="number" id="jumlah" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="jumlah" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-1 col-form-label text-left">PCS</label>
                                     <label class="col-sm-2 col-form-label text-right">Kelipatan</label>
-                                    <input class="col-sm-1 text-center form-control" type="text" id="kelipatan" onkeypress="return isYT(event)" maxlength="1">
-                                    <label class="col-sm-2 col-form-label text-left">[ Y / T ]</label>
+                                    <div class="col-sm-2">
+                                        <input class="text-center form-control" type="text" id="kelipatan" onkeypress="return isYT(event)" maxlength="1">
+                                    </div>
+                                    <label class="col-sm-2 col-form-label text-center">[ Y / T ]</label>
                                 </div>
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label text-right">Alokasi</label>
-                                    <input class="col-sm-2 text-center form-control" type="number" id="alokasi" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="alokasi" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-right">Terpakai</label>
-                                    <input class="col-sm-2 text-center form-control" type="number" id="pakai" disabled>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="pakai" disabled>
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-right">Sisa</label>
-                                    <input class="col-sm-2 text-center form-control" type="number" id="sisa" disabled>
+                                    <div class="col-sm-2">
+                                        <input class="text-right form-control" type="number" id="sisa" disabled>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -85,22 +105,26 @@
 
                         {{--HADIAH PER HARI & JENIS MEMBER--}}
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12 text-center font-weight-bold">HADIAH PER HARI :</span>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label text-right">Qty Max Per Member</label>
-                                    <input class="col-sm-5 text-center form-control" type="number" id="maxjmlhari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Qty Max Per Member</label>
+                                    <div class="col-sm-4">
+                                        <input class="text-right form-control" type="number" id="maxjmlhari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">PCS</label>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label text-right">Qty Max Pengeluaran</label>
-                                    <input class="col-sm-5 text-center form-control" type="number" id="maxouthari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Qty Max Pengeluaran</label>
+                                    <div class="col-sm-4">
+                                        <input class="text-right form-control" type="number" id="maxouthari" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">PCS</label>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <div class="row">
                                     <span style="text-decoration: underline" class="col-sm-12">JENIS MEMBER :</span>
                                 </div>
@@ -144,18 +168,20 @@
                         <br>
 
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label text-right">Max Frek Per Event</label>
-                                    <input class="col-sm-2 text-center form-control" type="number" id="maxFrekEvent" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    <label class="col-sm-4 col-form-label text-right">Max Frek Per Event</label>
+                                    <div class="col-sm-3">
+                                        <input class="text-right form-control" type="number" id="maxFrekEvent" min="0" value="0" onkeypress="return isNumberKey(event)">
+                                    </div>
                                     <label class="col-sm-2 col-form-label text-left">x</label>
                                 </div>
                             </div>
                             {{--BUTTONS--}}
-                            <div class="col-sm-8 d-flex justify-content-end">
-                                <button class="btn btn-primary col-sm-1" type="button" onclick="PromptNew()">NEW</button>&nbsp;
-                                <button class="btn btn-primary col-sm-1" type="button" onclick="EditButton()">EDIT</button>&nbsp;
-                                <button class="btn btn-primary col-sm-1" type="button" onclick="SaveButton()">SAVE</button>&nbsp;
+                            <div class="col-sm-6 d-flex justify-content-end">
+                                <button class="btn btn-primary col-sm-3" type="button" onclick="PromptNew()">NEW</button>&nbsp;
+                                <button class="btn btn-primary col-sm-3" type="button" onclick="EditButton()">EDIT</button>&nbsp;
+                                <button class="btn btn-primary col-sm-3" type="button" onclick="SaveButton()">SAVE</button>&nbsp;
                             </div>
                         </div>
                         <br>

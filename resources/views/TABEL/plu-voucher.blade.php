@@ -16,7 +16,7 @@
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Kode Voucher</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control text-left" id="kodevoucher">
-                                        <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovVoucher()">
+                                        <button id="btnLOV" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovVoucher()">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
@@ -304,6 +304,9 @@
             makeDataTable();
 
             $('#table_list_supplier').dataTable();
+
+            $('button').prop('disabled',true);
+            $('#btnLOV').prop('disabled',false);
         });
 
         function makeDataTable(){
@@ -443,14 +446,18 @@
                     }
 
                     fillDetail(dataPLU);
+
+                    $('button').prop('disabled',false);
                 },
                 error: function (error) {
+                    $('button').prop('disabled',true);
+                    $('#btnLOV').prop('disabled',false);
                     $('#modal-loader').modal('hide');
                     swal({
                         title: error.responseJSON.message,
                         icon: 'error',
                     }).then(() => {
-                        fillDetail([]);
+                        makeDataTable();
                         $('#kodevoucher').select();
                     });
                 }

@@ -18,7 +18,7 @@ class InformasiHistoryProductController extends Controller
     public function index()
     {
 
-        return view('MASTER.informasi-history-product');
+        return view('BACKOFFICE.informasi-history-product');
     }
 
     public function lovSearch(Request $request)

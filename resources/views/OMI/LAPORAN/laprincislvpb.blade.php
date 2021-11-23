@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Laporan Perincian Service Level Sales Thd Pb</legend>
+                    <legend class="w-auto ml-5 text-left">Laporan Perincian Service Level Sales Thd Pb [GA DI PAKE!]</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
