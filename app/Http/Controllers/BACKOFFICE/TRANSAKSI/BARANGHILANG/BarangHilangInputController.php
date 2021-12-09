@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\BARANGHILANG;
 
+use App\Http\Controllers\Auth\loginController;
 use FontLib\WOFF\TableDirectoryEntry;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

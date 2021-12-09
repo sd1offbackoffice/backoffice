@@ -3,7 +3,7 @@
 
 <div>
     <fieldset class="card border-dark">
-{{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
+{{--        <legend class="w-auto ml-5">Daftar Perpanjangan Anggota / Member</legend>--}}
         <br>
         <div class="row">
             <label class="col-sm-3 text-right col-form-label">Tanggal</label>
@@ -159,6 +159,31 @@
 
     }
     function menuBCetak(){
-        alert('cetak menu B');
+        //Date
+        let date = $('#menuBdaterangepicker').val();
+        // if(date == null || date == ""){
+        //     swal('Periode tidak boleh kosong','','warning');
+        //     return false;
+        // }
+        let dateA = date.substr(0,10);
+        let dateB = date.substr(13,10);
+        dateA = dateA.split('/').join('-');
+        dateB = dateB.split('/').join('-');
+        let member1 = $('#menuBKod1Input').val();
+        let member2 = $('#menuBKod2Input').val();
+
+        if(member1 != '' || member2 != ''){
+            if(member1 > member2){
+                temp = member1;
+                member1 = member2;
+                member2 = temp;
+            }
+        }
+
+        //sort value
+        let sort = $('#menuBSortBy').val();
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-perpanjangan-anggota-or-member?member1=${member1}&member2=${member2}&date1=${dateA}&date2=${dateB}&sort=${sort}`, '_blank');
     }
 </script>

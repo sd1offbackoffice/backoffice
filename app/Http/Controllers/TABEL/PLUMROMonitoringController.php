@@ -97,21 +97,7 @@ class PLUMROMonitoringController extends Controller
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('TABEL.plu-mro-monitoring-pdf',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Daftar Harga Jual Barang per Tanggal '.date("d-m-Y").'.pdf');
+        return view('TABEL.plu-mro-monitoring-pdf',compact(['perusahaan','data']));
     }
 
     public function deleteData(Request $request){

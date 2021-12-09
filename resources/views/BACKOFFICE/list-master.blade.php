@@ -631,7 +631,7 @@
                     menu5Cetak();
                     break;
                 case '6':
-                    menu5Cetak();
+                    menu6Cetak();
                     break;
                 case '7':
                     menu7Cetak();
@@ -646,7 +646,7 @@
                     menuACetak();
                     break;
                 case 'B':
-                    menuACetak();
+                    menuBCetak();
                     break;
                 case 'C':
                     menuCCetak();
@@ -1071,8 +1071,8 @@
                 },
                 "columns": [
                     {data: 'lks_koderak', name: 'lks_koderak'},
-                    {data: 'lks_tiperak', name: 'lks_tiperak'},
                     {data: 'lks_kodesubrak', name: 'lks_kodesubrak'},
+                    {data: 'lks_tiperak', name: 'lks_tiperak'},
                     {data: 'lks_shelvingrak', name: 'lks_shelvingrak'},
                 ],
                 "paging": true,

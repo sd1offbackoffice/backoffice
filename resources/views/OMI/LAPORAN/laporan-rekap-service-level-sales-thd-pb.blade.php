@@ -154,7 +154,7 @@
         function getPb(){
             tablePb =  $('#tablePb').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/getpb' }}',
+                    'url' : '{{ url()->current().'/get-pb' }}',
                 },
                 "columns": [
                     {data: 'pbo_nopb', name: 'pbo_nopb'},

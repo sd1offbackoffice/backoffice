@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -18,7 +18,7 @@
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th rowspan="2" width="3%" class="tengah center">No</th>
+            <th rowspan="2" width="3%" class="tengah right">No</th>
             <th rowspan="2" width="6%" class="tengah center">PLU</th>
             <th rowspan="2" width="34%" class="tengah">DESKRIPSI</th>
             <th rowspan="2" width="6%" class="tengah center">TAG</th>
@@ -41,7 +41,7 @@
         @php $no = 1; @endphp
         @foreach($data as $d)
             <tr>
-                <td width="6%" class="center">{{ $no++ }}</td>
+                <td width="6%" class="right">{{ $no++ }}</td>
                 <td width="6%" class="center">{{ $d->mpl_prdcd }}</td>
                 <td width="34%" class="left">{{ $d->prd_desc }}</td>
                 <td width="3%" class="center">{{ $d->prd_kodetag }}</td>

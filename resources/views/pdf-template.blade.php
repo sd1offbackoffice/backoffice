@@ -43,7 +43,7 @@
 
 
 <main>
-    @if(sizeof($data) == 0)
+    @if(sizeof($data) == 0 )
         <h4 class="center">TIDAK ADA DATA</h4>
     @else
         @yield('content')
@@ -148,7 +148,7 @@
         padding: 0.50rem;
     }
 
-    .table tbody td.padding-right, .table thead th.padding-right{
+    .table tbody td.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
         padding-right: 10px !important;
     }
 

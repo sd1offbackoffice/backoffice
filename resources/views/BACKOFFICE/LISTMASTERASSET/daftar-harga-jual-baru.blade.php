@@ -423,6 +423,52 @@
     }
 
     function menuACetak(){
-        alert('cetak menu 2');
+        let date = $('#menuAdaterangepicker').val();
+        if(date == null || date == ""){
+            swal('Periode tidak boleh kosong','','warning');
+            return false;
+        }
+        let dateA = date.substr(0,10);
+        let dateB = date.substr(13,10);
+        dateA = dateA.split('/').join('-');
+        dateB = dateB.split('/').join('-');
+
+        //DIV & DEP & KAT
+        let temp = '';
+        let div1 = $('#menuADiv1Input').val();
+        let div2 = $('#menuADiv2Input').val();
+        let dep1 = $('#menuADep1Input').val();
+        let dep2 = $('#menuADep2Input').val();
+        let kat1 = $('#menuAKat1Input').val();
+        let kat2 = $('#menuAKat2Input').val();
+        if(div1 != '' || div2 != ''){
+            if(parseInt(div1) > parseInt(div2)){
+                temp = div1;
+                div1 = div2;
+                div2 = temp;
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+
+
+        //sortby
+        let sort = $('#menuASortBy').val();
+
+        // TAG
+        let tag1 = $('#menuATag1').val();
+        let tag2 = $('#menuATag2').val();
+
+        let check = 0;
+        if($('#menuACheck').prop("checked")){
+            check = 1;
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-harga-jual-baru?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&tag1=${tag1}&tag2=${tag2}&date1=${dateA}&date2=${dateB}&check=${check}&sort=${sort}`, '_blank');
     }
 </script>

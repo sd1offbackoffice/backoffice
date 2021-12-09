@@ -304,29 +304,37 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jenisanggota" class="col-sm-2 col-form-label">Jenis Anggota<span class="wajib">*</span></label>
-                                            <div class="col-sm-1">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaR">
-                                                    <label class="custom-control-label" for="cb_jenisanggotaR">Regular</label>
+                                            <div class="col-sm">
+                                                <div class="row ml-1">
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaR">
+                                                            <label class="custom-control-label" for="cb_jenisanggotaR">Regular</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaK">
+                                                            <label class="custom-control-label" for="cb_jenisanggotaK">Khusus</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-1">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisanggotaK">
-                                                    <label class="custom-control-label" for="cb_jenisanggotaK">Khusus</label>
-                                                </div>
-                                            </div>
-                                            <label for="i_jeniskelamin" class="col-sm-4 col-form-label">Jenis Kelamin<span class="wajib">*</span></label>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="checkbox-inline custom-control-input diisi_cb" id="cb_jeniskelaminL">
-                                                    <label class="custom-control-label" for="cb_jeniskelaminL">Laki-laki</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-1">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jeniskelaminP">
-                                                    <label class="custom-control-label" for="cb_jeniskelaminP">Perempuan</label>
+                                            <label for="i_jeniskelamin" class="col-sm-2 col-form-label">Jenis Kelamin<span class="wajib">*</span></label>
+                                            <div class="col-sm">
+                                                <div class="row ml-1">
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="checkbox-inline custom-control-input diisi_cb" id="cb_jeniskelaminL">
+                                                            <label class="custom-control-label" for="cb_jeniskelaminL">Laki-laki</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jeniskelaminP">
+                                                            <label class="custom-control-label" for="cb_jeniskelaminP">Perempuan</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -422,16 +430,20 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_internet" class="col-sm-5 col-form-label">Apakah HP Anda menggunakan Layanan Data / Internet<span class="wajib">*</span></label>
-                                            <div class="col-sm-1">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetY">
-                                                    <label class="custom-control-label" for="cb_internetY">Ya</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-1">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetT">
-                                                    <label class="custom-control-label" for="cb_internetT">Tidak</label>
+                                            <div class="col-sm">
+                                                <div class="row ml-1">
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetY">
+                                                            <label class="custom-control-label" for="cb_internetY">Ya</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb" id="cb_internetT">
+                                                            <label class="custom-control-label" for="cb_internetT">Tidak</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -480,13 +492,13 @@
                                         <div class="form-group row mb-0">
                                             <label for="crm_alamatusaha1" class="col-sm-2 pl-0 col-form-label">Alamat Tempat Usaha<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control diisi" id="crm_alamatusaha1">
+                                                <input type="text" class="form-control diisi id3" id="crm_alamatusaha1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="crm_alamatusaha4" class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
                                             <div class="col-sm-3 buttonInside">
-                                                <input type="text" class="form-control diisi" id="crm_alamatusaha4">
+                                                <input type="text" class="form-control diisi id3" id="crm_alamatusaha4">
                                                 <button id="btn-modal-usaha" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_kodeposHelp">
                                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                 </button>
@@ -500,59 +512,67 @@
 {{--                                            </div>--}}
                                             <label for="pos_kecamatan" class="col-sm-3 col-form-label">Kecamatan<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control diisi" id="pos_kecamatan">
+                                                <input type="text" class="form-control diisi id3" id="pos_kecamatan">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="crm_alamatusaha3" class="col-sm-2 col-form-label">Kode Pos<span class="wajib">*</span></label>
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control diisi" id="crm_alamatusaha3">
+                                                <input type="text" class="form-control diisi id3" id="crm_alamatusaha3">
                                             </div>
                                             <label for="crm_alamatusaha2" class="col-sm-4 col-form-label">Kota<span class="wajib">*</span></label>
                                             <div class="col-sm-3">
-                                                <input type="text" class="form-control diisi" id="crm_alamatusaha2">
+                                                <input type="text" class="form-control diisi id3" id="crm_alamatusaha2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_jenisusaha" class="col-sm-4 col-form-label">Apakah jenis Tempat Usaha Anda?<span class="wajib">*</span></label>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanP">
-                                                    <label class="custom-control-label" for="cb_jenisbangunanP">Permanen</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanS">
-                                                    <label class="custom-control-label" for="cb_jenisbangunanS">Semi Permanen</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_jenisbangunanN">
-                                                    <label class="custom-control-label" for="cb_jenisbangunanN">Non Permanen</label>
+                                            <div class="col-sm">
+                                                <div class="row ml-1">
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb id3" id="cb_jenisbangunanP">
+                                                            <label class="custom-control-label" for="cb_jenisbangunanP">Permanen</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb id3" id="cb_jenisbangunanS">
+                                                            <label class="custom-control-label" for="cb_jenisbangunanS">Semi Permanen</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb id3" id="cb_jenisbangunanN">
+                                                            <label class="custom-control-label" for="cb_jenisbangunanN">Non Permanen</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="crm_lamatmpt" class="col-sm-2 col-form-label">Lama menempati<span class="wajib">*</span></label>
                                             <div class="col-sm-1">
-                                                <input type="number" min="0" class="form-control diisi" id="crm_lamatmpt">
+                                                <input type="number" min="0" class="form-control diisi id3" id="crm_lamatmpt">
                                             </div>
                                             <label for="crm_lamatmpt" class="col-sm-1 pl-0 text-left col-form-label">Tahun</label>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_statusbangunan" class="col-sm-2 col-form-label">Status Bangunan<span class="wajib">*</span></label>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_statusbangunanM">
-                                                    <label class="custom-control-label" for="cb_statusbangunanM">Milik Sendiri</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <div class="custom-control custom-checkbox mt-2 text-left">
-                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_statusbangunanS">
-                                                    <label class="custom-control-label" for="cb_statusbangunanS">Sewa</label>
+                                            <div class="col">
+                                                <div class="row ml-1">
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb id3" id="cb_statusbangunanM">
+                                                            <label class="custom-control-label" for="cb_statusbangunanM">Milik Sendiri</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <div class="custom-control custom-checkbox mt-2 text-left">
+                                                            <input type="checkbox" class="custom-control-input diisi_cb id3" id="cb_statusbangunanS">
+                                                            <label class="custom-control-label" for="cb_statusbangunanS">Sewa</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -2028,6 +2048,18 @@
             }
         });
 
+        $('#cb_jeniskelaminL').on('change',function(){
+            if($('#cb_jeniskelaminL').is(':checked')){
+                $('#cb_jeniskelaminP').prop('checked',false);
+            }
+        });
+
+        $('#cb_jeniskelaminP').on('change',function(){
+            if($('#cb_jeniskelaminP').is(':checked')){
+                $('#cb_jeniskelaminL').prop('checked',false);
+            }
+        });
+
         $('#crm_pic1').on('keydown',function(event){
             if(event.which == 13){
                 // if(this.value.length > 0){
@@ -2760,6 +2792,8 @@
         })
 
         function cek_field_wajib(){
+            $('.kosong').removeClass('kosong');
+
             ok = true;
 
             //Validasi KTP
@@ -2779,32 +2813,60 @@
                     $(this).removeClass('kosong');
                 }
                 else{
-                    $(this).addClass('kosong');
-                    ok = false;
+                    if($(this).hasClass('id3') && $('#cus_flagmemberkhusus').val() !== 'Y'){
+                        $(this).removeClass('kosong');
+                    }
+                    else{
+                        $(this).addClass('kosong');
+                        ok = false;
+                    }
                 }
             });
 
             if(ok){
-                id = 'xxxxx';
+                lastId = null;
+                id = null;
                 cb = '!ok';
 
+                isCbValid = true;
 
-                $('.diisi_cb').each(function(){
-                    if(id != $(this).attr('id').substr(0,9)){
-                        // console.log('id : ' + id);
-                        // console.log('cek - ' + $(this).attr('id'));
-                        if($(this).is(':checked')){
-                            cb = 'ok';
-                            ok = true;
-                            id = $(this).attr('id').substr(0,9);
-                            console.log('ok - ' + $(this).attr('id'));
+                total = $('.diisi_cb').length;
+
+                $('.diisi_cb').each(function(index){
+                    if($(this).is(':visible')){
+                        if($(this).hasClass('id3') && $('#cus_flagmemberkhusus').val() !== 'Y'){
+                            // console.log(id);
+                            return false;
                         }
-                        else ok = false;
+                        else if(id != $(this).attr('id').substr(0,11)){
+                            if(!isCbValid && id != null){
+                                console.log(id);
+                                lastId.parent().parent().parent().addClass('kosong');
+                                return false;
+                            }
+
+                            lastId = $(this);
+                            id = $(this).attr('id').substr(0,11);
+
+                            isCbValid = $(this).is(':checked');
+                        }
+                        else{
+                            if(!isCbValid){
+                                isCbValid = $(this).is(':checked');
+                            }
+                        }
+                    }
+
+                    if(index === total -1 && !isCbValid){
+                        console.log(id);
+                        lastId.parent().parent().parent().addClass('kosong');
                     }
                 });
-            }
 
-            return ok;
+
+
+                return isCbValid;
+            }
         }
 
         function lov_member_select(value, load){
@@ -3407,6 +3469,8 @@
         $('#btn-rekam').on('click',function(){
             ok = cek_field_wajib();
 
+            console.log(ok);
+
             // Validasi Suboutlet
             let outlet = $('#cus_kodeoutlet').val();
             if (outlet == 2 || outlet == 3 || outlet == 4 || outlet == 5) {
@@ -3618,28 +3682,48 @@
             else{
                 approvalMode = 'aktif-nonaktif';
 
+                isValid = true;
+
                 if(member.cus_recordid == '1'){
-                    message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
-                    status = '';
+                    if(member.cus_flagmemberkhusus === 'Y'){
+                        message = "Kode Anggota " + member.cus_kodemember + " merupakan member merah, tidak dapat diaktifkan kembali!";
+                        status = '';
+                        isValid = false;
+                    }
+                    else{
+                        message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
+                        status = '';
+                    }
                 }
                 else{
                     message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
                     status = '1';
                 }
-                swal({
-                    title: message,
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((createData) => {
-                    if (createData) {
-                        $('#m_aktifnonaktif').modal('toggle');
-                        $('#btn-aktifnonaktif-ok').show();
-                        $('#btn-aktifnonaktif-ok').attr('disabled', false);
-                        $('#btn-hapus-ok').hide();
-                        $('#btn-hapus-ok').attr('disabled', true);
-                    }
-                });
+
+                if(isValid){
+                    swal({
+                        title: message,
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((createData) => {
+                        if (createData) {
+                            $('#m_aktifnonaktif').modal('toggle');
+                            $('#btn-aktifnonaktif-ok').show();
+                            $('#btn-aktifnonaktif-ok').attr('disabled', false);
+                            $('#btn-hapus-ok').hide();
+                            $('#btn-hapus-ok').attr('disabled', true);
+                        }
+                    });
+                }
+                else{
+                    swal({
+                        title: message,
+                        icon: "error",
+                    }).then((createData) => {
+
+                    });
+                }
             }
         });
 

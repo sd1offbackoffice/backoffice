@@ -489,9 +489,7 @@
         //     return false;
         // }
         let dateA = date.substr(0,10);
-        let dateB = date.substr(13,10);
         dateA = dateA.split('/').join('-');
-        dateB = dateB.split('/').join('-');
 
         //DIV & DEP & KAT
         let temp = '';
@@ -570,5 +568,49 @@
         let tag3 = $('#menu1Tag3').val();
         let tag4 = $('#menu1Tag4').val();
         let tag5 = $('#menu1Tag5').val();
+        let ptag = '';
+        if(tag1 != '' && tag2 != '' && tag3 != '' && tag4 != '' && tag5 != ''){
+            if(tag1 != ''){
+                ptag = "'"+tag1+"'";
+            }else{
+                ptag = "'b'";
+            }
+            if(tag2 != ''){
+                ptag = ptag+",'"+tag2+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag3 != ''){
+                ptag = ptag+",'"+tag3+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag4 != ''){
+                ptag = ptag+",'"+tag4+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag5 != ''){
+                ptag = ptag+",'"+tag5+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+        }
+
+        //checkboxes
+        let produkbaru = 0;
+        if($('#menu1CheckProduk').prop("checked")){
+            produkbaru = 1;
+        }
+        let chp = 0;
+        if($('#menu1CheckCHP').prop("checked")){
+            chp = 1;
+        }
+
+        //sortby
+        let sort = $('#menu1SortBy').val();
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-produk?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&ptag=${ptag}&date=${dateA}&produkbaru=${produkbaru}&chp=${chp}&sort=${sort}`, '_blank');
     }
 </script>

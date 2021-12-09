@@ -13,6 +13,9 @@
                                 <label class="col-sm-2 col-form-label text-right">Kode Toko OMI</label>
                                 <div class="col-sm-3 buttonInside">
                                     <input type="text" class="form-control text-uppercase" id="kodeomi">
+                                    <button id="btn-no-doc" type="button" class="btn btn-lov p-0"  data-toggle="modal" data-target="#m_tokoomi">
+                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                    </button>
                                 </div>
                             </div>
                             <div class="form-group row mb-1">
@@ -98,18 +101,57 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_tokoomi" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Toko OMI</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-bordered" id="tableModalTokoOMI">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>OMI</th>
+                                        <th>File</th>
+                                        <th>No Doc</th>
+                                        <th>No Bukti</th>
+                                        <th>Supplier</th>
+                                        <th>Tgl Struk</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>
         let tableModal = $('#tableModal').DataTable();
+        let tableModalTokoOMI = $('#tableModalTokoOMI').DataTable();
 
         $(document).ready(function () {
             $('#kodeomi').focus()
+            getDataLovTokoOMI('')
         })
 
-        $('#kodeomi').on('change', function () {
-            let kodeomi = $('#kodeomi').val();
-            cekKodeOmi(kodeomi)
+        $('#kodeomi').on('keypress', function (e){
+            if (e.which == 13) {
+                let kodeomi = $('#kodeomi').val();
+                cekKodeOmi(kodeomi)
+            }
         })
 
         $('#noBukti').on('keypress', function (e){
@@ -175,6 +217,51 @@
             })
         }
 
+        function getDataLovTokoOMI(value){
+            tableModalTokoOMI.destroy();
+            tableModalTokoOMI =  $('#tableModalTokoOMI').DataTable({
+                "ajax": {
+                    'url' : '{{url()->current()}}/get-lov-tokoomi',
+                    "data" : {value},
+                },
+                "columns": [
+                    {data: 'bkl_kodeomi'},
+                    {data: 'bkl_idfile'},
+                    {data: 'bkl_nodoc'},
+                    {data: 'bkl_nobukti'},
+                    {data: 'bkl_kodesupplier'},
+                    {data: 'bkl_tglstruk'},
+
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow modalLovTokoOMI');
+                },
+                columnDefs : [
+                    { targets : [5],
+                        render : function (data, type, row) {
+                            return formatDate(data, 'dd-mm-yy');
+                        }
+                    }
+                ],
+                "order": []
+            });
+
+            $('#tableModalTokoOMI_filter input').off().on('keypress', function (e){
+                if (e.which == 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getDataLovTokoOMI(val);
+                }
+            })
+        }
+
         function getDataLov(kodeomi, noBukti){
             tableModal.destroy();
             tableModal =  $('#tableModal').DataTable({
@@ -235,6 +322,21 @@
                                 </tr>`);
 
             $('#btnReprint').focus()
+        });
+
+        $(document).on('click', '.modalLovTokoOMI', function () {
+            let tokoOmi    = $(this).find('td')[0]['innerHTML']
+            let noBukti    = $(this).find('td')[3]['innerHTML']
+
+            $('#kodeomi').val(tokoOmi);
+            $('#noBukti').val(noBukti);
+            $('#m_tokoomi').modal('hide');
+
+            getDataLov(tokoOmi, '')
+
+            setTimeout(function() {
+                $('#noBukti').focus();
+            }, 1000);
         });
 
         function printLaporan(){

@@ -255,6 +255,15 @@ class loginController extends Controller
                 'dbHostSim' => '192.168.248.193',
                 'dbPass' => 'Ultr0nslo!'
             ),
+            (object)array(
+                'kodeigr' => '44',
+                'namacabang' => 'cikokol',
+                'segment' => '249',
+                'kode' => 'ckl',
+                'dbHostProd' => '192.168.249.191',
+                'dbHostSim' => '192.168.249.193',
+                'dbPass' => 'Sh4ngch1ckl!'
+            ),
         );
     }
 

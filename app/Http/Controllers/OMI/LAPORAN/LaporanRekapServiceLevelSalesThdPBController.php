@@ -15,12 +15,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class lapsvlslspbController extends Controller
+class LaporanRekapServiceLevelSalesThdPBController extends Controller
 {
 
     public function index()
     {
-        return view('OMI.LAPORAN.lapsvlslspb');
+        return view('OMI.LAPORAN.laporan-rekap-service-level-sales-thd-pb');
     }
 
     public function pbModal(Request $request){
@@ -190,23 +190,26 @@ ORDER BY kodemember, pbo_kodeomi");
         }
 
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
         if($pilihan == 'D'){
-            return view('OMI.LAPORAN.lapsvlslspb_detail-pdf',
-                ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val]);
+            return view('OMI.LAPORAN.laporan-rekap-service-level-sales-thd-pb_detail-pdf',
+                ['kodeigr' => $kodeigr, 'data' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val, 'perusahaan' => $perusahaan]);
         }else{
-            $pdf = PDF::loadview('OMI.LAPORAN.lapsvlslspb-pdf',
-                ['kodeigr' => $kodeigr, 'datas' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val]);
-            $pdf->setPaper('A4', 'potrait');
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(524, 12, "HAL {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            return $pdf->stream('lapsvlslspb.pdf');
+//            $pdf = PDF::loadview('OMI.LAPORAN.laporan-rekap-service-level-sales-thd-pb-pdf',
+//                ['kodeigr' => $kodeigr, 'data' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val, 'perusahaan' => $perusahaan]);
+//            $pdf->setPaper('A4', 'potrait');
+//            $pdf->output();
+//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//            $canvas = $dompdf ->get_canvas();
+//            $canvas->page_text(524, 12, "HAL {PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//            return $pdf->stream('lapsvlslspb.pdf');
+            return view('OMI.LAPORAN.laporan-rekap-service-level-sales-thd-pb-pdf',
+                ['kodeigr' => $kodeigr, 'data' => $datas, 'today' => $today, 'time' => $time, 'date1' => $dateA, 'date2' => $dateB, 'pb1' => $pb1, 'pb2' => $pb2, 'val' => $val, 'perusahaan' => $perusahaan]);
         }
     }
 }

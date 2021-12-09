@@ -21,7 +21,10 @@
 <!--===============================================================================================-->
 <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/css/util.css')}}">
 <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/css/main.css')}}">
-<link href="{{ asset('css/stylee.css') }}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ asset('css/stylee.css') }}" >
+<link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
+<link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }}>
+<link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
 
 <script src={{asset('/js/jquery.js')}}></script>
 <script src={{asset('/js/moment.min.js')}}></script>

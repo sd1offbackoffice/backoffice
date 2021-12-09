@@ -20,7 +20,7 @@ class PLUNonRefundController extends Controller
     public function getData(){
         $data = DB::connection($_SESSION['connection'])->table('tbmaster_plunonrefund')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
-            ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
+            ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan, non_create_by, to_char(non_create_dt, 'dd/mm/yyyy hh24:mi:ss') non_create_dt")
             ->where('non_kodeigr','=',$_SESSION['kdigr'])
             ->orderBy('non_prdcd')
             ->get();

@@ -282,6 +282,14 @@
             getModalData('');
         });
 
+        $(document).on('click', '.row-plu', function (e) {
+            $('#plu').val($(this).find('td:eq(1)').html());
+
+            getDetailAndInsert($(this).find('td:eq(1)').html());
+
+            $('#m_lov_plu').modal('hide');
+        });
+
         $('#m_lov_plu').on('shown.bs.modal',function(){
             $('#table_lov_plu_filter input').val('');
             $('#table_lov_plu_filter input').select();
@@ -322,15 +330,15 @@
                 "initComplete" : function(){
                     $('#table_lov_plu_filter input').val(value).select();
 
-                    $(".row-plu").prop("onclick", null).off("click");
+                    // $(".row-plu").prop("onclick", null).off("click");
 
-                    $(document).on('click', '.row-plu', function (e) {
-                        $('#plu').val($(this).find('td:eq(1)').html());
-
-                        getDetailAndInsert($(this).find('td:eq(1)').html());
-
-                        $('#m_lov_plu').modal('hide');
-                    });
+                    // $(document).on('click', '.row-plu', function (e) {
+                    //     $('#plu').val($(this).find('td:eq(1)').html());
+                    //
+                    //     getDetailAndInsert($(this).find('td:eq(1)').html());
+                    //
+                    //     $('#m_lov_plu').modal('hide');
+                    // });
                 }
             });
 

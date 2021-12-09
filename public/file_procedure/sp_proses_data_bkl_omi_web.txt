@@ -1,0 +1,2170 @@
+CREATE OR REPLACE PROCEDURE SP_PROSES_DATA_BKL_OMI_WEB (SESIPROC VARCHAR2,
+                                                        NAMAFILER VARCHAR2,
+                                                        STAT VARCHAR2,
+                                                        kodeigr VARCHAR2,
+                                                        userid VARCHAR2,
+                                                        PARAM_PROSES out varchar2,
+                                                        result_kode out VARCHAR2,
+                                                        result_msg out VARCHAR2,
+                                                        param_all_kasir out varchar2)
+IS
+    TEMP                   NUMBER;
+    TEMP2                  NUMBER;
+    VIEWTK                 BOOLEAN;
+    VIEWBKL                BOOLEAN;
+    VIEWMEM                BOOLEAN;
+    VIEWSUP                BOOLEAN;
+    LOK                    BOOLEAN;
+    PLUIGR                 VARCHAR2 (7);
+    MEMBEROMI              VARCHAR2 (10);
+    NODOC                  VARCHAR2 (8);
+    NOKOLI                 VARCHAR2 (7);
+    NOKASIR                VARCHAR2 (5);
+    DFEE                   NUMBER;
+    DPP                    NUMBER;
+    GROSS                  NUMBER;
+    PPN                    NUMBER;
+    FEE                    NUMBER;
+    PPNFEE                 NUMBER;
+    QTYAKHIR               NUMBER;
+    NOLDACOST              NUMBER;
+    NACOST                 NUMBER;
+    HRG                    NUMBER;
+    SEQ                    NUMBER;
+    LHEADER                BOOLEAN;
+    COSTNEW                NUMBER;
+    TOTDIS                 NUMBER;
+    TOTDIS1                NUMBER;
+    TOTDIS2                NUMBER;
+    TOTDIS3                NUMBER;
+    LPAJAK                 BOOLEAN;
+    SIGN                   VARCHAR2 (70);
+    CPRDCD                 VARCHAR2 (7);
+    KSBU                   VARCHAR2 (1);
+    FKREDIT                VARCHAR2 (1);
+    TOTDPP                 NUMBER;
+    TOTPPN                 NUMBER;
+    TOTFEE                 NUMBER;
+    TOTPPNFEE              NUMBER;
+    INFO                   VARCHAR2 (200);
+    SUPCO                  VARCHAR2 (5);
+    FBKP1                  CHAR (1);
+    FBKP2                  CHAR (1);
+    TOP                    NUMBER;
+    URUTPROSES             CHAR (2);
+    KURANG                 NUMBER;
+    TOPSUP                 NUMBER;
+    NDISC1                 NUMBER;
+    NDISC2                 NUMBER;
+    NDISC3                 NUMBER;
+    NDISC4                 NUMBER;
+    HRGBELI                NUMBER;
+    PERSENDISC01           NUMBER;
+    RPHDISC01              NUMBER;
+    FLAGDISC01             CHAR (1);
+    TGLMULAIDISC02         DATE;
+    TGLAKHIRDISC02         DATE;
+    PERSENDISC02           NUMBER;
+    RPHDISC02              NUMBER;
+    TGLMULAIDISC03         DATE;
+    TGLAKHIRDISC03         DATE;
+    PERSENDISC03           NUMBER;
+    RPHDISC03              NUMBER;
+    TGLMULAIDISC04         DATE;
+    TGLAKHIRDISC04         DATE;
+    PERSENDISC04           NUMBER;
+    RPHDISC04              NUMBER;
+    TGLMULAIDISC05         DATE;
+    TGLAKHIRDISC05         DATE;
+    PERSENDISC05           NUMBER;
+    RPHDISC05              NUMBER;
+    TGLMULAIDISC06         DATE;
+    TGLAKHIRDISC06         DATE;
+    PERSENDISC06           NUMBER;
+    RPHDISC06              NUMBER;
+    NDISCP1                NUMBER;
+    NDISCR1                NUMBER;
+    CFDISC1                VARCHAR2 (1);
+    NDISCP2                NUMBER;
+    NDISCR2                NUMBER;
+    NDISCP3                NUMBER;
+    NDISCR3                NUMBER;
+    NDISCP4                NUMBER;
+    NDISCR4                NUMBER;
+    P41                    NUMBER;
+    R41                    NUMBER;
+    P42                    NUMBER;
+    R42                    NUMBER;
+    P43                    NUMBER;
+    R43                    NUMBER;
+    NDIS4CRA               NUMBER;
+    NDIS4RP                NUMBER;
+    NDIS4RR                NUMBER;
+    NDIS4JP                NUMBER;
+    NDIS4JR                NUMBER;
+    NDIS4CR                NUMBER;
+    NDIS4RRA               NUMBER;
+    NDIS4JRA               NUMBER;
+    LINDA                  VARCHAR2 (4000);
+    GROSS2                 NUMBER;
+    HRG2                   NUMBER;
+    NDISC12                NUMBER;
+    NDISC22                NUMBER;
+    NDISC32                NUMBER;
+    NTDISC2                NUMBER;
+    PROSES                 BOOLEAN;
+    AL_BUTTON              NUMBER;
+    TTL_NBTB               NUMBER;
+    TTL_STRK               NUMBER;
+    CEKHRGBELI             NUMBER;
+    CEKPPNBM               NUMBER;
+    CEKPPNBOTOL            NUMBER;
+    CEKTGLMULAIDISC01      DATE;
+    CEKTGLAKHIRDISC01      DATE;
+    CEKFLAGDISC01          VARCHAR (1);
+    CEKRPHDISC01           NUMBER;
+    CEKTGLMULAIDISC02      DATE;
+    CEKTGLAKHIRDISC02      DATE;
+    CEKRPHDISC02           NUMBER;
+    CEKTGLMULAIDISC02II    DATE;
+    CEKTGLAKHIRDISC02II    DATE;
+    CEKRPHDISC02II         NUMBER;
+    CEKTGLMULAIDISC02III   DATE;
+    CEKTGLAKHIRDISC02III   DATE;
+    CEKRPHDISC02III        NUMBER;
+    CEKTGLMULAIBONUS01     DATE;
+    CEKTGLAKHIRBONUS01     DATE;
+    CEKQTY1BONUS01         NUMBER;
+    CEKQTYMULAI1BONUS01    NUMBER;
+    CEKISIBELI             NUMBER;
+    CEKUNIT                VARCHAR2 (3);
+    HRGOMI                 NUMBER;
+    CEKFLAGBKP1            VARCHAR2 (1);
+    CEKFLAGBKP2            VARCHAR2 (1);
+    HRGFILE                NUMBER;
+    TOTDPP2                NUMBER;
+    TOTDISC2               NUMBER;
+    TOTPPN2                NUMBER;
+    TOTDIS12               NUMBER;
+    TOTDIS22               NUMBER;
+    TOTDIS32               NUMBER;
+    BULAN_NO               VARCHAR2 (12);
+    TAHUN_NO                             VARCHAR2 (35);
+
+    --PARAM_PROSES            VARCHAR2 (100);
+    PARAM_LBKP              VARCHAR2 (100);
+    PARAM_BEBAS             VARCHAR2 (100);
+    PARAM_LBEBAS            VARCHAR2 (100);
+    PARAM_LMINYAK           VARCHAR2 (100);
+    PARAM_LTEPUNG           VARCHAR2 (100);
+    PARAM_PKP               VARCHAR2 (100);
+    PARAM_PAJAKOK           VARCHAR2 (100);
+    PARAM_NOBPB             VARCHAR2 (1000);
+    PARAM_ALLKASIR          VARCHAR2 (1000);
+    PARAM_SERIMINYAK        VARCHAR2(100);
+    PARAM_SERIBEBAS         VARCHAR2(100);
+    PARAM_SERITEPUNG        VARCHAR2(100);
+    PARAM_SERIBKP           VARCHAR2 (100);
+    PARAM_JML               NUMBER;
+
+    TEMP_CEK_PKP            NUMBER;
+    NPWP_CEK_PKP            VARCHAR2 (23);
+
+
+    PARAM_NOBKP     VARCHAR2 (100);
+    PARAM_NOBEBAS   VARCHAR2 (100);
+    PARAM_NOTEPUNG  VARCHAR2 (100);
+    PARAM_NOMINYAK  VARCHAR2 (100);
+    PARAM_TEMPPJK   VARCHAR2 (100);
+    LBKP_NMR_PJK      BOOLEAN;
+    LBEBAS_NMR_PJK    BOOLEAN;
+    LMINYAK_NMR_PJK   BOOLEAN;
+    LTEPUNG_NMR_PJK   BOOLEAN;
+    TEMP_NMR_PJK      NUMBER;
+    FLAG_NMR_PJK      CHAR (1);
+    PAJAK_NMR_PJK     NUMBER;
+    NOPAJAK_NMR_PJK   VARCHAR (20);
+    flag_return1      BOOLEAN := FALSE;
+    flag_return2      BOOLEAN := FALSE;
+    flag_return3      BOOLEAN := FALSE;
+    flag_return4      BOOLEAN := FALSE;
+
+
+BEGIN
+      BULAN_NO := '123456789ABC';
+      TAHUN_NO := '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP
+      FROM TEMP_BKL_DALAMKOTA
+     WHERE TRIM (SESSID) = SESIPROC
+       AND TRIM (NAMAFILE) = NAMAFILER
+       AND KETER IS NOT NULL
+       AND EXISTS (SELECT MSTH_NOREF3
+                     FROM TBTR_MSTRAN_H
+                    WHERE MSTH_KODEIGR = kodeigr AND MSTH_NOREF3 = KETER);
+
+    IF NVL (TEMP, 0) <> 0
+    THEN
+        result_kode := 0;
+        result_msg := 'Data BKL Sudah Pernah Diproses !!';
+        RETURN;
+    END IF;
+
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP
+      FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
+                       FROM TEMP_BKL_DALAMKOTA, TBTR_MSTRAN_H
+                      WHERE TRIM (SESSID) = SESIPROC
+                        AND TRIM (NAMAFILE) = NAMAFILER
+                        AND MSTH_KODEIGR = kodeigr
+                        AND TRIM (MSTH_NOFAKTUR) = TRIM (GUDANG || BUKTI_NO)
+                        AND MSTH_TGLFAKTUR = BUKTI_TGL) A;
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP2
+      FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
+                       FROM TEMP_BKL_DALAMKOTA
+                      WHERE SESSID = SESIPROC AND NAMAFILE = NAMAFILER) A;
+
+-- cek data ada di mstran apa  ngak
+    IF NVL (TEMP, 0) = NVL (TEMP2, 0)
+    THEN
+--        DC_ALERT.OK ('Semua Record di File BKL ' || NAMAFILER || ' Sudah Pernah Diproses !!');
+
+        DELETE FROM TEMP_BKL_DALAMKOTA
+              WHERE TRIM (SESSID) = TRIM (SESIPROC) AND TRIM (NAMAFILE) = TRIM (NAMAFILER);
+
+        COMMIT;
+
+        result_kode := 0;
+        result_msg := 'Semua Record di File BKL ' || NAMAFILER || ' Sudah Pernah Diproses !!';
+        RETURN;
+    ELSE
+        -- kondisi ada data yg sudah di proses dan belum di proses file nya ditolak atau bagaimana?
+        -- delete data temporary yg sudah ada di mstran, biar ngak ke proses masuk lg
+        DELETE FROM TEMP_BKL_DALAMKOTA
+              WHERE GUDANG || BUKTI_NO || TO_CHAR (BUKTI_TGL, 'yyyyMMdd') IN (
+                        SELECT DISTINCT GUDANG || BUKTI_NO || TO_CHAR (BUKTI_TGL, 'yyyyMMdd')
+                                   FROM TEMP_BKL_DALAMKOTA, TBTR_MSTRAN_H
+                                  WHERE TRIM (SESSID) = SESIPROC
+                                    AND TRIM (NAMAFILE) = NAMAFILER
+                                    AND MSTH_KODEIGR = kodeigr
+                                    AND TRIM (MSTH_NOFAKTUR) = TRIM (GUDANG || BUKTI_NO)
+                                    AND MSTH_TGLFAKTUR = BUKTI_TGL);
+
+        COMMIT;
+        VIEWTK := TRUE;
+        VIEWBKL := TRUE;
+        VIEWSUP := TRUE;
+        VIEWMEM := TRUE;
+
+        -- cek data ada di history bkl apa ngak
+        SELECT NVL (COUNT (1), 0)
+          INTO TEMP
+          FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
+                           FROM TEMP_BKL_DALAMKOTA, TBHISTORY_BKL
+                          WHERE TRIM (SESSID) = SESIPROC
+                            AND TRIM (NAMAFILE) = NAMAFILER
+                            AND BKL_KODEIGR = kodeigr
+                            AND BKL_KODEOMI = GUDANG
+                            AND TRIM (BKL_NOBUKTI) = TRIM (BUKTI_NO)
+                            AND BKL_TGLBUKTI = BUKTI_TGL) A;
+
+        SELECT NVL (COUNT (1), 0)
+          INTO TEMP2
+          FROM (SELECT DISTINCT BUKTI_NO, GUDANG, BUKTI_TGL
+                           FROM TEMP_BKL_DALAMKOTA
+                          WHERE SESSID = SESIPROC AND NAMAFILE = NAMAFILER) A;
+
+        IF NVL (TEMP, 0) = NVL (TEMP2, 0)
+        THEN
+--            DC_ALERT.OK ('Semua Record di File BKL ' || NAMAFILER || ' Sudah Pernah Diproses !!');
+
+            DELETE FROM TEMP_BKL_DALAMKOTA
+                  WHERE TRIM (SESSID) = TRIM (SESIPROC) AND TRIM (NAMAFILE) = TRIM (NAMAFILER);
+
+            COMMIT;
+
+            result_kode := 0;
+            result_msg :='Semua Record di File BKL ' || NAMAFILER || ' Sudah Pernah Diproses !!';
+            RETURN;
+        ELSE
+            -- kondisi ada data yg sudah di proses dan belum di proses file nya ditolak atau bagaimana?
+            -- delete data temporary yg sudah ada di history bkl, biar ngak ke proses masuk lg
+            DELETE FROM TEMP_BKL_DALAMKOTA
+                  WHERE GUDANG || BUKTI_NO || TO_CHAR (BUKTI_TGL, 'yyyyMMdd') IN (
+                            SELECT DISTINCT GUDANG || BUKTI_NO || TO_CHAR (BUKTI_TGL, 'yyyyMMdd')
+                                       FROM TEMP_BKL_DALAMKOTA, TBHISTORY_BKL
+                                      WHERE TRIM (SESSID) = SESIPROC
+                                        AND TRIM (NAMAFILE) = NAMAFILER
+                                        AND BKL_KODEIGR = kodeigr
+                                        AND BKL_KODEOMI = GUDANG
+                                        AND TRIM (BKL_NOBUKTI) = TRIM (BUKTI_NO)
+                                        AND BKL_TGLBUKTI = BUKTI_TGL);
+
+            COMMIT;
+
+            FOR REC IN (SELECT DISTINCT GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO
+                                   FROM TEMP_BKL_DALAMKOTA
+                                  WHERE SESSID = SESIPROC AND NAMAFILE = NAMAFILER
+                               ORDER BY GUDANG, BUKTI_NO)
+            LOOP
+                LOK := TRUE;
+                PARAM_PROSES := '1';
+
+                -- select distinct untuk kondisi data double waktu trf dari dbf ke oracle, penggunaan dbase pkg omi, tp hanya kondisi tertentu, di lain komp
+                FOR RECNO IN (SELECT DISTINCT RECID, GUDANG, ID, LOKASI, RTYPE, BUKTI_NO,
+                                              BUKTI_TGL, SUPCO, CR_TERM, PRDCD, QTY, BONUS, PRICE,
+                                              GROSS, PPN, FMDFEE, PPNFEE, PPNBM, HRG_BOTOL, DISC1,
+                                              DISC2, DISC3, DISC4CR, DISC4RR, DISC4JR, INVNO,
+                                              INV_DATE, PO_NO, PO_DATE, ISTYPE, BKL, JAM, KETER,
+                                              SESSID, NAMAFILE
+                                         FROM TEMP_BKL_DALAMKOTA
+                                        WHERE BUKTI_NO = REC.BUKTI_NO
+                                          AND GUDANG = REC.GUDANG
+                                          AND SESSID = SESIPROC
+                                          AND NAMAFILE = NAMAFILER)
+                LOOP
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP
+                      FROM TBMASTER_PRODCRM
+                     WHERE PRC_KODEIGR = kodeigr
+                       AND (   PRC_PLUOMI = RECNO.PRDCD
+                            OR (PRC_PLUIDM = RECNO.PRDCD AND PRC_GROUP = 'I')
+                           );
+
+                    PLUIGR := NULL;
+
+                    IF NVL (TEMP, 0) = 0
+                    THEN
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID, NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'P.L.U Tidak Terdaftar Di Master OMI', SESIPROC, NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    ELSE
+                        SELECT PRC_PLUIGR
+                          INTO PLUIGR
+                          FROM TBMASTER_PRODCRM
+                         WHERE PRC_KODEIGR = kodeigr
+                           AND (   PRC_PLUOMI = RECNO.PRDCD
+                                OR (PRC_PLUIDM = RECNO.PRDCD AND PRC_GROUP = 'I')
+                               );
+                    END IF;
+
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP
+                      FROM TBMASTER_PRODCRM, TBMASTER_PRODMAST
+                     WHERE PRC_KODEIGR = kodeigr
+                       AND (   PRC_PLUOMI = RECNO.PRDCD
+                            OR (PRC_PLUIDM = RECNO.PRDCD AND PRC_GROUP = 'I')
+                           )
+                       AND PRD_KODEIGR = PRC_KODEIGR
+                       AND PRD_PRDCD = PRC_PLUIGR;
+
+                    IF NVL (TEMP, 0) = 0
+                    THEN
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID,
+                                     NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'P.L.U Tidak Terdaftar Di MASTER INDOGROSIR', SESIPROC,
+                                     NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    END IF;
+
+                    IF NVL (RECNO.BKL, 'N') <> 'Y'
+                    THEN
+                        IF VIEWBKL = TRUE
+                        THEN
+--                            DC_ALERT.OK (   'Ada PLU OMI : '
+--                                         || RECNO.PRDCD
+--                                         || 'Yang Bukan Flag BKL, Member OMI : '
+--                                         || RECNO.GUDANG
+--                                         || ' !!'
+--                                        );
+                            VIEWBKL := FALSE;
+
+                            result_kode := 0;
+                            result_msg := 'Ada PLU OMI : ' || RECNO.PRDCD || 'Yang Bukan Flag BKL, Member OMI : ' || RECNO.GUDANG || ' !!';
+                            RETURN;
+                        END IF;
+
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID, NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'P.L.U OMI Ada Yang Bukan Flag BKL', SESIPROC, NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    END IF;
+
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP
+                      FROM TBMASTER_TOKOIGR
+                     WHERE TKO_KODEIGR = kodeigr
+                       AND (   (TKO_KODEOMI = RECNO.GUDANG AND TKO_KODESBU = 'O')
+                            OR (TKO_KODEOMI = RECNO.GUDANG AND TKO_KODESBU = 'I')
+                           );
+
+                    MEMBEROMI := 0;
+                    KSBU := NULL;
+
+                    IF NVL (TEMP, 0) = 0
+                    THEN
+                        IF VIEWTK = TRUE
+                        THEN
+--                            DC_ALERT.OK (   'Member OMI '
+--                                         || RECNO.GUDANG
+--                                         || ' Tidak Terdaftar Di Master Toko OMI !!'
+--                                        );
+                            VIEWTK := FALSE;
+
+                            result_kode := 0;
+                            result_msg := 'Member OMI ' || RECNO.GUDANG || ' Tidak Terdaftar Di Master Toko OMI !!';
+                            RETURN;
+                        END IF;
+
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID,
+                                     NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'Member OMI Tidak Terdaftar Di Master Toko OMI', SESIPROC,
+                                     NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    ELSE
+                        SELECT TKO_KODECUSTOMER, TKO_KODESBU
+                          INTO MEMBEROMI, KSBU
+                          FROM TBMASTER_TOKOIGR
+                         WHERE TKO_KODEIGR = kodeigr
+                           AND (   (TKO_KODEOMI = RECNO.GUDANG AND TKO_KODESBU = 'O')
+                                OR (TKO_KODEOMI = RECNO.GUDANG AND TKO_KODESBU = 'I')
+                               );
+                    END IF;
+
+                    SUPCO := TRIM (RECNO.SUPCO);
+
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP
+                      FROM TBMASTER_CUSTOMER
+                     WHERE CUS_KODEMEMBER = MEMBEROMI AND ROWNUM = 1;
+
+                    IF NVL (TEMP, 0) = 0
+                    THEN
+                        IF VIEWMEM = TRUE
+                        THEN
+--                            DC_ALERT.OK (   'Member OMI '
+--                                         || MEMBEROMI
+--                                         || ' Tidak Terdaftar Di Master Member !!'
+--                                        );
+                            VIEWMEM := FALSE;
+
+                            result_kode := 0;
+                            result_msg := 'Member OMI ' || MEMBEROMI || ' Tidak Terdaftar Di Master Member !!';
+                            RETURN;
+                        END IF;
+
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID,
+                                     NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'Member OMI Tidak Terdaftar Di Master Member', SESIPROC,
+                                     NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    ELSE
+                        SELECT CUS_FLAGKREDIT
+                          INTO FKREDIT
+                          FROM TBMASTER_CUSTOMER
+                         WHERE CUS_KODEMEMBER = MEMBEROMI AND ROWNUM = 1;
+                    END IF;
+
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP
+                      FROM TBMASTER_SUPPLIER
+                     WHERE SUP_KODEIGR = kodeigr
+                           AND SUP_KODESUPPLIER = TRIM (RECNO.SUPCO);
+
+                    IF NVL (TEMP, 0) = 0
+                    THEN
+                        IF VIEWSUP = TRUE
+                        THEN
+--                            DC_ALERT.OK (   'Supplier OMI '
+--                                         || RECNO.SUPCO
+--                                         || ' Tidak Terdaftar Di Master Supplier !!'
+--                                        );
+                            VIEWSUP := FALSE;
+
+                            result_kode := 0;
+                            result_msg :=  'Supplier OMI ' || RECNO.SUPCO || ' Tidak Terdaftar Di Master Supplier !!';
+                            -- RETURN; -- Tidak direturn karna masih menjalankan fuction dibawahny
+                        END IF;
+
+                        INSERT INTO TEMP_CETAK_TOLAKANBKLDALAMKOTA
+                                    (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                     KODESUPPLIER, PRDCD, QTY, BONUS,
+                                     KETERANGAN, SESSID,
+                                     NAMAFILE
+                                    )
+                             VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                     TRIM (RECNO.SUPCO), RECNO.PRDCD, RECNO.QTY, RECNO.BONUS,
+                                     'Supplier OMI Tidak Terdaftar Di Master Supplier', SESIPROC,
+                                     NAMAFILER
+                                    );
+
+                        LOK := FALSE;
+                    END IF;
+
+                   COMMIT;
+                END LOOP;
+
+                IF LOK = FALSE
+                THEN
+--                    DC_ALERT.OK
+--                        (   'Masih Ada Data BKL OMI Yang Tidak Memenuhi Syarat Di No. Dokumen : '
+--                         || REC.BUKTI_NO
+--                         || ' File BKL OMI : '
+--                         || NAMAFILER
+--                         || ' Harap Disimpan ; Untuk Proses Ulang BKL OMI setelah Tolakan nya Direvisi !!'
+--                        );
+
+                    DELETE FROM TEMP_BKL_DALAMKOTA
+                          WHERE BUKTI_NO = REC.BUKTI_NO AND GUDANG = REC.GUDANG;
+
+                    COMMIT;
+
+                            result_kode := 0;
+                            result_msg :=  'Masih Ada Data BKL OMI Yang Tidak Memenuhi Syarat Di No. Dokumen : ' || REC.BUKTI_NO || ' File BKL OMI : '
+                                             || NAMAFILER || ' Harap Disimpan ; Untuk Proses Ulang BKL OMI setelah Tolakan nya Direvisi !!';
+                            RETURN;
+                ELSE
+                    SELECT SUM (FEE) DFEE, SUM (DPP) DPP
+                      INTO DFEE, DPP
+                      FROM (SELECT PRD_PRDCD,
+                                   CASE
+                                       WHEN NVL (PRD_FLAGNONDISTFEE, 'N') = 'Y'
+                                           THEN (FMDFEE + PPNFEE)
+                                       ELSE 0
+                                   END FEE,
+                                   (GROSS + PPN) DPP
+                              FROM TEMP_BKL_DALAMKOTA, TBMASTER_PRODCRM, TBMASTER_PRODMAST
+                             WHERE GUDANG = REC.GUDANG
+                               AND BUKTI_NO = REC.BUKTI_NO
+                               AND PRC_KODEIGR = kodeigr
+                               AND PRC_PLUOMI = PRDCD
+                               AND PRD_KODEIGR = kodeigr
+                               AND PRD_PRDCD = SUBSTR (PRC_PLUIGR, 1, 6) || '0') A;
+
+                    SELECT TKO_KODECUSTOMER
+                      INTO MEMBEROMI
+                      FROM TBMASTER_TOKOIGR
+                     WHERE TKO_KODEIGR = kodeigr
+                       AND (   (TKO_KODEOMI = REC.GUDANG AND TKO_KODESBU = 'O')
+                            OR (TKO_KODEOMI = REC.GUDANG AND TKO_KODESBU = 'I')
+                           );
+
+                    --cek pkp, ambil no pajak, ambil no BKL, ambil no KOLI, ambil no Kasir
+                    URUTPROSES := '1';
+                    LHEADER := TRUE;
+                    SEQ := 0;
+                    TOTDPP := 0;
+                    TOTDIS := 0;
+                    TOTDIS1 := 0;
+                    TOTDIS2 := 0;
+                    TOTDIS3 := 0;
+                    TOTPPN := 0;
+                    TOTFEE := 0;
+                    TOTPPNFEE := 0;
+                    PARAM_LBKP := '0';
+                    PARAM_LBEBAS := '0';
+                    PARAM_LMINYAK := '0';
+                    PARAM_LTEPUNG := '0';
+                    TOTDPP2 := 0;
+                    TOTDISC2 := 0;
+                    TOTDIS12 := 0;
+                    TOTDIS22 := 0;
+                    TOTDIS32 := 0;
+                    TOTPPN2 := 0;
+                    LPAJAK := TRUE;
+
+                    -- Program Unit CEK_PKP
+                    --CEK_PKP (MEMBEROMI);
+                    SELECT NVL (COUNT (1), 0)
+                      INTO TEMP_CEK_PKP
+                      FROM TBMASTER_CUSTOMER
+                     WHERE CUS_KODEMEMBER = MEMBEROMI
+                       AND NVL (CUS_FLAGPKP, 'N') = 'Y'
+                       AND ROWNUM = 1;
+
+                    IF NVL (TEMP_CEK_PKP, 0) = 0
+                    THEN
+                        PARAM_PKP := 'N';
+                    ELSE
+                        SELECT CUS_NPWP
+                          INTO NPWP_CEK_PKP
+                          FROM TBMASTER_CUSTOMER
+                         WHERE CUS_KODEMEMBER = MEMBEROMI
+                           AND NVL (CUS_FLAGPKP, 'N') = 'Y'
+                           AND ROWNUM = 1;
+
+                        IF NVL (NPWP_CEK_PKP, '0000') <> '0000'
+                        THEN
+                            PARAM_PKP := 'Y';
+                        ELSE
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP_CEK_PKP
+                              FROM TBMASTER_NPWP
+                             WHERE PWP_KODEIGR = kodeigr AND PWP_KODEMEMBER = MEMBEROMI;
+
+                            IF NVL (TEMP_CEK_PKP, 0) = 0
+                            THEN
+                                PARAM_PKP := 'N';
+                            ELSE
+                                PARAM_PKP := 'Y';
+                            END IF;
+                        END IF;
+                    END IF;
+                    -- End Program Unit CEK_PKP
+
+                    PARAM_PKP := 'Y'; -- Diatas udh di set variable pkp, tapi disini mala di set ulang
+                    PARAM_PAJAKOK := 'Y';
+
+                    -- Program Unit NOMOR_PAJAK
+--                    NOMOR_PAJAK (REC.GUDANG, REC.BUKTI_NO, MEMBEROMI);
+                    LBKP_NMR_PJK := FALSE;
+                    LBEBAS_NMR_PJK := FALSE;
+                    LMINYAK_NMR_PJK := FALSE;
+                    LTEPUNG_NMR_PJK := FALSE;
+                    PARAM_NOBKP := 0;
+                    PARAM_NOBEBAS := 0;
+                    PARAM_NOTEPUNG := 0;
+                    PARAM_NOMINYAK := 0;
+                    PARAM_SERIBKP := '';
+                    PARAM_SERIBEBAS := '';
+                    PARAM_SERIMINYAK := '';
+                    PARAM_SERITEPUNG := '';
+
+                    IF PARAM_PKP = 'Y'
+                    THEN
+                        --dc_alert.ok('pkp' || omi || nomor || kmember);
+                        FOR REC_2 IN (SELECT DISTINCT PRD_FLAGBKP1, PRD_FLAGBKP2, CUS_FLAGINSTITUSIPEMERINTAH
+                                               FROM TEMP_BKL_DALAMKOTA,
+                                                    TBMASTER_PRODMAST,
+                                                    TBMASTER_PRODCRM,
+                                                    TBMASTER_CUSTOMER
+                                              WHERE GUDANG = REC.GUDANG
+                                                AND BUKTI_NO = REC.BUKTI_NO
+                                                AND PRC_KODEIGR = kodeigr
+                                                AND PRC_PLUOMI = PRDCD
+                                                AND PRD_KODEIGR = kodeigr
+                                                AND PRD_PRDCD = PRC_PLUIGR
+                                                AND CUS_KODEMEMBER = MEMBEROMI)
+                        LOOP
+                            PARAM_JML := PARAM_JML + 1;
+
+                            IF    (    NVL (REC_2.PRD_FLAGBKP1, 'N') = 'Y'
+                                   AND NVL (REC_2.PRD_FLAGBKP2, 'N') NOT IN ('P', 'G', 'W')
+                                  )
+                               OR (NVL (REC_2.PRD_FLAGBKP1, 'N') <> 'Y' AND NVL (REC_2.PRD_FLAGBKP2, 'N') = 'C')
+                               OR (NVL (REC_2.PRD_FLAGBKP1, 'N') <> 'Y' AND NVL (REC_2.PRD_FLAGBKP2, 'N') = 'N')
+                            THEN
+                                --   dc_alert.ok('bkp');
+                                LBKP_NMR_PJK := TRUE;
+                                PARAM_LBKP := '1';
+                            ELSIF (NVL (REC_2.PRD_FLAGBKP1, 'N') = 'Y' AND NVL (REC_2.PRD_FLAGBKP2, 'N') = 'P')
+                            THEN
+                                LBEBAS_NMR_PJK := TRUE;
+                                PARAM_LBEBAS := '1';
+                            ELSIF (NVL (REC_2.PRD_FLAGBKP1, 'N') = 'Y' AND NVL (REC_2.PRD_FLAGBKP2, 'N') = 'G')
+                            THEN
+                                LMINYAK_NMR_PJK := TRUE;
+                                PARAM_LMINYAK := '1';
+                            ELSIF (NVL (REC_2.PRD_FLAGBKP1, 'N') = 'Y' AND NVL (REC_2.PRD_FLAGBKP2, 'N') = 'W')
+                            THEN
+                                LTEPUNG_NMR_PJK := TRUE;
+                                PARAM_LTEPUNG := '1';
+                            END IF;
+
+                            FLAG_NMR_PJK := REC_2.CUS_FLAGINSTITUSIPEMERINTAH;
+                        END LOOP;
+
+                        IF LBKP_NMR_PJK = TRUE
+                        THEN
+                            SELECT NVL (COUNT (*), 0)
+                              INTO TEMP_NMR_PJK
+                              FROM TBMASTER_FAKTUR
+                             WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                               AND FKT_KODEMEMBER = MEMBEROMI
+                               AND FKT_KASIR = 'BKL'
+                               AND SUBSTR (FKT_NOSERI, 20, 1) = 'Y';
+
+                            IF NVL (TEMP_NMR_PJK, 0) <> 0
+                            THEN
+                                SELECT FKT_NOFAKTUR, FKT_NOSERI
+                                  INTO PARAM_NOBKP, PARAM_SERIBKP
+                                  FROM TBMASTER_FAKTUR
+                                 WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                   AND FKT_KODEMEMBER = MEMBEROMI
+                                   AND FKT_KASIR = 'BKL'
+                                   AND SUBSTR (FKT_NOSERI, 20, 1) = 'Y';
+                            ELSE
+                                PAJAK_NMR_PJK := 0;
+                                GET_NO_FAKTUR (kodeigr, userid, PAJAK_NMR_PJK);
+
+                                    /*
+                                SELECT igr_tax_out_seq.NEXTVAL
+                                  INTO :parameter.nobkp
+                                  FROM DUAL;
+                                  */
+                                IF PAJAK_NMR_PJK = 0
+                                THEN
+                                    PARAM_PAJAKOK := 'N';
+                                    flag_return1 := TRUE;
+                                    --RETURN;----------------------------------------------------------??????????????
+                                ELSE
+                                    NOPAJAK_NMR_PJK := LPAD (PAJAK_NMR_PJK, 13, '0');
+                                    PARAM_NOBKP := SUBSTR (NOPAJAK_NMR_PJK, 6, 8);
+                                    PARAM_TEMPPJK := PARAM_TEMPPJK || PARAM_NOBKP;
+                                    PARAM_SERIBKP :=
+                                           CASE
+                                               WHEN NVL (FLAG_NMR_PJK, 'N') = 'Y'
+                                                   THEN '02'
+                                               ELSE '01'
+                                           END
+                                        || '0.'
+                                        || SUBSTR (NOPAJAK_NMR_PJK, 1, 3)
+                                        || '-'
+                                        || SUBSTR (NOPAJAK_NMR_PJK, 4, 2)
+                                        || '.'
+                                        || LPAD (PARAM_NOBKP, 8, '0')
+                                        || 'Y';
+                                END IF;
+                            END IF;
+                        END IF;
+
+                        IF flag_return1 = FALSE
+                        THEN
+                            IF LBEBAS_NMR_PJK = TRUE
+                            THEN
+                                SELECT NVL (COUNT (*), 0)
+                                  INTO TEMP_NMR_PJK
+                                  FROM TBMASTER_FAKTUR
+                                 WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                   AND FKT_KODEMEMBER = MEMBEROMI
+                                   AND FKT_KASIR = 'BKL'
+                                   AND SUBSTR (FKT_NOSERI, 20, 1) = 'P';
+
+                                IF NVL (TEMP_NMR_PJK, 0) <> 0
+                                THEN
+                                    SELECT FKT_NOFAKTUR, FKT_NOSERI
+                                      INTO PARAM_NOBEBAS, PARAM_SERIBEBAS
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                       AND FKT_KODEMEMBER = MEMBEROMI
+                                       AND FKT_KASIR = 'BKL'
+                                       AND SUBSTR (FKT_NOSERI, 20, 1) = 'P';
+                                ELSE
+                                    PAJAK_NMR_PJK := 0;
+                                    GET_NO_FAKTUR (kodeigr, userid, PAJAK_NMR_PJK);
+
+                                    IF PAJAK_NMR_PJK = 0
+                                    THEN
+                                        PARAM_PAJAKOK := 'N';
+                                        flag_return2 := true;
+                                        --RETURN;
+                                    ELSE
+                                        NOPAJAK_NMR_PJK := LPAD (PAJAK_NMR_PJK, 13, '0');
+                                        PARAM_NOBEBAS := SUBSTR (NOPAJAK_NMR_PJK, 6, 8);
+                                        PARAM_TEMPPJK := PARAM_TEMPPJK || PARAM_NOBEBAS;
+                                        PARAM_SERIBEBAS :=
+                                               CASE
+                                                   WHEN NVL (FLAG_NMR_PJK, 'N') = 'Y'
+                                                       THEN '02'
+                                                   ELSE '08'
+                                               END
+                                            || '0.'
+                                            || SUBSTR (NOPAJAK_NMR_PJK, 1, 3)
+                                            || '-'
+                                            || SUBSTR (NOPAJAK_NMR_PJK, 4, 2)
+                                            || '.'
+                                            || LPAD (PARAM_NOBEBAS, 8, '0')
+                                            || 'Y';
+                                    END IF;
+                                END IF;
+                            END IF;
+
+                            IF flag_return2 = FALSE
+                            THEN
+                                IF LMINYAK_NMR_PJK = TRUE
+                                THEN
+                                    SELECT NVL (COUNT (*), 0)
+                                      INTO TEMP_NMR_PJK
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                       AND FKT_KODEMEMBER = MEMBEROMI
+                                       AND FKT_KASIR = 'BKL'
+                                       AND SUBSTR (FKT_NOSERI, 20, 1) = 'G';
+
+                                    IF NVL (TEMP_NMR_PJK, 0) <> 0
+                                    THEN
+                                        SELECT FKT_NOFAKTUR, FKT_NOSERI
+                                          INTO PARAM_NOMINYAK, PARAM_SERIMINYAK
+                                          FROM TBMASTER_FAKTUR
+                                         WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                           AND FKT_KODEMEMBER = MEMBEROMI
+                                           AND FKT_KASIR = 'BKL'
+                                           AND SUBSTR (FKT_NOSERI, 20, 1) = 'G';
+                                    ELSE
+                                        PAJAK_NMR_PJK := 0;
+                                        GET_NO_FAKTUR (kodeigr, userid, PAJAK_NMR_PJK);
+
+                                        IF PAJAK_NMR_PJK = 0
+                                        THEN
+                                            PARAM_PAJAKOK := 'N';
+                                            flag_return3 := true;
+                                            --RETURN;
+                                        ELSE
+                                            NOPAJAK_NMR_PJK := LPAD (PAJAK_NMR_PJK, 13, '0');
+                                            PARAM_NOMINYAK := SUBSTR (NOPAJAK_NMR_PJK, 6, 8);
+                                            PARAM_TEMPPJK := PARAM_TEMPPJK || PARAM_NOMINYAK;
+                                            PARAM_SERIMINYAK :=
+                                                   CASE
+                                                       WHEN NVL (FLAG_NMR_PJK, 'N') = 'Y'
+                                                           THEN '02'
+                                                       ELSE '07'
+                                                   END
+                                                || '0.'
+                                                || SUBSTR (NOPAJAK_NMR_PJK, 1, 3)
+                                                || '-'
+                                                || SUBSTR (NOPAJAK_NMR_PJK, 4, 2)
+                                                || '.'
+                                                || LPAD (PARAM_NOMINYAK, 8, '0')
+                                                || 'Y';
+                                        END IF;
+                                    END IF;
+                                END IF;
+
+                                IF flag_return3 = true
+                                THEN
+                                    IF LTEPUNG_NMR_PJK = TRUE
+                                    THEN
+                                        SELECT NVL (COUNT (*), 0)
+                                          INTO TEMP_NMR_PJK
+                                          FROM TBMASTER_FAKTUR
+                                         WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                           AND FKT_KODEMEMBER = MEMBEROMI
+                                           AND FKT_KASIR = 'BKL'
+                                           AND SUBSTR (FKT_NOSERI, 20, 1) = 'W';
+
+                                        IF NVL (TEMP_NMR_PJK, 0) <> 0
+                                        THEN
+                                            SELECT FKT_NOFAKTUR, FKT_NOSERI
+                                              INTO PARAM_NOTEPUNG, PARAM_SERITEPUNG
+                                              FROM TBMASTER_FAKTUR
+                                             WHERE TRUNC (FKT_TGL) = TRUNC (SYSDATE)
+                                               AND FKT_KODEMEMBER = MEMBEROMI
+                                               AND FKT_KASIR = 'BKL'
+                                               AND SUBSTR (FKT_NOSERI, 20, 1) = 'W';
+                                        ELSE
+                                            PAJAK_NMR_PJK := 0;
+                                            GET_NO_FAKTUR (kodeigr, userid, PAJAK_NMR_PJK);
+
+                                            IF PAJAK_NMR_PJK = 0
+                                            THEN
+                                                PARAM_PAJAKOK := 'N';
+--                                                RETURN;
+                                            ELSE
+                                                NOPAJAK_NMR_PJK := LPAD (PAJAK_NMR_PJK, 13, '0');
+                                                PARAM_NOTEPUNG := SUBSTR (NOPAJAK_NMR_PJK, 6, 8);
+                                                PARAM_TEMPPJK := PARAM_TEMPPJK || PARAM_NOTEPUNG;
+                                                PARAM_SERITEPUNG :=
+                                                       CASE
+                                                           WHEN NVL (FLAG_NMR_PJK, 'N') = 'Y'
+                                                               THEN '02'
+                                                           ELSE '07'
+                                                       END
+                                                    || '0.'
+                                                    || SUBSTR (NOPAJAK_NMR_PJK, 1, 3)
+                                                    || '-'
+                                                    || SUBSTR (NOPAJAK_NMR_PJK, 4, 2)
+                                                    || '.'
+                                                    || LPAD (PARAM_NOTEPUNG, 8, '0')
+                                                    || 'Y';
+                                            END IF;
+                                        END IF;
+                                    END IF;
+                                END IF; -- END Flag_return3
+                            END IF; -- End Flag_return2
+                        END IF; -- END FLAG_RETURN1
+                    END IF;
+                    -- End Program Unit NOMOR_PAJAK
+
+                    IF PARAM_PAJAKOK = 'Y'
+                    THEN
+                        NODOC :=
+                            F_Igr_Get_Nomor (kodeigr,
+                                             'BKL',
+                                             'Nomor BKL OMI',
+                                             'L' || substr(tahun_no, TO_CHAR (SYSDATE, 'yy'), 1) || substr(bulan_no, TO_CHAR (SYSDATE, 'MM'), 1),
+                                             5,
+                                             TRUE
+                                            );
+                        PARAM_NOBPB := PARAM_NOBPB || '''' || NODOC || ''',';
+                        NOKOLI :=
+                            F_Igr_Get_Nomor (kodeigr,
+                                             'MRO',
+                                             'Nomor Koli BKL OMI',
+                                             substr(tahun_no, TO_CHAR (SYSDATE, 'yy'), 1) || substr(bulan_no, TO_CHAR (SYSDATE, 'MM'), 1),
+                                             5,
+                                             TRUE
+                                            );
+
+                        SELECT NVL (COUNT (*), 0)
+                          INTO TEMP
+                          FROM (SELECT   JH_TRANSACTIONNO
+                                    FROM TBTR_JUALHEADER
+                                   WHERE JH_KODEIGR = kodeigr
+                                     AND TO_CHAR (JH_TRANSACTIONDATE, 'YYYYMM') =
+                                                                         TO_CHAR (SYSDATE, 'YYYYMM')
+                                     AND JH_CASHIERID = 'BKL'
+                                     AND JH_CASHIERSTATION = STAT
+                                ORDER BY JH_TRANSACTIONNO DESC)
+                         WHERE ROWNUM = 1;
+
+                        IF NVL (TEMP, 0) = 0
+                        THEN
+                            NOKASIR := '00001';
+                        ELSE
+                            SELECT *
+                              INTO NOKASIR
+                              FROM (SELECT   JH_TRANSACTIONNO + 1
+                                        FROM TBTR_JUALHEADER
+                                       WHERE JH_KODEIGR = kodeigr
+                                         AND TO_CHAR (JH_TRANSACTIONDATE, 'YYYYMM') =
+                                                                         TO_CHAR (SYSDATE, 'YYYYMM')
+                                         AND JH_CASHIERID = 'BKL'
+                                         AND JH_CASHIERSTATION = STAT
+                                    ORDER BY JH_TRANSACTIONNO DESC)
+                             WHERE ROWNUM = 1;
+
+                            NOKASIR := LPAD (NOKASIR, 5, '0');
+                        END IF;
+
+                        PARAM_ALLKASIR :=
+                                             PARAM_ALLKASIR || '''' || NOKASIR || STAT || ''',';
+                        INFO :=
+                               'No : '
+                            || REC.BUKTI_NO
+                            || ' Tgl : '
+                            || REC.BUKTI_TGL
+                            || ' Supp : '
+                            || REC.SUPCO
+                            || ' OMI : '
+                            || REC.GUDANG
+                            || ' PLU : ';
+
+--dc_alert.ok('cek ' || '-' || :parameter.allkasir);
+                    --  URUTPROSES := '0';
+                    -- Proses data per record
+                        FOR RECNO IN (SELECT DISTINCT RECID, GUDANG, ID, LOKASI, RTYPE, BUKTI_NO,
+                                                      BUKTI_TGL, SUPCO, CR_TERM, PRDCD, QTY, BONUS,
+                                                      PRICE, GROSS, PPN, FMDFEE, PPNFEE, PPNBM,
+                                                      HRG_BOTOL, DISC1, DISC2, DISC3, DISC4CR,
+                                                      DISC4RR, DISC4JR, INVNO, INV_DATE, PO_NO,
+                                                      PO_DATE, ISTYPE, BKL, JAM, KETER, SESSID,
+                                                      NAMAFILE, PRD_FLAGNONDISTFEE, PRD_PRDCD,
+                                                      PRD_FLAGBKP1, PRD_FLAGBKP2, PRD_UNIT,
+                                                      PRD_FRAC, PRD_AVGCOST, PRD_KODEDIVISI,
+                                                      PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
+                                                      PRD_LASTCOST, CUS_TOP, SUP_PKP, SUP_TOP
+                                                 FROM TEMP_BKL_DALAMKOTA BKL,
+                                                      TBMASTER_PRODCRM,
+                                                      TBMASTER_PRODMAST,
+                                                      TBMASTER_CUSTOMER,
+                                                      TBMASTER_SUPPLIER
+                                                WHERE BUKTI_NO = REC.BUKTI_NO
+                                                  AND GUDANG = REC.GUDANG
+                                                  AND SESSID = SESIPROC
+                                                  AND NAMAFILE = NAMAFILER
+                                                  AND PRC_KODEIGR = kodeigr
+                                                  AND PRC_PLUOMI = PRDCD
+                                                  AND PRD_KODEIGR = kodeigr
+                                                  AND PRD_PRDCD = SUBSTR (PRC_PLUIGR, 1, 6) || '0'
+                                                  AND CUS_KODEMEMBER = MEMBEROMI
+                                                  AND SUP_KODEIGR = kodeigr
+                                                  AND SUP_KODESUPPLIER = SUPCO)
+                        LOOP
+                            URUTPROSES := '8';
+                            TOPSUP := RECNO.SUP_TOP;
+                            --dc_alert.ok('astaga');
+                            URUTPROSES := '2';
+                            --dc_alert.ok('b2');
+                            INFO :=
+                                   'No : '
+                                || RECNO.BUKTI_NO
+                                || ' Tgl : '
+                                || RECNO.BUKTI_TGL
+                                || ' Supp : '
+                                || RECNO.SUPCO
+                                || ' OMI : '
+                                || RECNO.GUDANG
+                                || ' PLU : '
+                                || RECNO.PRDCD
+                                || ' ';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+
+                            GROSS := RECNO.GROSS;
+                            GROSS2 := RECNO.GROSS;
+                            HRG := RECNO.PRICE;
+                            HRG2 := RECNO.PRICE;
+                            NDISC1 := RECNO.DISC1;
+                            NDISC2 := RECNO.DISC2;
+                            NDISC3 := RECNO.DISC3;
+                            PPN := RECNO.PPN;
+                            FBKP1 := RECNO.PRD_FLAGBKP1;
+                            FBKP2 := RECNO.PRD_FLAGBKP2;
+                            TOP := RECNO.CUS_TOP;
+
+                            IF PPN = 0
+                            THEN
+                                IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
+                                THEN
+                                    GROSS2 := FLOOR ((RECNO.GROSS / 1.1));
+                                    GROSS := FLOOR ((RECNO.GROSS / 1.1));
+                                    HRG2 := (RECNO.PRICE / 1.1);
+                                    HRG := (RECNO.PRICE / 1.1);
+                                    PPN := RECNO.GROSS - (RECNO.GROSS / 1.1);
+                                END IF;
+                            END IF;
+
+                            -- dc_alert.ok(recno.prd_prdcd || '8-' || gross || '-' || gross2 || '--' || NDISC1);
+                            IF SUBSTR (RECNO.PRD_PRDCD, 1, 6) = '002415'
+                            THEN
+                                IF PPN > 0
+                                THEN
+                                    HRG2 := GROSS2 / RECNO.QTY;
+                                ELSE
+                                    GROSS2 := FLOOR ((RECNO.GROSS / 1.1));
+                                    GROSS := FLOOR ((RECNO.GROSS / 1.1));
+                                    HRG2 := (RECNO.PRICE / 1.1);
+                                    HRG := (RECNO.PRICE / 1.1);
+                                    PPN := (RECNO.GROSS - RECNO.GROSS / 1.1);
+                                END IF;
+                            ELSE
+                                NULL;
+                            END IF;
+
+                            IF NVL (RECNO.PRD_FLAGNONDISTFEE, 'N') <> 'Y'
+                            THEN
+                                FEE := RECNO.FMDFEE;
+                                PPNFEE := RECNO.PPNFEE;
+                            ELSE
+                                FEE := 0;
+                                PPNFEE := 0;
+                            END IF;
+
+                            --- Add untuk List Data Yang di Transfer
+                            INSERT INTO TEMP_LIST_BKLDALAMKOTA
+                                        (KODETOKO, NO_BUKTI, TGL_BUKTI,
+                                         KODESUPPLIER, PRDCD, QTY,
+                                         BONUS, HARGA,
+                                         GROSS,
+                                         NO_TRAN, TGL_TRAN, NILAI, SESSID,
+                                         NAMAFILE
+                                        )
+                                 VALUES (RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                         TRIM (RECNO.SUPCO), RECNO.PRD_PRDCD, RECNO.QTY,
+                                         RECNO.BONUS, RECNO.PRICE,
+                                         (RECNO.GROSS + RECNO.PPN + RECNO.FMDFEE + RECNO.PPNFEE
+                                         ),
+                                         NOKASIR, SYSDATE, (GROSS + PPN + FEE + PPNFEE), SESIPROC,
+                                         NAMAFILER
+                                        );
+
+                            URUTPROSES := '3';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP
+                              FROM TBMASTER_STOCK
+                             WHERE ST_KODEIGR = kodeigr
+                               AND ST_LOKASI = '01'
+                               AND ST_PRDCD = SUBSTR (RECNO.PRD_PRDCD, 1, 6) || '0';
+
+                            IF NVL (TEMP, 0) = 0
+                            THEN
+                                INSERT INTO TBMASTER_STOCK
+                                            (ST_KODEIGR, ST_LOKASI,
+                                             ST_PRDCD, ST_TRFOUT, ST_SALDOAKHIR, ST_CREATE_DT,
+                                             ST_CREATE_BY, ST_SALDOAWAL, ST_TRFIN, ST_SALES,
+                                             ST_RETUR, ST_ADJ, ST_INTRANSIT, ST_MIN, ST_MAX,
+                                             ST_AVGCOSTMONTHEND, ST_RPSALDOAWAL, ST_RPSALDOAWAL2
+                                            )
+                                     VALUES (kodeigr, '01',
+                                             SUBSTR (RECNO.PRD_PRDCD, 1, 6) || '0', 0, 0, SYSDATE,
+                                             userid, 0, 0, 0,
+                                             0, 0, 0, 0, 0,
+                                             0, 0, 0
+                                            );
+
+                                QTYAKHIR := 0;
+                            ELSE
+                                SELECT ST_SALDOAKHIR
+                                  INTO QTYAKHIR
+                                  FROM TBMASTER_STOCK
+                                 WHERE ST_KODEIGR = kodeigr
+                                   AND ST_LOKASI = '01'
+                                   AND ST_PRDCD = SUBSTR (RECNO.PRD_PRDCD, 1, 6) || '0';
+                            END IF;
+
+                            URUTPROSES := '4';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            --- Hitung AVGCost
+                            IF SUBSTR (RECNO.PRD_PRDCD, -1) = '1' OR RECNO.PRD_UNIT = 'KG'
+                            THEN
+                                NOLDACOST := NVL (RECNO.PRD_AVGCOST, 0);
+                            ELSE
+                                NOLDACOST := NVL (RECNO.PRD_AVGCOST, 0) / RECNO.PRD_FRAC;
+                            END IF;
+
+                            IF TRIM (RECNO.PRD_UNIT) <> 'KG'
+                            THEN
+                                IF QTYAKHIR > 0
+                                THEN
+                                    NACOST :=
+                                          (  (QTYAKHIR * NOLDACOST)
+                                           + GROSS
+                                           - (NDISC1 + NDISC2 + NDISC3)
+                                          )
+                                        / (QTYAKHIR + (RECNO.QTY + RECNO.BONUS));
+                                ELSE
+                                    NACOST :=
+                                          (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                        / (RECNO.QTY + RECNO.BONUS);
+                                END IF;
+
+                                IF NACOST <= 0
+                                THEN
+                                    NACOST :=
+                                          (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                        / (RECNO.QTY + RECNO.BONUS);
+                                END IF;
+                            ELSE
+                                -------------- KILO-an --------------
+                                IF QTYAKHIR > 0
+                                THEN
+                                    NACOST :=
+                                          ((QTYAKHIR / 1000 * NOLDACOST)
+                                        +   (GROSS - (NDISC1 + NDISC2 + NDISC3)))
+                                          / ((QTYAKHIR + (RECNO.QTY + RECNO.BONUS))
+                                          / 1000);
+                                ELSE
+                                    NACOST :=
+                                          (  (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                           / ((RECNO.QTY + RECNO.BONUS) / 1000)
+                                          )
+                                          ;
+                                END IF;
+
+                                IF NACOST <= 0
+                                THEN
+                                    NACOST :=
+                                          (  (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                           / ((RECNO.QTY + RECNO.BONUS) / 1000)
+                                          )
+                                          ;
+                                END IF;
+                            END IF;
+
+                            URUTPROSES := '5';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            -- Add Transaksi
+                            IF LHEADER = TRUE
+                            THEN
+                                INSERT INTO TBTR_MSTRAN_H
+                                            (MSTH_KODEIGR, MSTH_TYPETRN, MSTH_NODOC, MSTH_TGLDOC,
+                                             MSTH_NOFAKTUR, MSTH_TGLFAKTUR,
+                                             MSTH_KODESUPPLIER, MSTH_PKP, MSTH_CTERM,
+                                             MSTH_LOC, MSTH_KETERANGAN_HEADER, MSTH_CREATE_BY,
+                                             MSTH_CREATE_DT, MSTH_FLAGDOC,
+                                                                          --++30-07-2013'JMY++--
+                                                                          MSTH_NOREF3
+                                            ----30-07-2013'JMY----
+                                            )
+                                     VALUES (kodeigr, 'B', NODOC, SYSDATE,
+                                             RECNO.GUDANG || RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                             TRIM (RECNO.SUPCO), NVL (RECNO.SUP_PKP, 'N'), TOPSUP,
+                                             kodeigr, STAT || 'BKL' || NOKASIR, 'BKL',
+                                             SYSDATE, '1',
+                                                          --++30-07-2013'JMY++--
+                                                          TRIM (RECNO.KETER)
+                                            ----30-07-2013'JMY----
+                                            );
+
+                                LHEADER := FALSE;
+                            END IF;
+
+                            SEQ := SEQ + 1;
+
+                            --dc_alert.ok(recno.prd_prdcd || '7-' || gross || '-' || gross2);
+                            /*IF :PARAMETER.DALAMKOTA = 'Y'
+                            THEN*/
+                                INSERT INTO TBTR_MSTRAN_D
+                                            (MSTD_KODEIGR, MSTD_TYPETRN, MSTD_NODOC, MSTD_TGLDOC,
+                                             MSTD_NOFAKTUR, MSTD_TGLFAKTUR,
+                                             MSTD_KODESUPPLIER, MSTD_PKP, MSTD_CTERM,
+                                             MSTD_SEQNO, MSTD_PRDCD, MSTD_KODEDIVISI,
+                                             MSTD_KODEDEPARTEMENT,
+                                             MSTD_KODEKATEGORIBRG, MSTD_BKP,
+                                             MSTD_FOBKP, MSTD_UNIT, MSTD_FRAC,
+                                             MSTD_LOC, MSTD_QTY, MSTD_QTYBONUS1,
+                                             MSTD_HRGSATUAN, MSTD_RPHDISC1, MSTD_RPHDISC2,
+                                             MSTD_RPHDISC3, MSTD_GROSS, MSTD_DISCRPH,
+                                             MSTD_PPNRPH,
+                                             MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
+                                             MSTD_AVGCOST,
+                                             MSTD_KETERANGAN, MSTD_FK, MSTD_CREATE_BY,
+                                             MSTD_CREATE_DT
+                                            )
+                                     VALUES (kodeigr, 'B', NODOC, SYSDATE,
+                                             RECNO.GUDANG || RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                             TRIM (RECNO.SUPCO), NVL (RECNO.SUP_PKP, 'N'), TOPSUP,
+                                             SEQ, RECNO.PRD_PRDCD, RECNO.PRD_KODEDIVISI,
+                                             RECNO.PRD_KODEDEPARTEMENT,
+                                             RECNO.PRD_KODEKATEGORIBARANG, RECNO.PRD_FLAGBKP1,
+                                             RECNO.PRD_FLAGBKP2, RECNO.PRD_UNIT, RECNO.PRD_FRAC,
+                                             kodeigr, RECNO.QTY, RECNO.BONUS,
+                                             (HRG * RECNO.PRD_FRAC
+                                             ), NDISC1, NDISC2,
+                                             NDISC3, GROSS, (NDISC1 + NDISC2 + NDISC3),
+                                             CASE
+                                                 WHEN     RECNO.PRD_FLAGBKP1 = 'Y'
+                                                      AND RECNO.PRD_FLAGBKP2 <> 'P'
+                                                      AND NVL (RECNO.SUP_PKP, 'N') = 'Y'
+                                                     THEN .1 * (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                                 ELSE 0
+                                             END,
+                                             0, 0,
+                                             (  (NACOST * RECNO.PRD_FRAC)
+                                              / CASE
+                                                    WHEN RECNO.PRD_UNIT = 'KG'
+                                                        THEN 1000
+                                                    ELSE 1
+                                                END
+                                             ),
+                                             STAT || 'BKL' || NOKASIR, '1', 'BKL',
+                                             SYSDATE
+                                            );
+                            /*ELSE                                                         --luar kota
+
+                            END IF;*/
+
+                            TOTDPP2 := TOTDPP2 + GROSS;
+                            TOTDISC2 := TOTDISC2 + (NDISC1 + NDISC2 + NDISC3);
+                            TOTPPN2 :=
+                                  TOTPPN2
+                                + (CASE
+                                       WHEN RECNO.PRD_FLAGBKP1 = 'Y'
+                                       AND RECNO.PRD_FLAGBKP2 <> 'P'
+                                       AND NVL (RECNO.SUP_PKP, 'N') = 'Y'
+                                           THEN .1 * (GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                       ELSE 0
+                                   END
+                                  );
+                            TOTDIS12 := TOTDIS12 + NDISC1;
+                            TOTDIS22 := TOTDIS22 + NDISC2;
+                            TOTDIS32 := TOTDIS32 + NDISC3;
+
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP
+                              FROM TBHISTORY_BKL
+                             WHERE BKL_KODEIGR = kodeigr
+                               AND BKL_KODEOMI = RECNO.GUDANG
+                               AND TRIM (BKL_NOBUKTI) = TRIM (RECNO.BUKTI_NO)
+                               AND BKL_TGLBUKTI = RECNO.BUKTI_TGL;
+
+                            IF NVL (TEMP, 0) = 0
+                            THEN
+                                INSERT INTO TBHISTORY_BKL
+                                            (BKL_KODEIGR, BKL_IDFILE,
+                                             BKL_KODEOMI, BKL_NOBUKTI, BKL_TGLBUKTI,
+                                             BKL_KODESUPPLIER, BKL_NODOC, BKL_KODEKASIR,
+                                             BKL_KODESTATION, BKL_NOSTRUK, BKL_TGLSTRUK,
+                                             BKL_TOTAL,
+                                             BKL_CREATE_BY, BKL_CREATE_DT
+                                            )
+                                     VALUES (kodeigr, SUBSTR (NAMAFILER, 1, 8),
+                                             RECNO.GUDANG, RECNO.BUKTI_NO, RECNO.BUKTI_TGL,
+                                             TRIM (RECNO.SUPCO), NODOC, 'BKL',
+                                             STAT, NOKASIR, SYSDATE,
+                                             (RECNO.GROSS + RECNO.PPN + RECNO.FMDFEE + RECNO.PPNFEE
+                                             ),
+                                             userid, SYSDATE
+                                            );
+                            ELSE
+                                UPDATE TBHISTORY_BKL
+                                   SET BKL_TOTAL =
+                                             BKL_TOTAL
+                                           + (RECNO.GROSS + RECNO.PPN + RECNO.FMDFEE + RECNO.PPNFEE
+                                             )
+                                 WHERE BKL_KODEIGR = kodeigr
+                                   AND BKL_KODEOMI = RECNO.GUDANG
+                                   AND TRIM (BKL_NOBUKTI) = TRIM (RECNO.BUKTI_NO)
+                                   AND BKL_TGLBUKTI = RECNO.BUKTI_TGL;
+                            END IF;
+
+                            UPDATE TBMASTER_STOCK
+                               SET ST_TRFIN = ST_TRFIN + RECNO.QTY + RECNO.BONUS,
+                                   ST_SALES = ST_SALES + RECNO.QTY + RECNO.BONUS
+                             WHERE ST_KODEIGR = kodeigr
+                               AND ST_LOKASI = '01'
+                               AND ST_PRDCD = SUBSTR (RECNO.PRD_PRDCD, 1, 6) || '0';
+
+                            URUTPROSES := '6';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP
+                              FROM TBHISTORY_COST
+                             WHERE HCS_KODEIGR = kodeigr
+                               AND HCS_PRDCD = RECNO.PRD_PRDCD
+                               AND TRUNC (HCS_TGLBPB) = TRUNC (SYSDATE)
+                               AND HCS_NODOCBPB = NODOC;
+
+                            IF TEMP = 0
+                            THEN
+                                COSTNEW :=
+                                      (  (RECNO.GROSS - (NDISC1 + NDISC2 + NDISC3))
+                                       / (RECNO.QTY + RECNO.BONUS)
+                                      )
+                                    * CASE
+                                          WHEN RECNO.PRD_UNIT = 'KG'
+                                              THEN 1000
+                                          ELSE 1
+                                      END;
+
+                                INSERT INTO TBHISTORY_COST
+                                            (HCS_KODEIGR, HCS_LOKASI, HCS_TYPETRN, HCS_PRDCD,
+                                             HCS_TGLBPB, HCS_NODOCBPB,
+                                             HCS_QTYBARU, HCS_QTYLAMA,
+                                             HCS_AVGLAMA,
+                                             HCS_AVGBARU,
+                                             HCS_LASTCOSTLAMA,
+                                             HCS_LASTCOSTBARU,
+                                             HCS_LASTQTY,
+                                             HCS_CREATE_BY, HCS_CREATE_DT
+                                            )
+                                     VALUES (kodeigr, '01', 'B', RECNO.PRD_PRDCD,
+                                             TRUNC (SYSDATE), NODOC,
+                                             (NVL (RECNO.QTY, 0) + NVL (RECNO.BONUS, 0)
+                                             ), QTYAKHIR,
+                                               NOLDACOST
+                                             * CASE
+                                                   WHEN    TRIM (RECNO.PRD_UNIT) = 'KG'
+                                                        OR SUBSTR (RECNO.PRD_PRDCD, -1) = '1'
+                                                       THEN 1
+                                                   ELSE RECNO.PRD_FRAC
+                                               END,
+                                               NACOST
+                                             * CASE
+                                                   WHEN    TRIM (RECNO.PRD_UNIT) = 'KG'
+                                                        OR SUBSTR (RECNO.PRD_PRDCD, -1) = '1'
+                                                       THEN 1
+                                                   ELSE RECNO.PRD_FRAC
+                                               END,
+                                             RECNO.PRD_LASTCOST,
+                                               CASE
+                                                   WHEN    RECNO.PRD_UNIT = 'KG'
+                                                        OR SUBSTR (RECNO.PRD_PRDCD, 7, 1) = '1'
+                                                       THEN 1
+                                                   ELSE RECNO.PRD_FRAC
+                                               END
+                                             * COSTNEW,
+                                             (  NVL (QTYAKHIR, 0)
+                                              + NVL (RECNO.QTY, 0)
+                                              + NVL (RECNO.BONUS, 0)
+                                             ),
+                                             userid, SYSDATE
+                                            );
+                            END IF;
+
+                            URUTPROSES := '7';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            IF LPAJAK = TRUE
+                            THEN
+                                SELECT NVL (COUNT (*), 0)
+                                  INTO TEMP
+                                  FROM TBMASTER_FAKTUR
+                                 WHERE FKT_TIPE = 'S';
+
+                                IF NVL (TEMP, 0) = 0
+                                THEN
+                                    SIGN := '';
+                                ELSE
+                                    SELECT FKT_SIGN
+                                      INTO SIGN
+                                      FROM (SELECT   FKT_SIGN
+                                                FROM TBMASTER_FAKTUR
+                                               WHERE FKT_TIPE = 'S'
+                                            ORDER BY FKT_NOFAKTUR DESC)
+                                     WHERE ROWNUM = 1;
+                                END IF;
+
+                                IF PARAM_LBKP = '1'
+                                THEN
+                                    SELECT NVL (COUNT (*), 0)
+                                      INTO TEMP
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE FKT_KODEIGR = kodeigr
+                                       AND FKT_TIPE = 'S'
+                                       AND FKT_NOFAKTUR =
+                                                  SUBSTR (PARAM_SERIBKP, 5, 3)
+                                               || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                               || SUBSTR (PARAM_SERIBKP, 12, 8)
+                                       AND TRUNC (FKT_TGL) = TRUNC (SYSDATE);
+
+                                    IF NVL (TEMP, 0) = 0
+                                    THEN
+                                        INSERT INTO TBMASTER_FAKTUR
+                                                    (FKT_KODEIGR, FKT_TIPE, FKT_TGL, FKT_STATION,
+                                                     FKT_KASIR, FKT_NOTRANSAKSI,
+                                                     FKT_NOFAKTUR,
+                                                     FKT_TGLFAKTUR, FKT_KODEMEMBER, FKT_NOSERI,
+                                                     FKT_SIGN, FKT_CREATE_BY, FKT_CREATE_DT
+                                                    )
+                                             VALUES (kodeigr, 'S', SYSDATE, STAT,
+                                                     'BKL', NOKASIR,
+                                                        SUBSTR (PARAM_SERIBKP, 5, 3)
+                                                     || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                                     || SUBSTR (PARAM_SERIBKP, 12, 8),
+                                                     SYSDATE, MEMBEROMI, PARAM_SERIBKP,
+                                                     SIGN, userid, SYSDATE
+                                                    );
+                                    END IF;
+                                END IF;
+
+                                IF PARAM_LBEBAS = '1'
+                                THEN
+                                    SELECT NVL (COUNT (*), 0)
+                                      INTO TEMP
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE FKT_KODEIGR = kodeigr
+                                       AND FKT_TIPE = 'S'
+                                       AND FKT_NOFAKTUR =
+                                                  SUBSTR (PARAM_SERIBEBAS, 5, 3)
+                                               || SUBSTR (PARAM_SERIBEBAS, 9, 2)
+                                               || SUBSTR (PARAM_SERIBEBAS, 12, 8)
+                                       AND TRUNC (FKT_TGL) = TRUNC (SYSDATE);
+
+                                    IF NVL (TEMP, 0) = 0
+                                    THEN
+                                        INSERT INTO TBMASTER_FAKTUR
+                                                    (FKT_KODEIGR, FKT_TIPE, FKT_TGL, FKT_STATION,
+                                                     FKT_KASIR, FKT_NOTRANSAKSI,
+                                                     FKT_NOFAKTUR,
+                                                     FKT_TGLFAKTUR, FKT_KODEMEMBER, FKT_NOSERI,
+                                                     FKT_SIGN, FKT_CREATE_BY, FKT_CREATE_DT
+                                                    )
+                                             VALUES (kodeigr, 'S', SYSDATE, STAT,
+                                                     'BKL', NOKASIR,
+                                                        SUBSTR (PARAM_SERIBEBAS, 5, 3)
+                                                     || SUBSTR (PARAM_SERIBEBAS, 9, 2)
+                                                     || SUBSTR (PARAM_SERIBEBAS, 12, 8),
+                                                     SYSDATE, MEMBEROMI, PARAM_SERIBEBAS,
+                                                     SIGN, userid, SYSDATE
+                                                    );
+                                    END IF;
+                                END IF;
+
+                                IF PARAM_LMINYAK = '1'
+                                THEN
+                                    SELECT NVL (COUNT (*), 0)
+                                      INTO TEMP
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE FKT_KODEIGR = kodeigr
+                                       AND FKT_TIPE = 'S'
+                                       AND FKT_NOFAKTUR =
+                                                  SUBSTR (PARAM_SERIMINYAK, 5, 3)
+                                               || SUBSTR (PARAM_SERIMINYAK, 9, 2)
+                                               || SUBSTR (PARAM_SERIMINYAK, 12, 8)
+                                       AND TRUNC (FKT_TGL) = TRUNC (SYSDATE);
+
+                                    IF NVL (TEMP, 0) = 0
+                                    THEN
+                                        INSERT INTO TBMASTER_FAKTUR
+                                                    (FKT_KODEIGR, FKT_TIPE, FKT_TGL, FKT_STATION,
+                                                     FKT_KASIR, FKT_NOTRANSAKSI,
+                                                     FKT_NOFAKTUR,
+                                                     FKT_TGLFAKTUR, FKT_KODEMEMBER, FKT_NOSERI,
+                                                     FKT_SIGN, FKT_CREATE_BY, FKT_CREATE_DT
+                                                    )
+                                             VALUES (kodeigr, 'S', SYSDATE, STAT,
+                                                     'BKL', NOKASIR,
+                                                        SUBSTR (PARAM_SERIMINYAK, 5, 3)
+                                                     || SUBSTR (PARAM_SERIMINYAK, 9, 2)
+                                                     || SUBSTR (PARAM_SERIMINYAK, 12, 8),
+                                                     SYSDATE, MEMBEROMI, PARAM_SERIMINYAK,
+                                                     SIGN, userid, SYSDATE
+                                                    );
+                                    END IF;
+                                END IF;
+
+                                IF PARAM_LTEPUNG = '1'
+                                THEN
+                                    SELECT NVL (COUNT (*), 0)
+                                      INTO TEMP
+                                      FROM TBMASTER_FAKTUR
+                                     WHERE FKT_KODEIGR = kodeigr
+                                       AND FKT_TIPE = 'S'
+                                       AND FKT_NOFAKTUR =
+                                                  SUBSTR (PARAM_SERITEPUNG, 5, 3)
+                                               || SUBSTR (PARAM_SERITEPUNG, 9, 2)
+                                               || SUBSTR (PARAM_SERITEPUNG, 12, 8)
+                                       AND TRUNC (FKT_TGL) = TRUNC (SYSDATE);
+
+                                    IF NVL (TEMP, 0) = 0
+                                    THEN
+                                        INSERT INTO TBMASTER_FAKTUR
+                                                    (FKT_KODEIGR, FKT_TIPE, FKT_TGL, FKT_STATION,
+                                                     FKT_KASIR, FKT_NOTRANSAKSI,
+                                                     FKT_NOFAKTUR,
+                                                     FKT_TGLFAKTUR, FKT_KODEMEMBER, FKT_NOSERI,
+                                                     FKT_SIGN, FKT_CREATE_BY, FKT_CREATE_DT
+                                                    )
+                                             VALUES (kodeigr, 'S', SYSDATE, STAT,
+                                                     'BKL', NOKASIR,
+                                                        SUBSTR (PARAM_SERITEPUNG, 5, 3)
+                                                     || SUBSTR (PARAM_SERITEPUNG, 9, 2)
+                                                     || SUBSTR (PARAM_SERITEPUNG, 12, 8),
+                                                     SYSDATE, MEMBEROMI, PARAM_SERITEPUNG,
+                                                     SIGN, userid, SYSDATE
+                                                    );
+                                    END IF;
+                                END IF;
+
+                                LPAJAK := FALSE;
+                            END IF;
+
+                            URUTPROSES := '8';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            SELECT PRD_PRDCD
+                              INTO CPRDCD
+                              FROM (SELECT   PRD_PRDCD
+                                        FROM TBMASTER_PRODMAST, TBMASTER_PRODCRM
+                                       WHERE PRC_KODEIGR = kodeigr
+                                         AND (   PRC_PLUOMI = RECNO.PRDCD
+                                              OR (PRC_PLUIDM = RECNO.PRDCD AND PRC_GROUP = 'I')
+                                             )
+                                         AND SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (PRC_PLUIGR, 1, 6)
+                                         AND SUBSTR (PRD_PRDCD, 7, 1) <> '0'
+                                    ORDER BY PRD_PRDCD)
+                             WHERE ROWNUM = 1;
+
+
+                            IF    (    NVL (RECNO.PRD_FLAGBKP1, 'N') = 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') NOT IN ('P', 'G', 'W')
+                                  )
+                               OR (    NVL (RECNO.PRD_FLAGBKP1, 'N') <> 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') = 'C'
+                                  )
+                               OR (    NVL (RECNO.PRD_FLAGBKP1, 'N') <> 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') = 'N'
+                                  )
+                            THEN
+                                IF NVL (RECNO.PRD_FLAGBKP2, 'N') IN ('C', 'N')
+                                THEN
+                                    INSERT INTO TBTR_JUALDETAIL
+                                                (TRJD_KODEIGR, TRJD_TRANSACTIONTYPE,
+                                                 TRJD_CASHIERSTATION, TRJD_CREATE_BY,
+                                                 TRJD_TRANSACTIONNO, TRJD_TRANSACTIONDATE,
+                                                 TRJD_PRDCD, TRJD_SEQNO, TRJD_FLAGTAX1,
+                                                 TRJD_FLAGTAX2, TRJD_QUANTITY,
+                                                 TRJD_UNITPRICE, TRJD_DISCOUNT,
+                                                 TRJD_NOMINALAMT, TRJD_DIVISIONCODE,
+                                                 TRJD_DIVISION,
+                                                 TRJD_BASEPRICE, TRJD_CUS_KODEMEMBER,
+                                                 TRJD_CREATE_DT, TRJD_ADMFEE, TRJD_NOINVOICE1,
+                                                 TRJD_NOINVOICE2
+                                                )
+                                         VALUES (kodeigr, 'S',
+                                                 STAT, 'BKL',
+                                                 NOKASIR, SYSDATE,
+                                                 CPRDCD, SEQ, RECNO.PRD_FLAGBKP1,
+                                                 RECNO.PRD_FLAGBKP2,
+                                                 --case when recno.prd_unit = 'KG' then (RECNO.QTY + RECNO.BONUS) / 1000 else RECNO.QTY + RECNO.BONUS end,
+                                                                 RECNO.QTY + RECNO.BONUS,
+                                                 case when recno.prd_unit = 'KG' then HRG2 * 1000 else HRG2 end, (NDISC12 + NDISC22 + NDISC32),
+                                                 ROUND (GROSS2),
+                                                                --(round(HRG2) * (RECNO.QTY + RECNO.BONUS))
+                                                                RECNO.PRD_KODEDIVISI,
+                                                    RECNO.PRD_KODEDEPARTEMENT
+                                                 || RECNO.PRD_KODEKATEGORIBARANG,
+                                                 case when recno.prd_unit = 'KG' then HRG2 * 1000 else HRG2 end, MEMBEROMI,
+                                                 SYSDATE, FEE, 0,
+                                                    SUBSTR (PARAM_SERIBKP, 5, 3)
+                                                 || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                                 || SUBSTR (PARAM_SERIBKP, 12, 8)
+                                                );
+                                ELSE
+                                    INSERT INTO TBTR_JUALDETAIL
+                                                (TRJD_KODEIGR, TRJD_TRANSACTIONTYPE,
+                                                 TRJD_CASHIERSTATION, TRJD_CREATE_BY,
+                                                 TRJD_TRANSACTIONNO, TRJD_TRANSACTIONDATE,
+                                                 TRJD_PRDCD, TRJD_SEQNO, TRJD_FLAGTAX1,
+                                                 TRJD_FLAGTAX2, TRJD_QUANTITY,
+                                                 TRJD_UNITPRICE, TRJD_DISCOUNT,
+                                                 TRJD_NOMINALAMT, TRJD_DIVISIONCODE,
+                                                 TRJD_DIVISION,
+                                                 TRJD_BASEPRICE, TRJD_CUS_KODEMEMBER,
+                                                 TRJD_CREATE_DT, TRJD_ADMFEE,
+                                                 TRJD_NOINVOICE1,
+                                                 TRJD_NOINVOICE2
+                                                )
+                                         VALUES (kodeigr, 'S',
+                                                 STAT, 'BKL',
+                                                 NOKASIR, SYSDATE,
+                                                 CPRDCD, SEQ, RECNO.PRD_FLAGBKP1,
+                                                 RECNO.PRD_FLAGBKP2, RECNO.QTY + RECNO.BONUS,
+                                                 HRG2, (NDISC12 + NDISC22 + NDISC32),
+                                                 ROUND (GROSS2),
+                                                                --(round(HRG2) * (RECNO.QTY + RECNO.BONUS)),
+                                                                RECNO.PRD_KODEDIVISI,
+                                                    RECNO.PRD_KODEDEPARTEMENT
+                                                 || RECNO.PRD_KODEKATEGORIBARANG,
+                                                 HRG2, MEMBEROMI,
+                                                 SYSDATE, FEE,
+                                                    SUBSTR (PARAM_SERIBKP, 5, 3)
+                                                 || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                                 || SUBSTR (PARAM_SERIBKP, 12, 8),
+                                                 0
+                                                );
+                                END IF;
+                            ELSIF (    NVL (RECNO.PRD_FLAGBKP1, 'N') = 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') = 'P'
+                                  )
+                            THEN
+                                INSERT INTO TBTR_JUALDETAIL
+                                            (TRJD_KODEIGR, TRJD_TRANSACTIONTYPE,
+                                             TRJD_CASHIERSTATION, TRJD_CREATE_BY,
+                                             TRJD_TRANSACTIONNO, TRJD_TRANSACTIONDATE, TRJD_PRDCD,
+                                             TRJD_SEQNO, TRJD_FLAGTAX1, TRJD_FLAGTAX2,
+                                             TRJD_QUANTITY, TRJD_UNITPRICE,
+                                             TRJD_DISCOUNT, TRJD_NOMINALAMT,
+                                             TRJD_DIVISIONCODE,
+                                             TRJD_DIVISION,
+                                             TRJD_BASEPRICE, TRJD_CUS_KODEMEMBER, TRJD_CREATE_DT,
+                                             TRJD_ADMFEE,
+                                             TRJD_NOINVOICE1,
+                                             TRJD_NOINVOICE2
+                                            )
+                                     VALUES (kodeigr, 'S',
+                                             STAT, 'BKL',
+                                             NOKASIR, SYSDATE, CPRDCD,
+                                             SEQ, RECNO.PRD_FLAGBKP1, RECNO.PRD_FLAGBKP2,
+                                             RECNO.QTY + RECNO.BONUS, HRG2,
+                                             (NDISC12 + NDISC22 + NDISC32
+                                             ), ROUND (GROSS2),
+                                             RECNO.PRD_KODEDIVISI,
+                                                RECNO.PRD_KODEDEPARTEMENT
+                                             || RECNO.PRD_KODEKATEGORIBARANG,
+                                             HRG2, MEMBEROMI, SYSDATE,
+                                             FEE,
+                                                SUBSTR (PARAM_SERIBEBAS, 5, 3)
+                                             || SUBSTR (PARAM_SERIBEBAS, 9, 2)
+                                             || SUBSTR (PARAM_SERIBEBAS, 12, 8),
+                                                SUBSTR (PARAM_SERIBEBAS, 5, 3)
+                                             || SUBSTR (PARAM_SERIBEBAS, 9, 2)
+                                             || SUBSTR (PARAM_SERIBEBAS, 12, 8)
+                                            );
+                            ELSIF (    NVL (RECNO.PRD_FLAGBKP1, 'N') = 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') = 'G'
+                                  )
+                            THEN
+                                INSERT INTO TBTR_JUALDETAIL
+                                            (TRJD_KODEIGR, TRJD_TRANSACTIONTYPE,
+                                             TRJD_CASHIERSTATION, TRJD_CREATE_BY,
+                                             TRJD_TRANSACTIONNO, TRJD_TRANSACTIONDATE, TRJD_PRDCD,
+                                             TRJD_SEQNO, TRJD_FLAGTAX1, TRJD_FLAGTAX2,
+                                             TRJD_QUANTITY, TRJD_UNITPRICE,
+                                             TRJD_DISCOUNT, TRJD_NOMINALAMT,
+                                             TRJD_DIVISIONCODE,
+                                             TRJD_DIVISION,
+                                             TRJD_BASEPRICE, TRJD_CUS_KODEMEMBER, TRJD_CREATE_DT,
+                                             TRJD_ADMFEE,
+                                             TRJD_NOINVOICE1,
+                                             TRJD_NOINVOICE2
+                                            )
+                                     VALUES (kodeigr, 'S',
+                                             STAT, 'BKL',
+                                             NOKASIR, SYSDATE, CPRDCD,
+                                             SEQ, RECNO.PRD_FLAGBKP1, RECNO.PRD_FLAGBKP2,
+                                             RECNO.QTY + RECNO.BONUS, HRG2,
+                                             (NDISC12 + NDISC22 + NDISC32
+                                             ), ROUND (GROSS2),
+                                             RECNO.PRD_KODEDIVISI,
+                                                RECNO.PRD_KODEDEPARTEMENT
+                                             || RECNO.PRD_KODEKATEGORIBARANG,
+                                             HRG2, MEMBEROMI, SYSDATE,
+                                             FEE,
+                                                SUBSTR (PARAM_SERIMINYAK, 5, 3)
+                                             || SUBSTR (PARAM_SERIMINYAK, 9, 2)
+                                             || SUBSTR (PARAM_SERIMINYAK, 12, 8),
+                                                SUBSTR (PARAM_SERIBKP, 5, 3)
+                                             || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                             || SUBSTR (PARAM_SERIBKP, 12, 8)
+                                            );
+                            ELSIF (    NVL (RECNO.PRD_FLAGBKP1, 'N') = 'Y'
+                                   AND NVL (RECNO.PRD_FLAGBKP2, 'N') = 'W'
+                                  )
+                            THEN
+                                INSERT INTO TBTR_JUALDETAIL
+                                            (TRJD_KODEIGR, TRJD_TRANSACTIONTYPE,
+                                             TRJD_CASHIERSTATION, TRJD_CREATE_BY,
+                                             TRJD_TRANSACTIONNO, TRJD_TRANSACTIONDATE, TRJD_PRDCD,
+                                             TRJD_SEQNO, TRJD_FLAGTAX1, TRJD_FLAGTAX2,
+                                             TRJD_QUANTITY, TRJD_UNITPRICE,
+                                             TRJD_DISCOUNT, TRJD_NOMINALAMT,
+                                             TRJD_DIVISIONCODE,
+                                             TRJD_DIVISION,
+                                             TRJD_BASEPRICE, TRJD_CUS_KODEMEMBER, TRJD_CREATE_DT,
+                                             TRJD_ADMFEE,
+                                             TRJD_NOINVOICE1,
+                                             TRJD_NOINVOICE2
+                                            )
+                                     VALUES (kodeigr, 'S',
+                                             STAT, 'BKL',
+                                             NOKASIR, SYSDATE, CPRDCD,
+                                             SEQ, RECNO.PRD_FLAGBKP1, RECNO.PRD_FLAGBKP2,
+                                             RECNO.QTY + RECNO.BONUS, HRG2,
+                                             (NDISC12 + NDISC22 + NDISC32
+                                             ), ROUND (GROSS2),
+                                             RECNO.PRD_KODEDIVISI,
+                                                RECNO.PRD_KODEDEPARTEMENT
+                                             || RECNO.PRD_KODEKATEGORIBARANG,
+                                             HRG2, MEMBEROMI, SYSDATE,
+                                             FEE,
+                                                SUBSTR (PARAM_SERITEPUNG, 5, 3)
+                                             || SUBSTR (PARAM_SERITEPUNG, 9, 2)
+                                             || SUBSTR (PARAM_SERITEPUNG, 12, 8),
+                                                SUBSTR (PARAM_SERIBKP, 5, 3)
+                                             || SUBSTR (PARAM_SERIBKP, 9, 2)
+                                             || SUBSTR (PARAM_SERIBKP, 12, 8)
+                                            );
+                            END IF;
+
+                            URUTPROSES := '9';
+                            --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                            SELECT NVL (COUNT (*), 0)
+                              INTO TEMP
+                              FROM TBMASTER_PBOMI
+                             WHERE PBO_KODEIGR = kodeigr
+                               AND TRIM (PBO_NOPB) = RECNO.BUKTI_NO || 'BL'
+                               AND TRUNC (PBO_TGLPB) = TRUNC (RECNO.BUKTI_TGL)
+                               AND PBO_KODEOMI = RECNO.GUDANG
+                               AND PBO_PLUIGR = CPRDCD;
+
+                            IF NVL (TEMP, 0) = 0
+                            THEN
+                                /*IF :PARAMETER.DALAMKOTA = 'Y'
+                                THEN*/
+                                    INSERT INTO TBMASTER_PBOMI
+                                                (PBO_KODEIGR, PBO_NOKOLI, PBO_NOURUT, PBO_TGLPB,
+                                                 PBO_NOPB, PBO_NOSTRUK,
+                                                 PBO_KODESBU, PBO_KODEMEMBER, PBO_KODESUPPLIER,
+                                                 PBO_KODEOMI, PBO_TGLSTRUK,
+                                                 PBO_KODEDIVISI, PBO_KODEDEPARTEMEN,
+                                                 PBO_KODEKATEGORIBRG, PBO_PLUOMI,
+                                                 PBO_PLUIGR, PBO_HRGSATUAN, PBO_QTYORDER,
+                                                 PBO_NILAIORDER, PBO_TGLUPDATE,
+                                                 PBO_JAMUPDATEKASIR, PBO_USERUPDATEKASIR,
+                                                 PBO_CREATE_BY, PBO_CREATE_DT
+                                                )
+                                         VALUES (kodeigr, NOKOLI, SEQ, RECNO.BUKTI_TGL,
+                                                 RECNO.BUKTI_NO, NOKASIR || STAT || 'BKL',
+                                                 KSBU, MEMBEROMI, TRIM (RECNO.SUPCO),
+                                                 TRIM (RECNO.GUDANG), SYSDATE,
+                                                 RECNO.PRD_KODEDIVISI, RECNO.PRD_KODEDEPARTEMENT,
+                                                 RECNO.PRD_KODEKATEGORIBARANG, TRIM (RECNO.PRDCD),
+                                                 CPRDCD, HRG, RECNO.QTY + RECNO.BONUS,
+                                                 GROSS, SYSDATE,
+                                                 TO_CHAR (SYSDATE, 'hh:mm:ss'), 'BKL',
+                                                 userid, SYSDATE
+                                                );
+                                /*ELSE
+                                    INSERT INTO TBMASTER_PBOMI
+                                                (PBO_KODEIGR, PBO_NOKOLI, PBO_NOURUT, PBO_TGLPB,
+                                                 PBO_NOPB, PBO_NOSTRUK,
+                                                 PBO_KODESBU, PBO_KODEMEMBER, PBO_KODESUPPLIER,
+                                                 PBO_KODEOMI, PBO_TGLSTRUK,
+                                                 PBO_KODEDIVISI, PBO_KODEDEPARTEMEN,
+                                                 PBO_KODEKATEGORIBRG, PBO_PLUOMI,
+                                                 PBO_PLUIGR, PBO_HRGSATUAN, PBO_QTYORDER,
+                                                 PBO_NILAIORDER, PBO_TGLUPDATE,
+                                                 PBO_JAMUPDATEKASIR, PBO_USERUPDATEKASIR,
+                                                 PBO_CREATE_BY, PBO_CREATE_DT
+                                                )
+                                         VALUES (kodeigr, NOKOLI, SEQ, RECNO.BUKTI_TGL,
+                                                 RECNO.BUKTI_NO || 'BL', NOKASIR || STAT || 'BKL',
+                                                 KSBU, MEMBEROMI, TRIM (RECNO.SUPCO),
+                                                 TRIM (RECNO.GUDANG), SYSDATE,
+                                                 RECNO.PRD_KODEDIVISI, RECNO.PRD_KODEDEPARTEMENT,
+                                                 RECNO.PRD_KODEKATEGORIBARANG, TRIM (RECNO.PRDCD),
+                                                 CPRDCD, HRG2, RECNO.QTY + RECNO.BONUS,
+                                                 GROSS2, SYSDATE,
+                                                 TO_CHAR (SYSDATE, 'hh:mm:ss'), 'BKL',
+                                                 :PARAMETER.USID, SYSDATE
+                                                );
+                                END IF;*/
+                            END IF;
+
+                            /*IF :PARAMETER.DALAMKOTA = 'Y'
+                            THEN*/
+                                TOTDIS1 := TOTDIS1 + NDISC1;
+                                TOTDIS2 := TOTDIS2 + NDISC2;
+                                TOTDIS3 := TOTDIS3 + NDISC3;
+                                TOTDIS := TOTDIS + (NDISC1 + NDISC2 + NDISC3);
+                                TOTDPP := TOTDPP + GROSS;
+
+                                IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
+                                THEN
+                                    TOTPPN := TOTPPN + ((GROSS * 1.1) - GROSS);
+                                END IF;
+                            /*ELSE
+                                TOTDIS1 := TOTDIS1 + NDISC12;
+                                TOTDIS2 := TOTDIS2 + NDISC22;
+                                TOTDIS3 := TOTDIS3 + NDISC32;
+                                TOTDIS := TOTDIS + (NDISC12 + NDISC22 + NDISC32);
+                                TOTDPP := TOTDPP + GROSS2;
+
+                                IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
+                                THEN
+                                    TOTPPN := TOTPPN + ((GROSS2 * 1.1) - GROSS2);
+                                END IF;
+                            END IF;*/
+
+                            TOTFEE := TOTFEE + FEE;
+                            TOTPPNFEE := TOTPPNFEE + PPNFEE;
+                        END LOOP;
+
+                        --DC_ALERT.OK ('a10');
+                        URUTPROSES := '10';
+                        --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                        --DC_ALERT.OK ('a11');
+                        IF NVL (FKREDIT, 'N') = 'Y' AND NVL (DPP, 0) <> 0
+                        THEN
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP
+                              FROM TBMASTER_PIUTANG
+                             WHERE PTG_KODEIGR = kodeigr AND PTG_KODEMEMBER = MEMBEROMI;
+
+                            IF NVL (TEMP, 0) = 0
+                            THEN
+                                INSERT INTO TBMASTER_PIUTANG
+                                            (PTG_KODEIGR, PTG_KODEMEMBER,
+                                             PTG_AMTAR,
+                                             PTG_CREATE_BY, PTG_CREATE_DT, PTG_AMTPAYMENT
+                                            )
+                                     VALUES (kodeigr, MEMBEROMI,
+                                             (TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE
+                                             ),
+                                             userid, SYSDATE, 0
+                                            );
+                            ELSE
+                                UPDATE TBMASTER_PIUTANG
+                                   SET PTG_AMTAR =
+                                             NVL (PTG_AMTAR, 0)
+                                           + (TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE),
+                                       PTG_MODIFY_BY = userid,
+                                       PTG_MODIFY_DT = SYSDATE
+                                 WHERE PTG_KODEIGR = kodeigr
+                                       AND PTG_KODEMEMBER = MEMBEROMI;
+                            END IF;
+                        END IF;
+
+                        URUTPROSES := '11';
+                        --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                        SELECT NVL (COUNT (1), 0)
+                          INTO TEMP
+                          FROM TBTR_PIUTANG
+                         WHERE TRPT_KODEIGR = kodeigr
+                           AND TRUNC (TRPT_SALESINVOICEDATE) = TRUNC (SYSDATE)
+                           AND TRPT_CUS_KODEMEMBER = MEMBEROMI--TO_CHAR (MEMBEROMI, '999999')
+                           AND TRPT_TYPE = 'J'
+                           AND TRPT_SALESINVOICENO = NOKASIR
+                           AND TRPT_CASHIERID = 'BKL'
+                           AND TRPT_CASHIERSTATION = STAT;
+
+                        IF NVL (TEMP, 0) = 0
+                        THEN
+                            INSERT INTO TBTR_PIUTANG
+                                        (TRPT_KODEIGR, TRPT_TYPE, TRPT_SALESINVOICEDATE,
+                                         TRPT_SALESINVOICENO, TRPT_CASHIERSTATION,
+                                         TRPT_CUS_KODEMEMBER, TRPT_CASHIERID, TRPT_DOCNO,
+                                         TRPT_RECEIVEDATE,
+                                         TRPT_SALESVALUE,
+                                         TRPT_NETSALES, TRPT_PPNTAXVALUE, TRPT_SALESDUEDATE,
+                                         TRPT_CREATE_BY, TRPT_CREATE_DT, TRPT_DISTFEE,
+                                         TRPT_PPNFEEVALUE, TRPT_TGBP, TRPT_KODESUPPLIER
+                                        )
+                                 VALUES (kodeigr, 'J', TRUNC (SYSDATE),
+                                         NOKASIR, STAT,
+                                         MEMBEROMI, 'BKL', REC.BUKTI_NO,
+                                         REC.BUKTI_TGL,
+                                         ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE), 0),
+                                         ROUND (TOTDPP, 0), ROUND (TOTPPN, 0), SYSDATE + TOP,
+                                         userid, SYSDATE, ROUND (TOTFEE, 0),
+                                         ROUND (TOTPPNFEE, 0), REC.BUKTI_TGL, TRIM (REC.SUPCO)
+                                        );
+                        END IF;
+
+                        URUTPROSES := '12';
+                        --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                        SELECT NVL (COUNT (1), 0)
+                          INTO TEMP
+                          FROM TBTR_JUALHEADER
+                         WHERE JH_KODEIGR = kodeigr
+                           AND JH_TRANSACTIONNO = NOKASIR
+                           AND JH_CASHIERSTATION = STAT
+                           AND TRUNC (JH_TRANSACTIONDATE) = TRUNC (SYSDATE)
+                           AND JH_CASHIERID = 'BKL'
+                           AND JH_TRANSACTIONTYPE = 'S';
+
+                        IF NVL (TEMP, 0) = 0
+                        THEN
+                            INSERT INTO TBTR_JUALHEADER
+                                        (JH_KODEIGR, JH_TRANSACTIONNO, JH_CASHIERSTATION,
+                                         JH_TRANSACTIONDATE, JH_CASHIERID, JH_TRANSACTIONTYPE,
+                                         JH_TRANSACTIONAMT,
+                                         JH_KMMCODE,
+                                         JH_CREATE_DT, JH_CREATE_BY, JH_APPROVEBY, JH_DISCOUNTAMT,
+                                         JH_TRANSACTIONCREDITAMT, JH_CUS_KODEMEMBER
+                                        )
+                                 VALUES (kodeigr, NOKASIR, STAT,
+                                         SYSDATE, 'BKL', 'S',
+                                         ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)),
+                                         REC.BUKTI_NO || ' ' || NOKOLI || ' ' || REC.GUDANG,
+                                         SYSDATE, userid, 'BKL', ROUND (TOTDIS),
+                                         ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)), MEMBEROMI
+                                        );
+                        ELSE
+                            UPDATE TBTR_JUALHEADER
+                               SET JH_TRANSACTIONAMT =
+                                         JH_TRANSACTIONAMT
+                                       + ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)),
+                                   JH_TRANSACTIONCASHAMT =
+                                         JH_TRANSACTIONCASHAMT
+                                       + ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)),
+                                   JH_DISCOUNTAMT = JH_DISCOUNTAMT + ROUND (TOTDIS)
+                             WHERE JH_KODEIGR = kodeigr
+                               AND JH_TRANSACTIONNO = NOKASIR
+                               AND JH_CASHIERSTATION = STAT
+                               AND TRUNC (JH_TRANSACTIONDATE) = TRUNC (SYSDATE)
+                               AND JH_CASHIERID = 'BKL'
+                               AND JH_TRANSACTIONTYPE = 'S';
+                        END IF;
+
+                        URUTPROSES := '13';
+                        --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                        SELECT NVL (COUNT (1), 0)
+                          INTO TEMP
+                          FROM TBTR_JUALSUMMARY
+                         WHERE JS_KODEIGR = kodeigr
+                           AND JS_CASHIERID = 'BKL'
+                           AND JS_CASHIERSTATION = STAT
+                           AND TRUNC (JS_TRANSACTIONDATE) = TRUNC (SYSDATE);
+
+                        IF NVL (TEMP, 0) = 0
+                        THEN
+                            INSERT INTO TBTR_JUALSUMMARY
+                                        (JS_KODEIGR, JS_CASHIERID, JS_CASHIERSTATION,
+                                         JS_TRANSACTIONDATE, JS_CREATE_BY, JS_CREATE_DT,
+                                         JS_CASHSTARTAMT, JS_RESETAMT,
+                                         JS_TOTSALESAMT,
+                                         JS_TOTCREDITSALESAMT
+                                        )
+                                 VALUES (kodeigr, 'BKL', STAT,
+                                         SYSDATE, userid, SYSDATE,
+                                         150000, 150000,
+                                         ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)),
+                                         ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE))
+                                        );
+                        ELSE
+                            UPDATE TBTR_JUALSUMMARY
+                               SET JS_TOTSALESAMT =
+                                         NVL (JS_TOTSALESAMT, 0)
+                                       + ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE)),
+                                   JS_TOTCREDITSALESAMT =
+                                         NVL (JS_TOTCREDITSALESAMT, 0)
+                                       + ROUND ((TOTDPP + TOTPPN + TOTFEE + TOTPPNFEE))
+                             WHERE JS_KODEIGR = kodeigr
+                               AND JS_CASHIERID = 'BKL'
+                               AND JS_CASHIERSTATION = STAT
+                               AND TRUNC (JS_TRANSACTIONDATE) = TRUNC (SYSDATE);
+                        END IF;
+
+                        URUTPROSES := '14';
+                        --:TXT_INFO := INFO || URUTPROSES; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+
+                        IF SUPCO IS NOT NULL
+                        THEN
+                            SELECT NVL (COUNT (1), 0)
+                              INTO TEMP
+                              FROM TBTR_HUTANG
+                             WHERE HTG_TYPE = 'J'
+                               AND HTG_NODOKUMEN = NODOC
+                               AND NVL (HTG_RECORDID, 0) <> '1'
+                               AND HTG_KODEIGR = kodeigr;
+
+                            IF NVL (TEMP, 0) = 0
+                            THEN
+                                INSERT INTO TBTR_HUTANG
+                                            (HTG_KODEIGR, HTG_TYPE, HTG_KODESUPPLIER,
+                                             HTG_NODOKUMEN, HTG_NODOKUMEN2, HTG_TGLFAKTURPAJAK,
+                                             HTG_FLAGBKP1, HTG_FLAGBKP2, HTG_TGLJATUHTEMPO,
+                                             HTG_TOP, HTG_NILAIHUTANG, HTG_PPN,
+                                             HTG_SALDO, HTG_RPHDISC1,
+                                             HTG_RPHDISC2, HTG_RPHDISC3, HTG_CREATEBY, HTG_CREATEDT
+                                            )
+                                     VALUES (kodeigr, 'J', SUPCO,
+                                             NODOC, REC.GUDANG || REC.BUKTI_NO, SYSDATE,
+                                             FBKP1, FBKP2, SYSDATE + TOPSUP,
+                                             TOPSUP, TOTDPP2 - TOTDISC2, TOTPPN2,
+                                             ROUND (((TOTDPP2 - TOTDISC2) + TOTPPN2)), TOTDIS12,
+                                             TOTDIS22, TOTDIS32, userid, SYSDATE
+                                            );
+                            END IF;
+                        END IF;
+                    ELSE
+--                        DC_ALERT.OK ('Nomor Pajak Kosong !!');
+
+                        result_kode := 0;
+                        result_msg := 'Nomor Pajak Kosong !!';
+                        RETURN;
+                    --RAISE FORM_TRIGGER_FAILURE;
+                    END IF;
+                END IF;
+            END LOOP;
+/*
+            IF :PARAMETER.DALAMKOTA <> 'Y'
+            THEN
+                --++18-09-2013'Cek harga di struk dan BTB++--
+                SELECT FLOOR (SUM (  (  NVL (MSTD_GROSS, 0)
+                                      - NVL (MSTD_DISCRPH, 0)
+                                      + NVL (MSTD_DIS4CR, 0)
+                                      + NVL (MSTD_DIS4RR, 0)
+                                      + NVL (MSTD_DIS4JR, 0)
+                                     )
+                                   + MSTD_PPNRPH
+                                   - (  NVL (MSTD_DIS4CR, 0)
+                                      + NVL (MSTD_DIS4RR, 0)
+                                      + NVL (MSTD_DIS4JR, 0)
+                                     )
+                                  )
+                             )
+                  INTO TTL_NBTB
+                  FROM TBTR_MSTRAN_D
+                 WHERE MSTD_KODEIGR = kodeigr AND MSTD_NODOC = NODOC;
+
+                SELECT FLOOR (SUM (TRJD_NOMINALAMT + TRJD_NOMINALAMT * 0.1))
+                  INTO TTL_STRK
+                  FROM TBTR_JUALDETAIL
+                 WHERE TRJD_KODEIGR = kodeigr
+                   AND TRJD_CREATE_BY = 'BKL'
+                   AND TRJD_CUS_KODEMEMBER = MEMBEROMI
+                   AND TRJD_TRANSACTIONNO || TRJD_CASHIERSTATION = NOKASIR || STAT;
+
+                PROSES := TRUE;
+
+                                    /*
+                IF ABS (TTL_NBTB - TTL_STRK) > 25
+                THEN
+                        DC_ALERT.OK (   'Total Nilai Struk : Rp '
+                             || TO_CHAR (TTL_STRK, '999,999,999')
+                             || '; Total Nilai BTB : Rp '
+                             || TO_CHAR (TTL_NBTB, '999,999,999'),
+                             'Info'
+                            );
+                    AL_BUTTON := show_alert ('COMMIT_DATA');
+                    PROSES := FALSE;
+                    FORMS_DDL ('ROLLBACK');
+                    RETURN;
+                    CLEAR_FORM (NO_VALIDATE);
+                END IF;*/
+
+                /*IF PROSES
+                THEN
+                    FORMS_DDL ('COMMIT');
+                END IF;
+            ELSE
+                FORMS_DDL ('COMMIT');
+            END IF;*/
+
+                        COMMIT;
+            ----18-09-2013'Cek harga di struk dan BTB----
+--            DC_ALERT.OK ('Data BKL Selesai Diproses !!');
+            --:TXT_INFO := ''; --DIKOMEN KARNA DIRASA TIDAK PAKAI (JR)
+            PARAM_NOBPB := TRIM (PARAM_NOBPB);
+            KURANG := LENGTH (PARAM_NOBPB) - 1;
+            PARAM_NOBPB := SUBSTR (PARAM_NOBPB, 1, KURANG);
+            PARAM_ALLKASIR := TRIM (PARAM_ALLKASIR);
+            KURANG := LENGTH (PARAM_ALLKASIR) - 1;
+            PARAM_ALLKASIR := SUBSTR (PARAM_ALLKASIR, 1, KURANG);
+
+            result_kode := 1;
+            result_msg := 'Data BKL Selesai Diproses !!';
+            param_all_kasir := param_allkasir;
+            RETURN;
+        END IF;
+    END IF;
+--END IF;
+EXCEPTION
+    WHEN OTHERS
+    THEN
+--        DC_ALERT.OK ('Proses ' || SQLERRM || ' ' || INFO || ' ' || URUTPROSES);
+        result_kode := 0;
+        result_msg := 'Proses ' || SQLERRM || ' ' || INFO || ' ' || URUTPROSES;
+        RETURN;
+END;
+/
+
+ALTER PROCEDURE SP_PROSES_DATA_BKL_OMI_WEB COMPILE;
+/

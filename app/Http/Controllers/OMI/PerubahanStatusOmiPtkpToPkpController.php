@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\OMI;
 
 use App\Http\Controllers\Auth\loginController;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -16,12 +17,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class rubahstatusomiController extends Controller
+class PerubahanStatusOmiPtkpToPkpController extends Controller
 {
 
     public function index()
     {
-        return view('OMI.rubahstatusomi');
+        return view('OMI.perubahan-status-omi-ptkp-to-pkp');
     }
 
     public function newFormInstance(){
@@ -151,27 +152,29 @@ class rubahstatusomiController extends Controller
         }
     }
     public function prosesData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
-        $usid = $_SESSION['usid'];
-        $ptkp = $request->ptkp;
-        $pkp = $request->pkp;
-        $bkl = $request->bkl;
+        try {
+            DB::connection($_SESSION['connection'])->beginTransaction();
+            $kodeigr = $_SESSION['kdigr'];
+            $usid = $_SESSION['usid'];
+            $ptkp = $request->ptkp;
+            $pkp = $request->pkp;
+            $bkl = $request->bkl;
 
-        $invno1 = 0;
-        $invno2 = 0;
+            $invno1 = 0;
+            $invno2 = 0;
 
-        $jmlstruk = ''; //di program lama, jmlstruk juga hanya di declare tapi ga diapa apain
+            $jmlstruk = ''; //di program lama, jmlstruk juga hanya di declare tapi ga diapa apain
 
-        $dateA = $request->tglSales1;
-        $dateB = $request->tglSales2;
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+            $dateA = $request->tglSales1;
+            $dateB = $request->tglSales2;
+            $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+            $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $tglfp = $request->tglfp;
-        $tglfp = DateTime::createFromFormat('d-m-Y', $tglfp)->format('d-m-Y');
+            $tglfp = $request->tglfp;
+            $tglfp = DateTime::createFromFormat('d-m-Y', $tglfp)->format('d-m-Y');
 
-        DB::connection($_SESSION['connection'])->beginTransaction();
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+            DB::connection($_SESSION['connection'])->beginTransaction();
+            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
       FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                        FROM TBTR_JUALDETAIL
                       WHERE TRJD_KODEIGR = '$kodeigr'
@@ -179,8 +182,8 @@ class rubahstatusomiController extends Controller
                         AND TRJD_CUS_KODEMEMBER = '$ptkp'
                         AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
                         AND NVL (TRJD_FLAGTAX2, 'N') = 'P') A");
-        if((int)$temp[0]->result == 0){
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+            if((int)$temp[0]->result == 0){
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
           FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                            FROM TBTR_JUALDETAIL
                           WHERE TRJD_KODEIGR = '$kodeigr'
@@ -188,23 +191,23 @@ class rubahstatusomiController extends Controller
                             AND TRJD_CUS_KODEMEMBER = '$ptkp'
                             AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
                             AND NVL (TRJD_FLAGTAX1, 'N') = 'Y') A");
-            if((int)$temp[0]->result != 0){
-                $pajak = 0;
-                //get_no_faktur
-                $connect = loginController::getConnectionProcedure();
-                $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
-                oci_bind_by_name($query, ':taxnum', $pajak, 32);
-                oci_execute($query);
-                if((int)$pajak == 0){
-                    //Nomor FP Kosong (exit form)
-                    return response()->json(['error' => 'Nomor FP Kosong']);
+                if((int)$temp[0]->result != 0){
+                    $pajak = 0;
+                    //get_no_faktur
+                    $connect = loginController::getConnectionProcedure();
+                    $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
+                    oci_bind_by_name($query, ':taxnum', $pajak, 32);
+                    oci_execute($query);
+                    if((int)$pajak == 0){
+                        //Nomor FP Kosong (exit form)
+                        return response()->json(['error' => 'Nomor FP Kosong']);
 
+                    }
+                    $invno1 = (int)$pajak;
+                    $invno2 = 0;
                 }
-                $invno1 = (int)$pajak;
-                $invno2 = 0;
-            }
-        }else{
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+            }else{
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
           FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                            FROM TBTR_JUALDETAIL
                           WHERE TRJD_KODEIGR = '$kodeigr'
@@ -213,16 +216,27 @@ class rubahstatusomiController extends Controller
                             AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
                             AND NVL (TRJD_FLAGTAX1, 'N') = 'Y') A");
 
-            if((int)$temp[0]->result != 0){
-                $temp = DB::connection($_SESSION['connection'])->table("TBTR_ALOKASITAX")
-                    ->selectRaw("NVL (COUNT (1), 0) as result")
-                    ->where("ALK_KDIGR",'=',$kodeigr)
-                    ->where("ALK_USED",'is',null)
-                    ->whereRaw("ALK_TAHUNPAJAK = TO_CHAR (SYSDATE, 'RR')")
-                    ->first();
-                if($temp->result < 2){
-                    //Nomor FP Tidak Cukup, Nomor FP Harus 2 Nomor !! (exit form)
-                    return response()->json(['error' => 'Nomor FP Tidak Cukup, Nomor FP Harus 2 Nomor !!']);
+                if((int)$temp[0]->result != 0){
+                    $temp = DB::connection($_SESSION['connection'])->table("TBTR_ALOKASITAX")
+                        ->selectRaw("NVL (COUNT (1), 0) as result")
+                        ->where("ALK_KDIGR",'=',$kodeigr)
+                        ->where("ALK_USED",'is',null)
+                        ->whereRaw("ALK_TAHUNPAJAK = TO_CHAR (SYSDATE, 'RR')")
+                        ->first();
+                    if($temp->result < 2){
+                        //Nomor FP Tidak Cukup, Nomor FP Harus 2 Nomor !! (exit form)
+                        return response()->json(['error' => 'Nomor FP Tidak Cukup, Nomor FP Harus 2 Nomor !!']);
+                    }
+                    $pajak = 0;
+                    $connect = loginController::getConnectionProcedure();
+                    $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
+                    oci_bind_by_name($query, ':taxnum', $pajak, 32);
+                    oci_execute($query);
+                    if((int)$pajak == 0){
+                        //Nomor FP Kosong !! (exit form)
+                        return response()->json(['error' => 'Nomor FP Kosong !!']);
+                    }
+                    $invno1 = (int)$pajak;
                 }
                 $pajak = 0;
                 $connect = loginController::getConnectionProcedure();
@@ -233,60 +247,49 @@ class rubahstatusomiController extends Controller
                     //Nomor FP Kosong !! (exit form)
                     return response()->json(['error' => 'Nomor FP Kosong !!']);
                 }
-                $invno1 = (int)$pajak;
+                $invno2 = (int)$pajak;
             }
-            $pajak = 0;
-            $connect = loginController::getConnectionProcedure();
-            $query = oci_parse($connect, "BEGIN get_no_faktur('$kodeigr','$usid',:taxnum); END;");
-            oci_bind_by_name($query, ':taxnum', $pajak, 32);
-            oci_execute($query);
-            if((int)$pajak == 0){
-                //Nomor FP Kosong !! (exit form)
-                return response()->json(['error' => 'Nomor FP Kosong !!']);
-            }
-            $invno2 = (int)$pajak;
-        }
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
-            ->selectRaw("NVL (COUNT (1), 0) as result")
-            ->where("TKO_KODECUSTOMER",'=',$pkp)
-            ->first();
-
-        if((int)$temp->result != 0){
-            $kodeomi = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
-                ->selectRaw("TKO_KODEOMI")
+            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("TKO_KODECUSTOMER",'=',$pkp)
                 ->first();
-            $kodeomi = $kodeomi->tko_kodeomi;
-        }else{
-            $kodeomi = '';
-        }
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
-            ->selectRaw("NVL (COUNT (1), 0) as result")
-            ->where("TKO_KODECUSTOMER",'=',$ptkp)
-            ->first();
-        if((int)$temp->result != 0){
-            $kodeomilama = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
-                ->selectRaw("TKO_KODEOMI")
+
+            if((int)$temp->result != 0){
+                $kodeomi = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                    ->selectRaw("TKO_KODEOMI")
+                    ->where("TKO_KODECUSTOMER",'=',$pkp)
+                    ->first();
+                $kodeomi = $kodeomi->tko_kodeomi;
+            }else{
+                $kodeomi = '';
+            }
+            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("TKO_KODECUSTOMER",'=',$ptkp)
                 ->first();
-            $kodeomilama = $kodeomilama->tko_kodeomi;
-        }else{
-            $kodeomilama = '';
-        }
-        $PESAN = 'Jumlah Struk'; //apaan, baru deklarasi sudah di replace
-        $temp = DB::connection($_SESSION['connection'])->table("TBTR_JUALDETAIL")
-            ->selectRaw("NVL (COUNT (1), 0) as result")
-            ->where("TRJD_KODEIGR",'=',$kodeigr)
-            ->whereRaw("NVL (TRJD_RECORDID, '0') <> '1'")
-            ->where("TRJD_TRANSACTIONTYPE",'=','S')
-            ->whereRaw("TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY') AND TRUNC (TRJD_TRANSACTIONDATE) <= TO_DATE('$eDate','DD-MM-YYYY')")
-            ->where("TRJD_CUS_KODEMEMBER",'=',$pkp)
-            ->first();
-        $PESAN = 'JualDetail - R - P';
+            if((int)$temp->result != 0){
+                $kodeomilama = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                    ->selectRaw("TKO_KODEOMI")
+                    ->where("TKO_KODECUSTOMER",'=',$ptkp)
+                    ->first();
+                $kodeomilama = $kodeomilama->tko_kodeomi;
+            }else{
+                $kodeomilama = '';
+            }
+            $PESAN = 'Jumlah Struk'; //apaan, baru deklarasi sudah di replace
+            $temp = DB::connection($_SESSION['connection'])->table("TBTR_JUALDETAIL")
+                ->selectRaw("NVL (COUNT (1), 0) as result")
+                ->where("TRJD_KODEIGR",'=',$kodeigr)
+                ->whereRaw("NVL (TRJD_RECORDID, '0') <> '1'")
+                ->where("TRJD_TRANSACTIONTYPE",'=','S')
+                ->whereRaw("TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY') AND TRUNC (TRJD_TRANSACTIONDATE) <= TO_DATE('$eDate','DD-MM-YYYY')")
+                ->where("TRJD_CUS_KODEMEMBER",'=',$pkp)
+                ->first();
+            $PESAN = 'JualDetail - R - P';
 
-        //-- update jualdetail utk kondisi R ( Baca JualHeader )
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            //-- update jualdetail utk kondisi R ( Baca JualHeader )
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -306,16 +309,16 @@ class rubahstatusomiController extends Controller
                   AND JH_TRANSACTIONNO = TRJD_TRANSACTIONNO
                   AND TRUNC (JH_REFERENCEDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
                   AND TRUNC (JH_REFERENCEDATE) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE1' => $invno2,
-                'TRJD_NOINVOICE2' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE1' => $invno2,
+                    'TRJD_NOINVOICE2' => $invno1
+                ]);
 
-        $PESAN = 'JualDetail - R - <> P, Y';
+            $PESAN = 'JualDetail - R - <> P, Y';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -335,15 +338,15 @@ class rubahstatusomiController extends Controller
                   AND JH_TRANSACTIONNO = TRJD_TRANSACTIONNO
                   AND TRUNC (JH_REFERENCEDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
                   AND TRUNC (JH_REFERENCEDATE) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE2' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE2' => $invno1
+                ]);
 
-        $PESAN = 'JualDetail - R - Y';
+            $PESAN = 'JualDetail - R - Y';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -363,31 +366,31 @@ class rubahstatusomiController extends Controller
                   AND JH_TRANSACTIONNO = TRJD_TRANSACTIONNO
                   AND TRUNC (JH_REFERENCEDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
                   AND TRUNC (JH_REFERENCEDATE) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE1' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE1' => $invno1
+                ]);
 
-        $PESAN = 'JualHeader - R';
+            $PESAN = 'JualHeader - R';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
-            ->whereRaw("JH_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+                ->whereRaw("JH_KODEIGR = '$kodeigr'
        AND NVL (JH_RECORDID, '0') <> '1'
        AND JH_TRANSACTIONTYPE = 'R'
        AND TRUNC (JH_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
        AND TRUNC (JH_TRANSACTIONDATE) <= TO_DATE('$eDate','DD-MM-YYYY')
        AND JH_CUS_KODEMEMBER = '$ptkp'
        AND JH_CREATE_BY <> 'BKL'")
-            ->update([
-                'JH_CUS_KODEMEMBER' => $pkp
-            ]);
+                ->update([
+                    'JH_CUS_KODEMEMBER' => $pkp
+                ]);
 
-        //--update jualdetail utk kondisi S, BKL (baca master PB OMI ) dan non BKL
-        if($bkl == 'Y'){
-            $PESAN = 'JualDetail - S - P - BKL';
+            //--update jualdetail utk kondisi S, BKL (baca master PB OMI ) dan non BKL
+            if($bkl == 'Y'){
+                $PESAN = 'JualDetail - S - P - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                    ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
            AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -411,16 +414,16 @@ class rubahstatusomiController extends Controller
                       AND PBO_CREATE_BY = 'BKL'
                       AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                       AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-                ->update([
-                    'TRJD_CUS_KODEMEMBER' => $pkp,
-                    'TRJD_NOINVOICE1' => $invno2,
-                    'TRJD_NOINVOICE2' =>  $invno1
-                ]);
+                    ->update([
+                        'TRJD_CUS_KODEMEMBER' => $pkp,
+                        'TRJD_NOINVOICE1' => $invno2,
+                        'TRJD_NOINVOICE2' =>  $invno1
+                    ]);
 
-            $PESAN = 'JualDetail - S - <> P, Y - BKL';
+                $PESAN = 'JualDetail - S - <> P, Y - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                    ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
            AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -444,15 +447,15 @@ class rubahstatusomiController extends Controller
                       AND PBO_CREATE_BY = 'BKL'
                       AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                       AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-                ->update([
-                    'TRJD_CUS_KODEMEMBER' => $pkp,
-                    'TRJD_NOINVOICE2' => $invno1
-                ]);
+                    ->update([
+                        'TRJD_CUS_KODEMEMBER' => $pkp,
+                        'TRJD_NOINVOICE2' => $invno1
+                    ]);
 
-            $PESAN = 'JualDetail - S - Y - BKL';
+                $PESAN = 'JualDetail - S - Y - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                    ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
            AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -476,15 +479,15 @@ class rubahstatusomiController extends Controller
                       AND PBO_CREATE_BY = 'BKL'
                       AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                       AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-                ->update([
-                    'TRJD_CUS_KODEMEMBER' => $pkp,
-                    'TRJD_NOINVOICE1' => $invno1
-                ]);
+                    ->update([
+                        'TRJD_CUS_KODEMEMBER' => $pkp,
+                        'TRJD_NOINVOICE1' => $invno1
+                    ]);
 
-            $PESAN = 'JualHeader - S - BKL';
+                $PESAN = 'JualHeader - S - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
-                ->whereRaw("JH_KODEIGR = '$kodeigr'
+                DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+                    ->whereRaw("JH_KODEIGR = '$kodeigr'
            AND NVL (JH_RECORDID, '0') <> '1'
            AND JH_TRANSACTIONTYPE = 'S'
            AND TRUNC (JH_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -506,15 +509,15 @@ class rubahstatusomiController extends Controller
                       AND PBO_CREATE_BY = 'BKL'
                       AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                       AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-                ->update([
-                    'JH_CUS_KODEMEMBER' => $pkp
-                ]);
-        }
+                    ->update([
+                        'JH_CUS_KODEMEMBER' => $pkp
+                    ]);
+            }
 
-        $PESAN = 'JualDetail - S - P';
+            $PESAN = 'JualDetail - S - P';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -522,16 +525,16 @@ class rubahstatusomiController extends Controller
        AND TRJD_CUS_KODEMEMBER = '$ptkp'
        AND TRJD_CREATE_BY <> 'BKL'
        AND NVL (TRJD_FLAGTAX2, 'N') = 'P'")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE1' => $invno2,
-                'TRJD_NOINVOICE2' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE1' => $invno2,
+                    'TRJD_NOINVOICE2' => $invno1
+                ]);
 
-        $PESAN = 'JualDetail - S - <> P, Y';
+            $PESAN = 'JualDetail - S - <> P, Y';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -539,15 +542,15 @@ class rubahstatusomiController extends Controller
        AND TRJD_CUS_KODEMEMBER = '$ptkp'
        AND TRJD_CREATE_BY <> 'BKL'
        AND NVL (TRJD_FLAGTAX2, 'N') NOT IN ('P', 'Y')")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE2' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE2' => $invno1
+                ]);
 
-        $PESAN = 'JualDetail - S - Y';
+            $PESAN = 'JualDetail - S - Y';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
-            ->whereRaw("TRJD_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
        AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
@@ -555,32 +558,32 @@ class rubahstatusomiController extends Controller
        AND TRJD_CUS_KODEMEMBER = '$ptkp'
        AND TRJD_CREATE_BY <> 'BKL'
        AND NVL (TRJD_FLAGTAX2, 'N') = 'Y'")
-            ->update([
-                'TRJD_CUS_KODEMEMBER' => $pkp,
-                'TRJD_NOINVOICE1' => $invno1
-            ]);
+                ->update([
+                    'TRJD_CUS_KODEMEMBER' => $pkp,
+                    'TRJD_NOINVOICE1' => $invno1
+                ]);
 
-        $PESAN = 'JualHeader - S';
+            $PESAN = 'JualHeader - S';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
-            ->whereRaw("JH_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+                ->whereRaw("JH_KODEIGR = '$kodeigr'
        AND NVL (JH_RECORDID, '0') <> '1'
        AND JH_TRANSACTIONTYPE = 'S'
        AND TRUNC (JH_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
        AND TRUNC (JH_TRANSACTIONDATE) <= TO_DATE('$eDate','DD-MM-YYYY')
        AND JH_CUS_KODEMEMBER = '$ptkp'
        AND JH_CREATE_BY <> 'BKL'")
-            ->update([
-                'JH_CUS_KODEMEMBER' => $pkp
-            ]);
+                ->update([
+                    'JH_CUS_KODEMEMBER' => $pkp
+                ]);
 
-        $hutang1 = 0;
-        $hutang2 = 0;
-        $bayar1 = 0;
-        $bayar2 = 0;
-        $PESAN = 'Hitung Nilai Hutang & Bayar';
+            $hutang1 = 0;
+            $hutang2 = 0;
+            $bayar1 = 0;
+            $bayar2 = 0;
+            $PESAN = 'Hitung Nilai Hutang & Bayar';
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
+            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
       FROM (SELECT TRPT_CUS_KODEMEMBER,
                    CASE
                        WHEN TRPT_TYPE IN ('D', 'R')
@@ -602,26 +605,26 @@ class rubahstatusomiController extends Controller
                AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')
                AND TRPT_CUS_KODEMEMBER = '$ptkp'
                AND TRPT_CASHIERID <> 'BKL')");
-        $hutang1 = $temp[0]->hutang;
-        $bayar1 = $temp[0]->bayar;
+            $hutang1 = $temp[0]->hutang;
+            $bayar1 = $temp[0]->bayar;
 
-        $PESAN = 'Piutang';
+            $PESAN = 'Piutang';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
-            ->where("TRPT_KODEIGR",'=',$kodeigr)
-            ->whereRaw("TRPT_SALESINVOICEDATE >= TO_DATE('$sDate','DD-MM-YYYY') AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')")
-            ->where("TRPT_CUS_KODEMEMBER",'=',$ptkp)
-            ->where("TRPT_CASHIERID",'<>','BKL')
-            ->update([
-                'TRPT_CUS_KODEMEMBER' => $pkp,
-                'TRPT_INVOICETAXNO' => $invno1,
-                'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
-            ]);
+            DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
+                ->where("TRPT_KODEIGR",'=',$kodeigr)
+                ->whereRaw("TRPT_SALESINVOICEDATE >= TO_DATE('$sDate','DD-MM-YYYY') AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')")
+                ->where("TRPT_CUS_KODEMEMBER",'=',$ptkp)
+                ->where("TRPT_CASHIERID",'<>','BKL')
+                ->update([
+                    'TRPT_CUS_KODEMEMBER' => $pkp,
+                    'TRPT_INVOICETAXNO' => $invno1,
+                    'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
+                ]);
 
-        if($bkl == 'Y'){
-            $PESAN = 'Hitung Nilai Hutang & Bayar - BKL';
+            if($bkl == 'Y'){
+                $PESAN = 'Hitung Nilai Hutang & Bayar - BKL';
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
           FROM (SELECT TRPT_CUS_KODEMEMBER,
                        CASE
                            WHEN TRPT_TYPE IN ('D', 'R')
@@ -657,14 +660,14 @@ class rubahstatusomiController extends Controller
                               AND PBO_CREATE_BY = 'BKL'
                               AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                               AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY')))");
-            $hutang2 = $temp[0]->hutang;
-            $bayar2 = $temp[0]->bayar;
-        }
+                $hutang2 = $temp[0]->hutang;
+                $bayar2 = $temp[0]->bayar;
+            }
 
-        $PESAN = 'Piutang - BKL';
+            $PESAN = 'Piutang - BKL';
 
-        DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
-            ->whereRaw("TRPT_KODEIGR = '$kodeigr'
+            DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
+                ->whereRaw("TRPT_KODEIGR = '$kodeigr'
            AND TRPT_SALESINVOICEDATE >= TO_DATE('$sDate','DD-MM-YYYY')
            AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')
            AND TRPT_CUS_KODEMEMBER = '$ptkp'
@@ -682,233 +685,233 @@ class rubahstatusomiController extends Controller
                       AND PBO_CREATE_BY = 'BKL'
                       AND TRUNC (PBO_TGLPB) >= TO_DATE('$sDate','DD-MM-YYYY')
                       AND TRUNC (PBO_TGLPB) <= TO_DATE('$eDate','DD-MM-YYYY'))")
-            ->update([
-                'TRPT_CUS_KODEMEMBER' => $pkp,
-                'TRPT_INVOICETAXNO' => $invno1,
-                'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
-            ]);
+                ->update([
+                    'TRPT_CUS_KODEMEMBER' => $pkp,
+                    'TRPT_INVOICETAXNO' => $invno1,
+                    'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
+                ]);
 
-        $PESAN = 'PBOMI - BKL';
+            $PESAN = 'PBOMI - BKL';
 
-        DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
-            ->where("PBO_KODEMEMBER",'=',$ptkp)
-            ->where("PBO_CREATE_BY",'=','BKL')
-            ->whereRaw("PBO_TGLPB >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLPB <= TO_DATE('$eDate','DD-MM-YYYY')")
-            ->update([
-                'PBO_KODEMEMBER' => $pkp,
-                'PBO_KODEOMI' => $kodeomi
-            ]);
+            DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
+                ->where("PBO_KODEMEMBER",'=',$ptkp)
+                ->where("PBO_CREATE_BY",'=','BKL')
+                ->whereRaw("PBO_TGLPB >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLPB <= TO_DATE('$eDate','DD-MM-YYYY')")
+                ->update([
+                    'PBO_KODEMEMBER' => $pkp,
+                    'PBO_KODEOMI' => $kodeomi
+                ]);
 
-        $PESAN = 'PBOMI';
+            $PESAN = 'PBOMI';
 
-        DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
-            ->where("PBO_KODEMEMBER",'=',$ptkp)
-            ->where("PBO_CREATE_BY",'<>','BKL')
-            ->whereRaw("PBO_TGLSTRUK >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLSTRUK <= TO_DATE('$eDate','DD-MM-YYYY')")
-            ->update([
-                'PBO_KODEMEMBER' => $pkp,
-                'PBO_KODEOMI' => $kodeomi
-            ]);
+            DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
+                ->where("PBO_KODEMEMBER",'=',$ptkp)
+                ->where("PBO_CREATE_BY",'<>','BKL')
+                ->whereRaw("PBO_TGLSTRUK >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLSTRUK <= TO_DATE('$eDate','DD-MM-YYYY')")
+                ->update([
+                    'PBO_KODEMEMBER' => $pkp,
+                    'PBO_KODEOMI' => $kodeomi
+                ]);
 
-        $PESAN = 'Update Piutang PTKP';
-        $jmlhutang = (int)$hutang1 + (int)$hutang2;
-        $jmlbayar = (int)$bayar1 + (int)$bayar2;
-
-        DB::connection($_SESSION['connection'])->table('TBMASTER_PIUTANG')
-            ->where("PTG_KODEIGR",'=',$kodeigr)
-            ->where("PTG_KODEMEMBER",'=','$ptkp')
-            ->update([
-                'PTG_AMTAR' => DB::raw("PTG_AMTAR - $jmlhutang"),
-                'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT - $jmlbayar")
-            ]);
-
-        $PESAN = 'Cek Piutang PKP';
-
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
-            ->selectRaw("NVL (COUNT (1), 0) as result")
-            ->where("PTG_KODEIGR",'=',$kodeigr)
-            ->where("PTG_KODEMEMBER",'=',$pkp)
-            ->first();
-        if((int)$temp->result == 0){
-            $PESAN = 'Insert Piutang PKP';
-
-            DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
-                ->insert([
-                    'PTG_KODEIGR' => $kodeigr,
-                    'PTG_KODEMEMBER' => $pkp,
-                    'PTG_AMTAR' => $jmlhutang,
-                    'PTG_AMTPAYMENT' => $jmlbayar,
-                    'PTG_CREATE_BY' => $usid,
-                    'PTG_CREATE_DT' => DB::RAW("SYSDATE")]);
-        }else{
-            $PESAN = 'Update Piutang PKP';
+            $PESAN = 'Update Piutang PTKP';
+            $jmlhutang = (int)$hutang1 + (int)$hutang2;
+            $jmlbayar = (int)$bayar1 + (int)$bayar2;
 
             DB::connection($_SESSION['connection'])->table('TBMASTER_PIUTANG')
                 ->where("PTG_KODEIGR",'=',$kodeigr)
-                ->where("PTG_KODEMEMBER",'=','$pkp')
+                ->where("PTG_KODEMEMBER",'=','$ptkp')
                 ->update([
-                    'PTG_AMTAR' => DB::raw("PTG_AMTAR + $jmlhutang"),
-                    'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT + $jmlbayar")
+                    'PTG_AMTAR' => DB::raw("PTG_AMTAR - $jmlhutang"),
+                    'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT - $jmlbayar")
                 ]);
-        }
 
-        if($invno1 != 0){
-            $PESAN = 'Cek FP';
+            $PESAN = 'Cek Piutang PKP';
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
-          FROM TBMASTER_PERUSAHAAN, TBMASTER_CUSTOMER
-         WHERE PRS_KODEIGR = '$kodeigr' AND CUS_KODEMEMBER = '$pkp'");
-            if($temp){
-                $kodemto = $temp[0]->prs_kodemto;
-                $flaginstitusipemerintah = $temp[0]->cus_flaginstitusipemerintah;
-            }else{
-                $kodemto = '';
-                $flaginstitusipemerintah = '';
-            }
-
-            $nopajak = str_pad(strval($invno1),13,'0',STR_PAD_LEFT);
-            if($flaginstitusipemerintah == 'Y'){
-                $serial1 = '02';
-            }else{
-                $serial1 = '01';
-            }
-            $serial1 = $serial1.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
-
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
-                ->where("FKT_KODEIGR",'=',$kodeigr)
-                ->where("FKT_NOFAKTUR",'=',$invno1)
-                ->where("FKT_TIPE",'=','S')
+                ->where("PTG_KODEIGR",'=',$kodeigr)
+                ->where("PTG_KODEMEMBER",'=',$pkp)
                 ->first();
             if((int)$temp->result == 0){
-                $PESAN = 'Insert FP';
+                $PESAN = 'Insert Piutang PKP';
 
-                DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
                     ->insert([
-                        'FKT_KODEIGR' => $kodeigr,
-                        'FKT_TIPE' => 'S',
-                        'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_NOFAKTUR' => $invno1,
-                        'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_KODEMEMBER' => $pkp,
-                        'FKT_SIGN' => 'PINDAH STATUS',
-                        'FKT_CREATE_BY' => $usid,
-                        'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
-                        'FKT_NOSERI' => $serial1]);
+                        'PTG_KODEIGR' => $kodeigr,
+                        'PTG_KODEMEMBER' => $pkp,
+                        'PTG_AMTAR' => $jmlhutang,
+                        'PTG_AMTPAYMENT' => $jmlbayar,
+                        'PTG_CREATE_BY' => $usid,
+                        'PTG_CREATE_DT' => DB::RAW("SYSDATE")]);
             }else{
-                $PESAN = 'Update FP';
+                $PESAN = 'Update Piutang PKP';
 
-                DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                DB::connection($_SESSION['connection'])->table('TBMASTER_PIUTANG')
+                    ->where("PTG_KODEIGR",'=',$kodeigr)
+                    ->where("PTG_KODEMEMBER",'=','$pkp')
+                    ->update([
+                        'PTG_AMTAR' => DB::raw("PTG_AMTAR + $jmlhutang"),
+                        'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT + $jmlbayar")
+                    ]);
+            }
+
+            if($invno1 != 0){
+                $PESAN = 'Cek FP';
+
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
+          FROM TBMASTER_PERUSAHAAN, TBMASTER_CUSTOMER
+         WHERE PRS_KODEIGR = '$kodeigr' AND CUS_KODEMEMBER = '$pkp'");
+                if($temp){
+                    $kodemto = $temp[0]->prs_kodemto;
+                    $flaginstitusipemerintah = $temp[0]->cus_flaginstitusipemerintah;
+                }else{
+                    $kodemto = '';
+                    $flaginstitusipemerintah = '';
+                }
+
+                $nopajak = str_pad(strval($invno1),13,'0',STR_PAD_LEFT);
+                if($flaginstitusipemerintah == 'Y'){
+                    $serial1 = '02';
+                }else{
+                    $serial1 = '01';
+                }
+                $serial1 = $serial1.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
+
+                $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    ->selectRaw("NVL (COUNT (1), 0) as result")
                     ->where("FKT_KODEIGR",'=',$kodeigr)
                     ->where("FKT_NOFAKTUR",'=',$invno1)
                     ->where("FKT_TIPE",'=','S')
-                    ->update([
-                        'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_KODEMEMBER' => $pkp,
-                        'FKT_SIGN' => 'PINDAH STATUS',
-                    ]);
-            }
-        }
-        if($invno2 != 0){
-            $PESAN = 'Cek FP 2';
+                    ->first();
+                if((int)$temp->result == 0){
+                    $PESAN = 'Insert FP';
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
+                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                        ->insert([
+                            'FKT_KODEIGR' => $kodeigr,
+                            'FKT_TIPE' => 'S',
+                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_NOFAKTUR' => $invno1,
+                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_KODEMEMBER' => $pkp,
+                            'FKT_SIGN' => 'PINDAH STATUS',
+                            'FKT_CREATE_BY' => $usid,
+                            'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
+                            'FKT_NOSERI' => $serial1]);
+                }else{
+                    $PESAN = 'Update FP';
+
+                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                        ->where("FKT_KODEIGR",'=',$kodeigr)
+                        ->where("FKT_NOFAKTUR",'=',$invno1)
+                        ->where("FKT_TIPE",'=','S')
+                        ->update([
+                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_KODEMEMBER' => $pkp,
+                            'FKT_SIGN' => 'PINDAH STATUS',
+                        ]);
+                }
+            }
+            if($invno2 != 0){
+                $PESAN = 'Cek FP 2';
+
+                $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
           FROM TBMASTER_PERUSAHAAN, TBMASTER_CUSTOMER
          WHERE PRS_KODEIGR = '$kodeigr' AND CUS_KODEMEMBER = '$pkp'");
-            if($temp){
-                $kodemto = $temp[0]->prs_kodemto;
-                $flaginstitusipemerintah = $temp[0]->cus_flaginstitusipemerintah;
-            }else{
-                $kodemto = '';
-                $flaginstitusipemerintah = '';
-            }
+                if($temp){
+                    $kodemto = $temp[0]->prs_kodemto;
+                    $flaginstitusipemerintah = $temp[0]->cus_flaginstitusipemerintah;
+                }else{
+                    $kodemto = '';
+                    $flaginstitusipemerintah = '';
+                }
 
-            $nopajak = str_pad(strval($invno2),13,'0',STR_PAD_LEFT);
-            if($flaginstitusipemerintah == 'Y'){
-                $serial2 = '02';
-            }else{
-                $serial2 = '01';
-            }
-            $serial2 = $serial2.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
-                ->selectRaw("NVL (COUNT (1), 0) as result")
-                ->where("FKT_KODEIGR",'=',$kodeigr)
-                ->where("FKT_NOFAKTUR",'=',$invno2)
-                ->where("FKT_TIPE",'=','S')
-                ->first();
-            if((int)$temp->result == 0){
-                $PESAN = 'Insert FP 2';
-
-                DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
-                    ->insert([
-                        'FKT_KODEIGR' => $kodeigr,
-                        'FKT_TIPE' => 'S',
-                        'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_NOFAKTUR' => $invno2,
-                        'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_KODEMEMBER' => $pkp,
-                        'FKT_SIGN' => 'PINDAH STATUS',
-                        'FKT_CREATE_BY' => $usid,
-                        'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
-                        'FKT_NOSERI' => $serial2]);
-            }else{
-                $PESAN = 'Update FP 2';
-
-                DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                $nopajak = str_pad(strval($invno2),13,'0',STR_PAD_LEFT);
+                if($flaginstitusipemerintah == 'Y'){
+                    $serial2 = '02';
+                }else{
+                    $serial2 = '01';
+                }
+                $serial2 = $serial2.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
+                $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    ->selectRaw("NVL (COUNT (1), 0) as result")
                     ->where("FKT_KODEIGR",'=',$kodeigr)
                     ->where("FKT_NOFAKTUR",'=',$invno2)
                     ->where("FKT_TIPE",'=','S')
-                    ->update([
-                        'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                        'FKT_KODEMEMBER' => $pkp,
-                        'FKT_SIGN' => 'PINDAH STATUS',
-                    ]);
+                    ->first();
+                if((int)$temp->result == 0){
+                    $PESAN = 'Insert FP 2';
+
+                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                        ->insert([
+                            'FKT_KODEIGR' => $kodeigr,
+                            'FKT_TIPE' => 'S',
+                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_NOFAKTUR' => $invno2,
+                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_KODEMEMBER' => $pkp,
+                            'FKT_SIGN' => 'PINDAH STATUS',
+                            'FKT_CREATE_BY' => $usid,
+                            'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
+                            'FKT_NOSERI' => $serial2]);
+                }else{
+                    $PESAN = 'Update FP 2';
+
+                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                        ->where("FKT_KODEIGR",'=',$kodeigr)
+                        ->where("FKT_NOFAKTUR",'=',$invno2)
+                        ->where("FKT_TIPE",'=','S')
+                        ->update([
+                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_KODEMEMBER' => $pkp,
+                            'FKT_SIGN' => 'PINDAH STATUS',
+                        ]);
+                }
             }
-        }
 
-        $PESAN = 'History Harga Struk OMI';
+            $PESAN = 'History Harga Struk OMI';
 
-        DB::connection($_SESSION['connection'])->table("TBHISTORY_HARGASTRUKOMI")
-            ->where("HSO_KODEIGR",'=',$kodeigr)
-            ->where("HSO_KODEMEMBER",'=',$ptkp)
-            ->update([
-                'HSO_KODEMEMBER' => $pkp
-            ]);
+            DB::connection($_SESSION['connection'])->table("TBHISTORY_HARGASTRUKOMI")
+                ->where("HSO_KODEIGR",'=',$kodeigr)
+                ->where("HSO_KODEMEMBER",'=',$ptkp)
+                ->update([
+                    'HSO_KODEMEMBER' => $pkp
+                ]);
 
-        //--penambahan diluar clipper info Pak Lili
-        $PESAN = 'Update TBTR_REALPB';
+            //--penambahan diluar clipper info Pak Lili
+            $PESAN = 'Update TBTR_REALPB';
 
-        DB::connection($_SESSION['connection'])->table("TBTR_REALPB")
-            ->whereRaw("TRUNC (RPB_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
-            ->where("RPB_KODECUSTOMER",'=',$ptkp)
-            ->update([
-                'RPB_KODECUSTOMER' => $pkp,
-                'RPB_KODEOMI' => $kodeomi
-            ]);
+            DB::connection($_SESSION['connection'])->table("TBTR_REALPB")
+                ->whereRaw("TRUNC (RPB_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
+                ->where("RPB_KODECUSTOMER",'=',$ptkp)
+                ->update([
+                    'RPB_KODECUSTOMER' => $pkp,
+                    'RPB_KODEOMI' => $kodeomi
+                ]);
 
-        $PESAN = 'Update TBTR_OMIKOLI';
-        DB::connection($_SESSION['connection'])->table("TBTR_OMIKOLI")
-            ->whereRaw("TRUNC (OKL_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
-            ->where("OKL_KODEOMI",'=',$kodeomilama)
-            ->update([
-                'OKL_KODEOMI' => $kodeomi
-            ]);
+            $PESAN = 'Update TBTR_OMIKOLI';
+            DB::connection($_SESSION['connection'])->table("TBTR_OMIKOLI")
+                ->whereRaw("TRUNC (OKL_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
+                ->where("OKL_KODEOMI",'=',$kodeomilama)
+                ->update([
+                    'OKL_KODEOMI' => $kodeomi
+                ]);
 
-        $PESAN = 'Update TBTR_RETUROMI';
-        DB::connection($_SESSION['connection'])->table("TBTR_RETUROMI")
-            ->whereRaw("TRUNC (ROM_TGLDOKUMEN) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
-            ->where("ROM_MEMBER",'=',$ptkp)
-            ->update([
-                'ROM_KODETOKO' => $kodeomi,
-                'ROM_MEMBER' => $pkp
-            ]);
-        //commit
-        DB::connection($_SESSION['connection'])->commit();
+            $PESAN = 'Update TBTR_RETUROMI';
+            DB::connection($_SESSION['connection'])->table("TBTR_RETUROMI")
+                ->whereRaw("TRUNC (ROM_TGLDOKUMEN) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
+                ->where("ROM_MEMBER",'=',$ptkp)
+                ->update([
+                    'ROM_KODETOKO' => $kodeomi,
+                    'ROM_MEMBER' => $pkp
+                ]);
+            //commit
+            DB::connection($_SESSION['connection'])->commit();
 
-        $PESAN = 'ADM Fee';
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (FEE, 0)) FEE
+            $PESAN = 'ADM Fee';
+            $temp = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (FEE, 0)) FEE
       FROM (SELECT CASE
                        WHEN TRJD_TRANSACTIONTYPE = 'S'
                            THEN TRJD_ADMFEE
@@ -920,20 +923,29 @@ class rubahstatusomiController extends Controller
                AND TRUNC (TRJD_TRANSACTIONDATE) >= TO_DATE('$sDate','DD-MM-YYYY')
                AND TRUNC (TRJD_TRANSACTIONDATE) <= TO_DATE('$eDate','DD-MM-YYYY')
                AND TRJD_CUS_KODEMEMBER = '$pkp') A");
-        $admfee = $temp[0]->fee;
-        dd($invno1);
-        if($invno1 != 0 || $invno2 != 0){
-            //PRINT_FP (INVNO1, INVNO2, ADMFEE, JMLSTRUK);
-            return response()->json(['error' => '', 'cetak' => 'yes', 'invno1' => $invno1, 'invno2' => $invno2, 'admfee' => $admfee, 'jmlstruk' => $jmlstruk]);
-        }else{
-            return response()->json(['error' => '', 'cetak' => 'no']);
+            $admfee = $temp[0]->fee;
+
+            if($invno1 != 0 || $invno2 != 0){
+                //PRINT_FP (INVNO1, INVNO2, ADMFEE, JMLSTRUK);
+                return response()->json(['error' => '', 'cetak' => 'yes', 'invno1' => $invno1, 'invno2' => $invno2, 'admfee' => $admfee, 'jmlstruk' => $jmlstruk]);
+            }else{
+                return response()->json(['error' => '', 'cetak' => 'no']);
+            }
+            //return notif DDC_ALERT.OK (   'Perubahan Member PTKP '
+            //                 || :TXT_PTKP
+            //                 || ' Menjadi Member PKP '
+            //                 || :TXT_PKP
+            //                 || ' Sudah Selesai Dilakukan !!'
+            //                );
+            DB::connection($_SESSION['connection'])->commit();
+        }catch (QueryException $e){
+            DB::connection($_SESSION['connection'])->rollBack();
+
+            return response()->json([
+                'error' => "Gagal memproses data!",
+            ], 500);
         }
-        //return notif DDC_ALERT.OK (   'Perubahan Member PTKP '
-        //                 || :TXT_PTKP
-        //                 || ' Menjadi Member PKP '
-        //                 || :TXT_PKP
-        //                 || ' Sudah Selesai Dilakukan !!'
-        //                );
+
     }
 
     public function cetak(Request $request){
@@ -1020,13 +1032,17 @@ class rubahstatusomiController extends Controller
    AND PWP_KODEIGR(+) = '$kodeigr'
    AND PWP_KODEMEMBER(+) = TRJD_CUS_KODEMEMBER
    AND FKT_NOFAKTUR = TRJD_NOINVOICE1");
+
+        if(sizeof($datas) === 0){
+            return "Data not found!";
+        }
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
 
 
-        $pdf = PDF::loadview('OMI.rubahstatusomi_fp-pdf',
+        $pdf = PDF::loadview('OMI.perubahan-status-omi-ptkp-to-pkp_fp-pdf',
             ['kodeigr' => $kodeigr, 'datas' => $datas,'nama' => $nama, 'jabatan1' => $jabatan1, 'jabatan2' => $jabatan2, 'p_jmlstruk' => $jmlstruk, 'admfee' => $admfee]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();

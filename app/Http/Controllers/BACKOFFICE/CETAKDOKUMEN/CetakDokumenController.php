@@ -36,14 +36,14 @@ class CetakDokumenController extends Controller
 
         if ($doc == 'K') {
             if ($lap == 'L') {
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                $recs = DB::select("SELECT TRBO_NODOC,TRBO_TGLDOC
                            FROM TBTR_BACKOFFICE
-                           WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
-                                        NVL(trbo_recordid, '0') <> '1' and
-                                        trbo_typetrn = '" . $doc . "' and
-                                        (NVL(trbo_flagdoc, ' ') = '" . $reprint . "' or NVL(trbo_flagdoc, ' ') = ' ')
-                           GROUP BY trbo_nodoc,trbo_tgldoc
-                           ORDER BY trbo_nodoc");
+                           WHERE(TRBO_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
+                                        NVL(TRBO_RECORDID, '0') <> '1' and
+                                        TRBO_TYPETRN = '" . $doc . "' and
+                                        (NVL(TRBO_FLAGDOC, ' ') = '" . $reprint . "' or NVL(TRBO_FLAGDOC, ' ') = ' ')
+                           GROUP BY TRBO_NODOC,TRBO_TGLDOC
+                           ORDER BY TRBO_NODOC");
                 if ($recs) {
                     foreach ($recs as $rec) {
                         $obj = (object)'';
@@ -54,14 +54,14 @@ class CetakDokumenController extends Controller
                 }
             } else {
                 if ($reprint == '0') {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                    $recs = DB::select("SELECT TRBO_NODOC,TRBO_TGLDOC
                                FROM TBTR_BACKOFFICE
-                               WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
-                                          trbo_typetrn = '" . $doc . "' and
-                                          NVL(trbo_recordid, '0') <> '1' and
-                                          NVL(trbo_flagdoc, ' ') <> '*'
-                               GROUP BY trbo_nodoc,trbo_tgldoc
-                               ORDER BY trbo_nodoc");
+                               WHERE(TRBO_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
+                                          TRBO_TYPETRN = '" . $doc . "' and
+                                          NVL(TRBO_RECORDID, '0') <> '1' and
+                                          NVL(TRBO_FLAGDOC, ' ') <> '*'
+                               GROUP BY TRBO_NODOC,TRBO_TGLDOC
+                               ORDER BY TRBO_NODOC");
                     if ($recs) {
                         foreach ($recs as $rec) {
                             $obj = (object)'';
@@ -71,7 +71,7 @@ class CetakDokumenController extends Controller
                         }
                     }
                 } else {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC,MSTH_TGLDOC
+                    $recs = DB::select("SELECT MSTH_NODOC,MSTH_TGLDOC
                                FROM TBTR_MSTRAN_H
                                WHERE(MSTH_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           MSTH_TYPETRN = '" . $doc . "' and
@@ -90,14 +90,14 @@ class CetakDokumenController extends Controller
             }
         } else {
             if ($lap == 'L') {
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                $recs = DB::select("SELECT TRBO_NODOC,TRBO_TGLDOC
 			           FROM TBTR_BACKOFFICE
-			           WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
-			           			  trbo_typetrn = '" . $doc . "' and
-                                  NVL(trbo_recordid, '0') <> '1' and
-                                  (NVL(trbo_flagdoc, ' ') = '" . $reprint . "' or NVL(trbo_flagdoc, ' ') = ' ')
-			           GROUP BY trbo_nodoc,trbo_tgldoc
-			           ORDER BY trbo_nodoc");
+			           WHERE(TRBO_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
+			           			  TRBO_TYPETRN = '" . $doc . "' and
+                                  NVL(TRBO_RECORDID, '0') <> '1' and
+                                  (NVL(TRBO_FLAGDOC, ' ') = '" . $reprint . "' or NVL(TRBO_FLAGDOC, ' ') = ' ')
+			           GROUP BY TRBO_NODOC,TRBO_TGLDOC
+			           ORDER BY TRBO_NODOC");
                 if ($recs) {
                     foreach ($recs as $rec) {
                         $obj = (object)'';
@@ -108,14 +108,14 @@ class CetakDokumenController extends Controller
                 }
             } else {
                 if ($reprint == '0') {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                    $recs = DB::select("SELECT TRBO_NODOC,TRBO_TGLDOC
                                FROM TBTR_BACKOFFICE
-                               WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
-                                          trbo_typetrn = '" . $doc . "' and
-                                          NVL(trbo_recordid, '0') <> '1' and
-                                          NVL(trbo_flagdoc, ' ') <> '*'
-                               GROUP BY trbo_nodoc,trbo_tgldoc
-                               ORDER BY trbo_nodoc");
+                               WHERE(TRBO_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
+                                          TRBO_TYPETRN = '" . $doc . "' and
+                                          NVL(TRBO_RECORDID, '0') <> '1' and
+                                          NVL(TRBO_FLAGDOC, ' ') <> '*'
+                               GROUP BY TRBO_NODOC,TRBO_TGLDOC
+                               ORDER BY TRBO_NODOC");
                     if ($recs) {
                         foreach ($recs as $rec) {
                             $obj = (object)'';
@@ -125,7 +125,7 @@ class CetakDokumenController extends Controller
                         }
                     }
                 } else {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC,MSTH_TGLDOC
+                    $recs = DB::select("SELECT MSTH_NODOC,MSTH_TGLDOC
                                FROM TBTR_MSTRAN_H
                                WHERE(MSTH_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           MSTH_TYPETRN = '" . $doc . "' and
@@ -196,17 +196,17 @@ class CetakDokumenController extends Controller
         }
         foreach ($nodocs as $nodoc) {
             if ($reprint == '0') {
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $temp = DB::select("SELECT COUNT(1) count
                        FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, tbmaster_supplier
-                      WHERE     trbo_prdcd = PRD_PRDCD
+                      WHERE     TRBO_PRDCD = PRD_PRDCD
                             and trbo_kodesupplier = sup_kodesupplier
-                            and trbo_typetrn = 'K'
-                            and trbo_nodoc = '" . $nodoc . "'
+                            and TRBO_TYPETRN = 'K'
+                            and TRBO_NODOC = '" . $nodoc . "'
                             and PRD_FLAGBKP1 = 'Y'
                             and PRD_FLAGBKP2 = 'Y'
                             and sup_pkp = 'Y'")[0]->count;
             } else {
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $temp = DB::select("SELECT COUNT(1) count
                        FROM TBTR_MSTRAN_D, TBMASTER_PRODMAST, tbmaster_supplier
                       WHERE     MSTD_PRDCD = PRD_PRDCD
                             and mstd_kodesupplier = sup_kodesupplier
@@ -238,55 +238,56 @@ class CetakDokumenController extends Controller
                 $tgldocbo = $tgldocs[$i];
 
 
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
+                $recs = DB::select("SELECT DISTINCT TRBO_INVNO INVNO, TRBO_NOFAKTUR
                      FROM TBTR_BACKOFFICE, tbmaster_prodmast, tbmaster_supplier
                     WHERE     trbo_prdcd = prd_prdcd
                 and trbo_kodesupplier = sup_kodesupplier
-                and trbo_typetrn = 'K'
+                and TRBO_TYPETRN = 'K'
                 and prd_flagbkp1 = 'Y'
                 and sup_pkp = 'Y'
-                and trbo_nofaktur IS NULL
-                and trbo_nodoc = '" . $nodocs[$i] . "'");
+                and TRBO_NOFAKTUR IS NULL
+                and TRBO_NODOC = '" . $nodocs[$i] . "'");
 
                 foreach ($recs as $rec) {
 
-                    $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                    $temp = DB::select("SELECT COUNT(1) count
                          FROM TBTR_BACKOFFICE
-                        WHERE     trbo_typetrn = 'K'
-                            and trbo_nodoc = '" . $nodocs[$i] . "'
-                            and trbo_invno = '" . $rec->invno . "'
+                        WHERE     TRBO_TYPETRN = 'K'
+                            and TRBO_NODOC = '" . $nodocs[$i] . "'
+                            and TRBO_INVNO = '" . $rec->invno . "'
                             and trbo_nofaktur is not null")[0]->count;
 
                     if ($temp > 0) {
-                        $nofak = DB::connection($_SESSION['connection'])->select("SELECT distinct trbo_nofaktur
+                        $nofak = DB::select("SELECT distinct TRBO_NOFAKTUR
                                 FROM TBTR_BACKOFFICE
-                               WHERE     trbo_typetrn = 'K'
-                               and trbo_nodoc = '" . $nodocs[$i] . "'
-                               and trbo_invno = '" . $rec->invno . "'
+                               WHERE     TRBO_TYPETRN = 'K'
+                               and TRBO_NODOC = '" . $nodocs[$i] . "'
+                               and TRBO_INVNO = '" . $rec->invno . "'
                                and trbo_nofaktur is not null")[0]->count;
                     } else {
-                        $connect = loginController::getConnectionProcedure();
+                        $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+
                         $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "','NRB','Nomor Retur Barang','Z',7,true); END;");
                         oci_bind_by_name($query, ':ret', $nofak, 32);
                         oci_execute($query);
                     }
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
+                    DB::table('TBTR_BACKOFFICE')
                         ->where([
-                            'trbo_kodeigr' => $_SESSION['kdigr'],
-                            'trbo_typetrn' => 'K',
-                            'trbo_nodoc' => $nodocs[$i],
-                            'trbo_invno' => $rec->invno
+                            'TRBO_KODEIGR' => $_SESSION['kdigr'],
+                            'TRBO_TYPETRN' => 'K',
+                            'TRBO_NODOC' => $nodocs[$i],
+                            'TRBO_INVNO' => $rec->invno
 
                         ])
                         ->update([
-                            'trbo_tglfaktur' => DB::raw("trunc(sysdate)"),
-                            'trbo_nofaktur' => $nofak
+                            'TRBO_TGLFAKTUR' => DB::raw("trunc(sysdate)"),
+                            'TRBO_NOFAKTUR' => $nofak
                         ]);
                 }
             } else {
 
-                $tgldocbo = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MSTH_TGLDOC MSTH_TGLDOC
+                $tgldocbo = DB::select("SELECT DISTINCT MSTH_TGLDOC MSTH_TGLDOC
                               FROM TBTR_MSTRAN_H
                              WHERE MSTH_NODOC = '" . $nodocs[$i] . "' and ROWNUM = 1")[0]->msth_tgldoc;
             }
@@ -381,56 +382,39 @@ class CetakDokumenController extends Controller
                 }
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+            $temp = DB::select("SELECT COUNT(1) count
                    FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                  WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
-                    and trbo_kodeigr = SUP_KODEIGR
-                    and trbo_kodesupplier = SUP_KODESUPPLIER
+                  WHERE     TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                    and TRBO_KODEIGR = SUP_KODEIGR
+                    and TRBO_KODESUPPLIER = SUP_KODESUPPLIER
                     and SUP_PKP = 'Y'
-                    and trbo_nodoc = '" . $nodocbo . "'")[0]->count;
+                    and TRBO_NODOC = '" . $nodocbo . "'")[0]->count;
 
             if ($reprint == '0' && $temp > 0) {
 
-                DB::connection($_SESSION['connection'])->table('TBHISTORY_FAKTURRM')->where('FRM_KODEIGR', '=', $_SESSION['kdigr'])->where('frm_nodocbo', '=', $nodocbo)->delete();
+                DB::table('TBHISTORY_FAKTURRM')->where('FRM_KODEIGR', '=', $_SESSION['kdigr'])->where('frm_nodocbo', '=', $nodocbo)->delete();
 
-                $dataInsert = DB::connection($_SESSION['connection'])->selectOne("SELECT trbo_kodeigr,trbo_nodoc,trbo_tgldoc,
-                      trbo_istype || '.' || trbo_invno referensifp
+                DB::insert(" INSERT INTO TBHISTORY_FAKTURRM (FRM_KODEIGR,
+                                            FRM_NODOCBO,
+                                            FRM_TGLBO,
+                                            FRM_REFERENSIFP,
+                                            FRM_CREATE_BY,
+                                            FRM_CREATE_DT)
+                    SELECT TRBO_KODEIGR,TRBO_NODOC,TRBO_TGLDOC,
+                      TRBO_ISTYPE . '.' . TRBO_INVNO,
+                      '" . $_SESSION['usid'] . "'
+                      SYSDATE
                  FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
-                and trbo_kodeigr = SUP_KODEIGR
-                and trbo_kodesupplier = SUP_KODESUPPLIER
+                WHERE     TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                and TRBO_KODEIGR = SUP_KODEIGR
+                and TRBO_KODESUPPLIER = SUP_KODESUPPLIER
                 and SUP_PKP = 'Y'
-                and trbo_nodoc = '" . $nodocbo . "'");
-
-                DB::connection($_SESSION['connection'])->table('TBHISTORY_FAKTURRM')
-                    ->where('FRM_KODEIGR', '=', $_SESSION['kdigr'])
-                    ->where('frm_nodocbo', '=', $nodocbo)
-                    ->delete();
-
-                DB::connection($_SESSION['connection'])->table('tbhistory_fakturrm')
-                    ->insert([
-                        'frm_nodocbo' => $dataInsert->trbo_kodeigr,
-                        'frm_nodocbo' => $dataInsert->trbo_nodoc,
-                        'frm_tglbo' => $dataInsert->trbo_tgldoc,
-                        'frm_referensifp' => $dataInsert->referensifp,
-                        'frm_create_by' => $_SESSION['usid'],
-                        'frm_create_dt' => DB::RAW("SYSDATE")
-                    ]);
-
-//                DB::connection($_SESSION['connection'])->insert(" INSERT INTO TBHISTORY_FAKTURRM(FRM_KODEIGR,
-//                                            FRM_NODOCBO,
-//                                            FRM_TGLBO,
-//                                            FRM_REFERENSIFP,
-//                                            FRM_CREATE_BY,
-//                                            FRM_CREATE_DT) values(
-//                    )");
+                and TRBO_NODOC = '" . $nodocbo . "'");
             }
 
         }
 
         $filename = 'RM.' . $_SESSION['kdigr'] . '.csv';
-
-        $columnHeader = ['RM', 'NPWP', 'NAMA', 'KD_JENIS_TRANSAKSI', 'FG_PENGGANTI', 'NOMOR_FAKTUR', 'TANGGAL_FAKTUR', 'IS_CREDITABLE', 'NOMOR_DOKUMEN_RETUR', 'TANGGAL_RETUR', 'MASA_PAJAK_RETUR', 'TAHUN_PAJAK_RETUR', 'NILAI_RETUR_DPP', 'NILAI_RETUR_PPN', 'NILAI_RETUR_PPNBM'];
 
         $headers = [
             "Content-type" => "text/csv",
@@ -451,7 +435,7 @@ class CetakDokumenController extends Controller
 
     public function RMBO_CUR(string $nodocbo)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT RM,
+        $result = DB::select("SELECT RM,
                NPWP,
                NAMA,
                KD_JENIS_TRANSAKSI,
@@ -469,25 +453,25 @@ class CetakDokumenController extends Controller
           FROM(SELECT 'RM' RM,
                        REPLACE(REPLACE(SUP_NPWP, '.', ''), '-', '') NPWP,
                        SUP_NAMASUPPLIER NAMA,
-                       SUBSTR(trbo_istype, 1, 2) KD_JENIS_TRANSAKSI,
-                       SUBSTR(trbo_istype, 3, 1) FG_PENGGANTI,
-                       REPLACE(SUBSTR(trbo_istype || trbo_invno, 5), '-', '')
+                       SUBSTR(TRBO_ISTYPE, 1, 2) KD_JENIS_TRANSAKSI,
+                       SUBSTR(TRBO_ISTYPE, 3, 1) FG_PENGGANTI,
+                       REPLACE(SUBSTR(TRBO_ISTYPE || TRBO_INVNO, 5), '-', '')
                           NOMOR_FAKTUR,
-                       TO_CHAR(trbo_tglinv, 'dd/MM/yyyy') TANGGAL_FAKTUR,
+                       TO_CHAR(TRBO_TGLINV, 'dd/MM/yyyy') TANGGAL_FAKTUR,
                        '1' IS_CREDITABLE,
                           PRS_KODEMTO
                           || '.'
-                          || TO_CHAR(trbo_tglfaktur, 'YY')
+                          || TO_CHAR(TRBO_TGLFAKTUR, 'YY')
                           || '.0'
-                          || SUBSTR(trbo_nofaktur, 2, 7)
+                          || SUBSTR(TRBO_NOFAKTUR, 2, 7)
                           NOMOR_DOKUMEN_RETUR,
-                       TO_CHAR(trbo_tglfaktur, 'dd/MM/yyyy') TANGGAL_RETUR,
-                       TO_NUMBER(TO_CHAR(trbo_tglfaktur, 'MM'))
+                       TO_CHAR(TRBO_TGLFAKTUR, 'dd/MM/yyyy') TANGGAL_RETUR,
+                       TO_NUMBER(TO_CHAR(TRBO_TGLFAKTUR, 'MM'))
                           MASA_PAJAK_RETUR,
-                       TO_NUMBER(TO_CHAR(trbo_tglfaktur, 'yyyy'))
+                       TO_NUMBER(TO_CHAR(TRBO_TGLFAKTUR, 'yyyy'))
                           TAHUN_PAJAK_RETUR,
-                       (trbo_gross - (bpb_discrph * trbo_qty)) NILAI_RETUR_DPP,
-                       (trbo_gross - (bpb_discrph * trbo_qty)) * 0.1
+                       (TRBO_GROSS - (bpb_discrph * trbo_qty)) NILAI_RETUR_DPP,
+                       (TRBO_GROSS - (bpb_discrph * trbo_qty)) * 0.1
                           NILAI_RETUR_PPN,
                        0 NILAI_RETUR_PPNBM
                   FROM TBTR_BACKOFFICE,
@@ -500,20 +484,20 @@ class CetakDokumenController extends Controller
                                mstd_discrph / mstd_qty bpb_discrph
                           FROM tbtr_mstran_d
                          WHERE mstd_typetrn = 'B')
-                 WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
-                and trbo_kodeigr = PRS_KODEIGR
-                and trbo_kodeigr = PRD_KODEIGR
-                and trbo_prdcd = PRD_PRDCD
+                 WHERE     TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                and TRBO_KODEIGR = PRS_KODEIGR
+                and TRBO_KODEIGR = PRD_KODEIGR
+                and TRBO_PRDCD = PRD_PRDCD
                 and NVL(PRD_FLAGBKP1, 'N') = 'Y'
                 and NVL(PRD_FLAGBKP2, 'N') = 'Y'
-                and trbo_kodeigr = SUP_KODEIGR
-                and trbo_kodesupplier = SUP_KODESUPPLIER
+                and TRBO_KODEIGR = SUP_KODEIGR
+                and TRBO_KODESUPPLIER = SUP_KODESUPPLIER
                 and SUP_PKP = 'Y'
-                and trbo_kodeigr = CONST_KODEIGR(+)
+                and TRBO_KODEIGR = CONST_KODEIGR(+)
                 and SUBSTR(CONST_BRANCH(+), 1, 1) = 'O'
                 and trbo_noreff = bpb_nodoc
                 and trbo_prdcd = bpb_prdcd
-                and trbo_nodoc = '" . $nodocbo . "')
+                and TRBO_NODOC = '" . $nodocbo . "')
       GROUP BY RM,
                NPWP,
                NAMA,
@@ -525,13 +509,13 @@ class CetakDokumenController extends Controller
                NOMOR_DOKUMEN_RETUR,
                TANGGAL_RETUR,
                MASA_PAJAK_RETUR,
-               TAHUN_PAJAK_RETUR");
+               TAHUN_PAJAK_RETUR;");
         return $result;
     }
 
     public function RMTR_CUR(string $nodoctr)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT RM,
+        $result = DB::select("SELECT RM,
                NPWP,
                NAMA,
                KD_JENIS_TRANSAKSI,
@@ -669,8 +653,7 @@ class CetakDokumenController extends Controller
         $f_docbtkp = '';
         $f_docbkp = '';
 
-        $file= [];
-        $laporan = [];
+        $file = [];
         $doc = $request->doc;
         $lap = $request->lap;
         $reprint = $request->reprint;
@@ -716,7 +699,7 @@ class CetakDokumenController extends Controller
                     array_push($sub_isi_docno, $nodoc);
                 }
             } else {
-                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $tmp = DB::select("SELECT COUNT(1) count
                               FROM TBMASTER_CABANG
                              WHERE CAB_KODECABANG = '" . $_SESSION['kdigr'] . "'
                                     and NVL(CAB_EFAKTUR, 'N') = 'Y'")[0]->count;
@@ -726,12 +709,12 @@ class CetakDokumenController extends Controller
                         $efaktur = true;
 
                         foreach ($nodocs as $nodoc) {
-                            $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                            $tmp = DB::select("SELECT COUNT(1) count
                           FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, tbmaster_supplier
-                         WHERE     trbo_prdcd = PRD_PRDCD
+                         WHERE     TRBO_PRDCD = PRD_PRDCD
                         and trbo_kodesupplier = sup_kodesupplier
-                        and trbo_typetrn = 'K'
-                        and trbo_nodoc = '" . $nodoc . "'
+                        and TRBO_TYPETRN = 'K'
+                        and TRBO_NODOC = '" . $nodoc . "'
                         and PRD_FLAGBKP1 = 'Y'
                         and PRD_FLAGBKP2 = 'Y'
                         and sup_pkp = 'Y'
@@ -763,11 +746,11 @@ class CetakDokumenController extends Controller
 
                     if ($reprint == '0') {
 
-                        $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                        $tmp = DB::select("SELECT COUNT(1) count
                                    FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, TBMASTER_SUPPLIER
-                                  WHERE trbo_prdcd = PRD_PRDCD
-                                  and trbo_typetrn = 'K'
-                                    and trbo_nodoc = $nodocs[$i]
+                                  WHERE TRBO_PRDCD = PRD_PRDCD
+                                  and TRBO_TYPETRN = 'K'
+                                    and TRBO_NODOC = $nodocs[$i]
                                     and NVL(PRD_FLAGBKP1, 'N') = 'Y'
                                     and NVL(PRD_FLAGBKP2, 'N') = 'Y'")[0]->count;
 
@@ -775,7 +758,8 @@ class CetakDokumenController extends Controller
                         if ($tmp > 0) {
                             $f_docbkp = 'Y';
 
-                            $connect = loginController::getConnectionProcedure();
+                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+
                             $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
@@ -786,18 +770,20 @@ class CetakDokumenController extends Controller
                             oci_execute($query);
                         }
 
-                        $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT COUNT(1)
+                        $tmp = DB::select("SELECT COUNT(1)
                                FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
-                              WHERE     trbo_prdcd = PRD_PRDCD
-                                and trbo_typetrn = 'K'
-                                and trbo_nodoc = '" . $nodocs[$i] . "'
-                                and (NVL(PRD_FLAGBKP1, 'N') <> 'Y' or NVL(PRD_FLAGBKP2, 'N') <> 'Y')");
+                              WHERE     TRBO_PRDCD = PRD_PRDCD
+                                and TRBO_TYPETRN = 'K'
+                                and TRBO_NODOC = '" . $nodocs[$i] . "'
+                                and (NVL(PRD_FLAGBKP1, 'N') <> 'Y'
+                                    or NVL(PRD_FLAGBKP2, 'N') <> 'Y'")[0]->count;
 
 
-                        if ($tmp) {
+                        if ($tmp > 0) {
                             $f_docbtkp = 'Y';
 
-                            $connect = loginController::getConnectionProcedure();
+                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
+
                             $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
@@ -808,29 +794,28 @@ class CetakDokumenController extends Controller
                             oci_execute($query);
 
                         }
-                        $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
+                        $recs = DB::select("SELECT DISTINCT TRBO_INVNO INVNO, TRBO_NOFAKTUR
                               FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
-                             WHERE     trbo_prdcd = PRD_PRDCD
+                             WHERE     TRBO_PRDCD = PRD_PRDCD
                         and PRD_FLAGBKP1 = 'Y'
                         and PRD_FLAGBKP2 = 'Y'
-                        and trbo_typetrn = 'K'
-                        and trbo_nodoc = '" . $nodocs[$i] . "'");
-
-
+                        and TRBO_TYPETRN = 'K'
+                        and TRBO_NODOC = '" . $nodocs[$i] . "'");
                         foreach ($recs as $rec) {
+                            $i = $i + 1;
 //                         getnofp_tab($i).invno = rec . invno;
 
-                            $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT COUNT(1)
+                            $tmp = DB::select("SELECT COUNT(1)
                           FROM TBMASTER_CABANG
                          WHERE CAB_KODECABANG = '" . $_SESSION['kdigr'] . "'
-                         and NVL(CAB_EFAKTUR, 'N') = 'Y'");
+                         and NVL(CAB_EFAKTUR, 'N') = 'Y'")[0]->count;
 
 
-                            if ($tmp) {
+                            if ($tmp > 0) {
                                 $nofak = $rec->trbo_nofaktur;
                             } else {
 
-                                $connect = loginController::getConnectionProcedure();
+                                $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
                                 $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
                                  'NRB',
@@ -867,22 +852,22 @@ class CetakDokumenController extends Controller
                         $nilsal_btkp = 0;
                         $nildisc_btkp = 0;
 
-                        $recs = DB::connection($_SESSION['connection'])->select("SELECT *
+                        $recs = DB::select("SELECT *
                              FROM TBTR_BACKOFFICE,
                                    TBMASTER_PRODMAST,
                                    TBMASTER_STOCK,
                                    TBMASTER_SUPPLIER
-                             WHERE     trbo_nodoc = '" . $nodocs[$i] . "'
-                        and trbo_kodeigr = PRD_KODEIGR
-                        and trbo_prdcd = PRD_PRDCD
-                        and trbo_kodeigr = ST_KODEIGR(+)
-                        and trbo_prdcd = ST_PRDCD(+)
+                             WHERE     TRBO_NODOC = '" . $nodocs[$i] . "'
+                        and TRBO_KODEIGR = PRD_KODEIGR
+                        and TRBO_PRDCD = PRD_PRDCD
+                        and TRBO_KODEIGR = ST_KODEIGR(+)
+                        and TRBO_PRDCD = ST_PRDCD(+)
                         and '02' = ST_LOKASI(+)
-                        and trbo_kodeigr = SUP_KODEIGR(+)
-                        and trbo_kodesupplier =
+                        and TRBO_KODEIGR = SUP_KODEIGR(+)
+                        and TRBO_KODESUPPLIER =
                             SUP_KODESUPPLIER(+)
-                        and trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
-                        and trbo_typetrn = 'K'");
+                        and TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                        and TRBO_TYPETRN = 'K'");
 
                         foreach ($recs as $rec) {
                             $v_prdcd = $rec->trbo_prdcd;
@@ -896,7 +881,7 @@ class CetakDokumenController extends Controller
                             $cterm = isset($rec->sup_top) ? $rec->sup_top : 0;
                             $f_plubkp = $rec->prd_flagbkp1 == 'Y' && $rec->prd_flagbkp2 == 'Y' ? 'Y' : 'N';
 
-                            if (isset($rec->trbo_invno) ? $rec->trbo_invno : ' ' == ' ') {
+                            if (isset($rec->TRBO_INVNO) ? $rec->TRBO_INVNO : ' ' == ' ') {
                                 $nofp = '';
                             } else {
 //                            GETNOFP_IDX = GETNOFP_TAB . FIRST;
@@ -907,7 +892,7 @@ class CetakDokumenController extends Controller
 //                              STEP = 3002;
 //
 //                              if GETNOFP_TAB(GETNOFP_IDX) . INVNO =
-//                                  $rec->trbo_invno {
+//                                  $rec->TRBO_INVNO {
 //                                  STEP = 3003;
 //                                  NOFAK = GETNOFP_TAB(GETNOFP_IDX) . NOFAK;
 //                              }
@@ -920,198 +905,276 @@ class CetakDokumenController extends Controller
                                 $nofp = $nofp . '\'' . $nofak . '\',';
                             }
 
-                            $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                            $tmp = DB::select("SELECT COUNT(1) count
                           FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                          WHERE     BTB_PRDCD = KVP_PLUOLD(+)
-                                 and BTB_NODOC = '" . $rec->trbo_noreff . "'
-                                 and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
-                                     or KVP_PLUNEW = '" . $rec->trbo_prdcd . "'
-                                     or BTB_PRDCD = '" . $rec->trbo_prdcd . "')")[0]->count;
+                                 and BTB_NODOC = '" . $rec->TRBO_NOREFF . "'
+                                 and (KVP_PLUOLD = '" . $rec->TRBO_PRDCD . "'
+                                     or KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'
+                                     or BTB_PRDCD = '" . $rec->TRBO_PRDCD . "')")[0]->count;
 
                             if ($tmp > 0) {
-                                $res = DB::connection($_SESSION['connection'])->select("SELECT BTB_FRAC, BTB_UNIT
+                                $res = DB::select("SELECT BTB_FRAC, BTB_UNIT
                              FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                             WHERE     BTB_PRDCD = KVP_PLUOLD(+)
-                            and BTB_NODOC = '" . $rec->trbo_noreff . "'
-                            and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
-                                or KVP_PLUNEW = '" . $rec->trbo_prdcd . "'
-                                or BTB_PRDCD = '" . $rec->trbo_prdcd . "')
+                            and BTB_NODOC = '" . $rec->TRBO_NOREFF . "'
+                            and (KVP_PLUOLD = '" . $rec->TRBO_PRDCD . "'
+                                or KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'
+                                or BTB_PRDCD = '" . $rec->TRBO_PRDCD . "')
                             and ROWNUM = 1");
-                                $frac = $res[0]->btb_frac;
-                                $unit = $res[0]->btb_unit;
+                                $frac = $res[0]->BTB_FRAC;
+                                $unit = $res[0]->BTB_UNIT;
                             } else {
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                $tmp = DB::select("SELECT COUNT(1) count
                              FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                             WHERE     BTB_PRDCD = KVP_PLUOLD(+)
-                            and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
-                                or KVP_PLUNEW = '" . $rec->trbo_prdcd . "'
-                                or BTB_PRDCD = '" . $rec->trbo_prdcd . "')
+                            and (KVP_PLUOLD = '" . $rec->TRBO_PRDCD . "'
+                                or KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'
+                                or BTB_PRDCD = '" . $rec->TRBO_PRDCD . "')
                             and SUBSTR(BTB_ISTYPE, -2, 2) || BTB_NODOC <
-                            SUBSTR('" . $rec->trbo_istype . "', -2, 2)
-                            || '" . $rec->trbo_noreff . "'
+                            SUBSTR('" . $rec->TRBO_ISTYPE . "', -2, 2)
+                            || '" . $rec->TRBO_NOREFF . "'
                             and BTB_INVNO IS NOT NULL")[0]->count;
 
                                 if ($tmp > 0) {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT BTB_FRAC, BTB_UNIT
+                                    $res = DB::select("SELECT BTB_FRAC, BTB_UNIT
                                   INTO FRAC, UNIT
                                   FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                                  WHERE     BTB_PRDCD = KVP_PLUOLD(+)
-                               and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
-                                   or KVP_PLUNEW = '" . $rec->trbo_prdcd . "'
-                                   or BTB_PRDCD = '" . $rec->trbo_prdcd . "')
+                               and (KVP_PLUOLD = '" . $rec->TRBO_PRDCD . "'
+                                   or KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'
+                                   or BTB_PRDCD = '" . $rec->TRBO_PRDCD . "')
                                and SUBSTR(BTB_ISTYPE, -2, 2)
                                || BTB_NODOC <
-                               SUBSTR('" . $rec->trbo_istype . "',
+                               SUBSTR('" . $rec->TRBO_ISTYPE . "',
                                    -2,
                                    2)
-                               || '" . $rec->trbo_noreff . "'
+                               || '" . $rec->TRBO_NOREFF . "'
                                and BTB_INVNO IS NOT NULL
                                and ROWNUM = 1
                               ORDER BY    SUBSTR(BTB_ISTYPE, -2, 2)
                                || BTB_NODOC DESC");
-                                    $frac = $res[0]->btb_frac;
-                                    $unit = $res[0]->btb_unit;
+                                    $frac = $res[0]->BTB_FRAC;
+                                    $unit = $res[0]->BTB_UNIT;
                                 } else {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT PRD_FRAC, PRD_UNIT
+                                    $res = DB::select("SELECT PRD_FRAC, PRD_UNIT
                                 INTO FRAC, UNIT
                                 FROM TBMASTER_PRODMAST, TBTR_KONVERSIPLU
                                WHERE     PRD_PRDCD = KVP_PLUOLD(+)
-                               and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
-                                   or KVP_PLUNEW = '" . $rec->trbo_prdcd . "'
-                                   or PRD_PRDCD = '" . $rec->trbo_prdcd . "')
+                               and (KVP_PLUOLD = '" . $rec->TRBO_PRDCD . "'
+                                   or KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'
+                                   or PRD_PRDCD = '" . $rec->TRBO_PRDCD . "')
                                and ROWNUM = 1");
-                                    $frac = $res[0]->prd_frac;
-                                    $unit = $res[0]->prd_unit;
+                                    $frac = $res[0]->PRD_FRAC;
+                                    $unit = $res[0]->PRD_UNIT;
                                 }
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
-                                ->insert([
-                                    'mstd_kodeigr' => $rec->trbo_kodeigr,
-                                    'mstd_recordid' => $rec->trbo_recordid,
-                                    'mstd_typetrn' => $doc,
-                                    'mstd_nodoc' => $f_plubkp == 'Y' ? $nodocbkp : $nodocbtkp,
-                                    'mstd_tgldoc' => DB::RAW("SYSDATE"),
-                                    'mstd_docno2' => $rec->trbo_invno != 'P' ? $nofak : null,
-                                    'mstd_date2' => $rec->trbo_tglfaktur,
-                                    'mstd_istype' => $rec->trbo_istype,
-                                    'mstd_invno' => $rec->trbo_invno,
-                                    'mstd_date3' => $rec->trbo_tglinv,
-                                    'mstd_kodesupplier' => $rec->trbo_kodesupplier,
-                                    'mstd_pkp' => $pkp,
-                                    'mstd_seqno' => $rec->trbo_seqno,
-                                    'mstd_prdcd' => $rec->trbo_prdcd,
-                                    'mstd_kodedivisi' => $rec->prd_kodedivisi,
-                                    'mstd_kodedepartement' => $rec->prd_kodedepartement,
-                                    'mstd_kodekategoribrg' => $rec->prd_kodekategoribarang,
-                                    'mstd_bkp' => $rec->prd_flagbkp1,
-                                    'mstd_fobkp' => $rec->prd_flagbkp2,
-                                    'mstd_unit' => $unit,
-                                    'mstd_frac' => $frac,
-                                    'mstd_qty' => $rec->trbo_qty,
-                                    'mstd_qtybonus1' => $rec->trbo_qtybonus1,
-                                    'mstd_qtybonus2' => $rec->trbo_qtybonus2,
-                                    'mstd_hrgsatuan' => $rec->trbo_hrgsatuan,
-                                    'mstd_persendisc1' => $rec->trbo_persendisc1,
-                                    'mstd_rphdisc1' => $rec->trbo_rphdisc1,
-                                    'mstd_flagdisc1' => $rec->trbo_flagdisc1,
-                                    'mstd_persendisc2' => $rec->trbo_persendisc2,
-                                    'mstd_rphdisc2' => $rec->trbo_rphdisc2,
-                                    'mstd_flagdisc2' => $rec->trbo_flagdisc2,
-                                    'mstd_persendisc3' => $rec->trbo_persendisc3,
-                                    'mstd_rphdisc3' => $rec->trbo_rphdisc3,
-                                    'mstd_flagdisc3' => $rec->trbo_flagdisc3,
-                                    'mstd_persendisc4' => $rec->trbo_persendisc4,
-                                    'mstd_rphdisc4' => $rec->trbo_rphdisc4,
-                                    'mstd_flagdisc4' => $rec->trbo_flagdisc4,
-                                    'mstd_dis4cp' => $rec->trbo_dis4cp,
-                                    'mstd_dis4cr' => $rec->trbo_dis4cr,
-                                    'mstd_dis4rp' => $rec->trbo_dis4rp,
-                                    'mstd_dis4rr' => $rec->trbo_dis4rr,
-                                    'mstd_dis4jp' => $rec->trbo_dis4jp,
-                                    'mstd_dis4jr' => $rec->trbo_dis4jr,
-                                    'mstd_gross' => $rec->trbo_gross,
-                                    'mstd_discrph' => $rec->trbo_discrph,
-                                    'mstd_ppnrph' => $rec->trbo_ppnrph,
-                                    'mstd_ppnbmrph' => $rec->trbo_ppnbmrph,
-                                    'mstd_ppnbtlrph' => $rec->trbo_ppnbtlrph,
-                                    'mstd_avgcost' => $rec->trbo_averagecost,
-                                    'mstd_ocost' => null,
-                                    'mstd_posqty' => $qtyst,
-                                    'mstd_keterangan' => $rec->trbo_keterangan,
-                                    'mstd_kodetag' => $rec->prd_kodetag,
-                                    'mstd_create_by' => $_SESSION['usid'],
-                                    'mstd_create_dt' => DB::RAW("SYSDATE"),
-                                    'mstd_modify_by' => $_SESSION['usid'],
-                                    'mstd_modify_dt' => DB::RAW("SYSDATE"),
-                                    'mstd_noref3' => $rec->trbo_noreff,
-                                ]);
+                            DB::Select("INSERT INTO TBTR_MSTRAN_D(MSTD_KODEIGR,
+                                     MSTD_RECORDID,
+                                     MSTD_TYPETRN,
+                                     MSTD_NODOC,
+                                     MSTD_TGLDOC,
+                                     MSTD_DOCNO2,
+                                     MSTD_DATE2,
+                                     MSTD_ISTYPE,
+                                     MSTD_INVNO,
+                                     MSTD_DATE3,
+                                     MSTD_KODESUPPLIER,
+                                     MSTD_PKP,
+                                     MSTD_SEQNO,
+                                     MSTD_PRDCD,
+                                     MSTD_KODEDIVISI,
+                                     MSTD_KODEDEPARTEMENT,
+                                     MSTD_KODEKATEGORIBRG,
+                                     MSTD_BKP,
+                                     MSTD_FOBKP,
+                                     MSTD_UNIT,
+                                     MSTD_FRAC,
+                                     MSTD_QTY,
+                                     MSTD_QTYBONUS1,
+                                     MSTD_QTYBONUS2,
+                                     MSTD_HRGSATUAN,
+                                     MSTD_PERSENDISC1,
+                                     MSTD_RPHDISC1,
+                                     MSTD_FLAGDISC1,
+                                     MSTD_PERSENDISC2,
+                                     MSTD_RPHDISC2,
+                                     MSTD_FLAGDISC2,
+                                     MSTD_PERSENDISC3,
+                                     MSTD_RPHDISC3,
+                                     MSTD_FLAGDISC3,
+                                     MSTD_PERSENDISC4,
+                                     MSTD_RPHDISC4,
+                                     MSTD_FLAGDISC4,
+                                     MSTD_DIS4CP,
+                                     MSTD_DIS4CR,
+                                     MSTD_DIS4RP,
+                                     MSTD_DIS4RR,
+                                     MSTD_DIS4JP,
+                                     MSTD_DIS4JR,
+                                     MSTD_GROSS,
+                                     MSTD_DISCRPH,
+                                     MSTD_PPNRPH,
+                                     MSTD_PPNBMRPH,
+                                     MSTD_PPNBTLRPH,
+                                     MSTD_AVGCOST,
+                                     MSTD_OCOST,
+                                     MSTD_POSQTY,
+                                     MSTD_KETERANGAN,
+                                     MSTD_KODETAG,
+                                     MSTD_CREATE_BY,
+                                     MSTD_CREATE_DT,
+                                     MSTD_MODifY_BY,
+                                     MSTD_MODifY_DT,
+                                     MSTD_NOREF3
+                                      )
+                                VALUES(
+                                    '" . $rec->TRBO_KODEIGR . "',
+                                    '" . $rec->TRBO_RECORDID . "',
+                                    '" . $doc . "',
+                                          case
+                                             WHEN F_PLUBKP = 'Y'
+                                             THEN
+                                                 '" . $nodocbkp . "'
+                                             ELSE
+                                                '" . $nodocbtkp . "'
+                                          END,
+                                          TRUNC(SYSDATE),
+                                          case
+                                             WHEN NVL('" . $rec->trbo_invno . "', 'P') <> 'P'
+                                             THEN
+                                                 NOFAK
+                                          END,
+                                          '" . $rec->trbo_tglfaktur . "',
+                                          '" . $rec->trbo_istype . "',
+                                          '" . $rec->trbo_invno . "',
+                                          '" . $rec->trbo_tglinv . "',
+                                          '" . $rec->trbo_kodesupplier . "',
+                                          '" . $pkp . "',
+                                          '" . $rec->trbo_seqno . "',
+                                          '" . $rec->trbo_prdcd . "',
+                                          '" . $rec->prd_kodedivisi . "',
+                                          '" . $rec->prd_kodedepartement . "',
+                                          '" . $rec->prd_kodekategoribarang . "',
+                                          '" . $rec->prd_flagbkp1 . "',
+                                          '" . $rec->prd_flagbkp2 . "',
+                                          '" . $unit . "',
+                                          '" . $frac . "',
+                                          '" . $rec->trbo_qty . "',
+                                          '" . $rec->trbo_qtybonus1 . "',
+                                          '" . $rec->trbo_qtybonus2 . "',
+                                          '" . $rec->trbo_hrgsatuan . "',
+                                          '" . $rec->trbo_persendisc1 . "',
+                                          '" . $rec->trbo_rphdisc1 . "',
+                                          '" . $rec->trbo_flagdisc1 . "',
+                                          '" . $rec->trbo_persendisc2 . "',
+                                          '" . $rec->trbo_rphdisc2 . "',
+                                          '" . $rec->trbo_flagdisc2 . "',
+                                          '" . $rec->trbo_persendisc3 . "',
+                                          '" . $rec->trbo_rphdisc3 . "',
+                                          '" . $rec->trbo_flagdisc3 . "',
+                                          '" . $rec->trbo_persendisc4 . "',
+                                          '" . $rec->trbo_rphdisc4 . "',
+                                          '" . $rec->trbo_flagdisc4 . "',
+                                          '" . $rec->trbo_dis4cp . "',
+                                          '" . $rec->trbo_dis4cr . "',
+                                          '" . $rec->trbo_dis4rp . "',
+                                          '" . $rec->trbo_dis4rr . "',
+                                          '" . $rec->trbo_dis4jp . "',
+                                          '" . $rec->trbo_dis4jr . "',
+                                          '" . $rec->trbo_gross . "',
+                                          '" . $rec->trbo_discrph . "',
+                                          '" . $rec->trbo_ppnrph . "',
+                                          '" . $rec->trbo_ppnbmrph . "',
+                                          '" . $rec->trbo_ppnbtlrph . "',
+                                          '" . $rec->trbo_averagecost . "',
+                                          NULL,
+                                          '" . $qtyst . "',
+                                          '" . $rec->trbo_keterangan . "',
+                                          '" . $rec->prd_kodetag . "',
+                                          '" . $_SESSION['usid'] . "',
+                                          SYSDATE,
+                                          '" . $_SESSION['usid'] . "',
+                                          SYSDATE,
+                                          '" . $rec->trbo_noreff . "')");
 
 
-                            $ada = DB::connection($_SESSION['connection'])->selectOne("SELECT *
+                            $ada = DB::select("SELECT COUNT(1) count
                                   FROM TBTR_MSTRAN_BTB
-                                 WHERE BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                     and BTB_NODOC = '" . $rec->trbo_noreff . "'
-                                     and BTB_PRDCD = '" . $rec->trbo_prdcd . "'");
+                                 WHERE BTB_KODEIGR = '" . $_SESSION['kdigr'] . "',
+                                     and BTB_NODOC = '" . $rec->TRBO_NOREFF . "'
+                                     and BTB_PRDCD = '" . $rec->TRBO_PRDCD . "'")[0]->count;
 
 
-                            if (!$ada) {
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                            if ($ada == 0) {
+                                $tmp = DB::select("SELECT COUNT(1) count
                                      FROM TBTR_KONVERSIPLU
-                                    WHERE KVP_PLUNEW = '" . $rec->trbo_prdcd . "'")[0]->count;
+                                    WHERE KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "'")[0]->count;
                                 if ($tmp == 0) {
                                     $qtypb = 9999999999;
                                 } else {
-                                    $qtypb = DB::connection($_SESSION['connection'])->select("SELECT BTB_QTY count
+                                    $qtypb = DB::select("SELECT BTB_QTY count
                                     FROM TBTR_MSTRAN_BTB
-                                   WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                   and BTB_NODOC = '" . $rec->trbo_noreff . "'
+                                   WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "',
+                                   and BTB_NODOC = '" . $rec->TRBO_NOREFF . "'
                                    and BTB_PRDCD IN(SELECT KVP_PLUOLD
                                      FROM TBTR_KONVERSIPLU
-                                    WHERE KVP_PLUNEW = '" . $rec->trbo_prdcd . "')")[0]->count;
+                                    WHERE KVP_PLUNEW = '" . $rec->TRBO_PRDCD . "')")[0]->count;
                                 }
                             } else {
-                                $qtypb = DB::connection($_SESSION['connection'])->select("SELECT BTB_QTY count
+                                $qtypb = DB::select("SELECT BTB_QTY count
                                  FROM TBTR_MSTRAN_BTB
-                                WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                and BTB_NODOC = '" . $rec->trbo_noreff . "'
-                                and BTB_PRDCD = '" . $rec->trbo_prdcd . "'")[0]->count;
+                                WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "',
+                                and BTB_NODOC = '" . $rec->TRBO_NOREFF . "'
+                                and BTB_PRDCD = '" . $rec->TRBO_PRDCD . "'")[0]->count;
 
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbhistory_retursupplier')
-                                ->insert([
-                                    'hsr_kodeigr' => $_SESSION['kdigr'],
-                                    'hsr_nodoc' => $f_plubkp == 'Y' ? $nodocbkp : $nodocbtkp,
-                                    'hsr_kodesupplier' => $rec->trbo_kodesupplier,
-                                    'hsr_prdcd' =>  $rec->trbo_prdcd,
-                                    'hsr_refnopajak' => $rec->trbo_invno,
-                                    'hsr_hrgsatuan' => $rec->trbo_hrgsatuan,
-                                    'hsr_qtypb' => $qtypb,
-                                    'hsr_qtyretur' => $rec->trbo_qty,
-                                    'hsr_create_by' => $_SESSION['usid'],
-                                    'hsr_create_dt' => DB::RAW("SYSDATE"),
-                                    'hsr_refbpb' => $rec->trbo_noreff
-                                ]);
+                            DB::insert("INSERT
+                          INTO TBHISTORY_RETURSUPPLIER(HSR_KODEIGR,
+                                                 HSR_NODOC,
+                                                 HSR_KODESUPPLIER,
+                                                 HSR_PRDCD,
+                                                 HSR_REFNOPAJAK,
+                                                 HSR_HRGSATUAN,
+                                                 HSR_QTYPB,
+                                                 HSR_QTYRETUR,
+                                                 HSR_CREATE_BY,
+                                                 HSR_CREATE_DT,
+                                                 HSR_REFBPB)
+                           VALUES(
+                                      '" . $_SESSION['kdigr'] . "',
+                                     case
+                                        WHEN F_PLUBKP = 'Y' THEN
+                                             '" . $nodocbkp . "'
+                                        ELSE
+                                             '" . $nodocbtkp . "'
+                                     END,
+                                     '" . $rec->TRBO_KODESUPPLIER . "',
+                                     '" . $rec->TRBO_PRDCD . "',
+                                     '" . $rec->TRBO_INVNO . "',
+                                     '" . $rec->TRBO_HRGSATUAN . "',
+                                     NVL('" . $qtypb . "', 0),
+                                     '" . $rec->TRBO_QTY . "',
+                                      '" . $_SESSION['usid'] . "',
+                                     SYSDATE,
+                                     '" . $rec->TRBO_NOREFF . "')");
 
 
+                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
-
-                            $connect = loginController::getConnectionProcedure();
-
-                            $query = oci_parse($connect, "BEGIN  sp_igr_update_stock('" . $_SESSION['kdigr'] . "',
+                            $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',
                             '02',
-                            '" . $rec->trbo_prdcd . "',
+                            '" . $rec->TRBO_PRDCD . "',
                             ' ',
                             'TRFOUT',
-                            " . $rec->trbo_qty . ",
-                            ".$lcostst.",
-                            ".$acostst.",
+                            '" . $rec->TRBO_QTY . "',
+                            LCOSTST,
+                            ACOSTST,
                             '" . $_SESSION['usid'] . "',
-                            :v_lok,
-                            :v_message); END;");
-                            oci_bind_by_name($query, ':v_lok', $v_lok, 32);
-                            oci_bind_by_name($query, ':v_message', $v_message, 32);
+                            V_LOK,
+                            V_MESSAGE); END;");
                             oci_execute($query);
 
                             $supcoht = $rec->trbo_kodesupplier;
@@ -1146,7 +1209,7 @@ class CetakDokumenController extends Controller
 
 
                         if ($f_docbkp == 'Y') {
-                            DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_H
+                            DB::insert("INSERT INTO TBTR_MSTRAN_H
                             (MSTH_KODEIGR,
                              MSTH_RECORDID,
                              MSTH_TYPETRN,
@@ -1207,79 +1270,104 @@ class CetakDokumenController extends Controller
                         }
 
                         if ($f_docbtkp == 'Y') {
-                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
-                                ->insert([
-                                    'MSTH_KODEIGR' => $_SESSION['kdigr'],
-                                    'MSTH_RECORDID' => '',
-                                    'MSTH_TYPETRN' => $doc,
-                                    'MSTH_NODOC' => $nodocbtkp,
-                                    'MSTH_TGLDOC' => DB::RAW("TRUNC(SYSDATE)"),
-                                    'MSTH_NOPO' => '',
-                                    'MSTH_TGLPO' => null,
-                                    'MSTH_NOFAKTUR' => null,
-                                    'MSTH_TGLFAKTUR' => DB::RAW("TRUNC(SYSDATE)"),
-                                    'MSTH_NOREF3' => null,
-                                    'MSTH_TGREF3' => null,
-                                    'MSTH_ISTYPE' => null,
-                                    'MSTH_INVNO' => null,
-                                    'MSTH_TGLINV' => null,
-                                    'MSTH_NOTT' => null,
-                                    'MSTH_TGLTT' => null,
-                                    'MSTH_KODESUPPLIER' => $supcoht,
-                                    'MSTH_PKP' => $pkp,
-                                    'MSTH_CTERM' => $cterm,
-                                    'MSTH_LOC' => null,
-                                    'MSTH_LOC2' => null,
-                                    'MSTH_KETERANGAN_HEADER' => null,
-                                    'MSTH_FURGNT' => null,
-                                    'MSTH_FLAGDOC' => 1,
-                                    'MSTH_CREATE_BY' => $_SESSION['usid'],
-                                    'MSTH_CREATE_DT' => DB::RAW("SYSDATE"),
-                                    'MSTH_MODifY_BY' => $_SESSION['usid'],
-                                    'MSTH_MODifY_DT' => DB::RAW("SYSDATE")
-                                ]);
+                            DB::insert("INSERT INTO TBTR_MSTRAN_H(MSTH_KODEIGR,
+                             MSTH_RECORDID,
+                             MSTH_TYPETRN,
+                             MSTH_NODOC,
+                             MSTH_TGLDOC,
+                             MSTH_NOPO,
+                             MSTH_TGLPO,
+                             MSTH_NOFAKTUR,
+                             MSTH_TGLFAKTUR,
+                             MSTH_NOREF3,
+                             MSTH_TGREF3,
+                             MSTH_ISTYPE,
+                             MSTH_INVNO,
+                             MSTH_TGLINV,
+                             MSTH_NOTT,
+                             MSTH_TGLTT,
+                             MSTH_KODESUPPLIER,
+                             MSTH_PKP,
+                             MSTH_CTERM,
+                             MSTH_LOC,
+                             MSTH_LOC2,
+                             MSTH_KETERANGAN_HEADER,
+                             MSTH_FURGNT,
+                             MSTH_FLAGDOC,
+                             MSTH_CREATE_BY,
+                             MSTH_CREATE_DT,
+                             MSTH_MODifY_BY,
+                             MSTH_MODifY_DT)
+                             VALUES('" . $_SESSION['kdigr'] . "',
+                                 '',
+                                 $doc,
+                                 $nodocbtkp,
+                                 TRUNC(SYSDATE),
+                                 '',
+                                 NULL,
+                                 NULL,
+                                 TRUNC(SYSDATE),
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 '" . $supcoht . "',
+                                 '" . $pkp . "',
+                                 '" . $cterm . "',
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 NULL,
+                                 '1',
+                                 '" . $_SESSION['usid'] . "',
+                                 SYSDATE,
+                                 '" . $_SESSION['usid'] . "',
+                                 SYSDATE);");
                         }
 
-                        DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
-                        SET trbo_nonota = '" . $nodocbkp . "',
-                            trbo_tglnota = TRUNC(SYSDATE),
-                            trbo_recordid = '2',
-                            trbo_flagdoc = '*'
-                      WHERE     trbo_nodoc = '" . $nodocs[$i] . "'
-                                             and trbo_typetrn = 'K'
+                        DB::update("UPDATE TBTR_BACKOFFICE
+                        SET TRBO_NONOTA = '" . $nodocbkp . "',
+                            TRBO_TGLNOTA = TRUNC(SYSDATE),
+                            TRBO_RECORDID = '2',
+                            TRBO_FLAGDOC = '*'
+                      WHERE     TRBO_NODOC = '" . $nodocs[$i] . "'
+                                             and TRBO_TYPETRN = 'K'
                                              and EXISTS
                                              (SELECT 1
                                       FROM TBMASTER_PRODMAST
-                                     WHERE     PRD_PRDCD = trbo_prdcd
+                                     WHERE     PRD_PRDCD = TRBO_PRDCD
                                              and PRD_FLAGBKP1 = 'Y'
-                                             and PRD_FLAGBKP2 = 'Y')");
+                                             and PRD_FLAGBKP2 = 'Y');");
 
-                        DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
-                        SET trbo_nonota = '" . $nodocbtkp . "',
-                            trbo_tglnota = TRUNC(SYSDATE),
-                            trbo_recordid = '2',
-                            trbo_flagdoc = '*'
-                      WHERE     trbo_nodoc = '" . $nodocs[$i] . "'
-                                             and trbo_typetrn = 'K'
+                        DB::update("UPDATE TBTR_BACKOFFICE
+                        SET TRBO_NONOTA = '" . $nodocbtkp . "',
+                            TRBO_TGLNOTA = TRUNC(SYSDATE),
+                            TRBO_RECORDID = '2',
+                            TRBO_FLAGDOC = '*'
+                      WHERE     TRBO_NODOC = '" . $nodocs[$i] . "'
+                                             and TRBO_TYPETRN = 'K'
                                              and EXISTS
                                              (SELECT 1
                                       FROM TBMASTER_PRODMAST
-                                     WHERE     PRD_PRDCD = trbo_prdcd
+                                     WHERE     PRD_PRDCD = TRBO_PRDCD
                                              and (NVL(PRD_FLAGBKP1, 'N') <>
                                                  'Y'
                                                  or NVL(PRD_FLAGBKP2, 'N') <>
-                                                 'Y'))");
+                                                 'Y'));");
 
-                        DB::connection($_SESSION['connection'])->update("update tbtr_usul_returlebih
+                        DB::update("update tbtr_usul_returlebih
 												set usl_status = 'SUDAH CETAK NOTA'
-										WHERE     usl_trbo_nodoc = '" . $nodocs[$i] . "'");
+										WHERE     usl_TRBO_NODOC = '" . $nodocs[$i] . "';");
 
                         if (isset($supcoht)) {
-                            $ada = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(1), 0)
+                            $ada = DB::select("SELECT NVL(COUNT(1), 0)
                           FROM TBTR_HUTANG
                          WHERE     HTG_TYPE = 'D'
                          and HTG_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                         and HTG_NODOKUMEN = '" . $nonpb . "'");
+                         and HTG_NODOKUMEN = '" . $nonpb . "';");
 
 
                             if (!isset($ada)) {
@@ -1288,7 +1376,7 @@ class CetakDokumenController extends Controller
                                 $pkp2 = $res[0]->prd_flagbkp2;
 
                                 if ($f_docbkp == 'Y') {
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
+                                    DB::insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
                                    HTG_TYPE,
                                    HTG_KODESUPPLIER,
                                    HTG_NODOKUMEN,
@@ -1322,12 +1410,12 @@ class CetakDokumenController extends Controller
                                        '" . $_SESSION['usid'] . "',
                                        SYSDATE,
                                        '" . $nodocs[$i] . "',
-                                       TGLDOC)");
+                                       TGLDOC);");
 
                                 }
 
                                 if ($f_docbtkp == 'Y') {
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
+                                    DB::insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
                                    HTG_TYPE,
                                    HTG_KODESUPPLIER,
                                    HTG_NODOKUMEN,
@@ -1361,14 +1449,14 @@ class CetakDokumenController extends Controller
                                        '" . $_SESSION['usid'] . "',
                                        SYSDATE,
                                        '" . $nodocs[$i] . "',
-                                       '" . $tgldocs[$i] . "')ss");
+                                       '" . $tgldocs[$i] . "');");
 
                                 }
                             }
                         }
                     } else {
                         $temp = $temp . '\'' . $nodocs[$i] . '\',';
-                        $nofak = DB::connection($_SESSION['connection'])->select("SELECT msth_nofaktur
+                        $nofak = DB::select("SELECT msth_nofaktur
                        FROM TBTR_MSTRAN_H
                       WHERE     MSTH_NODOC =  '" . $nodocs[$i] . "'
                                          and MSTH_TYPETRN = 'K'
@@ -1386,10 +1474,8 @@ class CetakDokumenController extends Controller
             if (isset($temp)) {
                 //sini
 //                return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-//                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
-                $func = 'print-doc';
-                $kdigr = $_SESSION['kdigr'];
-                $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
+                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+
 
                 if ($nrfp == 1) {
                     if (isset($nofp)) {
@@ -1398,50 +1484,48 @@ class CetakDokumenController extends Controller
 
                             if ($reprint == '0') {
 
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                $tmp = DB::SELECT("SELECT COUNT(1) count
                           FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                         WHERE     trbo_nodoc = '" . $nodoc . "'
-                            and trbo_kodeigr = SUP_KODEIGR(+)
-                            and trbo_invno <> 'P'
-                            and trbo_kodesupplier = SUP_KODESUPPLIER(+)")[0]->count;
+                         WHERE     TRBO_NODOC = '" . $nodoc . "'
+                            and TRBO_KODEIGR = SUP_KODEIGR(+)
+                            and TRBO_INVNO <> 'P'
+                            and TRBO_KODESUPPLIER = SUP_KODESUPPLIER(+)")[0]->count;
 
                                 if ($tmp > 0) {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT NVL(SUP_PKP, 'N') pkp, trbo_nonota nonota
+                                    $res = DB::SELECT("SELECT DISTINCT NVL(SUP_PKP, 'N') pkp, TRBO_NONOTA nonota
                              FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                            WHERE     trbo_nodoc = '" . $nodoc . "'
-                            and trbo_kodeigr = SUP_KODEIGR(+)
-                            and trbo_invno <> 'P'
-                            and trbo_kodesupplier = SUP_KODESUPPLIER(+)");
+                            WHERE     TRBO_NODOC = '" . $nodoc . "'
+                            and TRBO_KODEIGR = SUP_KODEIGR(+)
+                            and TRBO_INVNO <> 'P'
+                            and TRBO_KODESUPPLIER = SUP_KODESUPPLIER(+);");
 
                                     $pkp = $res[0]->pkp;
                                     $nonota = $res[0]->nonota;
 
                                     if ($pkp == 'Y') {
 
-                                        $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT *
+                                        $tmp = DB::SELECT("SELECT COUNT(1)
                                 FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
-                               WHERE     trbo_prdcd = PRD_PRDCD
-                               and trbo_typetrn = 'K'
-                               and trbo_nodoc = '" . $nodoc . "'
+                               WHERE     TRBO_PRDCD = PRD_PRDCD
+                               and TRBO_TYPETRN = 'K'
+                               and TRBO_NODOC = '" . $nodoc . "'
                                and PRD_FLAGBKP1 = 'Y'
-                               and PRD_FLAGBKP2 = 'Y'");
+                               and PRD_FLAGBKP2 = 'Y';")[0]->count;
 
-                                        if ($tmp) {
-                                            array_push($file, Self::CETAK_BARU($nonota,$reprint));
-                                            $func = 'cetak-baru';
-                                            $laporan[] = compact(['func','nonota','reprint']);
+                                        if ($tmp > 0) {
+                                            array_push($file, Self::CETAK_BARU($nonota, $reprint));
                                         }
                                     }
                                 }
                             } else {
-                                $pkp = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT NVL(MSTD_PKP, 'N') pkp
+                                $pkp = DB::SELECT("SELECT DISTINCT NVL(MSTD_PKP, 'N') pkp
                           FROM TBTR_MSTRAN_D
                          WHERE MSTD_NODOC = '" . $nodoc . "'
                             and MSTD_TYPETRN = 'K'
                             and MSTD_KODEIGR = '" . $_SESSION['kdigr'] . "' ")[0]->pkp;
 
                                 if ($pkp == 'Y') {
-                                    $pkp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                    $pkp = DB::SELECT("SELECT COUNT(1) count
                              FROM TBTR_MSTRAN_D, TBMASTER_PRODMAST
                             WHERE     MSTD_PRDCD = PRD_PRDCD
                             and MSTD_TYPETRN = 'K'
@@ -1450,9 +1534,8 @@ class CetakDokumenController extends Controller
                             and PRD_FLAGBKP2 = 'Y'")[0]->count;
 
                                     if ($tmp > 0) {
-                                        array_push($file, Self::CETAK_BARU($nodoc,$reprint));
-                                        $func = 'cetak-baru';
-                                        $laporan[] = compact(['func','nodoc','reprint']);
+                                        array_push($file, Self::CETAK_BARU($nodoc, $reprint));
+
                                     }
                                 }
                             }
@@ -1463,24 +1546,25 @@ class CetakDokumenController extends Controller
                 if ($lap == 'L') {
                     if ($reprint == '0') {
                         foreach ($sub_isi_docno as $sub) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
-                                SET trbo_flagdoc = '1'
-                              WHERE trbo_nodoc = '" . $sub . "'
-                            and trbo_kodeigr = '" . $_SESSION['kdigr'] . "'");
+                            DB::update("UPDATE TBTR_BACKOFFICE
+                                SET TRBO_FLAGDOC = '1'
+                              WHERE TRBO_NODOC = '" . $sub . "'
+                            and TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'");
                         }
                     } else {
                         foreach ($sub_isi_docno as $sub) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_MSTRAN_H
-                            SET MSTH_FLAGDOC = '1'
-                            WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "')
-                                    and MSTH_TYPETRN = '" . $doc . "'
-                                    and MSTH_NOPO = '" . $sub . "'");
+                            DB::connection($_SESSION['connection'])->table("TBTR_MSTRAN_H")
+                                ->where([
+                                    "MSTH_KODEIGR" => $_SESSION['kdigr'],
+                                    "MSTH_TYPETRN" => $doc,
+                                    "MSTH_NOPO" => $sub,
+                                ])
+                                ->update(["MSTH_FLAGDOC" => '1']);
                         }
                     }
                 }
             }
-        }
-        else {
+        } else {
             if ($lap == 'L') {
                 $sub_isi_docno = [];
 
@@ -1498,7 +1582,7 @@ class CetakDokumenController extends Controller
 
 
                         if ($reprint == '0') {
-                            $connect = loginController::getConnectionProcedure();
+                            $connect = oci_connect('SIMSMG', 'SIMSMG', '192.168.237.193:1521/SIMSMG');
 
                             $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR( '" . $_SESSION['kdigr'] . "',
                              'NBH',
@@ -1511,40 +1595,40 @@ class CetakDokumenController extends Controller
 
                             $temp = $temp . '\'' . $v_nodoc . '\',';
 
-                            $recs = DB::connection($_SESSION['connection'])->select("SELECT A .*, B .*
+                            $recs = DB::select("SELECT A .*, B .*
                                 FROM TBTR_BACKOFFICE A, TBMASTER_PRODMAST B
-                               WHERE     PRD_KODEIGR = trbo_kodeigr
-                                        and PRD_PRDCD = trbo_prdcd
-                                        and trbo_nodoc = '" . $nodoc . "'
-                                        and trbo_typetrn = 'H'
-                            ORDER BY trbo_seqno");
+                               WHERE     PRD_KODEIGR = TRBO_KODEIGR
+                                        and PRD_PRDCD = TRBO_PRDCD
+                                        and TRBO_NODOC = '" . $nodoc . "'
+                                        and TRBO_TYPETRN = 'H'
+                            ORDER BY TRBO_SEQNO");
                             foreach ($recs as $rec) {
                                 $qtyst = 0;
                                 $lcostst = 0;
 
 
-                                $results = DB::connection($_SESSION['connection'])->select("SELECT ST_SALDOAKHIR, ST_LASTCOST, ST_AVGCOST
+                                $results = DB::select("SELECT ST_SALDOAKHIR, ST_LASTCOST, ST_AVGCOST
                              FROM TBMASTER_STOCK
-                            WHERE     ST_KODEIGR =  '" . $rec->trbo_kodeigr . "'
+                            WHERE     ST_KODEIGR =  '" . $rec->TRBO_KODEIGR . "'
                          and ST_PRDCD =
-                             SUBSTR( '" . $rec->trbo_prdcd . "', 1, 6) || '0'
-                         and ST_LOKASI = '0' ||  '" . $rec->trbo_flagdisc1 . "';");
+                             SUBSTR( '" . $rec->TRBO_PRDCD . "', 1, 6) || '0'
+                         and ST_LOKASI = '0' ||  '" . $rec->TRBO_FLAGDISC1 . "';");
 
                                 $qtyst = $results->st_saldoakhir;
                                 $lcostst = $results->st_lastcost;
                                 $acostst = $results->st_avgcost;
                                 $pkp = ' ';
 
-                                if (isset($rec->trbo_kodesupplier)) {
+                                if (isset($rec->TRBO_KODESUPPLIER)) {
 
-                                    $pkp = DB::connection($_SESSION['connection'])->select(" SELECT SUP_PKP
+                                    $pkp = DB::select(" SELECT SUP_PKP
                                 FROM TBMASTER_SUPPLIER
                                WHERE     SUP_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                   and SUP_KODESUPPLIER = '" . $rec->trbo_kodesupplier . "';");
+                                   and SUP_KODESUPPLIER = '" . $rec->TRBO_KODESUPPLIER . "';");
                                     if (!isset($pkp)) {
                                         $pkp = 'N';
                                     }
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_D(MSTD_KODEIGR,
+                                    DB::insert("INSERT INTO TBTR_MSTRAN_D(MSTD_KODEIGR,
                                        MSTD_RECORDID,
                                        MSTD_TYPETRN,
                                        MSTD_NODOC,
@@ -1607,25 +1691,25 @@ class CetakDokumenController extends Controller
                                        MSTD_PKP,
                                        MSTD_CREATE_BY,
                                        MSTD_CREATE_DT)
-                             VALUES('" . $rec->trbo_kodeigr . "',
-                                 '" . $rec->trbo_recordid . "',
-                                 '" . $rec->trbo_typetrn . "',
+                             VALUES('" . $rec->TRBO_KODEIGR . "',
+                                 '" . $rec->TRBO_RECORDID . "',
+                                 '" . $rec->TRBO_TYPETRN . "',
                                  '" . $v_nodoc . "',
                                  TRUNC(SYSDATE),
-                                 '" . $rec->trbo_noreff . "',
-                                 '" . $rec->trbo_tglreff . "',
-                                 '" . $rec->trbo_nopo . "',
-                                 '" . $rec->trbo_tglpo . "',
-                                 '" . $rec->trbo_nofaktur . "',
-                                 '" . $rec->trbo_tglfaktur . "',
-                                 '" . $rec->trbo_istype . "',
-                                 '" . $rec->trbo_invno . "',
-                                 '" . $rec->trbo_tglinv . "',
-                                 '" . $rec->trbo_nott . "',
-                                 '" . $rec->trbo_tgltt . "',
-                                 '" . $rec->trbo_kodesupplier . "',
-                                 '" . $rec->trbo_seqno . "',
-                                 '" . $rec->trbo_prdcd . "',
+                                 '" . $rec->TRBO_NOREFF . "',
+                                 '" . $rec->TRBO_TGLREFF . "',
+                                 '" . $rec->TRBO_NOPO . "',
+                                 '" . $rec->TRBO_TGLPO . "',
+                                 '" . $rec->TRBO_NOFAKTUR . "',
+                                 '" . $rec->TRBO_TGLFAKTUR . "',
+                                 '" . $rec->TRBO_ISTYPE . "',
+                                 '" . $rec->TRBO_INVNO . "',
+                                 '" . $rec->TRBO_TGLINV . "',
+                                 '" . $rec->TRBO_NOTT . "',
+                                 '" . $rec->TRBO_TGLTT . "',
+                                 '" . $rec->TRBO_KODESUPPLIER . "',
+                                 '" . $rec->TRBO_SEQNO . "',
+                                 '" . $rec->TRBO_PRDCD . "',
                                  '" . $rec->PRD_KODEDIVISI . "',
                                  '" . $rec->PRD_KODEDEPARTEMENT . "',
                                  '" . $rec->PRD_KODEKATEGORIBARANG . "',
@@ -1633,40 +1717,40 @@ class CetakDokumenController extends Controller
                                  '" . $rec->PRD_FLAGBKP2 . "',
                                  '" . $rec->PRD_UNIT . "',
                                  '" . $rec->PRD_FRAC . "',
-                                 '" . $rec->trbo_gdg . "',
-                                 '" . $rec->trbo_qty . "',
-                                 '" . $rec->trbo_qtybonus1 . "',
-                                 '" . $rec->trbo_qtybonus2 . "',
-                                 '" . $rec->trbo_hrgsatuan . "',
-                                 '" . $rec->trbo_persendisc1 . "',
-                                 '" . $rec->trbo_rphdisc1 . "',
-                                 '" . $rec->trbo_flagdisc1 . "',
-                                 '" . $rec->trbo_persendisc2 . "',
-                                 '" . $rec->trbo_rphdisc2 . "',
-                                 '" . $rec->trbo_flagdisc2 . "',
-                                 '" . $rec->trbo_persendisc3 . "',
-                                 '" . $rec->trbo_rphdisc3 . "',
-                                 '" . $rec->trbo_flagdisc3 . "',
-                                 '" . $rec->trbo_persendisc4 . "',
-                                 '" . $rec->trbo_rphdisc4 . "',
-                                 '" . $rec->trbo_flagdisc4 . "',
-                                 '" . $rec->trbo_dis4cp . "',
-                                 '" . $rec->trbo_dis4cr . "',
-                                 '" . $rec->trbo_dis4rp . "',
-                                 '" . $rec->trbo_dis4rr . "',
-                                 '" . $rec->trbo_dis4jp . "',
-                                 '" . $rec->trbo_dis4jr . "',
-                                 '" . $rec->trbo_gross . "',
-                                 '" . $rec->trbo_discrph . "',
-                                 '" . $rec->trbo_ppnrph . "',
-                                 '" . $rec->trbo_ppnbmrph . "',
-                                 '" . $rec->trbo_ppnbtlrph . "',
-                                 '" . $rec->trbo_averagecost . "',
-                                 '" . $rec->trbo_oldcost . "',
+                                 '" . $rec->TRBO_GDG . "',
+                                 '" . $rec->TRBO_QTY . "',
+                                 '" . $rec->TRBO_QTYBONUS1 . "',
+                                 '" . $rec->TRBO_QTYBONUS2 . "',
+                                 '" . $rec->TRBO_HRGSATUAN . "',
+                                 '" . $rec->TRBO_PERSENDISC1 . "',
+                                 '" . $rec->TRBO_RPHDISC1 . "',
+                                 '" . $rec->TRBO_FLAGDISC1 . "',
+                                 '" . $rec->TRBO_PERSENDISC2 . "',
+                                 '" . $rec->TRBO_RPHDISC2 . "',
+                                 '" . $rec->TRBO_FLAGDISC2 . "',
+                                 '" . $rec->TRBO_PERSENDISC3 . "',
+                                 '" . $rec->TRBO_RPHDISC3 . "',
+                                 '" . $rec->TRBO_FLAGDISC3 . "',
+                                 '" . $rec->TRBO_PERSENDISC4 . "',
+                                 '" . $rec->TRBO_RPHDISC4 . "',
+                                 '" . $rec->TRBO_FLAGDISC4 . "',
+                                 '" . $rec->TRBO_DIS4CP . "',
+                                 '" . $rec->TRBO_DIS4CR . "',
+                                 '" . $rec->TRBO_DIS4RP . "',
+                                 '" . $rec->TRBO_DIS4RR . "',
+                                 '" . $rec->TRBO_DIS4JP . "',
+                                 '" . $rec->TRBO_DIS4JR . "',
+                                 '" . $rec->TRBO_GROSS . "',
+                                 '" . $rec->TRBO_DISCRPH . "',
+                                 '" . $rec->TRBO_PPNRPH . "',
+                                 '" . $rec->TRBO_PPNBMRPH . "',
+                                 '" . $rec->TRBO_PPNBTLRPH . "',
+                                 '" . $rec->TRBO_AVERAGECOST . "',
+                                 '" . $rec->TRBO_OLDCOST . "',
                                  '" . $qtyst . "',
-                                 '" . $rec->trbo_keterangan . "',
+                                 '" . $rec->TRBO_KETERANGAN . "',
                                  '" . $rec->PRD_KODETAG . "',
-                                 '" . $rec->trbo_furgnt . "',
+                                 '" . $rec->TRBO_FURGNT . "',
                                  '" . $pkp . "',
                                  '" . $_SESSION['usid'] . "',
                                  SYSDATE);");
@@ -1674,28 +1758,28 @@ class CetakDokumenController extends Controller
                                     if ($doc == 'B') {
                                         $connect = loginController::getConnectionProcedure();
 
-                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->TRBO_PRDCD . "',' ','TRFIN','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                         oci_execute($query);
 
                                     } else {
                                         if ($doc == 'K') {
                                             $connect = loginController::getConnectionProcedure();
 
-                                            $query = oci_parse($connect, "BEGIN SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','02','" . $rec->trbo_prdcd . "',' ','TRFOUT',$rec->trbo_qty,'" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                            $query = oci_parse($connect, "BEGIN SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','02','" . $rec->TRBO_PRDCD . "',' ','TRFOUT',$rec->TRBO_QTY,'" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                             oci_execute($query);
 
                                         } else {
                                             if ($doc == 'F') {
                                                 $connect = loginController::getConnectionProcedure();
 
-                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','03','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','03','" . $rec->TRBO_PRDCD . "',' ','TRFOUT','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                 oci_execute($query);
 
                                             } else {
                                                 if ($doc == 'X') {
                                                     $connect = loginController::getConnectionProcedure();
 
-                                                    $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc2 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','ADJ','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                    $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->TRBO_FLAGDISC2 . "', 2, '0'),,'" . $rec->TRBO_PRDCD . "',' ','ADJ','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                     oci_execute($query);
 
 
@@ -1703,30 +1787,27 @@ class CetakDokumenController extends Controller
                                                     if ($doc == 'H') {
                                                         $connect = loginController::getConnectionProcedure();
 
-                                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc1 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->TRBO_FLAGDISC1 . "', 2, '0'),,'" . $rec->TRBO_PRDCD . "',' ','TRFOUT','" . $rec->TRBO_QTY . "','" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                         oci_execute($query);
 
 
                                                     } else {
                                                         if ($doc == 'P') {
-                                                            if ($rec->trbo_flagdisc1 == 'P') {
+                                                            if ($rec->TRBO_FLAGDISC1 == 'P') {
                                                                 $connect = loginController::getConnectionProcedure();
-
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->TRBO_PRDCD . "',' ','TRFOUT','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
                                                             } else {
                                                                 $connect = loginController::getConnectionProcedure();
-
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->TRBO_PRDCD . "',' ','TRFIN','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
                                                             }
                                                         } else {
                                                             if ($doc == 'O') {
                                                                 $connect = loginController::getConnectionProcedure();
-
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->TRBO_PRDCD . "',' ','TRFOUT','" . $rec->TRBO_QTY . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
 
@@ -1737,7 +1818,7 @@ class CetakDokumenController extends Controller
                                             }
                                         }
                                     }
-                                    $ada = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(1), 0) count
+                                    $ada = DB::Select("SELECT NVL(COUNT(1), 0) count
                                           FROM TBTR_MSTRAN_H
                                          WHERE MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
                                                    and MSTH_TYPETRN = '" . $doc . "'
@@ -1745,7 +1826,7 @@ class CetakDokumenController extends Controller
 
                                     if ($ada == 0) {
 
-                                        DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_H(MSTH_KODEIGR,
+                                        DB::insert("INSERT INTO TBTR_MSTRAN_H(MSTH_KODEIGR,
                                 MSTH_TYPETRN,
                                 MSTH_NODOC,
                                 MSTH_TGLDOC,
@@ -1758,18 +1839,18 @@ class CetakDokumenController extends Controller
                                     '" . $v_nodoc . "',
                                     TRUNC(SYSDATE),
                                     '1',
-                                    '" . $rec->trbo_kodesupplier . "',
+                                    '" . $rec->TRBO_KODESUPPLIER . "',
                                     '" . $_SESSION['usid'] . "',
                                     SYSDATE);");
                                     }
                                 }
                             }
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
-                        SET trbo_nonota = '" . $v_nodoc . "'
-                            trbo_tglnota = TRUNC(SYSDATE),
-                            trbo_recordid = '2',
-                            trbo_flagdoc = '*'
-                      WHERE trbo_nodoc = '" . $nodoc . "' and trbo_typetrn = 'H';");
+                            DB::update("UPDATE TBTR_BACKOFFICE
+                        SET TRBO_NONOTA = '" . $v_nodoc . "'
+                            TRBO_TGLNOTA = TRUNC(SYSDATE),
+                            TRBO_RECORDID = '2',
+                            TRBO_FLAGDOC = '*'
+                      WHERE TRBO_NODOC = '" . $nodoc . "' and TRBO_TYPETRN = 'H';");
                         } else {
                             $temp = $temp . '\'' . $nodoc . '\',';
                         }
@@ -1782,24 +1863,21 @@ class CetakDokumenController extends Controller
 
                 if (isset($temp)) {
 //                    return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-//                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
-                    $func = 'print-doc';
-                    $kdigr = $_SESSION['kdigr'];
-                    $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
+                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
 //sini
                     if ($lap == 'L') {
                         if ($reprint == '0') {
                             foreach ($nodocs as $nodoc) {
 
-                                DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
-                        SET trbo_flagdoc = '1'
-                      WHERE     trbo_nodoc = '" . $nodoc . "'
-                      and trbo_kodeigr = '" . $_SESSION['kdigr'] . "';");
+                                DB::update("UPDATE TBTR_BACKOFFICE
+                        SET TRBO_FLAGDOC = '1'
+                      WHERE     TRBO_NODOC = '" . $nodoc . "'
+                      and TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "';");
                             }
                         }
                     } else {
                         foreach ($nodocs as $nodoc) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_MSTRAN_H
+                            DB::update("UPDATE TBTR_MSTRAN_H
                      SET MSTH_FLAGDOC = '1'
                    WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
                       and MSTH_TYPETRN = '" . $doc . "'
@@ -1817,83 +1895,72 @@ class CetakDokumenController extends Controller
 
 //          SHOW_DATA($doc, $lap, $reprint);
         }
-
-        return $laporan;
+        return $file;
     }
 
     public function PRD_CUR(string $plu)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2 FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '" . $_SESSION['kdigr'] . "' AND PRD_PRDCD = '" . $plu . "' ");
+        $result = DB::select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2 FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '" . $_SESSION['kdigr'] . "' AND PRD_PRDCD = '" . $plu . "' ");
         return $result;
     }
 
-    public function PRINT_DOC(Request $request)
+    public function PRINT_DOC(string $KodeIGR, string $NoDoc, string $TypeDoc, string $TypeLap, string $JNSKERTAS, string $REPRINT, string $tgl1, string $tgl2)
     {
-        $kodeigr = $request->kodeigr;
-        $nodoc = $request->nodoc;
-        $typedoc = $request->typedoc;
-        $typelap = $request->typelap;
-        $jnskertas = $request->jnskertas;
-        $reprint = $request->reprint;
-        $tgl1 = $request->tgl1;
-        $tgl2 = $request->tgl2;
-
-//        try{
-            $data1 = '';
-            $data2 = '';
-            $filename = '';
-            $cw = '';
-            $ch = '';
-            if ($typelap == 'L') {
-                // L = List  N = Nota
-                switch ($typedoc) {
-                    case  'B' :      // Penerimaan
-                        null;
-                        break;
-                    case  'K' :     // Pengeluaran data belum keluar
-                        $cw = 700;
-                        $ch = 45;
-                        $filename = 'list-pengeluaran';
-                        $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='K'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT   trbo_nodoc, trbo_tgldoc, trbo_kodesupplier, trbo_istype, trbo_invno, trbo_tglinv,
-                                 trbo_prdcd, trbo_hrgsatuan, trbo_keterangan, trbo_gross, trbo_discrph, trbo_ppnrph,
+        $data1 = '';
+        $data2 = '';
+        $filename = '';
+        $cw = '';
+        $ch = '';
+        if ($TypeLap == 'L') {
+            // L = List  N = Nota
+            switch ($TypeDoc) {
+                case  'B' :      // Penerimaan
+                    null;
+                    break;
+                case  'K' :     // Pengeluaran data belum keluar
+                    $cw = 700;
+                    $ch = 45;
+                    $filename = 'list-pengeluaran';
+                    $P_PN = "AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='K'";
+                    $data1 = DB::select("SELECT   TRBO_NODOC, TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
+                                 TRBO_PRDCD, TRBO_HRGSATUAN, TRBO_KETERANGAN, TRBO_GROSS, TRBO_DISCRPH, TRBO_PPNRPH,
                                  CASE
-                                     WHEN '" . $reprint . "' = '1'
+                                     WHEN '" . $REPRINT . "' = '1'
                                          THEN 'RE-PRINT'
                                      ELSE ''
-                                 END AS STATUS, trbo_qty, FLOOR (trbo_qty / BTB_FRAC) AS CTN,
-                                 MOD (trbo_qty, BTB_FRAC) AS PCS,
-                                 (NVL (trbo_gross, 0) - NVL (trbo_discrph, 0) + NVL (trbo_ppnrph, 0)) AS TOTAL,
+                                 END AS STATUS, TRBO_QTY, FLOOR (TRBO_QTY / BTB_FRAC) AS CTN,
+                                 MOD (TRBO_QTY, BTB_FRAC) AS PCS,
+                                 (NVL (TRBO_GROSS, 0) - NVL (TRBO_DISCRPH, 0) + NVL (TRBO_PPNRPH, 0)) AS TOTAL,
                                  PRD_DESKRIPSIPENDEK, BTB_UNIT, BTB_FRAC, SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN,
-                                 PRS_NAMACABANG, trbo_noreff
+                                 PRS_NAMACABANG, TRBO_NOREFF
                             FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN,
                                  TBTR_MSTRAN_BTB
-                           WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                           WHERE TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
                                       " . $P_PN . "
-                             AND PRD_KODEIGR = trbo_kodeigr
-                             AND PRD_PRDCD = trbo_prdcd
-                             AND SUP_KODEIGR(+) = trbo_kodeigr
-                             AND SUP_KODESUPPLIER(+) = trbo_kodesupplier
-                             AND PRS_KODEIGR = trbo_kodeigr
-                             AND trbo_prdcd = BTB_PRDCD(+)
-                             AND trbo_noreff = BTB_NODOC(+)
-                        ORDER BY trbo_seqno");
+                             AND PRD_KODEIGR = TRBO_KODEIGR
+                             AND PRD_PRDCD = TRBO_PRDCD
+                             AND SUP_KODEIGR(+) = TRBO_KODEIGR
+                             AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER
+                             AND PRS_KODEIGR = TRBO_KODEIGR
+                             AND TRBO_PRDCD = BTB_PRDCD(+)
+                             AND TRBO_NOREFF = BTB_NODOC(+)
+                        ORDER BY TRBO_SEQNO");
 
-                        $data2 = DB::connection($_SESSION['connection'])->select("SELECT distinct trbo_nodoc, trbo_tgldoc, trbo_kodesupplier,trbo_istype, trbo_invno, trbo_tglinv
+                    $data2 = DB::select("SELECT distinct trbo_nodoc, trbo_tgldoc, trbo_kodesupplier,trbo_istype, trbo_invno, trbo_tglinv
                                     FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN
-                                    WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                    WHERE TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
                                                   " . $P_PN . "
                                                   AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                                   AND sup_kodeigr(+) = trbo_kodeigr AND sup_kodesupplier(+) = trbo_kodesupplier
                                                   AND prs_kodeigr = trbo_kodeigr
                                     order by trbo_tglinv desc, trbo_istype desc, trbo_invno desc");
-                        break;
-                    case  'F' :      // Pemusnahan
-                        $cw = 700;
-                        $ch = 45;
-                        $filename = 'cetak-list';
-                        $P_PN = "AND trbo_noreff IN (" . $nodoc . ")";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT trbo_noreff trbo_nodoc, trbo_tglreff  trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_isibeli trbo_frac,                                    trbo_hrgsatuan, trbo_keterangan,
+                    break;
+                case  'F' :      // Pemusnahan
+                    $cw = 700;
+                    $ch = 45;
+                    $filename = 'cetak-list';
+                    $P_PN = "AND TRBO_NOREFF IN (" . $NoDoc . ")";
+                    $data1 = DB::select("SELECT trbo_noreff trbo_nodoc, trbo_tglreff  trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_isibeli trbo_frac,                                    trbo_hrgsatuan, trbo_keterangan,
                                 CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                 trbo_qty, FLOOR(trbo_qty/prd_isibeli) AS CTN, MOD(trbo_qty,prd_isibeli) AS PCS, (trbo_qty * trbo_hrgsatuan) AS total ,
                                 CASE WHEN trbo_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
@@ -1901,62 +1968,61 @@ class CetakDokumenController extends Controller
                                  'BARANG RUSAK' END END AS KET,
                                 prd_deskripsipanjang,
                                 prs_namaperusahaan, prs_namacabang,
-                                CASE WHEN trbo_typetrn = 'H' THEN 'EDIT LIST TRANSAKSI BARANG HILANG'
-                                     WHEN trbo_typetrn = 'X' THEN 'EDIT LIST PENYESUAIAN PERSEDIAAN'
+                                CASE WHEN TRBO_TYPETRN = 'H' THEN 'EDIT LIST TRANSAKSI BARANG HILANG'
+                                     WHEN TRBO_TYPETRN = 'X' THEN 'EDIT LIST PENYESUAIAN PERSEDIAAN'
                                      ELSE  'EDIT LIST PENERIMAAN BARANG'
                                 END AS JUDUL
                                 FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                                WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                WHERE TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
                                  " . $P_PN . "
                                 AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                 AND prs_kodeigr = trbo_kodeigr
-                                ORDER BY trbo_nodoc");
-                        break;
-                    case  'X' :      // Penyesuaian
-                        null;
-                        break;
-                    case  'H' :      // Barang Hilang
-                        $cw = 700;
-                        $ch = 45;
-                        $filename = 'list-baranghilang';
-                        $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='H'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
+                                ORDER BY TRBO_NODOC");
+                    break;
+                case  'X' :      // Penyesuaian
+                    null;
+                    break;
+                case  'H' :      // Barang Hilang
+                    $cw = 508.5;
+                    $ch = 77.5;
+                    $filename = 'list-baranghilang';
+                    $P_PN = "AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='H'";
+                    $data1 = DB::select("SELECT trbo_nodoc,trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
                                     CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                  trbo_qty, FLOOR(trbo_qty/prd_frac) AS CTN, MOD(trbo_qty,prd_frac) AS PCS, (trbo_qty * (trbo_hrgsatuan/prd_frac)) AS total ,
                                     CASE WHEN trbo_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
                                     CASE WHEN trbo_flagdisc1 = '2' THEN 'BARANG RETUR' ELSE 'BARANG RUSAK' END END AS KET,
                                  prd_deskripsipanjang,
                                  prs_namaperusahaan, prs_namacabang,
-                                    CASE WHEN trbo_typetrn = 'H' THEN 'EDIT LIST TRANSAKSI BARANG HILANG'
-                                          WHEN trbo_typetrn = 'X' THEN 'EDIT LIST PENYESUAIAN PERSEDIAAN'
+                                    CASE WHEN TRBO_TYPETRN = 'H' THEN 'EDIT LIST TRANSAKSI BARANG HILANG'
+                                          WHEN TRBO_TYPETRN = 'X' THEN 'EDIT LIST PENYESUAIAN PERSEDIAAN'
                                           ELSE  'EDIT LIST PENERIMAAN BARANG' END AS JUDUL
                                 FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                                WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                WHERE TRBO_KODEIGR = '" . $_SESSION['kdigr'] . "'
                                  " . $P_PN . "
                                                     AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                                     AND prs_kodeigr = trbo_kodeigr
-                                ORDER BY trbo_nodoc,trbo_seqno");
+                                ORDER BY TRBO_NODOC,TRBO_SEQNO");
 
 
-                        break;
-                    case  'P' :      // Re-Packing
-                        null;
-                        break;
-                    case  'O' :      // Surat Jalan
-                        null;
-                        break;
-                    default:
-                        null;
-                }
-            } else {
-                switch ($typedoc) {
+                    break;
+                case  'P' :      // Re-Packing
+                    null;
+                    break;
+                case  'O' :      // Surat Jalan
+                    null;
+                    break;
+                default:
+                    null;
+            }
+        } else {
+            switch ($TypeDoc) {
 
-                    case  'K' :
+                case  'K' :
 
-                        $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
-
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
-                                  CASE WHEN '" . $reprint . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                    $P_PN = "AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
+                    $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc,
+                                  CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
                                   mstd_gross, mstd_discrph, mstd_ppnrph, (NVL(mstd_gross,0) - NVL(mstd_discrph,0) + NVL(mstd_ppnrph,0)) AS TOTAL, msth_kodesupplier, msth_istype || msth_invno nofp, msth_tglinv,
@@ -1974,10 +2040,10 @@ class CetakDokumenController extends Controller
                                     " . $P_PN . "
                     ORDER BY MSTH_NODOC,MSTD_SEQNO");
 
-                        $data2 = DB::connection($_SESSION['connection'])->select("select rownum, a.*
+                    $data2 = DB::select("select rownum, a.*
                                         from
-                                        (SELECT DISTINCT MSTH_NODOC NODOC, to_char(MSTH_TGLDOC, 'dd/mm/yyyy') MSTH_TGLDOC, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
-                                                        to_char(MSTD_DATE3, 'dd/mm/yyyy') MSTD_DATE3
+                                        (SELECT DISTINCT MSTH_NODOC NODOC, MSTH_TGLDOC, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
+                                                        MSTD_DATE3
                                                    FROM TBTR_MSTRAN_H,
                                                         TBTR_MSTRAN_D,
                                                         TBMASTER_PRODMAST,
@@ -1992,146 +2058,119 @@ class CetakDokumenController extends Controller
                                                     AND MSTH_KODEIGR = SUP_KODEIGR(+)
                                                     AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
                                                     " . $P_PN . "
-                                                    ORDER BY MSTH_NODOC
                                         ) a");
-
-                        if ($jnskertas == 'B') {
-                            $cw = 700;
-                            $ch = 45;
-                            $filename = 'cetak-nota-pengeluaran-biasa';
-                        } else {
-                            $cw = 700;
-                            $ch = 45;
-                            $filename = 'cetak-nota-pengeluaran-kecil';
-                        }
-                        break;
-                    case  'H' :      // Barang Hilang
-                        $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc, msth_tgldoc,
-                                      mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
-                                      FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/prd_frac)) AS total, mstd_keterangan,
-                                      CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
-                                      CASE WHEN mstd_flagdisc1 = '2' THEN 'BARANG RETUR' ELSE 'BARANG RUSAK' END END AS KET,
-                                      prd_deskripsipanjang,  prd_frac,
-                                      prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3
-                        FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                        WHERE msth_KODEIGR = '" . $_SESSION['kdigr'] . "'
-                                      " . $P_PN . "
-                                     AND mstd_kodeigr = msth_kodeigr AND mstd_nodoc = msth_nodoc
-                                     AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
-                                     AND prs_kodeigr = msth_kodeigr
-                        ORDER BY msth_NODOC,mstd_seqno");
-
-                        if ($jnskertas == 'B') {
-                            $cw = 700;
-                            $ch = 45;
-
-                            $filename = 'cetak-nota-nbh-biasa';
-                        } else {
-                            $cw = 700;
-                            $ch = 45;
-
-                            $filename = 'cetak-nota-nbh-kecil';
-                        }
-                        break;
-                }
-            }
-
-            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
-                ->first();
-
-//            dd($data2);
-
-
-            if (sizeof($data1) != 0) {
-                $arrData = [];
-                $arrTemp = [];
-                $head = [];
-                $detail = [];
-                $temp = null;
-
-                for($i=0;$i<count($data1);$i++){
-                    if($data1[$i]->msth_nodoc != $temp){
-                        if($temp != null){
-                            $arrTemp['head'][] = $head;
-                            $arrTemp['detail'][] = $detail;
-                            $arrData[] = $arrTemp;
-                        }
-
-                        $temp = $data1[$i]->msth_nodoc;
-                        $arrTemp = [];
-                        $head = [];
-                        $detail = [];
+                    if ($JNSKERTAS == 'B') {
+                        $cw = 423;
+                        $ch = 77.5;
+                        $filename = 'cetak-nota-pengeluaran-biasa';
+                    } else {
+                        $cw = 423;
+                        $ch = 77.5;
+                        $filename = 'cetak-nota-pengeluaran-kecil';
                     }
-
-                    $temp = new \stdClass();
-                    $temp->rownum = null;
-                    $temp->nodoc = null;
-                    $temp->msth_tgldoc = null;
-                    $temp->msth_kodesupplier = null;
-                    $temp->nofp = null;
-                    $temp->mstd_date3 = null;
-
-                    $head[] = $i < count($data2) ? $data2[$i] : $temp;
-                    $detail[] = $data1[$i];
-                }
-                $arrTemp['head'][] = $head;
-                $arrTemp['detail'][] = $detail;
-                $arrData[] = $arrTemp;
-
-                dd($arrData);
-
-                $data = [
-                    'data' => ['dummy'],
-                    'perusahaan' => $perusahaan,
-                    'data1' => $data1,
-                    'data2' => $data2,
-                    'arrData' => $arrData,
-                    'tgl1' => $tgl1,
-                    'tgl2' => $tgl2,
-                    'jnskertas' => $jnskertas
-                ];
-
-                dd($filename);
-
-//                dd($data);
-
-                return view('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
-
-                $dompdf = new PDF();
-
-                $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-                $dompdf = $pdf;
-
-                return $dompdf->stream('Nota Pengeluaran Barang (Retur Pembelian).pdf');
-
-//                file_put_contents($filename.'.pdf',$pdf->output());
-//
-//                return $filename.'.pdf';
+                    break;
+                case  'H' :      // Barang Hilang
+                    if ($JNSKERTAS == 'B') {
+                        $cw = 508;
+                        $ch = 77.5;
+                        $P_PN = "AND MSTD_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                        $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
+                                    CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
+                                    FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/mstd_frac)) AS total, mstd_keterangan,
+                                    CASE WHEN msth_typetrn = 'H' THEN
+                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
+                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'BARANG RETUR' ELSE
+                                     'BARANG RUSAK' END END
+                                    ELSE
+                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'SELISIH STOK OPNAME' ELSE
+                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'TERTUKAR JENIS' ELSE
+                                     'GANTI PLU' END END
+                                    END
+                                    AS KET,
+                                    prd_deskripsipanjang,
+                                    prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3,
+                                    CASE WHEN msth_typetrn = 'H' THEN 'NOTA BARANG HILANG' ELSE CASE WHEN msth_typetrn = 'X' THEN 'MEMO PENYESUAIAN PERSEDIAAN' ELSE '' END END AS JUDUL
+                                    FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+                                    WHERE msth_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                    " . $P_PN . "
+                                    AND mstd_kodeigr = msth_kodeigr AND mstd_nodoc = msth_nodoc
+                                    AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
+                                    AND prs_kodeigr = msth_kodeigr
+                                    ORDER BY msth_NODOC,MSTD_SEQNO");
+                        $filename = 'cetak-nota-nbh-biasa';
+                    } else {
+                        $cw = 508;
+                        $ch = 77.5;
+                        $P_PN = "AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                        $data1 = DB::select("SELECT msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
+                                    CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
+                                    FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/mstd_frac)) AS total, mstd_keterangan,
+                                    CASE WHEN msth_typetrn = 'H' THEN
+                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
+                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'BARANG RETUR' ELSE
+                                     'BARANG RUSAK' END END
+                                    ELSE
+                                    CASE WHEN mstd_flagdisc1 = '1' THEN 'SELISIH STOK OPNAME' ELSE
+                                    CASE WHEN mstd_flagdisc1 = '2' THEN 'TERTUKAR JENIS' ELSE
+                                     'GANTI PLU' END END
+                                    END
+                                    AS KET,
+                                    prd_deskripsipanjang,
+                                    prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3,
+                                    CASE WHEN msth_typetrn = 'H' THEN 'NOTA BARANG HILANG' ELSE CASE WHEN msth_typetrn = 'X' THEN 'MEMO PENYESUAIAN PERSEDIAAN' ELSE '' END END AS JUDUL
+                                    FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+                                    WHERE msth_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                    " . $P_PN . "
+                                    AND mstd_kodeigr = msth_kodeigr AND mstd_nodoc = msth_nodoc
+                                    AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
+                                    AND prs_kodeigr = msth_kodeigr
+                                    ORDER BY msth_NODOC,MSTD_SEQNO");
+                        $filename = 'cetak-nota-nbh-kecil';
+                    }
+                    break;
             }
-            else {
-                return "TIDAK ADA DATA!";
+        }
 
-            }
-//        }
-//        catch (\Exception $e){
-//            return response()->json([
-//                'status' => 'error',
-//                'message' => $e->getMessage()
-//            ], 500);
-//        }
+        $perusahaan = DB::table('tbmaster_perusahaan')
+            ->first();
+
+
+        if (sizeof($data1) != 0) {
+            $data = [
+                'data1' => $data1,
+                'data2' => $data2,
+                'tgl1' => $tgl1,
+                'tgl2' => $tgl2
+            ];
+
+            $dompdf = new PDF();
+
+            $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['data', 'perusahaan']));
+
+            error_reporting(E_ALL ^ E_DEPRECATED);
+
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf->get_canvas();
+            $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+            $dompdf = $pdf;
+
+            file_put_contents($filename . '.pdf', $pdf->output());
+            return $filename . '.pdf';
+
+        } else {
+            return "TIDAK ADA DATA!";
+
+        }
+
     }
 
-    public function CETAK_BARU($nodoc, $reprint){
+    public function CETAK_BARU($nodoc, $reprint)
+    {
         $cw = 700;
         $ch = 45;
         $filename = 'ctk-rtrpjk';
@@ -2140,7 +2179,7 @@ class CetakDokumenController extends Controller
 //          $P_JBT2 = REPLACE(:P_JBT2,'1',' ');
 //          $P_TANDA = REPLACE(:P_TANDA,'1',' ');
 
-        $data1 = DB::connection($_SESSION['connection'])->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
+        $data1 = DB::select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
          MSTD_DATE2 , PRD_PRDCD, MSTD_QTY, MSTD_UNIT, MSTD_FRAC, MSTD_GROSS,
          MSTD_DISCRPH, (MSTD_PPNRPH) MSTD_PPNRPH, MSTD_PKP, MSTH_ISTYPE, MSTH_INVNO, MSTH_FLAGDOC,
          SUP_NAMASUPPLIER, SUP_SINGKATANSUPPLIER, SUP_NAMANPWP,
@@ -2176,7 +2215,7 @@ class CetakDokumenController extends Controller
      AND NVL (PRD_FLAGBKP1, 'N') = 'Y'
      AND PRD_KODEIGR = MSTD_KODEIGR
 ORDER BY MSTD_SEQNO");
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
+        $perusahaan = DB::table('tbmaster_perusahaan')->first();
 
 
         if (sizeof($data1) != 0) {
@@ -2186,7 +2225,7 @@ ORDER BY MSTD_SEQNO");
             ];
             $dompdf = new PDF();
 
-            $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', $data);
+            $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['data']));
 
             error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -2196,8 +2235,8 @@ ORDER BY MSTD_SEQNO");
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            $filenames = $filename.'_'.$nodoc.'.pdf';
-            file_put_contents($filenames,$pdf->output());
+            $filenames = $filename . '_' . $nodoc . '.pdf';
+            file_put_contents($filenames, $pdf->output());
 
             return $filenames;
         }

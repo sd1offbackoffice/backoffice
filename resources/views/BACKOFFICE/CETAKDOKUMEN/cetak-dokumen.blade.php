@@ -10,7 +10,7 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">CETAK DOKUMEN</legend>
+                            <legend class="w-auto ml-3">CETAK DOKUMEN <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span></legend>
                             <div class="card-body">
                                 <div class="row form-group">
                                     <label class="col-sm text-right col-form-label">Tanggal</label>
@@ -26,7 +26,7 @@
                                     <label class="col-sm-3 text-right col-form-label">Jenis Dokumen</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="dokumen">
-                                            <option value="K">PENGELUARAN</option>
+{{--                                            <option value="K">PENGELUARAN</option>--}}
                                             <option value="H">BARANG HILANG</option>
                                         </select>
                                     </div>
@@ -85,9 +85,6 @@
                                     <div class="col-sm-4">
                                         <button class="col btn btn-success" onclick="cetak()">CETAK</button>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <button class="col btn btn-primary" onclick="">BATAL</button>
-                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -122,16 +119,13 @@
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
         }
-
         label {
             color: #232443;
             font-weight: bold;
         }
-
         .cardForm {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
-
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button,
         input[type=date]::-webkit-inner-spin-button,
@@ -139,28 +133,23 @@
             -webkit-appearance: none;
             margin: 0;
         }
-
         .row_lov:hover {
             cursor: pointer;
             background-color: #acacac;
             color: white;
         }
-
         .my-custom-scrollbar {
             position: relative;
             height: 400px;
             overflow-y: auto;
         }
-
         .table-wrapper-scroll-y {
             display: block;
         }
-
         .clicked, .row-detail:hover {
             background-color: grey !important;
             color: white;
         }
-
     </style>
 
     <script>
@@ -179,14 +168,11 @@
             cekMenu();
             showData();
         });
-
         $('#dokumen,#laporan,#jenisKertas,#reprint').on('change', function () {
             cekTanggal();
             cekMenu();
             showData();
         });
-
-
         function cekMenu() {
             if ($('#dokumen').val() == 'K' && $('#laporan').val() == 'N') {
                 nomor = 'NOMOR REFERENSI'
@@ -197,7 +183,6 @@
             }
             $('#nomor').html(nomor);
         }
-
         function cekTanggal() {
             tgl1 = $.datepicker.parseDate('dd/mm/yy', $('#tgl1').val());
             tgl2 = $.datepicker.parseDate('dd/mm/yy', $('#tgl2').val());
@@ -216,13 +201,12 @@
                 }
             }
         }
-
         function showData() {
             checked = [];
             $('#tableDocument').DataTable().destroy();
             $('#tableDocument').DataTable({
                 "ajax": {
-                    'url': '{{ url('bo/cetak-dokumen/showData') }}',
+                    'url': '{{ url()->current() }}/showData',
                     "data": {
                         'doc': $('#dokumen').val(),
                         'lap': $('#laporan').val(),
@@ -256,9 +240,7 @@
                 ],
                 "order": []
             });
-
         }
-
         $('#check10lbl').on('change', function () {
             var bool = true;
             if ($(this).prop('checked') == true) {
@@ -275,7 +257,6 @@
                         if (index > -1) {
                         } else {
                             checked.push(val);
-
                         }
                     } else {
                         if (index > -1) {
@@ -285,7 +266,6 @@
                 }
             });
         });
-
         $(document).on('change', '.cekbox', function () {
             val = $(this).val();
             if ($(this).prop('checked') == true) {
@@ -297,7 +277,6 @@
                 }
             }
         });
-
         function cetakEFaktur() {
             if (checked.length != 0) {
                 ajaxSetup();
@@ -317,13 +296,21 @@
                     },
                     success: function (result) {
                         $('#modal-loader').modal('hide');
-                        window.open('../' + result, '_blank');
+                        console.log(result);
+                        if(result.status){
+                            swal({
+                                title: result.message,
+                                icon: result.status
+                            });
+                        }
+                        else{
+                            window.open('../' + result, '_blank');
+                        }
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         errorHandlingforAjax(err)
                     }
                 })
-
             } else {
                 swal({
                     title: 'Dokumen belum dipilih!',
@@ -331,7 +318,6 @@
                 });
             }
         }
-
         function cetak() {
             if (checked.length != 0) {
                 ajaxSetup();
@@ -353,33 +339,17 @@
                     },
                     success: function (result) {
                         $('#modal-loader').modal('hide');
-
-                        if(result.status == 'error'){
-                            swal({
-                                title: result.message,
-                                icon: 'error'
+                        $('#pdf').empty();
+                        console.log(result);
+                        buttons = '';
+                        if (result) {
+                            $.each(result, function (index, value) {
+                                $('#pdf').append(`<div class="row form-group" >
+                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
+                                </div>`);
                             });
                         }
-                        else{
-                            $('#pdf').empty();
-                            console.log(result);
-                            buttons = '';
-                            if (result) {
-                                $.each(result, function (index, value) {
-                                    if(value.func == 'print-doc'){
-                                        $('#pdf').append(`<div class="row form-group">
-                                        <a href="{{url()->current()}}/${value.func}?kodeigr=${value.kdigr}&nodoc=${value.temp}&typedoc=${value.doc}&typelap=${value.lap}&jnskertas=${value.kertas}&reprint=${value.reprint}&tgl1=${value.tgl1}&tgl2=${value.tgl2}"
-                                        target="_blank"><button class="btn btn-primary">
-                                        ${value.func}</button></a>
-                                    </div>`);
-                                    }
-                                });
-                            }
-                            $('#m_result').modal('show');
-                        }
-
-
-
+                        $('#m_result').modal('show');
                         // window.open('../' + result, '_blank');
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');
@@ -387,7 +357,6 @@
                     }
                 });
                 {{--window.open(`{{ url()->current() }}/cetak?doc=${$('#dokumen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&nrfp=${$('#cetaknotareturfp:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&kertas=${$('#kertas').val()}&data=${checked}`, '_blank');--}}
-
             } else {
                 swal({
                     title: 'Dokumen belum dipilih!',

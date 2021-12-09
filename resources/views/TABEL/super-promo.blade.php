@@ -9,10 +9,16 @@
                     <legend class="w-auto ml-5 text-left">Tabel Super Promo</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
-                        <div class="row" style="padding-bottom: 20px">
-                            <label class="col-sm-4 col-form-label text-right">Tanggal</label>
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label text-right">Tanggal Berlaku : </label>
                             <div class="col-sm-5">
-                                <input class="text-center form-control" type="text" id="daterangepicker">
+                                <input class="text-center form-control" type="text" id="dateBerlaku">
+                            </div>
+                        </div>
+                        <div class="row" style="padding-bottom: 20px">
+                            <label class="col-sm-4 col-form-label text-right">Tanggal Selesai : </label>
+                            <div class="col-sm-5">
+                                <input class="text-center form-control" type="text" id="dateSelesai">
                             </div>
                         </div>
                     </div>
@@ -96,9 +102,21 @@
     </div>
 
     <script>
-        $('#daterangepicker').daterangepicker({
+        $(document).ready(function () {
+            $('#dateSelesai').change();
+        });
+        $('#dateBerlaku').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
             locale: {
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY',
+            }
+        });
+        $('#dateSelesai').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY',
             }
         });
 
@@ -233,13 +251,14 @@
         }
 
         function save(){
-            let date = $('#daterangepicker').val();
+            let date = $('#dateBerlaku').val();
+            let dateA = date.substr(0,10);
             // if(date == null || date == ""){
             //     swal('Periode tidak boleh kosong','','warning');
             //     return false;
             // }
-            let dateA = date.substr(0,10);
-            let dateB = date.substr(13,10);
+            date = $('#dateSelesai').val();
+            let dateB = date.substr(0,10);
             dateA = dateA.split('/').join('-');
             dateB = dateB.split('/').join('-');
             let datas   = [{'plu' : '', 'hrg' : '', 'qty' : '', 'sales' : '', 'margin' : ''}];
@@ -277,8 +296,8 @@
                 error: function (error) {
                     $('#modal-loader').modal('hide');
                     swal({
-                        title: error.responseJSON.title,
-                        text: error.responseJSON.message,
+                        title: "ERROR",
+                        text: "GAGAL MENYIMPAN DATA",
                         icon: 'error',
                     });
                     return false;
@@ -288,8 +307,61 @@
 
         function ClearForm(){
             $(' input').val('');
-            $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
-            $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
+            $('#dateBerlaku').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
+            $('#dateSelesai').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
         }
+
+        $('#dateSelesai').on('change',function(){
+            let date = $('#dateBerlaku').val();
+            let dateA = date.substr(0,10);
+            date = $('#dateSelesai').val();
+            let dateB = date.substr(0,10);
+            dateA = dateA.split('/').join('-');
+            dateB = dateB.split('/').join('-');
+
+            $.ajax({
+                url: '{{ url()->current() }}/get-table',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    date1:dateA,
+                    date2:dateB
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                    $('.baris').remove();
+                    if(response.length != 0){
+                        for(i=0;i<response.length;i++){
+                            addRow();
+                            $('.plu')[i].value = response[i].spot_prdcd;
+                            $('.hrgjual')[i].value = response[i].spot_hrgjual;
+                            $('.qty')[i].value = response[i].qty;
+                            $('.sales')[i].value = response[i].target_sales;
+                            $('.grossmargin')[i].value = response[i].target_gross_margin;
+                        }
+                    }else{
+                        for(i=0;i<10;i++){
+                            addRow();
+                        }
+                    }
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: "ERROR",
+                        text: "GAGAL RETRIEVE DATA",
+                        icon: 'error',
+                    });
+                    return false;
+                }
+            });
+        });
     </script>
 @endsection

@@ -159,7 +159,6 @@ $datetime->setTimezone($timezone);
     tfoot{
         border-top: 1px solid black;
     }
-
     .keterangan{
         text-align: left;
     }
@@ -200,27 +199,21 @@ $datetime->setTimezone($timezone);
     .center{
         text-align: center;
     }
-
     .left{
         text-align: left;
     }
-
     .right{
         text-align: right;
     }
-
     .page-break {
         page-break-before: always;
     }
-
     .page-break-avoid{
         page-break-inside: avoid;
     }
-
     .table-header td{
         white-space: nowrap;
     }
-
     .tengah{
         vertical-align: middle !important;
     }
@@ -229,10 +222,8 @@ $datetime->setTimezone($timezone);
         line-height: 70px!important;
         color: white;
     }
-
     .border-top{
         border-bottom: 1px solid black;
     }
-
 </style>
 </html>

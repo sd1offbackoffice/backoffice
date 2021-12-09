@@ -151,22 +151,25 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
         $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $date = Carbon::now();
-        $dompdf = new PDF();
+//        $date = Carbon::now();
+//        $dompdf = new PDF();
+//
+//        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
+//
+//        error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf->get_canvas();
+//        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        $dompdf = $pdf;
+//
+//        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
 
-        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
+        return view('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename. '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
 
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
     }
 
     public function cp_nonota($nodokumen, $tgldok, $rom_kodetoko)

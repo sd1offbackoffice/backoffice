@@ -46,10 +46,10 @@ AND ROWNUM <= 1");
             ], 500);
         }
         else{
-//            $connect = loginController::getConnectionProcedure();
-//
-//            $query = oci_parse($connect, "BEGIN sp_csv_fk_mm_nonpkp('".$_SESSION['kdigr']."', to_date('".$request->periode."','mm/yyyy')); END;");
-//            oci_execute($query);
+            $connect = loginController::getConnectionProcedure();
+
+            $query = oci_parse($connect, "BEGIN sp_csv_fk_mm_nonpkp('".$_SESSION['kdigr']."', to_date('".$request->periode."','mm/yyyy')); END;");
+            oci_execute($query);
 
             return response()->json([
                 'message' => 'CSV berhasil dibuat!',

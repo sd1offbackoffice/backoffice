@@ -104,6 +104,28 @@
         $('#menu4 input').val('').change();
     }
     function menu4Cetak(){
-        alert('cetak menu 4');
+        let sup1 = $('#menu4Sup1Input').val();
+        let sup2 = $('#menu4Sup2Input').val();
+        if(sup1 != ''){
+            if(checkSupExist(sup1) == false){
+                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(sup2 != ''){
+            if(checkSupExist(sup2) == false){
+                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(sup1 != '' || sup2 != ''){
+            if(sup1 > sup2){
+                temp = sup1;
+                sup1 = sup2;
+                sup2 = temp;
+            }
+        }
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-supplier?sup1=${sup1}&sup2=${sup2}`, '_blank');
     }
 </script>

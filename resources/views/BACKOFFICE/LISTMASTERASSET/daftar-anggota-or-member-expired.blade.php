@@ -120,6 +120,20 @@
         $('#menu9SortBy').val(1);
     }
     function menu9Cetak(){
-        alert('cetak menu 9');
+        let member1 = $('#menu8Kod1Input').val();
+        let member2 = $('#menu8Kod2Input').val();
+        if(member1 != '' || member2 != ''){
+            if(member1 > member2){
+                temp = member1;
+                member1 = member2;
+                member2 = temp;
+            }
+        }
+
+        //sort value
+        let sort = $('#menu8SortBy').val();
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-anggota-or-member-expired?member1=${member1}&member2=${member2}&sort=${sort}`, '_blank');
     }
 </script>

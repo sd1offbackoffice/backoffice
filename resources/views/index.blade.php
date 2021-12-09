@@ -28,6 +28,16 @@
                                 BACKOFFICE - CETAK DOKUMEN -> PROCEDURE SP_IGR_UPDATE_STOCK
                             </a>
                         </p>
+                        <p>
+                            <a href="{{url('file_procedure/sp_kartu_gudang.txt')}}" target="_blank">
+                                BACKOFFICE - PROSES - KARTU GUDANG -> PROCEDURE SP_KARTU_GUDANG
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{{url('file_procedure/sp_proses_data_bkl_omi_web.txt')}}" target="_blank">
+                                OMI - PROSES BKL DALAM KOTA -> PROCEDURE SP_PROSES_DATA_BKL_OMI_WEB
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

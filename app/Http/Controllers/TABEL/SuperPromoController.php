@@ -49,7 +49,7 @@ class SuperPromoController extends Controller
     }
 
 
-    public function CheckPlu(Request $request){
+    public function checkPlu(Request $request){
         $kodeigr = $_SESSION['kdigr'];
         $kode = $request->kode;
         $notif = '';
@@ -101,6 +101,25 @@ class SuperPromoController extends Controller
                     'spot_modify_dt'=>'',
                 ]);
         }
+    }
 
+    public function getTable(Request $request){
+        $kodeigr = $_SESSION['kdigr'];
+        $dateA = $request->date1;
+        $dateB = $request->date2;
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+
+        $datas = DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
+            ->selectRaw("SPOT_PRDCD")
+            ->selectRaw("SPOT_HRGJUAL")
+            ->selectRaw("SPOT_FMTRGQ AS QTY")
+            ->selectRaw("SPOT_FMTRGS AS TARGET_SALES")
+            ->selectRaw("SPOT_FMTRGG AS TARGET_GROSS_MARGIN")
+            ->whereRaw("trunc(spot_periodeawal) = TO_DATE('$sDate','DD-MM-YYYY')")
+            ->whereRaw("trunc(spot_periodeakhir) = TO_DATE('$eDate','DD-MM-YYYY')")
+            ->get();
+
+        return response()->json($datas);
     }
 }

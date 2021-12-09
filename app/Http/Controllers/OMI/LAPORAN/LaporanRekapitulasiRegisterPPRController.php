@@ -172,22 +172,24 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
             ->first();
 
-        $date = Carbon::now();
-        $dompdf = new PDF();
+//        $date = Carbon::now();
+//        $dompdf = new PDF();
+//
+//        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
+//
+//        error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf->get_canvas();
+//        $canvas->page_text($w, $h, "HAL : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        $dompdf = $pdf;
+//
+//        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
+        return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
 
-        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text($w, $h, "HAL : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
     }
 
     public function cf_item($trpt_invoicetaxno, $tko_kodeomi)

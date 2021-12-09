@@ -323,6 +323,36 @@
     }
 
     function menuCCetak(){
-        alert('cetak menu C');
+        //DEP & KAT
+        let temp = '';
+        let dep1 = $('#menuCDep1Input').val();
+        let dep2 = $('#menuCDep2Input').val();
+        let kat1 = $('#menuCKat1Input').val();
+        let kat2 = $('#menuCKat2Input').val();
+        if(dep1 != '' || dep2 != ''){
+            if(parseInt(dep1) > parseInt(dep2)){
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+        let plu1 = $('#menuCPlu1Input').val();
+        let plu2 = $('#menuCPlu2Input').val();
+        if(plu1 != '' || plu2 != ''){
+            if(parseInt(plu1) > parseInt(plu2)){
+                temp = plu1;
+                plu1 = plu2;
+                plu2 = temp;
+            }
+        }
+
+        //status
+        let status = $('#menuCStatus').val();
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-status-tag-bar?dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&plu1=${plu1}&plu2=${plu2}&status=${status}`, '_blank');
     }
 </script>

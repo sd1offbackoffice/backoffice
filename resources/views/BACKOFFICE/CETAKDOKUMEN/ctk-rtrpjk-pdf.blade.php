@@ -11,7 +11,6 @@
 $datetime = new DateTime();
 $timezone = new DateTimeZone('Asia/Jakarta');
 $datetime->setTimezone($timezone);
-
 $bulan = '';
 if (substr($data1[0]->mstd_date2, 4, 2) == '01') {
     $bulan = 'JANUARI';
@@ -38,7 +37,6 @@ if (substr($data1[0]->mstd_date2, 4, 2) == '01') {
 } else {
     $bulan = 'DESEMBER';
 }
-
 $cf_fakturpjk = $data1[0]->mstd_istype . '.' . $data1[0]->mstd_invno;
 $cf_nofak = $data1[0]->prs_kodemto . '.' . substr($data1[0]->msth_tgldoc, 8, 2) . '.0' . $data1[0]->mstd_docno2 . $data1[0]->msth_flagdoc == 'T' ? '*' : '';
 $cf_skp_sup = '';
@@ -48,8 +46,6 @@ if ($data1[0]->sup_tglsk) {
     $cf_skp_sup = $data1[0]->sup_nosk;
 }
 $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasupplier . " " . $data1[0]->sup_singkatansupplier;
-
-
 ?>
 <header>
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
@@ -102,9 +98,7 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
                    else{
                         $nqty    = ((floor($d->mstd_qty/$d->mstd_frac)) * $d->mstd_frac) + ($d->mstd_qty % $d->mstd_frac);
                    }
-
                    $ngross  = $d->mstd_gross - $d->mstd_discrph;
-
                    $nprice  = ( $ngross / ($nqty2 * $d->mstd_frac + $nqtyk) );
                 @endphp
                 <tr>
@@ -150,7 +144,6 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         /*size: 1071pt 792pt;*/
         size: 750pt 500pt;
     }
-
     header {
         position: fixed;
         top: 0cm;
@@ -158,7 +151,6 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         right: 0cm;
         height: 3cm;
     }
-
     body {
         margin-top: 80px;
         margin-bottom: 10px;
@@ -167,43 +159,34 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         font-weight: 400;
         line-height: 1.8;
     }
-
     table {
         border-collapse: collapse;
     }
-
     tbody {
         display: table-row-group;
         vertical-align: middle;
         border-color: inherit;
     }
-
     tr {
         display: table-row;
         vertical-align: inherit;
         border-color: inherit;
     }
-
     td {
         display: table-cell;
     }
-
     thead {
         text-align: center;
     }
-
     tbody {
         text-align: center;
     }
-
     tfoot {
         border-top: 1px solid black;
     }
-
     .keterangan {
         text-align: left;
     }
-
     .table {
         width: 100%;
         font-size: 7px;
@@ -212,7 +195,6 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         /*padding-top: 20px;*/
         /*margin-top: 25px;*/
     }
-
     .table-ttd {
         width: 100%;
         font-size: 9px;
@@ -221,7 +203,6 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         /*padding-top: 20px;*/
         /*margin-top: 25px;*/
     }
-
     .table tbody td {
         /*font-size: 6px;*/
         vertical-align: top;
@@ -229,57 +210,44 @@ $f_1 = $data1[0]->sup_namanpwp ? $data1[0]->sup_namanpwp : $data1[0]->sup_namasu
         padding: 0.20rem 0;
         width: auto;
     }
-
     .table th {
         vertical-align: top;
         padding: 0.20rem 0;
     }
-
     .judul, .table-borderless {
         text-align: center;
     }
-
     .table-borderless th, .table-borderless td {
         border: 0;
         padding: 0.50rem;
     }
-
     .center {
         text-align: center;
     }
-
     .left {
         text-align: left;
     }
-
     .right {
         text-align: right;
     }
-
     .page-break {
         page-break-before: always;
     }
-
     .page-break-avoid {
         page-break-inside: avoid;
     }
-
     .table-header td {
         white-space: nowrap;
     }
-
     .tengah {
         vertical-align: middle !important;
     }
-
     .blank-row {
         line-height: 70px !important;
         color: white;
     }
-
     .border-top {
         border-bottom: 1px solid black;
     }
-
 </style>
 </html>

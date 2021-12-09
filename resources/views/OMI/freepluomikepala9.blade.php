@@ -249,6 +249,10 @@
         .modal thead tr th {
             vertical-align: middle;
         }
+        .text-custom {
+            font-size: 14px;
+        }
+
     </style>
 
     <script>
@@ -260,7 +264,8 @@
                     format: 'DD/MM/YYYY'
                 }
             });
-
+            $('#btn-hapus').prop('disabled',true);
+            $('#btn-simpan').prop('disabled',true);
             getDatatable();
             getLovPLU();
         });
@@ -343,8 +348,9 @@
                 "autoWidth": false,
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('row-data text-right').css({'cursor': 'pointer'});
+                    $(row).addClass('row-data text-sm-left text-custom').css({'cursor': 'pointer'});
                     $(row).find('td:eq(0)').addClass('text-center');
+
                 },
                 "order": [],
                 "initComplete": function (data) {
@@ -365,8 +371,12 @@
                     plu: plu,
                 }, beforeSend: () => {
                     $('#modal-loader').modal('show');
+                    $('#btn-hapus').prop('disabled',true);
+                    $('#btn-simpan').prop('disabled',true);
                 },
                 success: function (result) {
+                    $('#btn-hapus').prop('disabled',false);
+                    $('#btn-simpan').prop('disabled',false);
                     console.log(result);
                     result = result[0];
                     $('#pluomi').val(result.fpl_freepluomi);

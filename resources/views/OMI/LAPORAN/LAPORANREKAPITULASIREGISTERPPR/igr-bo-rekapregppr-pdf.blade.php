@@ -1,52 +1,42 @@
-<!DOCTYPE html>
-<html>
+@extends('html-template')
 
-<head>
-    <title>LAPORAN REKAPITULASI REGISTER PPR</title>
+@section('table_font_size','7 px')
 
-</head>
-<body>
+@section('page_title')
+    LAPORAN REKAPITULASI REGISTER PPR OMI
+@endsection
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            <b>{{ $perusahaan->prs_namaperusahaan }}</b><br>
-            {{ $perusahaan->prs_namacabang }}<br><br>
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            TANGGAL : {{ substr(\Carbon\Carbon::now(),0,10) }}<br><br>
-        </p>
-    </div>
-    <h2 style="text-align: center">** LAPORAN REKAPITULASI REGISTER PPR  ** </h2>
-    <h4 style="text-align: center">
+@section('title')
+    LAPORAN REKAPITULASI REGISTER PPR OMI
+@endsection
+
+@section('subtitle')
+    @if($member1!='')
         {{ 'Member : '. $member1 .' - '. $member2 }}<br>
-        {{ 'Tgl : '. substr($tgl1,0,10) .' - '. substr($tgl2,0,10) }}<br>
+    @endif
+    {{ 'Tgl : '. substr($tgl1,0,10) .' - '. substr($tgl2,0,10) }}<br>
+    @if($nodoc1!='')
         {{ 'No. Dokumen : '. $nodoc1 .' - '. $nodoc2 }}<br>
-    </h4>
-</header>
+    @endif
+@endsection
 
-<main style="margin-top: 50px;">
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th colspan="2">MEMBER</th>
-            <th>TANGGAL</th>
-            <th>NO. NRB</th>
-            <th>NO. DOKUMEN</th>
-            <th>ITEM</th>
-            <th>NILAI</th>
-            <th>PPN</th>
+            <th class="left">NO</th>
+            <th class="left">MEMBER</th>
+            <th class="left">TANGGAL</th>
+            <th class="left">NO. NRB</th>
+            <th class="left">NO. DOKUMEN</th>
+            <th class="right">ITEM</th>
+            <th class="right">NILAI</th>
+            <th class="right">PPN</th>
         </tr>
         </thead>
         <tbody>
         @php
+            $no = 1;
             $total_harga = 0;
             $total_ppn = 0;
             $sub_harga = 0;
@@ -57,26 +47,26 @@ $datetime->setTimezone($timezone);
             @for($i=0;$i<sizeof($data);$i++)
                 @if($member_temp != $data[$i]->rom_member)
                     <tr>
-                        <td align="left">{{ $data[$i]->rom_member }}</td>
-                        <td align="left">{{ $data[$i]->cus_namamember }}</td>
-                        <td>{{ substr($data[$i]->tgldok,0,10)}}</td>
-                        <td>{{ $data[$i]->rom_noreferensi }}</td>
-                        <td>{{ $data[$i]->rom_nodokumen }}</td>
-                        <td>{{ $data[$i]->item }}</td>
-                        <td>{{ number_format($data[$i]->harga,2) }}</td>
-                        <td>{{ number_format($data[$i]->ppn,2) }}</td>
+                        <td class="right padding-right">{{ $no }}</td>
+                        <td class="left">{{ $data[$i]->rom_member }}-{{ $data[$i]->cus_namamember }}</td>
+                        <td class="left">{{ substr($data[$i]->tgldok,0,10)}}</td>
+                        <td class="left">{{ $data[$i]->rom_noreferensi }}</td>
+                        <td class="left">{{ $data[$i]->rom_nodokumen }}</td>
+                        <td class="right">{{ $data[$i]->item }}</td>
+                        <td class="right">{{ number_format($data[$i]->harga,0) }}</td>
+                        <td class="right">{{ number_format($data[$i]->ppn,0) }}</td>
                     </tr>
-
+                    @php
+                        $no++;
+                    @endphp
                 @else
                     <tr>
-                        <td align="left"></td>
-                        <td align="left">{{ $data[$i]->cus_namamember }}</td>
-                        <td>{{ substr($data[$i]->tgldok,0,10)}}</td>
-                        <td>{{ $data[$i]->rom_noreferensi }}</td>
-                        <td>{{ $data[$i]->rom_nodokumen }}</td>
-                        <td>{{ $data[$i]->item }}</td>
-                        <td>{{ number_format($data[$i]->harga,2) }}</td>
-                        <td>{{ number_format($data[$i]->ppn,2) }}</td>
+                        <td class="left">{{  date('d/m/Y',strtotime(substr($data[$i]->tgldok,0,10))) }}</td>
+                        <td class="left">{{ $data[$i]->rom_noreferensi }}</td>
+                        <td class="left">{{ $data[$i]->rom_nodokumen }}</td>
+                        <td class="left">{{ $data[$i]->item }}</td>
+                        <td class="right">{{ number_format($data[$i]->harga,0) }}</td>
+                        <td class="right">{{ number_format($data[$i]->ppn,0) }}</td>
                     </tr>
                 @endif
                 @php
@@ -89,8 +79,8 @@ $datetime->setTimezone($timezone);
                 @if( isset($data[$i+1]->rom_member) && $member_temp != $data[$i+1]->rom_member || !(isset($data[$i+1]->rom_member)) )
                     <tr>
                         <td colspan="6" align="right"><b> SUB TOTAL :</b></td>
-                        <td>{{ number_format($sub_harga,2) }}</td>
-                        <td>{{ number_format($sub_ppn,2) }}</td>
+                        <td class="right">{{ number_format($sub_harga,0) }}</td>
+                        <td class="right">{{ number_format($sub_ppn,0) }}</td>
                     </tr>
                     @php
                         $sub_harga =0;
@@ -105,156 +95,12 @@ $datetime->setTimezone($timezone);
             </tr>
         @endif
         </tbody>
-        <tfoot>
+        <tfoot style="border-bottom: none">
         <tr>
             <td colspan="6" align="right"><b>TOTAL</b></td>
-            <td align="center">{{ number_format($total_harga,2) }}</td>
-            <td align="center">{{ number_format($total_ppn,2) }}</td>
+            <td class="right">{{ number_format($total_harga,0) }}</td>
+            <td class="right">{{ number_format($total_ppn,0) }}</td>
         </tr>
         </tfoot>
     </table>
-</main>
-
-<br>
-</body>
-
-
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 750pt 500pt;
-    }
-
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-
-    body {
-        margin-top: 100px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-
-    td {
-        display: table-cell;
-    }
-
-    thead {
-        text-align: center;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tfoot {
-        border-top: 1px solid black;
-    }
-
-    .keterangan {
-        text-align: left;
-    }
-
-    .table {
-        width: 100%;
-        font-size: 7px;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table-ttd {
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-
-    .table th {
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-
-    .judul, .table-borderless {
-        text-align: center;
-    }
-
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .left {
-        text-align: left;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .page-break-avoid {
-        page-break-inside: avoid;
-    }
-
-    .table-header td {
-        white-space: nowrap;
-    }
-
-    .tengah {
-        vertical-align: middle !important;
-    }
-
-    .blank-row {
-        line-height: 70px !important;
-        color: white;
-    }
-
-    .border-top {
-        border-bottom: 1px solid black;
-    }
-
-</style>
-</html>
+@endsection

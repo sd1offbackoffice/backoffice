@@ -1,83 +1,31 @@
-<html>
-<head>
-    <title>LAPORAN-PENJUALAN PER DIVISI</title>
-</head>
-<style>
-    /**
-        Set the margins of the page to 0, so the footer and the header
-        can be of the full height and width !
-     **/
-    @page {
-        margin: 25px 25px;
-    }
+@extends('html-template')
 
-    /** Define now the real margins of every page in the PDF **/
-    body {
-        margin-top: 10px;
-        margin-bottom: 0px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
-    }
+@section('table_font_size','8px')
 
-    /** Define the header rules **/
-    header {
-        /*position: fixed;*/
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 2cm;
-        margin-bottom: 30px;
-    }
-    table{
-        border: 1px;
-    }
-    .page-break {
-        page-break-after: always;
-    }
-    .page-numbers:after { content: counter(page); }
-</style>
-<script src={{asset('/js/jquery.js')}}></script>
-<script src={{asset('/js/sweetalert.js')}}></script>
-<script>
-    $(document).ready(function() {
-        swal('Information', 'Tekan Ctrl+P untuk print!', 'info');
-    });
-</script>
-<body>
-<!-- Define header and footer blocks before your content -->
-<?php
-$i = 1;
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-//rupiah formatter (no Rp or .00)
-function rupiah($angka){
-    //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
-    $hasil_rupiah = number_format($angka,0,'.',',');
-    return $hasil_rupiah;
-}
-?>
+@section('page_title')
+    LAPORAN SERVICE LEVEL SALES THD PB (DETAIL)
+@endsection
 
-<header>
-    <div style="font-size: 12px ;line-height: 0.1px !important;">
-        <p>{{$datas[0]->prs_namaperusahaan}}</p>
-        <p>{{$datas[0]->prs_namacabang}}</p>
-        <p>{{$datas[0]->prs_namawilayah}}</p>
-    </div>
-    <div style="float: right; margin-top: -38px">
-        <span>TGL : {{$today}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRG : LAP224 <br>JAM : {{$time}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-    </div>
-    <div style="margin-top: 35px; line-height: 0.1 !important;">
-        <h2 style="text-align: center">** LAPORAN SERVICE LEVEL SALES THD PB (DETAIL) ** </h2>
-        <h4 style="text-align: center">Periode : {{$date1}} s/d {{$date2}}</h4>
-        <h4 style="text-align: center">No. PB : {{$pb1}} s/d {{$pb2}}</h4>
-    </div>
-</header>
+@section('title')
+    ** LAPORAN SERVICE LEVEL SALES THD PB (DETAIL) **
+@endsection
+
+@section('subtitle')
+    {{--    Periode :--}}
+    {{--    {{ date("d/m/Y") }}--}}
+@endsection
+
+@php
+    function rupiah($angka){
+        //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
+        $hasil_rupiah = number_format($angka,0,'.',',');
+        return $hasil_rupiah;
+        }
+@endphp
+
+@section('content')
 <table class="table table-bordered table-responsive" style="border-collapse: collapse">
-    <thead style="border-top: 3px solid black;border-bottom: 3px solid black;">
+    <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
     <tr>
         <td rowspan="2" style="border-right: 1px solid black">No.</td>
         <td rowspan="2" style="border-right: 1px solid black">Member</td>
@@ -86,7 +34,7 @@ function rupiah($angka){
         <td colspan="3" style="text-align: center; border-bottom: 1px solid black; border-right: 1px solid black">--- Q U A N T I T Y ---</td>
         <td colspan="3" style="text-align: center; border-bottom: 1px solid black;">------ I T E M ------</td>
     </tr>
-    <tr style="text-align: right;">
+    <tr style="text-align: center;">
         <td style="border-right: 1px solid black">PO </td>
         <td style="border-right: 1px solid black">Realisasi </td>
         <td style="border-right: 1px solid black">% </td>
@@ -100,7 +48,7 @@ function rupiah($angka){
         <td>% </td>
     </tr>
     </thead>
-    <tbody style="border-bottom: 3px solid black">
+    <tbody>
     <?php
         $counter = 0;
         $kode = '';
@@ -114,9 +62,9 @@ function rupiah($angka){
         $itemo = 0;
         $itemr = 0;
     ?>
-    @for($i=0;$i<sizeof($datas);$i++)
+    @for($i=0;$i<sizeof($data);$i++)
         <tr>
-            @if($kode != $datas[$i]->kodemember)
+            @if($kode != $data[$i]->kodemember)
                 @if($i!=0)
                     <tr style="font-weight: bold">
                         <td colspan="3" style="border-top: 2px solid black;">TOTAL PER MEMBER</td>
@@ -156,50 +104,50 @@ function rupiah($angka){
                     ?>
                 @endif
                 <?php
-                $kode = $datas[$i]->kodemember;
+                $kode = $data[$i]->kodemember;
                 $counter++;
                 ?>
                 <td>{{$counter}}</td>
-                <td>{{$datas[$i]->kodemember}} {{$datas[$i]->namamember}}</td>
-                <td>{{$datas[$i]->pbo_kodeomi}} - {{$datas[$i]->tko_namaomi}}</td>
+                <td style="text-align: left">{{$data[$i]->kodemember}} {{$data[$i]->namamember}}</td>
+                <td style="text-align: left">{{$data[$i]->pbo_kodeomi}} - {{$data[$i]->tko_namaomi}}</td>
             @else
                 <td></td>
                 <td></td>
                 <td></td>
             @endif
-            <td style="text-align: right">{{rupiah($datas[$i]->nilaio)}}</td>
-            <td style="text-align: right">{{rupiah($datas[$i]->nilair)}}</td>
-            @if($datas[$i]->nilaio == '0' || $datas[$i]->nilair == '0')
+            <td style="text-align: right">{{rupiah($data[$i]->nilaio)}}</td>
+            <td style="text-align: right">{{rupiah($data[$i]->nilair)}}</td>
+            @if($data[$i]->nilaio == '0' || $data[$i]->nilair == '0')
                 <td style="text-align: right">0</td>
             @else
-                <td style="text-align: right">{{round((float)($datas[$i]->nilair)/(float)($datas[$i]->nilaio) * 100, 2)}}</td>
-            @endif
-
-            <td style="text-align: right">{{rupiah($datas[$i]->qtyo)}}</td>
-            <td style="text-align: right">{{rupiah($datas[$i]->qtyr)}}</td>
-            @if($datas[$i]->qtyo == '0' || $datas[$i]->qtyr == '0')
-                <td style="text-align: right">0</td>
-            @else
-                <td style="text-align: right">{{round((float)($datas[$i]->qtyr)/(float)($datas[$i]->qtyo) * 100, 2)}}</td>
+                <td style="text-align: right">{{round((float)($data[$i]->nilair)/(float)($data[$i]->nilaio) * 100, 2)}}</td>
             @endif
 
-            <td style="text-align: right">{{rupiah($datas[$i]->itemo)}}</td>
-            <td style="text-align: right">{{rupiah($datas[$i]->itemr)}}</td>
-            @if($datas[$i]->itemo == '0' || $datas[$i]->itemr == '0')
+            <td style="text-align: right">{{rupiah($data[$i]->qtyo)}}</td>
+            <td style="text-align: right">{{rupiah($data[$i]->qtyr)}}</td>
+            @if($data[$i]->qtyo == '0' || $data[$i]->qtyr == '0')
                 <td style="text-align: right">0</td>
             @else
-                <td style="text-align: right">{{round((float)($datas[$i]->itemr)/(float)($datas[$i]->itemo) * 100, 2)}}</td>
+                <td style="text-align: right">{{round((float)($data[$i]->qtyr)/(float)($data[$i]->qtyo) * 100, 2)}}</td>
+            @endif
+
+            <td style="text-align: right">{{rupiah($data[$i]->itemo)}}</td>
+            <td style="text-align: right">{{rupiah($data[$i]->itemr)}}</td>
+            @if($data[$i]->itemo == '0' || $data[$i]->itemr == '0')
+                <td style="text-align: right">0</td>
+            @else
+                <td style="text-align: right">{{round((float)($data[$i]->itemr)/(float)($data[$i]->itemo) * 100, 2)}}</td>
             @endif
         </tr>
         <?php
-            $nilo = $nilo + $datas[$i]->nilaio;
-            $nilr = $nilr + $datas[$i]->nilair;
+            $nilo = $nilo + $data[$i]->nilaio;
+            $nilr = $nilr + $data[$i]->nilair;
 
-            $qtyo = $qtyo + $datas[$i]->qtyo;
-            $qtyr = $qtyr + $datas[$i]->qtyr;
+            $qtyo = $qtyo + $data[$i]->qtyo;
+            $qtyr = $qtyr + $data[$i]->qtyr;
 
-            $itemo = $itemo + $datas[$i]->itemo;
-            $itemr = $itemr + $datas[$i]->itemr;
+            $itemo = $itemo + $data[$i]->itemo;
+            $itemr = $itemr + $data[$i]->itemr;
         ?>
     @endfor
     <tr style="font-weight: bold">
@@ -244,8 +192,5 @@ function rupiah($angka){
     </tr>
     </tbody>
 </table>
-<hr>
-<span style="font-weight: bold; float: right">** Akhir Laporan **</span>
-</body>
-</html>
+@endsection
 

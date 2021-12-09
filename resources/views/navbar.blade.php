@@ -23,6 +23,7 @@
     <script src={{asset('/js/sweetalert.js')}}></script>
     <script src={{asset('/js/datatables.js')}}></script>
     <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
+    <script src="{{asset('/js/dataTables-treeGrid.js')}}"></script>
     {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>

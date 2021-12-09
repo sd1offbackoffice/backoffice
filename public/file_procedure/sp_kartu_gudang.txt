@@ -1,0 +1,414 @@
+CREATE OR REPLACE PROCEDURE sp_kartu_gudang_migrasi(
+    p_memkodeigr           VARCHAR2,
+    p_periodeawal          DATE,
+    p_periodeakhir         DATE,
+    p_periodeaktif         DATE,
+    p_plu1                 VARCHAR2,
+    p_plu2                 VARCHAR2,
+    p_div1                 VARCHAR2,
+    p_div2                 VARCHAR2,
+    p_dept1                VARCHAR2,
+    p_dept2                VARCHAR2,
+    p_kat1                 VARCHAR2,
+    p_kat2                 VARCHAR2,
+    p_sukses         OUT   VARCHAR2,
+    p_errmsg         OUT   VARCHAR2
+)
+IS
+---- Variable Untuk Proses -----
+    temp         NUMBER;
+    rtype        VARCHAR2(1);
+    frac         NUMBER;
+    v_tglper1    DATE;
+    v_tglper2    DATE;
+    v_tglstruk   VARCHAR2(8);
+    ket          VARCHAR2(10);
+BEGIN
+    ket := '1';
+
+    ---->>> Proses TBTR_MSTRAN_D <<<-----
+    INSERT INTO tbtemp_kartugudang
+                (ktg_kodeigr, ktg_recordid, ktg_lokasi, ktg_flagdisc1, ktg_flagdisc2, ktg_typetrn,
+                 ktg_nodokumen, ktg_kasir, ktg_station, ktg_prdcd, ktg_supplier, ktg_tgl,
+                 ktg_divisi, ktg_departement, ktg_kategori, ktg_flag, ktg_qtyawal, ktg_qty,
+                 ktg_create_by, ktg_create_dt)
+        SELECT mstd_kodeigr,
+               mstd_recordid,
+               mstd_loc,
+               mstd_flagdisc1,
+               mstd_flagdisc2,
+               mstd_typetrn,
+               mstd_nodoc,
+               NULL,
+               NULL,
+               SUBSTR(mstd_prdcd, 1, 6) || '0',
+               mstd_kodesupplier,
+               mstd_tgldoc,
+               prd_kodedivisi,
+               prd_kodedepartement,
+               prd_kodekategoribarang,
+               mstd_flagdisc1,
+               st_saldoawal,
+               (NVL(mstd_qty, 0) + NVL(mstd_qtybonus1, 0)),
+               NULL,
+               NULL
+          FROM tbmaster_stock, tbmaster_prodmast, tbtr_mstran_d
+         WHERE st_kodeigr = p_memkodeigr
+           AND st_prdcd BETWEEN p_plu1 AND p_plu2
+           AND NVL(st_recordid, '9') <> '1'
+           AND st_lokasi = '01'
+           AND prd_kodeigr = st_kodeigr
+           AND prd_prdcd = st_prdcd
+           AND prd_kodedivisi BETWEEN p_div1 AND p_div2
+           AND prd_kodedepartement BETWEEN p_dept1 AND p_dept2
+           AND prd_kodekategoribarang BETWEEN p_kat1 AND p_kat2
+           AND mstd_kodeigr = st_kodeigr
+           AND NVL(mstd_recordid, '9') <> '1'
+           AND mstd_prdcd = st_prdcd
+           AND TRUNC(mstd_tgldoc) BETWEEN TRUNC(p_periodeawal) AND TRUNC(p_periodeakhir)
+           AND mstd_typetrn <> 'K'
+           AND mstd_typetrn <> 'F'
+           AND NVL(mstd_typetrn, ' ') || NVL(mstd_flagdisc2, ' ') <> 'X1'
+           AND NVL(mstd_typetrn, ' ') || NVL(mstd_flagdisc2, ' ') <> 'H1';
+
+    COMMIT;
+    ket := '2';
+
+    ---->>> PROSES RETUR OMI <<<-----
+    INSERT INTO tbtemp_kartugudang
+                (ktg_kodeigr, ktg_recordid, ktg_lokasi, ktg_flagdisc1, ktg_flagdisc2, ktg_typetrn,
+                 ktg_nodokumen, ktg_kasir, ktg_station, ktg_prdcd, ktg_supplier, ktg_tgl,
+                 ktg_divisi, ktg_departement, ktg_kategori, ktg_flag, ktg_qtyawal, ktg_qty,
+                 ktg_create_by, ktg_create_dt)
+        SELECT rom_kodeigr,
+               rom_recordid,
+               NULL,
+               NULL,
+               NULL,
+               'D',
+               rom_nodokumen,
+               NULL,
+               NULL,
+               SUBSTR(rom_prdcd, 1, 6) || '0',
+               NULL,
+               rom_tgldokumen,
+               prd_kodedivisi,
+               prd_kodedepartement,
+               prd_kodekategoribarang,
+               NULL,
+               st_saldoawal,
+               NVL(rom_qtyrealisasi, 0),
+               NULL,
+               NULL
+          FROM tbmaster_stock, tbmaster_prodmast, tbtr_returomi
+         WHERE st_kodeigr = p_memkodeigr
+           AND st_prdcd BETWEEN p_plu1 AND p_plu2
+           AND NVL(st_recordid, '9') <> '1'
+           AND st_lokasi = '01'
+           AND prd_kodeigr = st_kodeigr
+           AND prd_prdcd = st_prdcd
+           AND prd_kodedivisi BETWEEN p_div1 AND p_div2
+           AND prd_kodedepartement BETWEEN p_dept1 AND p_dept2
+           AND prd_kodekategoribarang BETWEEN p_kat1 AND p_kat2
+           AND rom_kodeigr = p_memkodeigr
+           AND SUBSTR(rom_prdcd, 1, 6) || '0' = st_prdcd
+           AND TRUNC(rom_tgldokumen) BETWEEN TRUNC(p_periodeawal) AND TRUNC(p_periodeakhir)
+           AND NVL(rom_recordid, '9') <> '1';
+
+    COMMIT;
+    ket := '3';
+
+    ---->>> PROSES SALES  (revisi 220513) <<<----
+    INSERT INTO tbtemp_kartugudang
+                (ktg_kodeigr, ktg_recordid, ktg_lokasi, ktg_flagdisc1, ktg_flagdisc2, ktg_typetrn,
+                 ktg_nodokumen, ktg_kasir, ktg_station, ktg_prdcd, ktg_supplier, ktg_tgl,
+                 ktg_divisi, ktg_departement, ktg_kategori, ktg_flag, ktg_qtyawal, ktg_qty,
+                 ktg_create_by, ktg_create_dt)
+        SELECT trjd_kodeigr,
+               trjd_recordid,
+               NULL,
+               NULL,
+               NULL,
+               CASE WHEN trjd_transactiontype = 'R' THEN 'D' ELSE trjd_transactiontype END tipe,
+               trjd_transactionno,
+               trjd_create_by,
+               trjd_cashierstation,
+               SUBSTR(trjd_prdcd, 1, 6) || '0',
+               NULL,
+               trjd_transactiondate,
+               prd_kodedivisi,
+               prd_kodedepartement,
+               prd_kodekategoribarang,
+               NULL,
+               st_saldoawal,
+               (NVL(trjd_quantity, 0) * CASE
+                    WHEN prd_unit = 'KG'
+                        THEN 1
+                    ELSE prd_frac
+                END),
+               NULL,
+               NULL
+          FROM tbmaster_stock, tbtr_jualdetail, tbmaster_prodmast
+         WHERE st_kodeigr = trjd_kodeigr
+           AND st_prdcd = SUBSTR(trjd_prdcd, 1, 6) || '0'
+           AND st_lokasi = '01'
+           AND trjd_kodeigr = prd_kodeigr
+           AND trjd_prdcd = prd_prdcd
+           AND st_kodeigr = p_memkodeigr
+           AND st_prdcd BETWEEN p_plu1 AND p_plu2
+           AND prd_kodedivisi BETWEEN p_div1 AND p_div2
+           AND prd_kodedepartement BETWEEN p_dept1 AND p_dept2
+           AND prd_kodekategoribarang BETWEEN p_kat1 AND p_kat2
+           AND TRUNC(trjd_transactiondate) BETWEEN TRUNC(p_periodeawal) AND TRUNC(p_periodeakhir)
+           AND NVL(st_recordid, '9') <> '1'
+           AND NVL(trjd_recordid, ' ') = ' ';
+
+    COMMIT;
+    ket := '4';
+    v_tglper1 := TO_DATE('01-' || TO_CHAR(p_periodeaktif, 'MM-YYYY'), 'DD-MM-YYYY');
+    v_tglper2 := TO_DATE('01-' || TO_CHAR(v_tglper1 - 1, 'MM-YYYY'), 'DD-MM-YYYY');
+    v_tglper2 := v_tglper1 - 1;
+
+    FOR itr IN (SELECT *
+                  FROM tbmaster_stock, tbmaster_prodmast, tbtr_omikoli LEFT JOIN tbtr_realpb
+                       ON rpb_kodeigr = okl_kodeigr AND rpb_idsuratjalan = okl_idtransaksi
+                 WHERE st_kodeigr = p_memkodeigr
+                   AND st_prdcd BETWEEN p_plu1 AND p_plu2
+                   AND NVL(st_recordid, '9') <> '1'
+                   AND st_lokasi = '01'
+                   AND prd_kodeigr = st_kodeigr
+                   AND prd_prdcd = st_prdcd
+                   AND prd_kodedivisi BETWEEN p_div1 AND p_div2
+                   AND prd_kodedepartement BETWEEN p_dept1 AND p_dept2
+                   AND prd_kodekategoribarang BETWEEN p_kat1 AND p_kat2
+                   AND okl_kodeigr = p_memkodeigr
+                   AND SUBSTR(rpb_plu2, 1, 6) || '0' = st_prdcd)
+    LOOP
+        v_tglstruk := SUBSTR(itr.okl_idstruk, 1, 8);
+
+        IF     SUBSTR(itr.rpb_idsuratjalan, 1, 8) >= TO_CHAR(p_periodeawal, 'YYYYMMDD')
+           AND SUBSTR(itr.rpb_idsuratjalan, 1, 8) <= TO_CHAR(p_periodeakhir, 'YYYYMMDD')
+        THEN
+            sp_saveintransit(itr.rpb_kodeigr,
+                             NULL,
+                             NULL,
+                             NULL,
+                             NULL,
+                             'N',
+                             'OT-' || SUBSTR(itr.rpb_idsuratjalan, 9, 5),
+                             SUBSTR(itr.rpb_idsuratjalan, 16, 3),
+                             SUBSTR(itr.rpb_idsuratjalan, 14, 2),
+                             SUBSTR(itr.rpb_plu2, 1, 6) || '0',
+                             NULL,
+                             TO_DATE(SUBSTR(itr.rpb_idsuratjalan, 1, 8), 'YYYYMMDD'),
+                             itr.prd_kodedivisi,
+                             itr.prd_kodedepartement,
+                             itr.prd_kodekategoribarang,
+                             NULL,
+                             itr.st_saldoawal,
+                             (NVL(itr.rpb_qtyrealisasi, 0)
+                              * CASE
+                                  WHEN itr.prd_unit = 'KG' OR SUBSTR(itr.rpb_plu2, 7, 1) = '1'
+                                      THEN 1
+                                  ELSE frac
+                              END
+                             ),
+                             NULL,
+                             NULL
+                            );
+
+            IF NVL(SUBSTR(itr.okl_idstruk, 1, 8), '88888888') = '88888888'
+            THEN
+                v_tglstruk :=
+                    f_sph_validated(p_memkodeigr,
+                                    itr.rpb_kodeomi,
+                                    itr.rpb_nodokumen,
+                                    itr.rpb_nosph
+                                   );
+            END IF;
+
+            IF v_tglstruk IS NOT NULL
+            THEN
+                IF v_tglstruk <= TO_CHAR(LAST_DAY(p_periodeakhir), 'YYYYMMDD')
+                THEN
+                    sp_saveintransit(itr.rpb_kodeigr,
+                                     NULL,
+                                     NULL,
+                                     NULL,
+                                     NULL,
+                                     'N',
+                                     'ot-' || SUBSTR(itr.rpb_idsuratjalan, 9, 5),
+                                     SUBSTR(itr.rpb_idsuratjalan, 16, 3),
+                                     SUBSTR(itr.rpb_idsuratjalan, 14, 2),
+                                     SUBSTR(itr.rpb_plu2, 1, 6) || '0',
+                                     NULL,
+                                     TO_DATE(SUBSTR(itr.rpb_idsuratjalan, 1, 8), 'YYYYMMDD'),
+                                     itr.prd_kodedivisi,
+                                     itr.prd_kodedepartement,
+                                     itr.prd_kodekategoribarang,
+                                     NULL,
+                                     itr.st_saldoawal,
+                                     (NVL(itr.rpb_qtyrealisasi, 0)
+                                      * CASE
+                                          WHEN itr.prd_unit = 'KG'
+                                               OR SUBSTR(itr.rpb_plu2, 7, 1) = '1'
+                                              THEN 1
+                                          ELSE frac
+                                      END
+                                     )
+                                     * -1,
+                                     NULL,
+                                     NULL
+                                    );
+                END IF;
+            END IF;
+        ELSE                                                 -- DSP BULAN LALU DI STRUK BULAN INI --
+            IF SUBSTR(itr.rpb_idsuratjalan, 1, 8) < TO_CHAR(p_periodeawal, 'YYYYMMDD')
+            THEN
+                IF NVL(SUBSTR(itr.okl_idstruk, 1, 8), '88888888') = '88888888'
+                THEN
+                    v_tglstruk :=
+                        f_sph_validated(p_memkodeigr,
+                                        itr.rpb_kodeomi,
+                                        itr.rpb_nodokumen,
+                                        itr.rpb_nosph
+                                       );
+                END IF;
+
+                IF v_tglstruk IS NOT NULL
+                THEN
+                    IF TO_DATE('01-' || SUBSTR(itr.rpb_idsuratjalan, 5, 2) || '-'
+                               || SUBSTR(itr.rpb_idsuratjalan, 1, 4),
+                               'DD-MM-YYYY'
+                              ) <>
+                           TO_DATE('01-' || SUBSTR(v_tglstruk, 5, 2) || '-'
+                                   || SUBSTR(v_tglstruk, 1, 4),
+                                   'DD-MM-YYYY'
+                                  )
+                    THEN
+                        sp_saveintransit(itr.rpb_kodeigr,
+                                         NULL,
+                                         NULL,
+                                         NULL,
+                                         NULL,
+                                         'N',
+                                         'ot-' || SUBSTR(itr.rpb_idsuratjalan, 9, 5),
+                                         SUBSTR(itr.rpb_idsuratjalan, 16, 3),
+                                         SUBSTR(itr.rpb_idsuratjalan, 14, 2),
+                                         SUBSTR(itr.rpb_plu2, 1, 6) || '0',
+                                         NULL,
+                                         TO_DATE(SUBSTR(itr.rpb_idsuratjalan, 1, 8), 'YYYYMMDD'),
+                                         itr.prd_kodedivisi,
+                                         itr.prd_kodedepartement,
+                                         itr.prd_kodekategoribarang,
+                                         NULL,
+                                         itr.st_saldoawal,
+                                         (NVL(itr.rpb_qtyrealisasi, 0)
+                                          * CASE
+                                              WHEN    itr.prd_unit = 'KG'
+                                                   OR SUBSTR(itr.rpb_plu2, 7, 1) = '1'
+                                                  THEN 1
+                                              ELSE frac
+                                          END
+                                         )
+                                         * -1,
+                                         NULL,
+                                         NULL
+                                        );
+                    END IF;
+                END IF;
+            END IF;
+        END IF;
+    END LOOP;
+
+        /*
+        ---- Proses REALPB, OMIKOLI
+        INSERT INTO tbtemp_kartugudang
+                    (ktg_kodeigr,
+                     ktg_recordid,
+                     ktg_lokasi,
+                     ktg_flagdisc1,
+                     ktg_flagdisc2,
+                     ktg_typetrn,
+                     ktg_nodokumen,
+                     ktg_kasir,
+                     ktg_station,
+                     ktg_prdcd,
+                     ktg_supplier,
+                     ktg_tgl,
+                     ktg_divisi,
+                     ktg_departement,
+                     ktg_kategori,
+                     ktg_flag,
+                     ktg_qtyawal,
+                     ktg_qty,
+                     ktg_create_by,
+                     ktg_create_dt
+                    )
+            SELECT *
+              FROM (SELECT rpb_kodeigr,
+                           NULL ktg_recordid,
+                           NULL ktg_lokasi,
+                           NULL ktg_flagdisc1,
+                           NULL ktg_flagdisc2,
+                           'N' ktg_typetrn,
+                           'OT-' || SUBSTR(rpb_idsuratjalan, 9, 5) ktg_nodokumen,
+                           SUBSTR(rpb_idsuratjalan, 16, 3) ktg_kasir,
+                           SUBSTR(rpb_idsuratjalan, 14, 2) ktg_station,
+                           SUBSTR(rpb_plu2, 1, 6) || '0' ktg_prdcd,
+                           NULL ktg_supplier,
+                           TO_DATE(SUBSTR(rpb_idsuratjalan, 1, 8), 'YYYYMMDD') ktg_tgl,
+                           prd_kodedivisi,
+                           prd_kodedepartement,
+                           prd_kodekategoribarang,
+                           NULL ktg_flag,
+                           st_saldoawal,
+                           CASE
+                               WHEN NVL(TRIM(rpb_nilaisph), '1234567') = '1234567'
+                                   THEN CASE
+                                           WHEN SUBSTR(rpb_idsuratjalan, 1, 8) >=
+                                                                          TO_CHAR(v_tglper2, 'YYYYMMDD')
+                                               THEN rpb_qtyrealisasi
+                                           ELSE 0
+                                       END
+                               ELSE f_igr_get_intransit(rpb_kodeigr,
+                                                        rpb_kodeomi,
+                                                        rpb_nodokumen,
+                                                        rpb_nokoli,
+                                                        0                             --rpb_qtyrealisasi
+                                                       )
+                           END intransit,
+                           NULL ktg_create_by,
+                           NULL ktg_create_dt
+                      FROM tbtr_realpb, tbtr_omikoli, tbmaster_stock, tbmaster_prodmast
+                     WHERE rpb_kodeigr = okl_kodeigr
+                       AND rpb_nodokumen = okl_noorder
+                       AND rpb_nokoli = okl_nokoli
+                       AND rpb_kodeigr = st_kodeigr(+)
+                       AND st_prdcd BETWEEN p_plu1 AND p_plu2
+                       AND NVL(st_recordid, '9') <> '1'
+                       AND st_lokasi = '01'
+                       AND prd_kodeigr = st_kodeigr
+                       AND prd_prdcd = st_prdcd
+                       AND st_prdcd BETWEEN p_plu1 AND p_plu2
+                       AND prd_kodedivisi BETWEEN p_div1 AND p_div2
+                       AND prd_kodedepartement BETWEEN p_dept1 AND p_dept2
+                       AND prd_kodekategoribarang BETWEEN p_kat1 AND p_kat2
+                       AND SUBSTR(rpb_plu1, 1, 6) || '0' = st_prdcd(+)
+                       AND st_lokasi = '01'
+                       AND rpb_kodeigr = prd_kodeigr(+)
+                       AND rpb_plu1 = prd_prdcd(+)
+                       AND SUBSTR(rpb_idsuratjalan, 1, 8) BETWEEN TO_CHAR(v_tglper2, 'YYYYMMDD')
+                                                              AND TO_CHAR(p_periodeakhir, 'YYYYMMDD')) a
+             WHERE intransit <> 0;
+    */
+    COMMIT;
+    p_sukses := 'TRUE';
+EXCEPTION
+    WHEN OTHERS
+    THEN
+        p_sukses := 'FALSE';
+        p_errmsg := SQLERRM || ' ' || ket;
+        ROLLBACK;
+END;
+/

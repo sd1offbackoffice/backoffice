@@ -32,6 +32,18 @@ class ReprintBKLController extends Controller
         }
     }
 
+    public function getDataLovTokoOMI(Request $request) {
+        $search = strtoupper($request->value);
+
+        $data = DB::connection($_SESSION['connection'])->table('tbhistory_bkl')
+            ->select('bkl_kodeomi', 'bkl_idfile', 'bkl_nodoc', 'bkl_nobukti', 'bkl_kodesupplier', 'bkl_tglstruk' )
+            ->whereRaw("(bkl_kodeomi LIKE '%$search%' or bkl_idfile  LIKE '%$search%' )")
+            ->orderByDesc('bkl_tglstruk')
+            ->limit(100)->get();
+
+        return Datatables::of($data)->make(true);
+    }
+
     public function getDataLov(Request $request) {
         $noBukti = strtoupper($request->noBukti);
         $kodeOmi = strtoupper($request->kodeomi);

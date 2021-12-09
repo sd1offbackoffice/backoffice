@@ -165,7 +165,7 @@
 
         function newFormInstance(){
             $.ajax({
-                url: '{{ url()->current() }}/newforminstance',
+                url: '{{ url()->current() }}/new-form-instance',
                 type: 'GET',
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -216,7 +216,7 @@
         function getModalPTKP(value){
             tablePTKP =  $('#tablePTKP').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalptkp' }}',
+                    'url' : '{{ url()->current().'/modal-ptkp' }}',
                     "data" : {
                         'value' : value
                     },
@@ -253,7 +253,7 @@
         function getModalPKP(value){
             tablePKP =  $('#tablePKP').DataTable({
                 "ajax": {
-                    'url' : '{{ url()->current().'/modalpkp' }}',
+                    'url' : '{{ url()->current().'/modal-pkp' }}',
                     "data" : {
                         'value' : value
                     },
@@ -344,7 +344,7 @@
 
         function choosePTKP(){
             $.ajax({
-                url: '{{ url()->current() }}/chooseptkp',
+                url: '{{ url()->current() }}/choose-ptkp',
                 type: 'GET',
                 data: {
                     kodeptkp: $('#kodePTKP').val(),
@@ -460,7 +460,7 @@
 
         function choosePKP(){
             $.ajax({
-                url: '{{ url()->current() }}/choosepkp',
+                url: '{{ url()->current() }}/choose-pkp',
                 type: 'GET',
                 data: {
                     kodepkp: $('#kodePKP').val(),
@@ -742,7 +742,7 @@
                 if(click == 'yes'){
                     //proses data
                     $.ajax({
-                        url: '{{ url()->current() }}/prosesdata',
+                        url: '{{ url()->current() }}/proses-data',
                         type: 'GET',
                         data: {
                             ptkp: $('#kodePTKP').val(),
@@ -782,7 +782,7 @@
                                 text: 'Perubahan Member PTKP '+$('#kodePTKP').val()+' Menjadi Member PKP '+$('#kodePKP').val()+' Sudah Selesai Dilakukan !!',
                                 icon:'info'
                             }).then(function(){
-                                //location.replace("{{ url()->to('/') }}");
+                                location.replace("{{ url()->to('/') }}");
                             })
                         },
                         error: function (error) {

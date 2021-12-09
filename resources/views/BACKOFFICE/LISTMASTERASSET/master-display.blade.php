@@ -128,6 +128,37 @@
     }
 
     function menuDCetak(){
-        alert('cetak menu D');
+        let rak1 = $('#menuDRak1Input').val();
+        let rak2 = $('#menuDRak1Input').val();
+        let subrak1 = $('#menuDSubRak1Input').val();
+        let subrak2 = $('#menuDSubRak2Input').val();
+        let tiperak1 = $('#menuDTipeRak1Input').val();
+        let tiperak2 = $('#menuDTipeRak2Input').val();
+        let shelving1 = $('#menuDShelving1Input').val();
+        let shelving2 = $('#menuDShelving2Input').val();
+
+        let temp = '';
+        if(rak1 > rak2){
+            temp = rak1;
+            rak1 = rak2;
+            rak2 = temp;
+            temp = subrak1;
+            subrak1 = subrak2;
+            subrak2 = temp;
+            temp = tiperak1;
+            tiperak1 = tiperak2;
+            tiperak2 = temp;
+            temp = shelving1;
+            shelving1 = shelving2;
+            shelving2 = temp;
+        }
+        //checkboxes
+        let omi = 0;
+        if($('#menuDCheck').prop("checked")){
+            omi = 1;
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-master-display?rak1=${rak1}&rak2=${rak2}&subrak1=${subrak1}&subrak2=${subrak2}&tiperak1=${tiperak1}&tiperak2=${tiperak2}&shelving1=${shelving1}&shelving2=${shelving2}&omi=${omi}`, '_blank');
     }
 </script>

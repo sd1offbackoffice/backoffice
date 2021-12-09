@@ -249,6 +249,38 @@
         $('#outletFilterer').val('').change();
     }
     function menu5Cetak(){
-        alert('cetak menu 5');
+        //DECLARE VARIABLE
+        let mem1 = $('#menu5Mem1Input').val();
+        let mem2 = $('#menu5Mem2Input').val();
+        let pilihan = $('#menu5Pilihan').val();
+        let outlet = $('#menu5OutlInput').val();
+        let subOutlet1 = $('#menu5SOu1Input').val();
+        let subOutlet2 = $('#menu5SOu2Input').val();
+        let sort = $('#menu5SortBy').val();
+
+        //CHECK DATA
+        if(mem1 != '' || mem2 != ''){
+            if(mem1 > mem2){
+                temp = mem1;
+                mem1 = mem2;
+                mem2 = temp;
+            }
+        }
+
+        if(outlet == ''){
+            swal('', "Silahkan Isi Kode Outlet Terlebih Dahulu", 'warning');
+            return false;
+        }
+
+        if(subOutlet1 != '' || subOutlet2 != ''){
+            if(subOutlet1 > subOutlet2){
+                temp = subOutlet1;
+                subOutlet1 = subOutlet2;
+                subOutlet2 = temp;
+            }
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-anggota-or-member?mem1=${mem1}&mem2=${mem2}&pilihan=${pilihan}&outlet=${outlet}&suboutlet1=${subOutlet1}&suboutlet2=${subOutlet2}&sort=${sort}`, '_blank');
     }
 </script>

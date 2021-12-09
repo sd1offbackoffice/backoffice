@@ -889,6 +889,21 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-lov-plu-custom', 'BACKOFFICE\ListMasterController@getLovPluCustom');
             Route::get('/check-plu', 'BACKOFFICE\ListMasterController@checkPlu');
             Route::get('/get-lov-rak', 'BACKOFFICE\ListMasterController@getLovRak');
+            //PATH PRINT
+            Route::get('/print-daftar-produk', 'BACKOFFICE\ListMasterController@printDaftarProduk');
+            Route::get('/print-daftar-perubahan-harga-jual', 'BACKOFFICE\ListMasterController@printDaftarPerubahanHargaJual');
+            Route::get('/print-daftar-margin-negatif', 'BACKOFFICE\ListMasterController@printDaftarMarginNegatif');
+            Route::get('/print-daftar-supplier', 'BACKOFFICE\ListMasterController@printDaftarSupplier');
+            Route::get('/print-daftar-anggota-or-member', 'BACKOFFICE\ListMasterController@printDaftarMember');
+            Route::get('/print-daftar-anggota-or-type-outlet', 'BACKOFFICE\ListMasterController@printDaftarMemberTypeOutlet');
+            Route::get('/print-daftar-anggota-or-member-baru', 'BACKOFFICE\ListMasterController@printDaftarMemberBaru');
+            Route::get('/print-daftar-anggota-or-member-jatuh-tempo', 'BACKOFFICE\ListMasterController@printDaftarMemberJatuhTempo');
+            Route::get('/print-daftar-anggota-or-member-expired', 'BACKOFFICE\ListMasterController@printDaftarMemberExpired');
+            Route::get('/print-daftar-harga-jual-baru', 'BACKOFFICE\ListMasterController@printDaftarHargaJualBaru');
+            Route::get('/print-daftar-perpanjangan-anggota-or-member', 'BACKOFFICE\ListMasterController@printDaftarPerpanjanganMember');
+            Route::get('/print-daftar-status-tag-bar', 'BACKOFFICE\ListMasterController@printDaftarStatusTagBar');
+            Route::get('/print-master-display', 'BACKOFFICE\ListMasterController@printMasterDisplay');
+            Route::get('/print-master-display-div-dep-kat', 'BACKOFFICE\ListMasterController@printMasterDisplayDDK');
         });
 
         Route::prefix('/proses')->group(function () {
@@ -929,6 +944,25 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\PROSES\settingPagiHariController@index');
                 Route::get('/cetak_perubahan_harga_jual', 'BACKOFFICE\PROSES\settingPagiHariController@cetak_perubahan_harga_jual');
                 Route::get('/cetak_daftar_plu_tag', 'BACKOFFICE\PROSES\settingPagiHariController@cetak_daftar_plu_tag');
+            });
+
+            /*Leo*/
+            Route::prefix('/copy-avg-cost')->group(function(){
+                Route::get('/','BACKOFFICE\PROSES\CopyAvgCostController@index');
+                Route::post('/copy-data','BACKOFFICE\PROSES\CopyAvgCostController@copyData');
+            });
+
+            /*Leo*/
+            Route::prefix('/kartu-gudang')->group(function(){
+                Route::get('/','BACKOFFICE\PROSES\KartuGudangController@index');
+                Route::post('/check-divisi', 'BACKOFFICE\PROSES\KartuGudangController@checkDivisi');
+                Route::post('/check-departement', 'BACKOFFICE\PROSES\KartuGudangController@checkDepartement');
+                Route::post('/check-kategori', 'BACKOFFICE\PROSES\KartuGudangController@checkKategori');
+                Route::post('/check-plu', 'BACKOFFICE\PROSES\KartuGudangController@checkPLU');
+                Route::get('/get-lov-plu', 'BACKOFFICE\PROSES\KartuGudangController@getLovPLU');
+                Route::post('/process', 'BACKOFFICE\PROSES\KartuGudangController@process');
+                Route::get('/print-rekap', 'BACKOFFICE\PROSES\KartuGudangController@printRekap');
+                Route::get('/print-detail', 'BACKOFFICE\PROSES\KartuGudangController@printDetail');
             });
         });
 
@@ -1093,7 +1127,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/print', 'BACKOFFICE\CETAKREGISTER\CetakRegisterController@print');
         });
 
-        /*Leo*/
+        /*Denni*/
         Route::prefix('/cetak-dokumen')->group(function () {
             Route::get('/', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@index');
             Route::get('/showData', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@showData');
@@ -1227,8 +1261,9 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/super-promo')->group(function () {
             //SUPER Promosi (IGR_TAB_SUPERPROMO) (ryanOrder = 34)
             Route::get('/', 'TABEL\SuperPromoController@index');
-            Route::get('/check-plu', 'TABEL\SuperPromoController@CheckPlu');
+            Route::get('/check-plu', 'TABEL\SuperPromoController@checkPlu');
             Route::post('/save', 'TABEL\SuperPromoController@save');
+            Route::get('/get-table', 'TABEL\SuperPromoController@getTable');
         });
         /*Ryan*/
         Route::prefix('/total-pembayaran-voucher')->group(function () {
@@ -1475,6 +1510,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-data', 'ADMINISTRATION\AccessController@getData');
             Route::get('/save', 'ADMINISTRATION\AccessController@save');
             Route::get('/clone', 'ADMINISTRATION\AccessController@clone');
+            Route::get('/clone-menu', 'ADMINISTRATION\AccessController@cloneMenu');
         });
 
         Route::prefix('/user')->group(function () {
@@ -1618,6 +1654,18 @@ Route::middleware(['CheckLogin'])->group(function () {
             });
         });
 
+        Route::prefix('/laporan-sales-per-divisi-departemen')->group(function () {
+            Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@index');
+            Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@getData');
+            Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@cetak');
+        });
+
+        Route::prefix('/laporan-sales-per-departemen-kategori')->group(function () {
+            Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@index');
+            Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@getData');
+            Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@cetak');
+        });
+
         Route::prefix('/laporan-planogram')->group(function () {
             Route::get('/', 'FRONTOFFICE\LaporanPlanogramController@index');
             Route::get('/cetak', 'FRONTOFFICE\LaporanPlanogramController@cetak');
@@ -1723,6 +1771,12 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/create-csv','FRONTOFFICE\FakturPajakStandardController@createCSV');
             Route::get('/get-csv','FRONTOFFICE\FakturPajakStandardController@getCSV');
         });
+
+        /*Leo*/
+        Route::prefix('/laporan-evaluasi-sales-member')->group(function(){
+            Route::get('/','FRONTOFFICE\LaporanEvaluasiSalesMemberController@index');
+            Route::get('/view-report','FRONTOFFICE\LaporanEvaluasiSalesMemberController@viewReport');
+        });
     });
 
     Route::prefix('/omi')->group(function () {
@@ -1742,6 +1796,9 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-monitoring-data-pb-tolakan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getMonitoringDataPBTolakan');
                 Route::post('/get-data-top', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@getDataTop');
                 Route::post('/simpan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@simpan');
+                Route::post('/submit-log-non-top', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@submitLogNonTop');
+                Route::post('/submit-log', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@submitLog');
+                Route::post('/proses-tolakan', 'OMI\TRANSFERORDERDARIOMIIDM\KreditLimitDanMonitoringPBOMIController@prosesTolakan');
             });
 
             Route::prefix('/proses-tolakan-clo-pb-omi')->group(function(){
@@ -1803,6 +1860,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'OMI\LAPORAN\ReprintBKLController@index');
                 Route::post('/cek-omi', 'OMI\LAPORAN\ReprintBKLController@checkKodeOmi');
                 Route::post('/cek-nomor', 'OMI\LAPORAN\ReprintBKLController@cekNomorBukti');
+                Route::get('/get-lov-tokoomi', 'OMI\LAPORAN\ReprintBKLController@getDataLovTokoOMI');
                 Route::get('/get-lov', 'OMI\LAPORAN\ReprintBKLController@getDataLov');
                 Route::get('/cetak-laporan', 'OMI\LAPORAN\ReprintBKLController@cetakLaporan');
             });
@@ -1838,10 +1896,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak', 'OMI\LAPORAN\monitem_tdk_supplyController@cetak');
             });
             /*Ryan*/
-            Route::prefix('/lapregbrgrtr')->group(function () {
+            Route::prefix('/laporan-register-barang-retur')->group(function () {
                 //LAPORAN REGISTER BARANG RETUR (ryanOrder = 28)
-                Route::get('/', 'OMI\LAPORAN\lapregbrgrtrController@index');
-                Route::get('/cetak', 'OMI\LAPORAN\lapregbrgrtrController@cetak');
+                Route::get('/', 'OMI\LAPORAN\LaporanRegisterBarangReturController@index');
+                Route::get('/cetak', 'OMI\LAPORAN\LaporanRegisterBarangReturController@cetak');
             });
             /*Ryan*/
             Route::prefix('/laprincislvpb')->group(function () {
@@ -1851,11 +1909,11 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak', 'OMI\LAPORAN\laprincislvpbController@cetak');
             });
             /*Ryan*/
-            Route::prefix('/lapsvlslspb')->group(function () {
+            Route::prefix('/laporan-rekap-service-level-sales-thd-pb')->group(function () {
                 //LAPORAN SVL SLS PB (ryanOrder = 30)
-                Route::get('/', 'OMI\LAPORAN\lapsvlslspbController@index');
-                Route::get('/getpb', 'OMI\LAPORAN\lapsvlslspbController@pbModal');
-                Route::get('/cetak', 'OMI\LAPORAN\lapsvlslspbController@cetak');
+                Route::get('/', 'OMI\LAPORAN\LaporanRekapServiceLevelSalesThdPBController@index');
+                Route::get('/get-pb', 'OMI\LAPORAN\LaporanRekapServiceLevelSalesThdPBController@pbModal');
+                Route::get('/cetak', 'OMI\LAPORAN\LaporanRekapServiceLevelSalesThdPBController@cetak');
             });
 
             /*Leo*/
@@ -1866,16 +1924,16 @@ Route::middleware(['CheckLogin'])->group(function () {
             });
         });
         /*Ryan*/
-        Route::prefix('/rubahstatusomi')->group(function () {
+        Route::prefix('/perubahan-status-omi-ptkp-to-pkp')->group(function () {
             //IGR_BO_RUBAHSTATUSOMI (ryanOrder = 26)
-            Route::get('/', 'OMI\rubahstatusomiController@index');
-            Route::get('/newforminstance', 'OMI\rubahstatusomiController@newFormInstance');
-            Route::get('/modalptkp', 'OMI\rubahstatusomiController@modalPTKP');
-            Route::get('/chooseptkp', 'OMI\rubahstatusomiController@choosePTKP');
-            Route::get('/modalpkp', 'OMI\rubahstatusomiController@modalPKP');
-            Route::get('/choosepkp', 'OMI\rubahstatusomiController@choosePKP');
-            Route::get('/prosesdata', 'OMI\rubahstatusomiController@prosesData');
-            Route::get('/cetak', 'OMI\rubahstatusomiController@cetak');
+            Route::get('/', 'OMI\PerubahanStatusOmiPtkpToPkpController@index');
+            Route::get('/new-form-instance', 'OMI\PerubahanStatusOmiPtkpToPkpController@newFormInstance');
+            Route::get('/modal-ptkp', 'OMI\PerubahanStatusOmiPtkpToPkpController@modalPTKP');
+            Route::get('/choose-ptkp', 'OMI\PerubahanStatusOmiPtkpToPkpController@choosePTKP');
+            Route::get('/modal-pkp', 'OMI\PerubahanStatusOmiPtkpToPkpController@modalPKP');
+            Route::get('/choose-pkp', 'OMI\PerubahanStatusOmiPtkpToPkpController@choosePKP');
+            Route::get('/proses-data', 'OMI\PerubahanStatusOmiPtkpToPkpController@prosesData');
+            Route::get('/cetak', 'OMI\PerubahanStatusOmiPtkpToPkpController@cetak');
         });
     });
 

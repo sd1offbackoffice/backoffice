@@ -543,6 +543,44 @@
     }
 
     function menuECetak(){
-        alert('cetak menu E');
+        //DIV & DEP & KAT & PLU
+        let div1 = $('#menuEDiv1Input').val();
+        let div2 = $('#menuEDiv2Input').val();
+        let dep1 = $('#menuEDep1Input').val();
+        let dep2 = $('#menuEDep2Input').val();
+        let kat1 = $('#menuEKat1Input').val();
+        let kat2 = $('#menuEKat2Input').val();
+        let plu1 = $('#menuEPlu1Input').val();
+        let plu2 = $('#menuEPlu2Input').val();
+
+        let temp = '';
+        if(div1 != '' || div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
+            if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
+                temp = div1;
+                div1 = div2;
+                div2 = temp;
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+        if(plu2 != ''){
+            if(parseInt(plu1) > parseInt(plu2)){
+                temp = plu1;
+                plu1 = plu2;
+                plu2 = temp;
+            }
+        }
+        //checkboxes
+        let omi = 0;
+        if($('#menuECheck').prop("checked")){
+            omi = 1;
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-master-display-div-dep-kat?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&plu1=${plu1}&plu2=${plu2}&omi=${omi}`, '_blank');
     }
 </script>

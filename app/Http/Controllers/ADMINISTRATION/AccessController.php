@@ -123,14 +123,32 @@ class AccessController extends Controller
         dd('sudah otomatis, tidak perlu clone manual lagi :)');
     }
 
-    public static function getListMenu($usid){
-        if($usid == 'ADM'){
-            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
-                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+    public static function getListMenu(){
+//        $menu = DB::connection($_SESSION['connection'])
+//            ->table('tbmaster_access_migrasi')
+//            ->first();
+//
+//        if(!$menu){
+//            self::insertBaseMenu();
+//        }
+
+        if($_SESSION['usid'] == 'ADM'){
+//            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+//                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
+//                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
+//                ->where('uac_userid','=',$_SESSION['usid'])
+//                ->where('acc_status','=',0)
+////            ->orderBy('acc_id')
+//                ->orderBy('acc_group')
+//                ->orderBy('acc_subgroup1')
+//                ->orderBy('acc_subgroup2')
+//                ->orderBy('acc_subgroup3')
+//                ->orderBy('acc_order')
+//                ->orderBy('acc_name')
+//                ->get();
+            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-                ->where('uac_userid','=',$usid)
                 ->where('acc_status','=',0)
-//            ->orderBy('acc_id')
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')
                 ->orderBy('acc_subgroup2')
@@ -139,8 +157,8 @@ class AccessController extends Controller
                 ->orderBy('acc_name')
                 ->get();
         }
-        else if(in_array($usid, ['DEV','SUP'])){
-            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        else if(in_array($_SESSION['usid'], ['DEV','SUP'])){
+            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')
@@ -151,10 +169,10 @@ class AccessController extends Controller
                 ->get();
         }
         else{
-            return DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
                 ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-                ->where('uac_userid','=',$usid)
+                ->where('uac_userid','=',$_SESSION['usid'])
                 ->where('acc_status','=',0)
                 ->where('acc_group','<>','Administration')
 //            ->orderBy('acc_id')
@@ -166,7 +184,80 @@ class AccessController extends Controller
                 ->orderBy('acc_name')
                 ->get();
         }
+
+        return $listMenu;
     }
+
+    public static function insertBaseMenu(){
+        DB::connection($_SESSION['connection'])
+            ->table('tbmaster_access_migrasi')
+            ->insert([
+                'acc_group' => 'Administration',
+                'acc_subgroup1' => null,
+                'acc_subgroup2' => null,
+                'acc_subgroup3' => null,
+                'acc_name' => 'Access Menu',
+                'acc_level' => 2,
+                'acc_url' => '/administration/menu',
+                'acc_id' => 'A000',
+                'acc_create_by' => 'DEV',
+                'acc_create_dt' => Carbon::now(),
+                'acc_status' => 0,
+                'acc_order' => null
+            ]);
+
+        DB::connection($_SESSION['connection'])
+            ->table('tbmaster_access_migrasi')
+            ->insert([
+                'acc_group' => 'Administration',
+                'acc_subgroup1' => null,
+                'acc_subgroup2' => null,
+                'acc_subgroup3' => null,
+                'acc_name' => 'User',
+                'acc_level' => 2,
+                'acc_url' => '/administration/user',
+                'acc_id' => 'A001',
+                'acc_create_by' => 'DEV',
+                'acc_create_dt' => Carbon::now(),
+                'acc_status' => 0,
+                'acc_order' => null
+            ]);
+
+        DB::connection($_SESSION['connection'])
+            ->table('tbmaster_access_migrasi')
+            ->insert([
+                'acc_group' => 'Administration',
+                'acc_subgroup1' => null,
+                'acc_subgroup2' => null,
+                'acc_subgroup3' => null,
+                'acc_name' => 'User Access',
+                'acc_level' => 2,
+                'acc_url' => '/administration/access',
+                'acc_id' => 'A002',
+                'acc_create_by' => 'DEV',
+                'acc_create_dt' => Carbon::now(),
+                'acc_status' => 0,
+                'acc_order' => null
+            ]);
+
+        DB::connection($_SESSION['connection'])
+            ->table('tbmaster_access_migrasi')
+            ->insert([
+                'acc_group' => 'Administration',
+                'acc_subgroup1' => null,
+                'acc_subgroup2' => null,
+                'acc_subgroup3' => null,
+                'acc_name' => 'Show / Hide Menu',
+                'acc_level' => 2,
+                'acc_url' => '/administration/dev',
+                'acc_id' => 'A003',
+                'acc_create_by' => 'DEV',
+                'acc_create_dt' => Carbon::now(),
+                'acc_status' => 0,
+                'acc_order' => null
+            ]);
+    }
+
     public static function isAccessible($url){
         $hasAccess = false;
 
@@ -220,5 +311,26 @@ class AccessController extends Controller
         catch(\Exception $e){
             DB::connection($_SESSION['connection'])->rollBack();
         }
+    }
+
+    public function cloneMenu(Request $request){
+        $source = $request->source;
+        $target = $request->target;
+
+        DB::connection($target)
+            ->table('tbmaster_access_migrasi')
+            ->delete();
+
+        $menu = DB::connection($source)
+            ->table('tbmaster_access_migrasi')
+            ->get();
+
+        $menu = json_decode(json_encode($menu), true);
+
+        DB::connection($target)
+            ->table('tbmaster_access_migrasi')
+            ->insert($menu);
+
+        dd('Berhasil clone menu dari '.$source.' ke '.$target);
     }
 }

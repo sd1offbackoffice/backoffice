@@ -1,5 +1,6 @@
 {{--ASSET LIST MASTER--}}
 {{-- DAFTAR PERUBAHAN HARGA JUAL --}}
+{{--NOTE!!!! MENU 2 DAN MENU F SAMA HANYA BEDA INISIAL DAN FORM REPORT NYA--}}
 
 <div>
     <fieldset class="card border-dark">
@@ -423,6 +424,100 @@
     }
 
     function menu2Cetak(){
-        alert('cetak menu 2');
+        let date = $('#menu2daterangepicker').val();
+        if(date == null || date == ""){
+            swal('Periode tidak boleh kosong','','warning');
+            return false;
+        }
+        let dateA = date.substr(0,10);
+        let dateB = date.substr(13,10);
+        dateA = dateA.split('/').join('-');
+        dateB = dateB.split('/').join('-');
+
+        //DIV & DEP & KAT
+        let temp = '';
+        let div1 = $('#menu2Div1Input').val();
+        let div2 = $('#menu2Div2Input').val();
+        let dep1 = $('#menu2Dep1Input').val();
+        let dep2 = $('#menu2Dep2Input').val();
+        let kat1 = $('#menu2Kat1Input').val();
+        let kat2 = $('#menu2Kat2Input').val();
+        //periksa agar input tidak aneh" meski input sudah dibatasin, jaga" kalau input nya pakai f12
+        if(div1 != ''){
+            if(checkDivExist(div1) == false){
+                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(div2 != ''){
+            if(checkDivExist(div2) == false){
+                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(dep1 != ''){
+            //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minDep').val(div1);
+            $('#maxDep').val(div1);
+            if(checkDepExist(dep1) == false){
+                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(dep2 != ''){
+            //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minDep').val(div2);
+            $('#maxDep').val(div2);
+            if(checkDepExist(dep2) == false){
+                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(kat1 != ''){
+            //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minKat').val(dep1);
+            $('#maxKat').val(dep1);
+            if(checkKatExist(kat1) == false){
+                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(kat2 != ''){
+            //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
+            $('#minKat').val(dep2);
+            $('#maxKat').val(dep2);
+            if(checkKatExist(kat2) == false){
+                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                return false;
+            }
+        }
+        if(div1 != '' || div2 != ''){
+            if(parseInt(div1) > parseInt(div2)){
+                temp = div1;
+                div1 = div2;
+                div2 = temp;
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+
+        //sortby
+        let sort = $('#menu2SortBy').val();
+
+        // TAG
+        let tag1 = $('#menu2Tag1').val();
+        let tag2 = $('#menu2Tag2').val();
+
+        let check = 0;
+        if($('#menu2Check').prop("checked")){
+            check = 1;
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-perubahan-harga-jual?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&tag1=${tag1}&tag2=${tag2}&date1=${dateA}&date2=${dateB}&check=${check}&sort=${sort}`, '_blank');
     }
 </script>

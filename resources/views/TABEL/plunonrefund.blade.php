@@ -90,9 +90,11 @@
                             <div class="card-body pt-0 pb-0">
                                 <div class="row form-group mb-0 ml-1 mr-3">
                                     <label for="prdcd" class="col-sm-1 text-center col-form-label pr-1 pl-0"></label>
-                                    <label for="prdcd" class="col-sm-2 text-center pl-0 pr-0 col-form-label">PLU</label>
-                                    <label for="prdcd" class="col-sm-7 text-center pl-0 pr-0 col-form-label">Deskripsi</label>
-                                    <label for="prdcd" class="col-sm-2 text-center pl-0 pr-0 col-form-label">Satuan</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">PLU</label>
+                                    <label for="prdcd" class="col-sm-6 text-center pl-0 pr-0 col-form-label">Deskripsi</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">Satuan</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">Created by</label>
+                                    <label for="prdcd" class="col-sm-2 text-center pl-0 pr-0 col-form-label">Created date</label>
                                 </div>
                                 <div class="scrollable-field mb-2" id="detail">
                                     @for($i=0;$i<6;$i++)
@@ -102,10 +104,16 @@
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
-                                            <div class="col-sm-2 pr-1 pl-1">
+                                            <div class="col-sm-1 pr-1 pl-1">
                                                 <input type="text" class="form-control text-center" disabled>
                                             </div>
-                                            <div class="col-sm-7 pr-1 pl-1">
+                                            <div class="col-sm-6 pr-1 pl-1">
+                                                <input type="text" class="form-control text-center" disabled>
+                                            </div>
+                                            <div class="col-sm-1 pr-1 pl-1">
+                                                <input type="text" class="form-control text-center" disabled>
+                                            </div>
+                                            <div class="col-sm-1 pr-1 pl-1">
                                                 <input type="text" class="form-control text-center" disabled>
                                             </div>
                                             <div class="col-sm-2 pr-1 pl-1">
@@ -335,14 +343,20 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled value="${ data.plu }">
+                    <div class="col-sm-1 pr-1 pl-1">
+                        <input type="text" class="form-control text-center pr-0 pl-0" disabled value="${ data.plu }">
                     </div>
-                    <div class="col-sm-7 pr-1 pl-1">
+                    <div class="col-sm-6 pr-1 pl-1">
                         <input type="text" class="form-control text-left" disabled value="${ data.desk }">
                     </div>
+                    <div class="col-sm-1 pr-1 pl-1">
+                        <input type="text" class="form-control text-center pr-0 pl-0" disabled value="${ data.satuan }">
+                    </div>
+                    <div class="col-sm-1 pr-1 pl-1">
+                        <input type="text" class="form-control text-center" disabled value="${ data.non_create_by }">
+                    </div>
                     <div class="col-sm-2 pr-1 pl-1">
-                        <input type="text" class="form-control text-center" disabled value="${ data.satuan }">
+                        <input type="text" class="form-control text-center pr-0 pl-0" disabled value="${ data.non_create_dt }">
                     </div>
                 </div>`
             );
@@ -356,10 +370,16 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <div class="col-sm-2 pr-1 pl-1">
+                    <div class="col-sm-1 pr-1 pl-1">
                         <input type="text" class="form-control text-center" disabled>
                     </div>
-                    <div class="col-sm-7 pr-1 pl-1">
+                    <div class="col-sm-5 pr-1 pl-1">
+                        <input type="text" class="form-control text-right" disabled>
+                    </div>
+                    <div class="col-sm-1 pr-1 pl-1">
+                        <input type="text" class="form-control text-right" disabled>
+                    </div>
+                    <div class="col-sm-1 pr-1 pl-1">
                         <input type="text" class="form-control text-right" disabled>
                     </div>
                     <div class="col-sm-2 pr-1 pl-1">

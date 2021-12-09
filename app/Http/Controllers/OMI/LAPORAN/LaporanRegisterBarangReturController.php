@@ -15,12 +15,12 @@ use PDF;
 use DateTime;
 use Yajra\DataTables\DataTables;
 
-class lapregbrgrtrController extends Controller
+class LaporanRegisterBarangReturController extends Controller
 {
 
     public function index()
     {
-        return view('OMI.LAPORAN.lapregbrgrtr');
+        return view('OMI.LAPORAN.laporan-register-barang-retur');
     }
 
 
@@ -62,13 +62,14 @@ GROUP BY rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi, rom_t
     cus_namamember, prs_namaperusahaan, prs_namacabang, prs_namawilayah
     ORDER BY tgldok, rom_nodokumen
 ");
-        if(sizeof($datas) == 0){
-            return "**DATA TIDAK ADA**";
-        }
+//        if(sizeof($datas) == 0){
+//            return "**DATA TIDAK ADA**";
+//        }
         //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        return view('OMI.LAPORAN.lapregbrgrtr-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'datas' => $datas, 'today' => $today, 'time' => $time]);
+        return view('OMI.LAPORAN.laporan-register-barang-retur-pdf',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 }

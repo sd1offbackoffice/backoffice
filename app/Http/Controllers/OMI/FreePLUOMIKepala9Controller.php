@@ -99,7 +99,8 @@ class FreePLUOMIKepala9Controller extends Controller
 			  AND fpl_pluigr = brg_prdcd (+)
 			  AND prd_kodedivisi = div_kodedivisi (+)
 			  AND prd_kodedepartement = kat_kodedepartement (+)
-			  AND prd_kodekategoribarang = kat_kodekategori (+)"
+			  AND prd_kodekategoribarang = kat_kodekategori (+)
+			  AND fpl_recordid is null"
         );
 
         return DataTables::of($data)->make(true);
@@ -195,7 +196,7 @@ class FreePLUOMIKepala9Controller extends Controller
                          WHERE FPL_PLUIGR = '" . $in_pluigr . "'");
                     }
                     $message = 'Data Berhasil ditambah.';
-                    $status = 'warning';
+                    $status = 'success';
                     return compact(['message', 'status']);
 
                 }
@@ -227,7 +228,7 @@ class FreePLUOMIKepala9Controller extends Controller
           WHERE fpl_pluigr ='" . $in_pluigr . "'");
 
             $message = 'Data Berhasil dihapus';
-            $status = 'warning';
+            $status = 'success';
             return compact(['message', 'status']);
         }else{
             $message = 'PLU tidak terdaftar dalam freeplu';
