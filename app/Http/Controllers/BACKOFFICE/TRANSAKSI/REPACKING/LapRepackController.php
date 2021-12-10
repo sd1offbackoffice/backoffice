@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\REPACKING;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -22,12 +22,12 @@ class LapRepackController extends Controller
         return view('BACKOFFICE.TRANSAKSI.REPACKING.laprepack');
     }
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        $cursor = DB::connection($_SESSION['connection'])->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
+        $cursor = DB::connection(Session::get('connection'))->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,
              Case mstd_flagdisc1 When 'P' Then mstd_prdcd Else Null End prd_p,
              Case mstd_flagdisc1 When 'P' Then prd_deskripsipanjang Else Null End desk_p,
@@ -56,7 +56,7 @@ Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         }
     }
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $today = date('d-m-Y');
@@ -65,7 +65,7 @@ Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-    $datas = DB::connection($_SESSION['connection'])->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
+    $datas = DB::connection(Session::get('connection'))->select("Select RowNum, msth_nodoc, to_char(msth_tgldoc, 'dd-mm-yyyy') tgldoc, prd_p,desk_p,gross_p,prd_r,desk_r,gross_r, prs_namaperusahaan, prs_namacabang
 From (Select msth_nodoc, msth_tgldoc,
              Case mstd_flagdisc1 When 'P' Then mstd_prdcd Else Null End prd_p,
              Case mstd_flagdisc1 When 'P' Then prd_deskripsipanjang Else Null End desk_p,

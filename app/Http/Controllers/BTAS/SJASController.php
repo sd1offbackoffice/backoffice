@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -19,9 +19,9 @@ class SJASController extends Controller
     }
 
     public function getLovCustomer(){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT SUBSTR(SJH_NOSTRUK,1,2) STAT, SUBSTR(SJH_NOSTRUK,3,3) KASIR, SUBSTR(SJH_NOSTRUK,6,5) NO, SJH_TGLSTRUK tglstruk, TO_CHAR(SJH_TGLSTRUK, 'DD/MM/YYYY') SJH_TGLSTRUK, SJH_KODECUSTOMER, TO_CHAR(SJH_TGLPENITIPAN, 'DD/MM/YYYY') SJH_TGLPENITIPAN, SJH_NOSJAS, TO_CHAR(SJH_TGLSJAS, 'DD/MM/YYYY') SJH_TGLSJAS, CUS_NAMAMEMBER, SJH_FLAGSELESAI
+        $data = DB::connection(Session::get('connection'))->select("SELECT SUBSTR(SJH_NOSTRUK,1,2) STAT, SUBSTR(SJH_NOSTRUK,3,3) KASIR, SUBSTR(SJH_NOSTRUK,6,5) NO, SJH_TGLSTRUK tglstruk, TO_CHAR(SJH_TGLSTRUK, 'DD/MM/YYYY') SJH_TGLSTRUK, SJH_KODECUSTOMER, TO_CHAR(SJH_TGLPENITIPAN, 'DD/MM/YYYY') SJH_TGLPENITIPAN, SJH_NOSJAS, TO_CHAR(SJH_TGLSJAS, 'DD/MM/YYYY') SJH_TGLSJAS, CUS_NAMAMEMBER, SJH_FLAGSELESAI
         FROM TBTR_SJAS_H, TBMASTER_CUSTOMER
-        WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."'
+        WHERE SJH_KODEIGR = '".Session::get('kdigr')."'
         AND CUS_KODEMEMBER = SJH_KODECUSTOMER
         ORDER BY tglstruk, SJH_KODECUSTOMER, SJH_NOSTRUK");
 
@@ -29,7 +29,7 @@ class SJASController extends Controller
     }
 
     public function getData(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_namamember')
             ->where('cus_kodemember','=',$request->cus_kode)
             ->first();
@@ -43,12 +43,12 @@ class SJASController extends Controller
         }
         else $data->cus_nama = $temp->cus_namamember;
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
             ->selectRaw("SJH_NOSJAS, TO_CHAR(SJH_TGLSJAS,'DD/MM/YYYY') SJH_TGLSJAS,
                SJH_FREKTAHAPAN, TO_CHAR(SJH_TGLSTRUK,'DD/MM/YYYY') SJH_TGLSTRUK,
                SUBSTR (SJH_NOSTRUK, 1, 2) station, SUBSTR (SJH_NOSTRUK, 3, 3) kasir,
                SUBSTR (SJH_NOSTRUK, 6, 5) no, SJH_FLAGSELESAI")
-            ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+            ->where('sjh_kodeigr','=',Session::get('kdigr'))
             ->where('sjh_kodecustomer','=',$request->cus_kode)
             ->whereRaw("sjh_nostruk = '".$request->station."'||'".$request->kasir."'||'".$request->nostruk."'")
             ->whereRaw("to_char(sjh_tglstruk,'dd/mm/yyyy') = '".$request->tglstruk."'")
@@ -84,11 +84,11 @@ class SJASController extends Controller
         }
         else $data->flagoto = '1';
 
-        $detail = DB::connection($_SESSION['connection'])->select("SELECT TRJD_SEQNO, TRJD_PRDCD, PRD_DESKRIPSIPANJANG,TRJD_QUANTITY, PRD_UNIT || '/' || PRD_FRAC unit
+        $detail = DB::connection(Session::get('connection'))->select("SELECT TRJD_SEQNO, TRJD_PRDCD, PRD_DESKRIPSIPANJANG,TRJD_QUANTITY, PRD_UNIT || '/' || PRD_FRAC unit
             FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST
             WHERE TRJD_KODEIGR = PRD_KODEIGR
             AND TRJD_PRDCD = PRD_PRDCD
-            AND TRJD_KODEIGR = '".$_SESSION['kdigr']."'
+            AND TRJD_KODEIGR = '".Session::get('kdigr')."'
             AND TO_CHAR(TRJD_TRANSACTIONDATE,'dd/mm/yyyy') = '".$data->tglstruk."'
             AND TRJD_CASHIERSTATION = '".$data->station."'
             AND TRJD_CREATE_BY = '".$data->kasir."'
@@ -97,7 +97,7 @@ class SJASController extends Controller
             ORDER BY TRJD_SEQNO");
 
         foreach($detail as $d){
-            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT *
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT *
                       FROM TBTR_JUALHEADER, TBTR_JUALDETAIL
                      WHERE JH_TRANSACTIONTYPE = 'R'
                             AND JH_REFERENCECASHIERSTATION = '".$data->station."'
@@ -118,9 +118,9 @@ class SJASController extends Controller
 
             $d->qtytitip = $d->trjd_quantity - $d->qtyrefund;
 
-            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT SUM(NVL (SJD_QTYSJAS, 0)) jml
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT SUM(NVL (SJD_QTYSJAS, 0)) jml
                       FROM TBTR_SJAS_D
-                     WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                     WHERE SJD_KODEIGR = '".Session::get('kdigr')."'
                        AND SJD_NOSJAS = '".$data->nosj."'
                        AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                        AND SJD_PRDCD = '".$d->trjd_prdcd."'");
@@ -136,9 +136,9 @@ class SJASController extends Controller
             $d->qtysisaall = $d->qtytitip - $d->qtyok;
 
             if($request->paramTHP == 'Y'){
-                $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT NVL(SJD_QTYSJAS, 0) qty
+                $temp = DB::connection(Session::get('connection'))->selectOne("SELECT NVL(SJD_QTYSJAS, 0) qty
                           FROM TBTR_SJAS_D
-                         WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                         WHERE SJD_KODEIGR = '".Session::get('kdigr')."'
                            AND SJD_NOSJAS = '".$data->nosj."'
                            AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                            AND SJD_PRDCD = '".$d->trjd_prdcd."'
@@ -160,7 +160,7 @@ class SJASController extends Controller
     }
 
     public function authUser(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_user')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_user')
             ->where('userid','=',strtoupper($request->username))
             ->where('userpassword','=',strtoupper($request->password))
             ->where('userlevel','=','1')
@@ -173,18 +173,18 @@ class SJASController extends Controller
 
     public function save(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT SJH_NOSJAS, to_char(SJH_TGLSJAS, 'dd/mm/yyyy') SJH_TGLSJAS, SJH_FREKTAHAPAN
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT SJH_NOSJAS, to_char(SJH_TGLSJAS, 'dd/mm/yyyy') SJH_TGLSJAS, SJH_FREKTAHAPAN
                     FROM TBTR_SJAS_H
-                    WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."'
+                    WHERE SJH_KODEIGR = '".Session::get('kdigr')."'
                     AND SJH_NOSTRUK = '".$request->nostruk."'
                     AND SJH_TGLSTRUK = to_date('".$request->tglstruk."','dd/mm/yyyy')
                     AND SJH_KODECUSTOMER = '".$request->kodecustomer."'");
 
             if($temp->sjh_nosjas == null){
                 $c = loginController::getConnectionProcedure();
-                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SJS','Surat Jalan Atas Struk', 'S'||TO_CHAR(SYSDATE, 'yy'),4,TRUE); END;");
+                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','SJS','Surat Jalan Atas Struk', 'S'||TO_CHAR(SYSDATE, 'yy'),4,TRUE); END;");
                 oci_bind_by_name($s, ':ret', $nosj, 32);
                 oci_execute($s);
 
@@ -202,7 +202,7 @@ class SJASController extends Controller
             $insert = [];
             foreach($request->data as $d){
                 $ins = [];
-                $ins['sjd_kodeigr'] = $_SESSION['kdigr'];
+                $ins['sjd_kodeigr'] = Session::get('kdigr');
                 $ins['sjd_nosjas'] = $nosj;
                 $ins['sjd_tglsjas'] = $tglsj;
                 $ins['sjd_kodecustomer'] = $request->kodecustomer;
@@ -213,15 +213,15 @@ class SJASController extends Controller
                 $ins['sjd_qtystruk'] = $d['qtytitip'];
                 $ins['sjd_qtysjas'] = $d['qtyambil'];
                 $ins['sjd_flagcetak'] = '1';
-                $ins['sjd_create_by'] = $_SESSION['usid'];
+                $ins['sjd_create_by'] = Session::get('usid');
                 $ins['sjd_create_dt'] = DB::RAW("SYSDATE");
 
-                DB::connection($_SESSION['connection'])->table('tbtr_sjas_d')
+                DB::connection(Session::get('connection'))->table('tbtr_sjas_d')
                     ->insert($ins);
 //                $insert[] = $ins;
             }
 
-            DB::connection($_SESSION['connection'])->table('tbtr_sjas_d')
+            DB::connection(Session::get('connection'))->table('tbtr_sjas_d')
                 ->insert($insert);
 
             if($request->sumsisa == 0){
@@ -229,8 +229,8 @@ class SJASController extends Controller
             }
             else $fok = null;
 
-            DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
-                ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
+                ->where('sjh_kodeigr','=',Session::get('kdigr'))
                 ->where('sjh_nostruk','=',$request->nostruk)
                 ->where('sjh_tglstruk','=',DB::RAW("to_date('".$request->tglstruk."','dd/mm/yyyy')"))
                 ->where('sjh_kodecustomer','=',$request->kodecustomer)
@@ -239,11 +239,11 @@ class SJASController extends Controller
                     'sjh_tglsjas' => $tglsj,
                     'sjh_flagselesai' => $fok,
                     'sjh_frektahapan' => $tahapan,
-                    'sjh_modify_by' => $_SESSION['usid'],
+                    'sjh_modify_by' => Session::get('usid'),
                     'sjh_modify_dt' => DB::RAW("SYSDATE")
                 ]);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'success',
@@ -252,7 +252,7 @@ class SJASController extends Controller
             ], 200);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -261,8 +261,8 @@ class SJASController extends Controller
     }
 
     public function checkPrint(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_sjas_d')
-            ->where('sjd_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_sjas_d')
+            ->where('sjd_kodeigr','=',Session::get('kdigr'))
             ->where('sjd_nosjas','=',$request->nosj)
             ->where('sjd_kodecustomer','=',$request->cus_kode)
             ->where('sjd_tahapan','=',$request->tahapan)
@@ -285,16 +285,16 @@ class SJASController extends Controller
             $reprint = 'RE-PRINT';
         else $reprint = '';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT SJH_KODECUSTOMER, to_char(SJH_TGLSTRUK, 'dd/mm/yyyy') SJH_TGLSTRUK, SUBSTR(SJH_NOSTRUK,1,2) || '.' || SUBSTR(SJH_NOSTRUK,3,3) || '.' || SUBSTR(SJH_NOSTRUK,6,5) STRUK,
+        $data = DB::connection(Session::get('connection'))->select("SELECT SJH_KODECUSTOMER, to_char(SJH_TGLSTRUK, 'dd/mm/yyyy') SJH_TGLSTRUK, SUBSTR(SJH_NOSTRUK,1,2) || '.' || SUBSTR(SJH_NOSTRUK,3,3) || '.' || SUBSTR(SJH_NOSTRUK,6,5) STRUK,
         SJH_NOSJAS, to_char(SJH_TGLPENITIPAN,'dd/mm/yyyy') SJH_TGLPENITIPAN,
         to_char(SJD_TGLTAHAPAN,'dd/mm/yyyy') SJD_TGLTAHAPAN, SUBSTR('00' || SJD_TAHAPAN ,LENGTH('00' || SJD_TAHAPAN ) - 1, 2) SJD_TAHAPAN, SJD_SEQNO, SJD_PRDCD, SJD_QTYSJAS,  SJD_QTYSTRUK,
         CUS_NAMAMEMBER,
         PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
         'PRINT : ' || TO_CHAR(SYSDATE, 'DD-MM-YYYY hh:mm:ss') KET
         FROM TBTR_SJAS_H, TBTR_SJAS_D, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
-        WHERE SJH_KODEIGR = '".$_SESSION['kdigr']."' AND SJH_NOSJAS = '".$request->nosj."' AND SJH_KODECUSTOMER = '".$request->cus_kode."'
+        WHERE SJH_KODEIGR = '".Session::get('kdigr')."' AND SJH_NOSJAS = '".$request->nosj."' AND SJH_KODECUSTOMER = '".$request->cus_kode."'
         AND SJD_KODEIGR = SJH_KODEIGR AND SJD_NOSJAS = SJH_NOSJAS AND SJD_KODECUSTOMER = SJH_KODECUSTOMER
         AND SJD_TAHAPAN = '".$request->tahap."'
         AND CUS_KODEMEMBER = SJH_KODECUSTOMER
@@ -303,9 +303,9 @@ class SJASController extends Controller
         ORDER BY SJD_SEQNO");
 
         foreach($data as $d){
-            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT SUM (NVL (SJD_QTYSJAS, 0)) qty
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT SUM (NVL (SJD_QTYSJAS, 0)) qty
                   FROM TBTR_SJAS_D
-                 WHERE SJD_KODEIGR = '".$_SESSION['kdigr']."'
+                 WHERE SJD_KODEIGR = '".Session::get('kdigr')."'
                    AND SJD_NOSJAS = '".$request->nosj."'
                    AND SJD_KODECUSTOMER = '".$request->cus_kode."'
                    AND SJD_TAHAPAN <= '".$request->tahap."'

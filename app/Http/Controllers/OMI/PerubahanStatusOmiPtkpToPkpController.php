@@ -11,7 +11,7 @@ namespace App\Http\Controllers\OMI;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,10 +26,10 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
     }
 
     public function newFormInstance(){
-        $kodeigr = $_SESSION['kdigr'];
-        $usid = $_SESSION['usid'];
+        $kodeigr = Session::get('kdigr');
+        $usid = Session::get('usid');
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PERUSAHAAN")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_PERUSAHAAN")
             ->selectRaw("PRS_RPTNAME")
             ->selectRaw("PRS_KODEMTO")
             ->where("PRS_KODEIGR",'=',$kodeigr)
@@ -37,12 +37,12 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
         $rptname = $temp->prs_rptname;
         $kodemto = $temp->prs_kodemto;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PERUSAHAAN")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_PERUSAHAAN")
             ->selectRaw("PRS_NAMACABANG")
             ->first();
         $apptitle = $temp->prs_namacabang;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTR_ALOKASITAX")
+        $temp = DB::connection(Session::get('connection'))->table("TBTR_ALOKASITAX")
             ->selectRaw("NVL (COUNT (1), 0) as result")
             ->where("ALK_KDIGR",'=',$kodeigr)
             ->whereRaw("ALK_USED IS NULL")
@@ -56,7 +56,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             //Nomor FP Tidak Cukup, Cadangan Nomor FP Harus 2 Nomor !! (EXIT PAGE)
             return response()->json('2');
         }
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT CAST(ALK_TAXNUM AS INT) as nofp1,  CAST(ALK_TAXNUM AS INT) + 1 as nofp2
+        $datas = DB::connection(Session::get('connection'))->select("SELECT CAST(ALK_TAXNUM AS INT) as nofp1,  CAST(ALK_TAXNUM AS INT) + 1 as nofp2
       FROM TBTR_ALOKASITAX
      WHERE ALK_TAXNUM =
                (SELECT MIN (ALK_TAXNUM)
@@ -70,7 +70,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
     public function modalPTKP(Request $request){
         $search = $request->value;
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_namamember','cus_kodemember')
 
             ->where('cus_namamember','LIKE', '%'.$search.'%')
@@ -88,7 +88,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
     public function choosePTKP(Request $request){
         $kode = $request->kodeptkp;
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw("NVL(COUNT(1),0) as result")
             ->where('cus_kodemember','=',$kode)
             ->first();
@@ -96,7 +96,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             //Kode Member Tidak Terdaftar !!
             return response()->json('1');
         }else{
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("NVL(CUS_FLAGPKP,'N') as pkp")
                 ->selectRaw("CUS_NAMAMEMBER")
                 ->where("CUS_KODEMEMBER",'=',$kode)
@@ -112,7 +112,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
     public function modalPKP(Request $request){
         $search = $request->value;
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_namamember','cus_kodemember')
 
             ->where('cus_namamember','LIKE', '%'.$search.'%')
@@ -130,7 +130,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
     public function choosePKP(Request $request){
         $kode = $request->kodepkp;
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw("NVL(COUNT(1),0) as result")
             ->where('cus_kodemember','=',$kode)
             ->first();
@@ -138,7 +138,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             //Kode Member Tidak Terdaftar !!
             return response()->json('1');
         }else{
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("NVL(CUS_FLAGPKP,'N') as pkp")
                 ->selectRaw("CUS_NAMAMEMBER")
                 ->where("CUS_KODEMEMBER",'=',$kode)
@@ -153,9 +153,9 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
     }
     public function prosesData(Request $request){
         try {
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
-            $usid = $_SESSION['usid'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
+            $usid = Session::get('usid');
             $ptkp = $request->ptkp;
             $pkp = $request->pkp;
             $bkl = $request->bkl;
@@ -173,8 +173,8 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             $tglfp = $request->tglfp;
             $tglfp = DateTime::createFromFormat('d-m-Y', $tglfp)->format('d-m-Y');
 
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as result
       FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                        FROM TBTR_JUALDETAIL
                       WHERE TRJD_KODEIGR = '$kodeigr'
@@ -183,7 +183,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
                         AND NVL (TRJD_FLAGTAX2, 'N') = 'P') A");
             if((int)$temp[0]->result == 0){
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+                $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as result
           FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                            FROM TBTR_JUALDETAIL
                           WHERE TRJD_KODEIGR = '$kodeigr'
@@ -207,7 +207,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                     $invno2 = 0;
                 }
             }else{
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as result
+                $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as result
           FROM (SELECT DISTINCT TRJD_FLAGTAX1, TRJD_FLAGTAX2
                            FROM TBTR_JUALDETAIL
                           WHERE TRJD_KODEIGR = '$kodeigr'
@@ -217,7 +217,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                             AND NVL (TRJD_FLAGTAX1, 'N') = 'Y') A");
 
                 if((int)$temp[0]->result != 0){
-                    $temp = DB::connection($_SESSION['connection'])->table("TBTR_ALOKASITAX")
+                    $temp = DB::connection(Session::get('connection'))->table("TBTR_ALOKASITAX")
                         ->selectRaw("NVL (COUNT (1), 0) as result")
                         ->where("ALK_KDIGR",'=',$kodeigr)
                         ->where("ALK_USED",'is',null)
@@ -249,13 +249,13 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 }
                 $invno2 = (int)$pajak;
             }
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+            $temp = DB::connection(Session::get('connection'))->table("TBMASTER_TOKOIGR")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("TKO_KODECUSTOMER",'=',$pkp)
                 ->first();
 
             if((int)$temp->result != 0){
-                $kodeomi = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                $kodeomi = DB::connection(Session::get('connection'))->table("TBMASTER_TOKOIGR")
                     ->selectRaw("TKO_KODEOMI")
                     ->where("TKO_KODECUSTOMER",'=',$pkp)
                     ->first();
@@ -263,12 +263,12 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             }else{
                 $kodeomi = '';
             }
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+            $temp = DB::connection(Session::get('connection'))->table("TBMASTER_TOKOIGR")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("TKO_KODECUSTOMER",'=',$ptkp)
                 ->first();
             if((int)$temp->result != 0){
-                $kodeomilama = DB::connection($_SESSION['connection'])->table("TBMASTER_TOKOIGR")
+                $kodeomilama = DB::connection(Session::get('connection'))->table("TBMASTER_TOKOIGR")
                     ->selectRaw("TKO_KODEOMI")
                     ->where("TKO_KODECUSTOMER",'=',$ptkp)
                     ->first();
@@ -277,7 +277,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 $kodeomilama = '';
             }
             $PESAN = 'Jumlah Struk'; //apaan, baru deklarasi sudah di replace
-            $temp = DB::connection($_SESSION['connection'])->table("TBTR_JUALDETAIL")
+            $temp = DB::connection(Session::get('connection'))->table("TBTR_JUALDETAIL")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("TRJD_KODEIGR",'=',$kodeigr)
                 ->whereRaw("NVL (TRJD_RECORDID, '0') <> '1'")
@@ -288,7 +288,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             $PESAN = 'JualDetail - R - P';
 
             //-- update jualdetail utk kondisi R ( Baca JualHeader )
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
@@ -317,7 +317,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualDetail - R - <> P, Y';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
@@ -345,7 +345,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualDetail - R - Y';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'R'
@@ -373,7 +373,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualHeader - R';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALHEADER')
                 ->whereRaw("JH_KODEIGR = '$kodeigr'
        AND NVL (JH_RECORDID, '0') <> '1'
        AND JH_TRANSACTIONTYPE = 'R'
@@ -389,7 +389,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             if($bkl == 'Y'){
                 $PESAN = 'JualDetail - S - P - BKL';
 
-                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                     ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
@@ -422,7 +422,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
                 $PESAN = 'JualDetail - S - <> P, Y - BKL';
 
-                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                     ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
@@ -454,7 +454,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
                 $PESAN = 'JualDetail - S - Y - BKL';
 
-                DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+                DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                     ->whereRaw("TRJD_KODEIGR = '$kodeigr'
            AND NVL (TRJD_RECORDID, '0') <> '1'
            AND TRJD_TRANSACTIONTYPE = 'S'
@@ -486,7 +486,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
                 $PESAN = 'JualHeader - S - BKL';
 
-                DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+                DB::connection(Session::get('connection'))->table('TBTR_JUALHEADER')
                     ->whereRaw("JH_KODEIGR = '$kodeigr'
            AND NVL (JH_RECORDID, '0') <> '1'
            AND JH_TRANSACTIONTYPE = 'S'
@@ -516,7 +516,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualDetail - S - P';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
@@ -533,7 +533,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualDetail - S - <> P, Y';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
@@ -549,7 +549,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualDetail - S - Y';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALDETAIL')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALDETAIL')
                 ->whereRaw("TRJD_KODEIGR = '$kodeigr'
        AND NVL (TRJD_RECORDID, '0') <> '1'
        AND TRJD_TRANSACTIONTYPE = 'S'
@@ -565,7 +565,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'JualHeader - S';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_JUALHEADER')
+            DB::connection(Session::get('connection'))->table('TBTR_JUALHEADER')
                 ->whereRaw("JH_KODEIGR = '$kodeigr'
        AND NVL (JH_RECORDID, '0') <> '1'
        AND JH_TRANSACTIONTYPE = 'S'
@@ -583,7 +583,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             $bayar2 = 0;
             $PESAN = 'Hitung Nilai Hutang & Bayar';
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
       FROM (SELECT TRPT_CUS_KODEMEMBER,
                    CASE
                        WHEN TRPT_TYPE IN ('D', 'R')
@@ -610,7 +610,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'Piutang';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
+            DB::connection(Session::get('connection'))->table('TBTR_PIUTANG')
                 ->where("TRPT_KODEIGR",'=',$kodeigr)
                 ->whereRaw("TRPT_SALESINVOICEDATE >= TO_DATE('$sDate','DD-MM-YYYY') AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')")
                 ->where("TRPT_CUS_KODEMEMBER",'=',$ptkp)
@@ -624,7 +624,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             if($bkl == 'Y'){
                 $PESAN = 'Hitung Nilai Hutang & Bayar - BKL';
 
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
+                $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (SUM (HUTANG), 0) HUTANG, NVL (SUM (BAYAR), 0) BAYAR
           FROM (SELECT TRPT_CUS_KODEMEMBER,
                        CASE
                            WHEN TRPT_TYPE IN ('D', 'R')
@@ -666,7 +666,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'Piutang - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBTR_PIUTANG')
+            DB::connection(Session::get('connection'))->table('TBTR_PIUTANG')
                 ->whereRaw("TRPT_KODEIGR = '$kodeigr'
            AND TRPT_SALESINVOICEDATE >= TO_DATE('$sDate','DD-MM-YYYY')
            AND TRPT_SALESINVOICEDATE <= TO_DATE('$eDate','DD-MM-YYYY')
@@ -693,7 +693,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'PBOMI - BKL';
 
-            DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
+            DB::connection(Session::get('connection'))->table('TBMASTER_PBOMI')
                 ->where("PBO_KODEMEMBER",'=',$ptkp)
                 ->where("PBO_CREATE_BY",'=','BKL')
                 ->whereRaw("PBO_TGLPB >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLPB <= TO_DATE('$eDate','DD-MM-YYYY')")
@@ -704,7 +704,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'PBOMI';
 
-            DB::connection($_SESSION['connection'])->table('TBMASTER_PBOMI')
+            DB::connection(Session::get('connection'))->table('TBMASTER_PBOMI')
                 ->where("PBO_KODEMEMBER",'=',$ptkp)
                 ->where("PBO_CREATE_BY",'<>','BKL')
                 ->whereRaw("PBO_TGLSTRUK >= TO_DATE('$sDate','DD-MM-YYYY') AND PBO_TGLSTRUK <= TO_DATE('$eDate','DD-MM-YYYY')")
@@ -717,7 +717,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             $jmlhutang = (int)$hutang1 + (int)$hutang2;
             $jmlbayar = (int)$bayar1 + (int)$bayar2;
 
-            DB::connection($_SESSION['connection'])->table('TBMASTER_PIUTANG')
+            DB::connection(Session::get('connection'))->table('TBMASTER_PIUTANG')
                 ->where("PTG_KODEIGR",'=',$kodeigr)
                 ->where("PTG_KODEMEMBER",'=','$ptkp')
                 ->update([
@@ -727,7 +727,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'Cek Piutang PKP';
 
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
+            $temp = DB::connection(Session::get('connection'))->table("TBMASTER_PIUTANG")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("PTG_KODEIGR",'=',$kodeigr)
                 ->where("PTG_KODEMEMBER",'=',$pkp)
@@ -735,7 +735,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             if((int)$temp->result == 0){
                 $PESAN = 'Insert Piutang PKP';
 
-                DB::connection($_SESSION['connection'])->table("TBMASTER_PIUTANG")
+                DB::connection(Session::get('connection'))->table("TBMASTER_PIUTANG")
                     ->insert([
                         'PTG_KODEIGR' => $kodeigr,
                         'PTG_KODEMEMBER' => $pkp,
@@ -746,7 +746,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             }else{
                 $PESAN = 'Update Piutang PKP';
 
-                DB::connection($_SESSION['connection'])->table('TBMASTER_PIUTANG')
+                DB::connection(Session::get('connection'))->table('TBMASTER_PIUTANG')
                     ->where("PTG_KODEIGR",'=',$kodeigr)
                     ->where("PTG_KODEMEMBER",'=','$pkp')
                     ->update([
@@ -758,7 +758,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             if($invno1 != 0){
                 $PESAN = 'Cek FP';
 
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
+                $temp = DB::connection(Session::get('connection'))->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
           FROM TBMASTER_PERUSAHAAN, TBMASTER_CUSTOMER
          WHERE PRS_KODEIGR = '$kodeigr' AND CUS_KODEMEMBER = '$pkp'");
                 if($temp){
@@ -777,7 +777,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 }
                 $serial1 = $serial1.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
 
-                $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                $temp = DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                     ->selectRaw("NVL (COUNT (1), 0) as result")
                     ->where("FKT_KODEIGR",'=',$kodeigr)
                     ->where("FKT_NOFAKTUR",'=',$invno1)
@@ -786,7 +786,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 if((int)$temp->result == 0){
                     $PESAN = 'Insert FP';
 
-                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                         ->insert([
                             'FKT_KODEIGR' => $kodeigr,
                             'FKT_TIPE' => 'S',
@@ -801,7 +801,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 }else{
                     $PESAN = 'Update FP';
 
-                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                         ->where("FKT_KODEIGR",'=',$kodeigr)
                         ->where("FKT_NOFAKTUR",'=',$invno1)
                         ->where("FKT_TIPE",'=','S')
@@ -816,7 +816,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             if($invno2 != 0){
                 $PESAN = 'Cek FP 2';
 
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
+                $temp = DB::connection(Session::get('connection'))->select("SELECT PRS_KODEMTO, CUS_FLAGINSTITUSIPEMERINTAH
           FROM TBMASTER_PERUSAHAAN, TBMASTER_CUSTOMER
          WHERE PRS_KODEIGR = '$kodeigr' AND CUS_KODEMEMBER = '$pkp'");
                 if($temp){
@@ -834,7 +834,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                     $serial2 = '01';
                 }
                 $serial2 = $serial2.'0.'.substr($nopajak,1,3).'-'.substr($nopajak,4,2).'.'.str_pad(substr($nopajak,6,8),8,'0',STR_PAD_LEFT).'Y';
-                $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                $temp = DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                     ->selectRaw("NVL (COUNT (1), 0) as result")
                     ->where("FKT_KODEIGR",'=',$kodeigr)
                     ->where("FKT_NOFAKTUR",'=',$invno2)
@@ -843,7 +843,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 if((int)$temp->result == 0){
                     $PESAN = 'Insert FP 2';
 
-                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                         ->insert([
                             'FKT_KODEIGR' => $kodeigr,
                             'FKT_TIPE' => 'S',
@@ -858,7 +858,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 }else{
                     $PESAN = 'Update FP 2';
 
-                    DB::connection($_SESSION['connection'])->table("TBMASTER_FAKTUR")
+                    DB::connection(Session::get('connection'))->table("TBMASTER_FAKTUR")
                         ->where("FKT_KODEIGR",'=',$kodeigr)
                         ->where("FKT_NOFAKTUR",'=',$invno2)
                         ->where("FKT_TIPE",'=','S')
@@ -873,7 +873,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
             $PESAN = 'History Harga Struk OMI';
 
-            DB::connection($_SESSION['connection'])->table("TBHISTORY_HARGASTRUKOMI")
+            DB::connection(Session::get('connection'))->table("TBHISTORY_HARGASTRUKOMI")
                 ->where("HSO_KODEIGR",'=',$kodeigr)
                 ->where("HSO_KODEMEMBER",'=',$ptkp)
                 ->update([
@@ -883,7 +883,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             //--penambahan diluar clipper info Pak Lili
             $PESAN = 'Update TBTR_REALPB';
 
-            DB::connection($_SESSION['connection'])->table("TBTR_REALPB")
+            DB::connection(Session::get('connection'))->table("TBTR_REALPB")
                 ->whereRaw("TRUNC (RPB_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
                 ->where("RPB_KODECUSTOMER",'=',$ptkp)
                 ->update([
@@ -892,7 +892,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 ]);
 
             $PESAN = 'Update TBTR_OMIKOLI';
-            DB::connection($_SESSION['connection'])->table("TBTR_OMIKOLI")
+            DB::connection(Session::get('connection'))->table("TBTR_OMIKOLI")
                 ->whereRaw("TRUNC (OKL_CREATE_DT) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
                 ->where("OKL_KODEOMI",'=',$kodeomilama)
                 ->update([
@@ -900,7 +900,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 ]);
 
             $PESAN = 'Update TBTR_RETUROMI';
-            DB::connection($_SESSION['connection'])->table("TBTR_RETUROMI")
+            DB::connection(Session::get('connection'))->table("TBTR_RETUROMI")
                 ->whereRaw("TRUNC (ROM_TGLDOKUMEN) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')")
                 ->where("ROM_MEMBER",'=',$ptkp)
                 ->update([
@@ -908,10 +908,10 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                     'ROM_MEMBER' => $pkp
                 ]);
             //commit
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $PESAN = 'ADM Fee';
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (FEE, 0)) FEE
+            $temp = DB::connection(Session::get('connection'))->select("SELECT SUM (NVL (FEE, 0)) FEE
       FROM (SELECT CASE
                        WHEN TRJD_TRANSACTIONTYPE = 'S'
                            THEN TRJD_ADMFEE
@@ -937,9 +937,9 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
             //                 || :TXT_PKP
             //                 || ' Sudah Selesai Dilakukan !!'
             //                );
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'error' => "Gagal memproses data!",
@@ -949,7 +949,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
     }
 
     public function cetak(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $invno1 = (int)$request->invno1;
         $invno2 = (int)$request->invno2;
@@ -965,7 +965,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
 
         $p_and = " and (trjd_noinvoice1 in (".$invno1.", ".$invno2.") or trjd_noinvoice2 in (".$invno1.", ".$invno2."))";
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT ROWNUM NOMOR, CUS_KODEMEMBER, PWP_KODEMEMBER, PRS_NPWP,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT ROWNUM NOMOR, CUS_KODEMEMBER, PWP_KODEMEMBER, PRS_NPWP,
        TO_CHAR (PRS_TGLSK, 'DD MONTH YYYY') PRS_TGLSK,
        PRS_ALAMATFAKTURPAJAK1 || ' ' || PRS_ALAMATFAKTURPAJAK2 ALAMATPJK1,
        PRS_ALAMATFAKTURPAJAK3 ALAMATPJK2, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH, CUS_NAMAMEMBER,

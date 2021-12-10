@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BTAS;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -20,8 +20,8 @@ class TitipController extends Controller
     public function getData(Request $request){
         $data = new \stdClass();
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail')
-            ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail')
+            ->where('trjd_kodeigr','=',Session::get('kdigr'))
             ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
             ->where('trjd_cashierstation','=',$request->station)
             ->where('trjd_create_by','=',$request->kasir)
@@ -30,8 +30,8 @@ class TitipController extends Controller
             ->first();
 
         if(!$temp){
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail_interface')
-                ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail_interface')
+                ->where('trjd_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
                 ->where('trjd_cashierstation','=',$request->station)
                 ->where('trjd_create_by','=',$request->kasir)
@@ -43,10 +43,10 @@ class TitipController extends Controller
                 return response()->json(['title' => 'Data Struk tidak ada!'],500);
             }
             else{
-                $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail_interface')
+                $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail_interface')
                     ->join('tbmaster_customer','cus_kodemember','=','trjd_cus_kodemember')
                     ->select('trjd_cus_kodemember','cus_namamember')
-                    ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+                    ->where('trjd_kodeigr','=',Session::get('kdigr'))
                     ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
                     ->where('trjd_cashierstation','=',$request->station)
                     ->where('trjd_create_by','=',$request->kasir)
@@ -57,9 +57,9 @@ class TitipController extends Controller
                 $data->kode = $temp->trjd_cus_kodemember;
                 $data->nama = $temp->cus_namamember;
 
-                $temp = DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
+                $temp = DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
                     ->selectRaw("to_char(sjh_tglpenitipan, 'dd/mm/yyyy') sjh_tglpenitipan")
-                    ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+                    ->where('sjh_kodeigr','=',Session::get('kdigr'))
                     ->where('sjh_nostruk','=',$request->station.$request->kasir.$request->notrx)
                     ->whereRaw("TO_CHAR(sjh_tglstruk, 'DD/MM/YYYY') = '".$request->tgl."'")
                     ->where('sjh_kodecustomer','=',$data->kode)
@@ -78,10 +78,10 @@ class TitipController extends Controller
             }
         }
         else{
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail')
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail')
                 ->join('tbmaster_customer','cus_kodemember','=','trjd_cus_kodemember')
                 ->select('trjd_cus_kodemember','cus_namamember')
-                ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+                ->where('trjd_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
                 ->where('trjd_cashierstation','=',$request->station)
                 ->where('trjd_create_by','=',$request->kasir)
@@ -92,9 +92,9 @@ class TitipController extends Controller
             $data->kode = $temp->trjd_cus_kodemember;
             $data->nama = $temp->cus_namamember;
 
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
                 ->selectRaw("to_char(sjh_tglpenitipan, 'dd/mm/yyyy') sjh_tglpenitipan")
-                ->where('sjh_kodeigr','=',$_SESSION['kdigr'])
+                ->where('sjh_kodeigr','=',Session::get('kdigr'))
                 ->where('sjh_nostruk','=',$request->station.$request->kasir.$request->notrx)
                 ->whereRaw("TO_CHAR(sjh_tglstruk, 'DD/MM/YYYY') = '".$request->tgl."'")
                 ->where('sjh_kodecustomer','=',$data->kode)
@@ -116,8 +116,8 @@ class TitipController extends Controller
     }
 
     public function showData(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail')
-            ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail')
+            ->where('trjd_kodeigr','=',Session::get('kdigr'))
             ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
             ->where('trjd_cashierstation','=',$request->station)
             ->where('trjd_create_by','=',$request->kasir)
@@ -126,7 +126,7 @@ class TitipController extends Controller
             ->first();
 
         if($temp){
-            $data = DB::connection($_SESSION['connection'])->select("SELECT trjd_seqno,
+            $data = DB::connection(Session::get('connection'))->select("SELECT trjd_seqno,
                       trjd_prdcd,
                       trjd_quantity,
                       trjd_unitprice,
@@ -134,7 +134,7 @@ class TitipController extends Controller
                       prd_deskripsipanjang,
                       prd_unit || '/' || prd_frac unit
                  FROM tbtr_jualdetail, tbmaster_prodmast
-                WHERE     TRJD_KODEIGR = '".$_SESSION['kdigr']."'
+                WHERE     TRJD_KODEIGR = '".Session::get('kdigr')."'
                       AND TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'
                       AND TRJD_CASHIERSTATION = '".$request->station."'
                       AND TRJD_CREATE_BY = '".$request->kasir."'
@@ -144,7 +144,7 @@ class TitipController extends Controller
              ORDER BY trjd_seqno");
 
             foreach($data as $d){
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT TRJD_QUANTITY
+                $temp = DB::connection(Session::get('connection'))->select("SELECT TRJD_QUANTITY
                         FROM TBTR_JUALHEADER, TBTR_JUALDETAIL
                         WHERE JH_TRANSACTIONTYPE = 'R'
                         AND JH_REFERENCECASHIERSTATION = '".$request->station."'
@@ -167,8 +167,8 @@ class TitipController extends Controller
             }
         }
         else{
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail_interface')
-                ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail_interface')
+                ->where('trjd_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
                 ->where('trjd_cashierstation','=',$request->station)
                 ->where('trjd_create_by','=',$request->kasir)
@@ -177,7 +177,7 @@ class TitipController extends Controller
                 ->first();
 
             if($temp){
-                $data = DB::connection($_SESSION['connection'])->select("SELECT trjd_seqno,
+                $data = DB::connection(Session::get('connection'))->select("SELECT trjd_seqno,
                       trjd_prdcd,
                       trjd_quantity,
                       trjd_unitprice,
@@ -185,7 +185,7 @@ class TitipController extends Controller
                       prd_deskripsipanjang,
                       prd_unit || '/' || prd_frac unit
                  FROM tbtr_jualdetail_interface, tbmaster_prodmast
-                WHERE     TRJD_KODEIGR = '".$_SESSION['kdigr']."'
+                WHERE     TRJD_KODEIGR = '".Session::get('kdigr')."'
                       AND TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'
                       AND TRJD_CASHIERSTATION = '".$request->station."'
                       AND TRJD_CREATE_BY = '".$request->kasir."'
@@ -195,7 +195,7 @@ class TitipController extends Controller
              ORDER BY trjd_seqno");
 
                 foreach($data as $d){
-                    $temp = DB::connection($_SESSION['connection'])->select("SELECT TRJD_QUANTITY
+                    $temp = DB::connection(Session::get('connection'))->select("SELECT TRJD_QUANTITY
                         FROM TBTR_JUALHEADER, TBTR_JUALDETAIL
                         WHERE JH_TRANSACTIONTYPE = 'R'
                         AND JH_REFERENCECASHIERSTATION = '".$request->station."'
@@ -223,8 +223,8 @@ class TitipController extends Controller
     }
 
     public function process(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail')
-            ->where('trjd_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail')
+            ->where('trjd_kodeigr','=',Session::get('kdigr'))
             ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '".$request->tgl."'")
             ->where('trjd_cashierstation','=',$request->station)
             ->where('trjd_create_by','=',$request->kasir)
@@ -233,8 +233,8 @@ class TitipController extends Controller
             ->first();
 
         if(!$temp) {
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualdetail_interface')
-                ->where('trjd_kodeigr', '=', $_SESSION['kdigr'])
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualdetail_interface')
+                ->where('trjd_kodeigr', '=', Session::get('kdigr'))
                 ->whereRaw("TO_CHAR(TRJD_TRANSACTIONDATE, 'DD/MM/YYYY') = '" . $request->tgl . "'")
                 ->where('trjd_cashierstation', '=', $request->station)
                 ->where('trjd_create_by', '=', $request->kasir)
@@ -246,27 +246,27 @@ class TitipController extends Controller
                 return response()->json(['title' => 'Data Struk tidak ada!'], 500);
             }
             else{
-                DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
+                DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
                     ->insert([
-                        'sjh_kodeigr' => $_SESSION['kdigr'],
+                        'sjh_kodeigr' => Session::get('kdigr'),
                         'sjh_nostruk' => $request->station.$request->kasir.$request->notrx,
                         'sjh_tglstruk' => DB::RAW("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
                         'sjh_kodecustomer' => $request->cus_kode,
                         'sjh_tglpenitipan' => DB::RAW("SYSDATE"),
-                        'sjh_create_by' => $_SESSION['usid'],
+                        'sjh_create_by' => Session::get('usid'),
                         'sjh_create_dt' => DB::RAW("SYSDATE")
                     ]);
             }
         }
         else{
-            DB::connection($_SESSION['connection'])->table('tbtr_sjas_h')
+            DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
                 ->insert([
-                    'sjh_kodeigr' => $_SESSION['kdigr'],
+                    'sjh_kodeigr' => Session::get('kdigr'),
                     'sjh_nostruk' => $request->station.$request->kasir.$request->notrx,
                     'sjh_tglstruk' => DB::RAW("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
                     'sjh_kodecustomer' => $request->cus_kode,
                     'sjh_tglpenitipan' => DB::RAW("SYSDATE"),
-                    'sjh_create_by' => $_SESSION['usid'],
+                    'sjh_create_by' => Session::get('usid'),
                     'sjh_create_dt' => DB::RAW("SYSDATE")
                 ]);
         }

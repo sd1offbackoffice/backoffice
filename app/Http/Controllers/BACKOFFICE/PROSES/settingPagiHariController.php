@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
 use App\AllModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
@@ -17,11 +17,11 @@ class settingPagiHariController extends Controller
 
     public function tanggal(){
 
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $model  = new AllModel();
         $dateTime = $model->getDateTime();
 
-        $tgltrkmrn = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $tgltrkmrn = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_periodeterakhir')
             ->where('prd_kodeigr', '=', $kodeigr)
             ->get();
@@ -37,11 +37,11 @@ class settingPagiHariController extends Controller
 
     public function cetak_perubahan_harga_jual(){
 
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $ppn = '';
         $nActMargin = '';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
@@ -52,7 +52,7 @@ class settingPagiHariController extends Controller
             $ppn = 1 + ($ppn/100);
         }
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT temp.prdcd as prdcd,
+        $data = DB::connection(Session::get('connection'))->select("SELECT temp.prdcd as prdcd,
                --++ NVL BUAT DIV DEPT KAT, KEPUTUSAN SSA
                NVL(prd.prd_kodedivisi,' ') as PRD_KodeDivisi,
                NVL(div.DIV_NAMADIVISI,' ') as DIV_NamaDivisi,
@@ -143,14 +143,14 @@ class settingPagiHariController extends Controller
 
     public function cetak_daftar_plu_tag(){
 
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd,
 		       prd_kodedivisi,
 		       div_namadivisi,
 		       prd_kodedepartement,

@@ -10,7 +10,7 @@ namespace App\Http\Controllers\FRONTOFFICE;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
@@ -25,7 +25,7 @@ class PromosiHoKeCabController extends Controller
         try{
 //            set_time_limit(0);
 //
-//            $kodeigr = $_SESSION['kdigr'];
+//            $kodeigr = Session::get('kdigr');
 //            $p_sukses = "false";
 //            $err_txt = "";
 //            $connect = loginController::getConnectionProcedure();
@@ -46,7 +46,6 @@ class PromosiHoKeCabController extends Controller
 //            }
 //            return response()->json($msg);
 
-//            $sql = oci_connect('igrmktho', $simulasi ? $_SESSION['connection'] : $_SESSION['dbPass'], ('172.20.28.24'. ':' . $_SESSION['dbPort'] . '/' . 'IGRMKTHO');
 //            $perusahaan = DB::connection('igrmktho')->table("tbmaster_perusahaan")->first();
         }catch (\Exception $e){
             $msg = "Proses Tarik Data GAGAL!!! --> ".$e->getMessage();
@@ -57,7 +56,7 @@ class PromosiHoKeCabController extends Controller
     public function DownEdit(Request $request){
         try{
             set_time_limit(0);
-            $kodeigr = $_SESSION['kdigr'];
+            $kodeigr = Session::get('kdigr');
             $p_sukses = "false";
             $err_txt = "";
             $connect = loginController::getConnectionProcedure();

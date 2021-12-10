@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,10 +26,10 @@ class SuperPromoController extends Controller
 
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
 
@@ -50,19 +50,19 @@ class SuperPromoController extends Controller
 
 
     public function checkPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
         $notif = '';
         $deskripsi = '';
         $unit = '';
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = '$kodeigr'
            AND prd_prdcd = brc_prdcd(+)
            AND (prd_prdcd = TRIM ('$kode') OR brc_barcode = TRIM ('kode'))");
         if($datas){
-            $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+            $temp = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
                 ->selectRaw("PRD_DESKRIPSIPANJANG")
                 ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
                 ->where("PRD_KODEIGR",'=',$kodeigr)
@@ -78,14 +78,14 @@ class SuperPromoController extends Controller
     }
 
     public function save(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $datas  = $request->datas;
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         for($i=1;$i<sizeof($datas);$i++){
-            DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
+            DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
                 ->insert([
                     'spot_kodeigr'=>$kodeigr,
                     'spot_periodeawal'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
@@ -95,7 +95,7 @@ class SuperPromoController extends Controller
                     'spot_fmtrgs'=>$datas[$i]['sales'],
                     'spot_fmtrgg'=>$datas[$i]['margin'],
                     'spot_hrgjual'=>$datas[$i]['hrg'],
-                    'spot_create_by'=>$_SESSION['usid'],
+                    'spot_create_by'=>Session::get('usid'),
                     'spot_create_dt'=>DB::RAW("trunc(SYSDATE)"),
                     'spot_modify_by'=>'',
                     'spot_modify_dt'=>'',
@@ -104,13 +104,13 @@ class SuperPromoController extends Controller
     }
 
     public function getTable(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbtr_hadiahkejutan")
+        $datas = DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
             ->selectRaw("SPOT_PRDCD")
             ->selectRaw("SPOT_HRGJUAL")
             ->selectRaw("SPOT_FMTRGQ AS QTY")

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\FRONTOFFICE;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -24,7 +24,7 @@ class CetakLaporanPromosiController extends Controller
     {
         $search = $request->search;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT LKS_KODERAK FROM TBMASTER_LOKASI
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT LKS_KODERAK FROM TBMASTER_LOKASI
                     WHERE LKS_KODERAK LIKE 'R%' OR LKS_KODERAK LIKE 'O%' and LKS_KODERAK like '%" . $request->search . "%' ORDER BY LKS_KODERAK");
 
         return Datatables::of($data)->make(true);
@@ -34,7 +34,7 @@ class CetakLaporanPromosiController extends Controller
     {
         $search = $request->search;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT CBH_KODEPROMOSI AS Kode, CBH_NAMAPROMOSI AS NamaPromosi
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT CBH_KODEPROMOSI AS Kode, CBH_NAMAPROMOSI AS NamaPromosi
            FROM TBMASTER_LOKASI,
                 TBMASTER_PERUSAHAAN,
                 TBTR_CASHBACK_DTL,
@@ -101,7 +101,7 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
             }
             $filename = 'igr-promo-per-rak';
 
-            $data = DB::connection($_SESSION['connection'])->select("SELECT * FROM (
+            $data = DB::connection(Session::get('connection'))->select("SELECT * FROM (
                                         SELECT DISTINCT LKS_KODESUBRAK AS SubRak, LKS_SHELVINGRAK AS Shelving, CBH_TGLAWAL, CBH_TGLAKHIR,
                                                         PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN, LKS_KODERAK AS RAK,
                                                         LKS_PRDCD AS PLU, PRD_DESKRIPSIPANJANG AS DESCPEN,
@@ -152,7 +152,7 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
             $koderak1 = 'R%';
             $koderak2 = 'O%';
             $kodepromosi = '%';
-            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
+            $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
 				CONCAT (LKS_PRDCD, CONCAT (' - ', PRD_DESKRIPSIPANJANG)) AS PLU,
                 CONCAT (CBH_KODEPROMOSI, CONCAT (' - ', CBH_NAMAPROMOSI)) AS Promosi,
 				CASE WHEN cba_Reguler = '1' AND cba_Freepass ='1' AND  cba_Retailer ='1' THEN 'ALL' ELSE
@@ -184,7 +184,7 @@ and GFA_KODEPROMOSI like '%" . $request->search . "%'");
             $koderak1 = 'R%';
             $koderak2 = 'O%';
             $kodepromosi = '%';
-            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
+            $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
 				CONCAT (LKS_PRDCD, CONCAT (' - ', PRD_DESKRIPSIPANJANG)) AS PLU,
                 GFH_NAMAPROMOSI AS Promosi,
 				BPRP_KETPENDEK AS Hadiah,
@@ -218,7 +218,7 @@ order by kodepromosi,plu
             $filename = 'igr-promo-gift';
             //CETAK_LAP_GF;
         } else if ($cetakby == 'PRINTBESOK') {
-            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
+            $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT CBH_TGLAWAL, CBH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPERUSAHAAN AS PERUSAHAAN,
                 LKS_PRDCD AS PLU, PRD_DESKRIPSIPANJANG AS DESCPAN,
                 CBH_NAMAPROMOSI AS PROMOSI,
 				CASE WHEN cba_Reguler = '1' AND cba_Freepass ='1' AND  cba_Retailer ='1' THEN 'ALL' ELSE
@@ -274,7 +274,7 @@ SELECT DISTINCT GFH_TGLAWAL, GFH_TGLAKHIR, PRS_NAMACABANG AS CABANG, PRS_NAMAPER
             $w = 738;
             $h = 74;
         }
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();

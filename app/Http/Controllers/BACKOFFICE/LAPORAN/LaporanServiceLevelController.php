@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class LaporanServiceLevelController extends Controller
@@ -14,10 +14,10 @@ class LaporanServiceLevelController extends Controller
     }
 
     public function lov_supplier(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = strtoupper($request->search);
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_namasupplier', 'LIKE', '%'.$search.'%')
             ->where('sup_kodesupplier', 'LIKE', '%'.$search.'%')
@@ -30,10 +30,10 @@ class LaporanServiceLevelController extends Controller
     }
 
     public function lov_monitoring(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = strtoupper($request->search);
 
-        $monitoring = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+        $monitoring = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
             ->select('msu_namamonitoring', 'msu_kodemonitoring')
             ->where('msu_namamonitoring', 'LIKE', '%'.$search.'%')
             ->where('msu_kodemonitoring', 'LIKE', '%'.$search.'%')
@@ -47,19 +47,19 @@ class LaporanServiceLevelController extends Controller
 
     public function cetak_laporan(Request $request){
 
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tgl1       = $request->tgl1;
         $tgl2       = $request->tgl2;
         $sup1       = $request->sup1;
         $sup2       = $request->sup2;
         $mtrSup     = $request->mtrSup;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_rptname', 'prs_namaperusahaan', 'prs_namacabang')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT sup_kodesupplier, sup_namasupplier, msu_kodemonitoring, msu_kodesupplier
+        $data = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, msu_kodemonitoring, msu_kodesupplier
         FROM
             tbmaster_supplier, tbtr_monitoringsupplier
         WHERE

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\CETAKDOKUMEN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -36,7 +36,7 @@ class OldCetakDokumenController extends Controller
 
         if ($doc == 'K') {
             if ($lap == 'L') {
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                $recs = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc,trbo_tgldoc
                            FROM TBTR_BACKOFFICE
                            WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                         NVL(trbo_recordid, '0') <> '1' and
@@ -54,7 +54,7 @@ class OldCetakDokumenController extends Controller
                 }
             } else {
                 if ($reprint == '0') {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                    $recs = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc,trbo_tgldoc
                                FROM TBTR_BACKOFFICE
                                WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           trbo_typetrn = '" . $doc . "' and
@@ -71,7 +71,7 @@ class OldCetakDokumenController extends Controller
                         }
                     }
                 } else {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC,MSTH_TGLDOC
+                    $recs = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC,MSTH_TGLDOC
                                FROM TBTR_MSTRAN_H
                                WHERE(MSTH_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           MSTH_TYPETRN = '" . $doc . "' and
@@ -90,7 +90,7 @@ class OldCetakDokumenController extends Controller
             }
         } else {
             if ($lap == 'L') {
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                $recs = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc,trbo_tgldoc
 			           FROM TBTR_BACKOFFICE
 			           WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
 			           			  trbo_typetrn = '" . $doc . "' and
@@ -108,7 +108,7 @@ class OldCetakDokumenController extends Controller
                 }
             } else {
                 if ($reprint == '0') {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc,trbo_tgldoc
+                    $recs = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc,trbo_tgldoc
                                FROM TBTR_BACKOFFICE
                                WHERE(trbo_tgldoc BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           trbo_typetrn = '" . $doc . "' and
@@ -125,7 +125,7 @@ class OldCetakDokumenController extends Controller
                         }
                     }
                 } else {
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC,MSTH_TGLDOC
+                    $recs = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC,MSTH_TGLDOC
                                FROM TBTR_MSTRAN_H
                                WHERE(MSTH_TGLDOC BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') and to_date('" . $tgl2 . "','dd/mm/yyyy')) and
                                           MSTH_TYPETRN = '" . $doc . "' and
@@ -196,7 +196,7 @@ class OldCetakDokumenController extends Controller
         }
         foreach ($nodocs as $nodoc) {
             if ($reprint == '0') {
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                        FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, tbmaster_supplier
                       WHERE     trbo_prdcd = PRD_PRDCD
                             and trbo_kodesupplier = sup_kodesupplier
@@ -206,7 +206,7 @@ class OldCetakDokumenController extends Controller
                             and PRD_FLAGBKP2 = 'Y'
                             and sup_pkp = 'Y'")[0]->count;
             } else {
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                        FROM TBTR_MSTRAN_D, TBMASTER_PRODMAST, tbmaster_supplier
                       WHERE     MSTD_PRDCD = PRD_PRDCD
                             and mstd_kodesupplier = sup_kodesupplier
@@ -238,7 +238,7 @@ class OldCetakDokumenController extends Controller
                 $tgldocbo = $tgldocs[$i];
 
 
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
+                $recs = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
                      FROM TBTR_BACKOFFICE, tbmaster_prodmast, tbmaster_supplier
                     WHERE     trbo_prdcd = prd_prdcd
                 and trbo_kodesupplier = sup_kodesupplier
@@ -250,7 +250,7 @@ class OldCetakDokumenController extends Controller
 
                 foreach ($recs as $rec) {
 
-                    $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                    $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                          FROM TBTR_BACKOFFICE
                         WHERE     trbo_typetrn = 'K'
                             and trbo_nodoc = '" . $nodocs[$i] . "'
@@ -258,7 +258,7 @@ class OldCetakDokumenController extends Controller
                             and trbo_nofaktur is not null")[0]->count;
 
                     if ($temp > 0) {
-                        $nofak = DB::connection($_SESSION['connection'])->select("SELECT distinct trbo_nofaktur
+                        $nofak = DB::connection(Session::get('connection'))->select("SELECT distinct trbo_nofaktur
                                 FROM TBTR_BACKOFFICE
                                WHERE     trbo_typetrn = 'K'
                                and trbo_nodoc = '" . $nodocs[$i] . "'
@@ -266,14 +266,14 @@ class OldCetakDokumenController extends Controller
                                and trbo_nofaktur is not null")[0]->count;
                     } else {
                         $connect = loginController::getConnectionProcedure();
-                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "','NRB','Nomor Retur Barang','Z',7,true); END;");
+                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
                         oci_bind_by_name($query, ':ret', $nofak, 32);
                         oci_execute($query);
                     }
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_BACKOFFICE')
+                    DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                         ->where([
-                            'trbo_kodeigr' => $_SESSION['kdigr'],
+                            'trbo_kodeigr' => Session::get('kdigr'),
                             'trbo_typetrn' => 'K',
                             'trbo_nodoc' => $nodocs[$i],
                             'trbo_invno' => $rec->invno
@@ -286,7 +286,7 @@ class OldCetakDokumenController extends Controller
                 }
             } else {
 
-                $tgldocbo = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT MSTH_TGLDOC MSTH_TGLDOC
+                $tgldocbo = DB::connection(Session::get('connection'))->select("SELECT DISTINCT MSTH_TGLDOC MSTH_TGLDOC
                               FROM TBTR_MSTRAN_H
                              WHERE MSTH_NODOC = '" . $nodocs[$i] . "' and ROWNUM = 1")[0]->msth_tgldoc;
             }
@@ -296,7 +296,7 @@ class OldCetakDokumenController extends Controller
 
                 $FNAME =
                     'RM'
-                    . $_SESSION['kdigr']
+                    . Session::get('kdigr')
                     . ' . CSV';
 
 //            -- HEADER'
@@ -381,9 +381,9 @@ class OldCetakDokumenController extends Controller
                 }
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+            $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                    FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                  WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                  WHERE     trbo_kodeigr = '" . Session::get('kdigr') . "'
                     and trbo_kodeigr = SUP_KODEIGR
                     and trbo_kodesupplier = SUP_KODESUPPLIER
                     and SUP_PKP = 'Y'
@@ -391,33 +391,33 @@ class OldCetakDokumenController extends Controller
 
             if ($reprint == '0' && $temp > 0) {
 
-                DB::connection($_SESSION['connection'])->table('TBHISTORY_FAKTURRM')->where('FRM_KODEIGR', '=', $_SESSION['kdigr'])->where('frm_nodocbo', '=', $nodocbo)->delete();
+                DB::connection(Session::get('connection'))->table('TBHISTORY_FAKTURRM')->where('FRM_KODEIGR', '=', Session::get('kdigr'))->where('frm_nodocbo', '=', $nodocbo)->delete();
 
-                $dataInsert = DB::connection($_SESSION['connection'])->selectOne("SELECT trbo_kodeigr,trbo_nodoc,trbo_tgldoc,
+                $dataInsert = DB::connection(Session::get('connection'))->selectOne("SELECT trbo_kodeigr,trbo_nodoc,trbo_tgldoc,
                       trbo_istype || '.' || trbo_invno referensifp
                  FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                WHERE     trbo_kodeigr = '" . Session::get('kdigr') . "'
                 and trbo_kodeigr = SUP_KODEIGR
                 and trbo_kodesupplier = SUP_KODESUPPLIER
                 and SUP_PKP = 'Y'
                 and trbo_nodoc = '" . $nodocbo . "'");
 
-                DB::connection($_SESSION['connection'])->table('TBHISTORY_FAKTURRM')
-                    ->where('FRM_KODEIGR', '=', $_SESSION['kdigr'])
+                DB::connection(Session::get('connection'))->table('TBHISTORY_FAKTURRM')
+                    ->where('FRM_KODEIGR', '=', Session::get('kdigr'))
                     ->where('frm_nodocbo', '=', $nodocbo)
                     ->delete();
 
-                DB::connection($_SESSION['connection'])->table('tbhistory_fakturrm')
+                DB::connection(Session::get('connection'))->table('tbhistory_fakturrm')
                     ->insert([
                         'frm_nodocbo' => $dataInsert->trbo_kodeigr,
                         'frm_nodocbo' => $dataInsert->trbo_nodoc,
                         'frm_tglbo' => $dataInsert->trbo_tgldoc,
                         'frm_referensifp' => $dataInsert->referensifp,
-                        'frm_create_by' => $_SESSION['usid'],
+                        'frm_create_by' => Session::get('usid'),
                         'frm_create_dt' => DB::RAW("SYSDATE")
                     ]);
 
-//                DB::connection($_SESSION['connection'])->insert(" INSERT INTO TBHISTORY_FAKTURRM(FRM_KODEIGR,
+//                DB::connection(Session::get('connection'))->insert(" INSERT INTO TBHISTORY_FAKTURRM(FRM_KODEIGR,
 //                                            FRM_NODOCBO,
 //                                            FRM_TGLBO,
 //                                            FRM_REFERENSIFP,
@@ -428,7 +428,7 @@ class OldCetakDokumenController extends Controller
 
         }
 
-        $filename = 'RM.' . $_SESSION['kdigr'] . '.csv';
+        $filename = 'RM.' . Session::get('kdigr') . '.csv';
 
         $columnHeader = ['RM', 'NPWP', 'NAMA', 'KD_JENIS_TRANSAKSI', 'FG_PENGGANTI', 'NOMOR_FAKTUR', 'TANGGAL_FAKTUR', 'IS_CREDITABLE', 'NOMOR_DOKUMEN_RETUR', 'TANGGAL_RETUR', 'MASA_PAJAK_RETUR', 'TAHUN_PAJAK_RETUR', 'NILAI_RETUR_DPP', 'NILAI_RETUR_PPN', 'NILAI_RETUR_PPNBM'];
 
@@ -451,7 +451,7 @@ class OldCetakDokumenController extends Controller
 
     public function RMBO_CUR(string $nodocbo)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT RM,
+        $result = DB::connection(Session::get('connection'))->select("SELECT RM,
                NPWP,
                NAMA,
                KD_JENIS_TRANSAKSI,
@@ -500,7 +500,7 @@ class OldCetakDokumenController extends Controller
                                mstd_discrph / mstd_qty bpb_discrph
                           FROM tbtr_mstran_d
                          WHERE mstd_typetrn = 'B')
-                 WHERE     trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                 WHERE     trbo_kodeigr = '" . Session::get('kdigr') . "'
                 and trbo_kodeigr = PRS_KODEIGR
                 and trbo_kodeigr = PRD_KODEIGR
                 and trbo_prdcd = PRD_PRDCD
@@ -531,7 +531,7 @@ class OldCetakDokumenController extends Controller
 
     public function RMTR_CUR(string $nodoctr)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT RM,
+        $result = DB::connection(Session::get('connection'))->select("SELECT RM,
                NPWP,
                NAMA,
                KD_JENIS_TRANSAKSI,
@@ -579,7 +579,7 @@ class OldCetakDokumenController extends Controller
                                mstd_discrph / mstd_qty bpb_discrph
                           FROM tbtr_mstran_d
                          WHERE mstd_typetrn = 'B')
-                 WHERE     MSTD_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                 WHERE     MSTD_KODEIGR = '" . Session::get('kdigr') . "'
                 and MSTD_KODEIGR = PRS_KODEIGR
                 and MSTD_KODEIGR = PRD_KODEIGR
                 and MSTD_PRDCD = PRD_PRDCD
@@ -716,9 +716,9 @@ class OldCetakDokumenController extends Controller
                     array_push($sub_isi_docno, $nodoc);
                 }
             } else {
-                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                               FROM TBMASTER_CABANG
-                             WHERE CAB_KODECABANG = '" . $_SESSION['kdigr'] . "'
+                             WHERE CAB_KODECABANG = '" . Session::get('kdigr') . "'
                                     and NVL(CAB_EFAKTUR, 'N') = 'Y'")[0]->count;
 
                 if ($tmp > 0) {
@@ -726,7 +726,7 @@ class OldCetakDokumenController extends Controller
                         $efaktur = true;
 
                         foreach ($nodocs as $nodoc) {
-                            $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                            $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                           FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, tbmaster_supplier
                          WHERE     trbo_prdcd = PRD_PRDCD
                         and trbo_kodesupplier = sup_kodesupplier
@@ -763,7 +763,7 @@ class OldCetakDokumenController extends Controller
 
                     if ($reprint == '0') {
 
-                        $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                        $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                                    FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, TBMASTER_SUPPLIER
                                   WHERE trbo_prdcd = PRD_PRDCD
                                   and trbo_typetrn = 'K'
@@ -776,7 +776,7 @@ class OldCetakDokumenController extends Controller
                             $f_docbkp = 'Y';
 
                             $connect = loginController::getConnectionProcedure();
-                            $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
+                            $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
                                  '2' || TO_CHAR(SYSDATE, 'yy'),
@@ -786,7 +786,7 @@ class OldCetakDokumenController extends Controller
                             oci_execute($query);
                         }
 
-                        $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT COUNT(1)
+                        $tmp = DB::connection(Session::get('connection'))->selectOne("SELECT COUNT(1)
                                FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
                               WHERE     trbo_prdcd = PRD_PRDCD
                                 and trbo_typetrn = 'K'
@@ -798,7 +798,7 @@ class OldCetakDokumenController extends Controller
                             $f_docbtkp = 'Y';
 
                             $connect = loginController::getConnectionProcedure();
-                            $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
+                            $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "',
                                  'NPB',
                                  'Nomor Pengeluaran Barang',
                                  '2' || TO_CHAR(SYSDATE, 'yy'),
@@ -808,7 +808,7 @@ class OldCetakDokumenController extends Controller
                             oci_execute($query);
 
                         }
-                        $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
+                        $recs = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_invno INVNO, trbo_nofaktur
                               FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
                              WHERE     trbo_prdcd = PRD_PRDCD
                         and PRD_FLAGBKP1 = 'Y'
@@ -820,9 +820,9 @@ class OldCetakDokumenController extends Controller
                         foreach ($recs as $rec) {
 //                         getnofp_tab($i).invno = rec . invno;
 
-                            $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT COUNT(1)
+                            $tmp = DB::connection(Session::get('connection'))->selectOne("SELECT COUNT(1)
                           FROM TBMASTER_CABANG
-                         WHERE CAB_KODECABANG = '" . $_SESSION['kdigr'] . "'
+                         WHERE CAB_KODECABANG = '" . Session::get('kdigr') . "'
                          and NVL(CAB_EFAKTUR, 'N') = 'Y'");
 
 
@@ -832,7 +832,7 @@ class OldCetakDokumenController extends Controller
 
                                 $connect = loginController::getConnectionProcedure();
 
-                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
+                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "',
                                  'NRB',
                                     'Nomor Retur Barang',
                                     'Z',
@@ -867,7 +867,7 @@ class OldCetakDokumenController extends Controller
                         $nilsal_btkp = 0;
                         $nildisc_btkp = 0;
 
-                        $recs = DB::connection($_SESSION['connection'])->select("SELECT *
+                        $recs = DB::connection(Session::get('connection'))->select("SELECT *
                              FROM TBTR_BACKOFFICE,
                                    TBMASTER_PRODMAST,
                                    TBMASTER_STOCK,
@@ -881,7 +881,7 @@ class OldCetakDokumenController extends Controller
                         and trbo_kodeigr = SUP_KODEIGR(+)
                         and trbo_kodesupplier =
                             SUP_KODESUPPLIER(+)
-                        and trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                        and trbo_kodeigr = '" . Session::get('kdigr') . "'
                         and trbo_typetrn = 'K'");
 
                         foreach ($recs as $rec) {
@@ -920,7 +920,7 @@ class OldCetakDokumenController extends Controller
                                 $nofp = $nofp . '\'' . $nofak . '\',';
                             }
 
-                            $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                            $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                           FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                          WHERE     BTB_PRDCD = KVP_PLUOLD(+)
                                  and BTB_NODOC = '" . $rec->trbo_noreff . "'
@@ -929,7 +929,7 @@ class OldCetakDokumenController extends Controller
                                      or BTB_PRDCD = '" . $rec->trbo_prdcd . "')")[0]->count;
 
                             if ($tmp > 0) {
-                                $res = DB::connection($_SESSION['connection'])->select("SELECT BTB_FRAC, BTB_UNIT
+                                $res = DB::connection(Session::get('connection'))->select("SELECT BTB_FRAC, BTB_UNIT
                              FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                             WHERE     BTB_PRDCD = KVP_PLUOLD(+)
                             and BTB_NODOC = '" . $rec->trbo_noreff . "'
@@ -940,7 +940,7 @@ class OldCetakDokumenController extends Controller
                                 $frac = $res[0]->btb_frac;
                                 $unit = $res[0]->btb_unit;
                             } else {
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                              FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                             WHERE     BTB_PRDCD = KVP_PLUOLD(+)
                             and (KVP_PLUOLD = '" . $rec->trbo_prdcd . "'
@@ -952,7 +952,7 @@ class OldCetakDokumenController extends Controller
                             and BTB_INVNO IS NOT NULL")[0]->count;
 
                                 if ($tmp > 0) {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT BTB_FRAC, BTB_UNIT
+                                    $res = DB::connection(Session::get('connection'))->select("SELECT BTB_FRAC, BTB_UNIT
                                   INTO FRAC, UNIT
                                   FROM TBTR_MSTRAN_BTB, TBTR_KONVERSIPLU
                                  WHERE     BTB_PRDCD = KVP_PLUOLD(+)
@@ -972,7 +972,7 @@ class OldCetakDokumenController extends Controller
                                     $frac = $res[0]->btb_frac;
                                     $unit = $res[0]->btb_unit;
                                 } else {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT PRD_FRAC, PRD_UNIT
+                                    $res = DB::connection(Session::get('connection'))->select("SELECT PRD_FRAC, PRD_UNIT
                                 INTO FRAC, UNIT
                                 FROM TBMASTER_PRODMAST, TBTR_KONVERSIPLU
                                WHERE     PRD_PRDCD = KVP_PLUOLD(+)
@@ -985,7 +985,7 @@ class OldCetakDokumenController extends Controller
                                 }
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+                            DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
                                 ->insert([
                                     'mstd_kodeigr' => $rec->trbo_kodeigr,
                                     'mstd_recordid' => $rec->trbo_recordid,
@@ -1040,48 +1040,48 @@ class OldCetakDokumenController extends Controller
                                     'mstd_posqty' => $qtyst,
                                     'mstd_keterangan' => $rec->trbo_keterangan,
                                     'mstd_kodetag' => $rec->prd_kodetag,
-                                    'mstd_create_by' => $_SESSION['usid'],
+                                    'mstd_create_by' => Session::get('usid'),
                                     'mstd_create_dt' => DB::RAW("SYSDATE"),
-                                    'mstd_modify_by' => $_SESSION['usid'],
+                                    'mstd_modify_by' => Session::get('usid'),
                                     'mstd_modify_dt' => DB::RAW("SYSDATE"),
                                     'mstd_noref3' => $rec->trbo_noreff,
                                 ]);
 
 
-                            $ada = DB::connection($_SESSION['connection'])->selectOne("SELECT *
+                            $ada = DB::connection(Session::get('connection'))->selectOne("SELECT *
                                   FROM TBTR_MSTRAN_BTB
-                                 WHERE BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                 WHERE BTB_KODEIGR = '" . Session::get('kdigr') . "'
                                      and BTB_NODOC = '" . $rec->trbo_noreff . "'
                                      and BTB_PRDCD = '" . $rec->trbo_prdcd . "'");
 
 
                             if (!$ada) {
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                                      FROM TBTR_KONVERSIPLU
                                     WHERE KVP_PLUNEW = '" . $rec->trbo_prdcd . "'")[0]->count;
                                 if ($tmp == 0) {
                                     $qtypb = 9999999999;
                                 } else {
-                                    $qtypb = DB::connection($_SESSION['connection'])->select("SELECT BTB_QTY count
+                                    $qtypb = DB::connection(Session::get('connection'))->select("SELECT BTB_QTY count
                                     FROM TBTR_MSTRAN_BTB
-                                   WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                   WHERE     BTB_KODEIGR = '" . Session::get('kdigr') . "'
                                    and BTB_NODOC = '" . $rec->trbo_noreff . "'
                                    and BTB_PRDCD IN(SELECT KVP_PLUOLD
                                      FROM TBTR_KONVERSIPLU
                                     WHERE KVP_PLUNEW = '" . $rec->trbo_prdcd . "')")[0]->count;
                                 }
                             } else {
-                                $qtypb = DB::connection($_SESSION['connection'])->select("SELECT BTB_QTY count
+                                $qtypb = DB::connection(Session::get('connection'))->select("SELECT BTB_QTY count
                                  FROM TBTR_MSTRAN_BTB
-                                WHERE     BTB_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                WHERE     BTB_KODEIGR = '" . Session::get('kdigr') . "'
                                 and BTB_NODOC = '" . $rec->trbo_noreff . "'
                                 and BTB_PRDCD = '" . $rec->trbo_prdcd . "'")[0]->count;
 
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbhistory_retursupplier')
+                            DB::connection(Session::get('connection'))->table('tbhistory_retursupplier')
                                 ->insert([
-                                    'hsr_kodeigr' => $_SESSION['kdigr'],
+                                    'hsr_kodeigr' => Session::get('kdigr'),
                                     'hsr_nodoc' => $f_plubkp == 'Y' ? $nodocbkp : $nodocbtkp,
                                     'hsr_kodesupplier' => $rec->trbo_kodesupplier,
                                     'hsr_prdcd' =>  $rec->trbo_prdcd,
@@ -1089,7 +1089,7 @@ class OldCetakDokumenController extends Controller
                                     'hsr_hrgsatuan' => $rec->trbo_hrgsatuan,
                                     'hsr_qtypb' => $qtypb,
                                     'hsr_qtyretur' => $rec->trbo_qty,
-                                    'hsr_create_by' => $_SESSION['usid'],
+                                    'hsr_create_by' => Session::get('usid'),
                                     'hsr_create_dt' => DB::RAW("SYSDATE"),
                                     'hsr_refbpb' => $rec->trbo_noreff
                                 ]);
@@ -1099,7 +1099,7 @@ class OldCetakDokumenController extends Controller
 
                             $connect = loginController::getConnectionProcedure();
 
-                            $query = oci_parse($connect, "BEGIN  sp_igr_update_stock('" . $_SESSION['kdigr'] . "',
+                            $query = oci_parse($connect, "BEGIN  sp_igr_update_stock('" . Session::get('kdigr') . "',
                             '02',
                             '" . $rec->trbo_prdcd . "',
                             ' ',
@@ -1107,7 +1107,7 @@ class OldCetakDokumenController extends Controller
                             " . $rec->trbo_qty . ",
                             ".$lcostst.",
                             ".$acostst.",
-                            '" . $_SESSION['usid'] . "',
+                            '" . Session::get('usid') . "',
                             :v_lok,
                             :v_message); END;");
                             oci_bind_by_name($query, ':v_lok', $v_lok, 32);
@@ -1146,7 +1146,7 @@ class OldCetakDokumenController extends Controller
 
 
                         if ($f_docbkp == 'Y') {
-                            DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_H
+                            DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_MSTRAN_H
                             (MSTH_KODEIGR,
                              MSTH_RECORDID,
                              MSTH_TYPETRN,
@@ -1175,7 +1175,7 @@ class OldCetakDokumenController extends Controller
                              MSTH_CREATE_DT,
                              MSTH_MODifY_BY,
                              MSTH_MODifY_DT)
-                             VALUES('" . $_SESSION['kdigr'] . "',
+                             VALUES('" . Session::get('kdigr') . "',
                                  NULL,
                                  '" . $doc . "',
                                  '" . $nodocbkp . "',
@@ -1199,17 +1199,17 @@ class OldCetakDokumenController extends Controller
                                  NULL,
                                  NULL,
                                  '1',
-                                  '" . $_SESSION['usid'] . "',
+                                  '" . Session::get('usid') . "',
                                  SYSDATE,
-                                  '" . $_SESSION['usid'] . "',
+                                  '" . Session::get('usid') . "',
                                  SYSDATE)");
 
                         }
 
                         if ($f_docbtkp == 'Y') {
-                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                            DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                                 ->insert([
-                                    'MSTH_KODEIGR' => $_SESSION['kdigr'],
+                                    'MSTH_KODEIGR' => Session::get('kdigr'),
                                     'MSTH_RECORDID' => '',
                                     'MSTH_TYPETRN' => $doc,
                                     'MSTH_NODOC' => $nodocbtkp,
@@ -1233,14 +1233,14 @@ class OldCetakDokumenController extends Controller
                                     'MSTH_KETERANGAN_HEADER' => null,
                                     'MSTH_FURGNT' => null,
                                     'MSTH_FLAGDOC' => 1,
-                                    'MSTH_CREATE_BY' => $_SESSION['usid'],
+                                    'MSTH_CREATE_BY' => Session::get('usid'),
                                     'MSTH_CREATE_DT' => DB::RAW("SYSDATE"),
-                                    'MSTH_MODifY_BY' => $_SESSION['usid'],
+                                    'MSTH_MODifY_BY' => Session::get('usid'),
                                     'MSTH_MODifY_DT' => DB::RAW("SYSDATE")
                                 ]);
                         }
 
-                        DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
+                        DB::connection(Session::get('connection'))->update("UPDATE TBTR_BACKOFFICE
                         SET trbo_nonota = '" . $nodocbkp . "',
                             trbo_tglnota = TRUNC(SYSDATE),
                             trbo_recordid = '2',
@@ -1254,7 +1254,7 @@ class OldCetakDokumenController extends Controller
                                              and PRD_FLAGBKP1 = 'Y'
                                              and PRD_FLAGBKP2 = 'Y')");
 
-                        DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
+                        DB::connection(Session::get('connection'))->update("UPDATE TBTR_BACKOFFICE
                         SET trbo_nonota = '" . $nodocbtkp . "',
                             trbo_tglnota = TRUNC(SYSDATE),
                             trbo_recordid = '2',
@@ -1270,15 +1270,15 @@ class OldCetakDokumenController extends Controller
                                                  or NVL(PRD_FLAGBKP2, 'N') <>
                                                  'Y'))");
 
-                        DB::connection($_SESSION['connection'])->update("update tbtr_usul_returlebih
+                        DB::connection(Session::get('connection'))->update("update tbtr_usul_returlebih
 												set usl_status = 'SUDAH CETAK NOTA'
 										WHERE     usl_trbo_nodoc = '" . $nodocs[$i] . "'");
 
                         if (isset($supcoht)) {
-                            $ada = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(1), 0)
+                            $ada = DB::connection(Session::get('connection'))->select("SELECT NVL(COUNT(1), 0)
                           FROM TBTR_HUTANG
                          WHERE     HTG_TYPE = 'D'
-                         and HTG_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                         and HTG_KODEIGR = '" . Session::get('kdigr') . "'
                          and HTG_NODOKUMEN = '" . $nonpb . "'");
 
 
@@ -1288,7 +1288,7 @@ class OldCetakDokumenController extends Controller
                                 $pkp2 = $res[0]->prd_flagbkp2;
 
                                 if ($f_docbkp == 'Y') {
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
+                                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
                                    HTG_TYPE,
                                    HTG_KODESUPPLIER,
                                    HTG_NODOKUMEN,
@@ -1306,7 +1306,7 @@ class OldCetakDokumenController extends Controller
                                    HTG_MODifYDT,
                                    HTG_NOREFERENSI,
                                    HTG_TGLREFERENSI)
-                                   VALUES('" . $_SESSION['kdigr'] . "'
+                                   VALUES('" . Session::get('kdigr') . "'
                                        'D',
                                        $supcoht,
                                        $nodocbkp,
@@ -1317,9 +1317,9 @@ class OldCetakDokumenController extends Controller
                                        '" . $nilsal . "',
                                        '" . $pkp1 . "',
                                        '" . $pkp2 . "',
-                                       '" . $_SESSION['usid'] . "',
+                                       '" . Session::get('usid') . "',
                                        SYSDATE,
-                                       '" . $_SESSION['usid'] . "',
+                                       '" . Session::get('usid') . "',
                                        SYSDATE,
                                        '" . $nodocs[$i] . "',
                                        TGLDOC)");
@@ -1327,7 +1327,7 @@ class OldCetakDokumenController extends Controller
                                 }
 
                                 if ($f_docbtkp == 'Y') {
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
+                                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_HUTANG(HTG_KODEIGR,
                                    HTG_TYPE,
                                    HTG_KODESUPPLIER,
                                    HTG_NODOKUMEN,
@@ -1345,7 +1345,7 @@ class OldCetakDokumenController extends Controller
                                    HTG_MODifYDT,
                                    HTG_NOREFERENSI,
                                    HTG_TGLREFERENSI)
-                                   VALUES('" . $_SESSION['kdigr'] . "',
+                                   VALUES('" . Session::get('kdigr') . "',
                                        'D',
                                        '" . $supcoht . "',
                                        '" . $nodocbtkp . "',
@@ -1356,9 +1356,9 @@ class OldCetakDokumenController extends Controller
                                        '" . $nilsal_btkp . "',
                                        '" . $pkp1 . "',
                                        '" . $pkp2 . "',
-                                       '" . $_SESSION['usid'] . "',
+                                       '" . Session::get('usid') . "',
                                        SYSDATE,
-                                       '" . $_SESSION['usid'] . "',
+                                       '" . Session::get('usid') . "',
                                        SYSDATE,
                                        '" . $nodocs[$i] . "',
                                        '" . $tgldocs[$i] . "')ss");
@@ -1368,11 +1368,11 @@ class OldCetakDokumenController extends Controller
                         }
                     } else {
                         $temp = $temp . '\'' . $nodocs[$i] . '\',';
-                        $nofak = DB::connection($_SESSION['connection'])->select("SELECT msth_nofaktur
+                        $nofak = DB::connection(Session::get('connection'))->select("SELECT msth_nofaktur
                        FROM TBTR_MSTRAN_H
                       WHERE     MSTH_NODOC =  '" . $nodocs[$i] . "'
                                          and MSTH_TYPETRN = 'K'
-                                         and MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'")[0]->msth_nofaktur;
+                                         and MSTH_KODEIGR = '" . Session::get('kdigr') . "'")[0]->msth_nofaktur;
 
 
                         $nofp = $nofp . '\'' . $nofak . '\',';
@@ -1385,10 +1385,10 @@ class OldCetakDokumenController extends Controller
 
             if (isset($temp)) {
                 //sini
-//                return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-//                array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+//                return Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+//                array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
                 $func = 'print-doc';
-                $kdigr = $_SESSION['kdigr'];
+                $kdigr = Session::get('kdigr');
                 $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
 
                 if ($nrfp == 1) {
@@ -1398,7 +1398,7 @@ class OldCetakDokumenController extends Controller
 
                             if ($reprint == '0') {
 
-                                $tmp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                           FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
                          WHERE     trbo_nodoc = '" . $nodoc . "'
                             and trbo_kodeigr = SUP_KODEIGR(+)
@@ -1406,7 +1406,7 @@ class OldCetakDokumenController extends Controller
                             and trbo_kodesupplier = SUP_KODESUPPLIER(+)")[0]->count;
 
                                 if ($tmp > 0) {
-                                    $res = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT NVL(SUP_PKP, 'N') pkp, trbo_nonota nonota
+                                    $res = DB::connection(Session::get('connection'))->select("SELECT DISTINCT NVL(SUP_PKP, 'N') pkp, trbo_nonota nonota
                              FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
                             WHERE     trbo_nodoc = '" . $nodoc . "'
                             and trbo_kodeigr = SUP_KODEIGR(+)
@@ -1418,7 +1418,7 @@ class OldCetakDokumenController extends Controller
 
                                     if ($pkp == 'Y') {
 
-                                        $tmp = DB::connection($_SESSION['connection'])->selectOne("SELECT *
+                                        $tmp = DB::connection(Session::get('connection'))->selectOne("SELECT *
                                 FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST
                                WHERE     trbo_prdcd = PRD_PRDCD
                                and trbo_typetrn = 'K'
@@ -1434,14 +1434,14 @@ class OldCetakDokumenController extends Controller
                                     }
                                 }
                             } else {
-                                $pkp = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT NVL(MSTD_PKP, 'N') pkp
+                                $pkp = DB::connection(Session::get('connection'))->select("SELECT DISTINCT NVL(MSTD_PKP, 'N') pkp
                           FROM TBTR_MSTRAN_D
                          WHERE MSTD_NODOC = '" . $nodoc . "'
                             and MSTD_TYPETRN = 'K'
-                            and MSTD_KODEIGR = '" . $_SESSION['kdigr'] . "' ")[0]->pkp;
+                            and MSTD_KODEIGR = '" . Session::get('kdigr') . "' ")[0]->pkp;
 
                                 if ($pkp == 'Y') {
-                                    $pkp = DB::connection($_SESSION['connection'])->select("SELECT COUNT(1) count
+                                    $pkp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
                              FROM TBTR_MSTRAN_D, TBMASTER_PRODMAST
                             WHERE     MSTD_PRDCD = PRD_PRDCD
                             and MSTD_TYPETRN = 'K'
@@ -1463,16 +1463,16 @@ class OldCetakDokumenController extends Controller
                 if ($lap == 'L') {
                     if ($reprint == '0') {
                         foreach ($sub_isi_docno as $sub) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
+                            DB::connection(Session::get('connection'))->update("UPDATE TBTR_BACKOFFICE
                                 SET trbo_flagdoc = '1'
                               WHERE trbo_nodoc = '" . $sub . "'
-                            and trbo_kodeigr = '" . $_SESSION['kdigr'] . "'");
+                            and trbo_kodeigr = '" . Session::get('kdigr') . "'");
                         }
                     } else {
                         foreach ($sub_isi_docno as $sub) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_MSTRAN_H
+                            DB::connection(Session::get('connection'))->update("UPDATE TBTR_MSTRAN_H
                             SET MSTH_FLAGDOC = '1'
-                            WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "')
+                            WHERE     MSTH_KODEIGR = '" . Session::get('kdigr') . "')
                                     and MSTH_TYPETRN = '" . $doc . "'
                                     and MSTH_NOPO = '" . $sub . "'");
                         }
@@ -1500,7 +1500,7 @@ class OldCetakDokumenController extends Controller
                         if ($reprint == '0') {
                             $connect = loginController::getConnectionProcedure();
 
-                            $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR( '" . $_SESSION['kdigr'] . "',
+                            $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR( '" . Session::get('kdigr') . "',
                              'NBH',
                              'Nomor Nota Barang Hilang',
                              '7' || TO_CHAR(SYSDATE, 'yy'),
@@ -1511,7 +1511,7 @@ class OldCetakDokumenController extends Controller
 
                             $temp = $temp . '\'' . $v_nodoc . '\',';
 
-                            $recs = DB::connection($_SESSION['connection'])->select("SELECT A .*, B .*
+                            $recs = DB::connection(Session::get('connection'))->select("SELECT A .*, B .*
                                 FROM TBTR_BACKOFFICE A, TBMASTER_PRODMAST B
                                WHERE     PRD_KODEIGR = trbo_kodeigr
                                         and PRD_PRDCD = trbo_prdcd
@@ -1523,7 +1523,7 @@ class OldCetakDokumenController extends Controller
                                 $lcostst = 0;
 
 
-                                $results = DB::connection($_SESSION['connection'])->select("SELECT ST_SALDOAKHIR, ST_LASTCOST, ST_AVGCOST
+                                $results = DB::connection(Session::get('connection'))->select("SELECT ST_SALDOAKHIR, ST_LASTCOST, ST_AVGCOST
                              FROM TBMASTER_STOCK
                             WHERE     ST_KODEIGR =  '" . $rec->trbo_kodeigr . "'
                          and ST_PRDCD =
@@ -1537,14 +1537,14 @@ class OldCetakDokumenController extends Controller
 
                                 if (isset($rec->trbo_kodesupplier)) {
 
-                                    $pkp = DB::connection($_SESSION['connection'])->select(" SELECT SUP_PKP
+                                    $pkp = DB::connection(Session::get('connection'))->select(" SELECT SUP_PKP
                                 FROM TBMASTER_SUPPLIER
-                               WHERE     SUP_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                               WHERE     SUP_KODEIGR = '" . Session::get('kdigr') . "'
                                    and SUP_KODESUPPLIER = '" . $rec->trbo_kodesupplier . "';");
                                     if (!isset($pkp)) {
                                         $pkp = 'N';
                                     }
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_D(MSTD_KODEIGR,
+                                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_MSTRAN_D(MSTD_KODEIGR,
                                        MSTD_RECORDID,
                                        MSTD_TYPETRN,
                                        MSTD_NODOC,
@@ -1668,34 +1668,34 @@ class OldCetakDokumenController extends Controller
                                  '" . $rec->PRD_KODETAG . "',
                                  '" . $rec->trbo_furgnt . "',
                                  '" . $pkp . "',
-                                 '" . $_SESSION['usid'] . "',
+                                 '" . Session::get('usid') . "',
                                  SYSDATE);");
 
                                     if ($doc == 'B') {
                                         $connect = loginController::getConnectionProcedure();
 
-                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                         oci_execute($query);
 
                                     } else {
                                         if ($doc == 'K') {
                                             $connect = loginController::getConnectionProcedure();
 
-                                            $query = oci_parse($connect, "BEGIN SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','02','" . $rec->trbo_prdcd . "',' ','TRFOUT',$rec->trbo_qty,'" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                            $query = oci_parse($connect, "BEGIN SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','02','" . $rec->trbo_prdcd . "',' ','TRFOUT',$rec->trbo_qty,'" . $lcostst . "','" . $acostst . "','" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                             oci_execute($query);
 
                                         } else {
                                             if ($doc == 'F') {
                                                 $connect = loginController::getConnectionProcedure();
 
-                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','03','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','03','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                 oci_execute($query);
 
                                             } else {
                                                 if ($doc == 'X') {
                                                     $connect = loginController::getConnectionProcedure();
 
-                                                    $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc2 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','ADJ','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                    $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "',LPAD('" . $rec->trbo_flagdisc2 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','ADJ','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                     oci_execute($query);
 
 
@@ -1703,7 +1703,7 @@ class OldCetakDokumenController extends Controller
                                                     if ($doc == 'H') {
                                                         $connect = loginController::getConnectionProcedure();
 
-                                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "',LPAD('" . $rec->trbo_flagdisc1 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "','" . $acostst . "','" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                        $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "',LPAD('" . $rec->trbo_flagdisc1 . "', 2, '0'),,'" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "','" . $acostst . "','" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                         oci_execute($query);
 
 
@@ -1712,13 +1712,13 @@ class OldCetakDokumenController extends Controller
                                                             if ($rec->trbo_flagdisc1 == 'P') {
                                                                 $connect = loginController::getConnectionProcedure();
 
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
                                                             } else {
                                                                 $connect = loginController::getConnectionProcedure();
 
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','01','" . $rec->trbo_prdcd . "',' ','TRFIN','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
                                                             }
@@ -1726,7 +1726,7 @@ class OldCetakDokumenController extends Controller
                                                             if ($doc == 'O') {
                                                                 $connect = loginController::getConnectionProcedure();
 
-                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . $_SESSION['kdigr'] . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . $_SESSION['usid'] . "','" . $v_lok . "','" . $v_message . "'); END;");
+                                                                $query = oci_parse($connect, "BEGIN  SP_IGR_UPDATE_STOCK('" . Session::get('kdigr') . "','01','" . $rec->trbo_prdcd . "',' ','TRFOUT','" . $rec->trbo_qty . "','" . $lcostst . "',0,'" . Session::get('usid') . "','" . $v_lok . "','" . $v_message . "'); END;");
                                                                 oci_execute($query);
 
 
@@ -1737,15 +1737,15 @@ class OldCetakDokumenController extends Controller
                                             }
                                         }
                                     }
-                                    $ada = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(1), 0) count
+                                    $ada = DB::connection(Session::get('connection'))->select("SELECT NVL(COUNT(1), 0) count
                                           FROM TBTR_MSTRAN_H
-                                         WHERE MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                         WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "'
                                                    and MSTH_TYPETRN = '" . $doc . "'
                                                    and MSTH_NODOC = V_NODOC;")[0]->count;
 
                                     if ($ada == 0) {
 
-                                        DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_MSTRAN_H(MSTH_KODEIGR,
+                                        DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_MSTRAN_H(MSTH_KODEIGR,
                                 MSTH_TYPETRN,
                                 MSTH_NODOC,
                                 MSTH_TGLDOC,
@@ -1753,18 +1753,18 @@ class OldCetakDokumenController extends Controller
                                 MSTH_KODESUPPLIER,
                                 MSTH_CREATE_BY,
                                 MSTH_CREATE_DT)
-                                VALUES('" . $_SESSION['kdigr'] . "'
+                                VALUES('" . Session::get('kdigr') . "'
                                     '" . $doc . "',
                                     '" . $v_nodoc . "',
                                     TRUNC(SYSDATE),
                                     '1',
                                     '" . $rec->trbo_kodesupplier . "',
-                                    '" . $_SESSION['usid'] . "',
+                                    '" . Session::get('usid') . "',
                                     SYSDATE);");
                                     }
                                 }
                             }
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
+                            DB::connection(Session::get('connection'))->update("UPDATE TBTR_BACKOFFICE
                         SET trbo_nonota = '" . $v_nodoc . "'
                             trbo_tglnota = TRUNC(SYSDATE),
                             trbo_recordid = '2',
@@ -1781,27 +1781,27 @@ class OldCetakDokumenController extends Controller
                 $temp = substr($temp, 0, strlen($temp) - 1);
 
                 if (isset($temp)) {
-//                    return Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
-//                    array_push($file, Self::PRINT_DOC($_SESSION['kdigr'], $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+//                    return Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2);
+//                    array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
                     $func = 'print-doc';
-                    $kdigr = $_SESSION['kdigr'];
+                    $kdigr = Session::get('kdigr');
                     $laporan[] = compact(['func','kdigr','temp','doc','lap','kertas','reprint','tgl1','tgl2']);
 //sini
                     if ($lap == 'L') {
                         if ($reprint == '0') {
                             foreach ($nodocs as $nodoc) {
 
-                                DB::connection($_SESSION['connection'])->update("UPDATE TBTR_BACKOFFICE
+                                DB::connection(Session::get('connection'))->update("UPDATE TBTR_BACKOFFICE
                         SET trbo_flagdoc = '1'
                       WHERE     trbo_nodoc = '" . $nodoc . "'
-                      and trbo_kodeigr = '" . $_SESSION['kdigr'] . "';");
+                      and trbo_kodeigr = '" . Session::get('kdigr') . "';");
                             }
                         }
                     } else {
                         foreach ($nodocs as $nodoc) {
-                            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_MSTRAN_H
+                            DB::connection(Session::get('connection'))->update("UPDATE TBTR_MSTRAN_H
                      SET MSTH_FLAGDOC = '1'
-                   WHERE     MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                   WHERE     MSTH_KODEIGR = '" . Session::get('kdigr') . "'
                       and MSTH_TYPETRN = '" . $doc . "'
                       and MSTH_NODOC =  '" . $nodoc . "'");
                         }
@@ -1823,7 +1823,7 @@ class OldCetakDokumenController extends Controller
 
     public function PRD_CUR(string $plu)
     {
-        $result = DB::connection($_SESSION['connection'])->select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2 FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '" . $_SESSION['kdigr'] . "' AND PRD_PRDCD = '" . $plu . "' ");
+        $result = DB::connection(Session::get('connection'))->select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2 FROM TBMASTER_PRODMAST WHERE PRD_KODEIGR = '" . Session::get('kdigr') . "' AND PRD_PRDCD = '" . $plu . "' ");
         return $result;
     }
 
@@ -1855,7 +1855,7 @@ class OldCetakDokumenController extends Controller
                         $ch = 45;
                         $filename = 'list-pengeluaran';
                         $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='K'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT   trbo_nodoc nodoc, trbo_tgldoc, trbo_kodesupplier, trbo_istype, trbo_invno, trbo_tglinv,
+                        $data1 = DB::connection(Session::get('connection'))->select("SELECT   trbo_nodoc nodoc, trbo_tgldoc, trbo_kodesupplier, trbo_istype, trbo_invno, trbo_tglinv,
                                  trbo_prdcd, trbo_hrgsatuan, trbo_keterangan, trbo_gross, trbo_discrph, trbo_ppnrph,
                                  CASE
                                      WHEN '" . $reprint . "' = '1'
@@ -1868,7 +1868,7 @@ class OldCetakDokumenController extends Controller
                                  PRS_NAMACABANG, trbo_noreff
                             FROM TBTR_BACKOFFICE, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN,
                                  TBTR_MSTRAN_BTB
-                           WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                           WHERE trbo_kodeigr = '" . Session::get('kdigr') . "'
                                       " . $P_PN . "
                              AND PRD_KODEIGR = trbo_kodeigr
                              AND PRD_PRDCD = trbo_prdcd
@@ -1879,9 +1879,9 @@ class OldCetakDokumenController extends Controller
                              AND trbo_noreff = BTB_NODOC(+)
                         ORDER BY trbo_seqno");
 
-                        $data2 = DB::connection($_SESSION['connection'])->select("SELECT distinct trbo_nodoc, trbo_tgldoc, trbo_kodesupplier,trbo_istype, trbo_invno, trbo_tglinv
+                        $data2 = DB::connection(Session::get('connection'))->select("SELECT distinct trbo_nodoc, trbo_tgldoc, trbo_kodesupplier,trbo_istype, trbo_invno, trbo_tglinv
                                     FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN
-                                    WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                    WHERE trbo_kodeigr = '" . Session::get('kdigr') . "'
                                                   " . $P_PN . "
                                                   AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                                   AND sup_kodeigr(+) = trbo_kodeigr AND sup_kodesupplier(+) = trbo_kodesupplier
@@ -1893,7 +1893,7 @@ class OldCetakDokumenController extends Controller
                         $ch = 45;
                         $filename = 'cetak-list';
                         $P_PN = "AND trbo_noreff IN (" . $nodoc . ")";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT trbo_noreff, trbo_nodoc nodoc, trbo_tglreff  trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_isibeli trbo_frac,                                    trbo_hrgsatuan, trbo_keterangan,
+                        $data1 = DB::connection(Session::get('connection'))->select("SELECT trbo_noreff, trbo_nodoc nodoc, trbo_tglreff  trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_isibeli trbo_frac,                                    trbo_hrgsatuan, trbo_keterangan,
                                 CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                 trbo_qty, FLOOR(trbo_qty/prd_isibeli) AS CTN, MOD(trbo_qty,prd_isibeli) AS PCS, (trbo_qty * trbo_hrgsatuan) AS total ,
                                 CASE WHEN trbo_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
@@ -1906,7 +1906,7 @@ class OldCetakDokumenController extends Controller
                                      ELSE  'EDIT LIST PENERIMAAN BARANG'
                                 END AS JUDUL
                                 FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                                WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                WHERE trbo_kodeigr = '" . Session::get('kdigr') . "'
                                  " . $P_PN . "
                                 AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                 AND prs_kodeigr = trbo_kodeigr
@@ -1920,7 +1920,7 @@ class OldCetakDokumenController extends Controller
                         $ch = 45;
                         $filename = 'list-baranghilang';
                         $P_PN = "AND trbo_nodoc IN (" . $nodoc . ") AND trbo_typetrn='H'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT trbo_nodoc nodoc,trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
+                        $data1 = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc nodoc,trbo_tgldoc, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
                                     CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                  trbo_qty, FLOOR(trbo_qty/prd_frac) AS CTN, MOD(trbo_qty,prd_frac) AS PCS, (trbo_qty * (trbo_hrgsatuan/prd_frac)) AS total ,
                                     CASE WHEN trbo_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
@@ -1931,7 +1931,7 @@ class OldCetakDokumenController extends Controller
                                           WHEN trbo_typetrn = 'X' THEN 'EDIT LIST PENYESUAIAN PERSEDIAAN'
                                           ELSE  'EDIT LIST PENERIMAAN BARANG' END AS JUDUL
                                 FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                                WHERE trbo_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                WHERE trbo_kodeigr = '" . Session::get('kdigr') . "'
                                  " . $P_PN . "
                                                     AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                                     AND prs_kodeigr = trbo_kodeigr
@@ -1955,7 +1955,7 @@ class OldCetakDokumenController extends Controller
 
                         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
 
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
+                        $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                                   CASE WHEN '" . $reprint . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
@@ -1966,7 +1966,7 @@ class OldCetakDokumenController extends Controller
                                  NVL(SUP_ALAMATNPWP2,SUP_ALAMATSUPPLIER2) SUP_ALAMATSUPPLIER2,
                                  NVL(SUP_ALAMATNPWP3,SUP_KOTASUPPLIER3) SUP_KOTASUPPLIER3, sup_telpsupplier, sup_contactperson, mstd_noref3
                     FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN, TBMASTER_SUPPLIER
-                    WHERE MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "' AND
+                    WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "' AND
                                    MSTH_KODEIGR = MSTD_KODEIGR AND MSTH_NODOC = MSTD_NODOC AND
                                    MSTD_KODEIGR = PRD_KODEIGR AND MSTD_PRDCD = PRD_PRDCD AND
                                    MSTH_KODEIGR = PRS_KODECABANG AND
@@ -1974,7 +1974,7 @@ class OldCetakDokumenController extends Controller
                                     " . $P_PN . "
                     ORDER BY MSTH_NODOC,MSTD_SEQNO");
 
-                        $data2 = DB::connection($_SESSION['connection'])->select("select rownum, a.*
+                        $data2 = DB::connection(Session::get('connection'))->select("select rownum, a.*
                                         from
                                         (SELECT DISTINCT MSTH_NODOC NODOC, to_char(MSTH_TGLDOC, 'dd/mm/yyyy') MSTH_TGLDOC nodoc, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
                                                         to_char(MSTD_DATE3, 'dd/mm/yyyy') MSTD_DATE3
@@ -1983,7 +1983,7 @@ class OldCetakDokumenController extends Controller
                                                         TBMASTER_PRODMAST,
                                                         TBMASTER_PERUSAHAAN,
                                                         TBMASTER_SUPPLIER
-                                                  WHERE MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                                  WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "'
                                                     AND MSTH_KODEIGR = MSTD_KODEIGR
                                                     AND MSTH_NODOC = MSTD_NODOC
                                                     AND MSTD_KODEIGR = PRD_KODEIGR
@@ -2007,7 +2007,7 @@ class OldCetakDokumenController extends Controller
                         break;
                     case  'H' :      // Barang Hilang
                         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='H'";
-                        $data1 = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc nodoc, msth_tgldoc,
+                        $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc nodoc, msth_tgldoc,
                                       mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                       FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/prd_frac)) AS total, mstd_keterangan,
                                       CASE WHEN mstd_flagdisc1 = '1' THEN 'BARANG BAIK' ELSE
@@ -2015,7 +2015,7 @@ class OldCetakDokumenController extends Controller
                                       prd_deskripsipanjang,  prd_frac,
                                       prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3
                         FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                        WHERE msth_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                        WHERE msth_KODEIGR = '" . Session::get('kdigr') . "'
                                       " . $P_PN . "
                                      AND mstd_kodeigr = msth_kodeigr AND mstd_nodoc = msth_nodoc
                                      AND prd_kodeigr = msth_kodeigr AND prd_prdcd = mstd_prdcd
@@ -2037,7 +2037,7 @@ class OldCetakDokumenController extends Controller
                 }
             }
 
-            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+            $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->first();
 
             if (sizeof($data1) != 0) {
@@ -2132,7 +2132,7 @@ class OldCetakDokumenController extends Controller
 //          $P_JBT2 = REPLACE(:P_JBT2,'1',' ');
 //          $P_TANDA = REPLACE(:P_TANDA,'1',' ');
 
-        $data1 = DB::connection($_SESSION['connection'])->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
+        $data1 = DB::connection(Session::get('connection'))->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
          MSTD_DATE2 , PRD_PRDCD, MSTD_QTY, MSTD_UNIT, MSTD_FRAC, MSTD_GROSS,
          MSTD_DISCRPH, (MSTD_PPNRPH) MSTD_PPNRPH, MSTD_PKP, MSTH_ISTYPE, MSTH_INVNO, MSTH_FLAGDOC,
          SUP_NAMASUPPLIER, SUP_SINGKATANSUPPLIER, SUP_NAMANPWP,
@@ -2151,7 +2151,7 @@ class OldCetakDokumenController extends Controller
          TBMASTER_PERUSAHAAN,
          TBMASTER_CONST,
          TBMASTER_PRODMAST
-   WHERE MSTH_KODEIGR = '" . $_SESSION['kdigr'] . "'
+   WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "'
 " . $P_PN . "
      AND MSTH_TYPETRN = 'K'
      AND MSTD_NODOC = MSTH_NODOC
@@ -2168,7 +2168,7 @@ class OldCetakDokumenController extends Controller
      AND NVL (PRD_FLAGBKP1, 'N') = 'Y'
      AND PRD_KODEIGR = MSTD_KODEIGR
 ORDER BY MSTD_SEQNO");
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
 
         if (sizeof($data1) != 0) {

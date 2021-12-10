@@ -435,7 +435,7 @@
         var tabel;
         var tgltrn;
         var datalks = [];
-        var parameterPPN = {{ $_SESSION['ppn'] }};
+        var parameterPPN = {{ Session::get('ppn') }};
 
         $(document).ready(function(){
             tgltrn = $('#tgltrn').datepicker({

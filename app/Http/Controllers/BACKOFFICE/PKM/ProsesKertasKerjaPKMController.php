@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\PKM;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -20,8 +20,8 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function getLovPrdcd(){
-        $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipendek desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
-            where prd_kodeigr = '".$_SESSION['kdigr']."'
+        $data = DB::connection(Session::get('connection'))->select("select prd_deskripsipendek desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
+            where prd_kodeigr = '".Session::get('kdigr')."'
             and substr(prd_Prdcd,7,1) = '0'
             order by prd_deskripsipendek");
 
@@ -29,7 +29,7 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function getHistory(){
-        $data = DB::connection($_SESSION['connection'])->select("select * from (SELECT pkm_prdcd,
+        $data = DB::connection(Session::get('connection'))->select("select * from (SELECT pkm_prdcd,
                    prd_deskripsipanjang,
                    pkm_mindisplay,
                    pkm_minorder,
@@ -63,7 +63,7 @@ class ProsesKertasKerjaPKMController extends Controller
                            THEN pkm_adjust_dt || ' - ' || pkm_adjust_by
                    END adjust
               FROM tbmaster_kkpkm, tbmaster_prodmast, tbmaster_supplier
-             WHERE pkm_kodeigr = '".$_SESSION['kdigr']."'
+             WHERE pkm_kodeigr = '".Session::get('kdigr')."'
                 and pkm_prdcd in (select pkm_prdcd from tbmaster_kkpkm where pkm_periodeproses is not null AND exists (select 1 from tbmaster_prodmast where prd_prdcd = pkm_prdcd and prd_kodedivisi IN ('1', '2', '3')))
                AND prd_kodeigr(+) = pkm_kodeigr
                AND prd_prdcd(+) = pkm_prdcd
@@ -83,13 +83,13 @@ class ProsesKertasKerjaPKMController extends Controller
         $qtymplus = $request->qtymplus;
         $pkmt = $request->pkmt;
 
-        if($_SESSION['userlevel'] != '1'){
+        if(Session::get('userlevel') != '1'){
             $usertype = 'XX';
         }
-        else if(substr($_SESSION['eml'],0,2) == 'SM'){
+        else if(substr(Session::get('eml'),0,2) == 'SM'){
             $usertype = 'SM';
         }
-        else if(substr($_SESSION['eml'],0,3) == 'SJM'){
+        else if(substr(Session::get('eml'),0,3) == 'SJM'){
             $usertype = 'SJM';
         }
 
@@ -116,24 +116,24 @@ class ProsesKertasKerjaPKMController extends Controller
             ];
         }
 
-        DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
-            ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
+        DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
+            ->where('pkm_kodeigr','=',Session::get('kdigr'))
             ->where('pkm_prdcd','=',$prdcd)
             ->update([
                 'pkm_pkm' => $pkm,
                 'pkm_pkmt' => $pkm + $qtymplus,
-                'pkm_adjust_by' => $_SESSION['usid'],
+                'pkm_adjust_by' => Session::get('usid'),
                 'pkm_adjust_dt' => DB::RAW("SYSdATE")
             ]);
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
             ->where('gdl_prdcd','=',$prdcd)
             ->count();
 
         if($temp > 0){
             $flagmpa = false;
 
-            $gdl = DB::connection($_SESSION['connection'])->select("SELECT GDL_QTY FROM TBTR_GONDOLA
+            $gdl = DB::connection(Session::get('connection'))->select("SELECT GDL_QTY FROM TBTR_GONDOLA
                     WHERE GDL_PRDCD = '".$prdcd."'
                     AND NVL (TRUNC (GDL_TGLAWAL), TO_DATE ('01-01-1990', 'dd-mm-yyyy')) - 3 <= TRUNC (SYSDATE)
                     AND NVL (TRUNC (GDL_TGLAK HIR), TO_DATE ('31-12-2100', 'dd-mm-yyyy')) - 7 >= TRUNC (SYSDATE)
@@ -147,7 +147,7 @@ class ProsesKertasKerjaPKMController extends Controller
             }
 
             if($flagmpa){
-                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->select('prd_kodedivisi','prd_kodedepartement','prd_kodekategoribarang')
                     ->where('prd_prdcd','=',$prdcd)
                     ->first();
@@ -156,15 +156,15 @@ class ProsesKertasKerjaPKMController extends Controller
                 $kddep = $data->prd_kodedepartement;
                 $kdkat = $data->prd_kodekategoribarang;
 
-                $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                $temp = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                     ->where('pkmg_prdcd','=',$prdcd)
-                    ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
+                    ->where('pkm_kodeigr','=',Session::get('kdigr'))
                     ->first();
 
                 if(!$temp){
-                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                         ->insert([
-                            'pkmg_kodeigr' => $_SESSION['kdigr'],
+                            'pkmg_kodeigr' => Session::get('kdigr'),
                             'pkmg_kodedivisi' => $kddiv,
                             'pkmg_kodedepartement' => $kddep,
                             'pkmg_kodekategoribrg' => $kdkat,
@@ -174,20 +174,20 @@ class ProsesKertasKerjaPKMController extends Controller
                             'pkmg_nilaimpkm' => $mpkm,
                             'pkmg_nilaipkmt' => $pkmt,
                             'pkmg_create_dt' => DB::RAW("SYSDATE"),
-                            'pkmg_create_by' => $_SESSION['usid'],
+                            'pkmg_create_by' => Session::get('usid'),
                         ]);
                 }
                 else{
-                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                         ->where('pkm_prdcd','=',$prdcd)
-                        ->where('pkm_kodeigr','=',$_SESSION['kdigr'])
+                        ->where('pkm_kodeigr','=',Session::get('kdigr'))
                         ->update([
                             'pkmg_nilaipkmg' => $ftngdla + $pkmt,
                             'pkmg_nilaipkmb' => $ftngdla + $pkmt,
                             'pkmg_nilaimpkm' => $mpkm,
                             'pkmg_nilaipkmt' => $pkmt,
                             'pkmg_modify_dt' => DB::RAW("SYSDATE"),
-                            'pkmg_modify_by' => $_SESSION['usid']
+                            'pkmg_modify_by' => Session::get('usid')
                         ]);
                 }
             }
@@ -200,7 +200,7 @@ class ProsesKertasKerjaPKMController extends Controller
     }
 
     public function cetakStatusStorage(){
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT
+        $datas = DB::connection(Session::get('connection'))->select("SELECT
                  pkm_prdcd,
                  pkm_mindisplay,
                  pkm_minorder,
@@ -241,7 +241,7 @@ class ProsesKertasKerjaPKMController extends Controller
                          WHERE PRD_PRDCD = PRC_PLUIGR
                          AND PRD_FLAGIDM = 'Y'
                          AND LKS_PRDCD = PRD_PRDCD))))
-           WHERE     prs_kodeigr = '".$_SESSION['kdigr']."'
+           WHERE     prs_kodeigr = '".Session::get('kdigr')."'
                  AND prs_kodeigr = pkm_kodeigr
                  AND pkm_prdcd = prd_prdcd
                  AND prd_kodedivisi IN ('1', '2', '3')   -- khusus dry product

@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -28,9 +28,9 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
+        $datas = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
             ->select("vcs_namasupplier")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
             ->orderBy("vcs_namasupplier")
             ->get();
@@ -41,8 +41,8 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+        $datas = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw("vcs_namasupplier like '%" . $search . "%'")
             ->orderBy("vcs_namasupplier")
             ->get();
@@ -52,9 +52,9 @@ class PendaftaranVoucherBelanjaController extends Controller
     public function getDeskripsi(Request $request)
     {
         $supp = $request->supp;
-        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
+        $data = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
             ->selectRaw("vcs_keterangan")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->where('vcs_namasupplier', '=', $supp)
             ->pluck('vcs_keterangan')->first();
         return $data;
@@ -64,8 +64,8 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+        $data = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->where('vcs_namasupplier', '=', $supp)
             ->first();
 
@@ -77,16 +77,16 @@ class PendaftaranVoucherBelanjaController extends Controller
     {
         $supp = $request->supp;
 
-        $temp = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
+        $temp = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
             ->selectRaw("NVL(COUNT(1),0) count")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->where('vcs_namasupplier', '=', $supp)
             ->pluck('count')->first();
 
         if ($temp == 0) {
-            DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
+            DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
                 ->insert([
-                    'vcs_kodeigr' => $_SESSION['kdigr'],
+                    'vcs_kodeigr' => Session::get('kdigr'),
                     'vcs_namasupplier' => $supp,
                     'vcs_nilaivoucher' => $request->vcs_nilaivoucher,
                     'vcs_tglmulai' => DB::raw("to_date('" . $request->vcs_tglmulai . "','yyyy-mm-dd')"),
@@ -95,15 +95,15 @@ class PendaftaranVoucherBelanjaController extends Controller
                     'vcs_joinpromo' => $request->vcs_joinpromo,
                     'vcs_keterangan' => $request->vcs_keterangan,
                     'vcs_minstruk' => $request->vcs_minstruk,
-                    'vcs_create_by' => $_SESSION['usid'],
+                    'vcs_create_by' => Session::get('usid'),
                     'vcs_create_dt' => DB::raw('sysdate')
                 ]);
             $message = "Data supp " . $supp . " Berhasil Disimpan!";
             $status = "success";
             return compact(['message', 'status']);
         } else {
-            DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
-                ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table("TBTABEL_VOUCHERSUPPLIER")
+                ->where('vcs_kodeigr', '=', Session::get('kdigr'))
                 ->where('vcs_namasupplier', '=', $supp)
                 ->update([
                     'vcs_nilaivoucher' => $request->vcs_nilaivoucher,
@@ -113,7 +113,7 @@ class PendaftaranVoucherBelanjaController extends Controller
                     'vcs_joinpromo' => $request->vcs_joinpromo,
                     'vcs_keterangan' => $request->vcs_keterangan,
                     'vcs_minstruk' => $request->vcs_minstruk,
-                    'vcs_create_by' => $_SESSION['usid'],
+                    'vcs_create_by' => Session::get('usid'),
                     'vcs_create_dt' => DB::raw('sysdate')
                 ]);
             $message = "Data " . $supp . " Berhasil Diupdate!";
@@ -126,8 +126,8 @@ class PendaftaranVoucherBelanjaController extends Controller
     public function hapus(Request $request)
     {
         $supp = $request->supp;
-        DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
-            ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+        DB::connection(Session::get('connection'))->table("TBTABEL_VOUCHERSUPPLIER")
+            ->where('vcs_kodeigr', '=', Session::get('kdigr'))
             ->where('vcs_namasupplier', '=', $supp)
             ->delete();
         $message = "Data " . $supp . " Berhasil Dihapus!";
@@ -140,15 +140,15 @@ class PendaftaranVoucherBelanjaController extends Controller
         $w = 647;
         $h = 52.75;
 
-        $data = DB::connection($_SESSION['connection'])->table("tbtabel_vouchersupplier")
+        $data = DB::connection(Session::get('connection'))->table("tbtabel_vouchersupplier")
             ->selectRaw('VCS_NAMASUPPLIER, VCS_NILAIVOUCHER, VCS_TGLMULAI, VCS_TGLAKHIR, VCS_MAXVOUCHER, VCS_JOINPROMO, VCS_KETERANGAN, VCS_MINSTRUK')
-        ->where('vcs_kodeigr', '=', $_SESSION['kdigr'])
+        ->where('vcs_kodeigr', '=', Session::get('kdigr'))
         ->orderBy('vcs_namasupplier')
         ->get();
 
         $filename = 'igr-tab-vchsup';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         return view('TABEL.PENDAFTARANVOUCHERBELANJA.'.$filename.'-pdf', compact(['perusahaan', 'data']));

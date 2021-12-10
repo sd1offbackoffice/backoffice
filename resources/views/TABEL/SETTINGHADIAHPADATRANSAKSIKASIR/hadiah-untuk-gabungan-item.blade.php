@@ -821,7 +821,7 @@
                     }else{
                         swal({
                             title:'Alert',
-                            text: 'Kode PLU '+crop+' - '+{{$_SESSION['kdigr']}} +' Tidak Terdaftar di Master Barang  !!',
+                            text: 'Kode PLU '+crop+' - '+{{Session::get('kdigr')}} +' Tidak Terdaftar di Master Barang  !!',
                             icon:'warning',
                         }).then(() => {
                             $('.plu')[cursor].value = '';

@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\REPACKING;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -23,12 +23,12 @@ class repackController extends Controller
     }
 
     public function getNewNmrTrn(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 //        $ip = LPAD(Substr(SUBSTR(:global.IP,-3),INSTR(SUBSTR(:global.IP,-3),'.')+1,3),3,'0');
-        //$_SESSION['ip'] = "172.20.28.123";
+        //Session::get('ip') = "172.20.28.123";
 
         //Bila ip nya 3 digit, +1 nya dihapus
-        $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3)+1,'.'),3),3,'0',STR_PAD_LEFT);
+        $ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3)+1,'.'),3),3,'0',STR_PAD_LEFT);
 
 
         $connect = loginController::getConnectionProcedure();
@@ -51,23 +51,23 @@ class repackController extends Controller
         oci_execute($query);
 
 
-       // dd($_SESSION['ip']);
+       // dd(Session::get('ip'));
         //dd($request->getClientIps());
         return response()->json(['noDoc' => $noDoc, 'noReff' => $noReff, 'model' => '* TAMBAH *']);
     }
 
     public function chooseTrn(Request $request){
         $kode = $request->kode;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-//        $cursor = DB::connection($_SESSION['connection'])->select("
+//        $cursor = DB::connection(Session::get('connection'))->select("
 //            SELECT * FROM tbTr_BackOffice
 //		             WHERE TRBO_KodeIGR = '.$kodeigr'
 //		                   AND TRBO_NODOC = '$kode'
 //		                   AND TRBO_TYPETRN = 'P'
 //		             ORDER BY TRBO_SEQNO
 //        ");
-        $cursor = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+        $cursor = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
             ->selectRaw('TRBO_NODOC')
             ->selectRaw('TRBO_TGLDOC')
             ->selectRaw('trbo_noreff')
@@ -117,7 +117,7 @@ class repackController extends Controller
     public function ModalNmrTrn(Request $request){
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+        $datas = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
             ->selectRaw('distinct TRBO_NODOC as TRBO_NODOC')
             ->selectRaw('TRBO_TGLDOC')
             ->selectRaw("CASE WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA ELSE 'Belum Cetak Nota' END NOTA")
@@ -138,7 +138,7 @@ class repackController extends Controller
     public function getNmrTrn(Request $request){
         $search = $request->val;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+        $datas = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
             ->selectRaw('distinct TRBO_NODOC as TRBO_NODOC')
             ->selectRaw('TRBO_TGLDOC')
             ->selectRaw("CASE WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA ELSE 'Belum Cetak Nota' END NOTA")
@@ -152,12 +152,12 @@ class repackController extends Controller
     public function deleteTrn(Request $request){
         $data = $request->val;
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+            DB::connection(Session::get('connection'))->beginTransaction();
+            DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                 ->where('TRBO_NODOC','=',$data)
                 ->where('TRBO_TYPETRN','=','P')
                 ->delete();
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             return response()->json(['kode' => 1]);
         }catch(\Exception $e){
             return response()->json(['kode' => 2]);
@@ -165,10 +165,10 @@ class repackController extends Controller
     }
 
     public function getPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->val;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+        $datas = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_DESKRIPSIPANJANG')
             ->selectRaw('PRD_PRDCD')
             ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
@@ -191,10 +191,10 @@ class repackController extends Controller
     }
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+        $datas = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_DESKRIPSIPANJANG')
             ->selectRaw('PRD_PRDCD')
             ->selectRaw("PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN")
@@ -224,10 +224,10 @@ class repackController extends Controller
     }
 
     public function choosePlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
 
-//        $cursor = DB::connection($_SESSION['connection'])->select("
+//        $cursor = DB::connection(Session::get('connection'))->select("
 //            SELECT PRD_PRDCD,PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_AVGCOST,nvl(ST_AVGCOST,0) lcostst,PRD_FLAGBKP1,nvl(ST_SALDOAKHIR,0) trbo_stokqty
 //            FROM TBMASTER_PRODMAST,TBMASTER_STOCK
 //            WHERE PRD_KODEIGR = ST_KODEIGR(+) AND
@@ -236,7 +236,7 @@ class repackController extends Controller
 //                      ST_LOKASI(+)='01' AND PRD_PRDCD='$kode'
 //        ");
 
-        $cursor = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+        $cursor = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->selectRaw('PRD_DESKRIPSIPENDEK')
             ->selectRaw('PRD_DESKRIPSIPANJANG')
             ->selectRaw('PRD_FRAC')
@@ -269,10 +269,10 @@ class repackController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
             //Start here
-            $userid = $_SESSION['usid'];
-            $kodeigr = $_SESSION['kdigr'];
+            $userid = Session::get('usid');
+            $kodeigr = Session::get('kdigr');
 
             $nomorTrn = $request->nomorTrn;
             $today  = date('Y-m-d H:i:s');
@@ -285,7 +285,7 @@ class repackController extends Controller
             //$flagdoc = $request->statusPrint; //belum tau ambil dari mana, seharusnya lihat data model untuk tau inputnya, kalau masih belum di print berarti koreksi, input kosong, kalau sudah di print kasih simbol *, dan kalau sudah print ga bisa di update
             $datas = $request->datas;
 
-            $check = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+            $check = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                 ->selectRaw("*")
                 ->where('TRBO_NODOC','=',$nomorTrn)
                 ->where('TRBO_TYPETRN','=','P')
@@ -297,7 +297,7 @@ class repackController extends Controller
                 $crDate = $check->trbo_create_dt;
                 $creator = $check->trbo_create_by;
                 $flagdoc = $check->trbo_flagdoc;
-                DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+                DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                     ->where('TRBO_NODOC','=',$nomorTrn)
                     ->where('TRBO_TYPETRN','=','P')
                     ->where('ST_KODEIGR','=',$kodeigr)
@@ -310,7 +310,7 @@ class repackController extends Controller
                         $noReff2 = $nomorTrn;
                     }
                     //
-                    DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+                    DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                         ->where('TRBO_NODOC','=',$nomorTrn)
                         ->where('TRBO_TYPETRN','=','P')
                         ->where('ST_KODEIGR','=',$kodeigr)
@@ -324,7 +324,7 @@ class repackController extends Controller
             }else{
                 //create new save data
                 $connect = loginController::getConnectionProcedure();
-                $ip =str_pad(substr(substr($_SESSION['ip'],-3),strpos(substr($_SESSION['ip'],-3),'.')+1,3),3,'0',STR_PAD_LEFT);
+                $ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3),'.')+1,3),3,'0',STR_PAD_LEFT);
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PCK',
 									                       'Nomor Packing',
 				                                 '$ip'||'PC',
@@ -349,14 +349,14 @@ class repackController extends Controller
                     }else{
                         $noReff2 = $nomorTrn;
                     }
-                    DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+                    DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                         ->insert(['TRBO_KODEIGR' => $kodeigr, 'TRBO_TYPETRN' => 'P','TRBO_NODOC' => $nomorTrn, 'TRBO_TGLDOC' => $tanggalTrn, 'TRBO_NOREFF' => $noReff2,
                             'TRBO_TGLREFF' => $tanggalTrn, 'TRBO_SEQNO' => $i, 'TRBO_PRDCD' => $temp['plu'], 'TRBO_QTY' => $temp['qty'], 'TRBO_HRGSATUAN' => $temp['hrgsatuan'],
                             'TRBO_FLAGDISC1' => $temp['flagdisc1'], 'TRBO_FLAGDISC2' => $trbo_flagdisc2,'TRBO_FLAGDISC3' => $trbo_flagdisc3, 'TRBO_GROSS' => $temp['gross'], 'TRBO_PPNRPH' => $temp['ppn'],
                             'TRBO_AVERAGECOST' => $temp['averagecost'], 'TRBO_KETERANGAN' => $keterangan,'TRBO_FLAGDOC' => '0', 'TRBO_CREATE_BY' => $userid, 'TRBO_CREATE_DT' => $today, 'TRBO_STOKQTY' => $temp['stokqty']]);
                 }
             }
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(\Exception $e){
             //dd($e);
         }
@@ -364,20 +364,20 @@ class repackController extends Controller
 
     public function print(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $userid = $_SESSION['usid'];
-            $kodeigr = $_SESSION['kdigr'];
+            $userid = Session::get('usid');
+            $kodeigr = Session::get('kdigr');
             $today  = date('Y-m-d H:i:s');
 
             $nomorTrn = $request->nomorTrn;
 //            $flagdoc = $request->flagdoc;
 //            $datas = $request->datas;
 
-            $totalA = DB::connection($_SESSION['connection'])->select("SELECT Sum(Case trbo_flagdisc1 When 'P' Then trbo_qty*(trbo_hrgsatuan/nvl(prd_frac,1)) Else 0 End) a FROM tbTr_BackOffice, tbmaster_prodmast WHERE trbo_kodeigr=prd_kodeigr and trbo_prdcd=prd_prdcd and trbo_kodeigr = '$kodeigr' and trbo_nodoc = '$nomorTrn'");
-            $totalB = DB::connection($_SESSION['connection'])->select("SELECT Sum(Case trbo_flagdisc1 When 'R' Then trbo_qty*(prd_hrgjual/nvl(prd_frac,1)) Else 0 End) b FROM tbTr_BackOffice, tbmaster_prodmast WHERE trbo_kodeigr=prd_kodeigr and trbo_prdcd=prd_prdcd and trbo_kodeigr = '$kodeigr' and trbo_nodoc = '$nomorTrn'");
+            $totalA = DB::connection(Session::get('connection'))->select("SELECT Sum(Case trbo_flagdisc1 When 'P' Then trbo_qty*(trbo_hrgsatuan/nvl(prd_frac,1)) Else 0 End) a FROM tbTr_BackOffice, tbmaster_prodmast WHERE trbo_kodeigr=prd_kodeigr and trbo_prdcd=prd_prdcd and trbo_kodeigr = '$kodeigr' and trbo_nodoc = '$nomorTrn'");
+            $totalB = DB::connection(Session::get('connection'))->select("SELECT Sum(Case trbo_flagdisc1 When 'R' Then trbo_qty*(prd_hrgjual/nvl(prd_frac,1)) Else 0 End) b FROM tbTr_BackOffice, tbmaster_prodmast WHERE trbo_kodeigr=prd_kodeigr and trbo_prdcd=prd_prdcd and trbo_kodeigr = '$kodeigr' and trbo_nodoc = '$nomorTrn'");
 
-            $datas = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+            $datas = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                 ->selectRaw("trbo_flagdoc")
                 ->selectRaw("trbo_flagdisc1")
                 ->selectRaw("trbo_prdcd")
@@ -386,7 +386,7 @@ class repackController extends Controller
                 ->where("trbo_nodoc",'=',$nomorTrn)
                 ->get();
 
-//            $totalA = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+//            $totalA = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
 //                ->selectRaw("Sum(Case trbo_flagdisc1 When 'P' Then trbo_qty*(trbo_hrgsatuan/nvl(prd_frac,1)) Else 0 End) totalA")
 //                ->LeftJoin('tbmaster_prodmast',function($join){
 //                    $join->on('trbo_kodeigr','prd_kodeigr');
@@ -402,7 +402,7 @@ class repackController extends Controller
 //                    $temp = $datas[$i];
 //                    $plu = $datas['plu'];
 //
-//                    $rec = DB::connection($_SESSION['connection'])->table("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
+//                    $rec = DB::connection(Session::get('connection'))->table("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
 //
 //                    $frac = $rec[0]->prd_frac;
 //                    $jualprd = $rec[0]->prd_hrgjual;
@@ -414,21 +414,21 @@ class repackController extends Controller
 //            if($datas[0]->trbo_flagdoc == '0'){
 //                for ($i = 0; $i < sizeof($datas); $i++){
 //                    $plu = $datas[$i]->trbo_prdcd;
-//                    $rec = DB::connection($_SESSION['connection'])->select("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
+//                    $rec = DB::connection(Session::get('connection'))->select("SELECT * FROM tbMaster_Prodmast WHERE PRD_KODEIGR='$kodeigr' AND PRD_PRDCD = '$plu'");
 //                    $frac[$i] = $rec[0]->prd_frac;
 //                    $jualPRD[$i] = $rec[0]->prd_hrgjual;
 //                }
 //                for ($i = 0; $i < sizeof($datas); $i++) {
 //                    $plu = $datas[$i]->trbo_prdcd;
 //                    if($datas[$i]->trbo_flagdisc1 == 'R'){
-//                        DB::connection($_SESSION['connection'])->table("TBTR_BACKOFFICE")
+//                        DB::connection(Session::get('connection'))->table("TBTR_BACKOFFICE")
 //                            ->where("TRBO_NODOC",'=',$nomorTrn)
 //                            ->where("TRBO_KODEIGR",'=',$kodeigr)
 //                            ->where("TRBO_PRDCD",'=',$plu)
 //                            ->where("TRBO_FLAGDISC1",'=','R')
 //                            ->update(['TRBO_FLAGDOC' => '1', 'TRBO_MODIFY_BY' => $userid, 'TRBO_MODIFY_DT' => $today]);
 //                    }else{
-//                        DB::connection($_SESSION['connection'])->table("TBTR_BACKOFFICE")
+//                        DB::connection(Session::get('connection'))->table("TBTR_BACKOFFICE")
 //                            ->where("TRBO_NODOC",'=',$nomorTrn)
 //                            ->where("TRBO_KODEIGR",'=',$kodeigr)
 //                            ->where("TRBO_PRDCD",'=',$plu)
@@ -440,7 +440,7 @@ class repackController extends Controller
 //            }
 
             self::simpan($request);
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
 
         }catch(\Exception $e){
@@ -451,11 +451,11 @@ class repackController extends Controller
 
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $today  = date('Y-m-d');
 
-        $flagdoc = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+        $flagdoc = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
             ->selectRaw("trbo_flagdoc")
             ->selectRaw("trbo_nonota")
             ->where("trbo_kodeigr",'=',$kodeigr)
@@ -470,7 +470,7 @@ class repackController extends Controller
         }
         $nodocPrint = $flagdoc->trbo_nonota;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
               ( MSTD_GROSS + nvl(MSTD_PPNRPH,0) + nvl(MSTD_PPNBMRPH,0) + nvl(MSTD_PPNBTLRPH,0) ) AS TOTAL,
               FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS,
@@ -499,11 +499,11 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
     }
     public function printDocumentKecil(Request $request){
         $noDoc      = $request->doc;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $today  = date('Y-m-d');
 
-        $flagdoc = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+        $flagdoc = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
             ->selectRaw("trbo_flagdoc")
             ->selectRaw("trbo_nonota")
             ->where("trbo_kodeigr",'=',$kodeigr)
@@ -518,7 +518,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         }
         $nodocPrint = $flagdoc->trbo_nonota;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
               ( MSTD_GROSS + nvl(MSTD_PPNRPH,0) + nvl(MSTD_PPNBMRPH,0) + nvl(MSTD_PPNBTLRPH,0) ) AS TOTAL,
               FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS,
@@ -548,18 +548,18 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 
     public function simpan(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             $nomorTrn = $request->nomorTrn;
             $noReff = $request->noReff;
             $keterangan = $request->keterangan;
-            $userid = $_SESSION['usid'];
-            $kodeigr = $_SESSION['kdigr'];
+            $userid = Session::get('usid');
+            $kodeigr = Session::get('kdigr');
             $today  = date('Y-m-d H:i:s');
 
             $vplulama = null;
 
-            $datas = DB::connection($_SESSION['connection'])->table('tbTr_BackOffice')
+            $datas = DB::connection(Session::get('connection'))->table('tbTr_BackOffice')
                 ->selectRaw("trbo_flagdoc")
                 ->selectRaw("trbo_flagdisc1")
                 ->selectRaw("trbo_flagdisc3")
@@ -594,7 +594,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 
                 $nodocprint = $v_nodoc;
 
-                $prdcd_cur = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                $prdcd_cur = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->selectRaw("prd_kodedivisi")
                     ->selectRaw("prd_kodedepartement")
                     ->selectRaw("prd_kodekategoribarang")
@@ -670,7 +670,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                     }
 
                     // ---->>>> =============== <<<<----
-                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                    $temp = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                         ->selectRaw("NVL(COUNT(1), 0) abc")
                         ->where("msth_kodeigr",'=',$kodeigr)
                         ->where("msth_nodoc",'=',$v_nodoc)
@@ -678,7 +678,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 
                     //dd($temp->abc);
                     if($temp->abc == 0){
-                        DB::connection($_SESSION['connection'])->table("tbtr_mstran_h")
+                        DB::connection(Session::get('connection'))->table("tbtr_mstran_h")
                             ->insert(['msth_kodeigr'=>$kodeigr,
                                 'msth_recordid'=>null,
                                 'msth_typetrn'=>'P',
@@ -716,7 +716,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             $acoststk2 = $acoststk * $frac;
                         }
                         //dd($datas[$i]->trbo_kodesupplier);
-                        DB::connection($_SESSION['connection'])->table("tbtr_mstran_d")
+                        DB::connection(Session::get('connection'))->table("tbtr_mstran_d")
                             ->insert(['mstd_kodeigr'=>$kodeigr,
                                 'mstd_recordid'=>null,
                                 'mstd_typetrn'=>'P',
@@ -815,7 +815,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             $vplulama = $datas[$i]->trbo_prdcd;
 
                             $plu = SUBSTR(($datas[$i]->trbo_prdcd), 1, 6).'0';
-                            $mplunew_cur = DB::connection($_SESSION['connection'])->table("tbmaster_barangbaru")
+                            $mplunew_cur = DB::connection(Session::get('connection'))->table("tbmaster_barangbaru")
                                 ->selectRaw("pln_pkmt")
                                 ->selectRaw("pln_flagtag")
                                 ->selectRaw("pln_tglbpb")
@@ -830,14 +830,14 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 $tglaktif = $mplunew_cur->pln_tglaktif;
 
                                 //--->>> Cek Data History
-                                $temp = DB::connection($_SESSION['connection'])->table("tbhistory_barangbaru")
+                                $temp = DB::connection(Session::get('connection'))->table("tbhistory_barangbaru")
                                     ->selectRaw("NVL(COUNT(1), 0) aaa")
                                     ->where("hpn_kodeigr",'=',$kodeigr)
                                     ->where("hpn_prdcd",'=',$plu)
                                     ->first();
                                 if($temp->aaa == 0){
                                     $trbo_prdcd = $datas[$i]->trbo_prdcd;
-                                    DB::connection($_SESSION['connection'])->table("tbhistory_barangbaru")
+                                    DB::connection(Session::get('connection'))->table("tbhistory_barangbaru")
                                         ->insert(['hpn_kodeigr'=>$kodeigr,
                                             'hpn_prdcd'=>$trbo_prdcd,
                                             'hpn_pkmtoko'=>$pkmt,
@@ -848,7 +848,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                             'hpn_create_dt'=>$today]);
                                 }
                                 //--->>> Hapus Data PLU <<<---
-                                DB::connection($_SESSION['connection'])->table("tbmaster_barangbaru")
+                                DB::connection(Session::get('connection'))->table("tbmaster_barangbaru")
                                     ->where("pln_kodeigr",'=',$kodeigr)
                                     ->where("pln_prdcd",'=',$plu)
                                     ->delete();
@@ -916,7 +916,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             $lcostx2 = $lcostx * $frac;
                             $lcoststk2 = $lcoststk * $frac;
                         }
-                        DB::connection($_SESSION['connection'])->table("tbtr_mstran_d")
+                        DB::connection(Session::get('connection'))->table("tbtr_mstran_d")
                             ->insert(['mstd_kodeigr'=>$kodeigr,
                                 'mstd_recordid'=>null,
                                 'mstd_typetrn'=>'P',
@@ -991,7 +991,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 'mstd_modify_dt'=>null]);
                         //--->>>> Insert Data pada tbMaster_Prodmast <<<<---
                         $plu = SUBSTR(($datas[$i]->trbo_prdcd), 1, 6);
-                        DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+                        DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
                             ->where('prd_kodeigr','=',$kodeigr)
                             ->whereRaw("SUBSTR(prd_prdcd, 1, 6) = $plu")
                             ->update(['prd_avgcost'=>$acostx2,'prd_lastcost'=>$lcostx2]);
@@ -1018,7 +1018,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         oci_execute($query);
 
                         $tgldoc = $datas[$i]->trbo_tgldoc;
-                        $temp = DB::connection($_SESSION['connection'])->table("tbhistory_cost")
+                        $temp = DB::connection(Session::get('connection'))->table("tbhistory_cost")
                             ->selectRaw("NVL(COUNT(1), 0) ccc")
                             ->where('hcs_kodeigr','=',$kodeigr)
                             ->where('hcs_prdcd','=',$plu)
@@ -1026,7 +1026,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             ->where('hcs_nodocbpb','=',$nomorTrn)
                             ->first();
                         if($temp->ccc == 0){
-                            DB::connection($_SESSION['connection'])->table("tbhistory_cost")
+                            DB::connection(Session::get('connection'))->table("tbhistory_cost")
                                 ->insert(['hcs_kodeigr'=>$kodeigr,
                                     'hcs_typetrn'=>'P',
                                     'hcs_prdcd'=>$plu,
@@ -1045,7 +1045,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         }
                         //-->>>>>> Cek Untuk Data Perubahan PLU
                         $plu = SUBSTR(($datas[$i]->trbo_prdcd), 1, 6).'0';
-                        $mplunew_cur = DB::connection($_SESSION['connection'])->table("tbmaster_barangbaru")
+                        $mplunew_cur = DB::connection(Session::get('connection'))->table("tbmaster_barangbaru")
                             ->selectRaw("pln_pkmt")
                             ->selectRaw("pln_flagtag")
                             ->selectRaw("pln_tglbpb")
@@ -1061,14 +1061,14 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 $tglbpb = $mplunew_cur->pln_tglbpb;
                                 $tglaktif = $mplunew_cur->pln_tglaktif;
                                 //--->>> Cek Data History
-                                $temp = DB::connection($_SESSION['connection'])->table("tbhistory_barangbaru")
+                                $temp = DB::connection(Session::get('connection'))->table("tbhistory_barangbaru")
                                     ->selectRaw("NVL(COUNT(1), 0) ccc")
                                     ->where('hpn_kodeigr','=',$kodeigr)
                                     ->where('hpn_prdcd','=',$plu)
                                     ->first();
                                 if($temp->ccc == 0){
                                     $trbo_prdcd = $datas[$i]->trbo_prdcd;
-                                    DB::connection($_SESSION['connection'])->table("tbhistory_barangbaru")
+                                    DB::connection(Session::get('connection'))->table("tbhistory_barangbaru")
                                         ->insert(['hpn_kodeigr'=>$kodeigr,
                                             'hpn_prdcd'=>$trbo_prdcd,
                                             'hpn_pkmtoko'=>$pkmt,
@@ -1079,19 +1079,19 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                             'hpn_create_dt'=>$today]);
                                 }
                                 //--->>> Hapus Data PLU <<<---
-                                DB::connection($_SESSION['connection'])->table("tbmaster_barangbaru")
+                                DB::connection(Session::get('connection'))->table("tbmaster_barangbaru")
                                     ->where("pln_kodeigr",'=',$kodeigr)
                                     ->where("pln_prdcd",'=',$plu)
                                     ->delete();
                             }
                         }
-                        $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kkpkm")
+                        $temp = DB::connection(Session::get('connection'))->table("tbmaster_kkpkm")
                             ->selectRaw("NVL(COUNT(1), 0) ccc")
                             ->where('pkm_kodeigr','=',$kodeigr)
                             ->where('pkm_prdcd','=',$vplulama)
                             ->first();
                         if($temp->ccc != 0){
-                            $ada = DB::connection($_SESSION['connection'])->table("tbmaster_lokasi")
+                            $ada = DB::connection(Session::get('connection'))->table("tbmaster_lokasi")
                                 ->selectRaw("NVL(COUNT(1), 0) aaa")
                                 ->where('lks_kodeigr','=',$kodeigr)
                                 ->where('lks_prdcd','=',$plu)
@@ -1102,7 +1102,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 ->first();
                             if($ada->aaa == 0){
                                 $vplulama2 = SUBSTR($vplulama, 1, 6).'0';
-                                $ada = DB::connection($_SESSION['connection'])->table("tbmaster_lokasi")
+                                $ada = DB::connection(Session::get('connection'))->table("tbmaster_lokasi")
                                     ->selectRaw("NVL(COUNT(1), 0) aaa")
                                     ->where('lks_kodeigr','=',$kodeigr)
                                     ->where('lks_prdcd','=',$vplulama2)
@@ -1115,7 +1115,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     $dimensi = 0;
                                 }else{
                                     $dimensi = 0;
-                                    $nilai = DB::connection($_SESSION['connection'])->table("tbmaster_lokasi")
+                                    $nilai = DB::connection(Session::get('connection'))->table("tbmaster_lokasi")
                                         ->selectRaw("(lks_tirkirikanan * lks_tirdepanbelakang * lks_tiratasbawah) nilai")
                                         ->where('lks_kodeigr','=',$kodeigr)
                                         ->where('lks_prdcd','=',$vplulama2)
@@ -1128,7 +1128,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     for($j = 0; $j < sizeof($nilai); $j++){
                                         $dimensi = $dimensi + $nilai[$j]->nilai;
                                     }
-//                                    $dimensi = DB::connection($_SESSION['connection'])->select("SELECT SUM(nilai)
+//                                    $dimensi = DB::connection(Session::get('connection'))->select("SELECT SUM(nilai)
 //                                    INTO dimensi
 //                                    FROM (SELECT lks_prdcd,
 //                                                 (lks_tirkirikanan * lks_tirdepanbelakang
@@ -1146,7 +1146,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 }
                             }else{
                                 $dimensi = 0;
-                                $nilai = DB::connection($_SESSION['connection'])->table("tbmaster_lokasi")
+                                $nilai = DB::connection(Session::get('connection'))->table("tbmaster_lokasi")
                                     ->selectRaw("(lks_tirkirikanan * lks_tirdepanbelakang * lks_tiratasbawah) nilai")
                                     ->where('lks_kodeigr','=',$kodeigr)
                                     ->where('lks_prdcd','=',$plu)
@@ -1161,25 +1161,25 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 }
                             }
                             if($gudang == 'Y' || $gudang == 'P'){
-                                $ada = DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                $ada = DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                     ->selectRaw("NVL(COUNT(1), 0)")
                                     ->where('min_kodeigr','=',$kodeigr)
                                     ->where('min_prdcd','=',$plu)
                                     ->first();
 
-                                $minord= DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                $minord= DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                     ->selectRaw("min_minorder")
                                     ->where('min_kodeigr','=',$kodeigr)
                                     ->where('min_prdcd','=',$plu)
                                     ->first();
                             }
                             //----->>>> Update data PKM
-                            DB::connection($_SESSION['connection'])->table("tbmaster_kkpkm")
+                            DB::connection(Session::get('connection'))->table("tbmaster_kkpkm")
                                 ->where('pkm_kodeigr','=',$kodeigr)
                                 ->where('pkm_prdcd','=',$plu)
                                 ->delete();
                             $jojo = $dimensi + $minord;
-                            DB::connection($_SESSION['connection'])->table("tbmaster_kkpkm")
+                            DB::connection(Session::get('connection'))->table("tbmaster_kkpkm")
                                 ->where('pkm_kodeigr','=',$kodeigr)
                                 ->where('pkm_prdcd','=',$vplulama)
                                 ->update(['pkm_prdcd'=>$plu,'pkm_pkmt'=>$jojo,'pkm_mindisplay'=>$dimensi]);
@@ -1187,7 +1187,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             //----->>>> ===o0O0o=== <<<<-----
                             //
                             //----->>>> Update data Master Lokasi
-                            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                            DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                 ->where('lks_kodeigr','=',$kodeigr)
                                 ->where('lks_prdcd','=',$vplulama)
                                 ->update(['lks_prdcd'=>$plu]);
@@ -1195,7 +1195,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             //----->>>> ===o0O0o===<<<<-----
                             //
                             //----->>>> Update data PKM GONDOLA
-                            $temp = DB::connection($_SESSION['connection'])->table("tbtr_pkmgondola")
+                            $temp = DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
                                 ->selectRaw('NVL(COUNT(1), 0)')
                                 ->where('pkmg_kodeigr','=',$kodeigr)
                                 ->where('pkmg_prdcd','=',$vplulama)
@@ -1203,18 +1203,18 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
 
                             if($temp != 0){
                                 $tampungan = $datas[$i]->trbo_prdcd;
-                                $pkmgdl_cur = DB::connection($_SESSION['connection'])->table("tbtr_pkmgondola")
+                                $pkmgdl_cur = DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
                                     ->selectRaw('1')
                                     ->where('pkmg_kodeigr','=',$kodeigr)
                                     ->where('pkmg_prdcd','=',$tampungan)
                                     ->first();
                                 if($pkmgdl_cur){
-                                    DB::connection($_SESSION['connection'])->table("tbtr_pkmgondola")
+                                    DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
                                         ->where('pkmg_kodeigr','=',$kodeigr)
                                         ->where('pkmg_prdcd','=',$vplulama)
                                         ->delete();
                                 }else{
-                                    DB::connection($_SESSION['connection'])->table("tbtr_pkmgondola")
+                                    DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
                                         ->where('pkmg_kodeigr','=',$kodeigr)
                                         ->where('pkmg_prdcd','=',$vplulama)
                                         ->update(['pkmg_prdcd'=>$plu]);
@@ -1222,24 +1222,24 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 //----->>>> ===o0O0o=== <<<<-----
                                 //
                                 //----->>>> Update data PKM PLUS
-                                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_pkmplus")
+                                $temp = DB::connection(Session::get('connection'))->table("tbmaster_pkmplus")
                                     ->selectRaw('NVL(COUNT(1), 0)')
                                     ->where('pkmp_kodeigr','=',$kodeigr)
                                     ->where('pkmp_prdcd','=',$vplulama)
                                     ->first();
                                 if($temp != 0){
-                                    $pkmplus_cur = DB::connection($_SESSION['connection'])->table("tbmaster_pkmplus")
+                                    $pkmplus_cur = DB::connection(Session::get('connection'))->table("tbmaster_pkmplus")
                                         ->selectRaw('1')
                                         ->where('pkmp_kodeigr','=',$kodeigr)
                                         ->where('pkmp_prdcd','=',$tampungan)
                                         ->first();
                                     if($pkmplus_cur){
-                                        DB::connection($_SESSION['connection'])->table("tbmaster_pkmplus")
+                                        DB::connection(Session::get('connection'))->table("tbmaster_pkmplus")
                                             ->where('pkmp_kodeigr','=',$kodeigr)
                                             ->where('pkmp_prdcd','=',$vplulama)
                                             ->delete();
                                     }else{
-                                        DB::connection($_SESSION['connection'])->table("tbmaster_pkmplus")
+                                        DB::connection(Session::get('connection'))->table("tbmaster_pkmplus")
                                             ->where('pkmp_kodeigr','=',$kodeigr)
                                             ->where('pkmp_prdcd','=',$vplulama)
                                             ->update(['pkmp_prdcd'=>$plu]);
@@ -1248,24 +1248,24 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 //----->>>> ===o0O0o=== <<<<-----
                                 //
                                 //----->>>> Update data GONDOLA
-                                $temp = DB::connection($_SESSION['connection'])->table("tbtr_gondola")
+                                $temp = DB::connection(Session::get('connection'))->table("tbtr_gondola")
                                     ->selectRaw("NVL(COUNT(1), 0)")
                                     ->where('gdl_kodeigr','=',$kodeigr)
                                     ->where('gdl_prdcd','=',$vplulama)
                                     ->first();
                                 if($temp != 0){
-                                    $gondola_cur = DB::connection($_SESSION['connection'])->table("tbtr_gondola")
+                                    $gondola_cur = DB::connection(Session::get('connection'))->table("tbtr_gondola")
                                         ->selectRaw('1')
                                         ->where('gdl_kodeigr','=',$kodeigr)
                                         ->where('gdl_prdcd','=',$tampungan)
                                         ->first();
                                     if($gondola_cur){
-                                        DB::connection($_SESSION['connection'])->table("tbtr_gondola")
+                                        DB::connection(Session::get('connection'))->table("tbtr_gondola")
                                             ->where('gdl_kodeigr','=',$kodeigr)
                                             ->where('gdl_prdcd','=',$vplulama)
                                             ->delete();
                                     }else{
-                                        DB::connection($_SESSION['connection'])->table("tbtr_gondola")
+                                        DB::connection(Session::get('connection'))->table("tbtr_gondola")
                                             ->where('gdl_kodeigr','=',$kodeigr)
                                             ->where('gdl_prdcd','=',$vplulama)
                                             ->update(['gdl_prdcd'=>$plu]);
@@ -1274,23 +1274,23 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 //----->>>> ===o0O0o=== <<<<-----
                                 //
                                 //----->>>> Update data MINIMUM ORDER
-                                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                $temp = DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                     ->where('min_kodeigr','=',$kodeigr)
                                     ->where('min_prdcd','=',$vplulama)
                                     ->first();
                                 if($temp != 0){
-                                    $temp = DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                    $temp = DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                         ->selectRaw('NVL(COUNT(1), 0)')
                                         ->where('min_kodeigr','=',$kodeigr)
                                         ->where('min_prdcd','=',$plu)
                                         ->first();
                                     if($temp != 0){
-                                        DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                        DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                             ->where('min_kodeigr','=',$kodeigr)
                                             ->where('min_prdcd','=',$vplulama)
                                             ->delete();
                                     }else{
-                                        DB::connection($_SESSION['connection'])->table("tbmaster_minimumorder")
+                                        DB::connection(Session::get('connection'))->table("tbmaster_minimumorder")
                                             ->where('min_kodeigr','=',$kodeigr)
                                             ->where('min_prdcd','=',$vplulama)
                                             ->update(['min_prdcd'=>$plu]);
@@ -1299,14 +1299,14 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                 //----->>>> ===o0O0o=== <<<<-----
                                 //
                                 //----->>>> Update data PLU KONVERSI
-                                $temp = DB::connection($_SESSION['connection'])->table("tbtr_konversiplu")
+                                $temp = DB::connection(Session::get('connection'))->table("tbtr_konversiplu")
                                     ->selectRaw('NVL(COUNT(1), 0)')
                                     ->where('kvp_kodeigr','=',$kodeigr)
                                     ->where('kvp_pluold','=',$vplulama)
                                     ->where('kvp_plunew','=',$plu)
                                     ->first();
                                 if($temp == 0){
-                                    $konvfrac_cur = DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+                                    $konvfrac_cur = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
                                         ->selectRaw("prd_frac")
                                         ->where('prd_kodeigr','=',$kodeigr)
                                         ->where('prd_prdcd','=',$vplulama)
@@ -1315,7 +1315,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     if(!$konvfrac_cur){
                                         $fracold = 0;
                                     }
-                                    $konvfrac_cur = DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+                                    $konvfrac_cur = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
                                         ->selectRaw("prd_frac")
                                         ->where('prd_kodeigr','=',$kodeigr)
                                         ->where('prd_prdcd','=',$plu)
@@ -1324,7 +1324,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     if(!$konvfrac_cur){
                                         $fracnew = 0;
                                     }
-                                    DB::connection($_SESSION['connection'])->table("tbtr_konversiplu")
+                                    DB::connection(Session::get('connection'))->table("tbtr_konversiplu")
                                         ->insert(['kvp_kodeigr'=>$kodeigr,
                                             'kvp_pluold'=>$vplulama,
                                             'kvp_plunew'=>$plu,
@@ -1341,7 +1341,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 }
                 //--** update data tbTr_BackOffice
 //ini masih dalam if trbo_flagdoc = 0, jadinya nonota nya kosong, dan tak bisa di print
-                DB::connection($_SESSION['connection'])->table("tbtr_backoffice")
+                DB::connection(Session::get('connection'))->table("tbtr_backoffice")
                     ->where('trbo_nodoc','=',$nomorTrn)
                     ->where('trbo_typetrn','=','P')
                     ->update(['trbo_nonota'=>$v_nodoc,
@@ -1350,7 +1350,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                         'trbo_flagdoc'=>'*']);
             }
             //dd("Jangan commit dulu cuy");
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(\Exception $e){
             dd($e);
         }

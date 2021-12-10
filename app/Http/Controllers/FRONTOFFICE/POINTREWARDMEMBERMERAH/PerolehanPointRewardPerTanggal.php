@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\POINTREWARDMEMBERMERAH;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -33,7 +33,7 @@ class PerolehanPointRewardPerTanggal extends Controller
 
         if ($menu == 'rekap') {
             $filename = 'igr-fo-rwd-trn-rkp';
-            $data = DB::connection($_SESSION['connection'])->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, KODEMEMBER, NAMAMEMBER, RECORDID, JS, SUM(JML) TOT_JML,
+            $data = DB::connection(Session::get('connection'))->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, KODEMEMBER, NAMAMEMBER, RECORDID, JS, SUM(JML) TOT_JML,
                        SUM(CASE WHEN FLAG='Y' THEN JML END) TOT_VALID, SUM(CASE WHEN NVL(FLAG,'N')<>'Y' THEN JML END) TOT_NOTVALID
                     FROM (
                         SELECT  PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, POR_KODEMEMBER KODEMEMBER, CUS_NAMAMEMBER NAMAMEMBER, POR_RECORDID RECORDID,
@@ -42,7 +42,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                         FROM TBTR_PEROLEHANMYPOIN, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN
                         WHERE CUS_KODEMEMBER = POR_KODEMEMBER
                         AND PRS_KODEIGR = POR_KODEIGR
-                        AND POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                        AND POR_KODEIGR = '" . Session::get('kdigr') . "'
                         AND POR_RECORDID IS NULL
                         AND TO_DATE(SUBSTR(POR_KODETRANSAKSI,1,8),'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                         )POR
@@ -50,7 +50,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                     ORDER BY KODEMEMBER");
 
             //-----TOTAL INTERN
-            $temp1 = DB::connection($_SESSION['connection'])->select("SELECT SUM(JML) jml
+            $temp1 = DB::connection(Session::get('connection'))->select("SELECT SUM(JML) jml
                         FROM(
                             SELECT  PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, POR_KODEMEMBER KODEMEMBER, CUS_NAMAMEMBER NAMAMEMBER, POR_RECORDID RECORDID,
                             CASE WHEN INSTR(POR_DESKRIPSI,'INTERN')>0 THEN 'INTERN'ELSE 'EXTERN' END JS,
@@ -58,7 +58,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                             FROM TBTR_PEROLEHANMYPOIN, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN
                             WHERE CUS_KODEMEMBER = POR_KODEMEMBER
                             AND PRS_KODEIGR = POR_KODEIGR
-                            AND POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                            AND POR_KODEIGR = '" . Session::get('kdigr') . "'
                             AND POR_RECORDID IS NULL
                             AND INSTR(POR_DESKRIPSI,'INTERN')>0
                             AND TO_DATE(SUBSTR(POR_KODETRANSAKSI,1,8),'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
@@ -71,14 +71,14 @@ class PerolehanPointRewardPerTanggal extends Controller
             }
 
             // ------TOTAL EKSTERN
-            $temp2 = DB::connection($_SESSION['connection'])->select("SELECT SUM (JML) jml
+            $temp2 = DB::connection(Session::get('connection'))->select("SELECT SUM (JML) jml
      FROM (SELECT  PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, POR_KODEMEMBER KODEMEMBER, CUS_NAMAMEMBER NAMAMEMBER, POR_RECORDID RECORDID,
         CASE WHEN INSTR(POR_DESKRIPSI,'INTERN')>0 THEN 'INTERN'ELSE 'EXTERN' END JS,
         CASE WHEN SUBSTR(POR_KODETRANSAKSI,19,1)='S' THEN (POR_PEROLEHANPOINT)*1 ELSE (POR_PEROLEHANPOINT)*-1 END JML
         FROM TBTR_PEROLEHANMYPOIN, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN
         WHERE CUS_KODEMEMBER = POR_KODEMEMBER
         AND PRS_KODEIGR = POR_KODEIGR
-        AND POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+        AND POR_KODEIGR = '" . Session::get('kdigr') . "'
         AND POR_RECORDID IS NULL
         AND INSTR(POR_DESKRIPSI,'INTERN')=0
         AND TO_DATE(SUBSTR(POR_KODETRANSAKSI,1,8),'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
@@ -94,7 +94,7 @@ class PerolehanPointRewardPerTanggal extends Controller
             $total = (int)$t_pe + (int)$t_pi;
         } else {
             $filename = 'igr-fo-rwd-trn-dtl';
-            $data = DB::connection($_SESSION['connection'])->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, KODEMEMBER || ' - ' || NAMAMEMBER KODEMEMBER, RECORDID, TGL, TRN, JS, JML, KET,
+            $data = DB::connection(Session::get('connection'))->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, KODEMEMBER || ' - ' || NAMAMEMBER KODEMEMBER, RECORDID, TGL, TRN, JS, JML, KET,
                    case WHEN FLAG = 'Y' THEN JML END VALID, case WHEN NVL(FLAG, 'N') <> 'Y' THEN JML END NOTVALID
                 FROM(
                     SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, POR_KODEMEMBER KODEMEMBER, CUS_NAMAMEMBER NAMAMEMBER, POR_RECORDID RECORDID,
@@ -106,7 +106,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                     FROM TBTR_PEROLEHANMYPOIN, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN
                     WHERE CUS_KODEMEMBER = POR_KODEMEMBER
             and PRS_KODEIGR = POR_KODEIGR
-            and POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+            and POR_KODEIGR = '" . Session::get('kdigr') . "'
             and POR_RECORDID IS NULL
             and TO_DATE(SUBSTR(POR_KODETRANSAKSI, 1, 8), 'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "', 'dd/mm/yyyy') and to_date('" . $tgl2 . "', 'dd/mm/yyyy')
             )POR
@@ -114,7 +114,7 @@ class PerolehanPointRewardPerTanggal extends Controller
               ");
 
             //-----TOTAL INTERN
-            $temp1 = DB::connection($_SESSION['connection'])->select("SELECT SUM (JML) jml
+            $temp1 = DB::connection(Session::get('connection'))->select("SELECT SUM (JML) jml
              FROM (SELECT CASE
                              WHEN SUBSTR (POR_KODETRANSAKSI, 19, 1) = 'S'
                              THEN
@@ -128,7 +128,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                           TBMASTER_PERUSAHAAN
                     WHERE     CUS_KODEMEMBER = POR_KODEMEMBER
                           AND PRS_KODEIGR = POR_KODEIGR
-                          AND POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                          AND POR_KODEIGR = '" . Session::get('kdigr') . "'
                           AND POR_RECORDID IS NULL
                           AND INSTR (POR_DESKRIPSI, 'INTERN') > 0
                           AND TO_DATE (SUBSTR (POR_KODETRANSAKSI, 1, 8),'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "', 'dd/mm/yyyy') and to_date('" . $tgl2 . "', 'dd/mm/yyyy')
@@ -142,7 +142,7 @@ class PerolehanPointRewardPerTanggal extends Controller
             }
 
             // ------TOTAL EKSTERN
-            $temp2 = DB::connection($_SESSION['connection'])->select("SELECT SUM (JML) jml
+            $temp2 = DB::connection(Session::get('connection'))->select("SELECT SUM (JML) jml
                      FROM (SELECT CASE
                                      WHEN SUBSTR (POR_KODETRANSAKSI, 19, 1) = 'S'
                                      THEN
@@ -156,7 +156,7 @@ class PerolehanPointRewardPerTanggal extends Controller
                                   TBMASTER_PERUSAHAAN
                             WHERE     CUS_KODEMEMBER = POR_KODEMEMBER
                                   AND PRS_KODEIGR = POR_KODEIGR
-                                  AND POR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                  AND POR_KODEIGR = '" . Session::get('kdigr') . "'
                                   AND POR_RECORDID IS NULL
                                   AND INSTR (POR_DESKRIPSI, 'INTERN') = 0             --EXTERN
                                   AND TO_DATE (SUBSTR (POR_KODETRANSAKSI, 1, 8),
@@ -172,7 +172,7 @@ class PerolehanPointRewardPerTanggal extends Controller
             $total = (int)$t_pe + (int)$t_pi;
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
             $data = [

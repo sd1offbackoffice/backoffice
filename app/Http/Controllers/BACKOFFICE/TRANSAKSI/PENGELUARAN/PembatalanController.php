@@ -6,7 +6,7 @@ use App\Http\Controllers\Connection;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Object_;
 use Yajra\DataTables\DataTables;
@@ -21,9 +21,9 @@ class PembatalanController extends Controller
 
     public function getDataLovNPB()
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
-            ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
@@ -38,12 +38,12 @@ class PembatalanController extends Controller
         $noNPB = $request->no_npb;
 
         $supco = '0';
-        $results = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $results = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d', 'msth_nodoc', '=', 'mstd_nodoc')
             ->join('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->rightJoin('tbmaster_supplier', 'msth_kodesupplier', '=', 'sup_kodesupplier')
             ->selectRaw('mstd_prdcd, prd_deskripsipanjang barang, mstd_unit||\'/\'||mstd_frac satuan, mstd_kodesupplier,floor(mstd_qty/mstd_frac) qty, mod(mstd_qty, mstd_frac) qtyk, mstd_hrgsatuan, mstd_gross')
-            ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $noNPB)
             ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
@@ -71,9 +71,9 @@ class PembatalanController extends Controller
         $no_npb = $request->no_npb;
 
         $periode = '';
-        $tgltran = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $tgltran = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw('to_char(msth_tgldoc,\'yyyymm\') tgl')
-            ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $no_npb)
             ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
@@ -81,7 +81,7 @@ class PembatalanController extends Controller
             ->first();
         $tgltran = $tgltran->tgl;
 
-        $periode = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $periode = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->selectRaw('prs_tahunberjalan || prs_bulanberjalan periode')
             ->first();
         $periode = $periode->periode;
@@ -91,8 +91,8 @@ class PembatalanController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         } else {
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $datas = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $datas = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                 ->join('tbtr_mstran_d', function ($join) {
                     $join->on('msth_nodoc', 'mstd_nodoc');
                     $join->on('msth_kodeigr', 'mstd_kodeigr');
@@ -111,14 +111,14 @@ class PembatalanController extends Controller
                 ->where('st_lokasi', '=', '02')
                 ->get();
             foreach ($datas as $data) {
-                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                     ->where('st_prdcd', '=', DB::Raw('substr(' . $data->mstd_prdcd . ',1,6)||\'0\''))
                     ->where('st_kodeigr', '=', $data->msth_kodeigr)
                     ->where('st_lokasi', '=', '02')
                     ->count();
 
                 if ($temp == 0) {
-                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')->insert([
+                    DB::connection(Session::get('connection'))->table('tbmaster_stock')->insert([
                         'st_kodeigr' => $data->msth_kodeigr,
                         'st_prdcd' => DB::Raw('substr(' . $data->mstd_prdcd . ', 1, 6) || \'0\''),
                         'st_lokasi' => '02'
@@ -126,14 +126,14 @@ class PembatalanController extends Controller
                 }
 
                 $temp = 0;
-                $temp = DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')
+                $temp = DB::connection(Session::get('connection'))->table('tbtr_hapusplu')
                     ->where('del_rtype', '=', 'K')
                     ->where('del_nodokumen', '=', $no_npb)
                     ->where('del_prdcd', '=', $data->mstd_prdcd)
                     ->count();
 
                 if ($temp == 0) {
-                    DB::connection($_SESSION['connection'])->table('tbtr_hapusplu')->insert([
+                    DB::connection(Session::get('connection'))->table('tbtr_hapusplu')->insert([
                         'del_kodeigr' => $data->msth_kodeigr,
                         'del_rtype' => 'K',
                         'del_nodokumen' => $data->msth_nodoc,
@@ -142,7 +142,7 @@ class PembatalanController extends Controller
                         'del_avgcostnew' => $data->st_avgcost,
                         'del_stokqtyold' => $data->st_saldoakhir,
                         'del_create_dt' => Carbon::now(),
-                        'del_create_by' => $_SESSION['usid'],
+                        'del_create_by' => Session::get('usid'),
                     ]);
                 }
 
@@ -161,7 +161,7 @@ class PembatalanController extends Controller
                     $nnilai = $ncost;
                 };
 
-                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                DB::connection(Session::get('connection'))->table('tbmaster_stock')
                     ->where('st_prdcd', $data->mstd_prdcd)
                     ->where('st_lokasi', '02')
                     ->where('st_kodeigr', $data->msth_kodeigr)
@@ -170,12 +170,12 @@ class PembatalanController extends Controller
                             'st_avgcost' => $nnilai,
                             'st_saldoakhir' => DB::Raw('nvl(st_saldoakhir, 0) + ' . $data->mstd_qty),
                             'st_trfout' => DB::Raw('nvl(st_trfout, 0) - ' . $data->mstd_qty),
-                            'st_modify_by' => $_SESSION['usid'],
+                            'st_modify_by' => Session::get('usid'),
                             'st_modify_dt' => DB::Raw('trunc(sysdate)')
                         ]
                     );
 
-                DB::connection($_SESSION['connection'])->table('tbhistory_cost')->insert([
+                DB::connection(Session::get('connection'))->table('tbhistory_cost')->insert([
                     'hcs_kodeigr' => $data->msth_kodeigr,
                     'hcs_typetrn' => 'K',
                     'hcs_lokasi' => '02',
@@ -187,48 +187,48 @@ class PembatalanController extends Controller
                     'hcs_avglama' => $data->st_avgcost * $data->prd_frac,
                     'hcs_avgbaru' => $nnilai * $data->prd_frac,
                     'hcs_lastqty' => $data->st_saldoakhir * $data->mstd_qty,
-                    'hcs_create_by' => $_SESSION['usid'],
+                    'hcs_create_by' => Session::get('usid'),
                     'hcs_create_dt' => Carbon::now()
                 ]);
             }
 
-            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+            DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                 ->where('msth_nodoc', $no_npb)
-                ->where('msth_kodeigr', $_SESSION['kdigr'])
+                ->where('msth_kodeigr', Session::get('kdigr'))
                 ->where('msth_typetrn', 'K')
                 ->update(
                     [
                         'msth_recordid' => 1,
-                        'msth_modify_by' => $_SESSION['usid'],
+                        'msth_modify_by' => Session::get('usid'),
                         'msth_modify_dt' => Carbon::now()
                     ]
                 );
 
-            DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+            DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
                 ->where('mstd_nodoc', $no_npb)
-                ->where('mstd_kodeigr', $_SESSION['kdigr'])
+                ->where('mstd_kodeigr', Session::get('kdigr'))
                 ->update(
                     [
                         'mstd_recordid' => 1,
-                        'mstd_modify_by' => $_SESSION['usid'],
+                        'mstd_modify_by' => Session::get('usid'),
                         'mstd_modify_dt' => Carbon::now()
                     ]
                 );
 
-            DB::connection($_SESSION['connection'])->table('tbtr_hutang')
+            DB::connection(Session::get('connection'))->table('tbtr_hutang')
                 ->where('htg_nodokumen', $no_npb)
-                ->where('htg_kodeigr', $_SESSION['kdigr'])
+                ->where('htg_kodeigr', Session::get('kdigr'))
                 ->where('htg_type', 'D')
                 ->update(
                     [
                         'htg_recordid' => '1',
-                        'htg_modifyby' => $_SESSION['usid'],
+                        'htg_modifyby' => Session::get('usid'),
                         'htg_modifydt' => Carbon::now()
                     ]
                 );
-            DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->where('trbo_nodoc', $no_npb)
-                ->where('trbo_kodeigr', $_SESSION['kdigr'])
+                ->where('trbo_kodeigr', Session::get('kdigr'))
                 ->update(
                     [
                         'trbo_recordid' => 1,
@@ -236,18 +236,18 @@ class PembatalanController extends Controller
                 );
 
 //	 --++update qty history retur++--
-            DB::connection($_SESSION['connection'])->table('TBHISTORY_RETURSUPPLIER')
+            DB::connection(Session::get('connection'))->table('TBHISTORY_RETURSUPPLIER')
                 ->where('HSR_NODOC', $no_npb)
-                ->where('HSR_KODEIGR', $_SESSION['kdigr'])
+                ->where('HSR_KODEIGR', Session::get('kdigr'))
                 ->update(
                     [
                         'HSR_QTYRETUR' => 0,
-                        'HSR_MODIFY_BY' => $_SESSION['usid'],
+                        'HSR_MODIFY_BY' => Session::get('usid'),
                         'HSR_MODIFY_DT' => Carbon::now()
                     ]
                 );
 //   ----update qty history retur----
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }
 
         $message = 'Proses Penghapusan Berhasil';

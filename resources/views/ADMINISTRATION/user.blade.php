@@ -1,4 +1,4 @@
-@extends('navbar')
+ @extends('navbar')
 @section('content')
 
 
@@ -297,23 +297,23 @@
     </div>
 
     {{--LOADER--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"--}}
+{{--         aria-hidden="true" style="vertical-align: middle;">--}}
+{{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-body">--}}
+{{--                    <div class="container">--}}
+{{--                        <div class="row">--}}
+{{--                            <div class="loader" id="loader"></div>--}}
+{{--                            <div class="col-sm-12 text-center">--}}
+{{--                                <label for="">LOADING...</label>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     <style>
 
@@ -400,7 +400,7 @@
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
                     if (response['message'] != '') {
@@ -408,7 +408,7 @@
                             title: response['message'],
                             icon: response['status']
                         }).then((createData) => {
-
+                            $('#modal-loader').modal('hide');
                         });
                     }
                     $('.baris').remove();
@@ -520,13 +520,14 @@
                         email: email
                     },
                     beforeSend: function () {
-                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        $('#modal-loader').modal('show');
                     },
                     success: function (response) {
                         swal({
                             title: response['message'],
                             icon: response['status']
                         }).then((createData) => {
+                            $('#modal-loader').modal('hide');
                             $('#add-id').val("");
                             $('#add-username').val("");
                             $('#add-password').val("");
@@ -612,9 +613,10 @@
                     accessgroup: aksesgroupselected
                 },
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal("show");
                 },
                 success: function (response) {
+                    $('#modal-loader').modal('hide');
                     oldDataAccess = response['access'];
                     $('.baris-acc').remove();
 
@@ -772,7 +774,8 @@
                             value: dataUser,
                         },
                         beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal('show');
+;
                         },
                         success: function (response) {
                             swal({
@@ -879,7 +882,8 @@
                             userid: arr[0]
                         },
                         beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal('show');
+;
                         },
                         success: function (response) {
                             swal({
@@ -966,7 +970,8 @@
                 type: 'POST',
                 data: {"_token": "{{ csrf_token() }}", value: value},
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
+;
                 },
                 success: function (response) {
                     if (response['message'] != '') {
@@ -1048,7 +1053,8 @@
                             computername: computername
                         },
                         beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            $('#modal-loader').modal('show');
+;
                         },
                         success: function (response) {
                             if (response['status'] == 'error') {
@@ -1132,7 +1138,7 @@
                                 value: dataIp,
                             },
                             beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                $('#modal-loader').modal('show');
                             },
                             success: function (response) {
                                 swal({

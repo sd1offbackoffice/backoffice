@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ADMINISTRATION;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -14,7 +14,7 @@ use Yajra\DataTables\DataTables;
 class AccessController extends Controller
 {
     public function index(){
-        $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        $group = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
             ->selectRaw('acc_group, count(1) total')
             ->where('acc_status','=',0)
             ->where('acc_group','<>','Administration')
@@ -22,7 +22,7 @@ class AccessController extends Controller
             ->groupBy('acc_group')
             ->get();
 
-        $menu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        $menu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
             ->where('acc_status','=',0)
             ->where('acc_group','<>','Administration')
             ->orderBy('acc_group')
@@ -37,7 +37,7 @@ class AccessController extends Controller
     }
 
     public function getLovUser(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_user')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_user')
             ->whereRaw("recordid is null")
             ->orderBy('userid')
             ->get();
@@ -46,7 +46,7 @@ class AccessController extends Controller
     }
 
     public function getData(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_user')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_user')
             ->where('userid','=',$request->userid)
             ->first();
 
@@ -56,14 +56,14 @@ class AccessController extends Controller
             ], 500);
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_useraccess_migrasi')
                 ->join('tbmaster_access_migrasi','uac_acc_id','=','acc_id')
                 ->select('uac_acc_id','acc_group')
                 ->where('uac_userid','=',$request->userid)
                 ->where('acc_status','=',0)
                 ->get();
 
-            $group = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $group = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw('acc_group, count(1) total')
                 ->where('acc_status','=',0)
                 ->orderBy('acc_group')
@@ -87,35 +87,49 @@ class AccessController extends Controller
     }
 
     public function save(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_user')
-            ->where('userid','=',$request->userid)
-            ->first();
+        try{
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-        if(!$temp){
-            return response()->json([
-                'title' => 'Data user tidak ditemukan!'
-            ], 500);
-        }
-        else{
-            DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
-                ->where('uac_userid','=',$request->userid)
-                ->delete();
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_user')
+                ->where('userid','=',$request->userid)
+                ->first();
 
-            if($request->menu){
-                foreach($request->menu as $m){
-                    DB::connection($_SESSION['connection'])->table('tbmaster_useraccess_migrasi')
-                        ->insert([
-                            'uac_userid' => $request->userid,
-                            'uac_acc_id' => $m,
-                            'uac_create_by' => $_SESSION['usid'],
-                            'uac_create_dt' => DB::RAW("SYSDATE")
-                        ]);
-                }
+            if(!$temp){
+                return response()->json([
+                    'title' => 'Data user tidak ditemukan!'
+                ], 500);
             }
+            else{
+                DB::connection(Session::get('connection'))->table('tbmaster_useraccess_migrasi')
+                    ->where('uac_userid','=',$request->userid)
+                    ->delete();
+
+                if($request->menu){
+                    foreach($request->menu as $m){
+                        DB::connection(Session::get('connection'))->table('tbmaster_useraccess_migrasi')
+                            ->insert([
+                                'uac_userid' => $request->userid,
+                                'uac_acc_id' => $m,
+                                'uac_create_by' => Session::get('usid'),
+                                'uac_create_dt' => Carbon::now()
+                            ]);
+                    }
+                }
+
+                DB::connection(Session::get('connection'))->commit();
+
+                return response()->json([
+                    'title' => 'Data berhasil disimpan!'
+                ], 200);
+            }
+        }
+        catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
-                'title' => 'Data berhasil disimpan!'
-            ], 200);
+                'title' => 'Terjadi kesalahan!',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -124,7 +138,7 @@ class AccessController extends Controller
     }
 
     public static function getListMenu(){
-//        $menu = DB::connection($_SESSION['connection'])
+//        $menu = DB::connection(Session::get('connection'))
 //            ->table('tbmaster_access_migrasi')
 //            ->first();
 //
@@ -132,11 +146,11 @@ class AccessController extends Controller
 //            self::insertBaseMenu();
 //        }
 
-        if($_SESSION['usid'] == 'ADM'){
-//            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        if(Session::get('usid') == 'ADM'){
+//            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
 //                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
 //                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-//                ->where('uac_userid','=',$_SESSION['usid'])
+//                ->where('uac_userid','=',Session::get('usid'))
 //                ->where('acc_status','=',0)
 ////            ->orderBy('acc_id')
 //                ->orderBy('acc_group')
@@ -146,7 +160,7 @@ class AccessController extends Controller
 //                ->orderBy('acc_order')
 //                ->orderBy('acc_name')
 //                ->get();
-            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->where('acc_status','=',0)
                 ->orderBy('acc_group')
@@ -157,8 +171,8 @@ class AccessController extends Controller
                 ->orderBy('acc_name')
                 ->get();
         }
-        else if(in_array($_SESSION['usid'], ['DEV','SUP'])){
-            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        else if(in_array(Session::get('usid'), ['DEV','SUP'])){
+            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')
@@ -169,10 +183,10 @@ class AccessController extends Controller
                 ->get();
         }
         else{
-            $listMenu = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-                ->where('uac_userid','=',$_SESSION['usid'])
+                ->where('uac_userid','=',Session::get('usid'))
                 ->where('acc_status','=',0)
                 ->where('acc_group','<>','Administration')
 //            ->orderBy('acc_id')
@@ -189,7 +203,7 @@ class AccessController extends Controller
     }
 
     public static function insertBaseMenu(){
-        DB::connection($_SESSION['connection'])
+        DB::connection(Session::get('connection'))
             ->table('tbmaster_access_migrasi')
             ->insert([
                 'acc_group' => 'Administration',
@@ -206,7 +220,7 @@ class AccessController extends Controller
                 'acc_order' => null
             ]);
 
-        DB::connection($_SESSION['connection'])
+        DB::connection(Session::get('connection'))
             ->table('tbmaster_access_migrasi')
             ->insert([
                 'acc_group' => 'Administration',
@@ -223,7 +237,7 @@ class AccessController extends Controller
                 'acc_order' => null
             ]);
 
-        DB::connection($_SESSION['connection'])
+        DB::connection(Session::get('connection'))
             ->table('tbmaster_access_migrasi')
             ->insert([
                 'acc_group' => 'Administration',
@@ -240,7 +254,7 @@ class AccessController extends Controller
                 'acc_order' => null
             ]);
 
-        DB::connection($_SESSION['connection'])
+        DB::connection(Session::get('connection'))
             ->table('tbmaster_access_migrasi')
             ->insert([
                 'acc_group' => 'Administration',
@@ -264,7 +278,7 @@ class AccessController extends Controller
         if($url == '/')
             $hasAccess = true;
 
-        foreach($_SESSION['menu'] as $m){
+        foreach(Session::get('menu') as $m){
             if($m->acc_url == substr($url,0,strlen($m->acc_url))){
                 if(strlen($m->acc_url) == strlen($url)){
                     self::insertMenuLog($m->acc_id);
@@ -276,9 +290,9 @@ class AccessController extends Controller
 
         return $hasAccess;
 
-//        $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+//        $data = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
 //            ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
-//            ->where('uac_userid','=',$_SESSION['usid'])
+//            ->where('uac_userid','=',Session::get('usid'))
 //            ->where('acc_url','=',$url)
 //            ->first();
 //
@@ -287,29 +301,29 @@ class AccessController extends Controller
 
     public static function insertMenuLog($menu){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $last = DB::connection($_SESSION['connection'])
+            $last = DB::connection(Session::get('connection'))
                 ->table('tblog_oracleform_migrasi')
                 ->orderBy('lom_id','desc')
                 ->first();
 
             $id = $last ? intval($last->lom_id) + 1 : 1;
 
-            DB::connection($_SESSION['connection'])
+            DB::connection(Session::get('connection'))
                 ->table('tblog_oracleform_migrasi')
                 ->insert([
                     'lom_id' => $id,
-                    'lom_kodeigr' => $_SESSION['kdigr'],
-                    'lom_userid' => $_SESSION['usid'],
+                    'lom_kodeigr' => Session::get('kdigr'),
+                    'lom_userid' => Session::get('usid'),
                     'lom_acc_id' => $menu,
                     'lom_accessdate' => Carbon::now()
                 ]);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
         }
     }
 

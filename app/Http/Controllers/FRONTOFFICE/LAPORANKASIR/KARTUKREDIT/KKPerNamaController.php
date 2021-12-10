@@ -5,7 +5,7 @@ namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR\KARTUKREDIT;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -23,10 +23,10 @@ class KKPerNamaController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT to_char(tglt,'dd/mm/yyyy') tglt, nmcard, ccno, jh_transactionno, jh_cashierid, mesin,
+        $data = DB::connection(Session::get('connection'))->select("SELECT to_char(tglt,'dd/mm/yyyy') tglt, nmcard, ccno, jh_transactionno, jh_cashierid, mesin,
             sum(ccadmfee) ccadmfee, sum(ccamt) ccamt, kasir, memb
         FROM
         (
@@ -54,7 +54,7 @@ class KKPerNamaController extends Controller
                 END Memb,
                 jh_cashierid||' - '||username kasir, edc_bankname mesin
             FROM TBTR_JUALHEADER, TBMASTER_USER, TBMASTER_EDCMACHINE
-            WHERE jh_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE jh_kodeigr = '".Session::get('kdigr')."'
             AND nvl(trim(jh_recordid),'9') <> '1'
             AND TRUNC(jh_transactiondate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
             AND jh_transactiontype = 'S'
@@ -95,7 +95,7 @@ class KKPerNamaController extends Controller
                 END Memb,
                 jh_cashierid||' - '||username kasir, edc_bankname mesin
             FROM TBTR_JUALHEADER, TBMASTER_USER, TBMASTER_EDCMACHINE
-            WHERE jh_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE jh_kodeigr = '".Session::get('kdigr')."'
             AND nvl(trim(jh_recordid),'9') <> '1'
             AND TRUNC(jh_transactiondate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
             AND jh_transactiontype = 'S'

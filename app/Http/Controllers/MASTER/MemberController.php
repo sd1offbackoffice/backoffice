@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use Yajra\DataTables\DataTables;
@@ -16,41 +16,41 @@ class MemberController extends Controller
     //
 
     public function index(){
-        $member = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $member = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('*')
-            ->where(DB::RAW('ROWNUM'),'<=','100')
+            ->whereRaw("ROWNUM <= 100")
             ->orderBy('cus_namamember')
             ->limit(100)
             ->get();
 
-        $hobby = DB::connection($_SESSION['connection'])->table('tbtabel_hobby')
+        $hobby = DB::connection(Session::get('connection'))->table('tbtabel_hobby')
             ->select('*')
             ->get();
 
-        $kodepos = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+        $kodepos = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
             ->select('*')
             ->limit(100)
             ->get();
 
-        $fasilitasperbankan = DB::connection($_SESSION['connection'])->table('tbmaster_fasilitasperbankan')
+        $fasilitasperbankan = DB::connection(Session::get('connection'))->table('tbmaster_fasilitasperbankan')
             ->get();
 
-        $jenismember = DB::connection($_SESSION['connection'])->table('tbmaster_jenismember')
+        $jenismember = DB::connection(Session::get('connection'))->table('tbmaster_jenismember')
             ->select('jm_kode','jm_keterangan')
             ->orderBy('jm_keterangan')
             ->get();
 
-        $jenisoutlet = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
+        $jenisoutlet = DB::connection(Session::get('connection'))->table('tbmaster_outlet')
             ->select('out_kodeoutlet','out_namaoutlet')
             ->orderBy('out_kodeoutlet')
             ->get();
 
-        $group = DB::connection($_SESSION['connection'])->table('tbtabel_groupkategori')
+        $group = DB::connection(Session::get('connection'))->table('tbtabel_groupkategori')
             ->select('grp_group','grp_subgroup','grp_kategori','grp_subkategori','grp_idgroupkat')
             ->orderBy('grp_group')
             ->get();
 
-        $produkmember = DB::connection($_SESSION['connection'])->table('tbtabel_produkmember')
+        $produkmember = DB::connection(Session::get('connection'))->table('tbtabel_produkmember')
             ->select('mpm_kodeprdcd','mpm_namaprdcd')
             ->orderBy('mpm_kodeprdcd')
             ->get();
@@ -61,7 +61,7 @@ class MemberController extends Controller
     public function getLovMember(Request  $request){
         $search = $request->value;
 
-        $member = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $member = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_kodemember', 'cus_namamember')
             ->where('cus_kodemember','LIKE', '%'.$search.'%')
             ->orWhere('cus_namamember','LIKE', '%'.$search.'%')
@@ -75,7 +75,7 @@ class MemberController extends Controller
     public function getLovKodepos(Request $request){
         $search = $request->value;
 
-        $kodepos = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+        $kodepos = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
             ->select('*')
             ->where('pos_propinsi', 'like', '%'.$search.'%')
             ->orWhere('pos_kabupaten','LIKE', '%'.$search.'%')
@@ -88,7 +88,7 @@ class MemberController extends Controller
     }
 
     public function lovSuboutlet(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
             ->select('sub_kodesuboutlet','sub_namasuboutlet')
             ->where('sub_kodeoutlet','=',$request->outlet)
             ->orderBy('sub_kodesuboutlet')
@@ -98,7 +98,7 @@ class MemberController extends Controller
     }
 
     public function lovMemberSelect(Request $request){
-        $member = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $member = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->leftJoin('tbmaster_customercrm','crm_kodemember','=','cus_kodemember')
             ->selectRaw("cus_kodeigr, cus_recordid, cus_kodemember, cus_namamember, cus_alamatmember1, cus_alamatmember2, cus_alamatmember3, cus_alamatmember4,
                 cus_tlpmember, cus_alamatmember5, cus_alamatmember6, cus_alamatmember7, cus_alamatmember8, cus_jenismember, cus_flagmemberkhusus, cus_jarak,
@@ -120,14 +120,14 @@ class MemberController extends Controller
         }
 
         if($member->cus_alamatmember4 != '' && $member->cus_alamatmember4 != null){
-            $ktp = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $ktp = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode','=',$member->cus_alamatmember3)
                 ->where('pos_kelurahan','=',$member->cus_alamatmember4)
                 ->first();
         }
         else if($member->cus_alamatmember3 != '' && $member->cus_alamatmember3 != null){
-            $ktp = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $ktp = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode','=',$member->cus_alamatmember3)
                 ->first();
@@ -135,14 +135,14 @@ class MemberController extends Controller
         else $ktp = '';
 
         if($member->cus_alamatmember8 != '' && $member->cus_alamatmember8 != null) {
-            $surat = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $surat = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode', '=', $member->cus_alamatmember7)
                 ->where('pos_kelurahan', '=', $member->cus_alamatmember8)
                 ->first();
         }
         else if($member->cus_alamatmember7 != '' && $member->cus_alamatmember7 != null){
-            $surat = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $surat = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode', '=', $member->cus_alamatmember7)
                 ->first();
@@ -150,7 +150,7 @@ class MemberController extends Controller
         else $surat = '';
 
         if($member->crm_kodemember != '' && $member->crm_alamatusaha3 != null && $member->crm_alamatusaha4 != null){
-            $usaha = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $usaha = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode','=',$member->crm_alamatusaha3)
                 ->where('pos_kelurahan','=',$member->crm_alamatusaha4)
@@ -161,7 +161,7 @@ class MemberController extends Controller
         }
 
         if($member->crm_idgroupkat != '' && $member->crm_idgroupkat != null){
-            $group = DB::connection($_SESSION['connection'])->table('tbtabel_groupkategori')
+            $group = DB::connection(Session::get('connection'))->table('tbtabel_groupkategori')
                 ->select('*')
                 ->where('grp_idgroupkat','=',$member->crm_idgroupkat)
                 ->first();
@@ -170,18 +170,27 @@ class MemberController extends Controller
             $group = '';
         }
 
-        $jenismember = DB::connection($_SESSION['connection'])->table('tbmaster_jenismember')
-            ->select('*')
-            ->where('jm_kode','=',$member->cus_jenismember)
-            ->first();
+        if($member->cus_jenismember == null){
+            $jenismember = DB::connection(Session::get('connection'))->table('tbmaster_jenismember')
+                ->select('*')
+                ->whereNull('jm_kode')
+                ->orWhere('jm_kode','=',' ')
+                ->first();
+        }
+        else{
+            $jenismember = DB::connection(Session::get('connection'))->table('tbmaster_jenismember')
+                ->select('*')
+                ->where('jm_kode','=',$member->cus_jenismember)
+                ->first();
+        }
 
-        $outlet = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
+        $outlet = DB::connection(Session::get('connection'))->table('tbmaster_outlet')
             ->select('*')
             ->where('out_kodeoutlet','=',$member->cus_kodeoutlet)
             ->first();
 
         if($outlet){
-            $arrsuboutlet = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+            $arrsuboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
                 ->select('sub_kodesuboutlet','sub_namasuboutlet')
                 ->where('sub_kodeoutlet','=',$outlet->out_kodeoutlet)
                 ->orderBy('sub_kodesuboutlet')
@@ -189,34 +198,34 @@ class MemberController extends Controller
         }
         else $arrsuboutlet = [];
 
-        $suboutlet = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+        $suboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
             ->select('*')
             ->where('sub_kodesuboutlet','=',$member->cus_kodesuboutlet)
             ->first();
 
-        $bank = DB::connection($_SESSION['connection'])->table('tbmaster_customerfasilitasbank')
+        $bank = DB::connection(Session::get('connection'))->table('tbmaster_customerfasilitasbank')
             ->select('*')
             ->where('cub_kodemember','=',$request->value)
             ->get();
 
-        $hobbymember = DB::connection($_SESSION['connection'])->table('tbtabel_hobbydetail')
+        $hobbymember = DB::connection(Session::get('connection'))->table('tbtabel_hobbydetail')
             ->select('*')
             ->where('dhb_kodemember','=',$member->cus_kodemember)
             ->get();
 
-        $creditlimit = DB::connection($_SESSION['connection'])->table('tbhistory_creditlimit')
+        $creditlimit = DB::connection(Session::get('connection'))->table('tbhistory_creditlimit')
             ->select('*')
             ->where('lmt_kodemember','=',$member->cus_kodemember)
             ->get();
 
-        $npwp = DB::connection($_SESSION['connection'])->table('tbmaster_npwp')
+        $npwp = DB::connection(Session::get('connection'))->table('tbmaster_npwp')
             ->select('*')
             ->where('pwp_kodemember','=',$member->cus_kodemember)
             ->first();
 
         $quisioner = '';
 //        if($member->cus_flagmemberkhusus == 'Y' && $member->cus_recordid != null){
-            $quisioner = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+            $quisioner = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
                 ->select('fpm_kodeprdcd','fpm_flagjual','fpm_flagbeliigr','fpm_flagbelilain')
                 ->where('fpm_kodemember',$member->cus_kodemember)
 //                    ->where('fpm_kodemember','578229')
@@ -231,13 +240,13 @@ class MemberController extends Controller
 
     public function lovKodeposSelect(Request $request){
         if($request->kode == 'x' && $request->kecamatan == 'x' && $request->kabupaten == 'x'){
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kelurahan','=',$request->kelurahan)
                 ->first();
         }
         else {
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
                 ->select('*')
                 ->where('pos_kode','=',$request->kode)
                 ->where('pos_kecamatan','=',$request->kecamatan)
@@ -254,13 +263,13 @@ class MemberController extends Controller
 
     public function lovMemberSearch(Request $request){
         if(!ctype_alpha($request->value)){
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                 ->select('cus_kodemember','cus_namamember')
                 ->where('cus_kodemember',$request->value)
                 ->get();
         }
         else{
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                 ->select('cus_kodemember','cus_namamember')
                 ->where('cus_namamember','like','%'.$request->value.'%')
                 ->orderBy('cus_namamember')
@@ -272,7 +281,7 @@ class MemberController extends Controller
     }
 
     public function lovKodeposSearch(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_kodepos')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_kodepos')
             ->select('*')
             ->where('pos_kelurahan','=',$request->value)
             ->orderBy('pos_kecamatan')
@@ -283,23 +292,23 @@ class MemberController extends Controller
 
     public function setStatusMember(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                 ->where('cus_kodemember',$request->kode)
                 ->update(['cus_recordid' => $request->status]);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             return 'success';
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             return 'failed';
         }
     }
 
     public function checkPassword(Request $request){
         sleep(1);
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_user')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_user')
             ->select('userlevel')
             ->where('userid','=',$request->username)
             ->where('userpassword','=',$request->password)
@@ -322,7 +331,7 @@ class MemberController extends Controller
         $insertHobby = false;
         $update_credit = false;
         $update_bank = false;
-        $userId = $_SESSION['usid'];
+        $userId = Session::get('usid');
 
         $update_cus = [];
         $update_crm = [];
@@ -330,9 +339,9 @@ class MemberController extends Controller
         $update_customerfasilitasbank = [];
 
         $kodemember = $request->customer['cus_kodemember'];
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $checkcus = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $checkcus = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->where('cus_kodemember',$kodemember)
             ->first();
 
@@ -342,7 +351,7 @@ class MemberController extends Controller
                     $update_cus[$request->keycustomer[$i]] = DB::RAW("to_date('" . $request->customer[$request->keycustomer[$i]] . "','dd/mm/yyyy')");
                 else $update_cus[$request->keycustomer[$i]] = $request->customer[$request->keycustomer[$i]];
             }
-            $update_cus['cus_modify_by'] = $_SESSION['usid'];
+            $update_cus['cus_modify_by'] = Session::get('usid');
             $update_cus['cus_modify_dt'] = DB::raw('SYSDATE');
 
             for($i=0;$i<sizeof($request->customercrm);$i++){
@@ -350,9 +359,9 @@ class MemberController extends Controller
                     $update_crm[$request->keycustomercrm[$i]] = DB::RAW("to_date('".$request->customercrm[$request->keycustomercrm[$i]]."','dd/mm/yyyy')");
                 else $update_crm[$request->keycustomercrm[$i]] = $request->customercrm[$request->keycustomercrm[$i]];
             }
-            $update_crm['crm_modify_by'] = $_SESSION['usid'];
+            $update_crm['crm_modify_by'] = Session::get('usid');
             $update_crm['crm_modify_dt'] = DB::raw('SYSDATE');
-            $update_crm['crm_kodeigr'] = $_SESSION['kdigr'];
+            $update_crm['crm_kodeigr'] = Session::get('kdigr');
 
             if($request->hobby != null){
                 for($i=0;$i<sizeof($request->hobby);$i++){
@@ -361,33 +370,33 @@ class MemberController extends Controller
             }
 
             try{
-                DB::connection($_SESSION['connection'])->beginTransaction();
+                DB::connection(Session::get('connection'))->beginTransaction();
 
-                $resultcus = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                $resultcus = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                     ->where('cus_kodemember', '=',$kodemember)
                     ->update($update_cus);
 
-                $checkcrm = DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')
+                $checkcrm = DB::connection(Session::get('connection'))->table('tbmaster_customercrm')
                     ->where('crm_kodemember','=',$kodemember)
                     ->first();
 
                 if($checkcrm){
-                    $resultcrm = DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')
+                    $resultcrm = DB::connection(Session::get('connection'))->table('tbmaster_customercrm')
                         ->where('crm_kodemember', '=',$kodemember)
                         ->update($update_crm);
                 }
                 else{
                     $update_crm['crm_kodemember'] = $kodemember;
-                    $resultcrm = DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')
+                    $resultcrm = DB::connection(Session::get('connection'))->table('tbmaster_customercrm')
                         ->insert($update_crm);
                 }
 
-                $check = DB::connection($_SESSION['connection'])->table('tbhistory_creditlimit')
+                $check = DB::connection(Session::get('connection'))->table('tbhistory_creditlimit')
                     ->where('lmt_kodemember',$kodemember)
                     ->first();
 
                 if($check){
-                    $update_credit = DB::connection($_SESSION['connection'])->table('tbhistory_creditlimit')
+                    $update_credit = DB::connection(Session::get('connection'))->table('tbhistory_creditlimit')
                         ->where('lmt_kodemember',$kodemember)
                         ->update([
                             'lmt_nilai' => $request->customer['cus_creditlimit'],
@@ -396,7 +405,7 @@ class MemberController extends Controller
                         ]);
                 }
                 else{
-                    $update_credit = DB::connection($_SESSION['connection'])->table('tbhistory_creditlimit')
+                    $update_credit = DB::connection(Session::get('connection'))->table('tbhistory_creditlimit')
                         ->insert([
                             'lmt_kodeigr' => $kodeigr,
                             'lmt_kodemember' => $kodemember,
@@ -406,11 +415,11 @@ class MemberController extends Controller
                         ]);
                 }
 
-                DB::connection($_SESSION['connection'])->table('tbtabel_hobbydetail')
+                DB::connection(Session::get('connection'))->table('tbtabel_hobbydetail')
                     ->where('dhb_kodemember',$request->customer['cus_kodemember'])
                     ->delete();
 
-                $insertHobby = DB::connection($_SESSION['connection'])->table('tbtabel_hobbydetail')
+                $insertHobby = DB::connection(Session::get('connection'))->table('tbtabel_hobbydetail')
                     ->insert($update_hobbydetail);
 
 
@@ -427,40 +436,40 @@ class MemberController extends Controller
                     }
                 }
 
-                $checkbank = DB::connection($_SESSION['connection'])->table('tbmaster_customerfasilitasbank')
+                $checkbank = DB::connection(Session::get('connection'))->table('tbmaster_customerfasilitasbank')
                     ->where('cub_kodemember',$kodemember)
                     ->first();
 
                 if($checkbank){
-                    $update_bank = DB::connection($_SESSION['connection'])->table('tbmaster_customerfasilitasbank')
+                    $update_bank = DB::connection(Session::get('connection'))->table('tbmaster_customerfasilitasbank')
                         ->where('cub_kodemember','=',$kodemember)
                         ->delete();
                 }
                 if(!empty($request->bank)) {
-                    $update_bank = DB::connection($_SESSION['connection'])->table('tbmaster_customerfasilitasbank')
+                    $update_bank = DB::connection(Session::get('connection'))->table('tbmaster_customerfasilitasbank')
                         ->insert($update_customerfasilitasbank);
                 }
                 else{
                     $update_bank = true;
                 }
 
-                $group = DB::connection($_SESSION['connection'])->table('tbtabel_groupkategori')->select('*')
+                $group = DB::connection(Session::get('connection'))->table('tbtabel_groupkategori')->select('*')
                     ->where('grp_idgroupkat', $request->customercrm['crm_idgroupkat'])
                     ->first();
 
                 if ($group){
-                    DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')->where('crm_kodemember', $kodemember)->where('crm_kodeigr', $kodeigr)
+                    DB::connection(Session::get('connection'))->table('tbmaster_customercrm')->where('crm_kodemember', $kodemember)->where('crm_kodeigr', $kodeigr)
                         ->update(['crm_group' => $group->grp_group, 'crm_subgroup' => $group->grp_subgroup, 'crm_kategori' => $group->grp_kategori, 'crm_subkategori' => $group->grp_subkategori]);
                 }
 
                 $status = 'success';
                 $message = 'Berhasil menyimpan data member!';
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
             }
             catch (QueryException $e){
                 $status = 'failed';
                 $message = 'Gagal menyimpan data member!';
-                DB::connection($_SESSION['connection'])->rollBack();
+                DB::connection(Session::get('connection'))->rollBack();
             }
         }
         else{
@@ -487,7 +496,7 @@ class MemberController extends Controller
                 ->where('crm_kodemember','=',$kodemember)
                 ->delete();
 
-            $cus = DB::connection($_SESSION['connection'])
+            $cus = DB::connection(Session::get('connection'))
                 ->table('tbmaster_customer')
                 ->where('cus_kodemember','=',$kodemember)
                 ->first();
@@ -543,7 +552,7 @@ class MemberController extends Controller
                     'cus_flagkirimsms' => $cus->cus_flagkirimsms,
                     'cus_source' => 'manual',
                     'cus_tgl_upload' => carbon::now(),
-                    'cus_user_upload' => $_SESSION['usid'],
+                    'cus_user_upload' => Session::get('usid'),
                     'cus_flag_uptodate' => $cus->cus_flag_uptodate,
                     'cus_nonaktif_dt' => $cus->cus_nonaktif_dt,
                     'cus_flag_ina' => $cus->cus_flag_ina,
@@ -555,7 +564,7 @@ class MemberController extends Controller
                     'cus_flag_isaku' => $cus->cus_flag_isaku
                 ]);
 
-            $crm = DB::connection($_SESSION['connection'])
+            $crm = DB::connection(Session::get('connection'))
                 ->table('tbmaster_customercrm')
                 ->where('crm_kodemember','=',$kodemember)
                 ->first();
@@ -607,7 +616,7 @@ class MemberController extends Controller
                     'crm_idsegment' => $crm->crm_idsegment,
                     'crm_source' => 'MANUAL',
                     'crm_tgl_upload' => Carbon::now(),
-                    'crm_user_upload' => $_SESSION['usid']
+                    'crm_user_upload' => Session::get('usid')
                 ]);
 
             if($tbmaster_customer && $tbmaster_customercrm){
@@ -642,9 +651,9 @@ class MemberController extends Controller
         $resultcrm = false;
 
         $kodemember = $request->kodemember;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $checkigr = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $checkigr = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_kodeigr')
             ->where('cus_kodemember',$kodemember)
             ->first();
@@ -657,20 +666,20 @@ class MemberController extends Controller
 //            sleep(3); // Dikoemen dlu karena langsung merubah table production igrcrm
             try {
                 DB::connection('igrcrm')->beginTransaction();
-//                $checkcus = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+//                $checkcus = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
                 $checkcus = DB::connection('igrcrm')
                     ->table(DB::RAW('tbmaster_customer_testias'))
                     ->where('cus_kodemember', $kodemember)
                     ->first();
                 if ($checkcus) {
-//                    DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+//                    DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
                     DB::connection('igrcrm')
                         ->table(DB::RAW('tbmaster_customer_testias'))
                         ->where('cus_kodemember', $kodemember)
                         ->delete();
                 }
 
-//                $checkcrm = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+//                $checkcrm = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
                 $checkcrm = DB::connection('igrcrm')
                     ->table(DB::RAW('tbmaster_customercrm_testias'))
                     ->where('crm_kodemember', $kodemember)
@@ -678,34 +687,34 @@ class MemberController extends Controller
 
 //                dd($checkcrm);
                 if ($checkcrm) {
-//                    DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+//                    DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
                     DB::connection('igrcrm')
                         ->table(DB::RAW('tbmaster_customercrm_testias'))
                         ->where('crm_kodemember', $kodemember)
                         ->delete();
                 }
 
-                $exportcus = DB::connection($_SESSION['connection'])
+                $exportcus = DB::connection(Session::get('connection'))
                     ->table('tbmaster_customer')
                     ->where('cus_kodemember', $kodemember)
                     ->first();
 
                 if ($exportcus) {
                     $arrexportcus = (array)$exportcus;
-//                    $resultcus = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
+//                    $resultcus = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
                     $resultcus = DB::connection('igrcrm')
                         ->table(DB::RAW('tbmaster_customer_testias'))
                         ->insert($arrexportcus);
                 }
 
-                $exportcrm = DB::connection($_SESSION['connection'])
+                $exportcrm = DB::connection(Session::get('connection'))
                     ->table('tbmaster_customercrm')
                     ->where('crm_kodemember', $kodemember)
                     ->first();
 
                 if ($exportcrm) {
                     $arrexportcrm = (array)$exportcrm;
-//                    $resultcrm = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
+//                    $resultcrm = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
                     $resultcrm = DB::connection('igrcrm')
                         ->table(DB::RAW('tbmaster_customercrm_testias'))
                         ->insert($arrexportcrm);
@@ -736,15 +745,15 @@ class MemberController extends Controller
         $quisioner = '';
         $kodemember = $request->arrdata[0]['fpm_kodemember'];
 
-        $oldQuisioner = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+        $oldQuisioner = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
             ->where('fpm_kodemember',$kodemember)
             ->orderBy('fpm_kodeprdcd')
             ->get();
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+            DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
                 ->where('fpm_kodemember', $kodemember)
                 ->delete();
 
@@ -760,12 +769,12 @@ class MemberController extends Controller
                             'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                             'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                             'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
-                            'fpm_modify_by' => $_SESSION['usid'],
+                            'fpm_modify_by' => Session::get('usid'),
                             'fpm_modify_dt' => DB::RAW('sysdate')
                         );
                         $arrquisioner[] = $quisioner;
 
-                        $insert = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+                        $insert = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
                             ->insert($quisioner);
                     }
                 }
@@ -782,7 +791,7 @@ class MemberController extends Controller
                                 'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                                 'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                                 'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
-                                'fpm_modify_by' => $_SESSION['usid'],
+                                'fpm_modify_by' => Session::get('usid'),
                                 'fpm_modify_dt' => DB::RAW('sysdate')
                             );
                             if($j < sizeof($oldQuisioner) - 1)
@@ -796,7 +805,7 @@ class MemberController extends Controller
                                 'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
                                 'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                                 'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                                'fpm_create_by' => $_SESSION['usid'],
+                                'fpm_create_by' => Session::get('usid'),
                                 'fpm_create_dt' => DB::RAW('sysdate'),
                                 'fpm_modify_by' => '',
                                 'fpm_modify_dt' => ''
@@ -804,7 +813,7 @@ class MemberController extends Controller
                         }
                         $arrquisioner[] = $quisioner;
 
-                        $insert = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+                        $insert = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
                             ->insert($quisioner);
                     }
                 }
@@ -818,30 +827,30 @@ class MemberController extends Controller
                         'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
                         'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                         'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
-                        'fpm_create_by' => $_SESSION['usid'],
+                        'fpm_create_by' => Session::get('usid'),
                         'fpm_create_dt' => DB::RAW('sysdate'),
                         'fpm_modify_by' => '',
                         'fpm_modify_dt' => ''
                     );
                     $arrquisioner[] = $quisioner;
 
-                    $insert = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+                    $insert = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
                         ->insert($quisioner);
                 }
             }
 
 //            dd($arrquisioner);
 
-//            $insert = DB::connection($_SESSION['connection'])->table('tbtabel_flagprodukmember')
+//            $insert = DB::connection(Session::get('connection'))->table('tbtabel_flagprodukmember')
 //                ->insert($arrquisioner);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
             $message = 'Berhasil menyimpan data quisioner!';
         }
         catch (QueryException $e){
             dd($e->getMessage());
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $status = 'failed';
             $message = 'Gagal menyimpan data quisioner!';
         }
@@ -852,7 +861,7 @@ class MemberController extends Controller
     public function deleteMember(Request $request){
         $kodemember = $request->kodemember;
 
-        $cus = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $cus = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select(
                 'CUS_KODEIGR',
                 'CUS_RECORDID',
@@ -906,31 +915,31 @@ class MemberController extends Controller
         $cus['cus_create_dt'] = DB::RAW('sysdate');
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $insert = DB::connection($_SESSION['connection'])->table('tbhistory_deletecustomer')
+            $insert = DB::connection(Session::get('connection'))->table('tbhistory_deletecustomer')
                 ->insert($cus);
 
             if($insert){
-                $deletecus = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                $deletecus = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                     ->where('cus_kodemember',$kodemember)
                     ->delete();
 
-                $deletecrm = DB::connection($_SESSION['connection'])->table('tbmaster_customercrm')
+                $deletecrm = DB::connection(Session::get('connection'))->table('tbmaster_customercrm')
                     ->where('crm_kodemember',$kodemember)
                     ->delete();
 
-                $deletecub = DB::connection($_SESSION['connection'])->table('tbmaster_customerfasilitasbank')
+                $deletecub = DB::connection(Session::get('connection'))->table('tbmaster_customerfasilitasbank')
                     ->where('cub_kodemember',$kodemember)
                     ->delete();
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
             $message = 'Berhasil menghapus data member!';
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $status = 'success';
             $message = 'Berhasil menghapus data member!';
         }
@@ -959,14 +968,14 @@ class MemberController extends Controller
         $date   = date('Y-m-d H:i:s');
 
         try{
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->table('tbmaster_customer')
                 ->where('cus_kodemember','=',$kodeMember)
                 ->where('cus_namamember', '<>','NEW')
                 ->whereNotNull('cus_tglregistrasi')
                 ->first();
 
-            $tglmulai = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+            $tglmulai = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                 ->select('cus_tglmulai')
                 ->where('cus_kodemember', $kodeMember)
                 ->first();
@@ -976,7 +985,7 @@ class MemberController extends Controller
             if ($temp){
                 return response()->json(['kode' => 1, "msg" => "Tgl registrasi sudah terisi", 'data' =>'']);
             } else {
-                DB::connection($_SESSION['connection'])
+                DB::connection(Session::get('connection'))
                     ->table('tbmaster_customer')
                     ->where('cus_kodemember', $kodeMember)
                     ->update(['cus_tglregistrasi' => $tglmulai]);

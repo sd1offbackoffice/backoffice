@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,7 +18,7 @@ class KertasKerjaStatusController extends Controller
     }
 
     public function getLovKodeRak(){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT lks_koderak koderak
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT lks_koderak koderak
                 FROM tbmaster_lokasi
                 WHERE (lks_koderak LIKE 'R%' OR lks_koderak LIKE 'O%')
                 AND lks_jenisrak IN ('D','N')
@@ -33,9 +33,9 @@ class KertasKerjaStatusController extends Controller
         $rowsb = $request->rowsb;
         $rowsk = $request->rowsk;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT LKS_KODERAK RAK, LKS_KODESUBRAK SR, LKS_TIPERAK TR,
+        $data = DB::connection(Session::get('connection'))->select("SELECT LKS_KODERAK RAK, LKS_KODESUBRAK SR, LKS_TIPERAK TR,
          LKS_SHELVINGRAK SH, LKS_NOURUT NU, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
          PRD_KODEKATEGORIBARANG KAT, LKS_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI, PRD_KODETAG TAG,
          PRD_FRAC FRAC, SLS_QTYIGR IGR, SLS_QTYOMI OMI, SLS_HARI, HARIIGR, HARIOMI,
@@ -144,7 +144,7 @@ class KertasKerjaStatusController extends Controller
                                    ) KUANB,
                                    NVL (MSTD_QTY, 0) KUANA
                               FROM TBTR_PO_D, TBTR_MSTRAN_D, TBMASTER_PRODMAST
-                             WHERE TPOD_KODEIGR = '".$_SESSION['kdigr']."'
+                             WHERE TPOD_KODEIGR = '".Session::get('kdigr')."'
                                AND NVL (TPOD_RECORDID, '9') <> '1'
                                AND TRUNC (TPOD_TGLPO)
                                        BETWEEN TRUNC (ADD_MONTHS (TO_DATE ('01' || '".$periode."',
@@ -177,7 +177,7 @@ class KertasKerjaStatusController extends Controller
         FROM tbtr_monitoringplu
         WHERE mpl_kodemonitoring IN('SM','SJMF','SJMNF','SPVF','SPVNF','SPVGMS')
         group by mpl_prdcd)
-   WHERE LKS_KODEIGR = '".$_SESSION['kdigr']."'
+   WHERE LKS_KODEIGR = '".Session::get('kdigr')."'
      AND LKS_PRDCD = PRD_PRDCD
      AND LKS_PRDCD = MIND_PRDCD(+)
      AND LKS_PRDCD = LT_PRDCD(+)

@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -22,11 +22,11 @@ class OutsScanController extends Controller
         return view('BACKOFFICE.LAPORAN.outsscan');
     }
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $date = $request->date;
         $theDate = DateTime::createFromFormat('d-m-Y', $date)->format('d-m-Y');
 
-        $cursor = DB::connection($_SESSION['connection'])->select("select rownum nomor, prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, qty from (
+        $cursor = DB::connection(Session::get('connection'))->select("select rownum nomor, prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, qty from (
 SELECT   prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, SUM (PBO_QTYREALISASI) qty
     FROM (SELECT PBO_KODEOMI, PBO_NOPB, PBO_TGLPB, PRD_PRDCD, PRD_DESKRIPSIPANJANG,  'Periode s/d : ' || to_char(TO_DATE('$theDate','dd-MM-YYYY'), 'dd-MM-yyyy') Periode,
                  PRD_UNIT || '/' || PRD_FRAC UNIT, PBO_QTYREALISASI, PBO_TTLNILAI, PBO_TTLPPN
@@ -49,12 +49,12 @@ order by prd_prdcd ) b");
         }
     }
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $today = date('d-m-Y');
         $date = $request->date;
         $theDate = DateTime::createFromFormat('d-m-Y', $date)->format('d-m-Y');
 
-    $datas = DB::connection($_SESSION['connection'])->select("select rownum nomor, prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, qty from (
+    $datas = DB::connection(Session::get('connection'))->select("select rownum nomor, prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, qty from (
 SELECT   prs_namaperusahaan, prs_Namacabang, PRD_PRDCD, PRD_DESKRIPSIPANJANG, UNIT, Periode, SUM (PBO_QTYREALISASI) qty
     FROM (SELECT PBO_KODEOMI, PBO_NOPB, PBO_TGLPB, PRD_PRDCD, PRD_DESKRIPSIPANJANG,  'Periode s/d : ' || to_char(TO_DATE('$theDate','dd-MM-YYYY'), 'dd-MM-yyyy') Periode,
                  PRD_UNIT || '/' || PRD_FRAC UNIT, PBO_QTYREALISASI, PBO_TTLNILAI, PBO_TTLPPN

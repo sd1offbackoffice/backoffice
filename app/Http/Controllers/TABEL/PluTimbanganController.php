@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,11 +18,11 @@ class PluTimbanganController extends Controller
     }
 
     public function StartNew(){
-        $jenistmb = DB::connection($_SESSION['connection'])->table('tbMaster_Perusahaan')
+        $jenistmb = DB::connection(Session::get('connection'))->table('tbMaster_Perusahaan')
             ->selectRaw("nvl(PRS_JENISTIMBANGAN,'q') a")
             ->first();
 
-        $persh_cur = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $persh_cur = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->selectRaw("PRS_IPSERVER, PRS_USERSERVER, PRS_PWDSERVER, nvl(PRS_JENISTIMBANGAN,'q') jenistmb")
             ->first();
 
@@ -32,16 +32,16 @@ class PluTimbanganController extends Controller
     public function LovPlu(Request $request){
         $search = $request->value;
 
-        $datas   = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+        $datas   = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->selectRaw("PRD_DESKRIPSIPANJANG,PRD_PRDCD, TO_CHAR(PRD_FRAC)||'/'||PRD_UNIT AS SATUAN, PRD_KODETAG, PRD_HRGJUAL, rownum num")
 
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->whereRaw("substr(prd_prdcd,7,1) = '1'")
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->whereRaw("substr(prd_prdcd,7,1) = '1'")
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orderBy('PRD_DESKRIPSIPANJANG')
             ->limit(100)
@@ -55,12 +55,12 @@ class PluTimbanganController extends Controller
     public function GetPlu(Request $request){
         $search = $request->plu;
 
-        $data   = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+        $data   = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->selectRaw("PRD_DESKRIPSIPANJANG,PRD_PRDCD, TO_CHAR(PRD_FRAC)||'/'||PRD_UNIT AS SATUAN, PRD_KODETAG, PRD_HRGJUAL, rownum num")
 
             ->where('prd_prdcd','=', $search)
             ->whereRaw("substr(prd_prdcd,7,1) = '1'")
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orderBy('PRD_DESKRIPSIPANJANG')
             ->first();
@@ -74,12 +74,12 @@ class PluTimbanganController extends Controller
             $plu = $request->plu;
             $desk = $request->desk;
 
-            $tempkd   = DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
+            $tempkd   = DB::connection(Session::get('connection'))->table('tbtabel_plutimbangan')
                 ->selectRaw("nvl(count(1),0) a")
                 ->where('tmb_kode','=', $kode)
                 ->first();
 
-            $temppr = DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
+            $temppr = DB::connection(Session::get('connection'))->table('tbtabel_plutimbangan')
                 ->selectRaw("nvl(count(1),0) a")
                 ->whereRaw("tmb_prdcd = substr('$plu',1,6)||'0'")
                 ->first();
@@ -88,24 +88,24 @@ class PluTimbanganController extends Controller
                 //kode sudah ada
                 return response()->json(1);
             }else if((int)($tempkd->a) == 0 && (int)($temppr->a) == 0){
-                DB::connection($_SESSION['connection'])->beginTransaction();
-                DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
+                DB::connection(Session::get('connection'))->beginTransaction();
+                DB::connection(Session::get('connection'))->table('tbtabel_plutimbangan')
                     ->insert([
-                        'tmb_kodeigr' => $_SESSION['kdigr'],
+                        'tmb_kodeigr' => Session::get('kdigr'),
                         'tmb_prdcd' => substr($plu,0,6).'0',
                         'tmb_kode' => $kode,
                         'tmb_deskripsi1' => $desk,
-                        'tmb_create_by' => $_SESSION['usid'],
+                        'tmb_create_by' => Session::get('usid'),
                         'tmb_create_dt' => DB::RAW("SYSDATE")
                     ]);
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
                 return response()->json(2);
             }else if((int)($temppr->a) != 0){
-                DB::connection($_SESSION['connection'])->beginTransaction();
-                DB::connection($_SESSION['connection'])->table('tbtabel_plutimbangan')
+                DB::connection(Session::get('connection'))->beginTransaction();
+                DB::connection(Session::get('connection'))->table('tbtabel_plutimbangan')
                     ->where('tmb_prdcd', '=',substr($plu,0,6).'0')
-                    ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => $_SESSION['usid'], 'tmb_MODIFY_DT' => DB::RAW("SYSDATE")]);
-                DB::connection($_SESSION['connection'])->commit();
+                    ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => Session::get('usid'), 'tmb_MODIFY_DT' => DB::RAW("SYSDATE")]);
+                DB::connection(Session::get('connection'))->commit();
                 return response()->json(3);
             }
         }catch (\Exception $e){
@@ -115,7 +115,7 @@ class PluTimbanganController extends Controller
 
     public function preHapus(Request $request){
         $plu = $request->plu;
-        $temptmb = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) a
+        $temptmb = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) a
       FROM TBMASTER_PRODMAST, tbtabel_plutimbangan
      WHERE prd_prdcd = tmb_prdcd and tmb_PRDCD = substr('$plu',1,6)||'0'");
 
@@ -129,7 +129,7 @@ class PluTimbanganController extends Controller
         $jenis_tmb = $request->jenis_tmb;
         $lnew1 = $request->lnew1;
         $lnew2 = $request->lnew2;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $dir1 = "S:\LREMOTE\HAPUS.txt";
         $dir2 = "S:\LREMOTE\ISHIDA\HAPUS.txt";
@@ -137,22 +137,22 @@ class PluTimbanganController extends Controller
         $judul = '';
         $isi = '';
 
-        DB::connection($_SESSION['connection'])->beginTransaction();
-        $temptmb = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) a
+        DB::connection(Session::get('connection'))->beginTransaction();
+        $temptmb = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) a
       FROM TBMASTER_PRODMAST, tbtabel_plutimbangan
      WHERE prd_prdcd = tmb_prdcd and tmb_PRDCD = substr('$plu',1,6)||'0'");
         if($temptmb[0]->a != 0){
-            $tempPrd = DB::connection($_SESSION['connection'])->select("SELECT PRD_KODETAG, PRD_UNIT, PRD_HRGJUAL, PRD_DESKRIPSIPENDEK,
+            $tempPrd = DB::connection(Session::get('connection'))->select("SELECT PRD_KODETAG, PRD_UNIT, PRD_HRGJUAL, PRD_DESKRIPSIPENDEK,
                SUBSTR (PRD_PRDCD, 6) || '1' AS PRD_PRDCD
           FROM TBMASTER_PRODMAST
          WHERE PRD_KODEIGR = '$kodeigr' AND PRD_PRDCD = SUBSTR ('$plu', 1, 6) || '1'");
 
-            $tempPrmd = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) AS FPROMO
+            $tempPrmd = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) AS FPROMO
           FROM tbtr_promomd
          WHERE PRMd_PRDCD = '$plu' AND TRUNC (SYSDATE) BETWEEN PRMd_TGLawal AND PRMd_TGLAKHIR");
 
             if(($tempPrmd[0]->fpromo) > 0){
-                $hrgpromo = DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                $hrgpromo = DB::connection(Session::get('connection'))->table('tbtr_promomd')
                     ->selectRaw('PRMd_HRGJUAL')
                     ->where('PRMd_PRDCD','=',$plu)
                     ->first();
@@ -204,7 +204,7 @@ class PluTimbanganController extends Controller
                         }
                         fwrite($out_file, $isi);
                         fclose($out_file);
-                        DB::connection($_SESSION['connection'])->table("TBTABEL_PLUTIMBANGAN")
+                        DB::connection(Session::get('connection'))->table("TBTABEL_PLUTIMBANGAN")
                             ->where('TMB_KODEIGR','=',$kodeigr)
                             ->whereRaw("TMB_PRDCD = substr('$plu',1,6)||'0'")
                             ->where('TMB_KODE','=',$kode)
@@ -369,16 +369,16 @@ class PluTimbanganController extends Controller
                 fclose($out_file);
             }
         }
-        DB::connection($_SESSION['connection'])->table("tbtabel_plutimbangan")
+        DB::connection(Session::get('connection'))->table("tbtabel_plutimbangan")
             ->where('tmb_kodeigr','=',$kodeigr)
             ->where('tmb_prdcd','=',$plu)
             ->where('tmb_kode','=',$kode)
             ->delete();
-        DB::connection($_SESSION['connection'])->commit();
+        DB::connection(Session::get('connection'))->commit();
     }
 
     public function shareDir(){
-        $ip = $ip = $_SESSION['ip'];
+        $ip = $ip = Session::get('ip');
         //$dir = "S:\\";
 //        system('net use S:  /delete');//tidak perlu delete, karena bila drive S: sudah di mapping, maka meski di mapping kembali tidak masalah
         system('net use S: "\\\\'.$ip.'\share"  /persistent:no>nul 2>&1');
@@ -410,7 +410,7 @@ class PluTimbanganController extends Controller
 
     public function CheckDir(Request $request){
         $path = $request->path;
-        $ip = $_SESSION['ip'];
+        $ip = Session::get('ip');
         $dir = "S:".$path;
         if(file_exists($dir)){
             return response()->json(true);
@@ -422,7 +422,7 @@ class PluTimbanganController extends Controller
 
     public function Transfer(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $date1 = $request->date1; //YYYY-MM-DD <-ubahlah jadi
         $date2 = $request->date2;
         $jenis_tmb = $request->jenis_tmb;
@@ -471,7 +471,7 @@ class PluTimbanganController extends Controller
                     $out_file = fopen($dir1, "w") or die("Unable to open file!");
                     fwrite($out_file, $judul.chr(13).chr(10));
 
-                    $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                    $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                               PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRMd_JENISDISC
@@ -549,7 +549,7 @@ class PluTimbanganController extends Controller
                 fwrite($out_file, $judul.chr(13).chr(10));
 
                 //step 81
-                $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                           PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                           PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                           PRMd_JENISDISC
@@ -632,7 +632,7 @@ class PluTimbanganController extends Controller
                             fwrite($out_file, $judul.chr(13).chr(10));
                             //step 106
 
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE,
                                       SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD, PRD_UNIT,
                                       to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                       PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
@@ -693,7 +693,7 @@ class PluTimbanganController extends Controller
                             fwrite($out_file, chr(13).chr(10));
                             // step 1071
 
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE,
                                       SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD, PRD_UNIT,
                                       to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                       PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
@@ -757,7 +757,7 @@ class PluTimbanganController extends Controller
                             $out_file = fopen($dir2, "w") or die("Unable to open file!");
                             fwrite($out_file, $judul.chr(13).chr(10));
                             //step 1081
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1'
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1'
                                                                                       AS PRD_PRDCD,
                                   PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
@@ -819,7 +819,7 @@ class PluTimbanganController extends Controller
                             //step 109
                             $out_file = fopen($dir3, "w") or die("Unable to open file!");
                             fwrite($out_file, chr(13).chr(10));
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                                   PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRMd_JENISDISC
@@ -888,7 +888,7 @@ class PluTimbanganController extends Controller
                             $out_file = fopen($dir2, "w") or die("Unable to open file!");
                             fwrite($out_file, $judul.chr(13).chr(10));
                             //step 113
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1'
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1'
                                                                                       AS PRD_PRDCD,
                                   PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
@@ -947,7 +947,7 @@ class PluTimbanganController extends Controller
                             $out_file = fopen($dir3, "w") or die("Unable to open file!");
                             fwrite($out_file, chr(13).chr(10));
                             //step 114
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                                   PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                                   PRMd_JENISDISC
@@ -1011,7 +1011,7 @@ class PluTimbanganController extends Controller
                             //step 1153
                             fwrite($out_file, $judul.chr(13).chr(10));
                             //step 116
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                               PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRMd_JENISDISC
@@ -1068,7 +1068,7 @@ class PluTimbanganController extends Controller
                             $out_file = fopen($dir3, "w") or die("Unable to open file!");
                             fwrite($out_file, chr(13).chr(10));
                             //step 117
-                            $rec = DB::connection($_SESSION['connection'])->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
+                            $rec = DB::connection(Session::get('connection'))->select("SELECT   TMB_PRDCD, RPAD(TMB_KODE,4,' ') TMB_KODE, SUBSTR (PRD_PRDCD, 1, 6) || '1' AS PRD_PRDCD,
                               PRD_UNIT, to_char(PRD_HRGJUAL,'9999999999.99') PRD_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRD_DESKRIPSIPENDEK, to_char(PRMd_HRGJUAL,'9999999999.99') PRMd_HRGJUAL, --add 2 koma (kmy gak bisa proses)
                               PRMd_JENISDISC
@@ -1132,7 +1132,7 @@ class PluTimbanganController extends Controller
     }
 
     public function Print(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $val1 = $request->val1;
         $val2 = $request->val2;
         $p_pil = $request->p_pil;
@@ -1159,7 +1159,7 @@ class PluTimbanganController extends Controller
             }
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH, SUBSTR(TMB_PRDCD,1,6)||'1' PLU, PRD_PRDCD, PRD_DESC, PRD_SATUAN, PRD_KODETAG, HRG_JUAL, TMB_KODE
+        $datas = DB::connection(Session::get('connection'))->select("SELECT PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH, SUBSTR(TMB_PRDCD,1,6)||'1' PLU, PRD_PRDCD, PRD_DESC, PRD_SATUAN, PRD_KODETAG, HRG_JUAL, TMB_KODE
 FROM TBMASTER_PERUSAHAAN, TBTABEL_PLUTIMBANGAN,
 (	 SELECT PRD_PRDCD, PRD_DESKRIPSIPENDEK PRD_DESC, PRD_UNIT||'/'||PRD_FRAC PRD_SATUAN, PRD_KODETAG,
 	 		CASE WHEN ( TRUNC(SYSDATE)>= TRUNC(PRMD_TGLAWAL) AND TRUNC(SYSDATE)<= TRUNC(PRMD_TGLAKHIR) ) AND PRMD_JENISDISC = 'T' THEN PRMD_HRGJUAL ELSE PRD_HRGJUAL END HRG_JUAL
@@ -1190,32 +1190,32 @@ WHERE PRS_KODEIGR = '$kodeigr'
     }
 
     public function LovKode(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas   = DB::connection($_SESSION['connection'])->table('TBTABEL_PLUTIMBANGAN')
+        $datas   = DB::connection(Session::get('connection'))->table('TBTABEL_PLUTIMBANGAN')
             ->selectRaw("TMB_DESKRIPSI1, TMB_KODE, PRD_FRAC, PRD_HRGJUAL")
 //            ->leftJoin("TBMASTER_PRODMAST","TBTABEL_PLUTIMBANGAN.TMB_PRDCD",'=','TBMASTER_PRODMAST.PRD_PRDCD ')
             ->LeftJoin('TBMASTER_PRODMAST',function($join){
                 $join->on('TMB_PRDCD','PRD_PRDCD');
             })
             ->where('TMB_DESKRIPSI1','LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orWhere('TMB_KODE','LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orWhere('PRD_FRAC','LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orWhere('PRD_HRGJUAL','LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
 
             ->orderBy('TMB_KODE')
             ->limit(100)
             ->get();
 
-//        $datas = DB::connection($_SESSION['connection'])->select("Select TMB_DESKRIPSI1, TMB_KODE, PRD_FRAC, PRD_HRGJUAL
+//        $datas = DB::connection(Session::get('connection'))->select("Select TMB_DESKRIPSI1, TMB_KODE, PRD_FRAC, PRD_HRGJUAL
 //FROM   TBTABEL_PLUTIMBANGAN, TBMASTER_PRODMAST
 //WHERE
 //    TMB_PRDCD = PRD_PRDCD AND PRD_KODEIGR = '$kodeigr'
@@ -1227,14 +1227,14 @@ WHERE PRS_KODEIGR = '$kodeigr'
     }
 
     public function GetKode(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->kode;
 
-        $datas   = DB::connection($_SESSION['connection'])->table('TBTABEL_PLUTIMBANGAN')
+        $datas   = DB::connection(Session::get('connection'))->table('TBTABEL_PLUTIMBANGAN')
             ->selectRaw("TMB_DESKRIPSI1, TMB_KODE")
 
             ->where('TMB_PRDCD','=', substr($search,0,6).'0')
-            ->where('tmb_kodeigr','=',$_SESSION['kdigr'])
+            ->where('tmb_kodeigr','=',Session::get('kdigr'))
 
             ->first();
 
@@ -1242,10 +1242,10 @@ WHERE PRS_KODEIGR = '$kodeigr'
     }
 
     public function getData(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
             ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
-            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            ->where('non_kodeigr','=',Session::get('kdigr'))
             ->orderBy('non_prdcd')
             ->get();
 

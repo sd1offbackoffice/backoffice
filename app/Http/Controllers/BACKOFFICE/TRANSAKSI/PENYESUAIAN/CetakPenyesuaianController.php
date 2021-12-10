@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENYESUAIAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -23,7 +23,7 @@ class CetakPenyesuaianController extends Controller
         $tgl2 = $request->tgl2;
 
         if($jenis == 1){
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->selectRaw('trbo_nodoc no, TRUNC(trbo_tgldoc) tgl')
                 ->where('trbo_typetrn','=','X')
                 ->whereRaw("NVL(trbo_recordid, '0') <> '1'")
@@ -35,7 +35,7 @@ class CetakPenyesuaianController extends Controller
         }
         else{
             if($reprint == 0){
-                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->selectRaw('trbo_nodoc no, TRUNC(trbo_tgldoc) tgl')
                     ->where('trbo_typetrn','=','X')
                     ->whereRaw("NVL(trbo_flagdoc, ' ') <> '*'")
@@ -46,7 +46,7 @@ class CetakPenyesuaianController extends Controller
                     ->get();
             }
             else{
-                $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                     ->selectRaw('msth_nodoc no, TRUNC(msth_tgldoc) tgl')
                     ->whereRaw("msth_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
                     ->where('msth_typetrn','=','X')
@@ -63,12 +63,12 @@ class CetakPenyesuaianController extends Controller
 
     public function storeData(Request $request){
         try{
-            $_SESSION['pys_nodoc'] = $request->nodoc;
-            $_SESSION['pys_reprint'] = $request->reprint;
-            $_SESSION['pys_jenis'] = $request->jenis;
-            $_SESSION['pys_ukuran'] = $request->ukuran;
-            $_SESSION['pys_updateLokasi'] = $request->updateLokasi;
-            $_SESSION['pys_updatePkmt'] = $request->updatePkmt;
+            Session::put('pys_nodoc', $request->nodoc);
+            Session::put('pys_reprint', $request->reprint);
+            Session::put('pys_jenis', $request->jenis);
+            Session::put('pys_ukuran', $request->ukuran);
+            Session::put('pys_updateLokasi', $request->updateLokasi);
+            Session::put('pys_updatePkmt', $request->updatePkmt);
         }
         catch(\Exception $e){
             return 'false';
@@ -77,28 +77,27 @@ class CetakPenyesuaianController extends Controller
     }
 
     public function laporan(){
-//        dd($_SESSION);
 
         $step = 0;
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+            $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->first();
 
-            $ukuran = $_SESSION['pys_ukuran'];
+            $ukuran = Session::get('pys_ukuran');
 
-            if($_SESSION['pys_jenis'] == '1'){
-                if($_SESSION['pys_reprint'] == '0'){
-                    DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
-                        ->whereIn('trbo_nodoc',$_SESSION['pys_nodoc'])
+            if(Session::get('pys_jenis') == '1'){
+                if(Session::get('pys_reprint') == '0'){
+                    DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                        ->whereIn('trbo_nodoc',Session::get('pys_nodoc'))
                         ->update([
                             'trbo_flagdoc' => '1'
                         ]);
                 }
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
 
-                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->join('tbmaster_perusahaan','prs_kodeigr','=','trbo_kodeigr')
                     ->join('tbmaster_prodmast',function($join){
                         $join->on('prd_prdcd','=','trbo_prdcd');
@@ -119,7 +118,7 @@ class CetakPenyesuaianController extends Controller
                             END AS REP")
                     ->where('trbo_kodeigr','=','22')
                     ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
-                    ->whereIn('trbo_nodoc',$_SESSION['pys_nodoc'])
+                    ->whereIn('trbo_nodoc',Session::get('pys_nodoc'))
                     ->orderBy('trbo_nodoc')
                     ->get();
 
@@ -167,40 +166,40 @@ class CetakPenyesuaianController extends Controller
 
                 $flag = '1';
 
-                if($_SESSION['pys_updateLokasi'] == 'true')
+                if(Session::get('pys_updateLokasi')  == 'true')
                     $updateLokasi = true;
                 else $updateLokasi = false;
 
-                if($_SESSION['pys_updatePkmt'] == 'true')
+                if( Session::get('pys_updatePkmt')  == 'true')
                     $updatePkmt = true;
                 else $updatePkmt = false;
 
                 $step = 0;
 
-                foreach($_SESSION['pys_nodoc'] as $n){
+                foreach(Session::get('pys_nodoc') as $n){
                     if($flag == 1){
                         $step = 4;
-                        $jum = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                        $jum = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                             ->select('trbo_nodoc')
                             ->where('trbo_nodoc',$n)
-                            ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                            ->where('trbo_kodeigr',Session::get('kdigr'))
                             ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                             ->get()->count();
 
                         if($jum == 2){
-                            $fppmm = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                            $fppmm = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                 ->select('trbo_nodoc')
                                 ->where('trbo_nodoc',$n)
-                                ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                                ->where('trbo_kodeigr',Session::get('kdigr'))
                                 ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                 ->where('trbo_qty','<','0')
                                 ->get()->count();
 
                             if($fppmm != 2){
-                                $fppmm = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                $fppmm = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->select('trbo_nodoc')
                                     ->where('trbo_nodoc',$n)
-                                    ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                                    ->where('trbo_kodeigr',Session::get('kdigr'))
                                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                     ->where('trbo_qty','>','0')
                                     ->get()->count();
@@ -210,19 +209,19 @@ class CetakPenyesuaianController extends Controller
                             else $ppmm = false;
                         }
 
-                        if($_SESSION['pys_reprint'] == '0'){
+                        if(Session::get('pys_reprint') == '0'){
                             if($jum == 1 || $jum > 2 || $ppmm){
                                 $step = 5;
-                                $flagdisc1 = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                $flagdisc1 = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->select('trbo_flagdisc1')
                                     ->where('trbo_nodoc',$n)
-                                    ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                                    ->where('trbo_kodeigr',Session::get('kdigr'))
                                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                     ->distinct()
                                     ->first()->trbo_flagdisc1;
 
                                 if($flagdisc1 == '1'){
-                                    $rec = DB::connection($_SESSION['connection'])->select("SELECT   AA.*, ROWNUM NOURUT, PRD_UNIT, PRD_FRAC,
+                                    $rec = DB::connection(Session::get('connection'))->select("SELECT   AA.*, ROWNUM NOURUT, PRD_UNIT, PRD_FRAC,
                                                   PRD_KODETAG, PRD_FLAGBKP1, PRD_FLAGBKP2, SUP_PKP,
                                                   SUP_TOP, PRD_LASTCOST, PRD_AVGCOST,
                                                   PRD_KODEDIVISI, PRD_KODEDEPARTEMENT,
@@ -232,9 +231,9 @@ class CetakPenyesuaianController extends Controller
                                                   TBMASTER_SUPPLIER
                                             WHERE TRBO_NODOC = '".$n."'
                                               AND PRD_PRDCD = TRBO_PRDCD
-                                              AND PRD_KODEIGR = '".$_SESSION['kdigr']."'
+                                              AND PRD_KODEIGR = '".Session::get('kdigr')."'
                                               AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER
-                                              AND SUP_KODEIGR(+) = '".$_SESSION['kdigr']."'
+                                              AND SUP_KODEIGR(+) = '".Session::get('kdigr')."'
                                               AND NVL (TRBO_RECORDID, ' ') <> '1'
                                          ORDER BY CASE
                                                       WHEN NVL (TRBO_FLAGDISC1, '0') <> '1'
@@ -250,9 +249,9 @@ class CetakPenyesuaianController extends Controller
 
                                     foreach($rec as $r){
                                         $step = 6;
-                                        DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+                                        DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
                                             ->insert([
-                                                'mstd_kodeigr' => $_SESSION['kdigr'],
+                                                'mstd_kodeigr' => Session::get('kdigr'),
                                                 'mstd_typetrn' => $r->trbo_typetrn,
                                                 'mstd_nodoc' => $r->trbo_nodoc,
                                                 'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
@@ -270,7 +269,7 @@ class CetakPenyesuaianController extends Controller
                                                 'mstd_pkp' => $r->sup_pkp,
                                                 'mstd_bkp' => $r->prd_flagbkp1,
                                                 'mstd_cterm' => $r->sup_top,
-                                                'mstd_create_by' => $_SESSION['usid'],
+                                                'mstd_create_by' => Session::get('usid'),
                                                 'mstd_create_dt' => DB::RAW("SYSDATE"),
                                                 'mstd_hrgsatuan' => self::nvl($r->trbo_hrgsatuan,0),
                                                 'mstd_qtybonus1' => self::nvl($r->trbo_qtybonus1,0),
@@ -304,37 +303,37 @@ class CetakPenyesuaianController extends Controller
 
                                         $step = 7;
 
-                                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                            ->where('st_kodeigr',$_SESSION['kdigr'])
+                                        DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                            ->where('st_kodeigr',Session::get('kdigr'))
                                             ->where('st_prdcd',$r->trbo_prdcd)
                                             ->where('st_lokasi', substr('0'.$r->trbo_flagdisc2,-2))
                                             ->update([
                                                 'st_adj' => DB::RAW("NVL(st_adj,0) + ".self::nvl($r->trbo_qty,0)),
                                                 'st_saldoakhir' => DB::RAW("NVL(st_saldoakhir,0) + ".self::nvl($r->trbo_qty,0)),
-                                                'st_modify_by' => $_SESSION['usid'],
+                                                'st_modify_by' => Session::get('usid'),
                                                 'st_modify_dt' => DB::RAW('SYSDATE')
                                             ]);
 
                                         $step = 8;
 
-                                        $jum = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                                        $jum = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                                             ->select('msth_nodoc')
-                                            ->where('msth_kodeigr',$_SESSION['kdigr'])
+                                            ->where('msth_kodeigr',Session::get('kdigr'))
                                             ->where('msth_typetrn','=','X')
                                             ->where('msth_nodoc',$n)
                                             ->whereRaw("NVL(msth_recordid, ' ') <> '1'")
                                             ->get()->count();
 
                                         if($jum == 0){
-                                            DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                                            DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                                                 ->insert([
-                                                    'msth_kodeigr' => $_SESSION['kdigr'],
+                                                    'msth_kodeigr' => Session::get('kdigr'),
                                                     'msth_typetrn' => 'X',
                                                     'msth_nodoc' => $n,
                                                     'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
                                                     'msth_flagdoc' => '1',
                                                     'msth_kodesupplier' => $r->trbo_kodesupplier,
-                                                    'msth_create_by' => $_SESSION['usid'],
+                                                    'msth_create_by' => Session::get('usid'),
                                                     'msth_create_dt' => DB::RAW('SYSDATE'),
                                                     'msth_pkp' => $r->sup_pkp,
                                                     'msth_cterm' => $r->sup_top,
@@ -346,7 +345,7 @@ class CetakPenyesuaianController extends Controller
 
                                         $step = 9;
 
-                                        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                        DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                             ->where('trbo_nodoc',$n)
                                             ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                             ->update([
@@ -360,7 +359,7 @@ class CetakPenyesuaianController extends Controller
                                 $step = 10;
                                 $updplu = false;
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->selectRaw("TRBO_PRDCD prdcdlama, LPAD (TRBO_FLAGDISC2, 2, '0') loklama")
                                     ->where('trbo_nodoc', $n)
                                     ->where('trbo_qty', '<', 0)
@@ -377,7 +376,7 @@ class CetakPenyesuaianController extends Controller
 
                                 $step = 11;
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->selectRaw("TRBO_PRDCD prdcdbaru, LPAD (TRBO_FLAGDISC2, 2, '0') lokbaru")
                                     ->where('trbo_nodoc', $n)
                                     ->where('trbo_qty', '>', 0)
@@ -394,18 +393,18 @@ class CetakPenyesuaianController extends Controller
 
                                 $step = 12;
 
-                                $v_plua1 = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                $v_plua1 = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->selectRaw('NVL(st_saldoakhir,0) v_plua1')
-                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                    ->where('st_kodeigr', Session::get('kdigr'))
                                     ->where('st_prdcd', $prdcdlama)
                                     ->where('st_lokasi', $loklama)
                                     ->first()->v_plua1;
 
                                 $step = 13;
 
-                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->select('st_prdcd')
-                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                    ->where('st_kodeigr', Session::get('kdigr'))
                                     ->where('st_prdcd', $prdcdbaru)
                                     ->where('st_lokasi', $lokbaru)
                                     ->get()->count();
@@ -413,9 +412,9 @@ class CetakPenyesuaianController extends Controller
                                 if ($jum > 0) {
                                     $step = 14;
 
-                                    $v_plub1 = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                    $v_plub1 = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                         ->selectRaw('NVL(st_saldoakhir,0) v_plub1')
-                                        ->where('st_kodeigr', $_SESSION['kdigr'])
+                                        ->where('st_kodeigr', Session::get('kdigr'))
                                         ->where('st_prdcd', $prdcdbaru)
                                         ->where('st_lokasi', $lokbaru)
                                         ->first()->v_plub1;
@@ -425,9 +424,9 @@ class CetakPenyesuaianController extends Controller
                                     $v_plub1 = 0;
                                 }
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->select('prd_lastcost', 'prd_avgcost')
-                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                     ->where('prd_prdcd', $prdcdbaru)
                                     ->first();
 
@@ -444,16 +443,16 @@ class CetakPenyesuaianController extends Controller
                                 }
 
                                 if ($updplu) {
-                                    $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->select('prd_prdcd')
-                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                         ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
                                         ->get()->count();
 
                                     if ($jum > 0) {
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_lastcost', 'prd_avgcost')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
                                             ->first();
 
@@ -462,27 +461,27 @@ class CetakPenyesuaianController extends Controller
                                             $cekacost = $data->prd_avgcost;
                                         }
                                     } else {
-                                        $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_prdcd')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                             ->get()->count();
 
                                         if ($jum > 0) {
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                                 ->first();
 
                                             $ceklcost = $data->prd_lastcost;
                                             $cekacost = $data->prd_avgcost;
                                         } else {
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
                                                 ->first();
 
@@ -491,93 +490,93 @@ class CetakPenyesuaianController extends Controller
                                         }
                                     }
 
-                                    $rec2 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    $rec2 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->select('prd_prdcd', 'prd_unit', 'prd_frac')
                                         ->whereRaw("SUBSTR(prd_prdcd,1,6) = '" . substr($prdcdbaru, 0, 6) . "'")
-                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                         ->get();
 
                                     foreach ($rec2 as $r2) {
                                         if (substr($r2->prd_prdcd, -1) == '1' || $r2->prd_unit == 'KG') {
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->where('prd_prdcd', $r2->prd_prdcd)
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prd_lastcost' => $ceklcost,
                                                     'prd_avgcost' => $cekacost
                                                 ]);
 
                                             if ($updplu) {
-                                                DB::connection($_SESSION['connection'])->table('tbtr_update_plu_md')
+                                                DB::connection(Session::get('connection'))->table('tbtr_update_plu_md')
                                                     ->insert([
-                                                        'upd_kodeigr' => $_SESSION['kdigr'],
+                                                        'upd_kodeigr' => Session::get('kdigr'),
                                                         'upd_prdcd' => $r2->prd_prdcd,
                                                         'upd_harga' => $ceklcost,
                                                         'upd_atribute1' => 'MPP1',
-                                                        'upd_create_by' => $_SESSION['usid'],
+                                                        'upd_create_by' => Session::get('usid'),
                                                         'upd_create_dt' => DB::RAW("SYSDATE")
                                                     ]);
                                             }
                                         } else {
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->where('prd_prdcd', $r2->prd_prdcd)
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prd_lastcost' => $ceklcost * $r2->prd_frac,
                                                     'prd_avgcost' => $cekacost * $r2->prd_frac
                                                 ]);
 
                                             if ($updplu) {
-                                                DB::connection($_SESSION['connection'])->table('tbtr_update_plu_md')
+                                                DB::connection(Session::get('connection'))->table('tbtr_update_plu_md')
                                                     ->insert([
-                                                        'upd_kodeigr' => $_SESSION['kdigr'],
+                                                        'upd_kodeigr' => Session::get('kdigr'),
                                                         'upd_prdcd' => $r2->prd_prdcd,
                                                         'upd_harga' => $ceklcost * $r2->prd_frac,
                                                         'upd_atribute1' => 'MPP1',
-                                                        'upd_create_by' => $_SESSION['usid'],
+                                                        'upd_create_by' => Session::get('usid'),
                                                         'upd_create_dt' => DB::RAW("SYSDATE")
                                                     ]);
                                             }
                                         }
                                     }
                                 } else {
-                                    $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->select('prd_prdcd')
-                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                         ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
                                         ->get()->count();
 
                                     if ($jum > 0) {
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_lastcost', 'prd_avgcost')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
                                             ->first();
 
                                         $ceklcost = $data->prd_lastcost;
                                         $cekacost = $data->prd_avgcost;
                                     } else {
-                                        $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_prdcd')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                             ->get()->count();
 
                                         if ($jum > 0) {
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                                 ->first();
 
                                             $ceklcost = $data->prd_lastcost;
                                             $cekacost = $data->prd_avgcost;
                                         } else {
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("case when PRD_UNIT = 'KG' then prd_lastcost else (PRD_LASTCOST / PRD_FRAC) end PRD_LASTCOST,
                                               case when PRD_UNIT = 'KG' then PRD_AVGCOST else (PRD_AVGCOST / PRD_FRAC) end PRD_AVGCOST")
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
                                                 ->first();
 
@@ -586,24 +585,24 @@ class CetakPenyesuaianController extends Controller
                                         }
                                     }
 
-                                    $rec2 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    $rec2 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->select('prd_prdcd', 'prd_unit', 'prd_frac')
                                         ->whereRaw("SUBSTR(prd_prdcd,1,6) = '" . substr($prdcdbaru, 0, 6) . "'")
-                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                         ->get();
 
                                     foreach ($rec2 as $r2) {
                                         if (substr($r2->prd_prdcd, -1) == '1' || $r2->prd_unit == 'KG') {
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->where('prd_prdcd', $r2->prd_prdcd)
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prd_avgcost' => $cekacost
                                                 ]);
                                         } else {
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->where('prd_prdcd', $r2->prd_prdcd)
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prd_avgcost' => $cekacost * $r2->prd_frac
                                                 ]);
@@ -611,7 +610,7 @@ class CetakPenyesuaianController extends Controller
                                     }
                                 }
 
-                                $rec = DB::connection($_SESSION['connection'])->select("SELECT   AA.*, ROWNUM NOURUT, PRD_UNIT, PRD_FRAC, PRD_KODETAG,
+                                $rec = DB::connection(Session::get('connection'))->select("SELECT   AA.*, ROWNUM NOURUT, PRD_UNIT, PRD_FRAC, PRD_KODETAG,
                                               PRD_FLAGBKP1, PRD_FLAGBKP2, SUP_PKP, SUP_TOP,
                                               PRD_LASTCOST, PRD_AVGCOST, PRD_KODEDIVISI,
                                               PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG
@@ -620,9 +619,9 @@ class CetakPenyesuaianController extends Controller
                                               TBMASTER_SUPPLIER
                                         WHERE TRBO_NODOC = '" . $n . "'
                                           AND PRD_PRDCD = TRBO_PRDCD
-                                          AND PRD_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                                          AND PRD_KODEIGR = '" . Session::get('kdigr') . "'
                                           AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER
-                                          AND SUP_KODEIGR(+) = '" . $_SESSION['kdigr'] . "'
+                                          AND SUP_KODEIGR(+) = '" . Session::get('kdigr') . "'
                                           AND NVL (TRBO_RECORDID, ' ') <> '1'
                                      ORDER BY CASE
                                                   WHEN NVL (TRBO_FLAGDISC1, '0') <> '1'
@@ -642,17 +641,17 @@ class CetakPenyesuaianController extends Controller
                                     $step = 17;
 
                                     if ($r->trbo_flagdisc1 != '3') {
-                                        $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                        $jum = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                             ->select('st_prdcd')
-                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                            ->where('st_kodeigr', Session::get('kdigr'))
                                             ->where('st_prdcd', $r->trbo_prdcd)
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->get()->count();
 
                                         if ($jum == 0) {
-                                            $trec = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                            $trec = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                 ->select('st_lastcost')
-                                                ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                ->where('st_kodeigr', Session::get('kdigr'))
                                                 ->where('st_prdcd', $prdcdlama)
                                                 ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                 ->get();
@@ -662,9 +661,9 @@ class CetakPenyesuaianController extends Controller
                                                 $oldstacost += $tr->st_lastcost;
                                             }
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                 ->insert([
-                                                    'st_kodeigr' => $_SESSION['kdigr'],
+                                                    'st_kodeigr' => Session::get('kdigr'),
                                                     'st_recordid' => null,
                                                     'st_lokasi' => substr('00' . $r->trbo_flagdisc2, -2),
                                                     'st_prdcd' => $r->trbo_prdcd,
@@ -684,15 +683,15 @@ class CetakPenyesuaianController extends Controller
                                                     'st_rpsaldoawal' => 0,
                                                     'st_rpsaldoawal2' => 0,
                                                     'st_tglavgcost' => DB::RAW("TRUNC(SYSDATE)"),
-                                                    'st_create_by' => $_SESSION['usid'],
+                                                    'st_create_by' => Session::get('usid'),
                                                     'st_create_dt' => DB::RAW("SYSDATE")
                                                 ]);
                                         }
                                     }
 
-                                    $v_gantiplu = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                    $v_gantiplu = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                         ->select('st_prdcd')
-                                        ->where('st_kodeigr', $_SESSION['kdigr'])
+                                        ->where('st_kodeigr', Session::get('kdigr'))
                                         ->where('st_prdcd', $r->trbo_prdcd)
                                         ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                         ->get()->count();
@@ -700,9 +699,9 @@ class CetakPenyesuaianController extends Controller
                                     if ($v_gantiplu > 0) {
                                         $step = 18;
 
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                             ->select('st_saldoawal', 'st_lastcost', 'st_saldoakhir')
-                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                            ->where('st_kodeigr', Session::get('kdigr'))
                                             ->where('st_prdcd', $r->trbo_prdcd)
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->first();
@@ -721,9 +720,9 @@ class CetakPenyesuaianController extends Controller
                                     $step = 20;
 
                                     if ((self::nvl($r->trbo_qty, 0) < 0)) {
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                             ->select('st_lastcost', 'st_avgcost')
-                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                            ->where('st_kodeigr', Session::get('kdigr'))
                                             ->where('st_prdcd', $r->trbo_prdcd)
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->first();
@@ -736,9 +735,9 @@ class CetakPenyesuaianController extends Controller
 
                                     $step = 21;
 
-                                    DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+                                    DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
                                         ->insert([
-                                            'mstd_kodeigr' => $_SESSION['kdigr'],
+                                            'mstd_kodeigr' => Session::get('kdigr'),
                                             'mstd_typetrn' => $r->trbo_typetrn,
                                             'mstd_nodoc' => $r->trbo_nodoc,
                                             'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
@@ -756,7 +755,7 @@ class CetakPenyesuaianController extends Controller
                                             'mstd_pkp' => $r->sup_pkp,
                                             'mstd_bkp' => $r->prd_flagbkp1,
                                             'mstd_cterm' => $r->sup_top,
-                                            'mstd_create_by' => $_SESSION['usid'],
+                                            'mstd_create_by' => Session::get('usid'),
                                             'mstd_create_dt' => DB::RAW("SYSDATE"),
                                             'mstd_hrgsatuan' => self::nvl($r->trbo_hrgsatuan, 0),
                                             'mstd_qtybonus1' => self::nvl($r->trbo_qtybonus1, 0),
@@ -789,15 +788,15 @@ class CetakPenyesuaianController extends Controller
                                         ]);
 
                                     if ($r->trbo_flagdisc1 == '3' && $r->trbo_flagdisc2 == '1') {
-                                        $stanak = DB::connection($_SESSION['connection'])->table('tbmaster_stock_cab_anak')
+                                        $stanak = DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                             ->where('sta_prdcd', $r->trbo_prdcd)
                                             ->where('sta_lokasi', '01')
                                             ->get()->count();
 
                                         if (self::nvl($stanak, 0) == 0) {
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_stock_cab_anak')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                                 ->insert([
-                                                    'sta_kodeigr' => $_SESSION['kdigr'],
+                                                    'sta_kodeigr' => Session::get('kdigr'),
                                                     'sta_lokasi' => '01',
                                                     'sta_prdcd' => $r->trbo_prdcd,
                                                     'sta_saldoawal' => 0,
@@ -808,12 +807,12 @@ class CetakPenyesuaianController extends Controller
                                                     'sta_adj' => 0,
                                                     'sta_intransit' => 0,
                                                     'sta_saldoakhir' => 0,
-                                                    'sta_create_by' => $_SESSION['usid'],
+                                                    'sta_create_by' => Session::get('usid'),
                                                     'sta_create_dt' => DB::RAW("sysdate")
                                                 ]);
                                         }
 
-                                        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_stock_cab_anak')
+                                        $cek = DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                             ->select('sta_prdcd')
                                             ->where('sta_prdcd', $r->trbo_prdcd)
                                             ->where('sta_lokasi', '01')
@@ -822,7 +821,7 @@ class CetakPenyesuaianController extends Controller
                                         if (self::nvl($cek, 0) == 0) {
                                             $qtycmo = 0;
                                         } else {
-                                            $qtycmo = DB::connection($_SESSION['connection'])->table('tbmaster_stock_cab_anak')
+                                            $qtycmo = DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                                 ->selectRaw("NVL(sta_saldoakhir,0) sta_saldoakhir")
                                                 ->where('sta_prdcd', $r->trbo_prdcd)
                                                 ->where('sta_lokasi', '01')
@@ -835,9 +834,9 @@ class CetakPenyesuaianController extends Controller
                                             $qtyadj = $qtycmo * -1;
                                         else $qtyadj = -1;
 
-                                        DB::connection($_SESSION['connection'])->table('tbtr_adj_cmo')
+                                        DB::connection(Session::get('connection'))->table('tbtr_adj_cmo')
                                             ->insert([
-                                                'acm_kodeigr' => $_SESSION['kdigr'],
+                                                'acm_kodeigr' => Session::get('kdigr'),
                                                 'acm_typetrn' => 'X',
                                                 'acm_nodokumen' => $r->trbo_nodoc,
                                                 'acm_tgldokumen' => DB::RAW('SYSDATE'),
@@ -845,11 +844,11 @@ class CetakPenyesuaianController extends Controller
                                                 'acm_qtystock' => $qtyst,
                                                 'acm_qtycmo' => $qtycmo,
                                                 'acm_qty' => $qtyadj,
-                                                'acm_create_by' => $_SESSION['usid'],
+                                                'acm_create_by' => Session::get('usid'),
                                                 'acm_create_dt' => DB::RAW('SYSDATE')
                                             ]);
 
-                                        DB::connection($_SESSION['connection'])->table('tbmaster_stock_cab_anak')
+                                        DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                             ->where('sta_prdcd', $r->trbo_prdcd)
                                             ->where('sta_lokasi', '01')
                                             ->update([
@@ -861,19 +860,19 @@ class CetakPenyesuaianController extends Controller
                                         if ($r->trbo_qty > 0) {
                                             $step = 22;
 
-                                            $v_plubaru = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                            $v_plubaru = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                                 ->select('trbo_prdcd')
                                                 ->where('trbo_nodoc', $r->trbo_nodoc)
                                                 ->where('trbo_qty', '>', 0)
                                                 ->where('trbo_typetrn', 'X')
-                                                ->where('trbo_kodeigr', $_SESSION['kdigr'])
+                                                ->where('trbo_kodeigr', Session::get('kdigr'))
                                                 ->whereRaw("NVL(trbo_recordid,' ') <> '1'")
                                                 ->first()->trbo_prdcd;
 
                                             $step = 23;
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', $v_plubaru)
                                                 ->update([
                                                     'prd_lastcost' => DB::RAW("CASE
@@ -885,24 +884,24 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 24;
 
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->select('prd_prdcd')
                                                 ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->get()->count();
 
                                             if ($jum > 0) {
-                                                $v_lcplulama1 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $v_lcplulama1 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->select('prd_lastcost')
                                                     ->where('prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->first()->prd_lastcost;
                                             } else $v_lcplulama1 = 0;
 
                                             $step = 25; //step 25 26 27
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->whereIn('prd_prdcd', [
                                                     substr($v_plubaru, 0, 6) . '1',
                                                     substr($v_plubaru, 0, 6) . '2',
@@ -918,7 +917,7 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 28;
 
-                                            $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                            $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                                 ->select('trbo_prdcd')
                                                 ->where('trbo_nodoc', $r->trbo_nodoc)
                                                 ->where('trbo_kodeigr', $r->trbo_kodeigr)
@@ -932,9 +931,9 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 29;
 
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->select('prd_lastcost')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', $prdcdlama)
                                                 ->first();
 
@@ -943,8 +942,8 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 30;
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', $r->trbo_prdcd)
                                                 ->update([
                                                     'prd_lastcost' => DB::RAW("CASE
@@ -956,10 +955,10 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 31;
 
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->select('prd_lastcost')
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->first();
 
 
@@ -976,9 +975,9 @@ class CetakPenyesuaianController extends Controller
                                             $v_oldprdacost1 = $v_lcplulama1;
                                             $step = 35;
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prd_lastcost' => DB::RAW("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
@@ -989,10 +988,10 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 36;
 
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("NVL(prd_lastcost, 0) lcplulama")
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->first();
 
                                             if ($jum) {
@@ -1002,9 +1001,9 @@ class CetakPenyesuaianController extends Controller
 
                                                 $step = 38;
 
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
                                                         'prd_lastcost' => DB::RAW("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
@@ -1015,9 +1014,9 @@ class CetakPenyesuaianController extends Controller
                                             } else {
                                                 $step = 39;
 
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
                                                         'prd_lastcost' => DB::RAW("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
@@ -1029,10 +1028,10 @@ class CetakPenyesuaianController extends Controller
 
                                             $step = 40;
 
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                 ->selectRaw("NVL(prd_lastcost,0) prd_lastcost")
                                                 ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
-                                                ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->first();
 
                                             if ($jum) {
@@ -1042,9 +1041,9 @@ class CetakPenyesuaianController extends Controller
 
                                                 $step = 42;
 
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
                                                         'prd_lastcost' => DB::RAW("CASE
                                                            WHEN NVL (PRD_LASTCOST, 0) = 0
@@ -1055,9 +1054,9 @@ class CetakPenyesuaianController extends Controller
                                             } else {
                                                 $step = 43;
 
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
                                                         'prd_lastcost' => DB::RAW("CASE
                                                            WHEN NVL (PRD_LASTCOST, 0) = 0
@@ -1073,9 +1072,9 @@ class CetakPenyesuaianController extends Controller
                                         if ($r->trbo_qty > 0) {
                                             $step = 44;
 
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                 ->select('st_lastcost')
-                                                ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                ->where('st_kodeigr', Session::get('kdigr'))
                                                 ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                 ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                 ->first();
@@ -1085,9 +1084,9 @@ class CetakPenyesuaianController extends Controller
                                                 $lcost = $jum->st_lastcost;
                                             } else {
                                                 $step = 46;
-                                                $lcost = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $lcost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->select('prd_lastcost')
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                     ->first()->prd_lastcost;
                                             }
@@ -1096,8 +1095,8 @@ class CetakPenyesuaianController extends Controller
 
                                             if ($r->trbo_flagdisc1 == '3') {
                                                 $step = 48;
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                                    ->where('st_kodeigr', Session::get('kdigr'))
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                     ->update([
@@ -1113,14 +1112,14 @@ class CetakPenyesuaianController extends Controller
                                                                THEN " . $oldlcostx . "
                                                            ELSE ST_LASTCOST
                                                        END"),
-                                                        'st_modify_by' => $_SESSION['usid'],
+                                                        'st_modify_by' => Session::get('usid'),
                                                         'st_modify_dt' => DB::RRAW("SYSDATE")
                                                     ]);
 
                                                 $step = 49;
 
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                                    ->where('st_kodeigr', Session::get('kdigr'))
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->where('st_prdcd', $r->trbo_prdcd)
                                                     ->get()->count();
@@ -1129,9 +1128,9 @@ class CetakPenyesuaianController extends Controller
                                                     $step = 50;
 
                                                     if (substr($r->trbo_prdcd, -1) == '0') {
-                                                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                                        DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                             ->insert([
-                                                                'st_kodeigr' => $_SESSION['kdigr'],
+                                                                'st_kodeigr' => Session::get('kdigr'),
                                                                 'st_recordid' => null,
                                                                 'st_lokasi' => substr('00' . $r->trbo_flagdisc2, -2),
                                                                 'st_prdcd' => $r->trbo_prdcd,
@@ -1139,7 +1138,7 @@ class CetakPenyesuaianController extends Controller
                                                                 'st_saldoakhir' => $r->trbo_qty,
                                                                 'st_lastcost' => $oldlcostx,
                                                                 'st_avgcost' => $oldacost,
-                                                                'st_create_by' => $_SESSION['usid'],
+                                                                'st_create_by' => Session::get('usid'),
                                                                 'st_create_dt' => DB::RAW("SYSDATE")
                                                             ]);
                                                     }
@@ -1151,22 +1150,22 @@ class CetakPenyesuaianController extends Controller
                                             } else {
                                                 $step = 55;
 
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                                    ->where('st_kodeigr', Session::get('kdigr'))
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->where('st_prdcd', $r->trbo_prdcd)
                                                     ->get()->count();
 
                                                 $step = 56;
 
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                                    ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                                    ->where('st_kodeigr', Session::get('kdigr'))
                                                     ->where('st_prdcd', $r->trbo_prdcd)
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->update([
                                                         'st_adj' => DB::RAW("NVL(ST_ADJ,0) + " . $r->trbo_qty),
                                                         'st_saldoakhir' => DB::RAW("NVL(ST_SALDOAKHIR,0) + " . $r->trbo_qty),
-                                                        'st_modify_by' => $_SESSION['usid'],
+                                                        'st_modify_by' => Session::get('usid'),
                                                         'st_modify_dt' => DB::RAW("SYSDATE")
                                                     ]);
 
@@ -1176,9 +1175,9 @@ class CetakPenyesuaianController extends Controller
                                                     $v_prd1st0 = 1;
                                                     $step = 57;
 
-                                                    $prdcdlama = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                                    $prdcdlama = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                                         ->select('trbo_prdcd')
-                                                        ->where('trbo_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('trbo_kodeigr', Session::get('kdigr'))
                                                         ->where('trbo_nodoc', $r->trbo_nodoc)
                                                         ->where('trbo_typetrn', 'X')
                                                         ->where('trbo_qty', '<', 0)
@@ -1188,9 +1187,9 @@ class CetakPenyesuaianController extends Controller
                                                     $step = 58;
 
                                                     if ($prdcdlama) {
-                                                        $v_lcplulama1 = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                                        $v_lcplulama1 = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                             ->select('st_avgcost')
-                                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                            ->where('st_kodeigr', Session::get('kdigr'))
                                                             ->where('st_prdcd', $prdcdlama)
                                                             ->where('st_lokasi', '01')
                                                             ->first()->st_avgcost;
@@ -1200,8 +1199,8 @@ class CetakPenyesuaianController extends Controller
                                         } else {
                                             $step = 59;
 
-                                            DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                                ->where('st_kodeigr', $_SESSION['kdigr'])
+                                            DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                                ->where('st_kodeigr', Session::get('kdigr'))
                                                 ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                 ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                 ->update([
@@ -1212,8 +1211,8 @@ class CetakPenyesuaianController extends Controller
                                     } else {
                                         $step = 60;
 
-                                        DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                        DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                            ->where('st_kodeigr', Session::get('kdigr'))
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                             ->update([
@@ -1225,9 +1224,9 @@ class CetakPenyesuaianController extends Controller
                                     if (($lfirst == 1 && $r->trbo_qty < 0) || ($lfirst == 0 && $r->trbo_qty > 0)) {
                                         $step = 61;
 
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                             ->selectRaw("NVL(ST_SALDOAKHIR, 0) newqty, NVL(ST_LASTCOST, 0) newlcost")
-                                            ->where('st_kodeigr', $_SESSION['kdigr'])
+                                            ->where('st_kodeigr', Session::get('kdigr'))
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->where('st_prdcd', $r->trbo_prdcd)
                                             ->first();
@@ -1239,10 +1238,10 @@ class CetakPenyesuaianController extends Controller
 
                                         $step = 62;
 
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->selectRaw("NVL(prd_frac,1) prdfrac")
                                             ->where('prd_prdcd', $r->trbo_prdcd)
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->first();
 
                                         if ($data) {
@@ -1251,10 +1250,10 @@ class CetakPenyesuaianController extends Controller
 
                                         if ($jum > 0) {
                                             $step = 63;
-                                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                            $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                                 ->selectRaw("NVL(st_avgcost,0) st_avgcost")
                                                 ->where('st_prdcd', $r->trbo_prdcd)
-                                                ->where('st_kodeigr', $_SESSION['kdigr'])
+                                                ->where('st_kodeigr', Session::get('kdigr'))
                                                 ->where('st_lokasi', '01')
                                                 ->first();
 
@@ -1269,9 +1268,9 @@ class CetakPenyesuaianController extends Controller
                                         if ($r->trbo_flagdisc1 != '1') {
                                             if ($r->trbo_flagdisc2 == '1') {
                                                 $step = 66;
-                                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->selectRaw("NVL(prd_frac,0) prd_frac")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', $r->trbo_prdcd)
                                                     ->first();
 
@@ -1280,9 +1279,9 @@ class CetakPenyesuaianController extends Controller
 
                                                 $step = 67;
 
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->selectRaw("NVL(prd_avgcost,0) prdacost")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
                                                     ->first();
 
@@ -1296,8 +1295,8 @@ class CetakPenyesuaianController extends Controller
 
                                                 if ($r->trbo_flagdisc1 == '3') {
                                                     $step = 71;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-                                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                                         ->where('prd_prdcd', $r->trbo_prdcd)
                                                         ->update([
                                                             'prd_avgcost' => DB::RAW("CASE
@@ -1309,10 +1308,10 @@ class CetakPenyesuaianController extends Controller
                                                 }
 
                                                 $step = 72;
-                                                $plulama = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                                $plulama = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                                     ->select('trbo_prdcd')
                                                     ->where('trbo_nodoc', $r->trbo_nodoc)
-                                                    ->where('trbo_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('trbo_kodeigr', Session::get('kdigr'))
                                                     ->where('trbo_typetrn', 'X')
                                                     ->where('trbo_qty', '<', 0)
                                                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
@@ -1322,26 +1321,26 @@ class CetakPenyesuaianController extends Controller
                                             $step = 86;
                                             if ($v_prd1st0 == 1 && $r->trbo_qty > 0) {
                                                 $step = 87;
-                                                $plulama = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                                $plulama = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                                     ->select('trbo_prdcd')
                                                     ->where('trbo_nodoc', $r->trbo_nodoc)
-                                                    ->where('trbo_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('trbo_kodeigr', Session::get('kdigr'))
                                                     ->where('trbo_typetrn', 'X')
                                                     ->where('trbo_qty', '<', 0)
                                                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                                     ->first()->trbo_prdcd;
 
                                                 $step = 88;
-                                                $v_oldprdacost = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $v_oldprdacost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->selectRaw("NVL(prd_avgcost,0) prd_avgcost")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', $plulama)
                                                     ->first()->prd_avgcost;
 
                                                 $step = 89;
-                                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmsat')
+                                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmsat')
                                                     ->selectRaw("NVL(prd_avgcost,0) prd_avgcost")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', substr($plulama, 0, 6) . '1')
                                                     ->first();
 
@@ -1351,9 +1350,9 @@ class CetakPenyesuaianController extends Controller
                                                 }
 
                                                 $step = 91;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->selectRaw("NVL(prd_avgcost,0) prd_avgcost")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', substr($plulama, 0, 6) . '2')
                                                     ->first();
 
@@ -1363,9 +1362,9 @@ class CetakPenyesuaianController extends Controller
                                                 }
 
                                                 $step = 94;
-                                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->selectRaw("NVL(prd_avgcost,0) prd_avgcost")
-                                                    ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->where('prd_prdcd', substr($plulama, 0, 6) . '3')
                                                     ->first();
 
@@ -1379,7 +1378,7 @@ class CetakPenyesuaianController extends Controller
 
                                     if ($v_prd1st0 == 1 && $r->trbo_qty > 0) {
                                         $step = 99;
-                                        $prdcdlama = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                        $prdcdlama = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                             ->select('trbo_prdcd')
                                             ->where('trbo_nodoc', $r->trbo_nodoc)
                                             ->where('trbo_kodeigr', $r->trbo_kodeigr)
@@ -1389,17 +1388,17 @@ class CetakPenyesuaianController extends Controller
                                             ->first()->trbo_prdcd;
 
                                         $step = 100;
-                                        $v_lcplulama1 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $v_lcplulama1 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_lastcost')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', $prdcdlama)
                                             ->first()->prd_lastcost;
 
                                         $step = 101;
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->select('prd_lastcost')
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '1')
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->first();
 
                                         if ($data) {
@@ -1409,9 +1408,9 @@ class CetakPenyesuaianController extends Controller
                                         $v_oldprdacost1 = $v_lcplulama1;
 
                                         $step = 104;
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->selectRaw("NVL(prd_lastcost,0) prd_lastcost")
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
                                             ->first();
 
@@ -1421,9 +1420,9 @@ class CetakPenyesuaianController extends Controller
                                         }
 
                                         $step = 107;
-                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                             ->selectRaw("NVL(prd_lastcost,0) prd_lastcost")
-                                            ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prd_kodeigr', Session::get('kdigr'))
                                             ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                             ->first();
 
@@ -1434,7 +1433,7 @@ class CetakPenyesuaianController extends Controller
 
                                     if ($r->trbo_flagdisc1 == '3') {
                                         $step = 111;
-                                        $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                        $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                             ->select('trbo_prdcd')
                                             ->where('trbo_nodoc', $r->trbo_nodoc)
                                             ->where('trbo_kodeigr', $r->trbo_kodeigr)
@@ -1447,7 +1446,7 @@ class CetakPenyesuaianController extends Controller
                                             $prdcdlama = $data->trbo_prdcd;
 
                                         $step = 112;
-                                        $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                        $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                             ->select('trbo_prdcd')
                                             ->where('trbo_nodoc', $r->trbo_nodoc)
                                             ->where('trbo_kodeigr', $r->trbo_kodeigr)
@@ -1463,27 +1462,27 @@ class CetakPenyesuaianController extends Controller
                                     if ($r->trbo_flagdisc1 == '3' && $r->trbo_qty > 0) {
                                         $step = 114;
                                         if ($updateLokasi) {
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
                                                 ->where('pln_prdcd', substr($prdcdlama, 0, 6) . '0')
-                                                ->where('pln_kodeigr', $_SESSION['kdigr'])
+                                                ->where('pln_kodeigr', Session::get('kdigr'))
                                                 ->get()->count();
 
                                             if ($jum > 0) {
                                                 $step = 116;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbhistory_barangbaru')
                                                     ->where('hpn_prdcd', substr($prdcdbaru, 0, 6) . '0')
-                                                    ->where('hpn_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('hpn_kodeigr', Session::get('kdigr'))
                                                     ->get()->count();
 
                                                 if ($jum == 0) {
                                                     $step = 117;
-                                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
+                                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
                                                         ->where('pln_prdcd', substr($prdcdbaru, 0, 6) . '0')
-                                                        ->where('pln_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pln_kodeigr', Session::get('kdigr'))
                                                         ->first();
 
                                                     $step = 118;
-                                                    DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
+                                                    DB::connection(Session::get('connection'))->table('tbhistory_barangbaru')
                                                         ->insert([
                                                             'hpn_kodeigr' => $data->pln_kodeigr,
                                                             'hpn_prdcd' => $data->pln_prdcd,
@@ -1499,13 +1498,13 @@ class CetakPenyesuaianController extends Controller
                                                 }
 
                                                 $step = 119;
-                                                DB::connection($_SESSION['connection'])->table('tbmaser_barangbaru')
+                                                DB::connection(Session::get('connection'))->table('tbmaser_barangbaru')
                                                     ->where('pln_prdcd', substr($prdcdbaru, 0, 6) . '0')
-                                                    ->where('pln_kodeigr', $_SESSION['kdigr']);
+                                                    ->where('pln_kodeigr', Session::get('kdigr'));
                                             }
 
                                             $step = 120;
-                                            $jum = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                                            $jum = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                                 ->where('lks_prdcd', $prdcdlama)
                                                 ->where('lks_kodeigr', $r->trbo_kodeigr)
                                                 ->get()->count();
@@ -1514,7 +1513,7 @@ class CetakPenyesuaianController extends Controller
                                                 $step = 121;
                                                 if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                     $step = 122;
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
 //                                                        ->where('lks_prdcd', $prdcdbaru)
 //                                                        ->where('lks_kodeigr', $r->trbo_kodeigr)
 //                                                        ->first()->toArray();
@@ -1522,11 +1521,11 @@ class CetakPenyesuaianController extends Controller
 //                                                    if ($data) {
 //                                                        $data['lks_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbmaster_lokasi')
 //                                                            ->insert($data);
 //                                                    }
 
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_LOKASI
                                                                 (LKS_KODEIGR, LKS_KODERAK,
                                                                  LKS_KODESUBRAK, LKS_TIPERAK,
                                                                  LKS_SHELVINGRAK, LKS_PRDCD,
@@ -1557,27 +1556,27 @@ class CetakPenyesuaianController extends Controller
                                                                 LKS_MODIFY_DT, '".$r->trbo_nodoc."'
                                                            FROM TBMASTER_LOKASI LKS
                                                           WHERE LKS_PRDCD = '".$prdcdbaru."'
-                                                            AND LKS_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                            AND LKS_KODEIGR = '".Session::get('kdigr')."')");
                                                 }
 
                                                 $step = 123;
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                                     ->where('lks_prdcd', $prdcdbaru)
                                                     ->where('lks_kodeigr', $r->trbo_kodeigr)
                                                     ->delete();
 
                                                 $step = 124;
-//                                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+//                                                $data = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
 //                                                    ->where('lks_prdcd', $prdcdlama)
 //                                                    ->where('lks_kodeigr', $r->trbo_kodeigr)
 //                                                    ->first()->toArray();
 //
 //                                                $data['lks_nodoc'] = $r->trbo_nodoc;
 //
-//                                                DB::connection($_SESSION['connection'])->table('temp_tbmaster_lokasi')
+//                                                DB::connection(Session::get('connection'))->table('temp_tbmaster_lokasi')
 //                                                    ->insert($data);
 
-                                                DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_LOKASI
+                                                DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_LOKASI
                                                             (LKS_KODEIGR, LKS_KODERAK,
                                                              LKS_KODESUBRAK, LKS_TIPERAK,
                                                              LKS_SHELVINGRAK, LKS_PRDCD, LKS_NOURUT,
@@ -1605,20 +1604,20 @@ class CetakPenyesuaianController extends Controller
                                                             LKS_MODIFY_DT, '".$r->trbo_nodoc."'
                                                        FROM TBMASTER_LOKASI LKS
                                                       WHERE LKS_PRDCD = '".$prdcdlama."'
-                                                        AND LKS_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                        AND LKS_KODEIGR = '".Session::get('kdigr')."')");
 
                                                 $step = 125;
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                                     ->where('lks_prdcd', $prdcdlama)
                                                     ->where('lks_kodeigr', $r->trbo_kodeigr)
                                                     ->update([
                                                         'lks_prdcd' => $prdcdbaru,
-                                                        'lks_modify_by' => $_SESSION['usid'],
+                                                        'lks_modify_by' => Session::get('usid'),
                                                         'lks_modify_dt' => DB::RAW("SYSDATE")
                                                     ]);
 
                                                 $step = 126;
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                                     ->where('lks_prdcd', $prdcdlama)
                                                     ->where('lks_kodeigr', $r->trbo_kodeigr)
                                                     ->delete();
@@ -1626,100 +1625,100 @@ class CetakPenyesuaianController extends Controller
                                         }
 
                                         $step = 134;
-                                        $jum = DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                        $jum = DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                             ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdlama, 0, 6))
-                                            ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                            ->where('prmd_kodeigr', Session::get('kdigr'))
                                             ->get()->count();
 
                                         if ($jum > 0) {
                                             if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                 $step = 135;
-//                                                $data = DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+//                                                $data = DB::connection(Session::get('connection'))->table('tbtr_promomd')
 //                                                    ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdbaru, 0, 6))
-//                                                    ->where('prmd_kodeigr', $_SESSION['kdigr'])
+//                                                    ->where('prmd_kodeigr', Session::get('kdigr'))
 //                                                    ->first()->toArray();
 //
 //                                                $data['prmd_nodoc'] = $r->trbo_nodoc;
 //
-//                                                DB::connection($_SESSION['connection'])->table('temp_tbtr_promomd')
+//                                                DB::connection(Session::get('connection'))->table('temp_tbtr_promomd')
 //                                                    ->insert($data);
 
-                                                DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                                DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_PROMOMD
                                                         (SELECT PRO.*, '".$r->trbo_nodoc."'
                                                            FROM TBTR_PROMOMD PRO
                                                           WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
                                                                            SUBSTR ('".$prdcdbaru."', 1, 6)
-                                                            AND PRMD_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                            AND PRMD_KODEIGR = '".Session::get('kdigr')."')");
                                             }
 
                                             $step = 136;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdbaru, 0, 6))
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->delete();
 
                                             $step = 137;
-//                                            $data = DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+//                                            $data = DB::connection(Session::get('connection'))->table('tbtr_promomd')
 //                                                ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdlama, 0, 6))
-//                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+//                                                ->where('prmd_kodeigr', Session::get('kdigr'))
 //                                                ->first()->toArray();
 //
 //                                            $data['prmd_nodoc'] = $r->trbo_nodoc;
 //
-//                                            DB::connection($_SESSION['connection'])->table('temp_tbtr_promomd')
+//                                            DB::connection(Session::get('connection'))->table('temp_tbtr_promomd')
 //                                                ->insert($data);
 
-                                            DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PROMOMD
+                                            DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_PROMOMD
                                                     (SELECT PRO.*, '".$r->trbo_nodoc."'
                                                        FROM TBTR_PROMOMD PRO
                                                       WHERE SUBSTR (PRMD_PRDCD, 1, 6) =
                                                                             SUBSTR ('".$prdcdlama."', 1, 6)
-                                                        AND PRMD_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                        AND PRMD_KODEIGR = '".Session::get('kdigr')."')");
 
                                             $step = 138;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->where('prmd_prdcd', substr($prdcdlama, 0, 6) . '0')
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '0',
-                                                    'prmd_modify_by' => $_SESSION['usid'],
+                                                    'prmd_modify_by' => Session::get('usid'),
                                                     'prmd_modify_dt' => DB::RAW("sysdate")
                                                 ]);
 
                                             $step = 139;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->where('prmd_prdcd', substr($prdcdlama, 0, 6) . '1')
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '1',
-                                                    'prmd_modify_by' => $_SESSION['usid'],
+                                                    'prmd_modify_by' => Session::get('usid'),
                                                     'prmd_modify_dt' => DB::RAW("sysdate")
                                                 ]);
 
                                             $step = 140;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->where('prmd_prdcd', substr($prdcdlama, 0, 6) . '2')
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '2',
-                                                    'prmd_modify_by' => $_SESSION['usid'],
+                                                    'prmd_modify_by' => Session::get('usid'),
                                                     'prmd_modify_dt' => DB::RAW("sysdate")
                                                 ]);
 
                                             $step = 141;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->where('prmd_prdcd', substr($prdcdlama, 0, 6) . '3')
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '3',
-                                                    'prmd_modify_by' => $_SESSION['usid'],
+                                                    'prmd_modify_by' => Session::get('usid'),
                                                     'prmd_modify_dt' => DB::RAW("sysdate")
                                                 ]);
 
                                             $step = 142;
-                                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                                 ->whereRaw("SUBSTR(PRMD_PRDCD,1,6) = " . substr($prdcdlama, 0, 6))
-                                                ->where('prmd_kodeigr', $_SESSION['kdigr'])
+                                                ->where('prmd_kodeigr', Session::get('kdigr'))
                                                 ->delete();
                                         }
                                     }
@@ -1729,7 +1728,7 @@ class CetakPenyesuaianController extends Controller
                                         if (($lfirst == '1' && $r->trbo_qty < 0) && ($lfirst == '0' && $r->trbo_qty < 0)) {
                                             if ($r->trbo_qty > 0) {
                                                 $step = 144;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                                     ->where('pkm_prdcd', $prdcdlama)
                                                     ->where('pkm_kodeigr', $r->trbo_kodeigr)
                                                     ->get()->count();
@@ -1738,17 +1737,17 @@ class CetakPenyesuaianController extends Controller
                                                     $step = 145;
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 146;
-//                                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+//                                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
 //                                                            ->where('pkm_prdcd', $prdcdbaru)
-//                                                            ->where('pkm_kodeigr', $_SESSION['kdigr'])
+//                                                            ->where('pkm_kodeigr', Session::get('kdigr'))
 //                                                            ->first()->toArray();
 //
 //                                                        $data['pkm_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbmaster_kkpkm')
 //                                                            ->insert($data);
 
-                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_KKPKM
                                                                         (PKM_KODEIGR,
                                                                          PKM_KODEDIVISI,
                                                                          PKM_KODEDEPARTEMENT,
@@ -1792,26 +1791,26 @@ class CetakPenyesuaianController extends Controller
                                                                         '".$r->trbo_nodoc."'
                                                                    FROM TBMASTER_KKPKM PKM
                                                                   WHERE PKM_PRDCD = '".$prdcdbaru."'
-                                                                    AND PKM_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                    AND PKM_KODEIGR = '".Session::get('kdigr')."')");
                                                     }
 
                                                     $step = 147;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                                         ->where('pkm_prdcd', $prdcdbaru)
-                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkm_kodeigr', Session::get('kdigr'))
                                                         ->delete();
 
                                                     $step = 148;
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
 //                                                        ->where('pkm_prdcd', $prdcdlama)
-//                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
+//                                                        ->where('pkm_kodeigr', Session::get('kdigr'))
 //                                                        ->first()->toArray();
 //
 //                                                    $data['pkm_nodoc'] = $r->trbo_nodoc;
 //
-//                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_kkpkm')
+//                                                    DB::connection(Session::get('connection'))->table('temp_tbmaster_kkpkm')
 //                                                        ->insert($data);
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_KKPKM
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_KKPKM
                                                                     (PKM_KODEIGR, PKM_KODEDIVISI,
                                                                      PKM_KODEDEPARTEMENT,
                                                                      PKM_PERIODEPROSES,
@@ -1842,27 +1841,27 @@ class CetakPenyesuaianController extends Controller
                                                                     PKM_MODIFY_DT, '".$r->trbo_nodoc."'
                                                                FROM TBMASTER_KKPKM PKM
                                                               WHERE PKM_PRDCD = '".$prdcdlama."'
-                                                                AND PKM_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                AND PKM_KODEIGR = '".Session::get('kdigr')."')");
 
                                                     $step = 149;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                                         ->where('pkm_prdcd', $prdcdlama)
-                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkm_kodeigr', Session::get('kdigr'))
                                                         ->update([
                                                             'pkm_prdcd' => $prdcdbaru,
-                                                            'pkm_modify_by' => $_SESSION['usid'],
+                                                            'pkm_modify_by' => Session::get('usid'),
                                                             'pkm_modify_dt' => DB::RAW("SYSDATE")
                                                         ]);
 
                                                     $step = 150;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                                         ->where('pkm_prdcd', $prdcdlama)
-                                                        ->where('pkm_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkm_kodeigr', Session::get('kdigr'))
                                                         ->delete();
                                                 }
 
                                                 $step = 151;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                                                     ->where('pkmg_prdcd', $prdcdlama)
                                                     ->where('pkmg_kodeigr', $r->trbo_kodeigr)
                                                     ->get()->count();
@@ -1873,287 +1872,287 @@ class CetakPenyesuaianController extends Controller
 
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 153;
-//                                                        $data = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+//                                                        $data = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
 //                                                            ->where('pkmg_prdcd', $prdcdbaru)
-//                                                            ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+//                                                            ->where('pkmg_kodeigr', Session::get('kdigr'))
 //                                                            ->first()->toArray();
 //
 //                                                        $data['pkmg_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbtr_pkmgondola')
 //                                                            ->insert($data);
-                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
                                                                 (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                    FROM TBTR_PKMGONDOLA PKM
                                                                   WHERE PKMG_PRDCD = '".$prdcdbaru."'
-                                                                    AND PKMG_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                    AND PKMG_KODEIGR = '".Session::get('kdigr')."')");
                                                     }
 
                                                     $step = 154;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd', $prdcdbaru)
-                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmg_kodeigr', Session::get('kdigr'))
                                                         ->delete();
 
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
 //                                                        ->where('pkmg_prdcd', $prdcdlama)
-//                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+//                                                        ->where('pkmg_kodeigr', Session::get('kdigr'))
 //                                                        ->first()->toArray();
 //
 //                                                    $data['pkmg_nodoc'] = $r->trbo_nodoc;
 //
-//                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_pkmgondola')
+//                                                    DB::connection(Session::get('connection'))->table('temp_tbtr_pkmgondola')
 //                                                        ->insert($data);
 
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_PKMGONDOLA
                                                             (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                FROM TBTR_PKMGONDOLA PKM
                                                               WHERE PKMG_PRDCD = '".$prdcdlama."'
-                                                                AND PKMG_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                AND PKMG_KODEIGR = '".Session::get('kdigr')."')");
 
                                                     $step = 155;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd', $prdcdlama)
-                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmg_kodeigr', Session::get('kdigr'))
                                                         ->update([
                                                             'pkmg_prdcd' => $prdcdbaru,
-                                                            'pkmg_modify_by' => $_SESSION['usid'],
+                                                            'pkmg_modify_by' => Session::get('usid'),
                                                             'pkmg_modify_dt' => DB::RAW("SYSDATE")
                                                         ]);
 
                                                     $step = 156;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
                                                         ->where('pkmg_prdcd', $prdcdlama)
-                                                        ->where('pkmg_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmg_kodeigr', Session::get('kdigr'))
                                                         ->delete();
                                                 }
 
                                                 $step = 157;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
                                                     ->where('pkmp_prdcd', $prdcdlama)
-                                                    ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('pkmp_kodeigr', Session::get('kdigr'))
                                                     ->get()->count();
 
                                                 $step = 158;
                                                 if ($jum > 0) {
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 159;
-//                                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
+//                                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
 //                                                            ->where('pkmp_prdcd', $prdcdbaru)
-//                                                            ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+//                                                            ->where('pkmp_kodeigr', Session::get('kdigr'))
 //                                                            ->first()->toArray();
 //
 //                                                        $data['pkmp_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbmaster_pkmplus')
 //                                                            ->insert($data);
-                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
                                                                 (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                    FROM TBMASTER_PKMPLUS PKM
                                                                   WHERE PKMP_PRDCD = '".$prdcdbaru."'
-                                                                    AND PKMP_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                    AND PKMP_KODEIGR = '".Session::get('kdigr')."')");
                                                     }
 
                                                     $step = 160;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
                                                         ->where('pkmp_prdcd', $prdcdbaru)
-                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmp_kodeigr', Session::get('kdigr'))
                                                         ->delete();
 
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
 //                                                        ->where('pkmp_prdcd', $prdcdlama)
-//                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+//                                                        ->where('pkmp_kodeigr', Session::get('kdigr'))
 //                                                        ->first()->toArray();
 //
 //                                                    $data['pkmp_nodoc'] = $r->trbo_nodoc;
 //
-//                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_pkmplus')
+//                                                    DB::connection(Session::get('connection'))->table('temp_tbmaster_pkmplus')
 //                                                        ->insert($data);
 
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_PKMPLUS
                                                             (SELECT PKM.*, '".$r->trbo_nodoc."'
                                                                FROM TBMASTER_PKMPLUS PKM
                                                               WHERE PKMP_PRDCD = '".$prdcdlama."'
-                                                                AND PKMP_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                AND PKMP_KODEIGR = '".Session::get('kdigr')."')");
 
                                                     $step = 161;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmplus')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_pkmplus')
                                                         ->where('pkmp_prdcd', $prdcdlama)
-                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmp_kodeigr', Session::get('kdigr'))
                                                         ->update([
                                                             'pkmp_prdcd' => $prdcdbaru,
-                                                            'pkmp_modify_by' => $_SESSION['usid'],
+                                                            'pkmp_modify_by' => Session::get('usid'),
                                                             'pkmp_modify_dt' => DB::RAW("SYSDATE")
                                                         ]);
 
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
                                                         ->where('pkmp_prdcd', $prdcdlama)
-                                                        ->where('pkmp_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('pkmp_kodeigr', Session::get('kdigr'))
                                                         ->delete();
                                                 }
 
                                                 $step = 162;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbtr_gondola')
                                                     ->where('gdl_prdcd', $prdcdlama)
-                                                    ->where('gdl_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('gdl_kodeigr', Session::get('kdigr'))
                                                     ->get()->count();
 
                                                 $step = 163;
                                                 if ($jum > 0) {
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 164;
-//                                                        $data = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+//                                                        $data = DB::connection(Session::get('connection'))->table('tbtr_gondola')
 //                                                            ->where('gdl_prdcd', $prdcdbaru)
-//                                                            ->where('gdl_kodeigr', $_SESSION['kdigr'])
+//                                                            ->where('gdl_kodeigr', Session::get('kdigr'))
 //                                                            ->first()->toArray();
 //
 //                                                        $data['gdl_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbtr_gondola')
 //                                                            ->insert($data);
 
-                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_GONDOLA
                                                                 (SELECT GDL.*, '".$r->trbo_nodoc."'
                                                                    FROM TBTR_GONDOLA GDL
                                                                   WHERE GDL_PRDCD = '".$prdcdbaru."'
-                                                                    AND GDL_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                    AND GDL_KODEIGR = '".Session::get('kdigr')."')");
                                                     }
 
                                                     $step = 165;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_gondola')
                                                         ->where('gdl_prdcd', $prdcdbaru)
-                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('gdl_kodeigr', Session::get('kdigr'))
                                                         ->delete();
 
                                                     $step = 166;
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbtr_gondola')
 //                                                        ->where('gdl_prdcd', $prdcdlama)
-//                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
+//                                                        ->where('gdl_kodeigr', Session::get('kdigr'))
 //                                                        ->first()->toArray();
 //
 //                                                    $data['gdl_nodoc'] = $r->trbo_nodoc;
 //
-//                                                    DB::connection($_SESSION['connection'])->table('temp_tbtr_gondola')
+//                                                    DB::connection(Session::get('connection'))->table('temp_tbtr_gondola')
 //                                                        ->insert($data);
 
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBTR_GONDOLA
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBTR_GONDOLA
                                                             (SELECT GDL.*, '".$r->trbo_nodoc."'
                                                                FROM TBTR_GONDOLA GDL
                                                               WHERE GDL_PRDCD = '".$prdcdlama."'
-                                                                AND GDL_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                AND GDL_KODEIGR = '".Session::get('kdigr')."')");
 
                                                     $step = 167;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_gondola')
                                                         ->where('gdl_prdcd', $prdcdlama)
-                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('gdl_kodeigr', Session::get('kdigr'))
                                                         ->update([
                                                             'gdl_prdcd' => $prdcdbaru,
-                                                            'gdl_modify_by' => $_SESSION['usid'],
+                                                            'gdl_modify_by' => Session::get('usid'),
                                                             'gdl_modify_dt' => DB::RAW("SYSDATE")
                                                         ]);
 
                                                     $step = 168;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_gondola')
                                                         ->where('gdl_prdcd', $prdcdlama)
-                                                        ->where('gdl_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('gdl_kodeigr', Session::get('kdigr'))
                                                         ->delete();
                                                 }
 
                                                 $step = 169;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
                                                     ->where('min_prdcd', $prdcdlama)
-                                                    ->where('min_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('min_kodeigr', Session::get('kdigr'))
                                                     ->get()->count();
 
                                                 if ($jum > 0) {
                                                     $step = 170;
                                                     if ($v_plua1 > 0 && $v_plub1 > 0) {
                                                         $step = 171;
-//                                                        $data = DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
+//                                                        $data = DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
 //                                                            ->where('min_prdcd', $prdcdbaru)
-//                                                            ->where('min_kodeigr', $_SESSION['kdigr'])
+//                                                            ->where('min_kodeigr', Session::get('kdigr'))
 //                                                            ->first()->toArray();
 //
 //                                                        $data['min_nodoc'] = $r->trbo_nodoc;
 //
-//                                                        DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
+//                                                        DB::connection(Session::get('connection'))->table('temp_tbmaster_minimumorder')
 //                                                            ->insert($data);
 
-                                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
                                                                 (SELECT ORD.*, '".$r->trbo_nodoc."'
                                                                    FROM TBMASTER_MINIMUMORDER ORD
                                                                   WHERE MIN_PRDCD = '".$prdcdbaru."'
-                                                                    AND MIN_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                    AND MIN_KODEIGR = '".Session::get('kdigr')."')");
                                                     }
 
                                                     $step = 172;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
                                                         ->where('min_prdcd', $prdcdbaru)
-                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('min_kodeigr', Session::get('kdigr'))
                                                         ->delete();
 
                                                     $step = 173;
-//                                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
+//                                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
 //                                                        ->where('min_prdcd', $prdcdlama)
-//                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
+//                                                        ->where('min_kodeigr', Session::get('kdigr'))
 //                                                        ->first()->toArray();
 //
 //                                                    $data['min_nodoc'] = $r->trbo_nodoc;
 //
-//                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
+//                                                    DB::connection(Session::get('connection'))->table('temp_tbmaster_minimumorder')
 //                                                        ->insert($data);
 
-                                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
+                                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TEMP_TBMASTER_MINIMUMORDER
                                                             (SELECT ORD.*, '".$r->trbo_nodoc."'
                                                                FROM TBMASTER_MINIMUMORDER ORD
                                                               WHERE MIN_PRDCD = '".$prdcdlama."'
-                                                                AND MIN_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                                AND MIN_KODEIGR = '".Session::get('kdigr')."')");
 
                                                     $step = 174;
-                                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
+                                                    DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
                                                         ->where('min_prdcd', $prdcdlama)
-                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('min_kodeigr', Session::get('kdigr'))
                                                         ->update([
                                                             'min_prdcd' => $prdcdbaru,
-                                                            'min_modify_by' => $_SESSION['usid'],
+                                                            'min_modify_by' => Session::get('usid'),
                                                             'min_modify_dt' => DB::RAW("SYSDATE")
                                                         ]);
 
                                                     $step = 175;
-                                                    DB::connection($_SESSION['connection'])->table('temp_tbmaster_minimumorder')
+                                                    DB::connection(Session::get('connection'))->table('temp_tbmaster_minimumorder')
                                                         ->where('min_prdcd', $prdcdlama)
-                                                        ->where('min_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('min_kodeigr', Session::get('kdigr'))
                                                         ->delete();
                                                 }
 
                                                 $step = 176;
-                                                $jum = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                                                $jum = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                                                     ->where('kvp_pluold', $prdcdlama)
                                                     ->where('kvp_plunew', $prdcdbaru)
                                                     ->where('kvp_kodetipe', 'M')
-                                                    ->where('kvp_kodeigr', $_SESSION['kdigr'])
+                                                    ->where('kvp_kodeigr', Session::get('kdigr'))
                                                     ->get()->count();
 
                                                 $step = 177;
                                                 if ($jum == 0) {
                                                     $step = 178;
-                                                    $fracold = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                    $fracold = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                         ->select('prd_frac')
-                                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                                         ->where('prd_prdcd', $prdcdlama)
                                                         ->first()->prd_frac;
 
                                                     $step = 179;
-                                                    $fracnew = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                                    $fracnew = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                         ->select('prd_frac')
-                                                        ->where('prd_kodeigr', $_SESSION['kdigr'])
+                                                        ->where('prd_kodeigr', Session::get('kdigr'))
                                                         ->where('prd_prdcd', $prdcdbaru)
                                                         ->first()->prd_frac;
 
                                                     $step = 180;
-                                                    DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                                                    DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                                                         ->insert([
-                                                            'kvp_kodeigr' => $_SESSION['kdigr'],
+                                                            'kvp_kodeigr' => Session::get('kdigr'),
                                                             'kvp_pluold' => $prdcdlama,
                                                             'kvp_plunew' => $prdcdbaru,
                                                             'kvp_kodetipe' => 'M',
@@ -2165,7 +2164,7 @@ class CetakPenyesuaianController extends Controller
                                                             'kvp_konversiold' => $fracold,
                                                             'kvp_konversinew' => $fracnew,
                                                             'kvp_create_dt' => DB::RAW("SYSDATE"),
-                                                            'kvp_create_by' => $_SESSION['usid']
+                                                            'kvp_create_by' => Session::get('usid')
                                                         ]);
                                                 }
                                             }
@@ -2181,15 +2180,15 @@ class CetakPenyesuaianController extends Controller
                                     $v_kethdr = $r->trbo_keterangan;
                                 }
 
-                                DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                                DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                                     ->insert([
-                                        'msth_kodeigr' => $_SESSION['kdigr'],
+                                        'msth_kodeigr' => Session::get('kdigr'),
                                         'msth_typetrn' => 'X',
                                         'msth_nodoc' => $n,
                                         'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
                                         'msth_flagdoc' => '1',
                                         'msth_kodesupplier' => $v_supp,
-                                        'msth_create_by' => $_SESSION['usid'],
+                                        'msth_create_by' => Session::get('usid'),
                                         'msth_create_dt' => DB::RAW("SYSDATE"),
                                         'msth_pkp' => $v_pkp,
                                         'msth_cterm' => $v_cterm,
@@ -2198,7 +2197,7 @@ class CetakPenyesuaianController extends Controller
                                         'msth_tgref3' => $v_tglreff
                                     ]);
 
-                                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->where('trbo_nodoc', $n)
                                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
                                     ->update([
@@ -2210,19 +2209,19 @@ class CetakPenyesuaianController extends Controller
                     }
                 }
 
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
 
-                $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+                $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                     ->select('prs_namaperusahaan','prs_namacabang')
                     ->first();
 
                 $nodoc = "(";
-                foreach($_SESSION['pys_nodoc'] as $no){
+                foreach(Session::get('pys_nodoc') as $no){
                     $nodoc .= "'".$no."',";
                 }
                 $nodoc = substr($nodoc,0,strlen($nodoc)-1).")";
 
-                $report = DB::connection($_SESSION['connection'])->select("Select DISTINCT
+                $report = DB::connection(Session::get('connection'))->select("Select DISTINCT
                             msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                             msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc,
                             mstd_prdcd, prd_deskripsipanjang,
@@ -2242,7 +2241,7 @@ class CetakPenyesuaianController extends Controller
                             tbmaster_cabang,
                             tbtr_backoffice
                         Where
-                            msth_kodeigr='".$_SESSION['kdigr']."'
+                            msth_kodeigr='".Session::get('kdigr')."'
                             and mstd_nodoc=msth_nodoc
                             and mstd_kodeigr=msth_kodeigr
                             and prd_kodeigr=msth_kodeigr
@@ -2280,7 +2279,7 @@ class CetakPenyesuaianController extends Controller
             }
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $message = $e->getMessage();
 
             return compact(['step','message']);

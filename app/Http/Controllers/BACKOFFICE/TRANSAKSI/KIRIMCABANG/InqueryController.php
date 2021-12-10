@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,9 +18,9 @@ class InqueryController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $lov = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') tgl")
-            ->where('msth_kodeigr',$_SESSION['kdigr'])
+            ->where('msth_kodeigr',Session::get('kdigr'))
             ->whereRaw("nvl(msth_recordid,'9') <> '1'")
             ->where('msth_typetrn','=','O')
             ->orderBy('msth_nodoc','desc')
@@ -46,7 +46,7 @@ class InqueryController extends Controller
 //        and st_prdcd(+)=prd_prdcd
 //        and st_lokasi(+)='01'
 
-        $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_istype, msth_invno, msth_noref3,msth_tgref3,
+        $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_istype, msth_invno, msth_noref3,msth_tgref3,
 	                   mstd_nopo, mstd_tglpo, msth_loc,msth_loc2, msth_tglinv, mstd_unit||'/'||mstd_frac satuan,
 	                   mstd_frac,mstd_prdcd, floor(mstd_qty/case when mstd_unit='KG' then 1 else mstd_frac end) mstd_qty,
 	                   case when mstd_unit='KG' then 0 else mod(mstd_qty,mstd_frac) end mstd_qtyk, mstd_gross,
@@ -58,7 +58,7 @@ class InqueryController extends Controller
                         mstd_hrgsatuan hrgsat, floor(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
 						mstd_gross gross, nvl(mstd_discrph,0) discrph, mstd_ppnrph ppnrph, mstd_keterangan ket
                 from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_supplier, tbmaster_cabang, tbmaster_stock
-                where msth_kodeigr='".$_SESSION['kdigr']."'
+                where msth_kodeigr='".Session::get('kdigr')."'
                         and msth_typetrn='O'
                         and msth_nodoc='".$request->no."'
                         and mstd_nodoc=msth_nodoc

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use App\AllModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
@@ -22,7 +22,7 @@ class printBPBController extends Controller
         $typeTrn = $request->typeTrn;
 
         if ($type == 1){
-            $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
+            $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
                                        FROM tbtr_backoffice
                                       WHERE trbo_typetrn = '$typeTrn'
                                         AND NVL (trbo_flagdoc, '0') = '$checked'
@@ -31,7 +31,7 @@ class printBPBController extends Controller
             return response()->json($data);
         } else {
             if ($checked == 0){
-                $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
+                $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
                                            FROM tbtr_backoffice
                                           WHERE (trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate'))
                                             AND trbo_typetrn = '$typeTrn'
@@ -40,7 +40,7 @@ class printBPBController extends Controller
 
                 return response()->json($data);
             } else {
-                $data = DB::connection($_SESSION['connection'])->select("SELECT msth_nodoc as nodoc, msth_tgldoc as tgldoc
+                $data = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc as nodoc, msth_tgldoc as tgldoc
                                           FROM tbtr_mstran_h
                                          WHERE (msth_tgldoc BETWEEN ('$startDate') AND ('$endDate'))
                                            AND msth_typetrn = '$typeTrn'
@@ -61,8 +61,8 @@ class printBPBController extends Controller
         $reprint    = $request->checked;
         $size       = $request->size;
         $dummyvar   = 1;
-        $kodeigr    = $_SESSION['kdigr'];
-        $userid     = $_SESSION['usid'];
+        $kodeigr    = Session::get('kdigr');
+        $userid     = Session::get('usid');
 
         $counter    = 0;
         $v_print    = 0;
@@ -85,7 +85,7 @@ class printBPBController extends Controller
                     }
                 $updateData = $this->update_data2($kodeigr,$conn,$type);
 
-                    $ct = DB::connection($_SESSION['connection'])->select("select nvl(count(1),0) as ct
+                    $ct = DB::connection(Session::get('connection'))->select("select nvl(count(1),0) as ct
 						            	from tbtr_backoffice, tbmaster_lokasi
 						            	where trbo_nodoc = '$data'
 							            	and lks_prdcd = trbo_prdcd
@@ -107,11 +107,11 @@ class printBPBController extends Controller
 
         if ($temp){
             if ($type == 1 && $reprint == 0){
-                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->whereIn('trbo_nodoc', $temp)
                     ->update(['trbo_flagdoc' => '1']);
             } elseif ($type == 2 && $reprint == 0){
-                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->whereIn('trbo_nodoc', $temp)
                     ->update(['trbo_flagdoc' => '*', 'trbo_recordid' => 2]);
             }
@@ -130,7 +130,7 @@ class printBPBController extends Controller
 
     public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $dummyvar){
         if(!$dummyvar){
-            $checkDummyVar = DB::connection($_SESSION['connection'])->select(" SELECT TRBO_PRDCD,
+            $checkDummyVar = DB::connection(Session::get('connection'))->select(" SELECT TRBO_PRDCD,
                                                      TRBO_TYPETRN,
                                                      PRD_PRDCD,
                                                      PRD_AVGCOST,
@@ -238,7 +238,7 @@ class printBPBController extends Controller
         $noDoc  = $request->noDoc;
         $reprint = $request->reprint;
         $splitDoc = explode(',', $noDoc);
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
         $document = '';
         $re_print = ($reprint == 1) ? '(REPRINT)' :' ';
 
@@ -249,7 +249,7 @@ class printBPBController extends Controller
         $document = substr($document,0,-1);
 
         if ($report == 'IGR_BO_LISTBTB_FULL'){
-            $datas = DB::connection($_SESSION['connection'])->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
+            $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
                                         trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
                                         trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,
@@ -277,7 +277,7 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_listbtb_full.pdf');
         } elseif ($report == 'IGR_BO_LISTBTB'){
-            $datas = DB::connection($_SESSION['connection'])->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
+            $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
                                         trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
                                         trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,
@@ -318,7 +318,7 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_listbtb.pdf');
         } elseif ($report == 'IGR_BO_CTBTBNOTA'){
-            $datas = DB::connection($_SESSION['connection'])->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
                                         sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
@@ -349,7 +349,7 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_ctbtbnota.pdf');
         } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL'){
-            $datas = DB::connection($_SESSION['connection'])->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
                                         sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
@@ -380,7 +380,7 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_ctbtbnota_full.pdf');
         } elseif ($report == 'lokasi'){
-            $datas = DB::connection($_SESSION['connection'])->select("SELECT trbo_prdcd,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
                                        SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
                                        prd_unit || '/' || prd_frac kemasan,
                                        lks_koderak,

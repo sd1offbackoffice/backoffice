@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use FontLib\Table\Table;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use XBase\TableReader;
@@ -17,14 +17,14 @@ use File;
 class ReturController extends Controller
 {
     public function index(){
-        $efaktur = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')
+        $efaktur = DB::connection(Session::get('connection'))->table('tbmaster_cabang')
             ->selectRaw("NVL(cab_efaktur, 'N') cab_efaktur")
-            ->where('cab_kodecabang','=',$_SESSION['kdigr'])
+            ->where('cab_kodecabang','=',Session::get('kdigr'))
             ->first()->cab_efaktur;
 
-        $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT ROM_NODOKUMEN
+        $recs = DB::connection(Session::get('connection'))->select("SELECT DISTINCT ROM_NODOKUMEN
                                FROM TBTR_RETUROMI
-                              WHERE ROM_KODEIGR = '".$_SESSION['kdigr']."'
+                              WHERE ROM_KODEIGR = '".Session::get('kdigr')."'
                                 AND NVL (ROM_STATUSTRF, '0') = '1'");
 
         $nomorEdit = '';
@@ -39,11 +39,11 @@ class ReturController extends Controller
         if($nomorEdit != '')
             $nomorEdit = 'Ada data transferan yang belum di edit, nomor : '.$nomorEdit;
 
-        $recs = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT ROM_NODOKUMEN,
+        $recs = DB::connection(Session::get('connection'))->select("SELECT DISTINCT ROM_NODOKUMEN,
                                     TO_CHAR(rom_tgldokumen,'dd/mm/yyyy') rom_tgldokumen,
                                     ROM_KODETOKO
                                FROM TBTR_RETUROMI
-                              WHERE ROM_KODEIGR = '".$_SESSION['kdigr']."'
+                              WHERE ROM_KODEIGR = '".Session::get('kdigr')."'
                                 AND NVL (ROM_RECORDID, '0') NOT IN ('1', '2')
                                 AND TO_CHAR (ROM_TGLDOKUMEN, 'YYYYMM') = TO_CHAR (SYSDATE, 'YYYYMM')");
 
@@ -70,7 +70,7 @@ class ReturController extends Controller
     public function getNewNodoc(){
         $connect = loginController::getConnectionProcedure();
 
-        $query = oci_parse($connect, "BEGIN :nodoc := f_igr_get_nomor('" . $_SESSION['kdigr'] . "','RTO','Nomor Retur OMI','O'|| to_char(sysdate, 'yy'),4,true); END;");
+        $query = oci_parse($connect, "BEGIN :nodoc := f_igr_get_nomor('" . Session::get('kdigr') . "','RTO','Nomor Retur OMI','O'|| to_char(sysdate, 'yy'),4,true); END;");
         oci_bind_by_name($query, ':nodoc', $nodoc, 7);
         oci_execute($query);
 
@@ -78,7 +78,7 @@ class ReturController extends Controller
     }
 
     public function checkMember(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->where('cus_kodemember','=',$request->kodemember)
             ->first();
 
@@ -88,9 +88,9 @@ class ReturController extends Controller
             ], 500);
         }
         else{
-            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')
                 ->select('tko_kodeomi')
-                ->where('tko_kodeigr','=',$_SESSION['kdigr'])
+                ->where('tko_kodeigr','=',Session::get('kdigr'))
                 ->where('tko_kodecustomer','=',$request->kodemember)
                 ->first();
 
@@ -109,7 +109,7 @@ class ReturController extends Controller
     }
 
     public static function checkPKP($kodemember){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->select('cus_npwp')
             ->where('cus_kodemember','=',$kodemember)
             ->whereRaw("NVL(cus_flagpkp,'N') = 'Y'")
@@ -122,8 +122,8 @@ class ReturController extends Controller
             if(self::nvl($temp->cus_npwp, '0000') != '0000')
                 return 'Y';
             else{
-                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_npwp')
-                    ->where('pwp_kodeigr','=',$_SESSION['kdigr'])
+                $temp = DB::connection(Session::get('connection'))->table('tbmaster_npwp')
+                    ->where('pwp_kodeigr','=',Session::get('kdigr'))
                     ->where('pwp_kodemember','=',$kodemember)
                     ->first();
 
@@ -135,8 +135,8 @@ class ReturController extends Controller
     }
 
     public function checkNRB(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-            ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi')
+            ->where('rom_kodeigr','=',Session::get('kdigr'))
             ->where('rom_noreferensi','=',$request->nonrb)
             ->whereRaw("rom_tglreferensi = to_date('".$request->tglnrb."','dd/mm/yyyy')")
             ->where('rom_kodetoko','=',$request->kodetoko)
@@ -157,9 +157,9 @@ class ReturController extends Controller
     public function getLovNodoc(Request $request){
         $where = "rom_nodokumen like '%".$request->search."%'";
 
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_returomi')
             ->selectRaw("rom_nodokumen nodoc,to_char(rom_tgldokumen, 'dd/mm/yyyy') tgl, rom_tgldokumen")
-            ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+            ->where('rom_kodeigr','=',Session::get('kdigr'))
             ->whereNotNull('rom_nodokumen')
             ->whereRaw("NVL(rom_recordid,'0') <> '1'")
             ->whereRaw($where)
@@ -173,9 +173,9 @@ class ReturController extends Controller
     }
 
     public function getLovMember(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT CUS_KODEMEMBER, TKO_KODEOMI, CUS_NAMAMEMBER
+        $data = DB::connection(Session::get('connection'))->select("SELECT CUS_KODEMEMBER, TKO_KODEOMI, CUS_NAMAMEMBER
             FROM TBMASTER_CUSTOMER, TBMASTER_TOKOIGR
-            WHERE CUS_KODEIGR = '".$_SESSION['kdigr']."'
+            WHERE CUS_KODEIGR = '".Session::get('kdigr')."'
             AND TKO_KODEIGR = CUS_KODEIGR AND
             TKO_KODECUSTOMER = CUS_KODEMEMBER
             ORDER BY TKO_KODEOMI ASC, CUS_KODEMEMBER ASC");
@@ -184,8 +184,8 @@ class ReturController extends Controller
     }
 
     public function getData(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-            ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi')
+            ->where('rom_kodeigr','=',Session::get('kdigr'))
             ->where('rom_nodokumen','=',$request->nodokumen)
             ->first();
 
@@ -195,7 +195,7 @@ class ReturController extends Controller
             ], 500);
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+            $data = DB::connection(Session::get('connection'))->table('tbtr_returomi')
                 ->join('tbmaster_prodmast','prd_prdcd','=','rom_prdcd')
                 ->leftJoin('tbhistory_hargastrukomi',function($join){
                     $join->on('hso_prdcd','=',DB::RAW("substr(rom_prdcd,1,6) || '1'"));
@@ -226,8 +226,8 @@ class ReturController extends Controller
     }
 
     public function getDataHistoryStrukOmi(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbhistory_strukomi')
-            ->where('hso_kodeigr','=',$_SESSION['kdigr'])
+        $data = DB::connection(Session::get('connection'))->table('tbhistory_strukomi')
+            ->where('hso_kodeigr','=',Session::get('kdigr'))
             ->where('hso_kodemember','=',$request->kodemember)
             ->where('hso_prdcd','=',$request->prdcd)
             ->get();
@@ -237,22 +237,22 @@ class ReturController extends Controller
 
     public function deleteData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+            $data = DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->where('rom_nodokumen','=',$request->nodoc)
                 ->get();
 
             foreach($data as $d){
-                DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
+                DB::connection(Session::get('connection'))->update("UPDATE tbmaster_stock
                SET st_sales = NVL(st_sales, 0) + ".$d->rom_qty.",
                    st_saldoakhir = NVL(st_saldoakhir, 0) - ".$d->rom_qty."
-             WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+             WHERE st_kodeigr = '".Session::get('kdigr')."'
                AND st_prdcd = SUBSTR('".$d->rom_prdcd."', 1, 6) || '0'
                AND st_lokasi = '01'");
 
-//                $plu = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd
+//                $plu = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd
 //              FROM (SELECT   *
 //                        FROM tbmaster_prodmast
 //                       WHERE SUBSTR(prd_prdcd, 1, 6) = SUBSTR('".$d->rom_prdcd."', 1, 6)
@@ -264,9 +264,9 @@ class ReturController extends Controller
 //                dd($plu);
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT trpt_salesvalue
+            $temp = DB::connection(Session::get('connection'))->select("SELECT trpt_salesvalue
           FROM tbtr_piutang
-         WHERE trpt_kodeigr = '".$_SESSION['kdigr']."'
+         WHERE trpt_kodeigr = '".Session::get('kdigr')."'
            AND trpt_type = 'D'
            AND trpt_receivedate = to_date('".$request->tgldoc."','dd/mm/yyyy')
            AND trpt_cus_kodemember = '".$request->kodemember."'
@@ -275,37 +275,37 @@ class ReturController extends Controller
             if(count($temp) > 0){
                 $rpretur = $temp[0]->trpt_salesvalue;
 
-                DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_piutang
+                DB::connection(Session::get('connection'))->update("UPDATE tbmaster_piutang
                    SET ptg_amtar = NVL(ptg_amtar, 0) + ".$rpretur.",
-                       ptg_modify_by = '".$_SESSION['usid']."',
+                       ptg_modify_by = '".Session::get('usid')."',
                        ptg_modify_dt = SYSDATE
-                 WHERE ptg_kodeigr = '".$_SESSION['kdigr']."'
+                 WHERE ptg_kodeigr = '".Session::get('kdigr')."'
                  AND ptg_kodemember = '".$request->kodemember."'");
 
-                DB::connection($_SESSION['connection'])->update("UPDATE tbtr_piutang
+                DB::connection(Session::get('connection'))->update("UPDATE tbtr_piutang
                    SET trpt_recordid = '1'
-                 WHERE trpt_kodeigr = '".$_SESSION['kdigr']."'
+                 WHERE trpt_kodeigr = '".Session::get('kdigr')."'
                    AND trpt_type = 'D'
                    AND trpt_receivedate = to_date('".$request->tgldoc."','dd/mm/yyyy')
                    AND trpt_cus_kodemember = '".$request->kodemember."'
                    AND trpt_docno = '".$request->nodoc."'");
             }
 
-            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+            DB::connection(Session::get('connection'))->table('tbtr_returomi')
                 ->where('rom_nodokumen','=',$request->nodoc)
-                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->update([
                     'rom_recordid' => '1'
                 ]);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Data dengan nomor dokumen '.$request->nodoc.'berhasil dihapus!'
             ], 200);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -324,12 +324,12 @@ class ReturController extends Controller
             $prdcd = substr('0000000'.$prdcd, -7);
         }
 
-        $temp1 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+        $temp1 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
             ->where('prd_prdcd','=',$prdcd)
             ->first();
 
-        $temp2 = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')
+        $temp2 = DB::connection(Session::get('connection'))->table('tbmaster_barcode')
             ->where('brc_barcode','=',$prdcd)
             ->first();
 
@@ -345,9 +345,9 @@ class ReturController extends Controller
 
         //vrec
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi')
             ->select('rom_recordid')
-            ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+            ->where('rom_kodeigr','=',Session::get('kdigr'))
             ->where('rom_nodokumen','=',$request->nodoc)
             ->whereRaw("rom_tgldokumen = to_date('".$request->tgldoc."','dd/mm/yyyy')")
             ->where('rom_prdcd','=',$prdcd)
@@ -363,8 +363,8 @@ class ReturController extends Controller
             }
         }
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
             ->where('prd_prdcd','=',$prdcd)
             ->first();
 
@@ -374,7 +374,7 @@ class ReturController extends Controller
             ], 500);
         }
 
-        $txt_prdcd = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_prdcd
+        $txt_prdcd = DB::connection(Session::get('connection'))->selectOne("SELECT prd_prdcd
             FROM (SELECT   *
                     FROM TBMASTER_PRODMAST
                    WHERE SUBSTR (prd_prdcd, 1, 6) = SUBSTR ('".$prdcd."', 1, 6)
@@ -387,7 +387,7 @@ class ReturController extends Controller
             $txt_prdcd = $txt_prdcd->prd_prdcd;
         else $txt_prdcd = null;
 
-        $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT count(1) jml
+        $temp = DB::connection(Session::get('connection'))->selectOne("SELECT count(1) jml
                     FROM (SELECT   HSO_PRDCD_LAMA, MAX (HSO_CREATE_DT)
                     FROM TBHISTORY_PLUOMI
                     WHERE substr(HSO_PRDCD_BARU,1,6) = substr('".$txt_prdcd."',1,6)
@@ -396,7 +396,7 @@ class ReturController extends Controller
         if($temp->jml > 0){
             $tempsj = substr($txt_prdcd, -1);
 
-            $tempplu = DB::connection($_SESSION['connection'])->selectOne("SELECT HSO_PRDCD_LAMA
+            $tempplu = DB::connection(Session::get('connection'))->selectOne("SELECT HSO_PRDCD_LAMA
                     FROM (SELECT   HSO_PRDCD_LAMA, MAX (HSO_CREATE_DT)
                     FROM TBHISTORY_PLUOMI
                     WHERE substr(HSO_PRDCD_BARU,1,6) = substr('".$txt_prdcd."',1,6)
@@ -405,8 +405,8 @@ class ReturController extends Controller
             $txt_prdcd = substr($tempplu, 0, 6).$tempsj;
         }
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-            ->where('st_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+            ->where('st_kodeigr','=',Session::get('kdigr'))
             ->whereRaw("st_prdcd = substr('".$prdcd."',1,6) || '0'")
             ->where('st_lokasi','=','01')
             ->first();
@@ -417,7 +417,7 @@ class ReturController extends Controller
             ], 500);
         }
 
-        $data = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_prdcd, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2,
+        $data = DB::connection(Session::get('connection'))->selectOne("SELECT prd_prdcd, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2,
             st_avgcost, to_char(hso_tgldokumen1, 'dd/mm/yyyy') hso_tgldokumen1, to_char(hso_tgldokumen2, 'dd/mm/yyyy') hso_tgldokumen2,
             to_char(hso_tgldokumen3, 'dd/mm/yyyy') hso_tgldokumen3, hso_qty1, hso_qty2, hso_qty3,
             round(hso_hrgsatuan1) hso_hrgsatuan1, round(hso_hrgsatuan2) hso_hrgsatuan2, round(hso_hrgsatuan3) hso_hrgsatuan3
@@ -426,7 +426,7 @@ class ReturController extends Controller
             and st_lokasi = '01'
             left join TBHISTORY_HARGASTRUKOMI on hso_kodeigr = prd_kodeigr
             AND hso_prdcd = SUBSTR(prd_prdcd, 1, 6) || '1' and hso_kodemember = '".$request->kodemember."'
-            WHERE prd_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE prd_kodeigr = '".Session::get('kdigr')."'
             AND prd_prdcd = '".$prdcd."'
             ");
 
@@ -435,7 +435,7 @@ class ReturController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             if($request->hitungSelisih != 0 && $request->namadrive == ''){
                 return response()->json([
@@ -453,21 +453,21 @@ class ReturController extends Controller
                 ], 500);
             }
 
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi')
                 ->select('rom_prdcd','rom_create_by','rom_create_dt')
-                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->where('rom_nodokumen','=',$request->nodokumen)
                 ->get();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->where('rom_nodokumen','=',$request->nodokumen)
                 ->delete();
 
             foreach($request->newData as $d){
                 $ins = [];
 
-                $top = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                $top = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                     ->select('cus_top')
                     ->where('cus_kodemember','=',$request->kodemember)
                     ->first()->cus_top;
@@ -484,13 +484,13 @@ class ReturController extends Controller
                 }
 
                 if($new){
-                    $ins['rom_create_by'] = $_SESSION['usid'];
+                    $ins['rom_create_by'] = Session::get('usid');
                     $ins['rom_create_dt'] = DB::RAW("sysdate");
                 }
                 else{
                     $ins['rom_create_by'] = $create_by;
                     $ins['rom_create_dt'] = $create_dt;
-                    $ins['rom_modify_by'] = $_SESSION['usid'];
+                    $ins['rom_modify_by'] = Session::get('usid');
                     $ins['rom_modify_dt'] = DB::RAW("sysdate");
                 }
 
@@ -503,7 +503,7 @@ class ReturController extends Controller
                 }
 
                 if($d['rom_qtyselisih'] != 0){
-                    $hrgjual = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_hrgjual
+                    $hrgjual = DB::connection(Session::get('connection'))->selectOne("SELECT prd_hrgjual
                   FROM (SELECT   *
                             FROM tbmaster_prodmast
                            WHERE SUBSTR (prd_prdcd, 1, 6) = SUBSTR ('".$d['rom_prdcd']."', 1, 6)
@@ -521,7 +521,7 @@ class ReturController extends Controller
                 $ins['rom_qtytlr'] = 0;
                 $ins['rom_hrgsatuan'] = 0;
                 $ins['rom_ttlnilai'] = 0;
-                $ins['rom_kodeigr'] = $_SESSION['kdigr'];
+                $ins['rom_kodeigr'] = Session::get('kdigr');
                 $ins['rom_nodokumen'] = $request->nodokumen;
                 $ins['rom_tgldokumen'] = DB::RAW("to_date('".$request->tgldokumen."','dd/mm/yyyy')");
                 $ins['rom_tgljatuhtempo'] = DB::RAW("to_date('".$request->tgldokumen."','dd/mm/yyyy') +".$top);
@@ -542,26 +542,26 @@ class ReturController extends Controller
                 $ins['rom_flagbkp'] = $d['rom_flagbkp'];
                 $ins['rom_flagbkp2'] = $d['rom_flagbkp2'];
 
-                DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+                DB::connection(Session::get('connection'))->table('tbtr_returomi')
                     ->insert($ins);
             }
 
 //            dd($insert);
 //
-//            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-//                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+//            DB::connection(Session::get('connection'))->table('tbtr_returomi')
+//                ->where('rom_kodeigr','=',Session::get('kdigr'))
 //                ->where('rom_nodokumen','=',$request->nodokumen)
 //                ->whereRaw("nvl(rom_qty,0) = 0")
 //                ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Data berhasil disimpan!'
             ], 200);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -571,7 +571,7 @@ class ReturController extends Controller
 
     public function print(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             $print = [];
 
@@ -579,9 +579,9 @@ class ReturController extends Controller
 
             //$this->checkPKP($request->kodemember);
 
-            $cek_x = DB::connection($_SESSION['connection'])->select("SELECT nvl(prd_kodetag,'zzz') tag, rom_prdcd
+            $cek_x = DB::connection(Session::get('connection'))->select("SELECT nvl(prd_kodetag,'zzz') tag, rom_prdcd
                           FROM tbtr_returomi, tbmaster_prodmast
-                         WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                         WHERE rom_kodeigr = '".Session::get('kdigr')."'
                            AND rom_nodokumen = '".$request->nodoc."'
                            AND rom_tgldokumen = TO_DATE('".$request->tgldoc."','dd/mm/yyyy')
                            AND prd_kodeigr = rom_kodeigr
@@ -607,9 +607,9 @@ class ReturController extends Controller
             else{
                 $step = 1;
 
-                $recid = DB::connection($_SESSION['connection'])->selectOne("SELECT DISTINCT NVL(rom_recordid, '0') recid
+                $recid = DB::connection(Session::get('connection'))->selectOne("SELECT DISTINCT NVL(rom_recordid, '0') recid
                        FROM tbtr_returomi
-                       WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                       WHERE rom_kodeigr = '".Session::get('kdigr')."'
                        AND rom_nodokumen = '".$request->nodoc."'")->recid;
 
                 $rpretur = 0;
@@ -620,18 +620,18 @@ class ReturController extends Controller
 
                 if($recid != '2'){
                     if($request->paramTypeRetur == 'M'){
-                        $recs = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                            ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                        $recs = DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                            ->where('rom_kodeigr','=',Session::get('kdigr'))
                             ->where('rom_nodokumen','=',$request->nodoc)
                             ->get();
 
                         foreach($recs as $rec){
                             $step = 2;
 
-                            DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
+                            DB::connection(Session::get('connection'))->update("UPDATE tbmaster_stock
                        SET st_sales = NVL(st_sales, 0) - ".$rec->rom_qty.",
                            st_saldoakhir = NVL(st_saldoakhir, 0) + ".$rec->rom_qty."
-                     WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+                     WHERE st_kodeigr = '".Session::get('kdigr')."'
                        AND st_prdcd = SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0'
                        AND st_lokasi = '01'");
                         }
@@ -644,7 +644,7 @@ class ReturController extends Controller
                             $dokrus = null;
                             $dokret = null;
 
-                            $recs = DB::connection($_SESSION['connection'])->select("SELECT   tbtr_returomi.*,
+                            $recs = DB::connection(Session::get('connection'))->select("SELECT   tbtr_returomi.*,
                                          NVL(tbmaster_stock.st_avgcost, 0) st_avgcost,
                                          NVL(tbmaster_stock.st_saldoakhir, 0) st_saldoakhir,
                                          tbmaster_hargabeli.hgb_kodesupplier,
@@ -654,7 +654,7 @@ class ReturController extends Controller
                                          tbmaster_hargabeli,
                                          tbmaster_supplier,
                                          tbmaster_stock
-                                   WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                                   WHERE rom_kodeigr = '".Session::get('kdigr')."'
                                      AND rom_nodokumen = '".$request->nodoc."'
                                      AND hgb_kodeigr = rom_kodeigr
                                      AND hgb_tipe = '2'
@@ -677,7 +677,7 @@ class ReturController extends Controller
                                 $pkp = $rec->sup_pkp;
                                 $step = 5;
 
-                                $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_unit,
+                                $temp = DB::connection(Session::get('connection'))->selectOne("SELECT prd_unit,
                                prd_frac,
                                prd_kodedivisi,
                                prd_kodedepartement,
@@ -686,7 +686,7 @@ class ReturController extends Controller
                                prd_flagbkp2,
                                prd_kodetag
                           FROM tbmaster_prodmast
-                         WHERE prd_kodeigr = '".$_SESSION['kdigr']."' AND prd_prdcd = '".$rec->rom_prdcd."'");
+                         WHERE prd_kodeigr = '".Session::get('kdigr')."' AND prd_prdcd = '".$rec->rom_prdcd."'");
 
                                 $unit = $temp->prd_unit;
                                 $frac = $temp->prd_frac;
@@ -701,10 +701,10 @@ class ReturController extends Controller
 
                                 $step = 6;
 
-                                DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
+                                DB::connection(Session::get('connection'))->update("UPDATE tbmaster_stock
                                     SET st_sales = NVL(st_sales, 0) - ".$qty.",
                                        st_saldoakhir = NVL(st_saldoakhir, 0) + ".$qty."
-                                    WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+                                    WHERE st_kodeigr = '".Session::get('kdigr')."'
                                     AND st_prdcd = SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0'
                                     AND st_lokasi = '01'");
 
@@ -739,7 +739,7 @@ class ReturController extends Controller
                                             $connect = loginController::getConnectionProcedure();
 
                                             $query = oci_parse($connect,
-                                                "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "',
+                                                "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "',
                                                 'BT','Nomor Barang Retur','9' || TO_CHAR(SYSDATE, 'yy') || 'T',4,TRUE); END;");
                                             oci_bind_by_name($query, ':ret', $dokret, 32);
                                             oci_execute($query);
@@ -759,7 +759,7 @@ class ReturController extends Controller
                                             $connect = loginController::getConnectionProcedure();
 
                                             $query = oci_parse($connect,
-                                                "BEGIN :ret := f_igr_get_nomor('" . $_SESSION['kdigr'] . "',
+                                                "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "',
                                                 'BR','Nomor Barang Rusak','9' || TO_CHAR(SYSDATE, 'yy') || 'R',4,TRUE); END;");
                                             oci_bind_by_name($query, ':ret', $dokrus, 32);
                                             oci_execute($query);
@@ -773,7 +773,7 @@ class ReturController extends Controller
 
                                     $step = 11;
 
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_mstran_d
+                                    DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_mstran_d
                                         (mstd_kodeigr,
                                          mstd_typetrn,
                                          mstd_nodoc,
@@ -831,7 +831,7 @@ class ReturController extends Controller
                                          mstd_persendisc2iii,
                                          mstd_cterm
                                         )
-                            VALUES      ('".$_SESSION['kdigr']."',
+                            VALUES      ('".Session::get('kdigr')."',
                                          'Z',
                                          '".$dokumen."',
                                          SYSDATE,
@@ -850,7 +850,7 @@ class ReturController extends Controller
                                          '".$bkp2."',
                                          '".$unit."',
                                          '".$frac."',
-                                         '".$_SESSION['kdigr']."',
+                                         '".Session::get('kdigr')."',
                                          ".$qty.",
                                          (".$rec->st_avgcost." * '".$frac."'),
                                          'B',
@@ -873,7 +873,7 @@ class ReturController extends Controller
                                          NVL(".$rec->st_saldoakhir.", 0),
                                          '".$keter."',
                                          SYSDATE,
-                                         '".$_SESSION['usid']."',
+                                         '".Session::get('usid')."',
                                          0,
                                          0,
                                          0,
@@ -906,7 +906,7 @@ class ReturController extends Controller
                             if($lctkrusak){
                                 $step = 12;
 
-                                DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_mstran_h
+                                DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_mstran_h
                                     (msth_kodeigr,
                                      msth_typetrn,
                                      msth_nodoc,
@@ -923,7 +923,7 @@ class ReturController extends Controller
                                      msth_create_dt,
                                      msth_cterm
                                     )
-                                 VALUES ('".$_SESSION['kdigr']."',
+                                 VALUES ('".Session::get('kdigr')."',
                                      'Z',
                                      '".$dokrus."',
                                      SYSDATE,
@@ -935,7 +935,7 @@ class ReturController extends Controller
                                      '".$pkp."',
                                      '".$ketrus."',
                                      '1',
-                                     '".$_SESSION['usid']."',
+                                     '".Session::get('usid')."',
                                      SYSDATE,
                                      0
                                     )");
@@ -944,7 +944,7 @@ class ReturController extends Controller
                             if($lctkretur){
                                 $step = 13;
 
-                                DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_mstran_h
+                                DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_mstran_h
                                     (msth_kodeigr,
                                      msth_typetrn,
                                      msth_nodoc,
@@ -961,7 +961,7 @@ class ReturController extends Controller
                                      msth_create_dt,
                                      msth_cterm
                                     )
-                                 VALUES ('".$_SESSION['kdigr']."',
+                                 VALUES ('".Session::get('kdigr')."',
                                      'Z',
                                      '".$dokret."',
                                      SYSDATE,
@@ -973,7 +973,7 @@ class ReturController extends Controller
                                      '".$pkp."',
                                      '".$ketret."',
                                      '1',
-                                     '".$_SESSION['usid']."',
+                                     '".Session::get('usid')."',
                                      SYSDATE,
                                      0
                                     )");
@@ -981,7 +981,7 @@ class ReturController extends Controller
                         }
 
                         if(self::nvl($request->hitungTlj,0) != 0){
-                            $recs = DB::connection($_SESSION['connection'])->select("SELECT tbtr_returomi.*,
+                            $recs = DB::connection(Session::get('connection'))->select("SELECT tbtr_returomi.*,
                                        tbmaster_hargabeli.hgb_statusbarang,
                                        tbmaster_prodmast.prd_prdcd,
                                        (tbmaster_prodmast.prd_avgcost
@@ -996,7 +996,7 @@ class ReturController extends Controller
                                        tbmaster_prodmast.prd_frac,
                                        tbmaster_prodmast.prd_flagbkp1
                                   FROM tbtr_returomi, tbmaster_hargabeli, tbmaster_prodmast
-                                 WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                                 WHERE rom_kodeigr = '".Session::get('kdigr')."'
                                    AND rom_nodokumen = '".$request->nodoc."'
                                    AND hgb_kodeigr = rom_kodeigr
                                    AND hgb_tipe = '2'
@@ -1022,8 +1022,8 @@ class ReturController extends Controller
 
                                     $qty = $qty;
 
-                                    $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                        ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                    $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                        ->where('st_kodeigr','=',Session::get('kdigr'))
                                         ->where('st_lokasi','=','01')
                                         ->where('st_prdcd','=',substr($rec->rom_prdcd,0,6).'0')
                                         ->first();
@@ -1033,7 +1033,7 @@ class ReturController extends Controller
                                     if(!$temp){
                                         $step = 15;
 
-                                        DB::connection($_SESSION['connection'])->insert("INSERT INTO tbmaster_stock
+                                        DB::connection(Session::get('connection'))->insert("INSERT INTO tbmaster_stock
                                                         (st_kodeigr,
                                                          st_lokasi,
                                                          st_prdcd,
@@ -1053,13 +1053,13 @@ class ReturController extends Controller
                                                          st_rpsaldoawal,
                                                          st_rpsaldoawal2
                                                         )
-                                            VALUES      ('".$_SESSION['kdigr']."',
+                                            VALUES      ('".Session::get('kdigr')."',
                                                          '01',
                                                          SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0',
                                                          ".$qty.",
                                                          ".$qty." * -1,
                                                          SYSDATE,
-                                                         '".$_SESSION['usid']."',
+                                                         '".Session::get('usid')."',
                                                          0,
                                                          0,
                                                          0,
@@ -1079,9 +1079,9 @@ class ReturController extends Controller
                                     else{
                                         $step = 16;
 
-                                        $st = DB::connection($_SESSION['connection'])->selectOne("SELECT st_lastcost, st_avgcost,(st_saldoakhir - qty) qtybaik
+                                        $st = DB::connection(Session::get('connection'))->selectOne("SELECT st_lastcost, st_avgcost,(st_saldoakhir - qty) qtybaik
                                           FROM tbmaster_stock
-                                         WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+                                         WHERE st_kodeigr = '".Session::get('kdigr')."'
                                            AND st_lokasi = '01'
                                            AND st_prdcd = SUBSTR(rec.rom_prdcd, 1, 6) || '0'");
 
@@ -1091,18 +1091,18 @@ class ReturController extends Controller
 
                                         $step = 17;
 
-                                        DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
+                                        DB::connection(Session::get('connection'))->update("UPDATE tbmaster_stock
                                            SET st_trfout =(NVL(st_trfout, 0) + ".$qty."),
                                                st_saldoakhir =(NVL(st_saldoakhir, 0) - ".$qty.")
-                                         WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+                                         WHERE st_kodeigr = '".Session::get('kdigr')."'
                                            AND st_lokasi = '01'
                                            AND st_prdcd = SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0'");
                                     }
 
                                     $step = 18;
 
-                                    $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                        ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                    $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                        ->where('st_kodeigr','=',Session::get('kdigr'))
                                         ->where('st_lokasi','=',$lokasi)
                                         ->where('st_prdcd','=',substr($rec->rom_prdcd,0,6).'0')
                                         ->first();
@@ -1110,7 +1110,7 @@ class ReturController extends Controller
                                     if(!$temp){
                                         $step = 19;
 
-                                        DB::connection($_SESSION['connection'])->insert("INSERT INTO tbmaster_stock
+                                        DB::connection(Session::get('connection'))->insert("INSERT INTO tbmaster_stock
                                             (st_kodeigr,
                                              st_lokasi,
                                              st_prdcd,
@@ -1130,13 +1130,13 @@ class ReturController extends Controller
                                              st_rpsaldoawal,
                                              st_rpsaldoawal2
                                             )
-                                VALUES      ('".$_SESSION['kdigr']."',
+                                VALUES      ('".Session::get('kdigr')."',
                                              '".$lokasi."',
                                              SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0',
                                              ".$qty.",
                                              ".$qty.",
                                              SYSDATE,
-                                             '".$_SESSION['usid']."',
+                                             '".Session::get('usid')."',
                                              0,
                                              0,
                                              0,
@@ -1156,9 +1156,9 @@ class ReturController extends Controller
                                     else{
                                         $step = 20;
 
-                                        $st = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                        $st = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                             ->select('st_avgcost','st_saldoakhir')
-                                            ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                            ->where('st_kodeigr','=',Session::get('kdigr'))
                                             ->where('st_lokoasi','=','01')
                                             ->where('st_prdcd','=',substr($rec->rom_prdcd,0,6).'0')
                                             ->first();
@@ -1168,10 +1168,10 @@ class ReturController extends Controller
 
                                         $step = 21;
 
-                                        DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_stock
+                                        DB::connection(Session::get('connection'))->update("UPDATE tbmaster_stock
                                    SET st_trfin =(NVL(st_trfin, 0) + ".$qty."),
                                        st_saldoakhir =(NVL(st_saldoakhir, 0) + ".$qty.")
-                                 WHERE st_kodeigr = '".$_SESSION['kdigr']."'
+                                 WHERE st_kodeigr = '".Session::get('kdigr')."'
                                    AND st_lokasi = '".$lokasi."'
                                    AND st_prdcd = SUBSTR('".$rec->rom_prdcd."', 1, 6) || '0'");
                                     }
@@ -1185,8 +1185,8 @@ class ReturController extends Controller
                                     $step = 23;
 
                                     if(nvl($rec->prd_prdcd, '1234567') != '1234567'){
-                                        $temp = DB::connection($_SESSION['connection'])->table('tbmhistory_cost')
-                                            ->where('hcs_kodeigr','=',$_SESSION['kdigr'])
+                                        $temp = DB::connection(Session::get('connection'))->table('tbmhistory_cost')
+                                            ->where('hcs_kodeigr','=',Session::get('kdigr'))
                                             ->where('hcs_prdcd','=',$rec->rom_prdcd)
                                             ->where('hcs_nodocbpb','=',$rec->rom_nodokumen)
                                             ->where('hcs_tglbpb','=',$rec->rom_tgldokumen)
@@ -1195,7 +1195,7 @@ class ReturController extends Controller
                                         if(!$temp){
                                             $step = 24;
 
-                                            DB::connection($_SESSION['connection'])->insert("INSERT INTO tbhistory_cost
+                                            DB::connection(Session::get('connection'))->insert("INSERT INTO tbhistory_cost
                                                 (hcs_kodeigr,
                                                  hcs_typetrn,
                                                  hcs_lokasi,
@@ -1212,7 +1212,7 @@ class ReturController extends Controller
                                                  hcs_create_by,
                                                  hcs_create_dt
                                                 )
-                                    VALUES      ('".$_SESSION['kdigr']."',
+                                    VALUES      ('".Session::get('kdigr')."',
                                                  'Z',
                                                  '".$lokasi."',
                                                  '".$rec->rom_prdcd."',
@@ -1239,7 +1239,7 @@ class ReturController extends Controller
                                                  (".$qty." + ".$qtyret."),
                                                  ".$cosbaik." * '".$rec->prd_frac."',
                                                  ".$lcostlama." * '".$rec->prd_frac."',
-                                                 '".$_SESSION['usid']."',
+                                                 '".Session::get('usid')."',
                                                  SYSDATE
                                                 )");
                                         }
@@ -1247,8 +1247,8 @@ class ReturController extends Controller
 
                                     $step = 25;
 
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                        ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                        ->where('st_kodeigr','=',Session::get('kdigr'))
                                         ->where('st_lokasi','=',$lokasi)
                                         ->where('st_prdcd','=',substr($rec->rom_prdcd,0,6).'0')
                                         ->update([
@@ -1263,12 +1263,12 @@ class ReturController extends Controller
                             $step = 26;
 
                             $c = loginController::getConnectionProcedure();
-                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' ||  TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
+                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','RST','Nomor Reset Kasir','R' ||  TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                             oci_bind_by_name($s, ':ret', $noreset, 32);
                             oci_execute($s);
 
                             $c = loginController::getConnectionProcedure();
-                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','SOS','Nomor Struk Beban Driver','SOS',5,TRUE); END;");
+                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','SOS','Nomor Struk Beban Driver','SOS',5,TRUE); END;");
                             oci_bind_by_name($s, ':ret', $dokdriver, 32);
                             oci_execute($s);
 
@@ -1277,7 +1277,7 @@ class ReturController extends Controller
                             $ppn = 0;
                             $seqno = 0;
 
-                            $recs = DB::connection($_SESSION['connection'])->select("SELECT tbtr_returomi.*,
+                            $recs = DB::connection(Session::get('connection'))->select("SELECT tbtr_returomi.*,
                                        tbmaster_stock.st_avgcost,
                                        tbmaster_prodmast.prd_flagbkp1,
                                        tbmaster_prodmast.prd_flagbkp2,
@@ -1287,7 +1287,7 @@ class ReturController extends Controller
                                        tbmaster_prodmast.prd_kodekategoribarang,
                                        tbmaster_prodmast.prd_deskripsipendek
                                   FROM tbtr_returomi, tbmaster_stock, tbmaster_prodmast
-                                 WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                                 WHERE rom_kodeigr = '".Session::get('kdigr')."'
                                    AND rom_nodokumen = '".$request->nodoc."'
                                    AND prd_kodeigr = rom_kodeigr
                                    AND prd_prdcd = rom_prdcd
@@ -1299,7 +1299,7 @@ class ReturController extends Controller
                                 $step = 28;
 
                                 if(self::nvl($rec->rom_qtyselisih, 0) != 0){
-                                    $plu = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_prdcd, prd_hrgjual
+                                    $plu = DB::connection(Session::get('connection'))->selectOne("SELECT prd_prdcd, prd_hrgjual
                                           FROM (SELECT   *
                                                     FROM tbmaster_prodmast
                                                    WHERE SUBSTR(prd_prdcd, 1, 6) = SUBSTR('".$rec->rom_prdcd."', 1, 6)
@@ -1327,7 +1327,7 @@ class ReturController extends Controller
 
                                     $step = 30;
 
-                                    DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_jualdetail
+                                    DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_jualdetail
                                         (trjd_kodeigr,
                                          trjd_transactionno,
                                          trjd_cashierstation,
@@ -1352,7 +1352,7 @@ class ReturController extends Controller
                                          trjd_noinvoice1,
                                          trjd_noinvoice2
                                         )
-                            VALUES      ('".$_SESSION['kdigr']."',
+                            VALUES      ('".Session::get('kdigr')."',
                                          '".$dokdriver."',
                                          '99',
                                          SYSDATE,
@@ -1379,8 +1379,8 @@ class ReturController extends Controller
                                 }
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualheader')
-                                ->where('jh_kodeigr','=',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualheader')
+                                ->where('jh_kodeigr','=',Session::get('kdigr'))
                                 ->where('jh_transactionno','=',$dokdriver)
                                 ->where('jh_cashierstation','=','99')
                                 ->whereRaw("trunc(jh_transactiondate) = trunc(sysdate)")
@@ -1391,7 +1391,7 @@ class ReturController extends Controller
                             if(!$temp){
                                 $step = 31;
 
-                                DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_jualheader
+                                DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_jualheader
                                     (jh_kodeigr,
                                      jh_transactionno,
                                      jh_cashierstation,
@@ -1419,7 +1419,7 @@ class ReturController extends Controller
                                      jh_ccadmfee1,
                                      jh_ccadmfee2
                                     )
-                        VALUES      ('".$_SESSION['kdigr']."',
+                        VALUES      ('".Session::get('kdigr')."',
                                      '".$dokdriver."',
                                      '99',
                                      SYSDATE,
@@ -1429,7 +1429,7 @@ class ReturController extends Controller
                                      (".$nilai." + ".$ppn."),
                                      '199999',
                                      SYSDATE,
-                                     '".$_SESSION['usid']."',
+                                     '".Session::get('usid')."',
                                      0,
                                      0,
                                      0,
@@ -1450,10 +1450,10 @@ class ReturController extends Controller
                             else{
                                 $step = 32;
 
-                                DB::connection($_SESSION['connection'])->update("UPDATE tbtr_jualheader
+                                DB::connection(Session::get('connection'))->update("UPDATE tbtr_jualheader
                                        SET jh_transactionamt = jh_transactionamt +(".$nilai." + ".$ppn."),
                                            jh_transactioncashamt = jh_transactioncashamt +(".$nilai." + ".$ppn.")
-                                     WHERE jh_kodeigr = '".$_SESSION['kdigr']."'
+                                     WHERE jh_kodeigr = '".Session::get('kdigr')."'
                                        AND jh_transactionno = '".$dokdriver."'
                                        AND jh_cashierstation = '99'
                                        AND TRUNC(jh_transactiondate) = TRUNC(SYSDATE)
@@ -1461,8 +1461,8 @@ class ReturController extends Controller
                                        AND jh_transactiontype = 'S'");
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualsummary')
-                                ->where('js_kodeigr','=',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualsummary')
+                                ->where('js_kodeigr','=',Session::get('kdigr'))
                                 ->where('js_cashierid','=','SOS')
                                 ->where('js_cashierstation','=','99')
                                 ->whereRaw("TRUNC(js_transactiondate) = TRUNC(SYSDATE)")
@@ -1471,7 +1471,7 @@ class ReturController extends Controller
                             if(!$temp){
                                 $step = 33;
 
-                                DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_jualsummary
+                                DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_jualsummary
                                     (js_kodeigr,
                                      js_cashierid,
                                      js_cashierstation,
@@ -1501,7 +1501,7 @@ class ReturController extends Controller
                                      js_totchargeamt,
                                      js_totremainvouchervalue
                                     )
-                        VALUES      ('".$_SESSION['kdigr']."',
+                        VALUES      ('".Session::get('kdigr')."',
                                      'SOS',
                                      '99',
                                      SYSDATE,
@@ -1509,7 +1509,7 @@ class ReturController extends Controller
                                      (".$nilai." + ".$ppn."),
                                      (".$nilai." + ".$ppn."),
                                      150000,
-                                     '".$_SESSION['usid']."',
+                                     '".Session::get('usid')."',
                                      SYSDATE,
                                      0,
                                      0,
@@ -1534,10 +1534,10 @@ class ReturController extends Controller
                             else{
                                 $step = 34;
 
-                                DB::connection($_SESSION['connection'])->update("UPDATE tbtr_jualsummary
+                                DB::connection(Session::get('connection'))->update("UPDATE tbtr_jualsummary
                                    SET js_totsalesamt = js_totsalesamt +(".$nilai." + ".$ppn."),
                                        js_totcashsalesamt = js_totcashsalesamt +(".$nilai." + ".$ppn.")
-                                 WHERE js_kodeigr = '".$_SESSION['kdigr']."'
+                                 WHERE js_kodeigr = '".Session::get('kdigr')."'
                                    AND js_cashierid = 'SOS'
                                    AND js_cashierstation = '99'
                                    AND TRUNC(js_transactiondate) = TRUNC(SYSDATE)");
@@ -1545,8 +1545,8 @@ class ReturController extends Controller
 
                             $step = 35;
 
-                            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                            DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                                ->where('rom_kodeigr','=',Session::get('kdigr'))
                                 ->where('rom_nodokumen','=',$request->nodoc)
                                 ->whereRaw("nvl(rom_qtyselisih,0) <> 0")
                                 ->update([
@@ -1561,11 +1561,11 @@ class ReturController extends Controller
                     $rpretur = 0;
                     $ppnretur = 0;
 
-                    $recs = DB::connection($_SESSION['connection'])->select("SELECT tbtr_returomi.*,
+                    $recs = DB::connection(Session::get('connection'))->select("SELECT tbtr_returomi.*,
                                tbmaster_prodmast.prd_flagbkp1,
                                tbmaster_prodmast.prd_flagbkp2
                           FROM tbtr_returomi, tbmaster_prodmast
-                         WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+                         WHERE rom_kodeigr = '".Session::get('kdigr')."'
                            AND rom_nodokumen = '".$request->nodoc."'
                            AND rom_tgldokumen = TO_DATE('".$request->tgldoc."','dd/mm/yyyy')
                            AND prd_kodeigr = rom_kodeigr
@@ -1587,7 +1587,7 @@ class ReturController extends Controller
 
                         $cekplu = '2'.$rec->rom_prdcd;
 
-                        $plujual = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_prdcd
+                        $plujual = DB::connection(Session::get('connection'))->selectOne("SELECT prd_prdcd
                               FROM (SELECT   *
                                         FROM tbmaster_prodmast
                                        WHERE SUBSTR(prd_prdcd, 1, 6) = SUBSTR('".$rec->rom_prdcd."', 1, 6)
@@ -1604,15 +1604,15 @@ class ReturController extends Controller
                     if($request->paramTypeRetur == 'M'){
                         $step = 372;
 
-                        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_piutang')
-                            ->where('ptg_kodeigr','=',$_SESSION['kdigr'])
+                        $temp = DB::connection(Session::get('connection'))->table('tbmaster_piutang')
+                            ->where('ptg_kodeigr','=',Session::get('kdigr'))
                             ->where('ptg_kodemember','=',$request->kodemember)
                             ->first();
 
                         if(!$temp){
                             $step = 38;
 
-                            DB::connection($_SESSION['connection'])->insert("INSERT INTO tbmaster_piutang
+                            DB::connection(Session::get('connection'))->insert("INSERT INTO tbmaster_piutang
                                             (ptg_kodeigr,
                                              ptg_kodemember,
                                              ptg_amtar,
@@ -1620,10 +1620,10 @@ class ReturController extends Controller
                                              ptg_create_dt,
                                              ptg_amtpayment
                                             )
-                                    VALUES ('".$_SESSION['kdigr']."',
+                                    VALUES ('".Session::get('kdigr')."',
                                              '".$request->kodemember."',
                                              ".$rpretur." * -1,
-                                             '".$_SESSION['usid']."',
+                                             '".Session::get('usid')."',
                                              SYSDATE,
                                              0
                                             )");
@@ -1631,16 +1631,16 @@ class ReturController extends Controller
                         else{
                             $step = 39;
 
-                            DB::connection($_SESSION['connection'])->update("UPDATE tbmaster_piutang
+                            DB::connection(Session::get('connection'))->update("UPDATE tbmaster_piutang
                                SET ptg_amtar = NVL(ptg_amtar, 0) - ".$rpretur.",
-                                   ptg_modify_by = '".$_SESSION['usid']."',
+                                   ptg_modify_by = '".Session::get('usid')."',
                                    ptg_modify_dt = SYSDATE
-                             WHERE ptg_kodeigr = '".$_SESSION['kdigr']."'
+                             WHERE ptg_kodeigr = '".Session::get('kdigr')."'
                              AND ptg_kodemember = '".$request->kodemember."'");
                         }
 
-                        $temp = DB::connection($_SESSION['connection'])->table('tbtr_piutang')
-                            ->where('trpt_kodeigr','=',$_SESSION['kdigr'])
+                        $temp = DB::connection(Session::get('connection'))->table('tbtr_piutang')
+                            ->where('trpt_kodeigr','=',Session::get('kdigr'))
                             ->where('trpt_type','=','D')
                             ->whereRaw("trunc(trpt_receivedate) = trunc(sysdate)")
                             ->where('trpt_cus_kodemember','=',$request->kodemember)
@@ -1650,14 +1650,14 @@ class ReturController extends Controller
                         if(!$temp){
                             $step = 40;
 
-                            $top = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                            $top = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                                 ->select('cus_top')
                                 ->where('cus_kodemember','=',$request->kodemember)
                                 ->first()->cus_top;
 
                             $step = 41;
 
-                            DB::connection($_SESSION['connection'])->insert("INSERT INTO tbtr_piutang
+                            DB::connection(Session::get('connection'))->insert("INSERT INTO tbtr_piutang
                                 (trpt_kodeigr,
                                  trpt_type,
                                  trpt_salesinvoicedate,
@@ -1678,7 +1678,7 @@ class ReturController extends Controller
                                  trpt_distfee,
                                  trpt_ppnfeevalue
                                 )
-                        VALUES ('".$_SESSION['kdigr']."',
+                        VALUES ('".Session::get('kdigr')."',
                                  'D',
                                  TRUNC(SYSDATE),
                                  '".$request->kodemember."',
@@ -1691,7 +1691,7 @@ class ReturController extends Controller
                                  ".$rpretur." - ".$ppnretur.",
                                  ".$ppnretur.",
                                  ".DB::RAW("SYSDATE + ".intval($top)).",
-                                 '".$_SESSION['usid']."',
+                                 '".Session::get('usid')."',
                                  SYSDATE,
                                  0,
                                  0,
@@ -1703,8 +1703,8 @@ class ReturController extends Controller
 
                     $step = 42;
 
-                    DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                        ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                    DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                        ->where('rom_kodeigr','=',Session::get('kdigr'))
                         ->where('rom_nodokumen','=',$request-> nodoc)
                         ->update([
                             'rom_flag' => 'P',
@@ -1715,8 +1715,8 @@ class ReturController extends Controller
                 else{
                     $step = 43;
 
-                    DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                        ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                    DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                        ->where('rom_kodeigr','=',Session::get('kdigr'))
                         ->where('rom_nodokumen','=',$request->nodoc)
                         ->update([
                             'rom_flag' => '*'
@@ -1724,9 +1724,9 @@ class ReturController extends Controller
 
                     $step = 44;
 
-                    $noreset = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+                    $noreset = DB::connection(Session::get('connection'))->table('tbtr_returomi')
                         ->select('rom_noreset')
-                        ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                        ->where('rom_kodeigr','=',Session::get('kdigr'))
                         ->where('rom_nodokumen','=',$request->nodoc)
                         ->first()->rom_noreset;
                 }
@@ -1740,8 +1740,8 @@ class ReturController extends Controller
                     $print[] = 'bpb';
                 }
 
-                $recs = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
-                    ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
+                $recs = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
+                    ->where('mstd_kodeigr','=',Session::get('kdigr'))
                     ->where('mstd_nopo','=',$request->nodoc)
                     ->whereRaw("mstd_tglpo = to_date('".$request->tgldoc."','dd/mm/yyyy')")
                     ->where('mstd_nofaktur','=',$request->nonrb)
@@ -1777,7 +1777,7 @@ class ReturController extends Controller
             ], 200);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             dd($e->getMessage());
 
@@ -1791,15 +1791,15 @@ class ReturController extends Controller
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldokumen, rom_noreferensi,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldokumen, rom_noreferensi,
     rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_kodetag, hgb_statusbarang,
     rom_member, rom_kodetoko, rom_qty, rom_qtymlj, rom_qtytlj, rom_hrg, rom_ttl,
     rom_avgcost, rom_qtyselisih, nvl(rom_qtymlj,0) * nvl(rom_avgcost,0) ttlcostlayak,
     nvl(rom_qtytlj,0) * nvl(rom_avgcost,0) ttlcosttdklyk, tko_namaomi, tko_kodecustomer
 FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_HARGABELI,TBMASTER_TOKOIGR
-WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+WHERE rom_kodeigr = '".Session::get('kdigr')."'
               and rom_nodokumen = '".$nodoc."'
               and rom_tgldokumen = to_date('".$tgldoc."','dd/mm/yyyy')
               and prd_kodeigr(+) = rom_kodeigr
@@ -1834,9 +1834,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("select  rom_nodokumen, TRUNC(rom_tgldokumen) tgldokumen, rom_noreferensi,
+        $data = DB::connection(Session::get('connection'))->select("select  rom_nodokumen, TRUNC(rom_tgldokumen) tgldokumen, rom_noreferensi,
                        rom_kodetoko, rom_member, tko_namaomi, prd_kodetag,
                        mstd_prdcd plu, prd_deskripsipanjang, prd_unit||'/'||mstd_frac kemasan,
                        mstd_nodoc, TO_CHAR(mstd_tgldoc,'dd/mm/yyyy') tgldoc, nvl(mstd_hrgsatuan,0) hrg_satuan,
@@ -1844,7 +1844,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                        floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk,
                        nvl(mstd_avgcost,0) avgcost, nvl(mstd_gross,0) subtotal
             from tbtr_returomi, tbtr_mstran_d, tbmaster_prodmast, tbmaster_tokoigr
-            where rom_kodeigr = '".$_SESSION['kdigr']."'
+            where rom_kodeigr = '".Session::get('kdigr')."'
                     and rom_nodokumen = '".$nodoc."'
                     and rom_tgldokumen = TO_DATE('".$tgldoc."','dd/mm/yyyy')
                     and mstd_kodeigr(+) = rom_kodeigr
@@ -1885,9 +1885,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("select  rom_nodokumen, TO_CHAR(rom_tgldokumen,'dd/mm/yyyy') tgldokumen, rom_noreferensi,
+        $data = DB::connection(Session::get('connection'))->select("select  rom_nodokumen, TO_CHAR(rom_tgldokumen,'dd/mm/yyyy') tgldokumen, rom_noreferensi,
                            rom_kodetoko, rom_member, tko_namaomi, prd_kodetag,
                            mstd_prdcd plu, prd_deskripsipanjang, prd_unit||'/'||mstd_frac kemasan,
                            mstd_nodoc, to_char(mstd_tgldoc,'dd/mm/yyyy') tgldoc, nvl(mstd_hrgsatuan,0) hrg_satuan,
@@ -1897,7 +1897,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                            prs_namaperusahaan, prs_namacabang
                 from tbtr_returomi, tbtr_mstran_d, tbmaster_prodmast, tbmaster_tokoigr,
                         tbmaster_perusahaan
-                where rom_kodeigr = '".$_SESSION['kdigr']."'
+                where rom_kodeigr = '".Session::get('kdigr')."'
                         and rom_nodokumen = '".$nodoc."'
                         and rom_tgldokumen = TO_DATE('".$tgldoc."','dd/mm/yyyy')
                         and mstd_kodeigr(+) = rom_kodeigr
@@ -1938,9 +1938,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_noreferensi, to_char(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi, rom_kodetoko,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_noreferensi, to_char(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi, rom_kodetoko,
                 prc_pluomi, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, rom_qty, rom_ttl, tko_namaomi,
                 CASE WHEN prd_flagbkp2 = 'Y' THEN
                        rom_ttl / 1.1
@@ -1949,7 +1949,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 END nilai
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_PRODCRM,
                        TBMASTER_TOKOIGR
-            WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE rom_kodeigr = '".Session::get('kdigr')."'
             and rom_nodokumen = '".$nodoc."'
             and rom_tgldokumen = TO_DATE('".$tgldoc."','dd/mm/yyyy')
             and prc_kodeigr = rom_kodeigr
@@ -1988,9 +1988,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_nopo, rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_nopo, rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi,
                 rom_member, to_char(rom_tgljatuhtempo,'dd/mm/yyyy') rom_tgljatuhtempo, rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
                 rom_qty, rom_qtyrealisasi, rom_avgcost, rom_ttlcost, cus_namamember, cus_npwp
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_CUSTOMER
@@ -2026,9 +2026,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi, rom_nopo,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi, rom_nopo,
                 rom_member, rom_tgljatuhtempo, rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
                 rom_flagbkp, rom_flagbkp2, rom_qty, rom_qtyrealisasi, rom_hrg, rom_ttl,
                 cus_namamember, cus_alamatmember1|| ' ' || cus_alamatmember2 alamat,
@@ -2054,7 +2054,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                        rom_hrg
                 END hrgsat
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_CUSTOMER, TBHISTORY_HARGASTRUKOMI
-            WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE rom_kodeigr = '".Session::get('kdigr')."'
             and rom_nodokumen = '".$nodoc."'
             and rom_tgldokumen = TO_DATE('".$tgldoc."','dd/mm/yyyy')
             and rom_statusdata = '1'
@@ -2090,13 +2090,13 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi,
                 rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_prdcd, prd_hrgjual,
                 rom_member, rom_qty, rom_qtyrealisasi, rom_qtyselisih, rom_hrg, rom_ttl, cus_namamember
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_CUSTOMER
-            WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE rom_kodeigr = '".Session::get('kdigr')."'
                           and rom_nodokumen = '".$nodoc."'
                           and rom_tgldokumen = to_date('".$request->tgldoc."','dd/mm/yyyy')
                           and prd_kodeigr = rom_kodeigr
@@ -2129,9 +2129,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi,'dd/mm/yyyy') rom_tglreferensi,
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi,'dd/mm/yyyy') rom_tglreferensi,
                 rom_prdcd, prd_deskripsipanjang, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, cus_kodemember,
                 cus_namamember,  rom_namadrive, rom_kodekasir, rom_station, rom_jenistransaksi, rom_qty, rom_qtyselisih,
                 rom_hrg, rom_ttl, trjd_discount, prd_prdcd, rom_flagbkp, rom_flagbkp2,
@@ -2146,7 +2146,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                        rom_ttl - (rom_ttl / 1.1)
                 END Ppn
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-            WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE rom_kodeigr = '".Session::get('kdigr')."'
             and rom_nodokumen = '".$nodoc."'
             and rom_tgldokumen = TO_DATE('".$tgldoc."','dd/mm/yyyy')
             and prd_kodeigr(+) = rom_kodeigr
@@ -2160,7 +2160,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             ORDER BY rom_nodokumen, rom_prdcd");
 
         foreach($data as $d){
-            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_hrgjual')
                 ->whereRaw("substr(prd_prdcd,1,6) = substr('".$d->rom_prdcd."',1,6)")
                 ->whereRaw("substr(prd_prdcd,7,1) <> '1'")
@@ -2203,9 +2203,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $noreset = $request->noreset;
         $tgldoc = $request->tgldoc;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT rom_kodeigr, tgldoc, rom_kodekasir, rom_station, rom_jenistransaksi,
+        $data = DB::connection(Session::get('connection'))->select("SELECT rom_kodeigr, tgldoc, rom_kodekasir, rom_station, rom_jenistransaksi,
                   rom_noreset, tanggal, jam, js_create_by, js_totcreditsalesamt, js_totsalesamt,
                   SUM(item) notrx, SUM(rom_ttlnilai) penjualan
             FROM(
@@ -2214,7 +2214,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                      TO_CHAR(js_create_dt,'hh24:mi:ss') jam, js_create_by, js_totcreditsalesamt,
                      js_totsalesamt, 1 item
              FROM TBTR_JUALSUMMARY, TBTR_RETUROMI
-             WHERE rom_kodeigr = '".$_SESSION['kdigr']."'
+             WHERE rom_kodeigr = '".Session::get('kdigr')."'
              AND rom_noreset = '".$noreset."'
              AND rom_tgltransaksi = TO_DATE('".$tgldoc."','dd/mm/yyyy')
              AND rom_qtyselisih <> 0
@@ -2285,7 +2285,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
         $fname = 'RK_'.$request->kodetoko.'_'.date_format(Carbon::now(),'Y-m-d').'_'.substr('00'.$seq, -2).'.csv';
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT   RK, NPWP, NAMA, KD_JENIS_TRANSAKSI, FG_PENGGANTI, NOMOR_FAKTUR, TANGGAL_FAKTUR,
+        $data = DB::connection(Session::get('connection'))->select("SELECT   RK, NPWP, NAMA, KD_JENIS_TRANSAKSI, FG_PENGGANTI, NOMOR_FAKTUR, TANGGAL_FAKTUR,
                           NOMOR_DOKUMEN_RETUR, TANGGAL_RETUR, MASA_PAJAK_RETUR, TAHUN_PAJAK_RETUR,
                           ROUND (SUM (NILAI_RETUR_DPP)) NILAI_RETUR_DPP,
                           ROUND (SUM (NILAI_RETUR_PPN)) NILAI_RETUR_PPN,
@@ -2321,7 +2321,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                                  )
                                                          ) FKT_NOSERI
                                                 FROM TBMASTER_FAKTUR)
-                              WHERE ROM_KODEIGR = '".$_SESSION['kdigr']."'
+                              WHERE ROM_KODEIGR = '".Session::get('kdigr')."'
                                 AND ROM_NODOKUMEN = '".$request->nodoc."'
                                 AND NVL(ROM_FLAGBKP, 'N') = 'Y'
                                 AND ROM_TGLDOKUMEN = TO_DATE('".$request->tgldoc."','dd/mm/yyyy')
@@ -2390,8 +2390,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $fileR = $request->file('fileR');
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-//            $sesiproc = DB::connection($_SESSION['connection'])->selectOne("select TO_CHAR (USERENV ('SESSIONID')) userenv from dual")->userenv;
+            DB::connection(Session::get('connection'))->beginTransaction();
+//            $sesiproc = DB::connection(Session::get('connection'))->selectOne("select TO_CHAR (USERENV ('SESSIONID')) userenv from dual")->userenv;
 
             $sesiproc = '9999999';
             $lok = false;
@@ -2459,15 +2459,15 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 $insert[] = $temp;
             }
 
-            DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->insert($insert);
 
-            DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->whereRaw("nvl(qty, 0) = 0")
                 ->where('SESSID','=',$sesiproc)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $lok = true;
 
@@ -2476,7 +2476,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             }
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return $e->getMessage();
         }
@@ -2486,27 +2486,27 @@ ORDER BY rom_nodokumen, rom_prdcd");
         set_time_limit(0);
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             $all_nodoc = '';
 
-            $tokoomi = DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            $tokoomi = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->select('GUDANG')
                 ->where('SESSID','=',$sesiproc)
                 ->where('NAMAFILE','=',$namaFileR)
                 ->distinct()
                 ->first()->gudang;
 
-            $memberomi = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
+            $memberomi = DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')
                 ->select('tko_kodecustomer')
-                ->where('tko_kodeigr','=',$_SESSION['kdigr'])
+                ->where('tko_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("((TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'O')
             OR (TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'I'))")
                 ->first()->tko_kodecustomer;
 
             $paramPKP = self::checkPKP($memberomi);
 
-            $tempketer = DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            $tempketer = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->where('SESSID','=',$sesiproc)
                 ->where('NAMAFILE','=',$namaFileR)
                 ->whereRaw("NVL(trim(KETER), 'AA') <> 'AA'")
@@ -2517,7 +2517,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                     $paramVB = 'Y';
                 else $paramVB = 'N';
 
-                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
+                DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')
                     ->where('tko_kodeomi','=',$tokoomi)
                     ->update([
                         'tko_flagvb' => 'Y',
@@ -2527,7 +2527,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             }
             else $paramVB = 'N';
 
-            $temp = DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            $temp = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->join('tbmaster_tokoigr','tko_kodeomi','=','gudang')
                 ->where('sessid','=',$sesiproc)
                 ->whereRaw("NVL(tko_flagvb,'N') = 'Y'")
@@ -2562,19 +2562,19 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
             }
 
-            $temp = DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+            $temp = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->join('tbtr_returomi',function($join){
                     $join->on('rom_noreferensi','=','bukti_no');
                     $join->on('rom_kodetoko','=','gudang');
                     $join->on(DB::RAW("TO_CHAR(rom_tglreferensi,'YYYY')"),'=',DB::RAW("TO_CHAR(bukti_tgl,'YYYY')"));
                 })
-                ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->where('sessid','=',$sesiproc)
                 ->where('namafile','=',$namaFileR)
                 ->first();
 
             if(!$temp){
-                DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+                DB::connection(Session::get('connection'))->table('temp_retur_omi')
                     ->where('sessid','=',$sesiproc)
                     ->where('namafile','=',$namaFileR)
                     ->delete();
@@ -2588,7 +2588,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 $lsupco = false;
                 $lqty = true;
 
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT PRDCD, QTY, PRC_SATUANRENCENG,
+                $recs = DB::connection(Session::get('connection'))->select("SELECT PRDCD, QTY, PRC_SATUANRENCENG,
                            (  CEIL (QTY / CASE
                                         WHEN PRC_SATUANRENCENG = 0
                                             THEN 1
@@ -2604,7 +2604,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                      WHERE SESSID = '".$sesiproc."'
                        AND TRIM (NAMAFILE) = '".$namaFileR."'
                        AND TRIM (SUPCO) = 'SIGR5'
-                       AND PRC_KODEIGR = '".$_SESSION['kdigr']."'
+                       AND PRC_KODEIGR = '".Session::get('kdigr')."'
                        AND (PRC_PLUOMI = PRDCD OR (PRC_PLUIDM = PRDCD AND PRC_GROUP = 'I'))");
 
                 foreach($recs as $rec){
@@ -2619,7 +2619,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
 
                 if(!$lqty){
-                    DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+                    DB::connection(Session::get('connection'))->table('temp_retur_omi')
                         ->where('sessid','=',$sesiproc)
                         ->where('namafile','=',$namaFileR)
                         ->delete();
@@ -2633,7 +2633,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
                 else{
                     if(!$lsupco){
-                        DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+                        DB::connection(Session::get('connection'))->table('temp_retur_omi')
                             ->where('sessid','=',$sesiproc)
                             ->where('namafile','=',$namaFileR)
                             ->delete();
@@ -2646,7 +2646,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                     else{
                         $viewtk = false;
 
-                        $recs = DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+                        $recs = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                             ->where('sessid','=',$sesiproc)
                             ->where('namafile','=',$namaFileR)
                             ->orderBy('bukti_no')
@@ -2656,7 +2656,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                         foreach($recs as $rec){
                             $lok = true;
 
-                            $recnos = DB::connection($_SESSION['connection'])->select("SELECT   GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO, PRDCD, SUM (QTY) QTY,
+                            $recnos = DB::connection(Session::get('connection'))->select("SELECT   GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO, PRDCD, SUM (QTY) QTY,
                                            SUM (BONUS) BONUS
                                       FROM TEMP_RETUR_OMI
                                      WHERE BUKTI_NO = '".$rec->bukti_no."'
@@ -2665,16 +2665,16 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                   GROUP BY GUDANG, BUKTI_NO, BUKTI_TGL, SUPCO, PRDCD");
 
                             foreach($recnos as $recno){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodcrm')
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodcrm')
                                     ->select('prc_pluigr')
-                                    ->where('prc_kodeigr','=',$_SESSION['kdigr'])
+                                    ->where('prc_kodeigr','=',Session::get('kdigr'))
                                     ->whereRaw("(PRC_PLUOMI = '".$recno->prdcd."' OR (PRC_PLUIDM = '".$recno->prdcd."' AND PRC_GROUP = 'I'))")
                                     ->first();
 
                                 $pluigr = null;
 
                                 if(!$temp){
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2694,18 +2694,18 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $pluigr = $temp->prc_pluigr;
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodcrm')
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodcrm')
                                     ->join('tbmaster_prodmast',function($join){
                                         $join->on('prd_kodeigr','=','prc_kodeigr');
                                         $join->on('prd_prdcd','=','prc_pluigr');
                                     })
                                     ->select('prc_pluigr')
-                                    ->where('prc_kodeigr','=',$_SESSION['kdigr'])
+                                    ->where('prc_kodeigr','=',Session::get('kdigr'))
                                     ->whereRaw("(PRC_PLUOMI = '".$recno->prdcd."' OR (PRC_PLUIDM = '".$recno->prdcd."' AND PRC_GROUP = 'I'))")
                                     ->first();
 
                                 if(!$temp){
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2722,9 +2722,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $lok = false;
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')
                                     ->select('tko_kodecustomer')
-                                    ->where('tko_kodeigr','=',$_SESSION['kdigr'])
+                                    ->where('tko_kodeigr','=',Session::get('kdigr'))
                                     ->whereRaw("nvl(trunc(tko_tgltutup), sysdate + 30) > trunc(sysdate)")
                                     ->whereRaw("(TKO_KODEOMI = '".$recno->gudang."' AND TKO_KODESBU = 'O') OR (TKO_KODEOMI = '".$recno->gudang."' AND TKO_KODESBU = 'I')")
                                     ->first();
@@ -2739,7 +2739,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                         ];
                                     }
 
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2759,7 +2759,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $memberomi = $temp->tko_kodecustomer;
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                                     ->where('cus_kodemember','=','199999')
                                     ->first();
 
@@ -2772,7 +2772,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                         ];
                                     }
 
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2789,14 +2789,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $lok = false;
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                    ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                    ->where('st_kodeigr','=',Session::get('kdigr'))
                                     ->whereRaw("st_prdcd = substr('".$pluigr."',1,6) || '0'")
                                     ->where('st_lokasi','=','01')
                                     ->first();
 
                                 if(!$temp){
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2813,14 +2813,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $lok = false;
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
-                                    ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                    ->where('prd_kodeigr','=',Session::get('kdigr'))
                                     ->whereRaw("prd_prdcd = substr('".$pluigr."',1,6) || '0'")
                                     ->whereRaw("nvl(prd_kodetag,'_') = 'X'")
                                     ->first();
 
                                 if($temp){
-                                    DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanreturomi')
+                                    DB::connection(Session::get('connection'))->table('temp_cetak_tolakanreturomi')
                                         ->insert([
                                             'kodetoko' => $recno->gudang,
                                             'no_bukti' => $recno->bukti_no,
@@ -2847,7 +2847,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                             }
                             else{
                                 $connect = loginController::getConnectionProcedure();
-                                $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "',
+                                $query = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "',
                                  'RTO',
                                  'Nomor Retur OMI',
                                  'O' || TO_CHAR(SYSDATE, 'yy'),
@@ -2856,7 +2856,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                 oci_bind_by_name($query, ':ret', $nodoc, 32);
                                 oci_execute($query);
 
-                                $recnos = DB::connection($_SESSION['connection'])->select("SELECT   RECID, GUDANG, ID, LOKASI, RTYPE, BUKTI_NO,
+                                $recnos = DB::connection(Session::get('connection'))->select("SELECT   RECID, GUDANG, ID, LOKASI, RTYPE, BUKTI_NO,
                                                BUKTI_TGL, SUPCO, CR_TERM, PRDCD, SUM (QTY) QTY,
                                                SUM (BONUS) BONUS, SUM (GROSS) GROSS, SUM (PPN) PPN,
                                                SUM (FMDFEE) FMDFEE, SUM (PPNFEE) PPNFEE,
@@ -2878,13 +2878,13 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                          WHERE BUKTI_NO = '".$rec->bukti_no."'
                                            AND SESSID = '".$sesiproc."'
                                            AND NAMAFILE = '".$namaFileR."'
-                                           AND PRC_KODEIGR = '".$_SESSION['kdigr']."'
+                                           AND PRC_KODEIGR = '".Session::get('kdigr')."'
                                            AND (   PRC_PLUOMI = PRDCD
                                                 OR (PRC_PLUIDM = PRDCD AND PRC_GROUP = 'I')
                                                )
                                            AND PRD_KODEIGR = PRC_KODEIGR
                                            AND PRD_PRDCD = PRC_PLUIGR
-                                           AND TKO_KODEIGR = '".$_SESSION['kdigr']."'
+                                           AND TKO_KODEIGR = '".Session::get('kdigr')."'
                                            AND (   (TKO_KODEOMI = GUDANG AND TKO_KODESBU = 'O')
                                                 OR (TKO_KODEOMI = GUDANG AND TKO_KODESBU = 'I')
                                                )
@@ -2924,14 +2924,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
                                     $nopo = '';
 
-                                    $top = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                                    $top = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                                         ->select('cus_top')
                                         ->where('cus_kodemember','=',$recno->tko_kodecustomer)
                                         ->first()->cus_top;
 
-                                    $acost = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                    $acost = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                         ->select('st_avgcost')
-                                        ->where('st_kodeigr','=',$_SESSION['kdigr'])
+                                        ->where('st_kodeigr','=',Session::get('kdigr'))
                                         ->where('st_prdcd','=',substr($recno->prd_prdcd,0,6).'0')
                                         ->where('st_lokasi','=','01')
                                         ->first()->st_avgcost;
@@ -2939,8 +2939,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     $memberomi = $recno->tko_kodecustomer;
                                     $paramPKP = self::checkPKP($memberomi);
 
-                                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi')
-                                        ->where('rom_kodeigr','=',$_SESSION['kdigr'])
+                                    $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi')
+                                        ->where('rom_kodeigr','=',Session::get('kdigr'))
                                         ->where('rom_noreferensi','=',$rec->bukti_no)
                                         ->where('rom_tglreferensi','=',$recno->bukti_tgl)
                                         ->where('rom_kodetoko','=',$recno->gudang)
@@ -2950,7 +2950,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     if(!$temp){
                                         if($paramPKP == 'Y' && $paramVB == 'Y'){
                                             if(self::nvl($recno->tko_flagvb,'N') != 'Y'){
-                                                DB::connection($_SESSION['connection'])->table('tbmaster_tokoigr')
+                                                DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')
                                                     ->where('tko_kodeomi','=',$recno->gudang)
                                                     ->update([
                                                         'tko_flagvb' => 'Y',
@@ -2959,23 +2959,23 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     ]);
                                             }
 
-                                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_returomi_pajak')
-                                                ->where('rpj_kodeigr','=',$_SESSION['kdigr'])
+                                            $temp = DB::connection(Session::get('connection'))->table('tbtr_returomi_pajak')
+                                                ->where('rpj_kodeigr','=',Session::get('kdigr'))
                                                 ->where('rpj_nodokumen','=',$nodoc)
                                                 ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
                                                 ->where('rpj_prdcd','=',$recno->prd_prdcd)
                                                 ->first();
 
                                             if($temp){
-                                                DB::connection($_SESSION['connection'])->table('tbtr_returomi_pajak')
-                                                    ->where('rpj_kodeigr','=',$_SESSION['kdigr'])
+                                                DB::connection(Session::get('connection'))->table('tbtr_returomi_pajak')
+                                                    ->where('rpj_kodeigr','=',Session::get('kdigr'))
                                                     ->where('rpj_nodokumen','=',$nodoc)
                                                     ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
                                                     ->where('rpj_prdcd','=',$recno->prd_prdcd)
                                                     ->delete();
                                             }
 
-                                            $recpjks = DB::connection($_SESSION['connection'])->select("SELECT BUKTI_NO, BUKTI_TGL, PRDCD, INVNO,
+                                            $recpjks = DB::connection(Session::get('connection'))->select("SELECT BUKTI_NO, BUKTI_TGL, PRDCD, INVNO,
                                                           INV_DATE, PO_NO, PO_DATE, ISTYPE, KETER,
                                                           NOSPH, TGLSPH, GROSS, PPN
                                                      FROM TEMP_RETUR_OMI
@@ -2985,7 +2985,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                       AND PRDCD = '".$recno->prdcd."'");
 
                                             foreach($recpjks as $recpjk){
-                                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_faktur')
+                                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_faktur')
                                                     ->selectRaw("(FKT_NOTRANSAKSI || FKT_STATION || FKT_KASIR) refstruk")
                                                     ->whereRaw("fkt_noseri = trim('".$recpjk->keter."')")
                                                     ->first();
@@ -2996,9 +2996,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     $refstruk = $temp->refstruk;
                                                 }
 
-                                                DB::connection($_SESSION['connection'])->table('tbtr_returomi_pajak')
+                                                DB::connection(Session::get('connection'))->table('tbtr_returomi_pajak')
                                                     ->insert([
-                                                        'rpj_kodeigr' => $_SESSION['kdigr'],
+                                                        'rpj_kodeigr' => Session::get('kdigr'),
                                                         'rpj_nodokumen' => $nodoc,
                                                         'rpj_tgldokumen' => DB::RAW("SYSDATE"),
                                                         'rpj_prdcd' => $recno->prd_prdcd,
@@ -3009,14 +3009,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                         'rpj_referensifp' => substr(str_replace('.','',str_replace('-','',$recpjk->keter)), 3,13),
                                                         'rpj_referensitglfp' => $recpjk->po_date,
                                                         'rpj_nilai' => ($recpjk->gross + self::nvl($recpjk->ppn, 0)),
-                                                        'rpj_create_by' => $_SESSION['usid'],
+                                                        'rpj_create_by' => Session::get('usid'),
                                                         'rpj_create_dt' => DB::RAW("SYSDATE")
                                                     ]);
                                             }
 
-                                            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+                                            DB::connection(Session::get('connection'))->table('tbtr_returomi')
                                                 ->insert([
-                                                    'ROM_KODEIGR' => $_SESSION['kdigr'],
+                                                    'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
                                                     'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
                                                     'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
@@ -3038,7 +3038,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_TTL' => ($recno->gross + self::nvl($recno->ppn,0)),
                                                     'ROM_STATUSDATA' => '2',
                                                     'ROM_STATUSTRF' => '1',
-                                                    'ROM_CREATE_BY' => $_SESSION['usid'],
+                                                    'ROM_CREATE_BY' => Session::get('usid'),
                                                     'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
                                                     'ROM_HRGSATUAN' => 0,
                                                     'ROM_TTLNILAI' => 0,
@@ -3047,9 +3047,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                 ]);
                                         }
                                         else{
-                                            DB::connection($_SESSION['connection'])->table('tbtr_returomi')
+                                            DB::connection(Session::get('connection'))->table('tbtr_returomi')
                                                 ->insert([
-                                                    'ROM_KODEIGR' => $_SESSION['kdigr'],
+                                                    'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
                                                     'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
                                                     'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
@@ -3071,7 +3071,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_TTL' => ($recno->gross + self::nvl($recno->ppn,0)),
                                                     'ROM_STATUSDATA' => '2',
                                                     'ROM_STATUSTRF' => '1',
-                                                    'ROM_CREATE_BY' => $_SESSION['usid'],
+                                                    'ROM_CREATE_BY' => Session::get('usid'),
                                                     'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
                                                     'ROM_HRGSATUAN' => 0,
                                                     'ROM_TTLNILAI' => 0,
@@ -3088,10 +3088,10 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                 $rpretur = 0;
                                 $ppnretur = 0;
 
-                                $recs = DB::connection($_SESSION['connection'])->select("SELECT TBTR_RETUROMI.*, TBMASTER_PRODMAST.PRD_FLAGBKP1,
+                                $recs = DB::connection(Session::get('connection'))->select("SELECT TBTR_RETUROMI.*, TBMASTER_PRODMAST.PRD_FLAGBKP1,
                                            TBMASTER_PRODMAST.PRD_FLAGBKP2
                                       FROM TBTR_RETUROMI, TBMASTER_PRODMAST
-                                     WHERE ROM_KODEIGR = '".$_SESSION['kdigr']."'
+                                     WHERE ROM_KODEIGR = '".Session::get('kdigr')."'
                                        AND ROM_NODOKUMEN = '".$nodoc."'
                                        AND TRUNC (ROM_TGLDOKUMEN) = TRUNC (SYSDATE)
                                        AND PRD_KODEIGR = ROM_KODEIGR
@@ -3107,33 +3107,33 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     }
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_piutang')
-                                    ->where('ptg_kodeigr','=',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_piutang')
+                                    ->where('ptg_kodeigr','=',Session::get('kdigr'))
                                     ->where('ptg_kodemember','=',$memberomi)
                                     ->first();
 
                                 if(!$temp){
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_piutang')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_piutang')
                                         ->insert([
-                                            'ptg_kodeigr' => $_SESSION['kdigr'],
+                                            'ptg_kodeigr' => Session::get('kdigr'),
                                             'ptg_kodemember' => $memberomi,
                                             'ptg_amtar' => $rpretur * (-1),
-                                            'ptg_create_by' => $_SESSION['usid'],
+                                            'ptg_create_by' => Session::get('usid'),
                                             'ptg_create_dt' => DB::RAW("SYSDATE"),
                                             'ptg_amtpayment' => 0
                                         ]);
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_PIUTANG
+                                    DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_PIUTANG
                                         SET PTG_AMTAR = NVL (PTG_AMTAR, 0) - ".$rpretur.",
-                                        PTG_MODIFY_BY = '".$_SESSION['usid']."',
+                                        PTG_MODIFY_BY = '".Session::get('usid')."',
                                         PTG_MODIFY_DT = SYSDATE
-                                        WHERE PTG_KODEIGR = '".$_SESSION['kdigr']."'
+                                        WHERE PTG_KODEIGR = '".Session::get('kdigr')."'
                                         AND PTG_KODEMEMBER = '".$memberomi."'");
                                 }
 
-                                $temp = DB::connection($_SESSION['connection'])->table('tbtr_piutang')
-                                    ->where('trpt_kodeigr','=',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbtr_piutang')
+                                    ->where('trpt_kodeigr','=',Session::get('kdigr'))
                                     ->where('trpt_type','=','D')
                                     ->whereRaw("TRUNC(trpt_receivedate) = TRUNC(SYSDATE)")
                                     ->where('trpt_cus_kodemember','=',$memberomi)
@@ -3141,14 +3141,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     ->first();
 
                                 if(!$temp){
-                                    $top = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+                                    $top = DB::connection(Session::get('connection'))->table('tbmaster_customer')
                                         ->select('cus_top')
                                         ->where('cus_kodemember','=',$memberomi)
                                         ->first()->cus_top;
 
-                                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_jualheader')
+                                    $temp = DB::connection(Session::get('connection'))->table('tbtr_jualheader')
                                         ->select('jh_transactionno')
-                                        ->where('jh_kodeigr','=',$_SESSION['kdigr'])
+                                        ->where('jh_kodeigr','=',Session::get('kdigr'))
                                         ->whereRaw("TO_CHAR(jh_transactiondate, 'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM')")
                                         ->orderBy('jh_transactionno','desc')
                                         ->first();
@@ -3160,9 +3160,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                         $nokasir = substr('00000'.(intval($temp->jh_transactionno)+1),-5);
                                     }
 
-                                    DB::connection($_SESSION['connection'])->table('tbtr_piutang')
+                                    DB::connection(Session::get('connection'))->table('tbtr_piutang')
                                         ->insert([
-                                            'TRPT_KODEIGR' => $_SESSION['kdigr'],
+                                            'TRPT_KODEIGR' => Session::get('kdigr'),
                                             'TRPT_TYPE' => 'D',
                                             'TRPT_SALESINVOICEDATE' => DB::RAW("TRUNC(SYSDATE)"),
                                             'TRPT_SALESINVOICENO' => $nokasir,
@@ -3177,7 +3177,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                             'TRPT_NETSALES' => $rpretur - $ppnretur,
                                             'TRPT_PPNTAXVALUE' => $ppnretur,
                                             'TRPT_SALESDUEDATE' => DB::RAW("SYSDATE + ".$top),
-                                            'TRPT_CREATE_BY' => $_SESSION['usid'],
+                                            'TRPT_CREATE_BY' => Session::get('usid'),
                                             'TRPT_CREATE_DT' => DB::RAW("SYSDATE"),
                                             'TRPT_SPH_AMOUNT' => 0,
                                             'TRPT_PAYMENTVALUE' => 0,
@@ -3188,7 +3188,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                             }
                         }
 
-                        DB::connection($_SESSION['connection'])->table('temp_retur_omi')
+                        DB::connection(Session::get('connection'))->table('temp_retur_omi')
                             ->where('sessid','=',$sesiproc)
                             ->where('namafile','=',$namaFileR)
                             ->delete();
@@ -3196,7 +3196,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return [
                 'message' => 'Proses transfer file '.$namaFileR.' berhasil!',
@@ -3204,7 +3204,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             ];
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return [
                 'message' => $e->getMessage(),

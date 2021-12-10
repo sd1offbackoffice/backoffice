@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\OMI\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,7 +26,7 @@ class LaporanRegisterBarangReturController extends Controller
 
 
     public function cetak(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $nodoc1 = $request->nodoc1;
         $nodoc2 = $request->nodoc2;
         $p_prog = 'IGR0369';
@@ -40,7 +40,7 @@ class LaporanRegisterBarangReturController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi,
     rom_tglreferensi, SUM(rom_ttlcost) total, cus_namamember, SUM(item) item,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah, (rom_member  || ' - ' || cus_namamember) member,
     sum(case when flag_bkp='Y' then rom_ttlcost else 0 end) ttl_bkp,

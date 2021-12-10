@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,7 +26,7 @@ class ServiceLevelItemParetoController extends Controller
     public function ModalNmr(Request $request)
     {
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGPLU')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
             ->selectRaw('MPL_NAMAMONITORING')
             ->orderByDesc('MPL_KODEMONITORING')
@@ -39,7 +39,7 @@ class ServiceLevelItemParetoController extends Controller
     {
         $search = $request->val;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGPLU')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
             ->selectRaw('MPL_NAMAMONITORING')
             ->where('MPL_KODEMONITORING','=', $search)
@@ -50,7 +50,7 @@ class ServiceLevelItemParetoController extends Controller
     }
 
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $kmp = $request->kmp;
@@ -60,7 +60,7 @@ class ServiceLevelItemParetoController extends Controller
         $p_and = " AND NVL(PRD_FLAGBARANGORDERTOKO, 'N') = 'Y' ";
 
         if($kmp != 'zonk-zonk'){
-            $temp = DB::connection($_SESSION['connection'])->table("TBTR_MONITORINGPLU")
+            $temp = DB::connection(Session::get('connection'))->table("TBTR_MONITORINGPLU")
                 ->selectRaw("NVL (COUNT (1), 0) counter")
                 ->where("MPL_KODEIGR",'=',$kodeigr)
                 ->where("MPL_KODEMONITORING",'=',$kmp)
@@ -74,7 +74,7 @@ class ServiceLevelItemParetoController extends Controller
 
         if($rad_order == "Supplier" || $kmp == 'zonk-zonk'){
             //SL_PARETO_BYSUP
-            $cursor = DB::connection($_SESSION['connection'])->select("SELECT   case when '$kmp' = 'zonk-zonk' then ' ** SERVICE LEVEL ITEM BKL ** ' else ' ** SERVICE LEVEL ITEM PARETO ** ' end judul,
+            $cursor = DB::connection(Session::get('connection'))->select("SELECT   case when '$kmp' = 'zonk-zonk' then ' ** SERVICE LEVEL ITEM BKL ** ' else ' ** SERVICE LEVEL ITEM PARETO ** ' end judul,
          TPOD_PRDCD, TPOH_KODESUPPLIER, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS, SUM (BM) BM,
          SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,
@@ -136,7 +136,7 @@ GROUP BY TPOD_PRDCD,
 ORDER BY TPOH_KODESUPPLIER, TPOD_PRDCD");
         }else{
             //SL_PARETO_BYDDK
-            $cursor = DB::connection($_SESSION['connection'])->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
+            $cursor = DB::connection(Session::get('connection'))->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
          DEP_NAMADEPARTEMENT, KAT_NAMAKATEGORI, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS,
          SUM (BM) BM, SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,
@@ -226,7 +226,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
     }
 
     public function printDocumentddk(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $today = date('d-m-Y');
@@ -235,7 +235,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $mon = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGPLU')
+        $mon = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
             ->selectRaw('MPL_NAMAMONITORING')
             ->where('MPL_KODEMONITORING','=', $kmp)
@@ -244,7 +244,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $kdmon = $mon->mpl_kodemonitoring;
         $nmon =$mon->mpl_namamonitoring;
 
-    $datas = DB::connection($_SESSION['connection'])->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
+    $datas = DB::connection(Session::get('connection'))->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
          DEP_NAMADEPARTEMENT, KAT_NAMAKATEGORI, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS,
          SUM (BM) BM, SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,
@@ -338,7 +338,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
     }
 
     public function printDocumentSupplier(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $kmp = $request->kodemon;
@@ -351,7 +351,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         if($kmp != 'zonk-zonk'){
-            $mon = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGPLU')
+            $mon = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
                 ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
                 ->selectRaw('MPL_NAMAMONITORING')
                 ->where('MPL_KODEMONITORING','=', $kmp)
@@ -364,7 +364,7 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
 
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   case when '$kmp' = 'zonk-zonk' then ' ** SERVICE LEVEL ITEM BKL ** ' else ' ** SERVICE LEVEL ITEM PARETO ** ' end judul,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   case when '$kmp' = 'zonk-zonk' then ' ** SERVICE LEVEL ITEM BKL ** ' else ' ** SERVICE LEVEL ITEM PARETO ** ' end judul,
          TPOD_PRDCD, TPOH_KODESUPPLIER, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS, SUM (BM) BM,
          SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,

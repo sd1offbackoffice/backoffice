@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\OMI\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -28,7 +28,7 @@ class laplvlpbController extends Controller
         if($value == ''){
             $value = '0';
         }
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_pbomi")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_pbomi")
             ->selectRaw("pbo_nokoli, pbo_nopb, pbo_kodeomi")
             //->orderByRaw("pbo_nokoli, pbo_nopb, pbo_kodeomi") //orderby membuat load data menjadi lambat
             ->whereRaw("pbo_nopb >= '$value'");
@@ -36,14 +36,14 @@ class laplvlpbController extends Controller
 //            ->limit(5000)
 //            ->get();
 
-//        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+//        $datas = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
 //            ->selectRaw("prd_prdcd as pbo_nokoli, prd_kodekategoribarang as pbo_nopb, prd_kodetag as pbo_kodeomi");
 
         return Datatables::of($datas)->make(true);
     }
 
     public function cetak(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $jenis = $request->jenis;
         $pb1 = $request->pb1;
@@ -61,7 +61,7 @@ class laplvlpbController extends Controller
 
         if($jenis == '1'){
             $title = "** SERVICE LEVEL PB YG TIDAK DICHECK **";
-            $datas = DB::connection($_SESSION['connection'])->select("select nopb, tglpb, pbo_pluigr, pb,
+            $datas = DB::connection(Session::get('connection'))->select("select nopb, tglpb, pbo_pluigr, pb,
 SUM(pbo_qtyorder) qtyo, SUM(pbo_nilaiorder) nilo, SUM(pbo_ppnorder) ppno,
 prd_deskripsipanjang, kemasan,
 prs_namaperusahaan, prs_namacabang, prs_namawilayah
@@ -130,7 +130,7 @@ GROUP BY nopb, tglpb, pbo_pluigr, pb,
 order by nopb, tglpb, pbo_pluigr");
         }else{
             $title = "** SERVICE LEVEL PB YG TIDAK TERPICKING **";
-            $datas = DB::connection($_SESSION['connection'])->select("select nopb, tglpb, pbo_pluigr, pb,
+            $datas = DB::connection(Session::get('connection'))->select("select nopb, tglpb, pbo_pluigr, pb,
      SUM(pbo_qtyorder) qtyo, SUM(pbo_nilaiorder) nilo,
      SUM(pbo_ppnorder) ppno, prd_deskripsipanjang, kemasan,
      prs_namaperusahaan, prs_namacabang, prs_namawilayah

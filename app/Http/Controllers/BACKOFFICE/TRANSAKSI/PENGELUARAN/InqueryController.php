@@ -6,7 +6,7 @@ use App\Http\Controllers\Connection;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Object_;
 use Yajra\DataTables\DataTables;
@@ -21,9 +21,9 @@ class InqueryController extends Controller
 
     public function getDataLovNPB()
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
-            ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
@@ -36,7 +36,7 @@ class InqueryController extends Controller
     {
         $noNPB = $request->no_npb;
 
-        $results = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $results = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d', 'msth_nodoc', '=', 'mstd_nodoc')
             ->join('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->rightJoin('tbmaster_supplier', 'msth_kodesupplier', '=', 'sup_kodesupplier')
@@ -46,7 +46,7 @@ class InqueryController extends Controller
 									mstd_gross - mstd_discrph nAmt,
 									prd_deskripsipanjang,
 									sup_kodesupplier||\'-\'||sup_namasupplier supp, sup_pkp')
-            ->where('msth_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $noNPB)
             ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
@@ -72,7 +72,7 @@ class InqueryController extends Controller
         $plu = $request->plu;
         $noref3 = $request->noref3;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
             ->join('tbmaster_prodmast', function ($join) {
                 $join->on('prd_prdcd', 'mstd_prdcd');
                 $join->on('prd_kodeigr', 'mstd_kodeigr');
@@ -87,7 +87,7 @@ class InqueryController extends Controller
             ->where('mstd_nodoc', '=', $no_npb)
             ->where('mstd_prdcd', '=', $plu)
 //            ->where('mstd_noref3', '=', $noref3)
-            ->where('mstd_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('mstd_kodeigr', '=', Session::get('kdigr'))
             ->first();
 
         $data->ndiscp = ((float)$data->discrph * 100 / (float)$data->gross);

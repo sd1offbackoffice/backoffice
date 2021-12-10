@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 
 use Carbon\Traits\Date;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
@@ -25,7 +25,7 @@ class InformasiHistoryProductController extends Controller
     {
         $search = $request->value;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->whereRaw("(prd_prdcd LIKE '%" . $search . "%' or prd_deskripsipanjang LIKE '%" . $search . "%')")
             ->whereRaw("SUBSTR (PRD_PRDCD, 7, 1) = '0'")
             ->orderBy('prd_prdcd')
@@ -51,7 +51,7 @@ class InformasiHistoryProductController extends Controller
             $lCek = 3;
         }
         if ($lCek == 1) {
-            $plu = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')->rightJoin('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
+            $plu = DB::connection(Session::get('connection'))->table('tbmaster_barcode')->rightJoin('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
                 ->where('prd_prdcd', '=', $request->value)
                 ->first();
@@ -60,7 +60,7 @@ class InformasiHistoryProductController extends Controller
                 return $message;
             }
         } else if ($lCek == 2) {
-            $plu = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')->rightJoin('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
+            $plu = DB::connection(Session::get('connection'))->table('tbmaster_barcode')->rightJoin('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
                 ->whereRaw('lower(prd_deskripsipendek) = \'' . strtolower((string)$request->value) . '\'')
                 ->first();
@@ -69,7 +69,7 @@ class InformasiHistoryProductController extends Controller
                 return $message;
             }
         } else {
-            $plu = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')->join('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
+            $plu = DB::connection(Session::get('connection'))->table('tbmaster_barcode')->join('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
                 ->where('brc_barcode', '=', $request->value)
                 ->first();
@@ -79,7 +79,7 @@ class InformasiHistoryProductController extends Controller
             }
         }
 
-        $produk = DB::connection($_SESSION['connection'])->table('TBMASTER_CABANG')->Join('TBMASTER_PRODMAST', function ($join) {
+        $produk = DB::connection(Session::get('connection'))->table('TBMASTER_CABANG')->Join('TBMASTER_PRODMAST', function ($join) {
             $join->on('CAB_KODECABANG', '=', 'PRD_KODEIGR')->On('CAB_KODEIGR', '=', 'PRD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
             $join->On(DB::raw('SUBSTR (ST_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'))->On('ST_KODEIGR', '=', 'PRD_KODEIGR')->On('ST_LOKASI', '=', 01);
@@ -170,7 +170,7 @@ class InformasiHistoryProductController extends Controller
                    NVL (PRD_FLAGIGR, \'N\')'))
             ->first();
 
-        $pri = DB::connection($_SESSION['connection'])->table('tbmaster_prodcrm')
+        $pri = DB::connection(Session::get('connection'))->table('tbmaster_prodcrm')
             ->select('*')
             ->where('prc_pluigr', '=', $produk->prd_prdcd)
             ->where('prc_group', '=', 'I')
@@ -184,7 +184,7 @@ class InformasiHistoryProductController extends Controller
             $tag_idm = $pri->prc_kodetag;
         }
 
-        $pro = DB::connection($_SESSION['connection'])->table('tbmaster_prodcrm')
+        $pro = DB::connection(Session::get('connection'))->table('tbmaster_prodcrm')
             ->select('*')
             ->where('prc_pluigr', '=', $produk->prd_prdcd)
             ->where('prc_group', '=', 'O')
@@ -299,7 +299,7 @@ class InformasiHistoryProductController extends Controller
         $flag['OBI'] = $OBI;
         $flag['IGR'] = $IGR;
         $flag['IDM'] = $IDM;
-        $depo = DB::connection($_SESSION['connection'])->table('DEPO_LIST_IDM')->join('TBMASTER_PRODMAST', 'PLUIDM', 'PRD_PLUMCG')
+        $depo = DB::connection(Session::get('connection'))->table('DEPO_LIST_IDM')->join('TBMASTER_PRODMAST', 'PLUIDM', 'PRD_PLUMCG')
             ->select('*')
             ->where('PRD_PRDCD', '=', $produk->prd_prdcd)
             ->first();
@@ -317,7 +317,7 @@ class InformasiHistoryProductController extends Controller
         $produk->jampromo = $jampromo;
 
         //satuan jual
-        $sj = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')->leftJoin('TBTR_PROMOMD', function ($join) {
+        $sj = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')->leftJoin('TBTR_PROMOMD', function ($join) {
             $join->on('PRD_PRDCD', '=', 'PRMD_PRDCD')->On('PRD_KODEIGR', '=', 'PRMD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
             $join->On(DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
@@ -442,7 +442,7 @@ class InformasiHistoryProductController extends Controller
                 }
             }
             $sj[$i]->sj_sj = SUBSTR($sj[$i]->prd_prdcd, -1);
-            $barcode = DB::connection($_SESSION['connection'])->table('tbmaster_barcode')
+            $barcode = DB::connection(Session::get('connection'))->table('tbmaster_barcode')
                 ->select('brc_barcode')
                 ->where('brc_status', '=', 'BC')
                 ->where('brc_prdcd', '=', $sj[$i]->prd_prdcd)
@@ -475,13 +475,13 @@ class InformasiHistoryProductController extends Controller
         }
 
         //trendsales
-        $trendsales = DB::connection($_SESSION['connection'])->table('TBTR_SALESBULANAN')
+        $trendsales = DB::connection(Session::get('connection'))->table('TBTR_SALESBULANAN')
             ->select('*')
             ->where('sls_prdcd', '=', $request->value)
             ->first();
         $trendsales = (array)$trendsales;
 
-        $blnberjalan = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $blnberjalan = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('PRS_BULANBERJALAN')
             ->first();
 
@@ -525,7 +525,7 @@ class InformasiHistoryProductController extends Controller
             $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
         }
         $TEMP = date('m');
-        $prodstock = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
+        $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
             ->where('prd_kodeigr', '=', "22")
@@ -561,7 +561,7 @@ class InformasiHistoryProductController extends Controller
         }
         $AVGSALES = $VAVG / 3;
 
-        $gdltemp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
+        $gdltemp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
             ->select('*')
             ->whereRaw('substr(gdl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
             ->whereRaw('gdl_tglawal <= trunc(sysdate)')
@@ -577,7 +577,7 @@ class InformasiHistoryProductController extends Controller
         }
 
         //stok
-        $stock = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
+        $stock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
             ->where('prd_kodeigr', '=', "22")
@@ -607,13 +607,13 @@ class InformasiHistoryProductController extends Controller
             $lsoic = true;
 
 
-            $temp = DB::connection($_SESSION['connection'])->table('TBMASTER_SETTING_SO')
+            $temp = DB::connection(Session::get('connection'))->table('TBMASTER_SETTING_SO')
                 ->select('*')
                 ->whereRaw('to_char(MSO_TGLSO, \'yyyy-MM\') =  to_char(sysdate,\'yyyy-MM\')')
                 ->count('*');
 
             if (self::ceknull($temp, 0) != 0) {
-                $freset = DB::connection($_SESSION['connection'])->table('TBMASTER_SETTING_SO')
+                $freset = DB::connection(Session::get('connection'))->table('TBMASTER_SETTING_SO')
                     ->selectRaw('NVL(MSO_FLAGRESET, \'N\')')
                     ->whereRaw('to_char(MSO_TGLSO, \'yyyy-MM\') =  to_char(sysdate,\'yyyy-MM\')')
                     ->first();
@@ -625,7 +625,7 @@ class InformasiHistoryProductController extends Controller
             }
 
             if ($stock[$i]->st_lokasi == '01') {
-                $qty_soic = DB::connection($_SESSION['connection'])->table('tbtr_reset_soic')
+                $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
                     ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
                     ->whereRaw('substr(rso_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
                     ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
@@ -680,7 +680,7 @@ class InformasiHistoryProductController extends Controller
             $stock[$i]->st_akhir = self::ceknull($st_akhir, 0);
         }
 
-        $pkmt = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
+        $pkmt = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
             ->join('tbmaster_supplier', 'hgb_kodesupplier', '=', 'sup_kodesupplier')
             ->join('tbmaster_prodmast', 'hgb_prdcd', '=', 'prd_prdcd')
             ->selectRaw('hgb_top, hgb_hrgbeli, sup_kodesupplier||\' - \'||sup_namasupplier sup,sup_top, prd_isibeli')
@@ -702,7 +702,7 @@ class InformasiHistoryProductController extends Controller
             $pkmt->top = $pkmt->sup_top;
         }
 
-        $kkpkm = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+        $kkpkm = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
             ->leftJoin('tbmaster_pkmplus', 'pkmp_prdcd', '=', 'pkm_prdcd')
             ->leftJoin('tbmaster_minimumorder', 'min_prdcd', '=', 'pkm_prdcd')
             ->selectRaw('nvl(pkm_pkmt,0) vpkmt, nvl(pkm_mindisplay,0) vmindisplay, nvl(pkmp_qtyminor,0) vqtyminor, min_minorder vminor')
@@ -737,7 +737,7 @@ class InformasiHistoryProductController extends Controller
 
 
         /*PENERIMAAN*/
-        $supplier = DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
+        $supplier = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
             ->select('*')
             ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->where('mstd_kodeigr', '=', '22')
@@ -778,7 +778,7 @@ class InformasiHistoryProductController extends Controller
         $temppb = 'A,';
 
         $permintaan = array();
-        $pb = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
+        $pb = DB::connection(Session::get('connection'))->table('tbtr_po_d')
             ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
             ->join('tbtr_pb_d', function ($join) {
                 $join->On(DB::raw('SUBSTR (pbd_prdcd, 1, 6)'), '=', DB::raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
@@ -873,7 +873,7 @@ class InformasiHistoryProductController extends Controller
         }
 
         $step = 13;
-        $pb2 = DB::connection($_SESSION['connection'])->table('tbtr_pb_d')
+        $pb2 = DB::connection(Session::get('connection'))->table('tbtr_pb_d')
             ->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
             ->selectRaw('DISTINCT pbh_keteranganpb,
                                      pbh_nopb,
@@ -926,7 +926,7 @@ class InformasiHistoryProductController extends Controller
             }
         }
         $step = 17;
-        $po = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
+        $po = DB::connection(Session::get('connection'))->table('tbtr_po_d')
             ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
             ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
                                 tpod_prdcd,
@@ -1002,7 +1002,7 @@ class InformasiHistoryProductController extends Controller
         }
         $step = 29;
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_ba_stockopname')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_ba_stockopname')
             ->selectRaw('distinct sop_tglso')
             ->where('sop_kodeigr', '=', '22')
             ->orderBy('sop_tglso', 'desc')
@@ -1028,7 +1028,7 @@ class InformasiHistoryProductController extends Controller
                                     ADJ_PRDCD,
                                     ADJ_LOKASI) B');
 
-        $so = DB::connection($_SESSION['connection'])->table('TBTR_BA_STOCKOPNAME')
+        $so = DB::connection(Session::get('connection'))->table('TBTR_BA_STOCKOPNAME')
             ->join('TBMASTER_PRODMAST', 'PRD_PRDCD', '=', 'SOP_PRDCD')
             ->leftJoin($tempadjustso, function ($join) {
                 $join->On(DB::raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::raw('trunc(B.ADJ_TGLSO)'), '=', DB::raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
@@ -1049,7 +1049,7 @@ class InformasiHistoryProductController extends Controller
             ->whereRaw('SOP_TGLSO = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
             ->get();
 
-        $adjustso = DB::connection($_SESSION['connection'])->table('TBTR_ADJUSTSO')
+        $adjustso = DB::connection(Session::get('connection'))->table('TBTR_ADJUSTSO')
             ->select('*')
             ->where('adj_kodeigr', '=', '22')
             ->where('adj_lokasi', '=', '01')
@@ -1058,7 +1058,7 @@ class InformasiHistoryProductController extends Controller
             ->orderBy('adj_create_dt')
             ->get();
 
-        $resetsoic = DB::connection($_SESSION['connection'])->table('TBTR_RESET_SOIC')
+        $resetsoic = DB::connection(Session::get('connection'))->table('TBTR_RESET_SOIC')
             ->select('*')
             ->where('rso_kodeigr', '=', '22')
             ->where('rso_lokasi', '=', '01')
@@ -1068,7 +1068,7 @@ class InformasiHistoryProductController extends Controller
             ->orderBy('rso_kodeso')
             ->get();
 
-        $hargabeli = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
+        $hargabeli = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
             ->join('tbmaster_prodmast', 'prd_prdcd', '=', 'hgb_prdcd')
             ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'hgb_kodesupplier')
             ->leftJoin('tbmaster_tag', 'tag_kodetag', '=', 'prd_kodetag')
@@ -1321,7 +1321,7 @@ class InformasiHistoryProductController extends Controller
         }
 
         //STOCK CARTON
-        $flagreset = DB::connection($_SESSION['connection'])->table('tbmaster_setting_so')
+        $flagreset = DB::connection(Session::get('connection'))->table('tbmaster_setting_so')
             ->selectRaw('nvl(mso_flagreset, \'N\')')
             ->whereRaw('to_char(mso_tglso, \'yyyy-MM\') = TO_CHAR (SYSDATE , \'yyyy-MM\')')
             ->first();
@@ -1330,14 +1330,14 @@ class InformasiHistoryProductController extends Controller
             $flagreset = 'Y';
         }
 
-        $qty_soic = DB::connection($_SESSION['connection'])->table('tbtr_reset_soic')
+        $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
             ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
             ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
             ->where('rso_lokasi', '=', '01')
             ->first();
         $qty_soic = $qty_soic->qty;
-        $stockcarton = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $stockcarton = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->join('tbmaster_stock', function ($join) {
                 $join->On(DB::raw('substr(st_prdcd, 1, 6)'), '=', DB::raw('substr(prd_prdcd, 1, 6)'));
             })
@@ -1427,17 +1427,17 @@ class InformasiHistoryProductController extends Controller
 //        $showpromosi = true;
 //        $promosi = '';
 
-//        $periodepromosi = DB::connection($_SESSION['connection'])->table('tbtr_hadiahkejutan')
+//        $periodepromosi = DB::connection(Session::get('connection'))->table('tbtr_hadiahkejutan')
 //            ->selectRaw('max(spot_periodeawal) awal, max(spot_periodeakhir) akhir')
 //            ->where('spot_prdcd', $produk->prd_prdcd)
-//            ->where('spot_kodeigr', $_SESSION['kdigr'])
+//            ->where('spot_kodeigr', Session::get('kdigr'))
 //            ->first();
 //        //tanda
-//        $condition = DB::connection($_SESSION['connection'])
+//        $condition = DB::connection(Session::get('connection'))
 //            ->select("select case when trunc(sysdate) <= to_date('" . $periodepromosi->akhir . "','ddmmyyyy') and trunc(sysdate)  >= to_date('" . $periodepromosi->akhir . "','ddmmyyyy') then 1
 //else 2 end condition from dual");
 //        if ($condition == 1) {
-//            $datediff = DB::connection($_SESSION['connection'])
+//            $datediff = DB::connection(Session::get('connection'))
 //                ->select("select to_date('" . $periodepromosi->akhir . "','ddmmyyyy')-to_date('" . $periodepromosi->awal . "','ddmmyyyy') from dual");
 //            if ($datediff > 10) {
 //                $promosi = 'SUPER PROMO';
@@ -1469,7 +1469,7 @@ class InformasiHistoryProductController extends Controller
         $adjustso = $request->cetakso['adjustso'];
         $resetsoic = $request->cetakso['resetsoic'];
 
-        $prs = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $prs = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('*')
             ->where('PRS_KODEIGR', '=', '22')
             ->first();
@@ -1525,7 +1525,7 @@ class InformasiHistoryProductController extends Controller
     {
 //        dd($request->cetak['produk']['brc_barcode']);
 
-        $prs = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $prs = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('*')
             ->where('PRS_KODEIGR', '=', '22')
             ->first();
@@ -1619,10 +1619,10 @@ class InformasiHistoryProductController extends Controller
     public function getNextPLU(Request $request)
     {
         $currentPLU = $request->plu;
-        $max_plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $max_plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->count();
 
-        $currentRow = DB::connection($_SESSION['connection'])->select("SELECT COL
+        $currentRow = DB::connection(Session::get('connection'))->select("SELECT COL
                                   FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
                                           FROM (SELECT   PRD_PRDCD
                                                     FROM TBMASTER_PRODMAST
@@ -1631,7 +1631,7 @@ class InformasiHistoryProductController extends Controller
                                  WHERE PLU = substr('" . $currentPLU . "',1,6) || '0'")[0]->col;
         $nextRow = intval($currentRow) + 1;
         if ($nextRow != $max_plu) {
-            $nextPLU = DB::connection($_SESSION['connection'])->select("SELECT plu
+            $nextPLU = DB::connection(Session::get('connection'))->select("SELECT plu
             FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
               FROM (SELECT   PRD_PRDCD
                         FROM TBMASTER_PRODMAST
@@ -1648,7 +1648,7 @@ class InformasiHistoryProductController extends Controller
     {
         $currentPLU = $request->plu;
 
-        $currentRow = DB::connection($_SESSION['connection'])->select("SELECT COL
+        $currentRow = DB::connection(Session::get('connection'))->select("SELECT COL
                                   FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
                                           FROM (SELECT   PRD_PRDCD
                                                     FROM TBMASTER_PRODMAST
@@ -1658,7 +1658,7 @@ class InformasiHistoryProductController extends Controller
         $nextRow = intval($currentRow) - 1;
         if (intval($currentRow) - 1 != 1) {
 
-            $nextPLU = DB::connection($_SESSION['connection'])->select("SELECT plu
+            $nextPLU = DB::connection(Session::get('connection'))->select("SELECT plu
       FROM (SELECT ROWNUM COL, PRD_PRDCD PLU
               FROM (SELECT   PRD_PRDCD
                         FROM TBMASTER_PRODMAST
@@ -1675,31 +1675,31 @@ class InformasiHistoryProductController extends Controller
     public function getDetailSales(Request $request)
 
     {
-        $blnberjalan = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $blnberjalan = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('PRS_BULANBERJALAN')
             ->first();
 
         $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
 
-        $ds01 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+        $ds01 = DB::connection(Session::get('connection'))->table('tbtr_rekapsalesbulanan')
             ->selectRaw('nvl(rsl_qty_01, 0) qty_igr1, nvl(rsl_qty_02, 0) qty_igr2, nvl(rsl_qty_03, 0) qty_igr3 ,nvl(rsl_qty_04, 0) qty_igr4, nvl(rsl_qty_05, 0) qty_igr5, nvl(rsl_qty_06, 0) qty_igr6, nvl(rsl_qty_07, 0) qty_igr7, nvl(rsl_qty_08, 0) qty_igr8,nvl(rsl_qty_09, 0) qty_igr9,nvl(rsl_qty_10, 0) qty_igr10,nvl(rsl_qty_11, 0) qty_igr11,nvl(rsl_qty_12, 0) qty_igr12, nvl(rsl_rph_01, 0) rph_igr1, nvl(rsl_rph_02, 0) rph_igr2, nvl(rsl_rph_03, 0) rph_igr3, nvl(rsl_rph_04, 0) rph_igr4, nvl(rsl_rph_05, 0) rph_igr5, nvl(rsl_rph_06, 0) rph_igr6, nvl(rsl_rph_07, 0) rph_igr7, nvl(rsl_rph_08, 0) rph_igr8, nvl(rsl_rph_09, 0) rph_igr9, nvl(rsl_rph_10, 0) rph_igr10, nvl(rsl_rph_11, 0) rph_igr11, nvl(rsl_rph_12, 0) rph_igr12')
             ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
             ->where('rsl_group', '=', '01')
             ->first();
 
-        $ds02 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+        $ds02 = DB::connection(Session::get('connection'))->table('tbtr_rekapsalesbulanan')
             ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09 , 0)qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10 , 0)rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
             ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
             ->where('rsl_group', '=', '02')
             ->first();
 
-        $ds03 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+        $ds03 = DB::connection(Session::get('connection'))->table('tbtr_rekapsalesbulanan')
             ->selectRaw('nvl(rsl_qty_01, 0) qty_mrh1, nvl(rsl_qty_02, 0) qty_mrh2, nvl(rsl_qty_03, 0) qty_mrh3 ,nvl(rsl_qty_04, 0) qty_mrh4, nvl(rsl_qty_05, 0) qty_mrh5, nvl(rsl_qty_06, 0) qty_mrh6,nvl(rsl_qty_07, 0) qty_mrh7, nvl(rsl_qty_08, 0) qty_mrh8,nvl(rsl_qty_09, 0) qty_mrh9,nvl(rsl_qty_10, 0) qty_mrh10,nvl(rsl_qty_11, 0) qty_mrh11,nvl(rsl_qty_12, 0) qty_mrh12,nvl(rsl_rph_01, 0) rph_mrh1, nvl(rsl_rph_02, 0) rph_mrh2, nvl(rsl_rph_03, 0) rph_mrh3, nvl(rsl_rph_04, 0) rph_mrh4, nvl(rsl_rph_05, 0) rph_mrh5, nvl(rsl_rph_06, 0) rph_mrh6,nvl(rsl_rph_07, 0) rph_mrh7, nvl(rsl_rph_08, 0) rph_mrh8, nvl(rsl_rph_09 , 0)rph_mrh9, nvl(rsl_rph_10, 0) rph_mrh10, nvl(rsl_rph_11, 0) rph_mrh11, nvl(rsl_rph_12, 0) rph_mrh12')
             ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
             ->where('rsl_group', '=', '03')
             ->first();
 
-        $ds04 = DB::connection($_SESSION['connection'])->table('tbtr_rekapsalesbulanan')
+        $ds04 = DB::connection(Session::get('connection'))->table('tbtr_rekapsalesbulanan')
             ->selectRaw('nvl(rsl_qty_01, 0) qty_omi1, nvl(rsl_qty_02, 0) qty_omi2, nvl(rsl_qty_03, 0) qty_omi3 ,nvl(rsl_qty_04, 0) qty_omi4, nvl(rsl_qty_05, 0) qty_omi5, nvl(rsl_qty_06, 0) qty_omi6,nvl(rsl_qty_07, 0) qty_omi7, nvl(rsl_qty_08, 0) qty_omi8,nvl(rsl_qty_09, 0) qty_omi9,nvl(rsl_qty_10, 0) qty_omi10,nvl(rsl_qty_11, 0) qty_omi11,nvl(rsl_qty_12, 0) qty_omi12,nvl(rsl_rph_01, 0) rph_omi1, nvl(rsl_rph_02, 0) rph_omi2, nvl(rsl_rph_03, 0) rph_omi3, nvl(rsl_rph_04, 0) rph_omi4, nvl(rsl_rph_05, 0) rph_omi5, nvl(rsl_rph_06, 0) rph_omi6,nvl(rsl_rph_07, 0) rph_omi7, nvl(rsl_rph_08, 0) rph_omi8, nvl(rsl_rph_09, 0) rph_omi9, nvl(rsl_rph_10, 0) rph_omi10, nvl(rsl_rph_11, 0) rph_omi11, nvl(rsl_rph_12, 0) rph_omi12')
             ->whereRaw('substr(rsl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
             ->where('rsl_group', '=', '04')

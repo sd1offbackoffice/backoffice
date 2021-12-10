@@ -412,7 +412,7 @@
                     if(response == '0'){
                         swal({
                             title:'Alert',
-                            text: 'Kode PLU '+crop+'-'+<?php echo $_SESSION['kdigr'] ?>+' Tidak Terdaftar di Master Barang  !!',
+                            text: 'Kode PLU '+crop+'-'+<?php echo Session::get('kdigr') ?>+' Tidak Terdaftar di Master Barang  !!',
                             icon:'warning',
                         }).then(() => {
                             $('#pluTrans').select();

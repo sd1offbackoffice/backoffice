@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -20,10 +20,10 @@ class TransferSJController extends Controller
     }
 
     public function getData(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("select distinct msth_loc2, cab_namacabang, msth_nodoc no
+        $data = DB::connection(Session::get('connection'))->select("select distinct msth_loc2, cab_namacabang, msth_nodoc no
                     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_cabang
                     where nvl(msth_recordid,0) <> '1'
-                    and msth_kodeigr = '".$_SESSION['kdigr']."'
+                    and msth_kodeigr = '".Session::get('kdigr')."'
                     and msth_typetrn = 'O'
                     and mstd_kodeigr = msth_kodeigr
                     and mstd_nodoc = msth_nodoc
@@ -43,12 +43,12 @@ class TransferSJController extends Controller
         }
         $nodoc = substr($nodoc,0,-1).')';
 
-        DB::connection($_SESSION['connection'])->statement("truncate table temp_sj");
+        DB::connection(Session::get('connection'))->statement("truncate table temp_sj");
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $data = DB::connection($_SESSION['connection'])->insert("insert into temp_sj select mstd_recordid recid , mstd_typetrn rtype, mstd_nodoc docno,
+            $data = DB::connection(Session::get('connection'))->insert("insert into temp_sj select mstd_recordid recid , mstd_typetrn rtype, mstd_nodoc docno,
                               mstd_tgldoc DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2,
                               mstd_date2 tgref2,
 						       mstd_docno2 docno2, mstd_date2  date2, mstd_istype istype,  mstd_invno invno,
@@ -64,33 +64,33 @@ class TransferSJController extends Controller
 						       null, nvl(mstd_gross,0) gross, nvl(mstd_discrph,0) discrp, nvl(mstd_ppnrph,0) ppnrp,
 						       nvl(mstd_ppnbmrph,0) bmrp, nvl(mstd_ppnbtlrph,0) btlrp, nvl(mstd_avgcost,0) acost,	mstd_keterangan keter,
 						       'T' doc, 'F' doc2, 'F' fk, NULL	,
-						        mstd_kodetag mtag, mstd_gdg	gdg, trunc(sysdate) tglupd, to_char(sysdate,'hh24:mi:ss') jamupd,'".$_SESSION['usid']."'	USERO
+						        mstd_kodetag mtag, mstd_gdg	gdg, trunc(sysdate) tglupd, to_char(sysdate,'hh24:mi:ss') jamupd,'".Session::get('usid')."'	USERO
 						from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast
 						where msth_nodoc in ".$nodoc."
-								and msth_kodeigr='".$_SESSION['kdigr']."'
+								and msth_kodeigr='".Session::get('kdigr')."'
 								and mstd_nodoc=msth_nodoc
 								and mstd_kodeigr=msth_kodeigr
 								and prd_prdcd=mstd_prdcd
 								and prd_kodeigr=mstd_kodeigr");
 
-            DB::connection($_SESSION['connection'])->update("update tbtr_mstran_h
+            DB::connection(Session::get('connection'))->update("update tbtr_mstran_h
                               set msth_flagdoc = '*'
                               where msth_nodoc in ".$nodoc." and msth_typetrn='O'");
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return 'success';
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             return 'error';
         }
     }
 
     public function download(){
-        $data = DB::connection($_SESSION['connection'])->select("select * from temp_sj");
+        $data = DB::connection(Session::get('connection'))->select("select * from temp_sj");
 
-        DB::connection($_SESSION['connection'])->statement("truncate table temp_sj");
+        DB::connection(Session::get('connection'))->statement("truncate table temp_sj");
 
 //        dd($data);
 
@@ -108,7 +108,7 @@ class TransferSJController extends Controller
         }
         $datas[] = $x;
 
-        $column = DB::connection($_SESSION['connection'])->select("select column_name FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ'
+        $column = DB::connection(Session::get('connection'))->select("select column_name FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ'
                                     ORDER BY column_id");
 
         $columnHeader = [];

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,7 +18,7 @@ class MonitoringProdukController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringplu')
             ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
             ->whereNotNull('mpl_kodemonitoring')
             ->distinct()
@@ -34,9 +34,9 @@ class MonitoringProdukController extends Controller
             ], 500);
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
+            $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringplu')
                 ->select('mpl_namamonitoring')
-                ->where('mpl_kodeigr','=',$_SESSION['kdigr'])
+                ->where('mpl_kodeigr','=',Session::get('kdigr'))
                 ->where('mpl_kodemonitoring','=',$request->kode)
                 ->first();
 
@@ -57,27 +57,27 @@ class MonitoringProdukController extends Controller
         $search = $request->plu;
 
         if($search == ''){
-            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
                 ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
                 ->orderBy('prd_prdcd')
                 ->limit(100)
                 ->get();
         }
         else if(is_numeric($search)){
-            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
                 ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
                 ->where('prd_prdcd','like',DB::RAW("'%".$search."%'"))
                 ->orderBy('prd_prdcd','asc')
                 ->get();
         }
         else{
-            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
                 ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
                 ->where('prd_deskripsipanjang','like',DB::RAW("'%".$search."%'"))
                 ->orderBy('prd_prdcd','asc')
@@ -94,7 +94,7 @@ class MonitoringProdukController extends Controller
             ], 500);
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->select("SELECT mpl_prdcd plu, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN
+            $data = DB::connection(Session::get('connection'))->select("SELECT mpl_prdcd plu, SUBSTR(PRD_DESKRIPSIPANJANG,1,60) DESKRIPSI, PRD_UNIT||'/'||PRD_FRAC SATUAN
 					FROM TBMASTER_PRODMAST, tbtr_monitoringplu, tbmaster_maxpalet
 					WHERE PRD_PRDCD(+) = mpl_prdcd AND MPT_PRDCD(+) = PRD_PRDCD
 					AND mpl_kodemonitoring = '".$request->kode."'
@@ -106,16 +106,16 @@ class MonitoringProdukController extends Controller
 
     public function addData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->selectOne("select * from (
                     SELECT prd_kodeigr kdigr, prd_prdcd prdcd FROM TBMASTER_PRODMAST
                     UNION
                     SELECT mpl_kodeigr kdigr, mpl_prdcd prdcd FROM TBTR_MONITORINGPLU
                     where mpl_kodemonitoring = '".$request->mon_kode."'
 				)
-                where kdigr = '".$_SESSION['kdigr']."'
+                where kdigr = '".Session::get('kdigr')."'
                   and prdcd = '".$request->plu."'");
 
             if(!$temp){
@@ -124,26 +124,26 @@ class MonitoringProdukController extends Controller
                 ], 500);
             }
             else{
-                DB::connection($_SESSION['connection'])
+                DB::connection(Session::get('connection'))
                     ->table('tbtr_monitoringplu')
                     ->insert([
-                        'mpl_kodeigr' => $_SESSION['kdigr'],
+                        'mpl_kodeigr' => Session::get('kdigr'),
                         'mpl_kodemonitoring' => $request->mon_kode,
                         'mpl_namamonitoring' => $request->mon_nama,
                         'mpl_prdcd' => $request->plu,
-                        'mpl_create_by' => $_SESSION['usid'],
+                        'mpl_create_by' => Session::get('usid'),
                         'mpl_create_dt' => Carbon::now()
                     ]);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'PLU sudah masuk ke kode monitoring '.$request->mon_kode.' !'
             ], 200);
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -153,16 +153,16 @@ class MonitoringProdukController extends Controller
 
     public function deleteData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->selectOne("select * from (
                     SELECT prd_kodeigr kdigr, prd_prdcd prdcd FROM TBMASTER_PRODMAST
                     UNION
                     SELECT mpl_kodeigr kdigr, mpl_prdcd prdcd FROM TBTR_MONITORINGPLU
                     where mpl_kodemonitoring = '".$request->mon_kode."'
 				)
-                where kdigr = '".$_SESSION['kdigr']."'
+                where kdigr = '".Session::get('kdigr')."'
                   and prdcd = '".$request->plu."'");
 
             if(!$temp){
@@ -171,14 +171,14 @@ class MonitoringProdukController extends Controller
                 ], 500);
             }
             else{
-                $temp = DB::connection($_SESSION['connection'])
+                $temp = DB::connection(Session::get('connection'))
                     ->table('tbtr_monitoringplu')
                     ->where('mpl_kodemonitoring','=',$request->mon_kode)
                     ->where('mpl_namamonitoring','=',$request->mon_nama)
                     ->where('mpl_prdcd','=',$request->plu)
                     ->delete();
 
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
 
                 if($temp == 0){
                     return response()->json([
@@ -193,7 +193,7 @@ class MonitoringProdukController extends Controller
             }
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -202,23 +202,23 @@ class MonitoringProdukController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
-        $monitoring = DB::connection($_SESSION['connection'])
+        $monitoring = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringplu')
             ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
             ->where('mpl_kodemonitoring','=',$request->mon)
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang,
                 prd_unit||'/'||prd_frac satuan, prd_kodetag
                 FROM TBTR_MONITORINGPLU, TBMASTER_PRODMAST
                 WHERE translate(mpl_kodemonitoring,' ','_') = '".$request->mon."'
                 AND prd_prdcd(+) = mpl_prdcd
-                AND mpl_kodeigr = '".$_SESSION['kdigr']."'
+                AND mpl_kodeigr = '".Session::get('kdigr')."'
                 ORDER BY mpl_prdcd");
 
         return view('TABEL.monitoring-produk-pdf',compact(['perusahaan','data','monitoring']));

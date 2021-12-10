@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -24,9 +24,9 @@ class PengirimanController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi','div_namadivisi')
-            ->where('div_kodeigr','=',$_SESSION['kdigr'])
+            ->where('div_kodeigr','=',Session::get('kdigr'))
             ->whereRaw('div_kodedivisi >= '.$div)
             ->get();
 
@@ -34,9 +34,9 @@ class PengirimanController extends Controller
     }
 
     public function getDataLovDep(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-            ->where('dep_kodeigr','=',$_SESSION['kdigr'])
+            ->where('dep_kodeigr','=',Session::get('kdigr'))
             ->where('dep_kodedivisi','=',$request->div)
             ->get();
 
@@ -44,10 +44,10 @@ class PengirimanController extends Controller
     }
 
     public function getDataLovKat(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
             ->join('tbmaster_departement','dep_kodedepartement','=','kat_kodedepartement')
             ->select('kat_namakategori','kat_kodekategori','kat_kodedepartement','dep_kodedivisi')
-            ->where('kat_kodeigr','=',$_SESSION['kdigr'])
+            ->where('kat_kodeigr','=',Session::get('kdigr'))
             ->where('kat_kodedepartement','=',$request->dep)
             ->where('dep_kodedivisi','=',$request->div)
             ->orderBy('kat_kodedepartement')
@@ -68,12 +68,12 @@ class PengirimanController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
         if($tipe === '1'){
-            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
                     mstd_kodedepartement, dep_namadepartement,
                     mstd_kodekategoribrg, kat_namakategori,
                     sum(mstd_gross) gross, sum(mstd_pot) pot,
@@ -135,7 +135,7 @@ class PengirimanController extends Controller
                     tbtr_mstran_h, tbtr_mstran_d
             where msth_typetrn='O'
                     and nvl(msth_recordid,'0') <> '1'
-                    and div_kodeigr(+) = '".$_SESSION['kdigr']."'
+                    and div_kodeigr(+) = '".Session::get('kdigr')."'
                     and dep_kodedivisi(+) = mstd_kodedivisi
                     and dep_kodeigr(+) = mstd_kodeigr
                     and kat_kodedepartement(+) = mstd_kodedepartement
@@ -176,7 +176,7 @@ class PengirimanController extends Controller
             return $dompdf->stream('LAPORAN PENGIRIMAN ANTAR CABANG RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
                 ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang,
                 prs_namawilayah,
                 mstd_kodedivisi, div_namadivisi,
@@ -245,7 +245,7 @@ class PengirimanController extends Controller
                 from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_perusahaan,
                 tbmaster_divisi, tbmaster_departement, tbmaster_kategori
                 where msth_typetrn='O'
-                    and msth_kodeigr(+) = '".$_SESSION['kdigr']."'
+                    and msth_kodeigr(+) = '".Session::get('kdigr')."'
                     and msth_tgldoc between TO_DATE('".$tgl1."','DD/MM/YYYY') and TO_DATE('".$tgl2."','DD/MM/YYYY')
                     and mstd_nodoc=msth_nodoc
                     and mstd_kodeigr=msth_kodeigr

@@ -245,7 +245,7 @@
                                 Jam Cetak : {{ date('H:i:s') }}
                             </p>
                             <p>
-                                <i>User ID</i> : {{ $_SESSION['usid'] }}
+                                <i>User ID</i> : {{ Session::get('usid') }}
                             </p>
                             <p>
 {{--                                Hal. : <span id="pageNumber"></span>--}}

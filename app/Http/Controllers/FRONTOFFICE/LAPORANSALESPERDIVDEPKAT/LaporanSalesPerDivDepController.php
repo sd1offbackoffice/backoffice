@@ -5,7 +5,7 @@ namespace App\Http\Controllers\FRONTOFFICE\LAPORANSALESPERDIVDEPKAT;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -16,20 +16,20 @@ class LaporanSalesPerDivDepController extends Controller
 {
     public function index()
     {
-        $group = DB::connection($_SESSION['connection'])->table('tbmaster_jenismember')
+        $group = DB::connection(Session::get('connection'))->table('tbmaster_jenismember')
             ->orderBy('jm_kode')
             ->get();
 
-        $outlet = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
+        $outlet = DB::connection(Session::get('connection'))->table('tbmaster_outlet')
             ->orderBy('out_kodeoutlet')
             ->get();
 
-        $suboutlet = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+        $suboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
             ->orderBy('sub_kodeoutlet')
             ->orderBy('sub_kodesuboutlet')
             ->get();
 
-        $segmentasi = DB::connection($_SESSION['connection'])->table('tbmaster_segmentasi')
+        $segmentasi = DB::connection(Session::get('connection'))->table('tbmaster_segmentasi')
             ->orderBy('seg_id')
             ->get();
 
@@ -73,7 +73,7 @@ class LaporanSalesPerDivDepController extends Controller
             $p_suboutlet = " AND cus_kodesuboutlet = '" . $suboutlet . "'";
         }
 
-        $dataDivGroup = DB::connection($_SESSION['connection'])
+        $dataDivGroup = DB::connection(Session::get('connection'))
             ->select("select kodedivisi,namadivisi nama,sum(round(margin/sales*100,2)) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
@@ -164,7 +164,7 @@ class LaporanSalesPerDivDepController extends Controller
 
         ");
 
-        $dataDiv = DB::connection($_SESSION['connection'])
+        $dataDiv = DB::connection(Session::get('connection'))
             ->select("select a.*,round(margin/sales*100,2) marginpersen
                             from(
                                 select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kode,dep_namadepartement nama,
@@ -321,7 +321,7 @@ class LaporanSalesPerDivDepController extends Controller
             $p_suboutlet = " AND cus_kodesuboutlet = '" . $suboutlet . "'";
         }
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("select a.*,round(margin/sales*100,2) marginpersen
                             from(
                                 select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,
@@ -407,7 +407,7 @@ class LaporanSalesPerDivDepController extends Controller
                             ) a
         ");
         $filename = 'laporan-sales-per-divisi-departemen';
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $totalsales = 0;

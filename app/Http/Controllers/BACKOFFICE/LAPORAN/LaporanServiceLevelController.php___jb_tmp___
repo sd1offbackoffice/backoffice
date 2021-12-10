@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class LaporanServiceLevelController extends Controller
@@ -14,10 +14,10 @@ class LaporanServiceLevelController extends Controller
     }
 
     public function lov_supplier(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = strtoupper($request->search);
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
             ->where('sup_namasupplier', 'LIKE', '%'.$search.'%')
             ->where('sup_kodesupplier', 'LIKE', '%'.$search.'%')
@@ -30,10 +30,10 @@ class LaporanServiceLevelController extends Controller
     }
 
     public function lov_monitoring(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = strtoupper($request->search);
 
-        $monitoring = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+        $monitoring = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
             ->select('msu_namamonitoring', 'msu_kodemonitoring')
             ->where('msu_namamonitoring', 'LIKE', '%'.$search.'%')
             ->where('msu_kodemonitoring', 'LIKE', '%'.$search.'%')
@@ -47,7 +47,7 @@ class LaporanServiceLevelController extends Controller
 
     public function cetak_laporan_rekap(Request $request){
 
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tgl1       = $request->tgl1;
         $tgl2       = $request->tgl2;
         $sup1       = $request->sup1;
@@ -55,7 +55,7 @@ class LaporanServiceLevelController extends Controller
         $mtrSup     = $request->mtrSup;
         $ranking    = $request->ranking;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT ROWNUM NOMOR, HASIL.*
+        $data = DB::connection(Session::get('connection'))->select("SELECT ROWNUM NOMOR, HASIL.*
   FROM (SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH, TPOH_KODESUPPLIER,
                  SUP_NAMASUPPLIER, ITEMPO, QTYPO, NILAIPO, ITEMBPBAK, ITEMBPBNA, QTYBPB, NILAIBPB,
                  NVL(ITEMOUT,0) ITEMOUT, NVL(QTYOUT,0) QTYOUT, NVL(NILAIOUT,0) NILAIOUT,  case when (ITEMPO - NVL(ITEMOUT,0) )  = 0 then 0 else ((ITEMBPBAK + ITEMBPBNA) / (ITEMPO - NVL(ITEMOUT,0) )) * 100 end SLITEM,

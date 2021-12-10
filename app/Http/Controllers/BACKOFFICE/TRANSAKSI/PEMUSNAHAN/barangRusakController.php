@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PEMUSNAHAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -17,7 +17,7 @@ class barangRusakController extends Controller
     public function getNmrTrn(Request $request){
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbtr_BarangRusak')
+        $datas = DB::connection(Session::get('connection'))->table('tbtr_BarangRusak')
             ->selectRaw('distinct RSK_NODOC as RSK_NODOC')
             ->selectRaw('RSK_tglDOC')
             ->selectRaw('RSK_create_dt')
@@ -33,7 +33,7 @@ class barangRusakController extends Controller
     public function getPlu(Request $request){
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
@@ -45,7 +45,7 @@ class barangRusakController extends Controller
     }
 
     public function getNewNmrTrn(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $connect = loginController::getConnectionProcedure();
 
@@ -61,7 +61,7 @@ class barangRusakController extends Controller
     public function chooseTrn(Request $request){
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')
+        $datas = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
             ->selectRaw('RSK_NODOC')
             ->selectRaw('RSK_tglDOC')
             ->selectRaw("Case When RSK_RECORDID='2'  OR RSK_RECORDID='9' Then 'Sudah Cetak Nota' Else 'Belum Cetak Nota' End  Nota")
@@ -80,7 +80,7 @@ class barangRusakController extends Controller
             ->orderBy('rsk_seqno')
             ->get();
 
-//        $test = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->limit(10)->get()->toArray();
+//        $test = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->limit(10)->get()->toArray();
 //        dd($datas);
 
         return response()->json($datas);
@@ -92,7 +92,7 @@ class barangRusakController extends Controller
         $trim = 0;
 
         if ($type == 'M'){
-            $cursor = DB::connection($_SESSION['connection'])->select("
+            $cursor = DB::connection(Session::get('connection'))->select("
                 SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_avgCOST,ST_avgCOST,
                         NVL(ST_PRDCD,'XXXXXXX') ST_PRDCD,Nvl(ST_SALDOAKHIR,0) ST_SALDOAKHIR, prd_kodeigr as hrgsatuan
                 FROM TBMASTER_PRODMAST a
@@ -137,8 +137,8 @@ class barangRusakController extends Controller
         $datas  = $request->datas;
         $date   = date('Y-M-d', strtotime($request->date));
         $noTrn  = $request->noDoc;
-        $kodeigr= $_SESSION['kdigr'];
-        $userid = $_SESSION['usid'];
+        $kodeigr= Session::get('kdigr');
+        $userid = Session::get('usid');
         $today  = date('Y-m-d H:i:s');
 
 //        *** Get Doc No ***
@@ -150,17 +150,17 @@ class barangRusakController extends Controller
         oci_execute($query);
 
 //        *** Search DocNo for Edit ***
-        $getDoc = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->first();
+        $getDoc = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->first();
 
 
         if ($getDoc){
 //                *** Update Data ***
-            DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->delete();
+            DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $noTrn)->delete();
 
             for ($i = 1; $i < sizeof($datas); $i++){
                 $temp = $datas[$i];
 
-                DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')
+                DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
                     ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $getDoc->rsk_nodoc, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
                         'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $getDoc->rsk_create_by,
                         'rsk_create_dt' => $getDoc->rsk_create_dt, 'rsk_modify_by' => $userid, 'rsk_modify_dt' => $today]);
@@ -172,7 +172,7 @@ class barangRusakController extends Controller
             for ($i = 1; $i < sizeof($datas); $i++){
                 $temp = $datas[$i];
 
-                DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')
+                DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
                     ->insert(['rsk_kodeigr' => $kodeigr, 'rsk_recordid' => '', 'rsk_nodoc' => $docNo, 'rsk_tgldoc' => $date, 'rsk_seqno' => $i, 'rsk_prdcd' => $temp['plu'], 'rsk_qty' => $temp['qty'],
                         'rsk_hrgsatuan' => $temp['harga'], 'rsk_nilai' => $temp['total'], 'rsk_flag' => '1', 'rsk_keterangan' => strtoupper($temp['keterangan']), 'rsk_create_by' => $userid, 'rsk_create_dt' => $today]);
             }
@@ -184,13 +184,13 @@ class barangRusakController extends Controller
     public function deleteDocument(Request $request){
         $docNum = $request->docNum;
 
-        DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->where('rsk_nodoc', $docNum)->delete();
+        DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $docNum)->delete();
 
         return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus!"]);
     }
 
     public function showAll(){
-        $datas  = DB::connection($_SESSION['connection'])->select("
+        $datas  = DB::connection(Session::get('connection'))->select("
                 SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_avgCOST,ST_avgCOST,
                         NVL(ST_PRDCD,'XXXXXXX') ST_PRDCD,Nvl(ST_SALDOAKHIR,0) ST_SALDOAKHIR, prd_kodeigr as hrgsatuan
                 FROM TBMASTER_PRODMAST a
@@ -218,7 +218,7 @@ class barangRusakController extends Controller
         $noDoc      = $request->doc;
         $p_reprint  = 'Y';
 
-        $cekStatusPrint = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->first();
+        $cekStatusPrint = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->first();
 
         if ($cekStatusPrint->rsk_recordid == '2' || $cekStatusPrint->rsk_recordid == '9'){
             $p_reprint = 'Y';
@@ -226,7 +226,7 @@ class barangRusakController extends Controller
             $p_reprint = '';
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select PRS_NAMAPERUSAHAAN, cab_namacabang, cab_alamat2, nvl(rsk_recordid,'8') ,
+        $datas = DB::connection(Session::get('connection'))->select("select PRS_NAMAPERUSAHAAN, cab_namacabang, cab_alamat2, nvl(rsk_recordid,'8') ,
                                               rsk_nodoc, rsk_tgldoc, rsk_prdcd, FLOOR(rsk_qty/prd_frac) qty, mod(rsk_qty,prd_frac) qtyk,rsk_hrgsatuan, rsk_nilai,
                                               rsk_keterangan, rap_store_manager,  rap_logistic_supervisor, rap_administrasi,
                                               prd_deskripsipanjang, prd_unit||'/'||prd_frac SATUAN, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
@@ -242,7 +242,7 @@ class barangRusakController extends Controller
 ");
 
 //                Update rsk_recordid
-        DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->whereNull('rsk_recordid')->update(['rsk_recordid' => '9']);
+        DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->whereNull('rsk_recordid')->update(['rsk_recordid' => '9']);
 
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.barangRusak-laporan', ['datas' => $datas]);
         $pdf->output();
@@ -259,7 +259,7 @@ class barangRusakController extends Controller
 }
 
 //query cetak report
-//        $datas = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->select('*')
+//        $datas = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->select('*')
 //            ->leftJoin('tbmaster_cabang','cab_kodeigr', 'prs_kodeigr')
 //            ->leftJoin('tbmaster_perusahaan', 'rsk_kodeigr', 'prs_kodeigr')
 //            ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'rsk_prdcd')

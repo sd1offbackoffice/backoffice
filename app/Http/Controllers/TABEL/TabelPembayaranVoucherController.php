@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,9 +26,9 @@ class TabelPembayaranVoucherController extends Controller
 
 
     public function GetSupp(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_hargabeli")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_hargabeli")
             ->selectRaw("DISTINCT hgb_kodesupplier as hgb_kodesupplier")
             ->selectRaw("sup_namasupplier")
 
@@ -47,9 +47,9 @@ class TabelPembayaranVoucherController extends Controller
     }
 
     public function GetSingkatan(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_VOUCHERSUPPLIER")
+        $datas = DB::connection(Session::get('connection'))->table("TBTABEL_VOUCHERSUPPLIER")
             ->selectRaw("VCS_NAMASUPPLIER")
             ->selectRaw("VCS_NILAIVOUCHER")
 
@@ -62,13 +62,13 @@ class TabelPembayaranVoucherController extends Controller
 
 
     public function CheckVoucher(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $supp = $request->supp;
         $sing = $request->sing;
         $tglAwal = '';
         $tglAkhir = '';
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+        $temp = DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
             ->selectRaw("DISTINCT TO_CHAR(BYR_TGLAWAL, 'DD/MM/YYYY') as BYR_TGLAWAL")
             ->selectRaw("TO_CHAR(BYR_TGLAKHIR, 'DD/MM/YYYY') as BYR_TGLAKHIR")
             ->where("BYR_KODEIGR",'=',$kodeigr)
@@ -83,8 +83,8 @@ class TabelPembayaranVoucherController extends Controller
     }
 
     public function CheckDBTable(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
-        $usid = $_SESSION['usid'];
+        $kodeigr = Session::get('kdigr');
+        $usid = Session::get('usid');
         $supp = $request->supp;
         $sing = $request->sing;
         $dateA = $request->date1;
@@ -92,16 +92,16 @@ class TabelPembayaranVoucherController extends Controller
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+            $temp = DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
                 ->selectRaw("NVL (COUNT (1), 0) as result")
                 ->where("BYR_KODEIGR",'=',$kodeigr)
                 ->where("BYR_KODESUPPLIER",'=',$supp)
                 ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
                 ->first();
             if($temp->result == '0'){
-                $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_HARGABELI")
+                $datas = DB::connection(Session::get('connection'))->table("TBMASTER_HARGABELI")
                     ->selectRaw("HGB_PRDCD")
 
                     ->leftJoin('TBMASTER_PRODMAST',function($join){
@@ -115,7 +115,7 @@ class TabelPembayaranVoucherController extends Controller
 
                     ->get();
                 for($i=0;$i<sizeof($datas);$i++){
-                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                    DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
                         ->insert([
                             'BYR_KODEIGR'=>$kodeigr,
                             'BYR_KODESUPPLIER'=>$supp,
@@ -130,7 +130,7 @@ class TabelPembayaranVoucherController extends Controller
                         ]);
                 }
             }
-//            $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+//            $datas = DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
 //                ->selectRaw("BYR_PRDCD")
 //                ->selectRaw("prd_deskripsipanjang")
 //                ->selectRaw("byr_qtymaxvoucher")
@@ -143,16 +143,16 @@ class TabelPembayaranVoucherController extends Controller
 //                ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
 //                ->get();
 
-            $datas = DB::connection($_SESSION['connection'])
+            $datas = DB::connection(Session::get('connection'))
                 ->select("select byr_prdcd, prd_deskripsipanjang, byr_qtymaxvoucher
 from TBTABEL_PEMBAYARANVOUCHER LEFT JOIN TBMASTER_PRODMAST ON trim(PRD_PRDCD) = trim(BYR_PRDCD)
 WHERE BYR_KODEIGR = '$kodeigr' AND BYR_KODESUPPLIER = '$supp'
 AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json($datas);
         }catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -164,8 +164,8 @@ AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
 
     public function Save(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
             $datas  = $request->datas;
             $supp = $request->supp;
             $sing = $request->sing;
@@ -176,7 +176,7 @@ AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
             for($i=1;$i<sizeof($datas);$i++){
                 $tempPlu = $datas[$i]['plu'];
                 if($datas[$i]['status'] == 2){
-                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                    DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
                         ->where("BYR_KODEIGR",'=',$kodeigr)
                         ->where("BYR_KODESUPPLIER",'=',$supp)
                         ->whereRaw("TRIM(BYR_PRDCD) = TRIM('$tempPlu')")
@@ -186,7 +186,7 @@ AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
                             "BYR_QTYMAXVOUCHER" => $datas[$i]['voucher']
                         ]);
                 }else{
-                    DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+                    DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
                         ->where("BYR_KODEIGR",'=',$kodeigr)
                         ->where("BYR_KODESUPPLIER",'=',$supp)
                         ->whereRaw("TRIM(BYR_PRDCD) = TRIM('$tempPlu')")
@@ -194,9 +194,9 @@ AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
                         ->delete();
                 }
             }
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $status = 'error';
             $message = $e->getMessage();
 
@@ -207,19 +207,19 @@ AND TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')");
     }
     public function Delete(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
             $supp = $request->supp;
             $sing = $request->sing;
-            DB::connection($_SESSION['connection'])->table("TBTABEL_PEMBAYARANVOUCHER")
+            DB::connection(Session::get('connection'))->table("TBTABEL_PEMBAYARANVOUCHER")
                 ->where("BYR_KODEIGR",'=',$kodeigr)
                 ->where("BYR_KODESUPPLIER",'=',$supp)
                 ->whereRaw("TRIM(BYR_SINGKATANSUPPLIER) = TRIM('$sing')")
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();

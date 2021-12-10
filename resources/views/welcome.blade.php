@@ -126,7 +126,7 @@
                         </li>
                         <li class="dropdown" style="position: relative; left: 400px;">
                             {{--<a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"--}}
-                               {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$_SESSION['usid']}}</a>--}}
+                               {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{Session::get('usid')}}</a>--}}
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li> <a href="{{url("/logout")}}">Logout</a>
                                 </li>
@@ -572,7 +572,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?php
-                    echo $_SESSION['usid'];
+                    echo Session::get('usid');
                     ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

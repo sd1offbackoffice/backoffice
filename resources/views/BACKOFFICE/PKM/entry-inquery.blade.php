@@ -152,7 +152,7 @@
                             </div>
                             <label for="desk" class="col-sm-4 text-right col-form-label">USER</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="d_user" value="{{ $_SESSION['usertype'] }}" disabled>
+                                <input type="text" class="form-control" id="d_user" value="{{ Session::get('usertype') }}" disabled>
                             </div>
                             <label for="desk" class="col-sm-2 text-right col-form-label">KETERANGAN</label>
                             <div class="col-sm-2">
@@ -770,7 +770,7 @@
 
         function getDetail(type){
             $('#detail_view input').val('');
-            $('#d_user').val('{{ $_SESSION['usertype'] }}');
+            $('#d_user').val('{{ Session::get('usertype') }}');
 
             $('.d_prdcd').hide();
 
@@ -879,7 +879,7 @@
                 },
                 "order" : [],
                 "initComplete": function(){
-                    {{--if('{{ $_SESSION['usertype'] }}' == 'XXX'){--}}
+                    {{--if('{{ Session::get('usertype') }}' == 'XXX'){--}}
                         {{--$('.row-pkm').prop('disabled',true);--}}
                     {{--}--}}
                     {{--else $('.row-pkm').prop('disabled',false);--}}

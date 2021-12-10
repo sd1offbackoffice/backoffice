@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
@@ -11,15 +11,15 @@ class SupplierController extends Controller
     //
 
     public function index(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $firstsupplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $firstsupplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier')
             ->where('sup_kodeigr','=','22')
             ->orderBy('sup_kodesupplier')
             ->first();
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier')
             ->where('sup_kodeigr',$kodeigr)
             ->orderBy('sup_namasupplier')
@@ -29,7 +29,7 @@ class SupplierController extends Controller
     }
 
     public function getDetail(Request $request){
-        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier', $request->value)
             ->first();
@@ -38,7 +38,7 @@ class SupplierController extends Controller
     }
 
     public function lovSelect(Request $request){
-        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier',$request->value)
             ->first();
@@ -51,7 +51,7 @@ class SupplierController extends Controller
 
     public function lovSearch(Request $request){
         if(is_numeric(substr($request->value,1,4))){
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('*')
                 ->where('sup_kodesupplier','like', '%'.$request->value.'%')
                 ->orderBy('sup_namasupplier')
@@ -60,7 +60,7 @@ class SupplierController extends Controller
 
 
         else{
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('*')
                 ->where('sup_namasupplier','like','%'.$request->value.'%')
                 ->orderBy('sup_namasupplier')

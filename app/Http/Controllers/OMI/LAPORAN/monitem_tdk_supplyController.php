@@ -10,7 +10,7 @@ namespace App\Http\Controllers\OMI\LAPORAN;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,9 +25,9 @@ class monitem_tdk_supplyController extends Controller
     }
 
     public function monModal(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbtr_monitoringplu")
+        $datas = DB::connection(Session::get('connection'))->table("tbtr_monitoringplu")
             ->selectRaw("distinct MPL_KodeMonitoring, MPL_NamaMonitoring")
             ->where("MPL_KodeIGR",'=',$kodeigr)
             ->orderBy("MPL_KodeMonitoring")
@@ -47,7 +47,7 @@ class monitem_tdk_supplyController extends Controller
         $eDate = explode("-",$eDate);
         $eDate = $eDate[2].$eDate[1].$eDate[0];
 
-        DB::connection($_SESSION['connection'])->table("temp_lap211")
+        DB::connection(Session::get('connection'))->table("temp_lap211")
             ->truncate();
 //        ("temp_lap211")
 //            ->selectRaw("*")
@@ -60,14 +60,14 @@ class monitem_tdk_supplyController extends Controller
     }
 
     public function getTable(){
-        $datas = DB::connection($_SESSION['connection'])->table("temp_lap211")
+        $datas = DB::connection(Session::get('connection'))->table("temp_lap211")
             ->selectRaw("*")
             ->get();
         return Datatables::of($datas)->make(true);
     }
 
     public function checkData(){
-        $datas = DB::connection($_SESSION['connection'])->table("temp_lap211")
+        $datas = DB::connection(Session::get('connection'))->table("temp_lap211")
             ->selectRaw("*")
             ->first();
         if($datas){
@@ -78,7 +78,7 @@ class monitem_tdk_supplyController extends Controller
     }
 
     public function cetak(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
 
         $dateA = $request->date1;
@@ -86,7 +86,7 @@ class monitem_tdk_supplyController extends Controller
 //        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
 //        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::connection($_SESSION['connection'])->select("Select PRS_NamaPerusahaan,
+        $datas = DB::connection(Session::get('connection'))->select("Select PRS_NamaPerusahaan,
        PRS_NamaCabang,
        PRS_NamaWilayah,
        PLUIGR,

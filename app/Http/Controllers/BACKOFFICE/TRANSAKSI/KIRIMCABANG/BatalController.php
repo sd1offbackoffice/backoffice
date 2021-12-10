@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -21,7 +21,7 @@ class BatalController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, msth_tgldoc tgl")
             ->where('msth_typetrn','=','O')
             ->whereRaw("nvl(msth_recordid,' ') <> '1'")
@@ -35,16 +35,16 @@ class BatalController extends Controller
         try{
             $nodoc = $request->nodoc;
 
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             foreach($nodoc as $no){
-                $sjs = DB::connection($_SESSION['connection'])->select("SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
+                $sjs = DB::connection(Session::get('connection'))->select("SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
   							          mstd_qty, mstd_avgcost,	mstd_prdcd, mstd_hrgsatuan,
   							          nvl(mstd_noref3,'xxx') mstd_noref3, mstd_tgref3,
   							          st_lastcost,st_avgcost,prd_unit, prd_frac, prd_avgcost,st_saldoakhir
   							   FROM tbtr_mstran_d, tbmaster_prodmast, tbmaster_stock
   							   WHERE mstd_nodoc='".$no."'
-  							         and mstd_kodeigr='".$_SESSION['kdigr']."'
+  							         and mstd_kodeigr='".Session::get('kdigr')."'
   							         and prd_prdcd = mstd_prdcd
   							         and prd_kodeigr = mstd_kodeigr
   							         and st_prdcd(+)=mstd_prdcd
@@ -65,15 +65,15 @@ class BatalController extends Controller
                     }
                     else $vacostbaru = (((Self::nvl($sj->st_saldoakhir,0)*Self::nvl($sj->st_avgcost,0))+(Self::nvl($ncost,0)*Self::nvl($nqtt,0)))/ ((Self::nvl($sj->st_saldoakhir,0)+$nqtt)));
 
-                    DB::connection($_SESSION['connection'])->update("	UPDATE tbmaster_prodmast
+                    DB::connection(Session::get('connection'))->update("	UPDATE tbmaster_prodmast
   							     set prd_avgcost=".$vacostbaru." * case when prd_unit='KG' then 1 else
   							                                case when prd_frac <= 0 then 1 else nvl(prd_frac,1) end end
   						WHERE substr(prd_prdcd,1,6)= substr('".$sj->mstd_prdcd."',1,6)
-  							    and prd_kodeigr='".$_SESSION['kdigr']."'");
+  							    and prd_kodeigr='".Session::get('kdigr')."'");
 
-                    DB::connection($_SESSION['connection'])->insert("INSERT INTO tbhistory_cost (HCS_KODEIGR,HCS_TYPETRN,HCS_LOKASI,HCS_PRDCD,HCS_TGLBPB,HCS_NODOCBPB,HCS_QTYBARU,HCS_QTYLAMA,HCS_AVGLAMA,HCS_AVGBARU, HCS_LASTQTY,
+                    DB::connection(Session::get('connection'))->insert("INSERT INTO tbhistory_cost (HCS_KODEIGR,HCS_TYPETRN,HCS_LOKASI,HCS_PRDCD,HCS_TGLBPB,HCS_NODOCBPB,HCS_QTYBARU,HCS_QTYLAMA,HCS_AVGLAMA,HCS_AVGBARU, HCS_LASTQTY,
 				HCS_CREATE_BY,HCS_CREATE_DT)
-                VALUES ('".$_SESSION['kdigr']."', 'O', '01', '".$sj->mstd_prdcd."', '".$sj->mstd_tgldoc."','".$sj->mstd_nodoc."','".$sj->mstd_qty."', '".$sj->st_saldoakhir."', ".$sj->mstd_prdcd * $sj->prd_frac.", ".$vacostbaru * $sj->prd_frac.", ". $sj->st_saldoakhir."+".$sj->mstd_qty.",'".$_SESSION['usid']."', sysdate)");
+                VALUES ('".Session::get('kdigr')."', 'O', '01', '".$sj->mstd_prdcd."', '".$sj->mstd_tgldoc."','".$sj->mstd_nodoc."','".$sj->mstd_qty."', '".$sj->st_saldoakhir."', ".$sj->mstd_prdcd * $sj->prd_frac.", ".$vacostbaru * $sj->prd_frac.", ". $sj->st_saldoakhir."+".$sj->mstd_qty.",'".Session::get('usid')."', sysdate)");
 
 //                $qty = (integer) -1 * $sj->mstd_qty;
 //
@@ -95,7 +95,7 @@ class BatalController extends Controller
 //                oci_bind_by_name($exec, ':qty',$qty);
 //                oci_bind_by_name($exec, ':st_lastcost',$lcost);
 //                oci_bind_by_name($exec, ':st_avgcost',$acost);
-//                oci_bind_by_name($exec, ':user',$_SESSION['usid']);
+//                oci_bind_by_name($exec, ':user',Session::get('usid'));
 //                oci_bind_by_name($exec, ':v_lok', $v_lok,-1,'OCI_B_BOL');
 //                oci_bind_by_name($exec, ':v_message', $v_msg,10000);
 //                oci_execute($exec);
@@ -104,30 +104,30 @@ class BatalController extends Controller
                 DB::raw("INSERT INTO tbtr_hapusplu (DEL_KODEIGR,DEL_RTYPE,DEL_NODOKUMEN,DEL_TGLDOKUMEN,
   								DEL_STOKQTYOLD,DEL_AVGCOSTOLD, DEL_CREATE_BY,DEL_CREATE_DT,DEL_PRDCD)
  					    SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
-  							   mstd_qty, mstd_avgcost,	'".$_SESSION['usid']."', sysdate,mstd_prdcd
+  							   mstd_qty, mstd_avgcost,	'".Session::get('usid')."', sysdate,mstd_prdcd
                      FROM tbTr_MSTRAN_D, tbMaster_Stock
                      WHERE mstd_nodoc='".$no."'
-                           and mstd_kodeigr='".$_SESSION['kdigr']."'
+                           and mstd_kodeigr='".Session::get('kdigr')."'
                            and st_prdcd=mstd_prdcd
                            and st_kodeigr=mstd_kodeigr
                            and st_lokasi='01'");
 
-                DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+                DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
                     ->where('msth_nodoc','=',$no)
-                    ->where('msth_kodeigr','=',$_SESSION['kdigr'])
+                    ->where('msth_kodeigr','=',Session::get('kdigr'))
                     ->update([
                         'msth_recordid' => '1'
                     ]);
 
-                DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+                DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
                     ->where('mstd_nodoc','=',$no)
-                    ->where('mstd_kodeigr','=',$_SESSION['kdigr'])
+                    ->where('mstd_kodeigr','=',Session::get('kdigr'))
                     ->update([
                         'mstd_recordid' => '1'
                     ]);
 
                 if($vnoipb != 'xxx'){
-                    DB::connection($_SESSION['connection'])->table('tbtr_ipb')
+                    DB::connection(Session::get('connection'))->table('tbtr_ipb')
                         ->where('ipb_noipb','=',$vnoipb)
                         ->updae([
                             'ipb_recordid' => ''
@@ -135,13 +135,13 @@ class BatalController extends Controller
                 }
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $title = 'Surat Jalan berhasil dibatalkan!';
             $status = 'success';
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $title = 'Surat Jalan gagal dibatalkan!';
             $message = $e->getMessage();

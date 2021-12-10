@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSFER;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -23,40 +23,40 @@ class TransferPBkeMDController extends Controller
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbkirim_status')
+        $temp = DB::connection(Session::get('connection'))->table('tbkirim_status')
             ->whereRaw("TRIM(STS_KODE) = 'PB'")
             ->count();
 
         if($temp == 0){
-            DB::connection($_SESSION['connection'])->table('tbkirim_status')
+            DB::connection(Session::get('connection'))->table('tbkirim_status')
                 ->insert([
                     'sts_kode' => 'PB',
                     'sts_status' => 'Y'
                 ]);
         }
 
-        $status = DB::connection($_SESSION['connection'])->table('tbkirim_status')
+        $status = DB::connection(Session::get('connection'))->table('tbkirim_status')
             ->whereRaw("TRIM(sts_kode) = 'PB'")
             ->first()->sts_status;
 
         if($status == 'N'){
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT *
+            $temp = DB::connection(Session::get('connection'))->select("SELECT *
                   FROM (SELECT   PBH_NOPB, PBH_TGLPB, PBD_PRDCD, SUM (ITEM) ITEM
                             FROM (SELECT PBH_NOPB, TRUNC (PBH_TGLPB) PBH_TGLPB, PBD_PRDCD, 1 ITEM
                                     FROM TBTR_PB_H, TBTR_PB_D
-                                   WHERE PBH_KODEIGR = '".$_SESSION['kdigr']."'
+                                   WHERE PBH_KODEIGR = '".Session::get('kdigr')."'
                                      AND TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
-                                     AND PBD_KODEIGR = '".$_SESSION['kdigr']."'
+                                     AND PBD_KODEIGR = '".Session::get('kdigr')."'
                                      AND PBD_NOPB = PBH_NOPB) A
                         GROUP BY PBH_NOPB, PBH_TGLPB, PBD_PRDCD) B
                  WHERE NVL (ITEM, 0) > 1");
 
             if(count($temp) == 0){
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT *
+                $temp = DB::connection(Session::get('connection'))->select("SELECT *
               FROM TBTR_PB_H, TBTR_PB_D, TBMASTER_PRODMAST
               WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                AND PBH_TGLTRANSFER IS NULL
-               AND PBH_KODEIGR = '".$_SESSION['kdigr']."'
+               AND PBH_KODEIGR = '".Session::get('kdigr')."'
                AND PBD_NOPB = PBH_NOPB
                AND PBD_KODEIGR = PBH_KODEIGR
                AND PRD_KODEIGR(+) = PBD_KODEIGR
@@ -69,13 +69,13 @@ class TransferPBkeMDController extends Controller
                     ];
                 }
                 else{
-                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBKIRIM_PB
+                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBKIRIM_PB
                             (FDRCID, FDKCAB, FDNOUO, FDURGN, FDTGUO, FDNOUR, FDKKLP, FDDEPT,
                              FDKPLU, FDQTYB, FDQBBP, FDKSUP, FDHSAT, FDDIS1, FDDIR1, FDFDI1,
                              FDDIS2, FDDISR, FDFDIS, FDTHRG, FDTPPN, FDTPPM, FDTBTL, FDBNSB,
                              FDBNSK, FDBBBP, FDBKBP, FDNOPO, FDTGPO, FDFPJK, FDJTOP, FDTGUP,
                              FDDVPO, FDXREV)
-                    (SELECT NULL, '".$_SESSION['kdigr']."', PBH_NOPB, PBH_JENISPB, PBH_TGLPB, PBD_NOURUT,
+                    (SELECT NULL, '".Session::get('kdigr')."', PBH_NOPB, PBH_JENISPB, PBH_TGLPB, PBD_NOURUT,
                             PRD_KODEKATEGORIBARANG, PRD_KODEDEPARTEMENT, PBD_PRDCD, PBD_QTYPB,
                             NULL, PBD_KODESUPPLIER, PBD_HRGSATUAN, PBD_PERSENDISC1, PBD_RPHDISC1,
                             PBD_FLAGDISC1, PBD_PERSENDISC2, PBD_RPHDISC2, PBD_FLAGDISC2, PBD_GROSS,
@@ -84,18 +84,18 @@ class TransferPBkeMDController extends Controller
                        FROM TBTR_PB_H, TBTR_PB_D, TBMASTER_PRODMAST
                         WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                         AND PBH_TGLTRANSFER IS NULL
-                        AND PBH_KODEIGR = '".$_SESSION['kdigr']."'
+                        AND PBH_KODEIGR = '".Session::get('kdigr')."'
                         AND PBD_NOPB = PBH_NOPB
                         AND PBD_KODEIGR = PBH_KODEIGR
                         AND PRD_KODEIGR(+) = PBD_KODEIGR
                         AND PRD_PRDCD(+) = PBD_PRDCD)");
 
-                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBKIRIM_PB_FULL
+                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBKIRIM_PB_FULL
                             (FDRCID, FDKCAB, FDNOUO, FDURGN, FDTGUO, FDNOUR, FDKKLP, FDDEPT, FDKPLU,
                              FDQTYB, FDQBBP, FDKSUP, FDHSAT, FDDIS1, FDDIR1, FDFDI1, FDDIS2, FDDISR,
                              FDFDIS, FDTHRG, FDTPPN, FDTPPM, FDTBTL, FDBNSB, FDBNSK, FDBBBP, FDBKBP,
                              FDNOPO, FDTGPO, FDFPJK, FDJTOP, FDTGUP, FDDVPO, FDXREV)
-                    (SELECT NULL, '".$_SESSION['kdigr']."', PBH_NOPB, PBH_JENISPB, PBH_TGLPB, PBD_NOURUT,
+                    (SELECT NULL, '".Session::get('kdigr')."', PBH_NOPB, PBH_JENISPB, PBH_TGLPB, PBD_NOURUT,
                             PRD_KODEKATEGORIBARANG, PRD_KODEDEPARTEMENT, PBD_PRDCD, PBD_QTYPB, NULL,
                             PBD_KODESUPPLIER, PBD_HRGSATUAN, PBD_PERSENDISC1, PBD_RPHDISC1,
                             PBD_FLAGDISC1, PBD_PERSENDISC2, PBD_RPHDISC2, PBD_FLAGDISC2, PBD_GROSS,
@@ -104,19 +104,19 @@ class TransferPBkeMDController extends Controller
                        FROM TBTR_PB_H, TBTR_PB_D, TBMASTER_PRODMAST
                         WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                         AND PBH_TGLTRANSFER IS NULL
-                        AND PBH_KODEIGR = '".$_SESSION['kdigr']."'
+                        AND PBH_KODEIGR = '".Session::get('kdigr')."'
                         AND PBD_NOPB = PBH_NOPB
                         AND PBD_KODEIGR = PBH_KODEIGR
                         AND PRD_KODEIGR(+) = PBD_KODEIGR
                         AND PRD_PRDCD(+) = PBD_PRDCD)");
 
-                    DB::connection($_SESSION['connection'])->update("UPDATE TBTR_PB_H
+                    DB::connection(Session::get('connection'))->update("UPDATE TBTR_PB_H
                         SET PBH_TGLTRANSFER = SYSDATE
                         WHERE TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
                         AND PBH_TGLTRANSFER IS NULL
-                        AND PBH_KODEIGR = '".$_SESSION['kdigr']."'");
+                        AND PBH_KODEIGR = '".Session::get('kdigr')."'");
 
-                    DB::connection($_SESSION['connection'])->table('tbkirim_status')
+                    DB::connection(Session::get('connection'))->table('tbkirim_status')
                         ->whereRaw("TRIM(sts_kode) = 'PB'")
                         ->update([
                             'sts_status' => 'Y'
@@ -131,14 +131,14 @@ class TransferPBkeMDController extends Controller
             else{
                 $tolakan = '';
 
-                $recs = DB::connection($_SESSION['connection'])->select("SELECT *
+                $recs = DB::connection(Session::get('connection'))->select("SELECT *
                           FROM (SELECT   PBH_NOPB, PBH_TGLPB, PBD_PRDCD, SUM (ITEM) ITEM
                                     FROM (SELECT PBH_NOPB, TRUNC (PBH_TGLPB) PBH_TGLPB, PBD_PRDCD,
                                                  1 ITEM
                                             FROM TBTR_PB_H, TBTR_PB_D
-                                           WHERE PBH_KODEIGR = '".$_SESSION['kdigr']."'
+                                           WHERE PBH_KODEIGR = '".Session::get('kdigr')."'
                                              AND TRUNC (PBH_TGLPB) BETWEEN TO_DATE('".$tgl1."','DD/MM/YYYY') AND TO_DATE('".$tgl2."','DD/MM/YYYY')
-                                             AND PBD_KODEIGR = '".$_SESSION['kdigr']."'
+                                             AND PBD_KODEIGR = '".Session::get('kdigr')."'
                                              AND PBD_NOPB = PBH_NOPB) A
                                 GROUP BY PBH_NOPB, PBH_TGLPB, PBD_PRDCD) B
                          WHERE NVL (ITEM, 0) > 1");

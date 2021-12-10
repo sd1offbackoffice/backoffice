@@ -4,7 +4,7 @@ namespace App\Http\Controllers\OMI;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -19,7 +19,7 @@ class EntryGroupRakController extends Controller
 
     public function getDataHeader(Request $request)
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_grouprak')->select('grr_grouprak', 'grr_namagroup', 'grr_flagcetakan')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_grouprak')->select('grr_grouprak', 'grr_namagroup', 'grr_flagcetakan')
             ->distinct()
             ->get();
         return DataTables::of($data)->make(true);
@@ -28,7 +28,7 @@ class EntryGroupRakController extends Controller
     public function getDataDetail(Request $request)
     {
         $search = $request->search;
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_grouprak')->select('grr_koderak', 'grr_subrak')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_grouprak')->select('grr_koderak', 'grr_subrak')
             ->where('grr_grouprak', '=', $search)
             ->get();
         return DataTables::of($data)->make(true);
@@ -40,12 +40,12 @@ class EntryGroupRakController extends Controller
         $namarak = $request->data['namarak'];
         $flag = $request->data['flag'];
 
-        $jum = DB::connection($_SESSION['connection'])->select("Select NVL(COUNT(1), 0) count
+        $jum = DB::connection(Session::get('connection'))->select("Select NVL(COUNT(1), 0) count
 		  From TBMaster_GroupRak
-		 Where GRR_KodeIGR = '" . $_SESSION['kdigr'] . "'
+		 Where GRR_KodeIGR = '" . Session::get('kdigr') . "'
             and GRR_GroupRak = '" . $grouprak . "'")[0]->count;
         if ($jum == 0) {
-            DB::connection($_SESSION['connection'])->insert("INSERT INTO TBMASTER_GROUPRAK
+            DB::connection(Session::get('connection'))->insert("INSERT INTO TBMASTER_GROUPRAK
 			(
 				GRR_KodeIGR,
 				GRR_GroupRak,
@@ -56,11 +56,11 @@ class EntryGroupRakController extends Controller
 			)
 			VALUES
 			(
-				'" . $_SESSION['kdigr'] . "',
+				'" . Session::get('kdigr') . "',
 				'" . $grouprak . "',
 				'" . $namarak . "',
 				'" . $flag . "',
-				'" . $_SESSION['usid'] . "',
+				'" . Session::get('usid') . "',
 				sysdate
 			)");
 
@@ -68,12 +68,12 @@ class EntryGroupRakController extends Controller
             $status = 'success';
             return compact(['message', 'status']);
         } else {
-            DB::connection($_SESSION['connection'])->update("UPDATE TBMASTER_GROUPRAK
+            DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_GROUPRAK
 			   SET GRR_NamaGroup = '" . $namarak . "',
 			       GRR_FlagCetakan = '" . $flag . "',
-			       GRR_Modify_BY = '" . $_SESSION['usid'] . "',
+			       GRR_Modify_BY = '" . Session::get('usid') . "',
 			       GRR_Modify_Dt = sysdate
-			 Where GRR_KodeIGR = '" . $_SESSION['kdigr'] . "'
+			 Where GRR_KodeIGR = '" . Session::get('kdigr') . "'
 		     And GRR_GROUPRak = '" . $grouprak . "'");
 
             $message = 'Group Rak ' . $grouprak . ' Berhasil Diupdate!';
@@ -90,29 +90,29 @@ class EntryGroupRakController extends Controller
         $subrak = $request->data['subrak'];
         $flag = $request->data['flag'];
 
-        $jum = DB::connection($_SESSION['connection'])->select("Select NVL(COUNT(1), 0) count
+        $jum = DB::connection(Session::get('connection'))->select("Select NVL(COUNT(1), 0) count
 		  From tbmaster_lokasi
-		 Where lks_kodeigr = '" . $_SESSION['kdigr'] . "'
+		 Where lks_kodeigr = '" . Session::get('kdigr') . "'
             and lks_koderak = '" . $koderak . "'
             and lks_kodesubrak = '" . $subrak . "'")[0]->count;
 
         if ($jum > 0) {
 
-            $jum = DB::connection($_SESSION['connection'])->select("Select NVL(COUNT(1), 0) count
+            $jum = DB::connection(Session::get('connection'))->select("Select NVL(COUNT(1), 0) count
                   From tbmaster_grouprak
-                 Where grr_kodeigr = '" . $_SESSION['kdigr'] . "'
+                 Where grr_kodeigr = '" . Session::get('kdigr') . "'
                     and grr_grouprak = '" . $grouprak . "'
                     and grr_koderak is null
                     and grr_subrak is null")[0]->count;
 
             if ($jum > 0) {
-                DB::connection($_SESSION['connection'])->update("update tbmaster_grouprak
+                DB::connection(Session::get('connection'))->update("update tbmaster_grouprak
 				   set grr_koderak = '" . $koderak . "',
 				       grr_subrak = '" . $subrak . "',
 				       grr_nourut = '1',
-				       grr_modify_by = '" . $_SESSION['usid'] . "',
+				       grr_modify_by = '" . Session::get('usid') . "',
 				       grr_modify_dt = sysdate
-				 where grr_kodeigr = '" . $_SESSION['kdigr'] . "'
+				 where grr_kodeigr = '" . Session::get('kdigr') . "'
                 and grr_grouprak = '" . $grouprak . "'
                 and grr_koderak is null
                 and grr_subrak is null");
@@ -121,23 +121,23 @@ class EntryGroupRakController extends Controller
                 return compact(['message', 'status']);
 
             } else {
-                $jum = DB::connection($_SESSION['connection'])->select("Select NVL(COUNT(1), 0) count
+                $jum = DB::connection(Session::get('connection'))->select("Select NVL(COUNT(1), 0) count
                   From tbmaster_grouprak
-                 Where grr_kodeigr = '" . $_SESSION['kdigr'] . "'
+                 Where grr_kodeigr = '" . Session::get('kdigr') . "'
                     and grr_grouprak = '" . $grouprak . "'
                     and grr_koderak = '" . $koderak . "'
                     and grr_subrak = '" . $subrak . "'")[0]->count;
 
                 if ($jum == 0) {
-                    $nour = DB::connection($_SESSION['connection'])->select("select nvl(max(grr_nourut), 0) count
+                    $nour = DB::connection(Session::get('connection'))->select("select nvl(max(grr_nourut), 0) count
 					  from tbmaster_grouprak
-				   where grr_kodeigr = '" . $_SESSION['kdigr'] . "'
+				   where grr_kodeigr = '" . Session::get('kdigr') . "'
                     and grr_grouprak = '" . $grouprak . "'
                     and grr_koderak = '" . $koderak . "'")[0]->count;
 
                     $nour = $nour + 1;
 
-                    DB::connection($_SESSION['connection'])->insert("insert into tbmaster_grouprak
+                    DB::connection(Session::get('connection'))->insert("insert into tbmaster_grouprak
                     (
                         grr_kodeigr,
                         grr_grouprak,
@@ -151,14 +151,14 @@ class EntryGroupRakController extends Controller
                     )
 					values
                     (
-						'" . $_SESSION['kdigr'] . "',
+						'" . Session::get('kdigr') . "',
 						'" . $grouprak . "',
 						'" . $namarak . "',
 						'" . $koderak . "',
 						'" . $subrak . "',
 						'" . $flag . "',
 						'" . $nour . "',
-						'" . $_SESSION['usid'] . "',
+						'" . Session::get('usid') . "',
 						sysdate
 					)");
 
@@ -185,16 +185,16 @@ class EntryGroupRakController extends Controller
         $d_koderak = $request->data['koderak'];
         $d_subrak = $request->data['subrak'];
 
-        $jum = DB::connection($_SESSION['connection'])->select("Select NVL(COUNT(1), 0) count
+        $jum = DB::connection(Session::get('connection'))->select("Select NVL(COUNT(1), 0) count
 		  From TBMaster_GroupRak
-		 Where GRR_KodeIGR = '" . $_SESSION['kdigr'] . "'
+		 Where GRR_KodeIGR = '" . Session::get('kdigr') . "'
             and GRR_GroupRak = '" . $d_grouprak . "'
             and GRR_KodeRak = '" . $d_koderak . "'
             and GRR_Subrak = '" . $d_subrak . "'")[0]->count;
 
         if ($jum > 0) {
-            DB::connection($_SESSION['connection'])->delete("delete From TBMaster_GroupRak
-		 Where GRR_KodeIGR = '" . $_SESSION['kdigr'] . "'
+            DB::connection(Session::get('connection'))->delete("delete From TBMaster_GroupRak
+		 Where GRR_KodeIGR = '" . Session::get('kdigr') . "'
             and GRR_GroupRak = '" . $d_grouprak . "'
             and GRR_KodeRak = '" . $d_koderak . "'
             and GRR_Subrak = '" . $d_subrak . "'");

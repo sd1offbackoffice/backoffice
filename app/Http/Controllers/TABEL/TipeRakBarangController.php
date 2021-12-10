@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,9 +26,9 @@ class TipeRakBarangController extends Controller
 
     public function loadData(){
         try{
-            $kodeigr = $_SESSION['kdigr'];
+            $kodeigr = Session::get('kdigr');
 
-            $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_TIPERAK")
+            $datas = DB::connection(Session::get('connection'))->table("TBTABEL_TIPERAK")
                 ->selectRaw("trak_kodetiperak")
                 ->selectRaw("trak_namatiperak")
                 ->get();
@@ -45,32 +45,32 @@ class TipeRakBarangController extends Controller
 
     public function Save(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
             $kode = $request->kode;
             $nama = $request->nama;
             $status = $request->status;
             if($status == 'insert'){
-                DB::connection($_SESSION['connection'])->table("TBTABEL_TIPERAK")
+                DB::connection(Session::get('connection'))->table("TBTABEL_TIPERAK")
                     ->insert([
                         'TRAK_KODETIPERAK' => $kode,
                         'TRAK_NAMATIPERAK' => $nama,
-                        'TRAK_CREATE_BY' => $_SESSION['usid'],
-                        'TRAK_CREATE_DT' => DB::connection($_SESSION['connection'])->Raw('sysdate')
+                        'TRAK_CREATE_BY' => Session::get('usid'),
+                        'TRAK_CREATE_DT' => DB::connection(Session::get('connection'))->Raw('sysdate')
                     ]);
             }else{
-                DB::connection($_SESSION['connection'])->table("TBTABEL_TIPERAK")
+                DB::connection(Session::get('connection'))->table("TBTABEL_TIPERAK")
                     ->where("TRAK_KODETIPERAK",'=',$kode)
                     ->update([
                         'TRAK_NAMATIPERAK' => $nama,
-                        'TRAK_MODIFY_BY' => $_SESSION['usid'],
-                        'TRAK_MODIFY_DT' => DB::connection($_SESSION['connection'])->Raw('sysdate')
+                        'TRAK_MODIFY_BY' => Session::get('usid'),
+                        'TRAK_MODIFY_DT' => DB::connection(Session::get('connection'))->Raw('sysdate')
                     ]);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $status = 'error';
             $message = $e->getMessage();
 
@@ -79,16 +79,16 @@ class TipeRakBarangController extends Controller
     }
     public function hapus(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
             $kode = $request->kode;
-            DB::connection($_SESSION['connection'])->table("TBTABEL_TIPERAK")
+            DB::connection(Session::get('connection'))->table("TBTABEL_TIPERAK")
                 ->where("TRAK_KODETIPERAK",'=',$kode)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();

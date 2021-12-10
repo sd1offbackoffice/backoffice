@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 
@@ -11,7 +11,7 @@ class inquerySuppProdController extends Controller
 {
     public function index()
     {
-        $plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_prdcd')
@@ -23,7 +23,7 @@ class inquerySuppProdController extends Controller
 
     public function suppProd(Request $request)
     {
-        $getKodeigr = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->select('prd_kodeigr')->first();
+        $getKodeigr = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->select('prd_kodeigr')->first();
         $kodeigr    = $getKodeigr->prd_kodeigr;
         $kodeplu = $request->kodeplu;
 
@@ -35,7 +35,7 @@ class inquerySuppProdController extends Controller
         oci_bind_by_name($s, ':value', $result,1000);
         oci_execute($s);
 
-        $result = DB::connection($_SESSION['connection'])->table('temp_inqsup a')
+        $result = DB::connection(Session::get('connection'))->table('temp_inqsup a')
             ->join('tbmaster_prodmast b', 'b.prd_prdcd', '=', 'a.kodeplu' )
             ->select('b.prd_prdcd','b.prd_deskripsipanjang','a.kodesup','a.namasup', 'a.qty', 'a.nobpb', 'a.tglbpb', 'a.term', 'a.hpp' )
             ->where('b.prd_kodeigr', '=', '22')
@@ -47,7 +47,7 @@ class inquerySuppProdController extends Controller
     }
 
     public function helpSelect(Request $request){
-        $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where('prd_prdcd',$request->value)
             ->first();

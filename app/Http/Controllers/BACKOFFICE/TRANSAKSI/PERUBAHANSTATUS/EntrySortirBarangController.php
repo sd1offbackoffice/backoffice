@@ -3,7 +3,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -17,7 +17,7 @@ class EntrySortirBarangController extends Controller
     }
 
     public function getNewNmrSrt(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $connect = loginController::getConnectionProcedure();
 
@@ -36,9 +36,9 @@ class EntrySortirBarangController extends Controller
 
     public function getNmrSrt(Request $request){
         $search = $request->val;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('distinct SRT_KODEIGR as SRT_KODEIGR')
             ->selectRaw('SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
@@ -56,10 +56,10 @@ class EntrySortirBarangController extends Controller
     }
 
     public function ModalSrt(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('distinct SRT_KODEIGR as SRT_KODEIGR')
             ->selectRaw('SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
@@ -88,7 +88,7 @@ class EntrySortirBarangController extends Controller
     public function chooseSrt(Request $request){
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
             ->selectRaw('SRT_KETERANGAN')
@@ -109,7 +109,7 @@ class EntrySortirBarangController extends Controller
             ->where('SRT_NOSORTIR', $kode)
             ->get();
 
-//        $test = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->limit(10)->get()->toArray();
+//        $test = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->limit(10)->get()->toArray();
 //        dd($datas);
 
         return response()->json($datas);
@@ -117,9 +117,9 @@ class EntrySortirBarangController extends Controller
 
 //    public function getPlu(Request $request){
 //        $search = $request->val;
-//        $kodeigr = $_SESSION['kdigr'];
+//        $kodeigr = Session::get('kdigr');
 //
-//        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+//        $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
 //            ->select('prd_prdcd', 'prd_deskripsipanjang')
 ////            ->where('prd_prdcd', '1188110')
 //            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
@@ -132,10 +132,10 @@ class EntrySortirBarangController extends Controller
 //    }
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
 //            ->where('prd_prdcd', '1188110')
 
@@ -156,7 +156,7 @@ class EntrySortirBarangController extends Controller
     public function choosePlu(Request $request){
         $kode = $request->kode;
 
-        $cursor = DB::connection($_SESSION['connection'])->select("
+        $cursor = DB::connection(Session::get('connection'))->select("
             SELECT PRD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_DESKRIPSIPANJANG, PRD_FRAC, PRD_UNIT, PRD_PERLAKUANBARANG, PRD_KODETAG, ST_AVGCOST
             FROM TBMASTER_PRODMAST a
             LEFT JOIN TBMASTER_STOCK b ON prd_prdcd = st_prdcd and st_lokasi = '01'
@@ -175,14 +175,14 @@ class EntrySortirBarangController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
             $datas  = $request->datas;
             $keterangan  = $request->keterangan;
             $pludi  = $request->pludi;
             $date   = date('Y-m-d', strtotime($request->date));
             $noSrt  = $request->noDoc;
-            $kodeigr= $_SESSION['kdigr'];
-            $userid = $_SESSION['usid'];
+            $kodeigr= Session::get('kdigr');
+            $userid = Session::get('usid');
             $today  = date('Y-m-d H:i:s');
 
 ////        *** Get Doc No ***
@@ -197,7 +197,7 @@ class EntrySortirBarangController extends Controller
 //            oci_execute($query);
 
 //        *** Search DocNo for Edit ***
-            $getDoc = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
+            $getDoc = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
 
 
             if ($getDoc){
@@ -205,7 +205,7 @@ class EntrySortirBarangController extends Controller
                     return response()->json(['kode' => 3, 'msg' => $getDoc->srt_nosortir]);
                 }
 //                *** Update Data ***
-                $prevVal = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                $prevVal = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                     ->selectRaw("srt_create_dt")
                     ->selectRaw("srt_create_by")
                     ->where('srt_nosortir', $noSrt)
@@ -213,25 +213,25 @@ class EntrySortirBarangController extends Controller
                 $today  = date('Y-m-d H:i:s', strtotime($prevVal->srt_create_dt));
                 $userid = $prevVal->srt_create_by;
 
-               DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->delete();
+               DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->delete();
 
                 for ($i = 1; $i < sizeof($datas); $i++){
                     $temp = $datas[$i];
 
                     //pakai ini print nya tidak jalan, di program lama juga sepertinya ini tidak terpakai
-//                    $cekStatusPrint = DB::connection($_SESSION['connection'])->table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
+//                    $cekStatusPrint = DB::connection(Session::get('connection'))->table('tbtr_sortir_barang')->where('srt_nosortir', $noSrt)->first();
 //
 //                    if($cekStatusPrint->srt_flagdisc1 <> ' ' && $cekStatusPrint->srt_flagdisc2 <> ' ' && $cekStatusPrint->srt_flagdisc1 <> $cekStatusPrint->srt_flagdisc1){
 //                        return response()->json(['kode' => 2, 'msg' => "Isian Status Aw & Ak Harus Beda !!"]);
 //                    }
 
 
-                    $prodMast = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+                    $prodMast = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->where('prd_kodeigr', $kodeigr)
                         ->where('prd_prdcd', $temp['plu'])
                         ->first();
 
-                    $getVal = DB::connection($_SESSION['connection'])->table('TBMASTER_HARGABELI')
+                    $getVal = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
                         ->LeftJoin('TBMASTER_SUPPLIER',function($join){
                             $join->on('hgb_kodesupplier','sup_kodesupplier');
                             $join->on('hgb_kodeigr','sup_kodeigr');
@@ -241,7 +241,7 @@ class EntrySortirBarangController extends Controller
                         ->where('hgb_kodeigr',$kodeigr)
                         ->first();
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                    DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                         ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $noSrt, 'srt_tglsortir' => $date,
                             'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
                             'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
@@ -251,19 +251,19 @@ class EntrySortirBarangController extends Controller
                             'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
                             'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
                 return response()->json(['kode' => 1, 'msg' => $getDoc->srt_nosortir]);
             } else {
 //              *** Insert Data ***
                 for ($i = 1; $i < sizeof($datas); $i++){
                     $temp = $datas[$i];
 
-                    $prodMast = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+                    $prodMast = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->where('prd_kodeigr', $kodeigr)
                         ->where('prd_prdcd', $temp['plu'])
                         ->first();
 
-                    $getVal = DB::connection($_SESSION['connection'])->table('TBMASTER_HARGABELI')
+                    $getVal = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
                         ->LeftJoin('TBMASTER_SUPPLIER',function($join){
                             $join->on('hgb_kodesupplier','sup_kodesupplier');
                             $join->on('hgb_kodeigr','sup_kodeigr');
@@ -273,7 +273,7 @@ class EntrySortirBarangController extends Controller
                         ->where('hgb_kodeigr',$kodeigr)
                         ->first();
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                    DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                         ->insert(['srt_kodeigr' => $kodeigr, 'srt_recordid' => '', 'srt_type' => 'S', 'srt_batch' => '', 'srt_nosortir' => $noSrt, 'srt_tglsortir' => $date,
                             'srt_nodokumen' => '', 'srt_tgldokumen' => '', 'srt_noref' => '', 'srt_tglref' => '', 'srt_kodesupplier' => $getVal->hgb_kodesupplier,
                             'srt_pkp' => $getVal->sup_pkp, 'srt_cterm' => '', 'srt_seqno' => $i, 'srt_prdcd' => $temp['plu'], 'srt_kodedivisi' => $prodMast->prd_kodedivisi,
@@ -283,7 +283,7 @@ class EntrySortirBarangController extends Controller
                             'srt_ttlhrg' => $temp['total'], 'srt_avgcost' => $temp['avgcost'], 'srt_keterangan' => $keterangan, 'srt_tag' => $temp['tag'], 'srt_create_by' => $userid,
                             'srt_create_dt' => $today, 'srt_gudangtoko' => $pludi]);
                 }
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
                 return response()->json(['kode' => 1, 'msg' => $noSrt]);
             }
         }catch (\Exception $e){
@@ -294,10 +294,10 @@ class EntrySortirBarangController extends Controller
 
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
         $p_reprint  = 'Y';
 
-        $cekStatusPrint = DB::connection($_SESSION['connection'])->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->first();
+        $cekStatusPrint = DB::connection(Session::get('connection'))->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->first();
 
 //        if ($cekStatusPrint->srt_flagdisc3 == 'P' || $cekStatusPrint->srt_flagdisc3 == 'p'){
 //            $p_reprint = 'Y';
@@ -308,7 +308,7 @@ class EntrySortirBarangController extends Controller
 //
 //        }
 
-//        $datas = DB::connection($_SESSION['connection'])->select("select prs_namaperusahaan, prs_namacabang, prs_namaregional, prs_npwp, prs_alamat1, srt_tglsortir, srt_nosortir, srt_keterangan, prs_telepon, prd_perlakuanbarang, srt_prdcd, srt_qtykarton, srt_qtypcs, prd_deskripsipanjang, prd_unit||' / '||prd_frac SATUAN, prd_kodetag, hgb_statusbarang, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
+//        $datas = DB::connection(Session::get('connection'))->select("select prs_namaperusahaan, prs_namacabang, prs_namaregional, prs_npwp, prs_alamat1, srt_tglsortir, srt_nosortir, srt_keterangan, prs_telepon, prd_perlakuanbarang, srt_prdcd, srt_qtykarton, srt_qtypcs, prd_deskripsipanjang, prd_unit||' / '||prd_frac SATUAN, prd_kodetag, hgb_statusbarang, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
 //                                    from tbmaster_perusahaan, tbtr_sortir_barang, tbmaster_prodmast, tbmaster_hargabeli
 //                                    where srt_nosortir = '$noDoc'
 //                                              and prs_kodeigr = srt_kodeigr
@@ -317,7 +317,7 @@ class EntrySortirBarangController extends Controller
 //                                              and hgb_prdcd = srt_prdcd
 //                                    order by srt_seqno
 //");
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT srt_tglsortir, srt_nosortir || ' / ' || case when srt_gudangtoko = 'G' then 'GUDANG' else 'TOKO' end srt_nosortir, srt_prdcd, srt_qtykarton, srt_qtypcs, srt_keterangan,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT srt_tglsortir, srt_nosortir || ' / ' || case when srt_gudangtoko = 'G' then 'GUDANG' else 'TOKO' end srt_nosortir, srt_prdcd, srt_qtykarton, srt_qtypcs, srt_keterangan,
                                                    prd_deskripsipanjang, prd_unit, prd_frac, prd_kodetag,
                                                    hgb_statusbarang, CASE WHEN hgb_statusbarang = 'PT' THEN 'Y' ELSE '' END AS flag_pt,
                                                    CASE WHEN hgb_statusbarang = 'RT' OR hgb_statusbarang = 'TG' THEN 'Y' ELSE '' END AS flag_rttg,
@@ -331,9 +331,9 @@ class EntrySortirBarangController extends Controller
 ");
 
 //                Update srt_flagdisc3
-        DB::connection($_SESSION['connection'])->beginTransaction();
-        DB::connection($_SESSION['connection'])->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
-        DB::connection($_SESSION['connection'])->commit();
+        DB::connection(Session::get('connection'))->beginTransaction();
+        DB::connection(Session::get('connection'))->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
+        DB::connection(Session::get('connection'))->commit();
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang-laporan', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

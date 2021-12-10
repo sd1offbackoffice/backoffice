@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -17,7 +17,7 @@ class HargaBeliController extends Controller
         $search = $request->value;
 
         if($search != ''){
-            $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $prodmast   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->whereRaw("(prd_prdcd like '%".$search."%') OR (prd_deskripsipanjang like '%".$search."%')")
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
@@ -29,7 +29,7 @@ class HargaBeliController extends Controller
                 ->get();
         }
         else{
-            $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $prodmast   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
 //                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
@@ -44,7 +44,7 @@ class HargaBeliController extends Controller
     }
 
     public function lovSelect(Request $request){
-        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('*')
             ->where('prd_prdcd','=',$request->value)
             ->orderBy('prd_deskripsipanjang')
@@ -54,24 +54,24 @@ class HargaBeliController extends Controller
             return 'not-found';
         }
 
-        $tag = DB::connection($_SESSION['connection'])->table('tbmaster_tag')
+        $tag = DB::connection(Session::get('connection'))->table('tbmaster_tag')
             ->select('*')
             ->where('tag_kodeigr','=','22')
             ->where('tag_kodetag','=',$produk->prd_kodetag)
             ->first();
 
-        $hargabeli = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
+        $hargabeli = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
             ->select('*')
             ->where('hgb_prdcd','=',$request->value)
             ->first();
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodeigr','=','22')
             ->where('sup_kodesupplier','=',$hargabeli->hgb_kodesupplier)
             ->first();
 
-        $hargabelibaru = DB::connection($_SESSION['connection'])->table('tbmaster_hargabelibaru')
+        $hargabelibaru = DB::connection(Session::get('connection'))->table('tbmaster_hargabelibaru')
             ->select('*')
             ->where('hgn_kodeigr','=','22')
             ->where('hgn_tipe','=',$hargabeli->hgb_tipe)
@@ -85,7 +85,7 @@ class HargaBeliController extends Controller
 
     public function lovSearch(Request $request){
         if(is_numeric($request->value)){
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_prdcd','like','%'.$request->value.'%')
                 ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
@@ -95,7 +95,7 @@ class HargaBeliController extends Controller
 
 
         else{
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_deskripsipanjang','like','%'.$request->value.'%')
                 ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')

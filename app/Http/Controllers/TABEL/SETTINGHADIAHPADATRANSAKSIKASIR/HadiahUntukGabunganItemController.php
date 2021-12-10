@@ -11,7 +11,7 @@ namespace App\Http\Controllers\TABEL\SETTINGHADIAHPADATRANSAKSIKASIR;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,9 +26,9 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function ModalGabungan(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+        $datas = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
             ->selectRaw("ISH_NAMAPROMOSI")
             ->selectRaw("ISH_KODEPROMOSI")
             ->selectRaw("TO_CHAR(ISH_TGLAWAL, 'dd-MM-yyyy') || ' s/d ' || TO_CHAR(ISH_TGLAKHIR, 'dd-MM-yyyy') BERLAKU")
@@ -41,9 +41,9 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function ModalHadiah(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_BRGPROMOSI")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_BRGPROMOSI")
             ->selectRaw("BPRP_KETPANJANG")
             ->selectRaw("BPRP_PRDCD")
             ->selectRaw("BPRP_UNIT || '/' || BPRP_FRACKONVERSI as satuan")
@@ -57,10 +57,10 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
             ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
@@ -106,9 +106,9 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function ModalSupp(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_supplier")
             ->selectRaw("sup_namasupplier")
             ->selectRaw("sup_kodesupplier")
 
@@ -121,10 +121,10 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function CheckPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = '$kodeigr'
            AND prd_prdcd = brc_prdcd(+)
@@ -134,10 +134,10 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function ChooseMerk(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
             ->where('PRD_DESKRIPSIPANJANG','LIKE','%'.$search.'%')
@@ -149,10 +149,10 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function chooseSupplier(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_hargabeli")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_hargabeli")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
             ->leftJoin('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
@@ -165,10 +165,10 @@ class HadiahUntukGabunganItemController extends Controller
 
 
     public function GetDetail(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+        $datas = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
             ->selectRaw("ISD_PRDCD")
             ->selectRaw("ISD_KODEIGR")
             ->selectRaw("ISD_RECORDID")
@@ -225,7 +225,7 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function GetNew(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $result = '';
 
         $connect = loginController::getConnectionProcedure();
@@ -244,11 +244,11 @@ class HadiahUntukGabunganItemController extends Controller
     }
 
     public function GetHistory(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $prdcd = $request->prdcd;
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
 	  	ISH_PRDCDHADIAH, ISH_JMLHADIAH, ISH_KELIPATANHADIAH, ISH_MAXJMLHARI, ISH_MAXFREKHARI, ISH_MAXOUTHARI,
 	  	ISH_QTYALOKASI, NVL(ISH_QTYALOKASIOUT,0) as pakai, ISH_REGULER, ISH_REGULERBIRUPLUS, ISH_FREEPASS, ISH_RETAILER, ISH_SILVER,
 	  	ISH_GOLD1, ISH_GOLD2, ISH_GOLD3, ISH_PLATINUM, ISH_KETERANGAN, ISH_MAXFREKEVENT, ISH_MAXJMLEVENT
@@ -261,9 +261,9 @@ class HadiahUntukGabunganItemController extends Controller
 
     public function SaveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
-            $usid = $_SESSION['usid'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
+            $usid = Session::get('usid');
 
             $status = $request->statusform;
             $kodegab = $request->kodegab;
@@ -319,7 +319,7 @@ class HadiahUntukGabunganItemController extends Controller
                 oci_execute($query);
                 $kodegab = $nomor;
 
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->insert([
                         "ISH_KODEIGR" => $kodeigr,
                         "ISH_KODEPROMOSI" => $kodegab,
@@ -355,7 +355,7 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_PLATINUM" => $platinum
                     ]);
                 if($info == "ALLITEM"){
-                    DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                    DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                         ->insert([
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
@@ -372,7 +372,7 @@ class HadiahUntukGabunganItemController extends Controller
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
-                        DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                        DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                             ->insert([
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,
@@ -391,7 +391,7 @@ class HadiahUntukGabunganItemController extends Controller
                 }
 
             }else{
-                $temp = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+                $temp = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->selectRaw("ISH_CREATE_BY")
                     ->selectRaw("ISH_CREATE_DT")
                     ->where("ISH_KODEPROMOSI",'=',$kodegab)
@@ -399,7 +399,7 @@ class HadiahUntukGabunganItemController extends Controller
                 $creator = $temp->ish_create_by;
                 $create_dt = $temp->ish_create_dt;
 
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->insert([
                         "ISH_KODEIGR" => $kodeigr,
                         "ISH_KODEPROMOSI" => $kodegab,
@@ -437,7 +437,7 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_PLATINUM" => $platinum
                     ]);
                 if($info == "ALLITEM"){
-                    DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                    DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                         ->insert([
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
@@ -456,7 +456,7 @@ class HadiahUntukGabunganItemController extends Controller
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
-                        DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                        DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                             ->insert([
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,
@@ -476,10 +476,10 @@ class HadiahUntukGabunganItemController extends Controller
                     }
                 }
             }
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             return response()->json(['title' => 'Data Sudah Disimpan !!'],200);
         }catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
 //                'title' => $e->getMessage()

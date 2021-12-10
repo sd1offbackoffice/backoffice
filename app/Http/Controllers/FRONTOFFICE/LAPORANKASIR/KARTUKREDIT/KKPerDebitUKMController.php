@@ -5,7 +5,7 @@ namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR\KARTUKREDIT;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -21,9 +21,9 @@ class KKPerDebitUKMController extends Controller
     }
 
     public function getLov(){
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_user")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_user")
             ->select('userid','username')
-            ->where('kodeigr','=',$_SESSION['kdigr'])
+            ->where('kodeigr','=',Session::get('kdigr'))
             ->orderBy('userid')
             ->get();
 
@@ -38,10 +38,10 @@ class KKPerDebitUKMController extends Controller
             $kasir = '';
         else $kasir = "AND USERID BETWEEN '".$request->kasir1."' AND '".$request->kasir2."'";
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT to_char(TANGGAL, 'dd/mm/yyyy') TANGGAL, IDTRANS, KODE, CARDCODE, SUM (NILAI) NILAI, SUM (JH_CASHADVANCE) TUNAI, NAMAKARTU,
+        $data = DB::connection(Session::get('connection'))->select("SELECT to_char(TANGGAL, 'dd/mm/yyyy') TANGGAL, IDTRANS, KODE, CARDCODE, SUM (NILAI) NILAI, SUM (JH_CASHADVANCE) TUNAI, NAMAKARTU,
          JENIS
     FROM (SELECT TRUNC (JH_TRANSACTIONDATE) TANGGAL, JH_CASHADVANCE,
                  JH_CASHIERSTATION || '.' || JH_TRANSACTIONNO || '.' || JH_CASHIERID || '-' || USERNAME IDTRANS,
@@ -74,7 +74,7 @@ class KKPerDebitUKMController extends Controller
                              END
                  END NAMAKARTU
             FROM TBTR_JUALHEADER A, TBMASTER_USER
-            WHERE jh_kodeigr = '".$_SESSION['kdigr']."'
+            WHERE jh_kodeigr = '".Session::get('kdigr')."'
             AND TRUNC(jh_transactiondate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
              AND NVL (JH_RECORDID, '9') <> '1'
              AND JH_TRANSACTIONTYPE = 'S'
@@ -103,7 +103,7 @@ SELECT to_char(TANGGAL, 'dd/mm/yyyy') TANGGAL, IDTRANS, KODE, CARDCODE, SUM (NIL
                          THEN 'KREDIT BANK INA'
                  END NAMAKARTU
             FROM TBTR_JUALHEADER A, TBMASTER_USER
-           WHERE jh_kodeigr = '".$_SESSION['kdigr']."'
+           WHERE jh_kodeigr = '".Session::get('kdigr')."'
             AND TRUNC(jh_transactiondate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
              AND NVL (JH_RECORDID, '9') <> '1'
              AND JH_TRANSACTIONTYPE = 'S'

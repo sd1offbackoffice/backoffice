@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -11,7 +11,7 @@ use Yajra\DataTables\DataTables;
 class cetakPBController extends Controller
 {
     public function index(){
-        $divisi     = DB::connection($_SESSION['connection'])->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')->orderBy('div_kodedivisi')->limit(100)->get();
+        $divisi     = DB::connection(Session::get('connection'))->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')->orderBy('div_kodedivisi')->limit(100)->get();
         return view('BACKOFFICE.cetakPB', compact('divisi'));
     }
 
@@ -19,7 +19,7 @@ class cetakPBController extends Controller
         $tgl1   = $request->tgl1;
         $tgl2   = $request->tgl2;
 
-        $document = DB::connection($_SESSION['connection'])->table('tbtr_pb_h')
+        $document = DB::connection(Session::get('connection'))->table('tbtr_pb_h')
             ->select('pbh_nopb', 'pbh_tglpb')
             ->whereNull('pbh_recordid')
             ->whereBetween('pbh_tglpb', [$tgl1,$tgl2])
@@ -35,7 +35,7 @@ class cetakPBController extends Controller
         $tgl1   = $request->tgl1;
         $tgl2   = $request->tgl2;
 
-        $document = DB::connection($_SESSION['connection'])->table('tbtr_pb_h')->select('pbh_nopb', 'pbh_keteranganpb')
+        $document = DB::connection(Session::get('connection'))->table('tbtr_pb_h')->select('pbh_nopb', 'pbh_keteranganpb')
             ->where('pbh_nopb','LIKE', '%'.$search.'%')
             ->orWhere('pbh_keteranganpb','LIKE', '%'.$search.'%')
             ->whereBetween('pbh_create_dt', [$tgl1,$tgl2])
@@ -45,7 +45,7 @@ class cetakPBController extends Controller
     }
 
     public function getDivisi(){
-        $divisi     = DB::connection($_SESSION['connection'])->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')->orderBy('div_kodedivisi')->limit(100)->get();
+        $divisi     = DB::connection(Session::get('connection'))->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')->orderBy('div_kodedivisi')->limit(100)->get();
 
         return response()->json($divisi);
     }
@@ -53,7 +53,7 @@ class cetakPBController extends Controller
     public function searchDivisi(Request $request){
         $search = $request->search;
 
-        $divisi = DB::connection($_SESSION['connection'])->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')
+        $divisi = DB::connection(Session::get('connection'))->table('TBMASTER_DIVISI')->select('div_kodedivisi', 'div_namadivisi')
             ->where('div_kodedivisi','LIKE', '%'.$search.'%')
             ->orWhere('div_namadivisi','LIKE', '%'.$search.'%')
             ->orderBy('div_kodedivisi')
@@ -66,7 +66,7 @@ class cetakPBController extends Controller
         $div1   = $request->div1;
         $div2   = $request->div2;
 
-        $departemen = DB::connection($_SESSION['connection'])->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')
+        $departemen = DB::connection(Session::get('connection'))->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')
             ->whereBetween('dep_kodedivisi', [$div1,$div2])
             ->orderBy('DEP_KODEDEPARTEMENT')->get();
 
@@ -79,7 +79,7 @@ class cetakPBController extends Controller
         $div1   = $request->div1;
         $div2   = $request->div2;
 
-        $departemen = DB::connection($_SESSION['connection'])->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')
+        $departemen = DB::connection(Session::get('connection'))->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')
             ->where('DEP_KODEDEPARTEMENT','LIKE', '%'.$search.'%')
             ->orWhere('DEP_NAMADEPARTEMENT','LIKE', '%'.$search.'%')
             ->whereBetween('dep_kodedivisi', [$div1,$div2])
@@ -93,7 +93,7 @@ class cetakPBController extends Controller
         $dep1   = $request->dept1;
         $dep2   = $request->dept2;
 
-        $kategori = DB::connection($_SESSION['connection'])->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
+        $kategori = DB::connection(Session::get('connection'))->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
             ->whereBetween('KAT_KODEDEPARTEMENT',[$dep1,$dep2])
             ->orderBy('KAT_KODEDEPARTEMENT')
             ->orderBy('KAT_KODEKATEGORI')
@@ -107,7 +107,7 @@ class cetakPBController extends Controller
         $dep2   = $request->dept2;
         $search = strtoupper($request->search);
 
-        $kategori = DB::connection($_SESSION['connection'])->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
+        $kategori = DB::connection(Session::get('connection'))->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
             ->where('KAT_KODEKATEGORI','LIKE', '%'.$search.'%')
             ->orWhere('KAT_NAMAKATEGORI','LIKE', '%'.$search.'%')
             ->whereBetween('KAT_KODEDEPARTEMENT',[$dep1,$dep2])
@@ -130,7 +130,7 @@ class cetakPBController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
         $tipePB = $request->tipePB;
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
 
         if ($doc1   == null) { $doc1    = ' '; }
         if ($doc2   == null) { $doc2    = 'ZZZZZZZZZZ'; }
@@ -142,7 +142,7 @@ class cetakPBController extends Controller
         if ($kat2   == null) { $kat2    = 'ZZ'; }
 
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT pbh_nopb,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT pbh_nopb,
          tglpb pbh_tglpb,
          pbh_flagdoc,
          pbh_gross,
@@ -280,7 +280,7 @@ ORDER BY pbh_nopb,supplier, departement, kategori asc
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(535, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        DB::connection($_SESSION['connection'])->table('tbtr_pb_h')
+        DB::connection(Session::get('connection'))->table('tbtr_pb_h')
             ->whereRaw("trunc (pbh_tglpb) between '$tgl1' and '$tgl2'")
             ->whereBetween('pbh_nopb', [$doc1,$doc2])
             ->whereRaw("nvl(pbh_flagdoc,' ')=' '")

@@ -25,7 +25,7 @@ $datetime->setTimezone($timezone);
             No. NRB : {{ $data[0]->rom_noreferensi }}<br><br>
             TOP : {{ $data[0]->rom_tgljatuhtempo }}<br><br>
 {{--            Hal. :<br><br>--}}
-{{--            <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>--}}
+{{--            <i>User ID</i> : {{ Session::get('usid') }}<br><br>--}}
 
     </div>
     <h2 style="text-align: center">

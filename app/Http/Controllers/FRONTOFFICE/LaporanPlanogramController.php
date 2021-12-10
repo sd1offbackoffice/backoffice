@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FRONTOFFICE;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -22,7 +22,7 @@ class LaporanPlanogramController extends Controller
     public function lovKodeRak(Request $request)
     {
         $search = $request->value;
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->select('lks_koderak')
             ->Where('lks_koderak','LIKE', '%'.$search.'%')
             ->orderBy('lks_koderak')
@@ -60,7 +60,7 @@ class LaporanPlanogramController extends Controller
                 $p_order = 'ORDER BY LKS_QTY';
             }
 
-            $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namacabang,
+            $data = DB::connection(Session::get('connection'))->select("SELECT prs_namacabang,
                                            prs_namaperusahaan,
                                            lks_koderak || '.' || lks_kodesubrak || '.'
                                            || lks_tiperak || '.' || lks_shelvingrak || '.'
@@ -69,7 +69,7 @@ class LaporanPlanogramController extends Controller
                                            prd_deskripsipanjang,
                                            lks_qty
                                       FROM tbmaster_perusahaan, tbmaster_lokasi, tbmaster_prodmast
-                                     WHERE prs_kodeigr = '" . $_SESSION['kdigr'] . "' AND prs_kodeigr = lks_kodeigr AND lks_prdcd = prd_prdcd(+)
+                                     WHERE prs_kodeigr = '" . Session::get('kdigr') . "' AND prs_kodeigr = lks_kodeigr AND lks_prdcd = prd_prdcd(+)
                                            AND lks_koderak between '" . $rak1 . "' and '" . $rak2 . "'
                                            AND lks_qty < 0 " . $p_order);
 
@@ -93,7 +93,7 @@ class LaporanPlanogramController extends Controller
 
             $cw = 700;
             $ch = 35;
-            $data = DB::connection($_SESSION['connection'])->select("SELECT   ROWNUM NUMB, CASE
+            $data = DB::connection(Session::get('connection'))->select("SELECT   ROWNUM NUMB, CASE
                                              WHEN SPB_RECORDID = '1'
                                                  THEN 'SUDAH'
                                              ELSE 'BELUM'
@@ -108,7 +108,7 @@ class LaporanPlanogramController extends Controller
                                 AND NVL(SPB_RECORDID,'ZZ') LIKE '" . $p_recid . "' " . $p_order);
             $filename = 'lap-spb-manual';
         }
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         if (sizeof($data) != 0) {

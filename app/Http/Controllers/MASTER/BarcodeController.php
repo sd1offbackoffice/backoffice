@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 
@@ -18,7 +18,7 @@ class BarcodeController extends Controller
     public function getBarcode(Request $request){
         $search = $request->value;
 
-        $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
+        $barcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE')
             ->select('*')
             ->where('BRC_BARCODE','LIKE', '%'.$search.'%')
             ->orWhere('BRC_PRDCD','LIKE', '%'.$search.'%')
@@ -29,13 +29,13 @@ class BarcodeController extends Controller
 
     public function search_barcode(Request $request){
         if ($request->value == '0000000'){
-            $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
+            $barcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE')
                 ->select('*')
                 ->limit(20)
                 ->get();
         }
         else{
-            $barcode = DB::connection($_SESSION['connection'])->table('TBMASTER_BARCODE')
+            $barcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE')
                 ->select('*')
                 ->where('BRC_PRDCD','LIKE',$request->value)
                 ->limit(20)

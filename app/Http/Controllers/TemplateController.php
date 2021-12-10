@@ -10,7 +10,7 @@ class TemplateController extends Controller
 {
     public function __construct()
     {
-        session_start();
+
     }
 
     public function index(){
@@ -18,8 +18,8 @@ class TemplateController extends Controller
     }
 
     public function dataModal(){
-        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->orderBy('cab_kodecabang')->limit(11)->get();
-//        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get()->toArray();
+        $data   = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->limit(11)->get();
+//        $data   = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get()->toArray();
 
 
         return Datatables::of($data)->make(true);
@@ -28,7 +28,7 @@ class TemplateController extends Controller
     public function searchDataModal(Request $request){
         $search = $request->value;
 
-        $data   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $data   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')

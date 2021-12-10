@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PDF;
@@ -15,33 +15,33 @@ class CetakTolakanPBController extends Controller
     //
 
     public function index(){
-        $divisi = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $divisi = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi','div_namadivisi')
-            ->where('div_kodeigr',$_SESSION['kdigr'])
+            ->where('div_kodeigr',Session::get('kdigr'))
             ->get();
 
-        $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $departement = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-            ->where('dep_kodeigr',$_SESSION['kdigr'])
+            ->where('dep_kodeigr',Session::get('kdigr'))
             ->orderBy('dep_kodedepartement')
             ->get();
 
-        $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodedepartement','kat_kodekategori','kat_namakategori')
-            ->where('kat_kodeigr',$_SESSION['kdigr'])
+            ->where('kat_kodeigr',Session::get('kdigr'))
             ->orderBy('kat_kodedepartement')
             ->orderBy('kat_kodekategori')
             ->get();
 
-        $plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->join('tbmaster_hargabeli','hgb_prdcd','=','prd_prdcd')
             ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->orderBy('prd_deskripsipanjang')
             ->limit('100')
             ->get();
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier','sup_namasupplier')
             ->orderBy('sup_kodesupplier')
             ->limit(100)
@@ -51,9 +51,9 @@ class CetakTolakanPBController extends Controller
     }
 
     public function cek_divisi(Request $request){
-        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $cek = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi')
-            ->where('div_kodeigr',$_SESSION['kdigr'])
+            ->where('div_kodeigr',Session::get('kdigr'))
             ->where('div_kodedivisi',$request->div)
             ->get();
 
@@ -64,32 +64,32 @@ class CetakTolakanPBController extends Controller
             $div2 = $request->div2;
 
             if($div1 == null && $div2 == null){
-                $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+                $departement = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                     ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-                    ->where('dep_kodeigr',$_SESSION['kdigr'])
+                    ->where('dep_kodeigr',Session::get('kdigr'))
                     ->orderBy('dep_kodedepartement')
                     ->get();
             }
             else if($div1 == null && $div2 != null){
-                $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+                $departement = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                     ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-                    ->where('dep_kodeigr',$_SESSION['kdigr'])
+                    ->where('dep_kodeigr',Session::get('kdigr'))
                     ->where('dep_kodedivisi','<=',$div2)
                     ->orderBy('dep_kodedepartement')
                     ->get();
             }
             else if($div1 != null && $div2 == null){
-                $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+                $departement = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                     ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-                    ->where('dep_kodeigr',$_SESSION['kdigr'])
+                    ->where('dep_kodeigr',Session::get('kdigr'))
                     ->where('dep_kodedivisi','>=',$div1)
                     ->orderBy('dep_kodedepartement')
                     ->get();
             }
             else{
-                $departement = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+                $departement = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                     ->select('dep_kodedepartement','dep_namadepartement','dep_kodedivisi')
-                    ->where('dep_kodeigr',$_SESSION['kdigr'])
+                    ->where('dep_kodeigr',Session::get('kdigr'))
                     ->whereBetween('dep_kodedivisi',[$div1,$div2])
                     ->orderBy('dep_kodedepartement')
                     ->get();
@@ -101,25 +101,25 @@ class CetakTolakanPBController extends Controller
 
     public function cek_departement(Request $request){
         if($request->div1 == ''){
-            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+            $cek = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                 ->select('dep_kodedepartement')
-                ->where('dep_kodeigr',$_SESSION['kdigr'])
+                ->where('dep_kodeigr',Session::get('kdigr'))
                 ->where('dep_kodedivisi','<=',$request->div2)
                 ->where('dep_kodedepartement',$request->dep)
                 ->get();
         }
         else if($request->div2 == ''){
-            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+            $cek = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                 ->select('dep_kodedepartement')
-                ->where('dep_kodeigr',$_SESSION['kdigr'])
+                ->where('dep_kodeigr',Session::get('kdigr'))
                 ->where('dep_kodedivisi','>=',$request->div1)
                 ->where('dep_kodedepartement',$request->dep)
                 ->get();
         }
         else{
-            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+            $cek = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                 ->select('dep_kodedepartement')
-                ->where('dep_kodeigr',$_SESSION['kdigr'])
+                ->where('dep_kodeigr',Session::get('kdigr'))
                 ->whereBetween('dep_kodedivisi',[$request->div1,$request->div2])
                 ->where('dep_kodedepartement',$request->dep)
                 ->get();
@@ -133,35 +133,35 @@ class CetakTolakanPBController extends Controller
             $dep2 = $request->dep2;
 
             if($dep1 == null && $dep2 == null){
-                $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+                $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                     ->select('kat_kodedepartement','kat_kodekategori','kat_namakategori')
-                    ->where('kat_kodeigr',$_SESSION['kdigr'])
+                    ->where('kat_kodeigr',Session::get('kdigr'))
                     ->orderBy('kat_kodedepartement')
                     ->orderBy('kat_kodekategori')
                     ->get();
             }
             else if($dep1 == null && $dep2 != null){
-                $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+                $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                     ->select('kat_kodedepartement','kat_kodekategori','kat_namakategori')
-                    ->where('kat_kodeigr',$_SESSION['kdigr'])
+                    ->where('kat_kodeigr',Session::get('kdigr'))
                     ->where('kat_kodedepartement','<=',$dep2)
                     ->orderBy('kat_kodedepartement')
                     ->orderBy('kat_kodekategori')
                     ->get();
             }
             else if($dep1 != null && $dep2 == null){
-                $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+                $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                     ->select('kat_kodedepartement','kat_kodekategori','kat_namakategori')
-                    ->where('kat_kodeigr',$_SESSION['kdigr'])
+                    ->where('kat_kodeigr',Session::get('kdigr'))
                     ->where('kat_kodedepartement','>=',$dep1)
                     ->orderBy('kat_kodedepartement')
                     ->orderBy('kat_kodekategori')
                     ->get();
             }
             else{
-                $kategori = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+                $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                     ->select('kat_kodedepartement','kat_kodekategori','kat_namakategori')
-                    ->where('kat_kodeigr',$_SESSION['kdigr'])
+                    ->where('kat_kodeigr',Session::get('kdigr'))
                     ->whereBetween('kat_kodedepartement',[$dep1,$dep2])
                     ->orderBy('kat_kodedepartement')
                     ->orderBy('kat_kodekategori')
@@ -182,51 +182,51 @@ class CetakTolakanPBController extends Controller
         $kat2 = $request->kat2;
 
         if($div1 == null){
-            $divA = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+            $divA = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
                 ->select('div_kodedivisi')
                 ->orderBy('div_kodedivisi','asc')
                 ->first();
             $div1 = $divA->div_kodedivisi;
         }
         if($div2 == null){
-            $divB = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+            $divB = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
                 ->select('div_kodedivisi')
                 ->orderBy('div_kodedivisi','desc')
                 ->first();
             $div2 = $divB->div_kodedivisi;
         }
         if($dep1 == null){
-            $depA = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+            $depA = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                 ->select('dep_kodedepartement')
                 ->orderBy('dep_kodedepartement','asc')
                 ->first();
             $dep1 = $depA->dep_kodedepartement;
         }
         if($dep2 == null){
-            $depB = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+            $depB = DB::connection(Session::get('connection'))->table('tbmaster_departement')
                 ->select('dep_kodedepartement')
                 ->orderBy('dep_kodedepartement','desc')
                 ->first();
             $dep2 = $depB->dep_kodedepartement;
         }
         if($kat1 == null){
-            $katA = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+            $katA = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                 ->select('kat_kodekategori')
                 ->orderBy('kat_kodekategori','asc')
                 ->first();
             $kat1 = $katA->kat_kodekategori;
         }
         if($kat2 == null){
-            $katB = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+            $katB = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
                 ->select('kat_kodekategori')
                 ->orderBy('kat_kodekategori','desc')
                 ->first();
             $kat2 = $katB->kat_kodekategori;
         }
 
-        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $cek = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodekategori')
-            ->where('kat_kodeigr',$_SESSION['kdigr'])
+            ->where('kat_kodeigr',Session::get('kdigr'))
             ->whereBetween('kat_kodedepartement',[$dep1,$dep2])
             ->where('kat_kodekategori',$kat)
             ->get();
@@ -234,9 +234,9 @@ class CetakTolakanPBController extends Controller
         if(count($cek) == 0)
             return 'false';
         else{
-            $plu = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('prd_kodedivisi',[$div1,$div2])
                 ->whereBetween('prd_kodedepartement',[$dep1,$dep2])
                 ->whereBetween('prd_kodekategoribarang',[$kat1,$kat2])
@@ -249,32 +249,32 @@ class CetakTolakanPBController extends Controller
     }
 
     public function div_cek_plu(Request $request){
-        $divA = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $divA = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi')
             ->orderBy('div_kodedivisi','asc')
             ->first();
 
-        $divB = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $divB = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi')
             ->orderBy('div_kodedivisi','desc')
             ->first();
 
-        $depA = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $depA = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement')
             ->orderBy('dep_kodedepartement','asc')
             ->first();
 
-        $depB = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $depB = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement')
             ->orderBy('dep_kodedepartement','desc')
             ->first();
 
-        $katA = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $katA = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodekategori')
             ->orderBy('kat_kodekategori','asc')
             ->first();
 
-        $katB = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $katB = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodekategori')
             ->orderBy('kat_kodekategori','desc')
             ->first();
@@ -300,9 +300,9 @@ class CetakTolakanPBController extends Controller
         if($kat2 == null)
             $kat2 = $katB->kat_kodekategori;
 
-        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $cek = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereBetween('prd_kodedivisi',[$div1,$div2])
             ->whereBetween('prd_kodedepartement',[$dep1,$dep2])
             ->whereBetween('prd_kodekategoribarang',[$kat1,$kat2])
@@ -319,7 +319,7 @@ class CetakTolakanPBController extends Controller
             $tgl1 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl1'],'Asia/Jakarta'),'d/m/Y');
         }
         else{
-            $tgl1 = DB::connection($_SESSION['connection'])->table('tbtr_tolakanpb')
+            $tgl1 = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
                 ->selectRaw("to_char(trunc(tlk_tglpb),'dd-mm-yyyy') tgl")
                 ->orderBy('tlk_tglpb','asc')
                 ->first()->tgl;
@@ -329,7 +329,7 @@ class CetakTolakanPBController extends Controller
             $tgl2 = date_format(Carbon::createFromFormat('d-m-Y',$_GET['tgl2'],'Asia/Jakarta'),'d/m/Y');
         }
         else{
-            $tgl2 = DB::connection($_SESSION['connection'])->table('tbtr_tolakanpb')
+            $tgl2 = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
                 ->selectRaw("to_char(trunc(tlk_tglpb),'dd-mm-yyyy') tgl")
                 ->orderBy('tlk_tglpb','desc')
                 ->first()->tgl;
@@ -345,32 +345,32 @@ class CetakTolakanPBController extends Controller
         $plu2 = $_GET['plu2'];
         $pil = $_GET['pil'];
 
-        $divA = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $divA = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi')
             ->orderBy('div_kodedivisi','asc')
             ->first();
 
-        $divB = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $divB = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi')
             ->orderBy('div_kodedivisi','desc')
             ->first();
 
-        $depA = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $depA = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement')
             ->orderBy('dep_kodedepartement','asc')
             ->first();
 
-        $depB = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $depB = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement')
             ->orderBy('dep_kodedepartement','desc')
             ->first();
 
-        $katA = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $katA = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodekategori')
             ->orderBy('kat_kodekategori','asc')
             ->first();
 
-        $katB = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $katB = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->select('kat_kodekategori')
             ->orderBy('kat_kodekategori','desc')
             ->first();
@@ -388,18 +388,18 @@ class CetakTolakanPBController extends Controller
         if($kat2 == 'ALL')
             $kat2 = $katB->kat_kodekategori;
 
-        $pluA = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $pluA = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereBetween('prd_kodedivisi',[$div1,$div2])
             ->whereBetween('prd_kodedepartement',[$dep1,$dep2])
             ->whereBetween('prd_kodekategoribarang',[$kat1,$kat2])
             ->orderBy('prd_prdcd','asc')
             ->first();
 
-        $pluB = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $pluB = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereBetween('prd_kodedivisi',[$div1,$div2])
             ->whereBetween('prd_kodedepartement',[$dep1,$dep2])
             ->whereBetween('prd_kodekategoribarang',[$kat1,$kat2])
@@ -411,8 +411,8 @@ class CetakTolakanPBController extends Controller
         if($plu2 == 'ALL')
             $plu2 = $pluB->prd_prdcd;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
-            ->where('prs_kodeigr',$_SESSION['kdigr'])
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->where('prs_kodeigr',Session::get('kdigr'))
             ->first();
 
         if($pil == 1)
@@ -427,7 +427,7 @@ class CetakTolakanPBController extends Controller
             $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
         else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
 
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_tolakanpb')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('tlk_kodeigr','prd_kodeigr');
                 $join->on('tlk_prdcd','prd_prdcd');
@@ -500,21 +500,21 @@ class CetakTolakanPBController extends Controller
 
     public function search_supplier(Request $request){
         if($request->sup == ''){
-            $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier','sup_namasupplier')
                 ->orderBy('sup_kodesupplier')
                 ->limit(100)
                 ->get();
         }
         else if(is_numeric(substr($request->sup,1,4))){
-           $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+           $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                ->select('sup_kodesupplier','sup_namasupplier')
                ->where('sup_kodesupplier','like',$request->sup.'%')
                ->orderBy('sup_kodesupplier')
                ->get();
         }
         else{
-            $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier','sup_namasupplier')
                 ->where('sup_namasupplier','like','%'.$request->sup.'%')
                 ->orderBy('sup_kodesupplier')
@@ -532,9 +532,9 @@ class CetakTolakanPBController extends Controller
         $sup2 = $request->sup2;
 
         if($sup1 == ''){
-            $supA = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supA = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','asc')
                 ->first();
 
@@ -542,9 +542,9 @@ class CetakTolakanPBController extends Controller
         }
 
         if($sup2 == ''){
-            $supB = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supB = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','desc')
                 ->first();
 
@@ -552,39 +552,39 @@ class CetakTolakanPBController extends Controller
         }
 
         if($plu == ''){
-            $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->orderBy('prd_deskripsipanjang')
                 ->limit('100')
                 ->get();
         }
         else if(is_numeric($plu)){
-            $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->where('prd_prdcd','like','%'.$plu)
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         }
         else{
-            $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->where('prd_deskripsipanjang','like','%'.$plu.'%')
                 ->orderBy('prd_deskripsipanjang')
@@ -601,9 +601,9 @@ class CetakTolakanPBController extends Controller
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
 
-        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $cek = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier')
-            ->where('sup_kodeigr',$_SESSION['kdigr'])
+            ->where('sup_kodeigr',Session::get('kdigr'))
             ->where('sup_kodesupplier',$sup)
             ->get();
 
@@ -612,9 +612,9 @@ class CetakTolakanPBController extends Controller
         }
         else{
             if($sup1 == ''){
-                $supA = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+                $supA = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                     ->select('sup_kodesupplier')
-                    ->where('sup_kodeigr',$_SESSION['kdigr'])
+                    ->where('sup_kodeigr',Session::get('kdigr'))
                     ->orderBy('sup_kodesupplier','asc')
                     ->first();
 
@@ -622,22 +622,22 @@ class CetakTolakanPBController extends Controller
             }
 
             if($sup2 == ''){
-                $supB = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+                $supB = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                     ->select('sup_kodesupplier')
-                    ->where('sup_kodeigr',$_SESSION['kdigr'])
+                    ->where('sup_kodeigr',Session::get('kdigr'))
                     ->orderBy('sup_kodesupplier','desc')
                     ->first();
 
                 $sup2 = $supB->sup_kodesupplier;
             }
 
-            $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd','prd_deskripsipanjang','prd_unit','prd_frac')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->orderBy('prd_deskripsipanjang')
                 ->limit('100')
@@ -653,9 +653,9 @@ class CetakTolakanPBController extends Controller
         $plu = $request->plu;
 
         if($sup1 == ''){
-            $supA = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supA = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','asc')
                 ->first();
 
@@ -663,22 +663,22 @@ class CetakTolakanPBController extends Controller
         }
 
         if($sup2 == ''){
-            $supB = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supB = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','desc')
                 ->first();
 
             $sup2 = $supB->sup_kodesupplier;
         }
 
-        $cek = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $cek = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->join('tbmaster_hargabeli',function($join){
                 $join->on('hgb_kodeigr','prd_kodeigr');
                 $join->on('hgb_prdcd','prd_prdcd');
             })
             ->select('prd_prdcd')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
             ->where('prd_prdcd',$plu)
             ->get();
@@ -705,9 +705,9 @@ class CetakTolakanPBController extends Controller
         if($tgl2 == '' || strlen($tgl2) != 10)
             $tgl2 = $now;
         if($sup1 == 'ALL'){
-            $supA = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supA = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','asc')
                 ->first();
 
@@ -715,9 +715,9 @@ class CetakTolakanPBController extends Controller
         }
 
         if($sup2 == 'ALL'){
-            $supB = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supB = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier')
-                ->where('sup_kodeigr',$_SESSION['kdigr'])
+                ->where('sup_kodeigr',Session::get('kdigr'))
                 ->orderBy('sup_kodesupplier','desc')
                 ->first();
 
@@ -725,13 +725,13 @@ class CetakTolakanPBController extends Controller
         }
 
         if($plu1 == 'ALL'){
-            $pluA = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $pluA = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->orderBy('prd_prdcd','asc')
                 ->first();
@@ -739,21 +739,21 @@ class CetakTolakanPBController extends Controller
         }
 
         if($plu2 == 'ALL'){
-            $pluB = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $pluB = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->join('tbmaster_hargabeli',function($join){
                     $join->on('hgb_kodeigr','prd_kodeigr');
                     $join->on('hgb_prdcd','prd_prdcd');
                 })
                 ->select('prd_prdcd')
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereBetween('hgb_kodesupplier',[$sup1,$sup2])
                 ->orderBy('prd_prdcd','desc')
                 ->first();
             $plu2 = $pluB->prd_prdcd;
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
-            ->where('prs_kodeigr',$_SESSION['kdigr'])
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->where('prs_kodeigr',Session::get('kdigr'))
             ->first();
 
         if($pil == 1)
@@ -768,7 +768,7 @@ class CetakTolakanPBController extends Controller
             $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN LIKE '%MINOR%')";
         else $where = "TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND (TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%' OR TLK_KETERANGANTOLAKAN LIKE '%TAG T%')";
 
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_tolakanpb')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('tlk_kodeigr','prd_kodeigr');
                 $join->on('tlk_prdcd','prd_prdcd');

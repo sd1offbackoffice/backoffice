@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -22,7 +22,7 @@ class MonitoringSalesDanStockController extends Controller
 
     public function getLovMonitoring()
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringplu')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringplu')
             ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
             ->orderBy("mpl_kodemonitoring")
             ->distinct()
@@ -35,7 +35,7 @@ class MonitoringSalesDanStockController extends Controller
         $kodeMonitoring = $request->kode;
         $namaMonitoring = $request->nama;
 
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
             ->select("prd_prdcd", "prd_deskripsipanjang")
             ->whereRaw("substr(prd_prdcd,-1,1) = 0")
             ->whereRaw("prd_prdcd in ( select mpl_prdcd from tbtr_monitoringplu where mpl_kodemonitoring = '" . $kodeMonitoring . "' and mpl_namamonitoring = '" . $namaMonitoring . "' )")
@@ -106,11 +106,11 @@ class MonitoringSalesDanStockController extends Controller
             $periode = $periode1;
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("
                                 SELECT DISTINCT
                                        prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -179,7 +179,7 @@ class MonitoringSalesDanStockController extends Controller
                                      GROUP BY pbd_prdcd
                                 )
                                 WHERE mpl_kodeigr = prs_kodeigr
-                                  AND prs_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                  AND prs_kodeigr = '" . Session::get('kdigr') . "'
                                   AND mpl_prdcd = prd_prdcd (+)
                                   AND mpl_prdcd = st_prdcd (+)
                                   AND mpl_prdcd = sls_prdcd (+)
@@ -195,7 +195,7 @@ class MonitoringSalesDanStockController extends Controller
                                 ORDER BY avgsales DESC");
 
 //        dd($data);
-        $temp = DB::connection($_SESSION['connection'])
+        $temp = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->selectRaw("to_char(prs_periodeTerakhir, 'D') dow, prs_periodeTerakhir, to_date('13-dec-9999', 'dd-mm-yyyy') tglvv")
             ->first();
@@ -225,7 +225,7 @@ class MonitoringSalesDanStockController extends Controller
                     if ($i < $dow) {
                         $tglL = DateTime::createFromFormat('d/m/Y', $lastPer)->add(new DateInterval('P' . '7' . 'D'))->sub(new DateInterval('P' . $yT . 'D'));
 
-                        $tempHL = DB::connection($_SESSION['connection'])
+                        $tempHL = DB::connection(Session::get('connection'))
                             ->table("tbmaster_harilibur")
                             ->where("lib_tgllibur", $tglL)
                             ->count();
@@ -245,7 +245,7 @@ class MonitoringSalesDanStockController extends Controller
                             $tglY = $tglL->sub(new DateInterval('P' . $ltimeA . 'D'));
                         }
 
-                        $tempHL = DB::connection($_SESSION['connection'])
+                        $tempHL = DB::connection(Session::get('connection'))
                             ->table("tbmaster_harilibur")
                             ->where("lib_tgllibur", $tglL)
                             ->count();
@@ -284,7 +284,7 @@ class MonitoringSalesDanStockController extends Controller
     public function getDataDeskripsi(Request $request)
     {
         $plu = $request->plu;
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->table('TBMASTER_PRODMAST')
             ->selectRaw("prd_deskripsipanjang||' - '|| prd_unit||'/'||prd_frac deskripsi")
             ->where('prd_prdcd', $plu)
@@ -349,8 +349,8 @@ class MonitoringSalesDanStockController extends Controller
                 $sqlBulan = 'SELECT DISTINCT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, nvl((sls_qty_10 + sls_qty_11 + sls_qty_12)/3,0) avgqty, nvl((sls_rph_10 + sls_rph_11 + sls_rph_12)/3,0) avgsales	FROM TBTR_MONITORINGPLU, TBTR_SALESBULANAN WHERE mpl_prdcd = sls_prdcd(+) ' . $where . $orderBy;
                 break;
         }
-        $data = DB::connection($_SESSION['connection'])->select($sqlBulan);
-        $temp = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))->select($sqlBulan);
+        $temp = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->selectRaw("to_char(prs_periodeTerakhir, 'D') dow, prs_periodeTerakhir, to_date('13-dec-9999', 'dd-mm-yyyy') tglvv")
             ->first();
@@ -359,7 +359,7 @@ class MonitoringSalesDanStockController extends Controller
         $lastPer = $temp->prs_periodeterakhir;
         $tglVV = $temp->tglvv;
         for ($k = 0; $k < sizeof($data); $k++) {
-            $proses = DB::connection($_SESSION['connection'])->select("
+            $proses = DB::connection(Session::get('connection'))->select("
                     select prdcd, kemasan, sales_, margin, margin2, saldo, ftpkmt, keter, PB, PO, deskripsi
                     from tbtr_monitoringplu,
                     (	SELECT DISTINCT
@@ -397,7 +397,7 @@ class MonitoringSalesDanStockController extends Controller
                                      AND sls_prdcd = SUBSTR('" . $data[$k]->mpl_prdcd . "',1,6)||'0'
                              GROUP BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd
                         )
-                        WHERE mpl_kodeigr = '" . $_SESSION['kdigr'] . "'
+                        WHERE mpl_kodeigr = '" . Session::get('kdigr') . "'
                             AND mpl_prdcd = prd_prdcd (+)
                             AND mpl_prdcd = st_prdcd (+)
                             AND st_lokasi = '01'
@@ -435,7 +435,7 @@ class MonitoringSalesDanStockController extends Controller
             $data[$k]->po = $proses[0]->po;
             $data[$k]->pb = $proses[0]->pb;
 
-            $pkm = DB::connection($_SESSION['connection'])
+            $pkm = DB::connection(Session::get('connection'))
                 ->select("SELECT mpl_prdcd, pkm_pkmt ftpkmt
                             FROM TBTR_MONITORINGPLU,TBMASTER_PRODMAST, TBMASTER_KKPKM
                             WHERE mpl_prdcd = prd_prdcd (+)
@@ -444,7 +444,7 @@ class MonitoringSalesDanStockController extends Controller
                             and mpl_prdcd ='" . $data[$k]->mpl_prdcd . "'");
             $data[$k]->ftpkmt = Self::nvl($pkm[0]->ftpkmt, 0);
 
-            $supp = DB::connection($_SESSION['connection'])
+            $supp = DB::connection(Session::get('connection'))
                 ->select("SELECT DISTINCT mpl_prdcd PRDCD, sup_harikunjungan hrkj, sup_jangkawaktukirimbarang jwpb
                     FROM TBTR_MONITORINGPLU, TBTR_SALESBULANAN, TBMASTER_SUPPLIER
                     WHERE mpl_prdcd = sls_prdcd
@@ -471,7 +471,7 @@ class MonitoringSalesDanStockController extends Controller
                         if ($i < $dow) {
                             $tglL = DateTime::createFromFormat('d/m/Y', $lastPer)->add(new DateInterval('P' . '7' . 'D'))->sub(new DateInterval('P' . $yT . 'D'));
 
-                            $tempHL = DB::connection($_SESSION['connection'])
+                            $tempHL = DB::connection(Session::get('connection'))
                                 ->table("tbmaster_harilibur")
                                 ->where("lib_tgllibur", $tglL)
                                 ->count();
@@ -491,7 +491,7 @@ class MonitoringSalesDanStockController extends Controller
                                 $tglY = $tglL->sub(new DateInterval('P' . $ltimeA . 'D'));
                             }
 
-                            $tempHL = DB::connection($_SESSION['connection'])
+                            $tempHL = DB::connection(Session::get('connection'))
                                 ->table("tbmaster_harilibur")
                                 ->where("lib_tgllibur", $tglL)
                                 ->count();
@@ -583,8 +583,8 @@ class MonitoringSalesDanStockController extends Controller
                 break;
         }
 
-        $data = DB::connection($_SESSION['connection'])->select($sqlBulan);
-        $temp = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))->select($sqlBulan);
+        $temp = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->selectRaw("to_char(prs_periodeTerakhir, 'D') dow, prs_periodeTerakhir, to_date('13-dec-9999', 'dd-mm-yyyy') tglvv")
             ->first();
@@ -593,7 +593,7 @@ class MonitoringSalesDanStockController extends Controller
         $lastPer = $temp->prs_periodeterakhir;
         $tglVV = $temp->tglvv;
         for ($k = 0; $k < sizeof($data); $k++) {
-            $proses = DB::connection($_SESSION['connection'])->select("
+            $proses = DB::connection(Session::get('connection'))->select("
             select prdcd, kemasan, sales_, margin, margin2, saldo, ftpkmt, keter, PB, PO, deskripsi
                     from tbtr_monitoringplu,
                     (	SELECT DISTINCT
@@ -630,7 +630,7 @@ class MonitoringSalesDanStockController extends Controller
                              WHERE TRUNC(sls_periode) BETWEEN to_date('" . $periode1 . "','dd/mm/yyyy') AND to_date('" . $periode2 . "','dd/mm/yyyy')
                              GROUP BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd
                         )
-                        WHERE mpl_kodeigr = '" . $_SESSION['kdigr'] . "'
+                        WHERE mpl_kodeigr = '" . Session::get('kdigr') . "'
                     AND mpl_prdcd = prd_prdcd (+)
                     AND mpl_prdcd = st_prdcd (+)
                     AND st_lokasi = '01'
@@ -669,7 +669,7 @@ class MonitoringSalesDanStockController extends Controller
                 $data[$k]->pb = $proses[$j]->pb;
             }
 
-            $pkm = DB::connection($_SESSION['connection'])
+            $pkm = DB::connection(Session::get('connection'))
                 ->select("SELECT mpl_prdcd, pkm_pkmt ftpkmt
                             FROM TBTR_MONITORINGPLU,TBMASTER_PRODMAST, TBMASTER_KKPKM
                             WHERE mpl_prdcd = prd_prdcd (+)
@@ -680,7 +680,7 @@ class MonitoringSalesDanStockController extends Controller
                 $data[$k]->ftpkmt = Self::nvl($pkm[$j]->ftpkmt, 0);
             }
 
-            $supp = DB::connection($_SESSION['connection'])
+            $supp = DB::connection(Session::get('connection'))
                 ->select("SELECT DISTINCT mpl_prdcd PRDCD, sup_harikunjungan hrkj, sup_jangkawaktukirimbarang jwpb
                     FROM TBTR_MONITORINGPLU, TBTR_SALESBULANAN, TBMASTER_SUPPLIER
                     WHERE mpl_prdcd = sls_prdcd
@@ -708,7 +708,7 @@ class MonitoringSalesDanStockController extends Controller
                         if ($i < $dow) {
                             $tglL = DateTime::createFromFormat('d/m/Y', $lastPer)->add(new DateInterval('P' . '7' . 'D'))->sub(new DateInterval('P' . $yT . 'D'));
 
-                            $tempHL = DB::connection($_SESSION['connection'])
+                            $tempHL = DB::connection(Session::get('connection'))
                                 ->table("tbmaster_harilibur")
                                 ->where("lib_tgllibur", $tglL)
                                 ->count();
@@ -728,7 +728,7 @@ class MonitoringSalesDanStockController extends Controller
                                 $tglY = $tglL->sub(new DateInterval('P' . $ltimeA . 'D'));
                             }
 
-                            $tempHL = DB::connection($_SESSION['connection'])
+                            $tempHL = DB::connection(Session::get('connection'))
                                 ->table("tbmaster_harilibur")
                                 ->where("lib_tgllibur", $tglL)
                                 ->count();
@@ -825,7 +825,7 @@ class MonitoringSalesDanStockController extends Controller
             $periode = $periode1;
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
@@ -835,7 +835,7 @@ class MonitoringSalesDanStockController extends Controller
             } else {
                 $filename = 'monitoring-sales-dan-stock-avg-pdf';
             }
-            $data = DB::connection($_SESSION['connection'])
+            $data = DB::connection(Session::get('connection'))
                 ->select("
                                 SELECT DISTINCT
                                        prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -904,7 +904,7 @@ class MonitoringSalesDanStockController extends Controller
                                      GROUP BY pbd_prdcd
                                 )
                                 WHERE mpl_kodeigr = prs_kodeigr
-                                  AND prs_kodeigr = '" . $_SESSION['kdigr'] . "'
+                                  AND prs_kodeigr = '" . Session::get('kdigr') . "'
                                   AND mpl_prdcd = prd_prdcd (+)
                                   AND mpl_prdcd = st_prdcd (+)
                                   AND mpl_prdcd = sls_prdcd (+)
@@ -926,7 +926,7 @@ class MonitoringSalesDanStockController extends Controller
                 $filename = 'monitoring-sales-dan-stock-pdf';
 
             }
-            $data = DB::connection($_SESSION['connection'])
+            $data = DB::connection(Session::get('connection'))
                 ->select("
                     SELECT DISTINCT
                            prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1004,7 +1004,7 @@ class MonitoringSalesDanStockController extends Controller
                          GROUP BY pbd_prdcd
                     )
                     WHERE mpl_kodeigr = prs_kodeigr
-                      AND prs_kodeigr = '" . $_SESSION['kdigr'] . "'
+                      AND prs_kodeigr = '" . Session::get('kdigr') . "'
                       AND mpl_prdcd = prd_prdcd (+)
                       AND mpl_prdcd = st_prdcd (+)
                       AND mpl_prdcd = sls_prdcd (+)
@@ -1019,7 +1019,7 @@ class MonitoringSalesDanStockController extends Controller
                       AND mpl_namamonitoring = '" . $namamonitoring . "'
                     ORDER BY DIV, DEPT, KATB, mpl_prdcd");
         }
-        $temp = DB::connection($_SESSION['connection'])
+        $temp = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->selectRaw("to_char(prs_periodeTerakhir, 'D') dow, prs_periodeTerakhir, to_date('13-dec-9999', 'dd-mm-yyyy') tglvv")
             ->first();
@@ -1049,7 +1049,7 @@ class MonitoringSalesDanStockController extends Controller
                     if ($i < $dow) {
                         $tglL = DateTime::createFromFormat('d/m/Y', $lastPer)->add(new DateInterval('P' . '7' . 'D'))->sub(new DateInterval('P' . $yT . 'D'));
 
-                        $tempHL = DB::connection($_SESSION['connection'])
+                        $tempHL = DB::connection(Session::get('connection'))
                             ->table("tbmaster_harilibur")
                             ->where("lib_tgllibur", $tglL)
                             ->count();
@@ -1069,7 +1069,7 @@ class MonitoringSalesDanStockController extends Controller
                             $tglY = $tglL->sub(new DateInterval('P' . $ltimeA . 'D'));
                         }
 
-                        $tempHL = DB::connection($_SESSION['connection'])
+                        $tempHL = DB::connection(Session::get('connection'))
                             ->table("tbmaster_harilibur")
                             ->where("lib_tgllibur", $tglL)
                             ->count();

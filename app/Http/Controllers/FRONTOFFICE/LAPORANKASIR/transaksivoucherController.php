@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,7 +25,7 @@ class transaksivoucherController extends Controller
 
     public function print(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -36,7 +36,7 @@ class transaksivoucherController extends Controller
             $periode = 'TANGGAL: '.$dateA;
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRNDATE, KODEVOUCHER, PLATINUM, GOLD,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRNDATE, KODEVOUCHER, PLATINUM, GOLD,
          SILVER, REGULER, BIRU, GIFT_VCR*NILAIVOUCHER GIFT_VCR
     FROM (SELECT   POT_KODEIGR KODEIGR, TRNDATE, KODEVOUCHER, NILAIVOUCHER,
                    SUM (CASE
@@ -111,7 +111,7 @@ ORDER BY TRNDATE, REPLACE (KODEVOUCHER, 'R', '0')");
         }
 
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 

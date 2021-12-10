@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,7 +25,7 @@ class spbmanualController extends Controller
 
     public function getPlu(Request $request){
         $search = $request->value;
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_prodmast")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
             ->selectRaw("prd_deskripsipanjang, prd_unit||'/'||prd_frac satuan, prd_prdcd")
             ->whereRaw("SUBSTR(prd_prdcd,-1)='0'")
             ->where("prd_deskripsipanjang",'LIKE','%'.$search.'%')
@@ -84,7 +84,7 @@ class spbmanualController extends Controller
     }
 
     public function choosePlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
         //------->>>>>>> Baca Barcode <<<<<<<------- 1
         if(substr($plu,1,1) == '#'){
@@ -93,7 +93,7 @@ class spbmanualController extends Controller
                 //Kode Barcode Salah, kode 1
                 return response()->json(1);
             }
-            $temp_brc = DB::connection($_SESSION['connection'])->table("TBMASTER_BARCODE")
+            $temp_brc = DB::connection(Session::get('connection'))->table("TBMASTER_BARCODE")
                 ->selectRaw("NVL (COUNT (*), 0) as a")
                 ->where("BRC_BARCODE",'=',$barcode)
                 ->first();
@@ -104,7 +104,7 @@ class spbmanualController extends Controller
                 //BARCODE DOUBLE, kode 3
                 return response()->json(3);
             }else{
-                $pluTemp = DB::connection($_SESSION['connection'])->table("TBMASTER_BARCODE")
+                $pluTemp = DB::connection(Session::get('connection'))->table("TBMASTER_BARCODE")
                     ->selectRaw("BRC_PRDCD")
                     ->where("BRC_BARCODE",'=',$barcode)
                     ->first();
@@ -120,7 +120,7 @@ class spbmanualController extends Controller
             return response()->json(4);
         }
         //tak perlu periksa bila $plu == 0 atau tidak, $plu telah dibuat tidak bisa kosong di javaascript, langsung masuk ke bagian else
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT distinct PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC satuan, PRD_FRAC, SUBSTR (PRDCD, 1, 6) || '0' plu, PRD_BARCODE
+        $temp = DB::connection(Session::get('connection'))->select("SELECT distinct PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC satuan, PRD_FRAC, SUBSTR (PRDCD, 1, 6) || '0' plu, PRD_BARCODE
           FROM TBMASTER_PRODMAST,
                (SELECT PRD_PRDCD PRDCD, BRC_BARCODE
                   FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
@@ -134,7 +134,7 @@ class spbmanualController extends Controller
         $plu = $temp[0]->plu;
         $barcode = $temp[0]->prd_barcode;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_MAXPALET")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_MAXPALET")
             ->selectRaw("MPT_MAXQTY")
             ->where("MPT_PRDCD",'=',$plu)
             ->whereRaw("ROWNUM = 1")
@@ -148,7 +148,7 @@ class spbmanualController extends Controller
         }
 
         //--++parameter tipe++--
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT COUNT (1) as a
+        $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT (1) as a
 				  FROM TBMASTER_LOKASI
 				 WHERE LKS_PRDCD IN (
 				           SELECT LKS_PRDCD
@@ -165,7 +165,7 @@ class spbmanualController extends Controller
             $jenis = 'S'; //--dari storage gudang
         }
         //----parameter tipe----
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("NVL (SUM (LKS_QTY), 0) as rs")
             ->where("LKS_KODERAK",'LIKE','R%')
             ->where("LKS_TIPERAK",'LIKE','S%')
@@ -175,7 +175,7 @@ class spbmanualController extends Controller
         $rsctn = floor($temp->rs / $frac);
         $rspcs = $temp->rs % $frac;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("NVL (SUM (LKS_QTY), 0) as gs")
             ->where("LKS_KODERAK",'NOT LIKE','R%')
             ->where("LKS_TIPERAK",'LIKE','S%')
@@ -185,7 +185,7 @@ class spbmanualController extends Controller
         $gsctn = floor($temp->gs / $frac);
         $gspcs = $temp->gs % $frac;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("NVL (SUM (LKS_QTY), 0) as nsg")
             ->where("LKS_TIPERAK",'=','N')
             ->where("LKS_PRDCD",'=',$plu)
@@ -205,7 +205,7 @@ class spbmanualController extends Controller
 
         //----parameter tipe---- , bagian rs, gs, nsg nya sama, jadi skip bagian itu
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+        $temp = DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
             ->selectRaw("COUNT (1) as a")
             ->where("SPB_PRDCD",'=',$plu)
             ->where("SPB_JENIS",'=','MANUAL')
@@ -229,10 +229,10 @@ class spbmanualController extends Controller
 
     public function checkRak(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("COUNT (1) as result")
             ->where("LKS_KODEIGR",'=',$kodeigr)
             ->where("LKS_PRDCD",'=',$plu)
@@ -249,10 +249,10 @@ class spbmanualController extends Controller
 
     public function getRak(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT")
             ->where("LKS_KODEIGR",'=',$kodeigr)
             ->where("LKS_PRDCD",'=',$plu)
@@ -266,10 +266,10 @@ class spbmanualController extends Controller
 
     public function getRak2(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT   LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT,
+        $temp = DB::connection(Session::get('connection'))->select("SELECT   LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT,
                              LKS_PRDCD
                         FROM TBMASTER_LOKASI
                        WHERE LKS_KODEIGR = '$kodeigr'
@@ -299,10 +299,10 @@ class spbmanualController extends Controller
 
     public function getRak3(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK, LKS_NOURUT")
             ->where("LKS_KODEIGR",'=',$kodeigr)
             ->where("LKS_PRDCD",'=',$plu)
@@ -315,10 +315,10 @@ class spbmanualController extends Controller
     }
 
     public function getRakAntrian(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+        $temp = DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
             ->selectRaw("SPB_PRDCD, SPB_LOKASIASAL, SPB_LOKASITUJUAN, SPB_CREATE_BY, SPB_CREATE_DT, SPB_MINUS, SPB_ID")
             ->where("SPB_PRDCD",'=',$plu)
             ->where("SPB_JENIS",'=','MANUAL')
@@ -332,8 +332,8 @@ class spbmanualController extends Controller
     public function save(Request $request)
     {
         //note : fungsi dalam loopnya banyak sama, hanya mengikuti program sebelumnya, supaya ga bingung
-        $kodeigr = $_SESSION['kdigr'];
-        $usid = $_SESSION['usid'];
+        $kodeigr = Session::get('kdigr');
+        $usid = Session::get('usid');
         $plu = $request->plu;
         $jenis = $request->jenis;
         $tiperak = $request->tiperak;
@@ -341,7 +341,7 @@ class spbmanualController extends Controller
         $qty = (int)$request->qty;
 
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_LOKASI")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_LOKASI")
             ->selectRaw("LKS_QTY")
             ->whereRaw("LKS_KODERAK
            || '.'
@@ -354,9 +354,9 @@ class spbmanualController extends Controller
            || LKS_NOURUT = '$lks_to'")
             ->first();
         $qty_to = (int)$temp->lks_qty;
-        DB::connection($_SESSION['connection'])->beginTransaction();
+        DB::connection(Session::get('connection'))->beginTransaction();
         if($jenis == 'S'){
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (SUM (QTYS), 0) as result
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (SUM (QTYS), 0) as result
           FROM (SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK, LKS_SHELVINGRAK,
                          LKS_NOURUT, LKS_QTY QTYS, SPB_LOKASIASAL, NVL (ANTRIAN, 0) ANTRIAN,
                          PRD_FRAC, PRD_DESKRIPSIPANJANG
@@ -396,7 +396,7 @@ class spbmanualController extends Controller
         }
         if(((int)$temp[0]->result > 0) && $tiperak == 'display'){
 
-            $rec = DB::connection($_SESSION['connection'])->select("SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
+            $rec = DB::connection(Session::get('connection'))->select("SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
                                  LKS_SHELVINGRAK, LKS_NOURUT, LKS_QTY QTYS, SPB_LOKASIASAL,
                                  NVL (ANTRIAN, 0) ANTRIAN, PRD_FRAC, PRD_DESKRIPSIPANJANG
                             FROM TBMASTER_LOKASI,
@@ -436,14 +436,14 @@ class spbmanualController extends Controller
                 $lks_from = $rec[$i]->lks_koderak.'.'.$rec[$i]->lks_kodesubrak.'.'.$rec[$i]->lks_tiperak.'.'.$rec[$i]->lks_shelvingrak.'.'.$rec[$i]->lks_nourut;
 
                 if($rec[$i]->spb_lokasiasal == null){
-                    $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                    $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                     if($qty > (int)$rec[$i]->qtys){
                         $qtyCase = (int)$rec[$i]->qtys;
                     }else{
                         $qtyCase = $qty;
                     }
-                    DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                    DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                             'SPB_LOKASIASAL' => $lks_from,
@@ -454,7 +454,7 @@ class spbmanualController extends Controller
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
                             'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
-                    DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                    DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                             'SPB_LOKASIASAL' => $lks_from,
@@ -468,7 +468,7 @@ class spbmanualController extends Controller
                     $qty = $qty - (int)$rec[$i]->qtys;
                 }else{
                     if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
-                        $temp = DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                        $temp = DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                             ->selectRaw("COUNT (1) as result")
                             ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                             ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
@@ -482,14 +482,14 @@ class spbmanualController extends Controller
                             }else{
                                 $qtyCase = (int)$rec[$i]->antrian + $qty;
                             }
-                            DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                 ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                 ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                 ->where('SPB_LOKASIASAL','=',$lks_from)
                                 ->where('SPB_LOKASITUJUAN','=',$lks_to)
                                 ->where('spb_jenis','=','MANUAL')
                                 ->update(['SPB_MINUS' => $qtyCase]);
-                            DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                 ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                 ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                 ->where('SPB_LOKASIASAL','=',$lks_from)
@@ -497,7 +497,7 @@ class spbmanualController extends Controller
                                 ->where('spb_jenis','=','MANUAL')
                                 ->update(['SPB_MINUS' => $qtyCase]);
                         }else{
-                            $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                            $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                             if($qty > (int)$rec[$i]->qtys - (int)$rec[$i]->antrian){
                                 $qtyCase = (int)$rec[$i]->qtys - (int)$rec[$i]->antrian;
@@ -505,7 +505,7 @@ class spbmanualController extends Controller
                                 $qtyCase = $qty;
                             }
 
-                            DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                 ->insert(['SPB_PRDCD' => $plu,
                                     'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                     'SPB_LOKASIASAL' => $lks_from,
@@ -518,7 +518,7 @@ class spbmanualController extends Controller
                                     'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
 
 
-                            DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                 ->insert(['SPB_PRDCD' => $plu,
                                     'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                     'SPB_LOKASIASAL' => $lks_from,
@@ -541,7 +541,7 @@ class spbmanualController extends Controller
         }
         //-----<<<<<<< Ambil dari Rak Storage Gudang >>>>>>>-----
         if($qty > 0){
-            $rec = DB::connection($_SESSION['connection'])->select("SELECT LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
+            $rec = DB::connection(Session::get('connection'))->select("SELECT LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
                                  LKS_SHELVINGRAK, LKS_NOURUT, LKS_QTY QTYS, SPB_LOKASIASAL,
                                  NVL (ANTRIAN, 0) ANTRIAN, PRD_FRAC, PRD_DESKRIPSIPANJANG
                             FROM TBMASTER_LOKASI,
@@ -581,14 +581,14 @@ class spbmanualController extends Controller
                 $lks_from = $rec[$i]->lks_koderak.'.'.$rec[$i]->lks_kodesubrak.'.'.$rec[$i]->lks_tiperak.'.'.$rec[$i]->lks_shelvingrak.'.'.$rec[$i]->lks_nourut;
 
                 if($rec[$i]->spb_lokasiasal == null){
-                    $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                    $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                     if($qty > (int)$rec[$i]->qtys){
                         $qtyCase = (int)$rec[$i]->qtys;
                     }else{
                         $qtyCase = $qty;
                     }
-                    DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                    DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                             'SPB_LOKASIASAL' => $lks_from,
@@ -599,7 +599,7 @@ class spbmanualController extends Controller
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
                             'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
-                    DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                    DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                             'SPB_LOKASIASAL' => $lks_from,
@@ -613,7 +613,7 @@ class spbmanualController extends Controller
                     $qty = $qty - (int)$rec[$i]->qtys;
                 }else{
                     if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
-                        $temp = DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                        $temp = DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                             ->selectRaw("COUNT (1) as result")
                             ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                             ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
@@ -627,14 +627,14 @@ class spbmanualController extends Controller
                             }else{
                                 $qtyCase = (int)$rec[$i]->antrian + $qty;
                             }
-                            DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                 ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                 ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                 ->where('SPB_LOKASIASAL','=',$lks_from)
                                 ->where('SPB_LOKASITUJUAN','=',$lks_to)
                                 ->where('spb_jenis','=','MANUAL')
                                 ->update(['SPB_MINUS' => $qtyCase]);
-                            DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                 ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                 ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                 ->where('SPB_LOKASIASAL','=',$lks_from)
@@ -642,7 +642,7 @@ class spbmanualController extends Controller
                                 ->where('spb_jenis','=','MANUAL')
                                 ->update(['SPB_MINUS' => $qtyCase]);
                         }else{
-                            $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                            $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                             if($qty > (int)$rec[$i]->qtys - (int)$rec[$i]->antrian){
                                 $qtyCase = (int)$rec[$i]->qtys - (int)$rec[$i]->antrian;
@@ -650,7 +650,7 @@ class spbmanualController extends Controller
                                 $qtyCase = $qty;
                             }
 
-                            DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                 ->insert(['SPB_PRDCD' => $plu,
                                     'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                     'SPB_LOKASIASAL' => $lks_from,
@@ -663,7 +663,7 @@ class spbmanualController extends Controller
                                     'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
 
 
-                            DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                            DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                 ->insert(['SPB_PRDCD' => $plu,
                                     'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                     'SPB_LOKASIASAL' => $lks_from,
@@ -685,7 +685,7 @@ class spbmanualController extends Controller
             }
         }elseif($jenis == 'N'){
             if($qty > 0){
-                $rec = DB::connection($_SESSION['connection'])->select("SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
+                $rec = DB::connection(Session::get('connection'))->select("SELECT   LKS_PRDCD, LKS_KODERAK, LKS_KODESUBRAK, LKS_TIPERAK,
                                  LKS_SHELVINGRAK, LKS_NOURUT, LKS_QTY QTYS, SPB_LOKASIASAL,
                                  NVL (ANTRIAN, 0) ANTRIAN, PRD_DESKRIPSIPANJANG
                             FROM TBMASTER_LOKASI,
@@ -726,14 +726,14 @@ class spbmanualController extends Controller
                     $lks_from = $rec[$i]->lks_koderak.'.'.$rec[$i]->lks_kodesubrak.'.'.$rec[$i]->lks_tiperak.'.'.$rec[$i]->lks_shelvingrak.'.'.$rec[$i]->lks_nourut;
 
                     if($rec[$i]->spb_lokasiasal == null){
-                        $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                        $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                         if($qty > (int)$rec[$i]->qtys){
                             $qtyCase = (int)$rec[$i]->qtys;
                         }else{
                             $qtyCase = $qty;
                         }
-                        DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                        DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                             ->insert(['SPB_PRDCD' => $plu,
                                 'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                 'SPB_LOKASIASAL' => $lks_from,
@@ -744,7 +744,7 @@ class spbmanualController extends Controller
                                 'SPB_ID' => $seq[0]->nextval,
                                 'SPB_CREATE_BY' => $usid,
                                 'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
-                        DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                        DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                             ->insert(['SPB_PRDCD' => $plu,
                                 'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                 'SPB_LOKASIASAL' => $lks_from,
@@ -758,7 +758,7 @@ class spbmanualController extends Controller
                         $qty = $qty - (int)$rec[$i]->qtys;
                     }else{
                         if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
-                            $temp = DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                            $temp = DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                 ->selectRaw("COUNT (1) as result")
                                 ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                 ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
@@ -772,14 +772,14 @@ class spbmanualController extends Controller
                                 }else{
                                     $qtyCase = (int)$rec[$i]->antrian + $qty;
                                 }
-                                DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                                DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                     ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                     ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                     ->where('SPB_LOKASIASAL','=',$lks_from)
                                     ->where('SPB_LOKASITUJUAN','=',$lks_to)
                                     ->where('spb_jenis','=','MANUAL')
                                     ->update(['SPB_MINUS' => $qtyCase]);
-                                DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                                DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                     ->whereRaw("NVL (SPB_RECORDID, 'zz') = 'zz'")
                                     ->where('SPB_PRDCD','=',$rec[$i]->lks_prdcd)
                                     ->where('SPB_LOKASIASAL','=',$lks_from)
@@ -787,7 +787,7 @@ class spbmanualController extends Controller
                                     ->where('spb_jenis','=','MANUAL')
                                     ->update(['SPB_MINUS' => $qtyCase]);
                             }else{
-                                $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL
+                                $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL
                       FROM dual");
                                 if($qty > (int)$rec[$i]->qtys - (int)$rec[$i]->antrian){
                                     $qtyCase = (int)$rec[$i]->qtys - (int)$rec[$i]->antrian;
@@ -795,7 +795,7 @@ class spbmanualController extends Controller
                                     $qtyCase = $qty;
                                 }
 
-                                DB::connection($_SESSION['connection'])->table("TBTEMP_ANTRIANSPB")
+                                DB::connection(Session::get('connection'))->table("TBTEMP_ANTRIANSPB")
                                     ->insert(['SPB_PRDCD' => $plu,
                                         'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                         'SPB_LOKASIASAL' => $lks_from,
@@ -808,7 +808,7 @@ class spbmanualController extends Controller
                                         'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
 
 
-                                DB::connection($_SESSION['connection'])->table("TBTR_ANTRIANSPB")
+                                DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                                     ->insert(['SPB_PRDCD' => $plu,
                                         'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
                                         'SPB_LOKASIASAL' => $lks_from,
@@ -830,7 +830,7 @@ class spbmanualController extends Controller
                 }
             }
         }
-        DB::connection($_SESSION['connection'])->commit();
+        DB::connection(Session::get('connection'))->commit();
 
     }
 }

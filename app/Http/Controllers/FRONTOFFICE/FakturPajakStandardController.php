@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -22,7 +22,7 @@ class FakturPajakStandardController extends Controller
     }
 
     public function createCSV(Request $request){
-        $temp = DB::connection($_SESSION['connection'])
+        $temp = DB::connection(Session::get('connection'))
             ->selectOne("SELECT *
 FROM tbtr_jualdetail
 WHERE TRUNC (trjd_transactiondate)
@@ -33,7 +33,7 @@ FROM tbmaster_customer
 WHERE cus_flagmemberkhusus = 'Y'
 AND NVL (cus_flagpkp, 'z') <> 'Y'
 AND NVL (cus_jenismember, 'N') <> 'T'
-AND cus_kodeigr = '".$_SESSION['kdigr']."')
+AND cus_kodeigr = '".Session::get('kdigr')."')
 AND trjd_cus_kodemember NOT IN
 (SELECT fkt_kodemember
 FROM tbmaster_faktur_nonpkp
@@ -48,7 +48,7 @@ AND ROWNUM <= 1");
         else{
             $connect = loginController::getConnectionProcedure();
 
-            $query = oci_parse($connect, "BEGIN sp_csv_fk_mm_nonpkp('".$_SESSION['kdigr']."', to_date('".$request->periode."','mm/yyyy')); END;");
+            $query = oci_parse($connect, "BEGIN sp_csv_fk_mm_nonpkp('".Session::get('kdigr')."', to_date('".$request->periode."','mm/yyyy')); END;");
             oci_execute($query);
 
             return response()->json([
@@ -61,9 +61,9 @@ AND ROWNUM <= 1");
         $tipe = $request->tipe;
         $periode = explode('/',$request->periode);
 
-        $filename = $request->tipe.$_SESSION['kdigr'].'_'.$periode[1].$periode[0].'.CSV';
+        $filename = $request->tipe.Session::get('kdigr').'_'.$periode[1].$periode[0].'.CSV';
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->table('documents')
             ->where('doc_name','=',$filename)
             ->first();

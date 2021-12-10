@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
@@ -19,7 +19,7 @@ class JenisItemController extends Controller
     public function getProdmast(Request  $request){
         $search = $request->value;
 
-        $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $prodmast   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
@@ -33,7 +33,7 @@ class JenisItemController extends Controller
 
     public function lovSearch(Request $request){
         if(is_numeric($request->value)){
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_prdcd','like','%'.$request->value.'%')
                 ->orderBy('prd_deskripsipanjang')
@@ -42,7 +42,7 @@ class JenisItemController extends Controller
 
 
         else{
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_deskripsipanjang','like','%'.$request->value.'%')
                 ->orderBy('prd_deskripsipanjang')
@@ -60,7 +60,7 @@ class JenisItemController extends Controller
 
     public function lovSelect(Request $request)
     {
-        $lokasi = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $lokasi = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->select('lks_koderak',
                 'lks_kodesubrak',
                 'lks_tiperak',
@@ -77,23 +77,23 @@ class JenisItemController extends Controller
 
 
 
-        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
             ->first();
 
-        $palet = DB::connection($_SESSION['connection'])->table('TBMASTER_MAXPALET')
+        $palet = DB::connection(Session::get('connection'))->table('TBMASTER_MAXPALET')
             ->select('*')
             ->where('mpt_prdcd', '=', $request->value)
             ->first();
 
-        $trendsales = DB::connection($_SESSION['connection'])->table('TBTR_SALESBULANAN')
+        $trendsales = DB::connection(Session::get('connection'))->table('TBTR_SALESBULANAN')
             ->select('*')
             ->whereRaw("substr(sls_prdcd, 1, 6) = substr('".$request->value."',1,6)")
             ->first();
 
         $trendsales = (array)$trendsales;
-        $blnberjalan = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $blnberjalan = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('PRS_BULANBERJALAN')
             ->first();
 
@@ -140,7 +140,7 @@ class JenisItemController extends Controller
         }
 
     $TEMP = date('m');
-        $prodstock = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
+        $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
             ->where('prd_kodeigr', '=', "22")
@@ -178,7 +178,7 @@ class JenisItemController extends Controller
         }
         $AVGSALES = $VAVG / 3;
 
-        $po = DB::connection($_SESSION['connection'])->table('tbtr_po_h')->join('tbtr_po_d','TPOH_NOPO','=','TPOD_NOPO')->leftJoin('TBTR_PB_D', function ($join) {
+        $po = DB::connection(Session::get('connection'))->table('tbtr_po_h')->join('tbtr_po_d','TPOH_NOPO','=','TPOD_NOPO')->leftJoin('TBTR_PB_D', function ($join) {
             $join->on('TPOD_NOPO', '=', 'PBD_NOPO')->On('TPOD_PRDCD', '=', 'PBD_PRDCD');
         })
             ->select('*')
@@ -196,7 +196,7 @@ class JenisItemController extends Controller
             }
         }
 
-        $supplier = DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER','MSTD_KODESUPPLIER','=','SUP_KODESUPPLIER')
+        $supplier = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER','MSTD_KODESUPPLIER','=','SUP_KODESUPPLIER')
             ->select('*')
             ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
             ->where('mstd_kodeigr', '=', '22')
@@ -244,7 +244,7 @@ class JenisItemController extends Controller
 
         if ($request->jenisrak == 'N') {
 
-            $TEMP = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+            $TEMP = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                 ->select('*')
                 ->where('LKS_KODEIGR', '=', '22')
                 ->where('LKS_PRDCD', '=', $request->prdcd)
@@ -252,20 +252,20 @@ class JenisItemController extends Controller
                 ->count();
 
             if ($this->ceknull($TEMP, 0) == 0) {
-                DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                     ->where('LKS_KODEIGR', '22')
                     ->where('LKS_PRDCD', $request->prdcd)
                     ->whereRaw('NVL(LKS_JENISRAK, \'A\') IN(\'A\', \'D\', \'N\')')
                     ->update(['LKS_JENISRAK' => $request->jenisrak]);
 
-                $TEMP = DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')
+                $TEMP = DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                     ->select('*')
                     ->where('PLN_PRDCD', '=', $request->prdcd)
                     ->count();
 
                 if ($this->ceknull($TEMP, 0) == 0) {
 
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')->insert(
+                    DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                         ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                     );
                     $message = 'Data Berhasil Tersimpan!';
@@ -273,7 +273,7 @@ class JenisItemController extends Controller
                     return compact(['message','status']);
                 }
                 else {
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                         ->where('PLN_PRDCD', $request->prdcd)
                         ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
                     $message = 'Data Berhasil Terupdate!';
@@ -287,20 +287,20 @@ class JenisItemController extends Controller
             }
         }
         else{
-            DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+            DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                 ->where('LKS_KODEIGR', '22')
                 ->where('LKS_PRDCD', $request->prdcd)
                 ->whereRaw('NVL(LKS_JENISRAK, \'A\') IN(\'A\', \'D\', \'N\')')
                 ->update(['LKS_JENISRAK' => $request->jenisrak]);
 
-            $TEMP = DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')
+            $TEMP = DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                 ->select('*')
                 ->where('PLN_PRDCD', '=', $request->prdcd)
                 ->count();
 
             if ($this->ceknull($TEMP, 0) == 0 ) {
 
-                DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')->insert(
+                DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                     ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                 );
                 $message = 'Data Berhasil Tersimpan!';
@@ -308,7 +308,7 @@ class JenisItemController extends Controller
                 return compact(['message','status']);
             }
             else {
-                DB::connection($_SESSION['connection'])->table('TBMASTER_PLUPLANO')
+                DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                     ->where('PLN_PRDCD', $request->prdcd)
                     ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
                 $message = 'Data Berhasil Terupdate!';

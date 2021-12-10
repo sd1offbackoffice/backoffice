@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\OMI\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -24,9 +24,9 @@ class LaporanRekapServiceLevelSalesThdPBController extends Controller
     }
 
     public function pbModal(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("tbmaster_pbomi")
+        $datas = DB::connection(Session::get('connection'))->table("tbmaster_pbomi")
             ->selectRaw("DISTINCT pbo_nopb, pbo_kodeomi, pbo_create_dt")
             ->where('pbo_kodeigr','=',$kodeigr)
             //->whereRaw("trunc(pbo_create_dt) between :tgl1 and :tgl2")
@@ -40,7 +40,7 @@ class LaporanRekapServiceLevelSalesThdPBController extends Controller
     }
 
     public function cetak(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $cab1 = $request->cab1;
         $cab2 = $request->cab2;
@@ -65,7 +65,7 @@ class LaporanRekapServiceLevelSalesThdPBController extends Controller
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         if($pilihan == 'D'){
-            $datas = DB::connection($_SESSION['connection'])->select("SELECT NVL(COUNT(*),0) itemo, pbo_nopb, tglstruk, pbo_kodeomi, kodemember,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT NVL(COUNT(*),0) itemo, pbo_nopb, tglstruk, pbo_kodeomi, kodemember,
      pbo_nostruk, pbo_recordid, pbo_nokoli, tglgo, SUM(pbo_qtyorder) qtyo,
      SUM(pbo_nilaiorder) nilaio, SUM(pbo_ppnorder) ppno, SUM(qtyr) qtyr,
      SUM(nilair) nilair, SUM(itemr) itemr, tko_namaomi, namamember,
@@ -110,7 +110,7 @@ GROUP BY pbo_nopb, tglstruk, pbo_kodeomi, pbo_nostruk, kodemember,
                     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY kodemember, pbo_kodeomi, pbo_nopb, tglstruk");
         }else{
-            $datas = DB::connection($_SESSION['connection'])->select("SELECT pbo_kodeomi, kodemember, tglgo,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT pbo_kodeomi, kodemember, tglgo,
      SUM(pbo_qtyorder) qtyo, SUM(pbo_nilaiorder) nilaio,
      SUM(qtyr) qtyr, SUM(nilair) nilair, SUM(itemr) itemr,
      SUM(itemo) itemo, tko_namaomi, cus_namamember,

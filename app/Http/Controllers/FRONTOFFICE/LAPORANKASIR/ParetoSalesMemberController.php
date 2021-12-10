@@ -4,7 +4,7 @@ namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use PDF;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -12,18 +12,18 @@ class ParetoSalesMemberController extends Controller
 {
 
     public function index() {
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
 
-        $outlet = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')->where('out_kodeigr', $kodeigr)->orderBy('out_kodeoutlet')->get();
+        $outlet = DB::connection(Session::get('connection'))->table('tbmaster_outlet')->where('out_kodeigr', $kodeigr)->orderBy('out_kodeoutlet')->get();
 
         return view('FRONTOFFICE.LAPORANKASIR.laporan-pareto-sales-member', compact('outlet'));
     }
 
     public function getLovMember(Request  $request){
         $search = $request->search;
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
 
-        $member = DB::connection($_SESSION['connection'])->table('tbmaster_customer')->select('cus_kodemember' , 'cus_namamember', 'cus_recordid')
+        $member = DB::connection(Session::get('connection'))->table('tbmaster_customer')->select('cus_kodemember' , 'cus_namamember', 'cus_recordid')
             ->where('cus_kodeigr', $kodeigr)
             ->whereRaw("(cus_namamember LIKE '%$search%' or cus_kodemember  LIKE '%$search%' ) and (cus_recordid IS NULL OR cus_recordid <> 1)")
             ->orderBy('cus_kodemember')
@@ -33,7 +33,7 @@ class ParetoSalesMemberController extends Controller
     }
 
     public function cetakLaporan(Request $request){
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tgl_start  = $request->tgl_start;
         $tgl_end    = $request->tgl_end;
         $outlet_start = ($request->outlet_start) ? $request->outlet_start : '0';
@@ -65,9 +65,9 @@ class ParetoSalesMemberController extends Controller
             }
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-        $query = DB::connection($_SESSION['connection'])->select(" SELECT ROWNUM fnum, prs_namaperusahaan, prs_namacabang, out_namaoutlet, fNama,
+        $query = DB::connection(Session::get('connection'))->select(" SELECT ROWNUM fnum, prs_namaperusahaan, prs_namacabang, out_namaoutlet, fNama,
                            fOutlt, fCusNo, fwFreq, fwSlip, fwProd, fwAmt, flCost, fGrsMargn
                     FROM
                     (    SELECT prs_namaperusahaan, prs_namacabang, out_namaoutlet, cus_namamember fNama,

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\OMI;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use XBase\TableReader;
@@ -19,19 +19,19 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function prosesFile(Request  $request){
-        $userId     = $_SESSION['usid'];
-        $kodeigr    = $_SESSION['kdigr'];
-        $ip         = $_SESSION['ip'];
+        $userId     = Session::get('usid');
+        $kodeigr    = Session::get('kdigr');
+        $ip         = Session::get('ip');
         $file       = $request->file('file');
         $filename   = '';
         $list = [];
         $tempReportId = [];
         $sesiproc = rand(11,99).date('His');
 
-        DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanbkldalamkota')->delete();
-        DB::connection($_SESSION['connection'])->table('temp_list_bkldalamkota')->delete();
+        DB::connection(Session::get('connection'))->table('temp_cetak_tolakanbkldalamkota')->delete();
+        DB::connection(Session::get('connection'))->table('temp_list_bkldalamkota')->delete();
 
-        $stat = DB::connection($_SESSION['connection'])->table('tbmaster_computer')->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->toArray();
+        $stat = DB::connection(Session::get('connection'))->table('tbmaster_computer')->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->toArray();
         $station = ($stat)? $stat[0]->station : '';
 
         if (strtolower($file->getClientOriginalExtension()) == 'zip'){
@@ -64,7 +64,7 @@ class ProsesBKLDalamKotaController extends Controller
         $table = new TableReader(public_path('/DBF/'.$filename));
 
         while ($record = $table->nextRecord()) {
-            DB::connection($_SESSION['connection'])->table('temp_bkl_dalamkota')->insert([ 'recid' => 5, 'gudang' => $record->get('gudang'),
+            DB::connection(Session::get('connection'))->table('temp_bkl_dalamkota')->insert([ 'recid' => 5, 'gudang' => $record->get('gudang'),
                     'id' => $record->get('id'), 'lokasi' => $record->get('lokasi'), 'rtype' => $record->get('rtype'),
                     'bukti_no' => $record->get('bukti_no'), 'bukti_tgl' => $record->get('bukti_tgl'), 'supco' => $record->get('supco'),
                     'cr_term' => $record->get('cr_term'), 'prdcd' => $record->get('prdcd'), 'qty' => $record->get('qty'),
@@ -80,18 +80,18 @@ class ProsesBKLDalamKotaController extends Controller
                 ]);
         }
 
-        $moveData = DB::connection($_SESSION['connection'])->insert("INSERT INTO temp_bkl_dalamkota_full
+        $moveData = DB::connection(Session::get('connection'))->insert("INSERT INTO temp_bkl_dalamkota_full
                   (SELECT bkl.*, SYSDATE
                      FROM temp_bkl_dalamkota bkl
                     WHERE sessid = $sesiproc AND namafile = '$filename')");
 
         //testing report
-//        DB::connection($_SESSION['connection'])->insert("INSERT INTO temp_cetak_tolakanbkldalamkota
+//        DB::connection(Session::get('connection'))->insert("INSERT INTO temp_cetak_tolakanbkldalamkota
 //                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, keter, sessid, namafile
 //                     FROM temp_bkl_dalamkota bkl
 //                    WHERE sessid = $sesiproc AND namafile = '$filename')");
 //
-//        DB::connection($_SESSION['connection'])->insert("INSERT INTO temp_list_bkldalamkota
+//        DB::connection(Session::get('connection'))->insert("INSERT INTO temp_list_bkldalamkota
 //                  (SELECT gudang, bukti_no, bukti_tgl, supco,prdcd,qty, bonus, price, gross, 12345, inv_date, istype, sessid, namafile
 //                     FROM temp_bkl_dalamkota bkl
 //                    WHERE sessid = $sesiproc AND namafile = '$filename')");
@@ -117,14 +117,14 @@ class ProsesBKLDalamKotaController extends Controller
 //        $param_all_kasir = "000015";
 
         if ($param_proses == 1){
-            $temp = DB::connection($_SESSION['connection'])->table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
+            $temp = DB::connection(Session::get('connection'))->table('temp_list_bkldalamkota')->where('sessid', $sesiproc)
                 ->where('namafile', $filename)->get()->toArray();
 
             if ($temp){
                 array_push($tempReportId,'1','2','3','4');
             }
 
-            $temp = DB::connection($_SESSION['connection'])->table('temp_cetak_tolakanbkldalamkota')->where('sessid', $sesiproc)
+            $temp = DB::connection(Session::get('connection'))->table('temp_cetak_tolakanbkldalamkota')->where('sessid', $sesiproc)
                 ->where('namafile', $filename)->get()->toArray();
 
             if ($temp){
@@ -132,7 +132,7 @@ class ProsesBKLDalamKotaController extends Controller
             }
         }
 
-//        DB::connection($_SESSION['connection'])->table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
+//        DB::connection(Session::get('connection'))->table('temp_bkl_dalamkota')->where('sessid', $sesiproc)->where('namafile', $filename)->delete();
 
         $data = ['sesiproc' => $sesiproc, 'namafiler' => $filename, 'report_id' => $tempReportId, 'param_all_kasir' => $param_all_kasir];
         return response()->json(['kode' => $res_kode, 'msg' => $res_msg, 'data' => $data]);
@@ -144,9 +144,9 @@ class ProsesBKLDalamKotaController extends Controller
         $filename   = $request->filename;
         $sesiproc   = $request->sesiproc;
         $kasir      = $request->kasir;
-        $kodeigr    = $_SESSION['kdigr'];
-        $userId     = $_SESSION['usid'];
-        $ip         = $_SESSION['ip'];
+        $kodeigr    = Session::get('kdigr');
+        $userId     = Session::get('usid');
+        $ip         = Session::get('ip');
         $bladeName  = '';
         $paperFormat= 'potrait';
         $pageNum1   = -10;
@@ -160,7 +160,7 @@ class ProsesBKLDalamKotaController extends Controller
             $pageNum1   = ($size == 'K') ? 507 : 507; // list detail yg lama menggunakan landsacpe di koor : 756
             $pageNum2   = 77.75;
         } elseif ($report_id == 2){
-            $noPO = DB::connection($_SESSION['connection'])->select("SELECT *
+            $noPO = DB::connection(Session::get('connection'))->select("SELECT *
                                           FROM (SELECT DISTINCT no_bukti, kodetoko, tgl_bukti,  msth_nodoc
                                                   FROM temp_list_bkldalamkota, TBTR_MSTRAN_H
                                                  WHERE     TRIM (NAMAFILE) LIKE '%$filename%'
@@ -176,16 +176,16 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = "OMI.proses-bkl-struk-pdf";
         } elseif ($report_id == 4){
             $connect = loginController::getConnectionProcedure();
-            $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
+            $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
             oci_bind_by_name($execute, ':ret', $noDoc, 32);
             oci_execute($execute);
 
-            $stat = DB::connection($_SESSION['connection'])->table('tbmaster_computer')->select('station')
+            $stat = DB::connection(Session::get('connection'))->table('tbmaster_computer')->select('station')
                 ->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->first();
             $stat = $stat->station ?? '...';
 
             $result     = $this->laporanReset($noDoc, $kodeigr, $stat, $userId);
-            $jmlh_trans = DB::connection($_SESSION['connection'])->select("select nvl(count(*),0) as total from (
+            $jmlh_trans = DB::connection(Session::get('connection'))->select("select nvl(count(*),0) as total from (
                                               SELECT DISTINCT trjd_transactionno
                                               FROM tbtr_jualdetail
                                               WHERE trjd_kodeigr = '$kodeigr'
@@ -202,7 +202,7 @@ class ProsesBKLDalamKotaController extends Controller
             $bladeName  = "OMI.proses-bkl-tolakan-pdf";
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
         $pdf = PDF::loadview("$bladeName",[ 'data' => $result, 'perusahaan' => $perusahaan]);
         $pdf->setPaper('A4', $paperFormat);
@@ -217,7 +217,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanList($filename,$sesiproc,$kodeigr){
-        return DB::connection($_SESSION['connection'])->select(" SELECT no_bukti, tgl_bukti, kodetoko, cus_kodemember, cus_namamember, kodesupplier, sup_namasupplier, no_tran, TRUNC (tgl_tran) as tgl_tran, prs_namaperusahaan,
+        return DB::connection(Session::get('connection'))->select(" SELECT no_bukti, tgl_bukti, kodetoko, cus_kodemember, cus_namamember, kodesupplier, sup_namasupplier, no_tran, TRUNC (tgl_tran) as tgl_tran, prs_namaperusahaan,
                                             prs_namacabang, prs_namawilayah, SUM (harga) harga, SUM (gross) gross
                                         FROM (SELECT bkl.no_bukti, bkl.tgl_bukti, bkl.kodetoko, cus_kodemember, cus_namamember, bkl.kodesupplier, sup_namasupplier, bkl.no_tran,
                                                      bkl.tgl_tran, bkl.harga, bkl.gross, prs_namaperusahaan, prs_namacabang, prs_namawilayah
@@ -253,7 +253,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanListDetail($filename,$sesiproc,$kodeigr){
-        return DB::connection($_SESSION['connection'])->select("SELECT no_bukti, trunc(tgl_bukti) tgl_bukti, kodetoko, cus_kodemember,
+        return DB::connection(Session::get('connection'))->select("SELECT no_bukti, trunc(tgl_bukti) tgl_bukti, kodetoko, cus_kodemember,
                                     kodesupplier, sup_namasupplier, no_tran, trunc(tgl_tran) tgl_tran, prdcd,  qty, bonus,
                                     prd_deskripsipendek, prd_unit || '/' || prd_frac satuan, harga, gross, gross total,
                                     prs_namaperusahaan, prs_namacabang, prs_namawilayah
@@ -271,7 +271,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanBpb($kodeigr, $no_po){
-        return DB::connection($_SESSION['connection'])->select("SELECT  msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (TRUNC (mstd_tgldoc) + msth_cterm) tgljt,
+        return DB::connection(Session::get('connection'))->select("SELECT  msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (TRUNC (mstd_tgldoc) + msth_cterm) tgljt,
                                            mstd_cterm, mstd_typetrn, prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamatfakturpajak1, prs_alamatfakturpajak2, prs_alamatfakturpajak3,
                                            sup_kodesupplier || ' ' || sup_namasupplier || '/' || sup_singkatansupplier supplier,
                                            sup_npwp,
@@ -316,7 +316,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanStruk($kodeigr, $kasir){
-        return DB::connection($_SESSION['connection'])->select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
+        return DB::connection(Session::get('connection'))->select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
                                         trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
                                         trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
                                         trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,
@@ -340,7 +340,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanReset($noDoc, $kodeigr, $station, $userId){
-        return DB::connection($_SESSION['connection'])->select("SELECT js_totcreditsalesamt, prs_kodecabang, js_cashierstation, prs_namaperusahaan, prs_namacabang, 'No. Reset : ' || '$noDoc' nomor, TO_CHAR(SYSDATE,'dd-MM-yy') tgl, TO_CHAR(SYSDATE, 'hh:mm:ss') jam, 0 void, userid,  username
+        return DB::connection(Session::get('connection'))->select("SELECT js_totcreditsalesamt, prs_kodecabang, js_cashierstation, prs_namaperusahaan, prs_namacabang, 'No. Reset : ' || '$noDoc' nomor, TO_CHAR(SYSDATE,'dd-MM-yy') tgl, TO_CHAR(SYSDATE, 'hh:mm:ss') jam, 0 void, userid,  username
                                 FROM TBTR_JUALSUMMARY, TBMASTER_PERUSAHAAN, TBMASTER_USER
                                 WHERE js_kodeigr = '$kodeigr'
                                 AND js_cashierid = 'BKL'
@@ -352,7 +352,7 @@ class ProsesBKLDalamKotaController extends Controller
     }
 
     public function laporanTolakan($filename,$sesiproc, $kodeigr){
-        return DB::connection($_SESSION['connection'])->select("SELECT kodetoko, tko_namaomi, no_bukti, tgl_bukti, kodesupplier, prdcd, qty, bonus, keterangan,
+        return DB::connection(Session::get('connection'))->select("SELECT kodetoko, tko_namaomi, no_bukti, tgl_bukti, kodesupplier, prdcd, qty, bonus, keterangan,
                                         prd_deskripsipendek, prd_unit || '/' || prd_frac satuan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
                                   FROM temp_cetak_tolakanbkldalamkota,
                                        tbmaster_perusahaan,

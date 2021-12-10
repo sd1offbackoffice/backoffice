@@ -21,7 +21,7 @@ $datetime->setTimezone($timezone);
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
         <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
             Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ $_SESSION['usid'] }}<br><br>
+            <i>User ID</i> : {{ Session::get('usid') }}<br><br>
             Hal. :
     </div>
     <h2 style="text-align: center">** KERTAS KERJA STATUS **<br>Periode : {{ $periode }}</h2>

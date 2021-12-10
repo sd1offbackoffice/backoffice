@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use http\Env\Response;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -34,7 +34,7 @@ class MonitoringStokParetoController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::connection($_SESSION['connection'])->select("select distinct mpl_kodemonitoring kode_mon, mpl_namamonitoring nama_mon
+        $data = DB::connection(Session::get('connection'))->select("select distinct mpl_kodemonitoring kode_mon, mpl_namamonitoring nama_mon
             from tbtr_monitoringplu
             where mpl_kodemonitoring in('SM', 'SJMF', 'SJMNF', 'SPVF', 'SPVNF', 'SPVGMS','F1','F2','NF1','NF2','G','O')
             order by mpl_kodemonitoring");
@@ -69,11 +69,11 @@ class MonitoringStokParetoController extends Controller
 
         $hrkj++;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $data = [];
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT   HGB_KODESUPPLIER KDSUP, SUP_NAMASUPPLIER NMSUP,
+        $data = DB::connection(Session::get('connection'))->select("SELECT   HGB_KODESUPPLIER KDSUP, SUP_NAMASUPPLIER NMSUP,
          PRD_PRDCD PLU, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT UNIT, PRD_UNIT || ' / ' || PRD_FRAC SATUAN_JUAL,
          PRD_SATUANBELI || ' / ' || PRD_ISIBELI SATUAN_BELI, ST_SALDOAWAL SALDOAWAL,
          ST_SALDOAKHIR SALDOAKHIR, OUTPO, OUTQTY, SUP_JANGKAWAKTUKIRIMBARANG LT,
@@ -98,7 +98,7 @@ class MonitoringStokParetoController extends Controller
                        AND MSTD_PRDCD(+) = TPOD_PRDCD
                        AND NVL (MSTD_RECORDID(+), '0') <> '1')
           GROUP BY TPOD_PRDCD)
-   WHERE PRD_KODEIGR = '".$_SESSION['kdigr']."'
+   WHERE PRD_KODEIGR = '".Session::get('kdigr')."'
      AND PRD_PRDCD LIKE '%0'
      AND PRD_KODEIGR = HGB_KODEIGR(+)
      AND PRD_PRDCD = HGB_PRDCD(+)
@@ -120,7 +120,7 @@ class MonitoringStokParetoController extends Controller
         $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                 ->select('kvp_pluold')
                 ->where('kvp_kodetipe','=','M')
                 ->where('kvp_plunew','=',$d->plu)
@@ -136,7 +136,7 @@ class MonitoringStokParetoController extends Controller
             if($temp){
                 $v_pluold = $temp->kvp_pluold;
 
-                $sql = "BEGIN SP_PKM_SALES ('".$_SESSION['kdigr']."',
+                $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
@@ -162,7 +162,7 @@ class MonitoringStokParetoController extends Controller
                 oci_execute($s);
             }
 
-            $sql = "BEGIN SP_PKM_SALES ('".$_SESSION['kdigr']."',
+            $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
@@ -230,11 +230,11 @@ class MonitoringStokParetoController extends Controller
     public function printMontok(Request $request){
         $kodemon = $request->kodemon;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $data = [];
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT   MPL_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI,
+        $data = DB::connection(Session::get('connection'))->select("SELECT   MPL_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI,
              PRD_UNIT || '/' || PRD_FRAC SATUAN, PRD_UNIT UNIT, ST_SALDOAKHIR SALDOAKHIR, OUTPO, OUTQTY,
              PRD_MINORDER MINQTY, PKM_PKMT PKMT, PRD_KODEDIVISI DIV, PRD_KODEDEPARTEMENT DEP,
              PRD_KODEKATEGORIBARANG KAT, DIV_NAMADIVISI NMDIV, DEP_NAMADEPARTEMENT NMDEP,
@@ -256,7 +256,7 @@ class MonitoringStokParetoController extends Controller
              TBMASTER_DIVISI,
              TBMASTER_DEPARTEMENT,
              TBMASTER_KATEGORI
-       WHERE MPL_KODEIGR = '".$_SESSION['kdigr']."'
+       WHERE MPL_KODEIGR = '".Session::get('kdigr')."'
          AND MPL_PRDCD = PRD_PRDCD(+)
          AND MPL_KODEIGR = ST_KODEIGR(+)
          AND ST_LOKASI(+) = '01'
@@ -277,7 +277,7 @@ class MonitoringStokParetoController extends Controller
         $c = loginController::getConnectionProcedure();
 
         foreach($data as $d){
-            $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                 ->select('kvp_pluold')
                 ->where('kvp_kodetipe','=','M')
                 ->where('kvp_plunew','=',$d->plu)
@@ -293,7 +293,7 @@ class MonitoringStokParetoController extends Controller
             if($temp){
                 $v_pluold = $temp->kvp_pluold;
 
-                $sql = "BEGIN SP_PKM_SALES ('".$_SESSION['kdigr']."',
+                $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
@@ -319,7 +319,7 @@ class MonitoringStokParetoController extends Controller
                 oci_execute($s);
             }
 
-            $sql = "BEGIN SP_PKM_SALES ('".$_SESSION['kdigr']."',
+            $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
                       ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",

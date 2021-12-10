@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,9 +25,9 @@ class HargaPromosiController extends Controller
     }
 
     public function ModalMain(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
+        $datas = DB::connection(Session::get('connection'))->table("TBTR_PROMOMD")
             ->selectRaw("PRMD_PRDCD")
             ->selectRaw("PRMD_JENISDISC")
 //            ->selectRaw("PRMD_TGLAWAL")
@@ -47,10 +47,10 @@ class HargaPromosiController extends Controller
     }
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_PRDCD")
 
@@ -71,25 +71,25 @@ class HargaPromosiController extends Controller
 
 
     public function CheckPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
         $notif = '';
         $promo = '';
 
-        $barang = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $barang = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG as deskripsi")
             ->selectRaw("PRD_UNIT || '/' || PRD_FRAC as unit")
             ->where("PRD_KODEIGR",'=',$kodeigr)
             ->where("PRD_PRDCD",'=',$kode)
             ->first();
         if($barang){
-            $temp = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
+            $temp = DB::connection(Session::get('connection'))->table("TBTR_PROMOMD")
                 ->selectRaw("NVL(COUNT(1),0) as result")
                 ->where("PRMD_KODEIGR",'=',$kodeigr)
                 ->where("PRMD_PRDCD",'=',$kode)
                 ->first();
             if($temp->result != '0'){
-                $promo = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
+                $promo = DB::connection(Session::get('connection'))->table("TBTR_PROMOMD")
                     ->selectRaw("PRMD_JENISDISC")
                     ->selectRaw("PRMD_TGLAWAL")
                     ->selectRaw("PRMD_TGLAKHIR")
@@ -107,9 +107,9 @@ class HargaPromosiController extends Controller
     }
 
     public function print(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTR_PROMOMD")
+        $datas = DB::connection(Session::get('connection'))->table("TBTR_PROMOMD")
             ->selectRaw("PRMD_PRDCD")
             ->selectRaw("PRMD_JENISDISC")
             ->selectRaw("TO_CHAR(PRMD_TGLAWAL, 'DD/MM/YYYY') as PRMD_TGLAWAL")
@@ -128,7 +128,7 @@ class HargaPromosiController extends Controller
             ->orderBy("PRMD_PRDCD")
             ->get();
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('TABEL.harga-promosi-pdf',['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAANDARICABANG;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,10 +18,10 @@ class CetakTransferController extends Controller
     }
 
     public function getDataLov(){
-        $lov = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $lov = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw("msth_nodoc no, TO_CHAR(msth_tgldoc, 'DD/MM/YYYY') tgl")
             ->where('msth_typetrn','=','I')
-            ->where('msth_kodeigr','=',$_SESSION['kdigr'])
+            ->where('msth_kodeigr','=',Session::get('kdigr'))
             ->whereNull('msth_recordid')
             ->orderBy('msth_tgldoc','desc')
             ->get();
@@ -34,10 +34,10 @@ class CetakTransferController extends Controller
         $bpb2 = $request->bpb2;
         $ukuran = $request->size;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("select
+        $data = DB::connection(Session::get('connection'))->select("select
                     case when prs_namacabang = cab_namacabang then
                                 'BUKTI PENERIMAAN BARANG INTERN'
                     else
@@ -68,7 +68,7 @@ class CetakTransferController extends Controller
                     tbtr_mstran_h,
                     tbtr_mstran_d
                 Where
-                    prs_kodeigr = '".$_SESSION['kdigr']."'
+                    prs_kodeigr = '".Session::get('kdigr')."'
                     and cab_kodeigr = prs_kodeigr
                     and msth_kodeigr = prs_kodeigr
                     and mstd_kodeigr = prs_kodeigr

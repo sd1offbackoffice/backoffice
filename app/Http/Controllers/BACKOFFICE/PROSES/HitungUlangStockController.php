@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\PROSES;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -20,9 +20,9 @@ class HitungUlangStockController extends Controller
 
     public function getDataLov()
     {
-        $lov = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $lov = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where('prd_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->orderBy('prd_prdcd')
             ->get();
         return DataTables::of($lov)->make(true);
@@ -49,9 +49,9 @@ class HitungUlangStockController extends Controller
 
 
 //        dd($plu2);
-        DB::connection($_SESSION['connection'])->beginTransaction();
+        DB::connection(Session::get('connection'))->beginTransaction();
         $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN SP_HITUNG_STOCK2('" . $_SESSION['kdigr'] . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
+        $sql = "BEGIN SP_HITUNG_STOCK2('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':plu1', $plu1);
@@ -70,7 +70,7 @@ class HitungUlangStockController extends Controller
         }
 
         $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . $_SESSION['kdigr'] . "', to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),:p_sukses,:err_txt); END;";
+        $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . Session::get('kdigr') . "', to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':p_sukses', $p_sukses, 100);
@@ -84,7 +84,7 @@ class HitungUlangStockController extends Controller
             $status = 'error';
             $err_txt = 'Proses Hitung Stock GAGAL! --> ' . $err_txt;
         }
-        DB::connection($_SESSION['connection'])->commit();
+        DB::connection(Session::get('connection'))->commit();
 
         $akhir = Date('H:i:s');
         return compact(['mulai', 'akhir', 'status', 'err_txt']);
@@ -95,7 +95,7 @@ class HitungUlangStockController extends Controller
         $status = '';
         $err_txt = '';
 
-        DB::connection($_SESSION['connection'])->beginTransaction();
+        DB::connection(Session::get('connection'))->beginTransaction();
         $mulai = Date('H:i:s');
 
         $c = loginController::getConnectionProcedure();
@@ -108,7 +108,7 @@ class HitungUlangStockController extends Controller
         $status = 'success';
         $err_txt = 'Data Sudah di Proses !!' . $err_txt;
 
-        DB::connection($_SESSION['connection'])->commit();
+        DB::connection(Session::get('connection'))->commit();
 
         $akhir = Date('H:i:s');
         return compact(['mulai', 'akhir', 'status', 'err_txt']);
@@ -126,7 +126,7 @@ class HitungUlangStockController extends Controller
 
             $mulai = Date('H:i:s');
 
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
             $c = loginController::getConnectionProcedure();
             $sql = "BEGIN SP_LPP_POINT(to_char(sysdate,'yyyyMM'),'HITY',:err_txt); END;";
             $s = oci_parse($c, $sql);
@@ -139,7 +139,7 @@ class HitungUlangStockController extends Controller
             $status = 'success';
             $err_txt = 'Data Penghapusan Akhir Tahun Sudah di Lakukan !! ' . $err_txt;
             // report hapus?
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return compact(['mulai', 'akhir', 'status', 'err_txt']);
         }
@@ -149,12 +149,12 @@ class HitungUlangStockController extends Controller
     public function PrintHapus(Request $request)
     {
         $kdsup = $request->kdsup;
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
-            ->where('prs_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('prs_kodeigr', '=', Session::get('kdigr'))
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->select("select prs_namaperusahaan, prs_namacabang, prs_namawilayah, a.* from ( select 'S A L D O     P O I N T' jenis, lpp_kodemember kd_member, cus_namamember nm_member, lpp_saldoawal sebelum, lpp_saldoakhir sesudah, lpp_hapustahun hapus from tbtr_lpppoint, tbmaster_customer where lpp_periode = to_char(sysdate, 'yyyyMM') and nvl(lpp_hapustahun, 0) <> 0    and cus_kodemember(+) = lpp_kodemember union select 'S A L D O     S T A R' jenis, lps_kodemember kd_member, cus_namamember nm_member, lps_saldoawal sebelum, lps_saldoakhir sesudah, lps_hapustahun hapus from tbtr_lppstar, tbmaster_customer where lps_periode = to_char(sysdate, 'yyyyMM') and nvl(lps_hapustahun, 0) <> 0 and cus_kodemember(+) = lps_kodemember )a, tbmaster_perusahaan where prs_kodeigr = " . $_SESSION['kdigr'] . " order by jenis, kd_member");
+        $data = DB::connection(Session::get('connection'))->select("select prs_namaperusahaan, prs_namacabang, prs_namawilayah, a.* from ( select 'S A L D O     P O I N T' jenis, lpp_kodemember kd_member, cus_namamember nm_member, lpp_saldoawal sebelum, lpp_saldoakhir sesudah, lpp_hapustahun hapus from tbtr_lpppoint, tbmaster_customer where lpp_periode = to_char(sysdate, 'yyyyMM') and nvl(lpp_hapustahun, 0) <> 0    and cus_kodemember(+) = lpp_kodemember union select 'S A L D O     S T A R' jenis, lps_kodemember kd_member, cus_namamember nm_member, lps_saldoawal sebelum, lps_saldoakhir sesudah, lps_hapustahun hapus from tbtr_lppstar, tbmaster_customer where lps_periode = to_char(sysdate, 'yyyyMM') and nvl(lps_hapustahun, 0) <> 0 and cus_kodemember(+) = lps_kodemember )a, tbmaster_perusahaan where prs_kodeigr = " . Session::get('kdigr') . " order by jenis, kd_member");
 
         $pdf = PDF::loadview('BACKOFFICE.PROSES.hapustahun-cetak', compact(['data', 'perusahaan']));
         $pdf->output();

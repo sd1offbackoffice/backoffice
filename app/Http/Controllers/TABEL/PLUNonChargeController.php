@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,10 +18,10 @@ class PLUNonChargeController extends Controller
     }
 
     public function getData(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
             ->leftJoin('tbmaster_prodmast','prd_prdcd','=','non_prdcd')
             ->selectRaw("non_prdcd plu, nvl(prd_deskripsipanjang, 'PLU TIDAK TERDAFTAR DI MASTER BARANG') desk, case when prd_unit is null then ' ' else prd_unit || '/' || prd_frac end satuan")
-            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            ->where('non_kodeigr','=',Session::get('kdigr'))
             ->orderBy('non_prdcd')
             ->get();
 
@@ -29,9 +29,9 @@ class PLUNonChargeController extends Controller
     }
 
     public function getLovPLU(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
-            ->where('prd_kodeigr','=',$_SESSION['kdigr'])
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
             ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
             ->orderBy('prd_prdcd')
             ->get();
@@ -40,9 +40,9 @@ class PLUNonChargeController extends Controller
     }
 
     public function getPLUDetail(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
+        $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd plu, prd_kodetag tag, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
-         WHERE prd_kodeigr = ".$_SESSION['kdigr']."
+         WHERE prd_kodeigr = ".Session::get('kdigr')."
            AND prd_prdcd = brc_prdcd(+)
            AND (prd_prdcd = TRIM ('".$request->plu."') OR brc_barcode = TRIM('".$request->plu."'))")[0];
 
@@ -60,17 +60,17 @@ class PLUNonChargeController extends Controller
     }
 
     public function addPLU(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
-            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
+            ->where('non_kodeigr','=',Session::get('kdigr'))
             ->where('non_prdcd','=',$request->plu)
             ->first();
 
         if(!$temp){
-            DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
+            DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
                 ->insert([
-                    'non_kodeigr' => $_SESSION['kdigr'],
+                    'non_kodeigr' => Session::get('kdigr'),
                     'non_prdcd' => $request->plu,
-                    'non_create_by' => $_SESSION['usid'],
+                    'non_create_by' => Session::get('usid'),
                     'non_create_dt' => DB::RAW("SYSDATE")
                 ]);
 
@@ -87,8 +87,8 @@ class PLUNonChargeController extends Controller
 
     public function deletePLU(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
-                ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
+                ->where('non_kodeigr','=',Session::get('kdigr'))
                 ->where('non_prdcd','=',$request->plu)
                 ->delete();
 
@@ -112,15 +112,15 @@ class PLUNonChargeController extends Controller
 //        AND PRS_KODEIGR = :P_KODEIGR
 //ORDER BY NON_PRDCD
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_plucharge')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_plucharge')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('prd_kodeigr','=','non_kodeigr');
                 $join->on('prd_prdcd','=','non_prdcd');
             })
             ->selectRaw("NON_PRDCD, PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT")
-            ->where('non_kodeigr','=',$_SESSION['kdigr'])
+            ->where('non_kodeigr','=',Session::get('kdigr'))
             ->orderBy('non_prdcd')
             ->get();
 

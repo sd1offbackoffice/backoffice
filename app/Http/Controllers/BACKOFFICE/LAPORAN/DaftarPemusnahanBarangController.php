@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -26,9 +26,9 @@ class DaftarPemusnahanBarangController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi', 'div_namadivisi')
-            ->where('div_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('div_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('div_kodedivisi >= ' . $div)
             ->get();
 
@@ -37,9 +37,9 @@ class DaftarPemusnahanBarangController extends Controller
 
     public function getDataLovDep(Request $request)
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement', 'dep_namadepartement', 'dep_kodedivisi')
-            ->where('dep_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('dep_kodeigr', '=', Session::get('kdigr'))
             ->where('dep_kodedivisi', '=', $request->div)
             ->get();
 
@@ -48,10 +48,10 @@ class DaftarPemusnahanBarangController extends Controller
 
     public function getDataLovKat(Request $request)
     {
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
             ->join('tbmaster_departement', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('kat_namakategori', 'kat_kodekategori', 'kat_kodedepartement', 'dep_kodedivisi')
-            ->where('kat_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('kat_kodeigr', '=', Session::get('kdigr'))
             ->where('kat_kodedepartement', '=', $request->dep)
             ->where('dep_kodedivisi', '=', $request->div)
             ->orderBy('kat_kodedepartement')
@@ -67,9 +67,9 @@ class DaftarPemusnahanBarangController extends Controller
             $sup = 1;
         else $sup = $request->sup;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
-            ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->where('sup_kodesupplier', '>=', $sup)
             ->orderBy('sup_kodesupplier')
             ->distinct()
@@ -90,12 +90,12 @@ class DaftarPemusnahanBarangController extends Controller
         $kat1 = $request->kat1;
         $kat2 = $request->kat2;
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
         if ($tipe === '1') {
-            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang,
@@ -112,7 +112,7 @@ from (select mstd_kodedivisi, div_namadivisi,
         from tbmaster_divisi, tbmaster_departement, tbmaster_kategori, tbmaster_prodmast,
                 tbtr_mstran_d, tbmaster_perusahaan
 where mstd_typetrn = 'F'
-        and mstd_kodeigr = '".$_SESSION['kdigr']."'
+        and mstd_kodeigr = '".Session::get('kdigr')."'
         and NVL(mstd_recordid, '9') <> '1'
         and mstd_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and prd_prdcd(+) = mstd_prdcd
@@ -150,7 +150,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
-            $data = DB::connection($_SESSION['connection'])->select("select plu, barang, kemasan,
+            $data = DB::connection(Session::get('connection'))->select("select plu, barang, kemasan,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
@@ -172,7 +172,7 @@ from (
         from tbtr_mstran_d,tbmaster_prodmast,
         tbmaster_divisi, tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 where mstd_typetrn='F'
-        and mstd_kodeigr='".$_SESSION['kdigr']."'
+        and mstd_kodeigr='".Session::get('kdigr')."'
         and NVL(mstd_recordid, '9') <> '1'
         and mstd_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and prd_prdcd(+) = mstd_prdcd
@@ -212,7 +212,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, mstd_prdcd
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
-            $data = DB::connection($_SESSION['connection'])->select("select plu, barang, kemasan,
+            $data = DB::connection(Session::get('connection'))->select("select plu, barang, kemasan,
         mstd_nodoc, mstd_tgldoc,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -238,7 +238,7 @@ from (
         from tbtr_mstran_d,tbmaster_prodmast, tbmaster_divisi,
                 tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
         where mstd_typetrn = 'F'
-        and mstd_kodeigr ='".$_SESSION['kdigr']."'
+        and mstd_kodeigr ='".Session::get('kdigr')."'
         and NVL(mstd_recordid, '9') <> '1'
         and TRUNC(mstd_tgldoc) between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and prd_prdcd(+) = mstd_prdcd

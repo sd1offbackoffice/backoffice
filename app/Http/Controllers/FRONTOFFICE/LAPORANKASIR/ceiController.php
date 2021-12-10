@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,9 +25,9 @@ class ceiController extends Controller
     public function getNmr(Request $request)
     {
         $search = $request->val;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
             ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
@@ -40,7 +40,7 @@ class ceiController extends Controller
     }
 
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -57,7 +57,7 @@ class ceiController extends Controller
         if($event1 != '' && $event2 != ''){
             $and_even = " and dtl.kd_promosi between '".$event1."' and '".$event2."'";
         }
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
          A.CBH_TGLAKHIR, SUM(A.qtyref) qtyref, SUM(A.qtysls) qtysls, SUM(A.nilref) nilref,
          SUM(A.nilsls) nilsls, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER, SUP_NAMASUPPLIER,
          PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
@@ -119,7 +119,7 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
         }
     }
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -136,7 +136,7 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
         if($event1 != '' && $event2 != ''){
             $and_even = " and dtl.kd_promosi between '".$event1."' and '".$event2."'";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT A.PLU, A.CBH_KODEPROMOSI,A.CBH_NAMAPROMOSI, A.CBH_KODEPERJANJIAN, A.CBH_TGLAWAL,
          A.CBH_TGLAKHIR, SUM(A.qtyref) qtyref, SUM(A.qtysls) qtysls, SUM(A.nilref) nilref,
          SUM(A.nilsls) nilsls, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER, SUP_NAMASUPPLIER,
          PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
@@ -196,7 +196,7 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
             return "**DATA TIDAK ADA**";
         }
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $dateA = str_replace("-","/",$dateA);

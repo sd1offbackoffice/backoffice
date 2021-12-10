@@ -5,7 +5,7 @@ namespace App\Http\Controllers\OMI\LAPORAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,12 +18,12 @@ class CetakFakturPajakController extends Controller
     }
 
     public function getData(Request $request){
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT DISTINCT FKT_KODEMEMBER, TRUNC(FKT_TGL) FKT_TGL, TKO_KODEOMI,
     		                 TKO_NAMAOMI, CASE WHEN trjd_create_by = 'BKL' THEN 'BKL' ELSE trjd_create_by END kasir,
     		                 FKT_SIGN status
            FROM TBMASTER_FAKTUR, TBMASTER_TOKOIGR, TBTR_JUALDETAIL
-           WHERE FKT_KODEIGR = '".$_SESSION['kdigr']."'
+           WHERE FKT_KODEIGR = '".Session::get('kdigr')."'
             AND TRUNC(FKT_TGL)= TRUNC(TO_DATE('".$request->tanggal."','dd/mm/yyyy'))
             AND FKT_KODEMEMBER  IN (SELECT tko_kodecustomer FROM TBMASTER_TOKOIGR)
             AND trjd_cus_kodemember = fkt_kodemember
@@ -43,11 +43,11 @@ class CetakFakturPajakController extends Controller
         $nama = $request->nama;
         $jabatan = $request->jabatan;
 
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT JUDUL, CORET, NO_FP, fkt_sign, fkt_station, fkt_notransaksi, fkt_kasir,
          TGL_FP, NAMA_CUST, ALMT_C_1, ALMT_C_2,
          NPWP_CUST, NPPKP,  NAMA_BRG,
@@ -124,7 +124,7 @@ class CetakFakturPajakController extends Controller
            AND fp.fkt_kodemember = '".$request->kodemember."'
            AND fp.fkt_recordid IS NULL
            AND TRUNC(fp.fkt_tgl) = TRUNC(to_date('".$request->tanggal."','dd/mm/yyyy'))
-           AND fp.fkt_kodeigr = '".$_SESSION['kdigr']."'
+           AND fp.fkt_kodeigr = '".Session::get('kdigr')."'
         UNION ALL
         SELECT '                   ' JUDUL,
                '           XXXXXXXXXXXXXXXXXX' CORET,
@@ -176,7 +176,7 @@ class CetakFakturPajakController extends Controller
                NVL(trjd_admfee,0) JUMLAH,
                (NVL(trjd_admfee,0)* 0.1) PPN
           FROM TBMASTER_FAKTUR , TBMASTER_CUSTOMER, TBTR_JUALDETAIL, TBMASTER_NPWP
-          WHERE fkt_kodeigr = '".$_SESSION['kdigr']."'
+          WHERE fkt_kodeigr = '".Session::get('kdigr')."'
            AND TRUNC(fkt_tgl) = TRUNC(to_date('".$request->tanggal."','dd/mm/yyyy'))
            AND fkt_kodemember = '".$request->kodemember."'
            AND fkt_recordid IS NULL

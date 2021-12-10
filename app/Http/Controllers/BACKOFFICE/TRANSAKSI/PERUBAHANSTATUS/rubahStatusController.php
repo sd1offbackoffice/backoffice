@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS;
 use App\Http\Controllers\Auth\loginController;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -24,8 +24,8 @@ class rubahStatusController extends Controller
     }
 
     public function getNewNmrRsn(){
-        $kodeigr = $_SESSION['kdigr'];
-        $no_key = DB::connection($_SESSION['connection'])->table('tbmaster_nomordoc')
+        $kodeigr = Session::get('kdigr');
+        $no_key = DB::connection(Session::get('connection'))->table('tbmaster_nomordoc')
             ->selectRaw('nomorawal')
             ->where('kodedoc',"=",'RSN')
             ->where('nomordoc',"<=", 99999)
@@ -47,9 +47,9 @@ class rubahStatusController extends Controller
 
     public function getNmrRsn(Request $request){
         $search = $request->val;
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $datas = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw('distinct msth_nopo as msth_nopo')
             ->selectRaw('msth_tglpo')
             ->selectRaw('msth_keterangan_header')
@@ -69,10 +69,10 @@ class rubahStatusController extends Controller
         return response()->json($datas);
     }
     public function ModalRsn(Request $request){
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $datas = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw('distinct msth_nopo as msth_nopo')
             ->selectRaw('msth_tglpo')
             ->selectRaw('msth_keterangan_header')
@@ -109,10 +109,10 @@ class rubahStatusController extends Controller
     }
 
     public function getNmrSrt(Request $request){
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
         $search = $request->val;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('distinct SRT_NOSORTIR as SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
             ->selectRaw('SRT_KETERANGAN')
@@ -127,10 +127,10 @@ class rubahStatusController extends Controller
     }
 
     public function ModalSrt(Request $request){
-        $kodeigr= $_SESSION['kdigr'];
+        $kodeigr= Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('distinct SRT_NOSORTIR as SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
             ->selectRaw('SRT_KETERANGAN')
@@ -160,17 +160,9 @@ class rubahStatusController extends Controller
 
     public function chooseRsn(Request $request){
         $kode = $request->kode;
-        $kodeigr= $_SESSION['kdigr'];
-//        $this->flagisi ='Y';
-//        $this->flag_retur ='N';
-//        $this->flag_rusak ='N';
-//        $this->flag_putus ='N';
-//        $_SESSION['flagisi'] = 'Y';
-//        $_SESSION['flag_retur'] = 'N';
-//        $_SESSION['flag_rusak'] = 'N';
-//        $_SESSION['flag_putus'] = 'N';
+        $kodeigr= Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $datas = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw('msth_nopo')
             ->selectRaw('msth_tgldoc')
             ->selectRaw('msth_nofaktur')
@@ -202,7 +194,7 @@ class rubahStatusController extends Controller
             ->whereRaw("nvl(msth_recordid, 0)<>'1'")
             ->get();
 
-//        $test = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->limit(10)->get()->toArray();
+//        $test = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->limit(10)->get()->toArray();
 //        dd($datas);
 
         return response()->json($datas);
@@ -211,7 +203,7 @@ class rubahStatusController extends Controller
     public function chooseSrt(Request $request){
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
             ->selectRaw('SRT_NOSORTIR')
             ->selectRaw('SRT_TGLSORTIR')
             ->selectRaw('SRT_FLAGDISC3')
@@ -233,7 +225,7 @@ class rubahStatusController extends Controller
             ->where('HGB_TIPE','=','2')
             ->get();
 
-//        $test = DB::connection($_SESSION['connection'])->table('tbtr_barangrusak')->limit(10)->get()->toArray();
+//        $test = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->limit(10)->get()->toArray();
 //        dd($datas);
 
         return response()->json($datas);
@@ -241,7 +233,7 @@ class rubahStatusController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
             $this->flagisi ='Y';
             $this->flag_retur ='N';
             $this->flag_rusak ='N';
@@ -254,14 +246,14 @@ class rubahStatusController extends Controller
             $gudangtoko = $request->gudangtoko;
             $txtKeterangan = $request->keterangan;
             $keterangan = '';
-            $userid = $_SESSION['usid'];
-            $kodeigr = $_SESSION['kdigr'];
+            $userid = Session::get('usid');
+            $kodeigr = Session::get('kdigr');
             $flagretur = $this->flag_retur;
             $today  = date('Y-m-d H:i:s');
             $tglDoc = date("Y-d-m", strtotime($request->tglDoc));
             $tglSort = date("Y-d-m", strtotime($request->tglSort));
             $case = 0;
-            $checker = DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')
+            $checker = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                 ->selectRaw('MSTD_TGLDOC')
                 ->selectRaw('MSTD_CREATE_BY')
                 ->selectRaw('MSTD_CREATE_DT')
@@ -276,7 +268,7 @@ class rubahStatusController extends Controller
                     $crDate = $checker->mstd_tgldoc;
                     $creator = $checker->mstd_create_by;
                     $crDate2 = $checker->mstd_create_dt;
-                    DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')
+                    DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                         ->where('MSTD_NOPO','=',$noDoc)
                         ->where('MSTD_TYPETRN','=','Z')
                         ->delete();
@@ -304,7 +296,7 @@ class rubahStatusController extends Controller
                     $flagdisc4 = 'C';
                 }
 
-                $PRDCD_CUR = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                $PRDCD_CUR = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->selectRaw('PRD_FRAC')
                     ->selectRaw('PRD_UNIT')
                     ->selectRaw('PRD_KODEDIVISI')
@@ -337,31 +329,31 @@ class rubahStatusController extends Controller
                 }elseif ($temp['flagdisc1'] == 'R'){
                     $LOC1 = '03';
                 }
-                $tempStock = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                $tempStock = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                     ->selectRaw('*')
                     ->where('ST_KODEIGR','=',$kodeigr)
                     ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                     ->where('ST_LOKASI','=',$LOC1)
                     ->first();
                 if(!$tempStock){
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->insert(['ST_KODEIGR' => $kodeigr, 'ST_LOKASI' => $LOC1, 'ST_PRDCD' => $temp['mstd_prdcd'],
                             'ST_SALDOAKHIR' => (int)$temp['mstd_qty'], 'ST_TRFOUT' => (int)$temp['mstd_qty'],
                             'ST_CREATE_BY' => $userid, 'ST_CREATE_DT' => $today]);
                 }else{
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC1)
                         ->update(['ST_MODIFY_BY' => $userid, 'ST_MODIFY_DT' => $today]);
 
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC1)
                         ->decrement('ST_SALDOAKHIR', (int)$temp['mstd_qty']);
 
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC1)
@@ -370,7 +362,7 @@ class rubahStatusController extends Controller
                 if($LOC1 == '01'){
                     if($chkPlano == '1'){
                         if($gudangtoko == 'G'){
-                            $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                            $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                 ->selectRaw('*')
                                 ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                 ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
@@ -378,7 +370,7 @@ class rubahStatusController extends Controller
                                 ->where('LKS_KODERAK','LIKE','D%')
                                 ->count();
                             if($temp2 == 1){
-                                DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                     ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
                                     ->where('LKS_NOID','LIKE','%P')
@@ -388,7 +380,7 @@ class rubahStatusController extends Controller
                                 $keterangan = 'Tidak Ada Di Rak Display';
                             }else{
                                 $keterangan = 'Rak lebih dari 1, ';
-                                $recs = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                $recs = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->selectRaw('LKS_KODERAK')
                                     ->selectRaw('LKS_KODESUBRAK')
                                     ->selectRaw('LKS_TIPERAK')
@@ -406,7 +398,7 @@ class rubahStatusController extends Controller
                                 $rak = rtrim($rak,", ");
                                 $keterangan = $keterangan.$rak;
                             }
-                            DB::connection($_SESSION['connection'])->table('TBHISTORY_RUBAHSTATUS_RAK')
+                            DB::connection(Session::get('connection'))->table('TBHISTORY_RUBAHSTATUS_RAK')
                                 ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
                                     'nosortir' => $noSort.' - '.$gudangtoko,
                                     'prdcd' => $temp['mstd_prdcd'], 'deskripsi' => $temp['mstd_desc'],
@@ -424,7 +416,7 @@ class rubahStatusController extends Controller
                 if($LOC2 == '01'){
                     if($chkPlano == '1'){
                         if($gudangtoko == 'G'){
-                            $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                            $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                 ->selectRaw('*')
                                 ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                 ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
@@ -432,7 +424,7 @@ class rubahStatusController extends Controller
                                 ->where('LKS_KODERAK','LIKE','D%')
                                 ->count();
                             if($temp2 == 1){
-                                DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                     ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
                                     ->where('LKS_NOID','LIKE','%P')
@@ -442,7 +434,7 @@ class rubahStatusController extends Controller
                                 $keterangan = 'Tidak Ada Di Rak Display';
                             }else{
                                 $keterangan = 'Rak lebih dari 1, ';
-                                $recs = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                $recs = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->selectRaw('LKS_KODERAK')
                                     ->selectRaw('LKS_KODESUBRAK')
                                     ->selectRaw('LKS_TIPERAK')
@@ -459,21 +451,21 @@ class rubahStatusController extends Controller
                                 }
                                 $rak = rtrim($rak,", ");
                                 $keterangan = $keterangan.$rak;
-                                DB::connection($_SESSION['connection'])->table('TBHISTORY_RUBAHSTATUS_RAK')
+                                DB::connection(Session::get('connection'))->table('TBHISTORY_RUBAHSTATUS_RAK')
                                     ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
                                         'nosortir' => $noSort.' - '.$gudangtoko,
                                         'prdcd' => $temp['mstd_prdcd'], 'descprd' => $temp['mstd_desc'],
                                         'qty' => $temp['mstd_qty'], 'keterangan' => substr($keterangan,1,100)]);
                             }
                         }else{
-                            $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                            $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                 ->selectRaw('*')
                                 ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                 ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
                                 ->where('LKS_KODERAK',' NOT LIKE','D%')
                                 ->count();
                             if($temp2 == 1){
-                                DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->where('LKS_PRDCD','=',$temp['mstd_prdcd'])
                                     ->whereRaw("LKS_JENISRAK IN ('D', 'N')")
                                     ->where('LKS_KODERAK',' NOT LIKE','D%')
@@ -482,7 +474,7 @@ class rubahStatusController extends Controller
                                 $keterangan = 'Tidak Ada Di Rak Display';
                             }else{
                                 $keterangan = 'Rak lebih dari 1, ';
-                                $recs = DB::connection($_SESSION['connection'])->table('TBMASTER_LOKASI')
+                                $recs = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                                     ->selectRaw('LKS_KODERAK')
                                     ->selectRaw('LKS_KODESUBRAK')
                                     ->selectRaw('LKS_TIPERAK')
@@ -498,7 +490,7 @@ class rubahStatusController extends Controller
                                 }
                                 $rak = rtrim($rak,", ");
                                 $keterangan = $keterangan.$rak;
-                                DB::connection($_SESSION['connection'])->table('TBHISTORY_RUBAHSTATUS_RAK')
+                                DB::connection(Session::get('connection'))->table('TBHISTORY_RUBAHSTATUS_RAK')
                                     ->insert(['kodeigr' => $kodeigr, 'nodoc' => $noDoc,
                                         'nosortir' => $noSort.' - '.$gudangtoko,
                                         'prdcd' => $temp['mstd_prdcd'], 'descprd' => $temp['mstd_desc'],
@@ -507,44 +499,44 @@ class rubahStatusController extends Controller
                         }
                     }
                 }
-                $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                     ->selectRaw('*')
                     ->where('ST_KODEIGR','=',$kodeigr)
                     ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                     ->where('ST_LOKASI','=',$LOC2)
                     ->count();
                 if($temp2 == 0){
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->insert(['ST_KODEIGR' => $kodeigr, 'ST_LOKASI' => $LOC2, 'ST_PRDCD' => $temp['mstd_prdcd'],
                             'ST_SALDOAKHIR' => (int)$temp['mstd_qty'], 'ST_TRFIN' => (int)$temp['mstd_qty'], 'ST_CREATE_BY' => $userid,
                             'ST_CREATE_DT' => $today]);
                 }else{
-                    $qtyakhir = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    $qtyakhir = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->selectRaw('ST_SALDOAKHIR')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC2)
                         ->first();
-                    $additionalData = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    $additionalData = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->selectRaw('NVL (ST_SALDOAKHIR, 0) AS SALDOAKHIR')
                         ->selectRaw('NVL (ST_TRFIN, 0) AS TRFIN')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC2)
                         ->first();
-//                $trfin = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+//                $trfin = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
 //
 //                    ->where('ST_KODEIGR','=',$kodeigr)
 //                    ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
 //                    ->where('ST_LOKASI','=',$LOC2)
 //                    ->first();
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->where('ST_KODEIGR','=',$kodeigr)
                         ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                         ->where('ST_LOKASI','=',$LOC2)
                         ->update(['ST_SALDOAKHIR' => (int)$additionalData->saldoakhir + (int)$temp['mstd_qty'], 'ST_TRFIN' => (int)$additionalData->trfin + (int)$temp['mstd_qty'], 'ST_MODIFY_BY' => $userid, 'ST_MODIFY_DT' => $today]);
                 }
-                DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                     ->where('SRT_KODEIGR','=',$kodeigr)
                     ->where('SRT_TYPE','=','S')
                     ->where('SRT_NOSORTIR','=',$noSort)
@@ -558,7 +550,7 @@ class rubahStatusController extends Controller
                         if($flagretur == 'Y'){
                             $dokumen = $this->nomor_retur;
                         }else{
-                            $no_key = DB::connection($_SESSION['connection'])->table('tbmaster_nomordoc')
+                            $no_key = DB::connection(Session::get('connection'))->table('tbmaster_nomordoc')
                                 ->selectRaw('nomorawal')
                                 ->where('kodedoc','=','BTN')
                                 ->where('nomordoc','<=',99999)
@@ -591,7 +583,7 @@ class rubahStatusController extends Controller
                             $dokumen = $this->nomor_rusak;
                         }else{
 
-                            $no_key = DB::connection($_SESSION['connection'])->table('tbmaster_nomordoc')
+                            $no_key = DB::connection(Session::get('connection'))->table('tbmaster_nomordoc')
                                 ->selectRaw('nomorawal')
                                 ->where('kodedoc','=','BRN')
                                 ->where('nomordoc','<=',99999)
@@ -625,7 +617,7 @@ class rubahStatusController extends Controller
                         if($this->flag_putus == 'Y'){
                             $dokumen = $this->nomor_putus;
                         }else{
-                            $no_key = DB::connection($_SESSION['connection'])->table('tbmaster_nomordoc')
+                            $no_key = DB::connection(Session::get('connection'))->table('tbmaster_nomordoc')
                                 ->selectRaw('nomorawal')
                                 ->where('kodedoc','=','BPN')
                                 ->where('nomordoc','<=',99999)
@@ -655,7 +647,7 @@ class rubahStatusController extends Controller
                 $mstd_nodoc = $dokumen;
                 //$flagdisc3 = 'P';
 
-                $STOK_CUR = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                $STOK_CUR = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                     ->selectRaw('ST_SALDOAKHIR')
                     ->selectRaw('nvl(ST_AVGCOST, 0) ST_AVGCOST')
                     ->where('ST_KODEIGR','=',$kodeigr)
@@ -670,7 +662,7 @@ class rubahStatusController extends Controller
                     $ocost = (int)$STOK_CUR->st_avgcost * $FRACPRD;
                     $postqty = (int)$STOK_CUR->st_saldoakhir - (int)$temp['mstd_qty'];
                 }
-                $temp2 = DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_H')
+                $temp2 = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_H')
                     ->selectRaw('*')
                     ->where('MSTH_KODEIGR','=',$kodeigr)
                     ->where('MSTH_NODOC','=',$dokumen)
@@ -680,7 +672,7 @@ class rubahStatusController extends Controller
 
                 if($temp2 == 0){
 
-                    $sortData = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                    $sortData = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                         ->selectRaw('SRT_KODESUPPLIER')
                         ->selectRaw('SRT_PKP')
                         ->where('SRT_KODEIGR','=',$kodeigr)
@@ -688,7 +680,7 @@ class rubahStatusController extends Controller
                         ->first();
 
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_H')
+                    DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_H')
                         ->insert(['MSTH_KODEIGR' => $kodeigr, 'MSTH_TYPETRN' => 'Z', 'MSTH_NODOC' => $dokumen,
                             'MSTH_TGLDOC' => $tglDoc, 'MSTH_NOPO' => $noDoc, 'MSTH_TGLPO' => $today, 'MSTH_NOFAKTUR' => $noSort,
                             'MSTH_TGLFAKTUR' => $tglSort, 'MSTH_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTH_PKP' => $sortData->srt_pkp,
@@ -697,7 +689,7 @@ class rubahStatusController extends Controller
 
                 if($LOC1 == '01'){
                     $oldAcostPrd = $ACOSTPRD/$FRACPRD;
-                    $STOK_CUR = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    $STOK_CUR = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->selectRaw('ST_SALDOAKHIR')
                         ->selectRaw('nvl(ST_AVGCOST, 0) ST_AVGCOST')
                         ->where('ST_KODEIGR','=',$kodeigr)
@@ -711,7 +703,7 @@ class rubahStatusController extends Controller
                         $stock = (int)$STOK_CUR->st_saldoakhir;
                         $oldcost = (float)$STOK_CUR->st_avgcost;
                     }
-                    $STOK_CUR = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                    $STOK_CUR = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                         ->selectRaw('ST_SALDOAKHIR')
                         ->selectRaw('nvl(ST_AVGCOST, 0) ST_AVGCOST')
                         ->where('ST_KODEIGR','=',$kodeigr)
@@ -728,7 +720,7 @@ class rubahStatusController extends Controller
 
                     $qtystock = $stock - (int)$temp['mstd_qty'];
 
-                    $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+                    $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->selectRaw('*')
                         ->where('PRD_KODEIGR','=',$kodeigr)
                         ->where('PRD_PRDCD','=',$temp['mstd_prdcd'])
@@ -744,14 +736,14 @@ class rubahStatusController extends Controller
                         }
                     }
                 }else{
-                    $temp2 = DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+                    $temp2 = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->selectRaw('*')
                         ->where('PRD_KODEIGR','=',$kodeigr)
                         ->where('PRD','=',$temp['mstd_prdcd'])
                         ->count();
                     if($temp2 != 0){
                         $oldAcostPrd = $ACOSTPRD / $FRACPRD;
-                        $STOK_CUR = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                        $STOK_CUR = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                             ->selectRaw('ST_SALDOAKHIR')
                             ->selectRaw('nvl(ST_AVGCOST, 0) ST_AVGCOST')
                             ->where('ST_KODEIGR','=',$kodeigr)
@@ -765,7 +757,7 @@ class rubahStatusController extends Controller
                             $stock = (int)$STOK_CUR->st_saldoakhir;
                             $oldcost = (float)$STOK_CUR->st_avgcost;
                         }
-                        $temp3 = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                        $temp3 = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                             ->selectRaw('*')
                             ->where('ST_KODEIGR','=',$kodeigr)
                             ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
@@ -773,7 +765,7 @@ class rubahStatusController extends Controller
                             ->count();
 
                         if($temp3 != 0){
-                            $STOK_CUR = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                            $STOK_CUR = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                                 ->selectRaw('ST_SALDOAKHIR')
                                 ->selectRaw('nvl(ST_AVGCOST, 0) ST_AVGCOST')
                                 ->where('ST_KODEIGR','=',$kodeigr)
@@ -800,13 +792,13 @@ class rubahStatusController extends Controller
 
                     }
                 }
-                $lCostStk = DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                $lCostStk = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                     ->selectRaw('ST_LASTCOST')
                     ->where('ST_KODEIGR','=',$kodeigr)
                     ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                     ->where('ST_LOKASI','=','01')
                     ->first();
-                $temp2 = DB::connection($_SESSION['connection'])->table('TBHISTORY_COST')
+                $temp2 = DB::connection(Session::get('connection'))->table('TBHISTORY_COST')
                     ->selectRaw('*')
                     ->where('HCS_KODEIGR','=',$kodeigr)
                     ->where('HCS_PRDCD','=',$temp['mstd_prdcd'])
@@ -814,7 +806,7 @@ class rubahStatusController extends Controller
                     ->where('HCS_NODOCBPB','=',$mstd_nodoc)
                     ->count();
                 if($temp2 == 0){
-                    DB::connection($_SESSION['connection'])->table('TBHISTORY_COST')
+                    DB::connection(Session::get('connection'))->table('TBHISTORY_COST')
                         ->insert(['HCS_KODEIGR' => $kodeigr,'HCS_TYPETRN' => 'Z','HCS_LOKASI' => $LOC2,
                             'HCS_PRDCD' => $temp['mstd_prdcd'], 'HCS_TGLBPB' => $today,'HCS_NODOCBPB' => $mstd_nodoc,
                             'HCS_AVGLAMA' => ($oldcostx * $FRACPRD),'HCS_AVGBARU' => ($newAcostx * $FRACPRD),
@@ -823,12 +815,12 @@ class rubahStatusController extends Controller
                             'HCS_QTYBARU' => (int)$temp['mstd_qty'], 'HCS_LASTQTY' => ((int)$temp['mstd_qty'] + (int)$qtyakhir->st_saldoakhir)]);
                 }
                 if($LOC2 == '01') {
-                    DB::connection($_SESSION['connection'])->table('TBMASTER_PRODMAST')
+                    DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->where('PRD_KODEIGR', '=', $kodeigr)
                         ->whereRaw("SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ( " . $temp['mstd_prdcd'] . ", 1, 6)")
                         ->update(['PRD_AVGCOST' => ($newAcost * $FRACPRD)]);
                 }
-                DB::connection($_SESSION['connection'])->table('TBMASTER_STOCK')
+                DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
                     ->where('ST_KODEIGR','=',$kodeigr)
                     ->where('ST_PRDCD','=',$temp['mstd_prdcd'])
                     ->where('ST_LOKASI','=',$LOC2)
@@ -837,7 +829,7 @@ class rubahStatusController extends Controller
 
                 if($this->flagisi == 'Y'){
 
-                    $no_key = DB::connection($_SESSION['connection'])->table('tbmaster_nomordoc')
+                    $no_key = DB::connection(Session::get('connection'))->table('tbmaster_nomordoc')
                         ->selectRaw('nomorawal')
                         ->where('kodedoc','=','RSN')
                         ->where('nomordoc','<',100000)
@@ -856,7 +848,7 @@ class rubahStatusController extends Controller
                     $this->flagisi = 'N';
                 }
 
-                $sortData = DB::connection($_SESSION['connection'])->table('TBTR_SORTIR_BARANG')
+                $sortData = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
                     ->selectRaw('SRT_KODESUPPLIER')
                     ->selectRaw('SRT_KODEDEPARTEMENT')
                     ->selectRaw('SRT_PKP')
@@ -878,7 +870,7 @@ class rubahStatusController extends Controller
                 if($case == 1){
 
 
-                    DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')
+                    DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                         ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $crDate,
                             'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $crDate, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
@@ -896,7 +888,7 @@ class rubahStatusController extends Controller
 
 
                 }else{
-                    DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')
+                    DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                         ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $tglDoc,
                             'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $tglDoc, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
@@ -913,7 +905,7 @@ class rubahStatusController extends Controller
                             'MSTD_CREATE_BY' => $userid, 'MSTD_CREATE_DT' => $today, 'MSTD_MODIFY_BY' => null, 'MSTD_MODIFY_DT' => null]);
 
                 }
-            }DB::connection($_SESSION['connection'])->commit();return response()->json(['kode' => 1, 'msg' => $noDoc]);
+            }DB::connection(Session::get('connection'))->commit();return response()->json(['kode' => 1, 'msg' => $noDoc]);
         }
         catch(\Exception $e){
             // do task when error
@@ -924,12 +916,12 @@ class rubahStatusController extends Controller
     }
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $P_FLAG = '1';
 
         $today  = date('Y-m-d');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_NOFAKTUR, MSTH_KETERANGAN_HEADER,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_NOFAKTUR, MSTH_KETERANGAN_HEADER,
                                         MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_FLAGDISC4,
                                         FLOOR(MSTD_QTY/MSTD_FRAC) AS CTN, MOD(MSTD_QTY,MSTD_FRAC) AS PCS, (MSTD_GROSS) AS total ,
                                         HGB_KODESUPPLIER, SUP_NAMASUPPLIER, PRD_DESKRIPSIPANJANG,
@@ -977,7 +969,7 @@ class rubahStatusController extends Controller
                                     order by MSTH_NODOC
 ");
 
-        DB::connection($_SESSION['connection'])->table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
+        DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
 
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.RubahStatus-laporan', ['datas' => $datas, 'today' => $today]);
         $pdf->output();
@@ -991,9 +983,9 @@ class rubahStatusController extends Controller
 
     public function checkRak(Request $request){
         $noDoc      = $request->noDoc;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $rakChecker = DB::connection($_SESSION['connection'])->table('tbhistory_rubahstatus_rak')
+        $rakChecker = DB::connection(Session::get('connection'))->table('tbhistory_rubahstatus_rak')
             ->selectRaw('*')
             ->where('kodeigr','=',$kodeigr)
             ->where('nodoc','=',$noDoc)
@@ -1008,11 +1000,11 @@ class rubahStatusController extends Controller
 
     public function printDocumentRak(Request $request){
         $noDoc      = $request->doc;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $today  = date('Y-m-d');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT RAK.*, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH
+        $datas = DB::connection(Session::get('connection'))->select("SELECT RAK.*, PRS_NAMAPERUSAHAAN, PRS_NAMAWILAYAH
                                 FROM TBHISTORY_RUBAHSTATUS_RAK RAK, TBMASTER_PERUSAHAAN
                                 WHERE KODEIGR = '$kodeigr' AND NODOC = '$noDoc'
                                 AND PRS_KODEIGR = KODEIGR

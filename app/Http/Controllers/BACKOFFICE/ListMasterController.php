@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use mysql_xdevapi\Exception;
 use PDF;
@@ -26,9 +26,9 @@ class ListMasterController extends Controller
 
     public function getLovDivisi()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->selectRaw('div_namadivisi')
             ->selectRaw('trim(div_kodedivisi) div_kodedivisi')
             ->where('div_kodeigr','=',$kodeigr)
@@ -39,9 +39,9 @@ class ListMasterController extends Controller
 
     public function getLovDepartemen()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->selectRaw('dep_namadepartement')
             ->selectRaw('dep_kodedepartement')
             ->selectRaw('dep_kodedivisi')
@@ -54,9 +54,9 @@ class ListMasterController extends Controller
 
     public function getLovKategori()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_kategori')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
             ->selectRaw('kat_namakategori')
             ->selectRaw('kat_kodekategori')
             ->selectRaw('kat_kodedepartement')
@@ -69,9 +69,9 @@ class ListMasterController extends Controller
 
     public function getLovSupplier()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('sup_namasupplier')
             ->selectRaw('sup_kodesupplier')
             ->where('sup_kodeigr','=',$kodeigr)
@@ -83,10 +83,10 @@ class ListMasterController extends Controller
 
     public function getLovMember(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->selectRaw('cus_kodemember')
             ->where("cus_namamember",'LIKE', '%'.$search.'%')
@@ -101,10 +101,10 @@ class ListMasterController extends Controller
     }
     public function checkMember(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->where("cus_kodemember",'=', $search)
             ->where('cus_kodeigr','=',$kodeigr)
@@ -119,13 +119,13 @@ class ListMasterController extends Controller
     }
     public function getLovMemberWithDate(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_customer')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->selectRaw('cus_kodemember')
             ->where('cus_kodeigr','=',$kodeigr)
@@ -138,9 +138,9 @@ class ListMasterController extends Controller
 
     public function getLovOutlet()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_outlet')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_outlet')
             ->selectRaw('out_namaoutlet')
             ->selectRaw('out_kodeoutlet')
             ->where('out_kodeigr','=',$kodeigr)
@@ -152,9 +152,9 @@ class ListMasterController extends Controller
 
     public function getLovSubOutlet()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_suboutlet')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
             ->selectRaw('sub_namasuboutlet')
             ->selectRaw('sub_kodesuboutlet')
             ->selectRaw("sub_kodeoutlet")
@@ -167,10 +167,10 @@ class ListMasterController extends Controller
 
     public function getLovPlu(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('prd_prdcd')
             ->where("prd_deskripsipanjang",'LIKE', '%'.$search.'%')
@@ -186,7 +186,7 @@ class ListMasterController extends Controller
 
     public function getLovPluCustom(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         $div2 = $request->div2;
         $whereDiv = "";
@@ -229,7 +229,7 @@ class ListMasterController extends Controller
             $whereKat = " and ".$whereKat;
         }
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('prd_prdcd')
             ->where('prd_kodeigr','=',$kodeigr)
@@ -241,10 +241,10 @@ class ListMasterController extends Controller
 
     public function checkPlu(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw("prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang")
             ->where("prd_prdcd",'=', $search)
@@ -261,9 +261,9 @@ class ListMasterController extends Controller
 
     public function getLovRak()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->selectRaw('DISTINCT lks_koderak')
             ->selectRaw('lks_kodesubrak')
             ->selectRaw('lks_tiperak')
@@ -278,10 +278,10 @@ class ListMasterController extends Controller
     // ### FUNGSI-FUNGSI PRINT/CETAK ###
     public function printDaftarProduk(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         if($div1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -289,7 +289,7 @@ class ListMasterController extends Controller
         }
         $div2 = $request->div2;
         if($div2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -297,7 +297,7 @@ class ListMasterController extends Controller
         }
         $dep1 = $request->dep1;
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div1)
@@ -306,7 +306,7 @@ class ListMasterController extends Controller
         }
         $dep2 = $request->dep2;
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div2)
@@ -315,7 +315,7 @@ class ListMasterController extends Controller
         }
         $kat1 = $request->kat1;
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -324,7 +324,7 @@ class ListMasterController extends Controller
         }
         $kat2 = $request->kat2;
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -343,7 +343,7 @@ class ListMasterController extends Controller
         $date = DateTime::createFromFormat('d-m-Y', $date)->format('d-M-Y');
         if((int)$produkbaru == 1){
             $judul = " ** DAFTAR PRODUK BARU ** ";
-            $temp = DB::connection($_SESSION['connection'])->table("dual")
+            $temp = DB::connection(Session::get('connection'))->table("dual")
                 ->selectRaw("nvl(TO_DATE('$date','DD-MON-YYYY'),sysdate)-91 as result")
                 ->first();
             $tgla = $temp->result;
@@ -364,7 +364,7 @@ class ListMasterController extends Controller
            $p_orderby = " order by prd_deskripsipanjang";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan,
 case when substr(prd_prdcd,-1) = 1 then 1 else prd_minjual end minjl,
 prd_lastcost, prd_avgcost, prd_hrgjual, prd_flagbkp1, prd_flagbkp2,
 prd_unit, prd_frac, prd_tglaktif, prd_kodetag, prd_minorder,
@@ -452,10 +452,10 @@ and prs_kodeigr(+) = prd_kodeigr
 
     public function printDaftarPerubahanHargaJual(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         if($div1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -463,7 +463,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }
         $div2 = $request->div2;
         if($div2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -471,7 +471,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }
         $dep1 = $request->dep1;
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div1)
@@ -480,7 +480,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }
         $dep2 = $request->dep2;
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div2)
@@ -489,7 +489,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }
         $kat1 = $request->kat1;
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -498,7 +498,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }
         $kat2 = $request->kat2;
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -535,7 +535,7 @@ and prs_kodeigr(+) = prd_kodeigr
         }else{
             $and_diskon = " ";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("select prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2,prd_tglhrgjual,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2,prd_tglhrgjual,
         prd_unit||'/'||prd_frac as satuan, prd_unit unit, prd_frac frac, case when substr(prd_prdcd,-1) = '0' then 1 else 0 end jml_prod,
         prd_minjual, prd_lastcost, prd_avgcost, prd_hrgjual2 price_b, prd_hrgjual price_a,
         prd_tglaktif, prd_kodetag tag,
@@ -611,10 +611,10 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
 
     public function printDaftarMarginNegatif(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         if($div1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -622,7 +622,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         }
         $div2 = $request->div2;
         if($div2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -630,7 +630,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         }
         $dep1 = $request->dep1;
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div1)
@@ -639,7 +639,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         }
         $dep2 = $request->dep2;
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div2)
@@ -648,7 +648,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         }
         $kat1 = $request->kat1;
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -657,7 +657,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         }
         $kat2 = $request->kat2;
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -681,7 +681,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
             $p_orderby = " order by prd_deskripsipanjang";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select /*+ ORDERED */ prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2, prd_lastcost, prd_avgcost,
+        $datas = DB::connection(Session::get('connection'))->select("select /*+ ORDERED */ prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2, prd_lastcost, prd_avgcost,
       prd_hrgjual price_a, prd_kodetag tag, prd_lastcost, prd_unit unit, prd_frac frac,
       prd_unit||'/'|| case when substr(prd_prdcd,-1) = '0' then prd_frac else 1 end satuan,
       st_prdcd, nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end avgcost,
@@ -1030,11 +1030,11 @@ where prd_kodeigr = '$kodeigr'
 
     public function printDaftarSupplier(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $sup1 = $request->sup1;
         if ($sup1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_supplier")
                 ->selectRaw("min(sup_kodesupplier) as result")
                 ->where("sup_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1042,14 +1042,14 @@ where prd_kodeigr = '$kodeigr'
         }
         $sup2 = $request->sup2;
         if ($sup2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_supplier")
                 ->selectRaw("max(sup_kodesupplier) as result")
                 ->where("sup_kodeigr", '=', $kodeigr)
                 ->first();
             $sup2 = $temp->result;
         }
 
-        $datas = $datas = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
+        $datas = $datas = DB::connection(Session::get('connection'))->table("tbmaster_supplier")
             ->selectRaw("sup_kodesupplier")
             ->selectRaw("sup_namasupplier")
             ->selectRaw("sup_npwp")
@@ -1070,11 +1070,11 @@ where prd_kodeigr = '$kodeigr'
 
     public function printDaftarMember(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $outlet = $request->outlet;
         $mem1 = $request->mem1;
         if ($mem1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->whereRaw("nvl(cus_recordid,'9')<>'1'")
@@ -1083,7 +1083,7 @@ where prd_kodeigr = '$kodeigr'
         }
         $mem2 = $request->mem2;
         if ($mem2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->whereRaw("nvl(cus_recordid,'9')<>'1'")
@@ -1142,7 +1142,7 @@ where prd_kodeigr = '$kodeigr'
             $and_sub = " ";
         }
 
-        $datas = $datas = DB::connection($_SESSION['connection'])->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember kartu, cus_namamember,
+        $datas = $datas = DB::connection(Session::get('connection'))->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember kartu, cus_namamember,
 cus_alamatmember1||' '||cus_alamatmember2 alamat, cus_tlpmember telp, nvl(cus_flagpkp,'T') pkp,
 cus_npwp, cus_creditlimit, cus_top top, cus_kodearea area1, cus_kodeoutlet kodeoutlet,
 cus_jenismember,out_kodeoutlet||'-'||out_namaoutlet outlet, sub_kodesuboutlet||'-'||sub_namasuboutlet suboutlet,
@@ -1168,7 +1168,7 @@ $and_orderby);
         for($i=0;$i<sizeof($datas);$i++){
             try{
                 $tipearea = 'AA'.$datas[$i]->area2;
-                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_const")
+                $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
                     ->where("const_kodeigr",'=',$kodeigr)
                     ->where("const_branch",'=',$tipearea)
@@ -1194,35 +1194,35 @@ $and_orderby);
 
     public function printDaftarMemberTypeOutlet(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $outlet1 = $request->outlet1;
         $outlet2 = $request->outlet2;
         $member1 = $request->member1;
         $member2 = $request->member2;
 
         if ($outlet1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_outlet")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_outlet")
                 ->selectRaw("min(out_kodeoutlet) as result")
                 ->where("out_kodeigr", '=', $kodeigr)
                 ->first();
             $outlet1 = $temp->result;
         }
         if ($outlet2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_outlet")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_outlet")
                 ->selectRaw("max(out_kodeoutlet) as result")
                 ->where("out_kodeigr", '=', $kodeigr)
                 ->first();
             $outlet2 = $temp->result;
         }
         if ($member1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
             $member1 = $temp->result;
         }
         if ($member2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1254,7 +1254,7 @@ order by CUS_KODEOUTLET, cus_kodemember");
 
     public function printDaftarMemberBaru(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $member1 = $request->member1;
         $member2 = $request->member2;
         $sort = $request->sort;
@@ -1264,14 +1264,14 @@ order by CUS_KODEOUTLET, cus_kodemember");
         $eDate = DateTime::createFromFormat('d-m-Y', $eDate)->format('d-M-Y');
 
         if ($member1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
             $member1 = $temp->result;
         }
         if ($member2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1307,7 +1307,7 @@ order by CUS_KODEOUTLET, cus_kodemember");
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
+        $datas = DB::connection(Session::get('connection'))->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
 cus_alamatmember1||' '||cus_alamatmember2||case when cus_tlpmember is null then ' ' else  ' Telp.'||cus_tlpmember end alamat,
 cus_tlpmember, cus_flagpkp, cus_npwp, cus_creditlimit,
 cus_top, cus_kodearea area1, cus_kodearea area2, cus_kodeoutlet,
@@ -1329,7 +1329,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         for($i=0;$i<sizeof($datas);$i++){
             try{
                 $tipearea = 'AA'.$datas[$i]->area1;
-                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_const")
+                $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
                     ->where("const_kodeigr",'=',$kodeigr)
                     ->where("const_branch",'=',$tipearea)
@@ -1354,7 +1354,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
 
     public function printDaftarMemberJatuhTempo(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $member1 = $request->member1;
         $member2 = $request->member2;
         $sort = $request->sort;
@@ -1364,14 +1364,14 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         $eDate = DateTime::createFromFormat('d-m-Y', $eDate)->format('d-M-Y');
 
         if ($member1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
             $member1 = $temp->result;
         }
         if ($member2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1407,7 +1407,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
+        $datas = DB::connection(Session::get('connection'))->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
 cus_alamatmember1||' '||cus_alamatmember2||case when cus_tlpmember is null then ' ' else  ' Telp.'||cus_tlpmember end alamat,
 cus_tlpmember, cus_flagpkp, cus_npwp, cus_creditlimit,
 cus_top, cus_kodearea area1, cus_kodearea area2, cus_kodeoutlet,
@@ -1429,7 +1429,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         for($i=0;$i<sizeof($datas);$i++){
             try{
                 $tipearea = 'AA'.$datas[$i]->area1;
-                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_const")
+                $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
                     ->where("const_kodeigr",'=',$kodeigr)
                     ->where("const_branch",'=',$tipearea)
@@ -1455,20 +1455,20 @@ and out_kodeoutlet(+)= cus_kodeoutlet
     public function printDaftarMemberExpired(Request $request)
     {
         set_time_limit(0);
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $member1 = $request->member1;
         $member2 = $request->member2;
         $sort = $request->sort;
 
         if ($member1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
             $member1 = $temp->result;
         }
         if ($member2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1504,7 +1504,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
+        $datas = DB::connection(Session::get('connection'))->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
 cus_alamatmember1||' '||cus_alamatmember2 alamat, cus_tlpmember, cus_flagpkp, cus_npwp, cus_creditlimit,
 cus_top, cus_kodearea area1, cus_kodearea area2, cus_kodeoutlet, cus_tglregistrasi,
 prs_namaperusahaan, prs_namacabang,
@@ -1522,7 +1522,7 @@ and out_kodeoutlet= cus_kodeoutlet
         for($i=0;$i<sizeof($datas);$i++){
             try{
                 $tipearea = 'AA'.$datas[$i]->area1;
-                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_const")
+                $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
                     ->where("const_kodeigr",'=',$kodeigr)
                     ->where("const_branch",'=',$tipearea)
@@ -1546,10 +1546,10 @@ and out_kodeoutlet= cus_kodeoutlet
     }
     public function printDaftarHargaJualBaru(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         if($div1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -1557,7 +1557,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }
         $div2 = $request->div2;
         if($div2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -1565,7 +1565,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }
         $dep1 = $request->dep1;
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div1)
@@ -1574,7 +1574,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }
         $dep2 = $request->dep2;
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div2)
@@ -1583,7 +1583,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }
         $kat1 = $request->kat1;
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -1592,7 +1592,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }
         $kat2 = $request->kat2;
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -1629,7 +1629,7 @@ and out_kodeoutlet= cus_kodeoutlet
         }else{
             $and_diskon = " ";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("select prd_prdcd, prd_deskripsipanjang, prd_unit,  prd_frac,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang, prd_unit,  prd_frac,
 case when substr(prd_prdcd,-1) = '0' then 1 else 0 end jml_prod,
 prd_lastcost, prd_avgcost, prd_hrgjual2, prd_hrgjual, prd_tglhrgjual, prd_minjual,
 st_avgcost, st_prdcd, prd_kodetag, prd_flagbkp1 pkp, prd_flagbkp2 pkp2,
@@ -1706,7 +1706,7 @@ and prs_kodeigr = prd_kodeigr"
     }
 
     public function printDaftarPerpanjanganMember(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $member1 = $request->member1;
         $member2 = $request->member2;
         $sort = $request->sort;
@@ -1716,14 +1716,14 @@ and prs_kodeigr = prd_kodeigr"
         $eDate = DateTime::createFromFormat('d-m-Y', $eDate)->format('d-M-Y');
 
         if ($member1 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("min(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
             $member1 = $temp->result;
         }
         if ($member2 == '') {
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_customer")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_customer")
                 ->selectRaw("max(cus_kodemember) as result")
                 ->where("cus_kodeigr", '=', $kodeigr)
                 ->first();
@@ -1759,7 +1759,7 @@ and prs_kodeigr = prd_kodeigr"
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
+        $datas = DB::connection(Session::get('connection'))->select("select lpad(cus_kodemember,6,'0') kd, cus_nokartumember, cus_namamember,
 substr(cus_alamatmember1,0,38)||' '||cus_alamatmember2 alamat, cus_tlpmember, cus_flagpkp, cus_npwp, cus_creditlimit,
 cus_top, cus_kodearea area1, cus_kodearea area2, cus_kodeoutlet, cus_tglregistrasi, cus_create_by,
 to_char(cus_create_dt,'dd-mm-yy') tglupd,
@@ -1781,7 +1781,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         for($i=0;$i<sizeof($datas);$i++){
             try{
                 $tipearea = 'AA'.$datas[$i]->area1;
-                $temp = DB::connection($_SESSION['connection'])->table("tbmaster_const")
+                $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
                     ->where("const_kodeigr",'=',$kodeigr)
                     ->where("const_branch",'=',$tipearea)
@@ -1805,10 +1805,10 @@ and out_kodeoutlet(+)= cus_kodeoutlet
     }
 
     public function printDaftarStatusTagBar(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dep1 = $request->dep1;
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->first();
@@ -1816,7 +1816,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         }
         $dep2 = $request->dep2;
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->first();
@@ -1824,7 +1824,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         }
         $kat1 = $request->kat1;
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -1833,7 +1833,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         }
         $kat2 = $request->kat2;
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -1863,7 +1863,7 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         }else{
             $and_status = " ";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("select prd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac, prd_flagbarcode1,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac, prd_flagbarcode1,
 dep_kodedepartement||'-'||dep_namadepartement dep,
 kat_kodekategori||'-'||kat_namakategori kat,
 prs_namaperusahaan, prs_namacabang
@@ -1891,7 +1891,7 @@ order by dep_kodedepartement, dep_kodedepartement, prd_prdcd");
     }
 
     public function printMasterDisplay(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $rak1 = $request->rak1;
         $rak2 = $request->rak2;
         $subrak1 = $request->subrak1;
@@ -1952,7 +1952,7 @@ order by dep_kodedepartement, dep_kodedepartement, prd_prdcd");
                 " and prc_kodeigr(+)=prd_kodeigr and prc_pluomi(+)=prd_prdcd";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select /*+ USE_NL(TBMASTER_PERUSAHAAN,TBMASTER_PRODCRM) */  lks_koderak fmkrak, lks_kodesubrak fmsrak, lks_tiperak fmtipe, lks_shelvingrak fmselv,
+        $datas = DB::connection(Session::get('connection'))->select("select /*+ USE_NL(TBMASTER_PERUSAHAAN,TBMASTER_PRODCRM) */  lks_koderak fmkrak, lks_kodesubrak fmsrak, lks_tiperak fmtipe, lks_shelvingrak fmselv,
 lks_nourut fmnour, lks_depanbelakang fmdpbl, lks_atasbawah fmatba,
 lks_tirkirikanan fmface, lks_tirdepanbelakang fmtrdb,
 lks_tiratasbawah fmtrab, lks_tirkirikanan * lks_tiratasbawah * lks_tirdepanbelakang kapasitas,
@@ -1987,7 +1987,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
     }
 
     public function printMasterDisplayDDK(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         $div2 = $request->div2;
         $dep1 = $request->dep1;
@@ -2001,7 +2001,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         $p_omi = $request->omi;
 
         if($div1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -2009,7 +2009,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         }
 
         if($div2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_divisi")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
                 ->where("div_kodeigr",'=',$kodeigr)
                 ->first();
@@ -2017,7 +2017,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         }
 
         if($dep1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div1)
@@ -2026,7 +2026,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         }
 
         if($dep2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_departement")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
                 ->where("dep_kodeigr",'=',$kodeigr)
                 ->where("dep_kodedivisi",'=',$div2)
@@ -2035,7 +2035,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         }
 
         if($kat1 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep1)
@@ -2044,7 +2044,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         }
 
         if($kat2 == ''){
-            $temp = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+            $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
                 ->where("kat_kodeigr",'=',$kodeigr)
                 ->where("kat_kodedepartement",'=',$dep2)
@@ -2067,7 +2067,7 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
                 " and prc_kodeigr(+)=prd_kodeigr and prc_pluomi(+)=prd_prdcd";
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("select prd_prdcd, prd_deskripsipanjang,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang,
 prd_unit||'/'||prd_frac satuan,
 lks_prdcd, lks_koderak fmkrak, lks_kodesubrak fmsrak,
 lks_shelvingrak fmselv, lks_nourut fmnour,
@@ -2107,10 +2107,12 @@ ORDER BY prd_prdcd, lks_nourut ");
         }else{
             $title = "** LIST MASTER DISPLAY /DIV/DEPT/KATB **";
         }
+        $forbidden_tag = ['A','R','N','O','H','G','T','X','Z'];
         //PRINT
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
 
-        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-pdf',
-            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan, 'title' => $title]);
+        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+                'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag]);
     }
 }

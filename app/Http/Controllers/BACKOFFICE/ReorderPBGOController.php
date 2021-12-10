@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 use App\Http\Controllers\MASTER\departementController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PDF;
@@ -19,9 +19,9 @@ class ReorderPBGOController extends Controller
     }
 
     public function proses_go(){
-        $cek = DB::connection($_SESSION['connection'])->table('temp_go')
+        $cek = DB::connection(Session::get('connection'))->table('temp_go')
             ->select('isi_toko','per_awal_reorder','per_akhir_reorder')
-            ->where('kodeigr',$_SESSION['kdigr'])
+            ->where('kodeigr',Session::get('kdigr'))
             ->first();
 
         $now = Carbon::now('Asia/Jakarta');
@@ -36,9 +36,9 @@ class ReorderPBGOController extends Controller
         $insert_temp_pbprint = [];
         $where = '';
 
-        $prs = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $prs = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->selectRaw('prs_periodeterakhir, prs_nilaippn')
-            ->where('prs_kodeigr',$_SESSION['kdigr'])
+            ->where('prs_kodeigr',Session::get('kdigr'))
             ->first();
 
         $TGLAKHIR = $prs->prs_periodeterakhir;
@@ -49,7 +49,7 @@ class ReorderPBGOController extends Controller
         else $NILAIPPN = $prs->prs_nilaippn;
 
         $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PB','Nomor Permintaan Barang',".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yyMM'),3,FALSE); END;");
+        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PB','Nomor Permintaan Barang',".Session::get('kdigr')." || TO_CHAR(SYSDATE, 'yyMM'),3,FALSE); END;");
         oci_bind_by_name($s, ':ret', $r, 32);
         oci_execute($s);
 
@@ -57,7 +57,7 @@ class ReorderPBGOController extends Controller
 
         $oke = false;
 
-        $pb = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
+        $pb = DB::connection(Session::get('connection'))->table('tbtr_po_d')
             ->join('tbmaster_prodmast','tpod_prdcd','prd_prdcd')
             ->join('tbtr_po_h','tpod_nopo','tpoh_nopo')
             ->join('tbtr_mstran_h','tpoh_nopo','msth_nopo')
@@ -68,7 +68,7 @@ class ReorderPBGOController extends Controller
                 $join->on('st_prdcd',DB::RAW("SUBSTR(prd_prdcd,1,6) || '0'"));
                 $join->where('st_lokasi','01');
             })
-            ->where('tpod_kodeigr',$_SESSION['kdigr'])
+            ->where('tpod_kodeigr',Session::get('kdigr'))
             ->whereRaw("((NVL (TPOD_QTYPB, 0) = 0) OR ((NVL(TPOD_QTYPO, 0) - NVL(TPOD_QTYPB, 0)) <> 0))")
             ->whereRaw("NVL (TPOD_KODETAG, 'Z') <> '*'")
             ->whereRaw("NVL (PRD_FLAGBARANGORDERTOKO, 'Z') <> 'Y'")
@@ -321,8 +321,8 @@ class ReorderPBGOController extends Controller
 
         $where = substr($where,0,-4);
 
-        $xya = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
-            ->where('tpod_kodeigr',$_SESSION['kdigr'])
+        $xya = DB::connection(Session::get('connection'))->table('tbtr_po_d')
+            ->where('tpod_kodeigr',Session::get('kdigr'))
             ->whereRaw("(NVL (TPOD_QTYPB, 0) = 0) OR ((NVL(TPOD_QTYPO, 0) - NVL(TPOD_QTYPB, 0)) <> 0)")
             ->whereRaw("NVL (TPOD_KODETAG, 'Z') <> '*'")
             ->orderBy('tpod_prdcd')
@@ -330,12 +330,12 @@ class ReorderPBGOController extends Controller
             ->get();
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            DB::connection($_SESSION['connection'])->table('temp_pbprint')
+            DB::connection(Session::get('connection'))->beginTransaction();
+            DB::connection(Session::get('connection'))->table('temp_pbprint')
                 ->insert($insert_temp_pbprint);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $status = 'error';
             $message = $e->getMessage();
@@ -343,7 +343,7 @@ class ReorderPBGOController extends Controller
         }
 
         try{
-            DB::connection($_SESSION['connection'])->table('tbtr_po_d')
+            DB::connection(Session::get('connection'))->table('tbtr_po_d')
                 ->select('tpod_nopo','tpod_prdcd')
                 ->whereRaw($where)
                 ->update([
@@ -352,14 +352,14 @@ class ReorderPBGOController extends Controller
                 ]);
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $message = $e->getMessage();
             $status = 'error';
             return compact(['status','title','message']);
         }
 
-        $pbprint = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+        $pbprint = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->where('recid',null)
             ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
@@ -373,7 +373,7 @@ class ReorderPBGOController extends Controller
         }
         else{
             $c = loginController::getConnectionProcedure();
-            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PB','Nomor Permintaan Barang',".$_SESSION['kdigr']." || TO_CHAR(SYSDATE, 'yyMM'),3,TRUE); END;");
+            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PB','Nomor Permintaan Barang',".Session::get('kdigr')." || TO_CHAR(SYSDATE, 'yyMM'),3,TRUE); END;");
             oci_bind_by_name($s, ':ret', $r, 32);
             oci_execute($s);
 
@@ -398,7 +398,7 @@ class ReorderPBGOController extends Controller
                 }
             }
 
-            $y = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+            $y = DB::connection(Session::get('connection'))->table('temp_pbprint')
                 ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
                 ->where('docno',$NOPB)
                 ->whereIn('supco',$supco)
@@ -409,7 +409,7 @@ class ReorderPBGOController extends Controller
         }
 
 
-        $pbmast = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+        $pbmast = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->whereRaw("recid is null")
             ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
@@ -428,7 +428,7 @@ class ReorderPBGOController extends Controller
 
         foreach($pbmast as $pbm){
             $nourut++;
-            $data_tbtr_pb_d['pbd_kodeigr'] = $_SESSION['kdigr'];
+            $data_tbtr_pb_d['pbd_kodeigr'] = Session::get('kdigr');
             $data_tbtr_pb_d['pbd_nopb'] = $NOPB;
             $data_tbtr_pb_d['pbd_prdcd'] = $pbm->prdcd;
             $data_tbtr_pb_d['pbd_kodedepartement'] = $pbm->dept;
@@ -456,7 +456,7 @@ class ReorderPBGOController extends Controller
             $data_tbtr_pb_d['pbd_ostpo'] = $pbm->out_po;
             $data_tbtr_pb_d['pbd_ostpb'] = $pbm->out_pb;
             $data_tbtr_pb_d['pbd_create_dt'] = DB::RAW("sysdate");
-            $data_tbtr_pb_d['pbd_create_by'] = $_SESSION['usid'];
+            $data_tbtr_pb_d['pbd_create_by'] = Session::get('usid');
             $data_tbtr_pb_d['pbd_fdxrev'] = 'T';
 
             $insert_tbtr_pb_h['pbh_qtypb'] += $pbm->qty;
@@ -470,40 +470,40 @@ class ReorderPBGOController extends Controller
             array_push($insert_tbtr_pb_d,$data_tbtr_pb_d);
         }
 
-        $insert_tbtr_pb_h['pbh_kodeigr'] = $_SESSION['kdigr'];
+        $insert_tbtr_pb_h['pbh_kodeigr'] = Session::get('kdigr');
         $insert_tbtr_pb_h['pbh_tipepb'] = 'R';
         $insert_tbtr_pb_h['pbh_nopb'] = $NOPB;
         $insert_tbtr_pb_h['pbh_tglpb'] = $TGLAKHIR;
         $insert_tbtr_pb_h['pbh_keteranganpb'] = 'PB REORDER';
-        $insert_tbtr_pb_h['pbh_create_by'] = $_SESSION['usid'];
+        $insert_tbtr_pb_h['pbh_create_by'] = Session::get('usid');
         $insert_tbtr_pb_h['pbh_create_dt'] = DB::RAW("sysdate");
 
         try{
-            DB::connection($_SESSION['connection'])->table('tbtr_pb_d')
+            DB::connection(Session::get('connection'))->table('tbtr_pb_d')
                 ->insert($insert_tbtr_pb_d);
-            DB::connection($_SESSION['connection'])->table('tbtr_pb_h')
+            DB::connection(Session::get('connection'))->table('tbtr_pb_h')
                 ->insert($insert_tbtr_pb_h);
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
             $title = 'Gagal melakukan proses reorder GO!';
             $status = 'error';
             $message = $e->getMessage();
             return compact(['status','title','message']);
         }
 
-        $temp_tolak2 = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+        $temp_tolak2 = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->where('recid','2')
             ->where('docno',$NOPB)
             ->get();
 
-        $temp_tolak3 = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+        $temp_tolak3 = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->where('recid','3')
             ->where('docno',$NOPB)
             ->get();
 
         if($oke == true){
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
             $title = 'Berhasil melakukan reorder GO!';
             $message = 'No. Dokumen ini adalah : '.$NOPB;
@@ -531,11 +531,11 @@ class ReorderPBGOController extends Controller
             $title = '** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM RUPIAH/CARTON **';
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
-            ->where('prs_kodeigr',$_SESSION['kdigr'])
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->where('prs_kodeigr',Session::get('kdigr'))
             ->first();
 
-        $tolakan = DB::connection($_SESSION['connection'])->table('temp_pbprint')
+        $tolakan = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->join('tbmaster_prodmast','prdcd','prd_prdcd')
             ->selectRaw("prdcd,
             SUBSTR(PRD_DeskripsiPanjang,1,48) prd_desk,

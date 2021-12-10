@@ -10,7 +10,7 @@ namespace App\Http\Controllers\TABEL;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -28,10 +28,10 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->select("PRD_DESKRIPSIPANJANG", "PRD_PRDCD")
             ->whereRaw('nvl(prd_recordid,9)<>1')
-            ->where('prd_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw("PRD_PRDCD like '%" . $search . "%'")
             ->orderBy("PRD_PRDCD")
             ->limit(100)
@@ -43,8 +43,8 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
-            ->where('mtr_kodeigr', '=', $_SESSION['kdigr'])
+        $datas = DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
+            ->where('mtr_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw("mtr_prdcd like '%" . $search . "%'")
             ->orderBy("mtr_prdcd")
             ->get();
@@ -55,18 +55,18 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
         $data = '';
-        $temp = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $temp = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("NVL(COUNT(1),0) temp")
             ->whereRaw('nvl(prd_recordid,9)<>1')
-            ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
+            ->where('PRD_KODEIGR', '=', Session::get('kdigr'))
             ->where('PRD_PRDCD', '=', $plu)
             ->pluck('temp')->first();
 
         if ($temp > 0) {
-            $data = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+            $data = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
                 ->selectRaw("prd_deskripsipanjang || ' - ' || prd_unit || '/' || prd_frac desk")
                 ->whereRaw('nvl(prd_recordid,9)<>1')
-                ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
+                ->where('PRD_KODEIGR', '=', Session::get('kdigr'))
                 ->where('PRD_PRDCD', '=', $plu)
                 ->pluck('desk')->first();
             return $data;
@@ -79,22 +79,22 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
         $data = '';
-        $info = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $info = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC info")
-            ->where('PRD_KODEIGR', '=', $_SESSION['kdigr'])
+            ->where('PRD_KODEIGR', '=', Session::get('kdigr'))
             ->where('PRD_PRDCD', '=', $plu)
             ->pluck('info')->first();
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
+        $temp = DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
             ->selectRaw("COUNT(1) count")
-            ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
+            ->where('MTR_KODEIGR', '=', Session::get('kdigr'))
             ->where('MTR_PRDCD', '=', $plu)
             ->pluck('count')->first();
 
         if ($temp > 0) {
-            $data = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
+            $data = DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
                 ->selectRaw("MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM")
-                ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
+                ->where('MTR_KODEIGR', '=', Session::get('kdigr'))
                 ->whereRaw("MTR_PRDCD = '" . $plu . "'")
                 ->first();
         }
@@ -106,16 +106,16 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
 
-        $temp = DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
+        $temp = DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
             ->selectRaw("NVL(COUNT(1),0) count")
-            ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
+            ->where('MTR_KODEIGR', '=', Session::get('kdigr'))
             ->where('MTR_PRDCD', '=', $plu)
             ->pluck('count')->first();
 
         if ($temp == 0) {
-            DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
+            DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
                 ->insert([
-                    'mtr_kodeigr' => $_SESSION['kdigr'],
+                    'mtr_kodeigr' => Session::get('kdigr'),
                     'mtr_prdcd' => $plu,
                     'mtr_qtyregulerbiru' => $request->mtr_qtyregulerbiru,
                     'mtr_qtyregulerbiruplus' => $request->mtr_qtyregulerbiruplus,
@@ -126,15 +126,15 @@ class MaxPembelianItemPerTransaksiController extends Controller
                     'mtr_qtygold2' => $request->mtr_qtygold2,
                     'mtr_qtygold3' => $request->mtr_qtygold3,
                     'mtr_qtyplatinum' => $request->mtr_qtyplatinum,
-                    'mtr_create_by' => $_SESSION['usid'],
+                    'mtr_create_by' => Session::get('usid'),
                     'mtr_create_dt' => DB::raw('sysdate')
                 ]);
             $message = "Data PLU " . $plu . " Berhasil Disimpan!";
             $status = "success";
             return compact(['message', 'status']);
         } else {
-            DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
-                ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
+                ->where('MTR_KODEIGR', '=', Session::get('kdigr'))
                 ->where('MTR_PRDCD', '=', $plu)
                 ->update([
                     'mtr_qtyregulerbiru' => $request->mtr_qtyregulerbiru,
@@ -146,7 +146,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
                     'mtr_qtygold2' => $request->mtr_qtygold2,
                     'mtr_qtygold3' => $request->mtr_qtygold3,
                     'mtr_qtyplatinum' => $request->mtr_qtyplatinum,
-                    'mtr_create_by' => $_SESSION['usid'],
+                    'mtr_create_by' => Session::get('usid'),
                     'mtr_create_dt' => DB::raw('sysdate')
                 ]);
             $message = "Data PLU " . $plu . " Berhasil Diupdate!";
@@ -160,8 +160,8 @@ class MaxPembelianItemPerTransaksiController extends Controller
     {
         $plu = $request->plu;
 
-        DB::connection($_SESSION['connection'])->table("TBTABEL_MAXTRANSAKSI")
-            ->where('MTR_KODEIGR', '=', $_SESSION['kdigr'])
+        DB::connection(Session::get('connection'))->table("TBTABEL_MAXTRANSAKSI")
+            ->where('MTR_KODEIGR', '=', Session::get('kdigr'))
             ->where('MTR_PRDCD', '=', $plu)
             ->delete();
         $message = "Data PLU " . $plu . " Berhasil Dihapus!";
@@ -174,16 +174,16 @@ class MaxPembelianItemPerTransaksiController extends Controller
         $w = 490;
         $h = 37.75;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT MTR_PRDCD, MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM,
+        $data = DB::connection(Session::get('connection'))->select("SELECT MTR_PRDCD, MTR_QTYREGULERBIRU, MTR_QTYREGULERBIRUPLUS, MTR_QTYFREEPASS, MTR_QTYRETAILERMERAH, MTR_QTYSILVER, MTR_QTYGOLD1, MTR_QTYGOLD2, MTR_QTYGOLD3, MTR_QTYPLATINUM,
                 PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC UNIT,
                 PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH FROM TBTABEL_MAXTRANSAKSI, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-                WHERE MTR_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                WHERE MTR_KODEIGR = '" . Session::get('kdigr') . "'
                 AND PRD_KODEIGR = MTR_KODEIGR AND PRD_PRDCD = MTR_PRDCD
-                AND PRS_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                AND PRS_KODEIGR = '" . Session::get('kdigr') . "'
                 ORDER BY MTR_PRDCD");
         $filename = 'igr-tab-maxtran-pdf';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
         return view('TABEL.MAXPEMBELIANITEMPERTRANSAKSI.' . $filename, compact(['perusahaan', 'data']));
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -26,9 +26,9 @@ class DaftarReturPembelianController extends Controller
             $div = 1;
         else $div = $request->div;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_divisi')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->select('div_kodedivisi', 'div_namadivisi')
-            ->where('div_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('div_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('div_kodedivisi >= ' . $div)
             ->get();
 
@@ -37,9 +37,9 @@ class DaftarReturPembelianController extends Controller
 
     public function getDataLovDep(Request $request)
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_departement')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_departement')
             ->select('dep_kodedepartement', 'dep_namadepartement', 'dep_kodedivisi')
-            ->where('dep_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('dep_kodeigr', '=', Session::get('kdigr'))
             ->where('dep_kodedivisi', '=', $request->div)
             ->get();
 
@@ -48,10 +48,10 @@ class DaftarReturPembelianController extends Controller
 
     public function getDataLovKat(Request $request)
     {
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_kategori")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
             ->join('tbmaster_departement', 'dep_kodedepartement', '=', 'kat_kodedepartement')
             ->select('kat_namakategori', 'kat_kodekategori', 'kat_kodedepartement', 'dep_kodedivisi')
-            ->where('kat_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('kat_kodeigr', '=', Session::get('kdigr'))
             ->where('kat_kodedepartement', '=', $request->dep)
             ->where('dep_kodedivisi', '=', $request->div)
             ->orderBy('kat_kodedepartement')
@@ -67,9 +67,9 @@ class DaftarReturPembelianController extends Controller
             $sup = 1;
         else $sup = $request->sup;
 
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
-            ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->where('sup_kodesupplier', '>=', $sup)
             ->orderBy('sup_kodesupplier')
             ->distinct()
@@ -92,7 +92,7 @@ class DaftarReturPembelianController extends Controller
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
         $and_sup = '';
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
@@ -100,7 +100,7 @@ class DaftarReturPembelianController extends Controller
             $and_sup = " and mstd_kodesupplier(+) between '" . $sup1 . "' and '" . $sup2 . "'";
         }
         if ($tipe === '1') {
-            $data = DB::connection($_SESSION['connection'])->select("select mstd_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang,
@@ -137,7 +137,7 @@ CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
         from tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
         tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan
         where msth_typetrn='K'
-        and msth_kodeigr='" . $_SESSION['kdigr'] . "'
+        and msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and mstd_nodoc=msth_nodoc
         and TRUNC(mstd_tgldoc) = TRUNC(msth_tgldoc)
@@ -179,7 +179,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
-            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodedivisi, div_namadivisi, frac,
     mstd_kodedepartement, dep_namadepartement,
@@ -253,7 +253,7 @@ from (
     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_perusahaan,
     tbmaster_divisi, tbmaster_departement, tbmaster_kategori
     where  msth_typetrn='K'
-        and msth_kodeigr='" . $_SESSION['kdigr'] . "'
+        and msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and mstd_nodoc=msth_nodoc
         AND mstd_kodedivisi BETWEEN '" . $div1 . "' AND '" . $div2 . "'
@@ -296,7 +296,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
-            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp, frac,
     mstd_kodesupplier, sup_namasupplier,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -332,7 +332,7 @@ from (
         END avgcost
     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_perusahaan,
         tbmaster_supplier
-    where msth_kodeigr='" . $_SESSION['kdigr'] . "'
+    where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and msth_typetrn='K'
         " . $and_sup . "
@@ -367,7 +367,7 @@ order by mstd_kodesupplier, msth_nodoc, plu");
 
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
         }else if ($tipe === '4') {
-            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc, frac,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -403,7 +403,7 @@ from (
         END avgcost
     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_perusahaan,
          tbmaster_supplier
-    where msth_kodeigr='" . $_SESSION['kdigr'] . "'
+    where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and msth_typetrn='K'
         " . $and_sup . "
@@ -439,7 +439,7 @@ order by mstd_kodesupplier, msth_nodoc, plu");
             return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER PER DOKUMEN.pdf');
         }
         else if ($tipe === '5') {
-            $data = DB::connection($_SESSION['connection'])->select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
 supplier,prs_namaperusahaan, prs_namacabang,  mstd_bkp,
 sum(gross) gross, sum(potongan) potongan, sum(bm) bm, sum(btl) btl,
 sum(dpp) dpp, sum(ppn) ppn, sum(total) total, sum(avgcost) avgcost
@@ -479,7 +479,7 @@ from (
     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier,
          tbmaster_perusahaan, tbmaster_prodmast
     where msth_typetrn='K'
-    and msth_kodeigr='" . $_SESSION['kdigr'] . "'
+    and msth_kodeigr='" . Session::get('kdigr') . "'
     and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
     " . $and_sup . "
     and mstd_nodoc=msth_nodoc

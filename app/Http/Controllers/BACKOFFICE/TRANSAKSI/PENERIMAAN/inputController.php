@@ -5,10 +5,10 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 use App\AllModel;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class inputController extends Controller
@@ -30,10 +30,10 @@ class inputController extends Controller
     }
 
     public function showBTB(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $tipeTrn = $request->tipetrn;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT TRBO_NODOC, TRBO_NOPO, TRBO_TGLREFF
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_NODOC, TRBO_NOPO, TRBO_TGLREFF
                                         FROM TBTR_BACKOFFICE
                                        WHERE     TRBO_KODEIGR = '$kodeigr'
                                              AND TRBO_TYPETRN = '$tipeTrn'
@@ -49,9 +49,9 @@ class inputController extends Controller
         $noDoc = $request->noDoc;
         $noPO = $request->noPO;
         $typeTrn = $request->typeTrn;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TBTR_BACKOFFICE
                                      WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPO', '123') AND NVL(TRBO_RECORDID, '0') <> 1");
 
@@ -61,7 +61,7 @@ class inputController extends Controller
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TEMP_GO
                                      WHERE KODEIGR = '$kodeigr'
                                        AND ISI_TOKO = 'Y'
@@ -69,12 +69,12 @@ class inputController extends Controller
 
         $flagGO = ($temp[0]->temp != '0') ? 'Y' : 'N';
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (*), 0) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (*), 0) as temp
                                       FROM TBTR_BACKOFFICE
                                      WHERE TRBO_NODOC = '$noDoc' AND TRBO_KODEIGR = '$kodeigr' AND TRBO_TYPETRN = 'L'");
 
         if ($temp[0]->temp != '0') {
-            $recId = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT TRBO_RECORDID
+            $recId = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_RECORDID
                                            FROM TBTR_BACKOFFICE
                                           WHERE TRBO_NODOC = '$noDoc'
                                             AND TRBO_KODEIGR = '$kodeigr'
@@ -94,7 +94,7 @@ class inputController extends Controller
 //      dan kondisi dimana nomor dokumen tidak ada di tbtr_backoffice tidak bisa terpenuhi (Tidak ada inputan manual dari user),
 //      sehingga langsung menampilkan data dari tbtr_backoffice dengan query yang sepertinya buatan sendiri
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
+        $data = DB::connection(Session::get('connection'))->select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
                                     c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
                                       FROM tbtr_backoffice a
                                            LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
@@ -118,8 +118,8 @@ class inputController extends Controller
     public function getNewNoBTB(Request $request)
     {
         $typeTrn = $request->typeTrn;
-        $kodeigr = $_SESSION['kdigr'];
-        $IP = str_replace('.', '0', SUBSTR($_SESSION['ip'], -3));
+        $kodeigr = Session::get('kdigr');
+        $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
         $connect = loginController::getConnectionProcedure();
 
         if ($typeTrn == 'B') {
@@ -137,9 +137,9 @@ class inputController extends Controller
 
     public function showPO()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT tpoh_nopo,
+        $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
                                            tpoh_tglpo,
                                            tpoh_kodesupplier,
                                            sup_namasupplier
@@ -164,14 +164,14 @@ class inputController extends Controller
     {
         $typeTrn = $request->typeTrn;
         $noPO = $request->noPo;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $recid = '';
         $awalgo = '';
         $akhirgo = '';
         $lotorisasi = '';
         $flaggo = 'N';
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TEMP_GO
                                      WHERE KODEIGR = '$kodeigr' AND ISI_TOKO = 'Y'
                                        AND TRUNC (SYSDATE) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
@@ -180,13 +180,13 @@ class inputController extends Controller
             $flaggo = 'Y';
         }
 
-        $temp1 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp1
+        $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
                                       FROM TBTR_BACKOFFICE
                                      WHERE     TRBO_KODEIGR = '$kodeigr'
                                            AND TRBO_NOPO = NVL ('$noPO', '123')
                                            AND NVL (TRBO_RECORDID, '0') <> 1");
 
-        $temp2 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp2
+        $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
                                       FROM TBTR_MSTRAN_D
                                      WHERE     MSTD_KODEIGR = '$kodeigr'
                                            AND MSTD_NOPO = NVL ('$noPO', '123')
@@ -199,7 +199,7 @@ class inputController extends Controller
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TBTR_PO_H
                                      WHERE     TPOH_NOPO = '$noPO'
                                            AND TPOH_KODEIGR = '22'
@@ -215,7 +215,7 @@ class inputController extends Controller
 //        $flaggo = 'Y';
 
         if ($flaggo == 'Y') {
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT PER_AWAL_REORDER AS AWALGO, PER_AKHIR_REORDER AS AKHIRGO
+            $temp = DB::connection(Session::get('connection'))->select("SELECT PER_AWAL_REORDER AS AWALGO, PER_AKHIR_REORDER AS AKHIRGO
                                       FROM TEMP_GO
                                      WHERE     KODEIGR = '$kodeigr'
                                            AND ISI_TOKO = 'Y'
@@ -227,7 +227,7 @@ class inputController extends Controller
                 $akhirgo = $temp[0]->akhirgo;
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TBTR_PO_D
                                      WHERE     TPOD_NOPO = '$noPO'
                                            AND TPOD_KODEIGR = '$kodeigr'
@@ -246,7 +246,7 @@ class inputController extends Controller
                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT TPOH_TGLPO as TGLPO, TPOH_JWPB as WKPO, TPOH_TGLPO + TPOH_JWPB as tgl
+            $temp = DB::connection(Session::get('connection'))->select("SELECT TPOH_TGLPO as TGLPO, TPOH_JWPB as WKPO, TPOH_TGLPO + TPOH_JWPB as tgl
                        FROM TBTR_PO_H
                       WHERE     TPOH_NOPO = '$noPO'
                             AND TPOH_KODEIGR = '$kodeigr'");
@@ -274,12 +274,12 @@ class inputController extends Controller
             }
         } else {
 //-------------- ELSE DARI FLAGGO
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (tpoh_flagcmo, 'N') as flagcmo
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (tpoh_flagcmo, 'N') as flagcmo
                                          FROM tbtr_po_h
                                         WHERE tpoh_nopo = '$noPO'");
 
             if ($temp[0]->flagcmo == 'Y') {
-                $temp1 = DB::connection($_SESSION['connection'])->select("SELECT tpoh_tglkirimbrg as tglkirim
+                $temp1 = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglkirimbrg as tglkirim
                                                FROM tbtr_po_h
                                               WHERE     tpoh_nopo = '$noPO'
                                                     AND tpoh_kodeigr = '$kodeigr'");
@@ -296,7 +296,7 @@ class inputController extends Controller
                 }
             }
 
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT NVL (TPOH_RECORDID, 0) as recid, TPOH_TGLPO, TPOH_JWPB, CASE WHEN (TPOH_TGLPO + TPOH_JWPB) < sysdate - 1 THEN 0 ELSE 1 END as cond1, CASE WHEN (TPOH_TGLPO - sysdate) > 7 THEN 0 ELSE 1 END as cond2
+            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (TPOH_RECORDID, 0) as recid, TPOH_TGLPO, TPOH_JWPB, CASE WHEN (TPOH_TGLPO + TPOH_JWPB) < sysdate - 1 THEN 0 ELSE 1 END as cond1, CASE WHEN (TPOH_TGLPO - sysdate) > 7 THEN 0 ELSE 1 END as cond2
                                             FROM TBTR_PO_H
                                            WHERE     TPOH_NOPO = '$noPO'
                                                  AND TPOH_KODEIGR = '$kodeigr'");
@@ -340,7 +340,7 @@ class inputController extends Controller
         }
 
         if ($flaggo == 'Y') {
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT tpoh_tglpo as tglpo, tpoh_jwpb as wkpo, NVL (TRIM(tpoh_recordid), '0') recid
+            $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo as tglpo, tpoh_jwpb as wkpo, NVL (TRIM(tpoh_recordid), '0') recid
                                                   FROM tbtr_po_h
                                                  WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'");
 
@@ -351,7 +351,7 @@ class inputController extends Controller
                 $recid = $temp[0]->recid;
             }
         } else {
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT tpoh_tglpo, tpoh_jwpb, NVL (TRIM(tpoh_recordid), '0') recid
+            $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo, tpoh_jwpb, NVL (TRIM(tpoh_recordid), '0') recid
                                                   FROM tbtr_po_h
                                                  WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'
                                                        AND NVL (TRIM(tpoh_recordid), '0') != '2'");
@@ -369,7 +369,7 @@ class inputController extends Controller
             }
         }
 
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT tpoh_nopo, tpoh_tglpo, tpoh_kodesupplier, sup_namasupplier, sup_singkatansupplier, tpoh_top, sup_pkp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, tpoh_tglpo, tpoh_kodesupplier, sup_namasupplier, sup_singkatansupplier, tpoh_top, sup_pkp
                                               FROM tbtr_po_h, tbmaster_supplier
                                              WHERE tpoh_nopo = '$noPO'
                                                AND tpoh_kodeigr = '$kodeigr'
@@ -377,17 +377,17 @@ class inputController extends Controller
                                                AND sup_kodeigr = tpoh_kodeigr");
 
 //        ------------------ Update RecID menjadi 2, di komen karena di browser gk bisa update otomatis ke null ketika page ditutup
-//                DB::connection($_SESSION['connection'])->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
-//                DB::connection($_SESSION['connection'])->table('tbtr_po_d')->where('tpod_nopo', $noPO)->update(['tpod_recordid' => 2]);
+//                DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
+//                DB::connection(Session::get('connection'))->table('tbtr_po_d')->where('tpod_nopo', $noPO)->update(['tpod_recordid' => 2]);
 
         return (['kode' => 1, 'msg' => '', 'data' => $temp]);
     }
 
     public function showSupplier()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $data = DB::connection($_SESSION['connection'])->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
+        $data = DB::connection(Session::get('connection'))->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
                                     from tbmaster_supplier
                                     where sup_kodeigr='$kodeigr'");
 
@@ -397,14 +397,14 @@ class inputController extends Controller
     public function showPlu(Request $request)
     {
         $typeTrn = $request->typeTrn;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $value = strtoupper($request->value);
         $supplier = $request->supplier;
         $noPo = $request->noPo;
         $typeLov = $request->typeLov;
 
         if ($typeLov == 'PLU') {
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_deskripsipanjang', 'prd_prdcd')
                 ->join('tbmaster_stock', function ($join) {
                     $join->on("st_prdcd", "prd_prdcd");
@@ -419,7 +419,7 @@ class inputController extends Controller
                 ->get()->toArray();
 
         } elseif ($typeLov == 'PLU_PO') {
-            $data = DB::connection($_SESSION['connection'])->select("select prd_deskripsipanjang, tpod_prdcd, prd_unit||'/'||prd_frac kemasan,
+            $data = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, tpod_prdcd, prd_unit||'/'||prd_frac kemasan,
                                             floor(tpod_qtypo/prd_frac) qty,mod(tpod_qtypo,prd_frac) qtyk,
                                             tpod_bonuspo1 bonus1, tpod_bonuspo2 bonus2,
                                             TPOD_PERSENTASEDISC1, TPOD_RPHDISC1,
@@ -433,7 +433,7 @@ class inputController extends Controller
                                             AND prd_kodeigr=tpod_kodeigr
                                             AND (prd_deskripsipanjang LIKE '%$value%' or prd_prdcd LIKE '%$value%')");
         } elseif ($typeLov == 'LOV155') {
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_deskripsipanjang', 'prd_prdcd')
                 ->join('tbmaster_stock', function ($join) {
                     $join->on("st_prdcd", "prd_prdcd");
@@ -458,18 +458,18 @@ class inputController extends Controller
         $noPo = $request->noPo;
         $supplier = $request->supplier;
         $tempData = $request->tempData;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
         $this->tempDataSave = $tempData;
 
         $this->param_cek = 'Y';
 
-        $temp1 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp1
+        $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
                                       FROM TBTR_BACKOFFICE
                                      WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
                                          AND NVL(TRBO_RECORDID, '0') <> 1");
 
-        $temp2 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp2
+        $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
                                       FROM TBTR_MSTRAN_D
                                      WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'
                                       AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
@@ -481,7 +481,7 @@ class inputController extends Controller
         }
 
         if ($noPo != '' || $noPo) {
-            $temp = DB::connection($_SESSION['connection'])->select(" SELECT NVL (TPOH_RECORDID, 0) as recid
+            $temp = DB::connection(Session::get('connection'))->select(" SELECT NVL (TPOH_RECORDID, 0) as recid
                                           FROM TBTR_PO_H
                                          WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
@@ -620,7 +620,7 @@ class inputController extends Controller
 
     public function query1($supplier, $prdcd, $kodeigr)
     {
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_kodeigr as i_kodeigr,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prd_kodeigr as i_kodeigr,
                                            prd_kodedivisi as i_kodedivisi,
                                            prd_kodedepartement as i_kodedepartement,
                                            prd_kodekategoribarang as i_kodekategoribrg,
@@ -750,7 +750,7 @@ class inputController extends Controller
 
     public function query2($noPo, $kodeigr, $prdcd)
     {
-        $data = DB::connection($_SESSION['connection'])->select(" SELECT   tpod_kodeigr,
+        $data = DB::connection(Session::get('connection'))->select(" SELECT   tpod_kodeigr,
                                              tpod_recordid,
                                              tpod_nopo,
                                              tpod_tglpo,
@@ -1435,7 +1435,7 @@ class inputController extends Controller
 
     public function query3($prdcd, $kodeigr, $supplier, $noPo)
     {
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd,
                                      prd_lastcost,
                                      prd_unit,
                                      prd_flagbkp1,
@@ -1532,7 +1532,7 @@ class inputController extends Controller
         $noPo       = $request->noPo;
         $qty        = $request->qty;
         $qtyk       = $request->qtyk;
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tempDataPlu= $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
 
@@ -1568,14 +1568,14 @@ class inputController extends Controller
         $noPo       = $request->noPo;
         $qty        = $request->qty;
         $qtyk       = $request->qtyk;
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tempDataPlu= $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
         $msg        = '';
         $kode       = 0;
 
 
-        $dataPoD  = DB::connection($_SESSION['connection'])->table("TBTR_PO_D")->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)->get()->toArray();
+        $dataPoD  = DB::connection(Session::get('connection'))->table("TBTR_PO_D")->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)->get()->toArray();
 
         if ($dataPoD){
             $temp = $dataPoD[0];
@@ -1615,7 +1615,7 @@ class inputController extends Controller
         $prdcd      = $request->prdcd;
         $supplier   = $request->supplier;
         $noPo       = $request->noPo;
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $tempDataPlu= $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
         $msg        = '';
@@ -1641,7 +1641,7 @@ class inputController extends Controller
         $prdcd = $request->prdcd;
         $supplier = $request->supplier;
         $noPo = $request->noPo;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $tempDataPlu = $request->tempDataPLU;
         $this->getDataPlu = (object)$tempDataPlu;
         $msg = '';
@@ -1666,7 +1666,7 @@ class inputController extends Controller
         $prdcd  = $request->prdcd;
         $noBtb  = $request->noBTB;
         $noPo   = $request->noPo;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $tempDataPlu = $request->tempDataPLU;
         $tempData    = $request->tempDataSave;
         $this->getDataPlu = (object)$tempDataPlu;
@@ -1680,7 +1680,7 @@ class inputController extends Controller
             }
         }
 
-        $checkBtb   = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')->where('trbo_nodoc', $noBtb)->get()->toArray();
+        $checkBtb   = DB::connection(Session::get('connection'))->table('tbtr_backoffice')->where('trbo_nodoc', $noBtb)->get()->toArray();
 
         if ($checkBtb){
 //            --- Tidak dipakai, karena validasi pas pakai noPO ini belum bisa dibuat, karena ketika halaman ditutup, belum bisa update otomatis supaya noPO dapat di pakai oleh user lain
@@ -1771,11 +1771,11 @@ class inputController extends Controller
                     array_push($this->tempDataSave,$temp);
 
                     $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
-//                    $updatePoD  = DB::connection($_SESSION['connection'])->table('tbtr_po_d')
+//                    $updatePoD  = DB::connection(Session::get('connection'))->table('tbtr_po_d')
 //                        ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
 //                        ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
 //
-//                    $updatePoH  = DB::connection($_SESSION['connection'])->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
+//                    $updatePoH  = DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
                 }
 
             }
@@ -1787,15 +1787,15 @@ class inputController extends Controller
     public function transferPO(Request $request){
         $supplier = $request->supplier;
         $noPo   = $request->noPo;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
 
-        $temp1 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp1
+        $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
                                       FROM TBTR_BACKOFFICE
                                      WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NOPO = NVL('$noPo', '123') AND NVL(trbo_recordid, '0') <> 1
                                          AND NVL(TRBO_RECORDID, '0') <> 1");
 
-        $temp2 = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as temp2
+        $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
                                       FROM TBTR_MSTRAN_D
                                      WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'  AND NVL(MSTD_RECORDID, '0') <> 1");
 
@@ -1807,7 +1807,7 @@ class inputController extends Controller
             return response()->json(['kode' => 2, 'msg' => "Check No PO", 'data' => '']);
         }
 
-        $recID  = DB::connection($_SESSION['connection'])->select("SELECT NVL (TPOH_RECORDID, 0)
+        $recID  = DB::connection(Session::get('connection'))->select("SELECT NVL (TPOH_RECORDID, 0)
                                       FROM TBTR_PO_H
                                      WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
@@ -1830,7 +1830,7 @@ class inputController extends Controller
         $this->tempDataSave = [];
 
         foreach ($query4 as $data){
-            DB::connection($_SESSION['connection'])->table("tbtr_po_d")->where('tpod_nopo', $noPo)->where('tpod_prdcd', $data->tpod_prdcd)->where('tpod_kodeigr', $kodeigr)
+            DB::connection(Session::get('connection'))->table("tbtr_po_d")->where('tpod_nopo', $noPo)->where('tpod_prdcd', $data->tpod_prdcd)->where('tpod_kodeigr', $kodeigr)
                 ->update(['tpod_qtypb' => $data->qty_po, 'tpod_recordid' => '2']);
 
 //            *** Save to tempdatasave
@@ -1900,7 +1900,7 @@ class inputController extends Controller
     }
 
     public function query4($kodeigr, $supplier, $noPo){
-        $data   = DB::connection($_SESSION['connection'])->select("SELECT  tpod_kodeigr,
+        $data   = DB::connection(Session::get('connection'))->select("SELECT  tpod_kodeigr,
                                              tpod_recordid,
                                              tpod_nopo,
                                              tpod_tglpo,
@@ -1969,8 +1969,8 @@ class inputController extends Controller
 
     public function saveData(Request $request){
         $tempdata   = $request->tempDataSave;
-        $user       = $_SESSION['usid'];
-        $kodeigr    = $_SESSION['kdigr'];
+        $user       = Session::get('usid');
+        $kodeigr    = Session::get('kdigr');
         $help       = new AllModel();
         $date       = $help->getDate();
 
@@ -1979,7 +1979,7 @@ class inputController extends Controller
             foreach ($tempdata as $temp){
                 $data = (object) $temp;
 
-                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')->insert([
+                DB::connection(Session::get('connection'))->table('tbtr_backoffice')->insert([
                     "TRBO_KODEIGR" => $kodeigr,
                     "TRBO_RECORDID" => '',
                     "TRBO_TYPETRN" => 'B',

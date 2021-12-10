@@ -493,7 +493,7 @@
             }else{
                 swal({
                     title:'Alert',
-                    text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo $_SESSION['kdigr'] ?> + ' Tidak Terdaftar di Master Barang',
+                    text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo Session::get('kdigr') ?> + ' Tidak Terdaftar di Master Barang',
                     icon:'warning',
                     timer: 2000,
                     buttons: {
@@ -580,7 +580,7 @@
                 if(checkKodePembandingExist() == 'false'){
                     swal({
                         title:'Alert',
-                        text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo $_SESSION['kdigr'] ?> + ' Tidak Terdaftar di Master Barang',
+                        text: 'Kode PLU '+$('#kodePembanding').val()+' - '+ <?php echo Session::get('kdigr') ?> + ' Tidak Terdaftar di Master Barang',
                         icon:'warning',
                         timer: 2000,
                         buttons: {

@@ -6,7 +6,7 @@ use App\Http\Controllers\ADMINISTRATION\AccessController;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use Yajra\DataTables\DataTables;
@@ -14,9 +14,9 @@ use Yajra\DataTables\DataTables;
 class InputPenyesuaianController extends Controller
 {
     public function index(){
-        $penyesuaian = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+        $penyesuaian = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
             ->select('trbo_nodoc',DB::RAW("to_char(trbo_tgldoc,'dd/mm/yyyy') trbo_tgldoc"))
-            ->where('trbo_kodeigr',$_SESSION['kdigr'])
+            ->where('trbo_kodeigr',Session::get('kdigr'))
             ->where('trbo_typetrn','X')
             ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
             ->orderBy('trbo_nodoc','desc')
@@ -36,11 +36,11 @@ class InputPenyesuaianController extends Controller
 //    and substr(prd_prdcd,-1) = '0'
 //order by prd_prdcd
 
-        $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+        $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
             ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
             ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
             ->whereRaw("st_lokasi(+) = '01'")
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereRaw("substr(prd_prdcd,-1) = '0'")
             ->orderBy('prd_prdcd')
             ->limit(100)
@@ -55,22 +55,22 @@ class InputPenyesuaianController extends Controller
         $tipebarang = $request->lokasi;
 
         if(is_numeric($search)){
-            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,-1) = '0'")
                 ->where('prd_prdcd',$search)
                 ->orderBy('prd_prdcd')
                 ->get();
         }
         else{
-            $produk = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,-1) = '0'")
                 ->where('prd_deskripsipanjang','like',DB::RAW("'%".$search."%'"))
                 ->orderBy('prd_prdcd')
@@ -81,9 +81,9 @@ class InputPenyesuaianController extends Controller
     }
 
     public function plu_select(Request $request){
-        $cekPLU = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $cekPLU = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->where('prd_prdcd',$request->plu)
             ->first();
 
@@ -107,9 +107,9 @@ class InputPenyesuaianController extends Controller
             $FPRDCD = 0;
             $FGANTIPLU = 0;
 
-            $cekStock = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+            $cekStock = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                 ->select('st_prdcd')
-                ->where('st_kodeigr',$_SESSION['kdigr'])
+                ->where('st_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(st_prdcd,1,6) = '".substr($request->plu,0,6)."'")
                 ->where('st_lokasi',$tipebarang)
                 ->first();
@@ -127,9 +127,9 @@ class InputPenyesuaianController extends Controller
 
                 $plu = substr($plu,0,6).'0';
 
-                $FPLUBARU = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                $FPLUBARU = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                     ->selectRaw("NVL(st_saldoakhir,0) saldoakhir")
-                    ->where('st_kodeigr',$_SESSION['kdigr'])
+                    ->where('st_kodeigr',Session::get('kdigr'))
                     ->where('st_prdcd',$plu)
                     ->where('st_lokasi',$tipebarang)
                     ->first();
@@ -144,9 +144,9 @@ class InputPenyesuaianController extends Controller
                 }
 
                 if($FPRDCD == 0){
-                    $response = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                    $response = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                         ->selectRaw("PRD_DESKRIPSIPANJANG barang, PRD_UNIT || '/' || NVL (PRD_FRAC, 0) KEMASAN,PRD_KODETAG tag, NVL (PRD_FRAC, 0) frac, PRD_FLAGBANDROL bandrol, PRD_UNIT unit, PRD_LASTCOST oldcost, PRD_FLAGBKP1 bkp")
-                        ->where('prd_kodeigr',$_SESSION['kdigr'])
+                        ->where('prd_kodeigr',Session::get('kdigr'))
                         ->where('prd_prdcd',$plu)
                         ->first();
 
@@ -160,7 +160,7 @@ class InputPenyesuaianController extends Controller
                     $frac = $response->frac;
 
                     if(substr($request->plu,-1) == '1'){
-                        $data = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                        $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                             ->selectRaw("NVL(st_saldoakhir,0) persediaan, 0 persediaan2, st_avgcost hargasatuan,
                         ST_AVGCOST * CASE
                         WHEN TRIM (PRD_UNIT) = 'KG'
@@ -174,7 +174,7 @@ class InputPenyesuaianController extends Controller
                         END pcs")
                             ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                             ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                            ->where('prd_kodeigr',$_SESSION['kdigr'])
+                            ->where('prd_kodeigr',Session::get('kdigr'))
                             ->where('prd_prdcd',$plu)
                             ->first();
 
@@ -186,15 +186,15 @@ class InputPenyesuaianController extends Controller
                     }
                     else{
                         if($FGANTIPLU == 0){
-                            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                            $cek = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                 ->selectRaw("NVL(COUNT(1),0) jum")
-                                ->where('st_kodeigr',$_SESSION['kdigr'])
+                                ->where('st_kodeigr',Session::get('kdigr'))
                                 ->where('st_lokasi',$tipebarang)
                                 ->where('st_prdcd',$plu)
                                 ->first()->jum;
 
                             if($cek > 0){
-                                $data = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                                     ->selectRaw("
                                 CASE
                                    WHEN PRD_UNIT = 'PCS'
@@ -224,7 +224,7 @@ class InputPenyesuaianController extends Controller
                                 END pcs")
                                     ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                     ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_prdcd',$plu)
                                     ->first();
 
@@ -239,14 +239,14 @@ class InputPenyesuaianController extends Controller
                                 $persediaan2 = 0;
                                 $hrgsatuan = 0;
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->selectRaw("
                                 CASE
                                 WHEN PRD_UNIT = 'KG'
                                    THEN 'GRAM'
                                 ELSE 'PCS'
                                 END pcs")
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_prdcd',substr($request->plu,0,6).'1')
                                     ->first();
 
@@ -255,14 +255,14 @@ class InputPenyesuaianController extends Controller
                             }
                         }
                         else{
-                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->selectRaw("0 persediaan, 0 persediaan2, nvl(prd_avgcost,0) hrgsatuan,
                             CASE
                                WHEN TRIM (PRD_UNIT) = 'KG'
                                    THEN 'GRAM'
                                ELSE 'PCS'
                             END oldcost")
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_prdcd',$plu)
                                 ->first();
 
@@ -271,15 +271,15 @@ class InputPenyesuaianController extends Controller
                             $hrgsatuan = $data->hrgsatuan;
                             $lastcost = $data->oldcost;
 
-                            $cek = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                            $cek = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                 ->selectRaw("NVL(COUNT(1),0) jum")
-                                ->where('st_kodeigr',$_SESSION['kdigr'])
+                                ->where('st_kodeigr',Session::get('kdigr'))
                                 ->where('st_prdcd',$plu)
                                 ->where('st_lokasi',$tipebarang)
                                 ->first()->jum;
 
                             if($cek > 0){
-                                $data = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                                     ->selectRaw("
                                 CASE
                                    WHEN PRD_UNIT = 'PCS'
@@ -309,7 +309,7 @@ class InputPenyesuaianController extends Controller
                                 END pcs")
                                     ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                     ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_prdcd',$plu)
                                     ->first();
 
@@ -324,14 +324,14 @@ class InputPenyesuaianController extends Controller
                                 $persediaan2 = 0;
                                 $hrgsatuan = 0;
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->selectRaw("
                                 CASE
                                 WHEN TRIM (PRD_UNIT) = 'KG'
                                    THEN 'GRAM'
                                 ELSE 'PCS'
                                 END pcs")
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_prdcd',substr($request->plu,0,6).'1')
                                     ->first();
 
@@ -342,9 +342,9 @@ class InputPenyesuaianController extends Controller
                         }
                     }
 
-                    $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                    $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                         ->selectRaw("NVL(COUNT(1),0) jum")
-                        ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                        ->where('trbo_kodeigr',Session::get('kdigr'))
                         ->where('trbo_prdcd',$request->plu)
                         ->where('trbo_nodoc',$request->nodoc)
                         ->where('trbo_typetrn','X')
@@ -357,21 +357,21 @@ class InputPenyesuaianController extends Controller
                         $subtotal = 0;
 
                         if(substr($request->plu,-1) == '1' ){
-                            $hrgsatuan = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                            $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                                 ->selectRaw("NVL (ST_AVGCOST, 0) hrgsatuan")
                                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_prdcd',$plu)
                                 ->first()->hrgsatuan;
                         }
                         else{
                             if($FGANTIPLU == 0){
-                                $cek = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                $cek = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->selectRaw("NVL(COUNT(1),0) jum")
                                     ->where('st_prdcd',$plu)
                                     ->whereRaw("st_lokasi = '".$tipebarang."'")
-                                    ->where('st_kodeigr',$_SESSION['kdigr'])
+                                    ->where('st_kodeigr',Session::get('kdigr'))
                                     ->first();
 
                                 if($cek)
@@ -379,11 +379,11 @@ class InputPenyesuaianController extends Controller
                                 else $cek = 0;
 
                                 if($cek > 0){
-                                    $hrgsatuan = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                    $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
                                         ->selectRaw("NVL (ST_AVGCOST, 0) hrgsatuan")
                                         ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                         ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
-                                        ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                        ->where('prd_kodeigr',Session::get('kdigr'))
                                         ->where('prd_prdcd',$plu)
                                         ->first()->hrgsatuan;
 
@@ -391,29 +391,29 @@ class InputPenyesuaianController extends Controller
                                         $hrgsatuan *= $frac;
                                 }
                                 else{
-                                    $hrgsatuan = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    $hrgsatuan = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->selectRaw("
                                     NVL (PRD_AVGCOST, 0) * CASE
                                         WHEN PRD_UNIT = 'KG'
                                             THEN 1
                                         ELSE PRD_FRAC
                                     END hrgsatuan")
-                                        ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                        ->where('prd_kodeigr',Session::get('kdigr'))
                                         ->where('prd_prdcd',substr($request->plu,0,6).'1')
                                         ->first()->hrgsatuan;
                                 }
                             }
                             else{
-                                $hrgsatuan = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $hrgsatuan = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->selectRaw("NVL(prd_avgcost,0) hrgsatuan")
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_prdcd',$plu)
                                     ->first()->hrgsatuan;
                             }
                         }
                     }
                     else{
-                        $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                        $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                             ->selectRaw("TRBO_AVERAGECOST avgcost, TRUNC (NVL (TRBO_QTY, 0)) AS QTYB,
                        (NVL (TRBO_QTY, 0)) AS QTYK, NVL (TRBO_GROSS, 0) subtotal,
                        NVL (TRBO_HRGSATUAN, 0) hrgsatuan, TRBO_KETERANGAN keterangan")
@@ -433,23 +433,23 @@ class InputPenyesuaianController extends Controller
 
                     if($tipempp != '1'){
                         if($totalitem > 0){
-                            $oldplu = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                            $oldplu = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                 ->select('trbo_prdcd')
-                                ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                                ->where('trbo_kodeigr',Session::get('kdigr'))
                                 ->where('trbo_nodoc',$nodoc)
                                 ->where('trbo_qty','<','0')
                                 ->whereRaw("NVL(trbo_recordid,0) <> '1'")
                                 ->first()->trbo_prdcd;
 
-                            $oldfrac = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                            $oldfrac = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->selectRaw("NVL(prd_frac,0) frac")
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_prdcd',$oldplu)
                                 ->first()->frac;
 
-                            $hrgsatuan = (DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                            $hrgsatuan = (DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                         ->select('trbo_hrgsatuan hrgsatuan')
-                                        ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                                        ->where('trbo_kodeigr',Session::get('kdigr'))
                                         ->where('trbo_nodoc',$nodoc)
                                         ->where('trbo_prdcd',$oldplu)
                                         ->whereRaw("NVL(trbo_recordid,0) <> '1'")
@@ -459,9 +459,9 @@ class InputPenyesuaianController extends Controller
 
                     $s = $qty * $frac + $qtyk * ($hrgsatuan/$frac);
 
-                    $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                    $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                         ->select('trbo_nodoc')
-                        ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                        ->where('trbo_kodeigr',Session::get('kdigr'))
                         ->where('trbo_nodoc',$nodoc)
                         ->where('trbo_typetrn','X')
                         ->whereRaw("NVL(trbo_recordid,0) <> '1'")
@@ -469,9 +469,9 @@ class InputPenyesuaianController extends Controller
                         ->get();
 
                     if(count($cek) == 2){
-                        $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                        $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                             ->select('trbo_nodoc')
-                            ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                            ->where('trbo_kodeigr',Session::get('kdigr'))
                             ->where('trbo_nodoc',$nodoc)
                             ->where('trbo_typetrn','X')
                             ->whereRaw("NVL(trbo_recordid,0) <> '1'")
@@ -487,9 +487,9 @@ class InputPenyesuaianController extends Controller
                 }
 
                 if($FGANTIPLU == 1){
-                    $cek = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                    $cek = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                         ->select('st_prdcd')
-                        ->where('st_kodeigr',$_SESSION['kdigr'])
+                        ->where('st_kodeigr',Session::get('kdigr'))
                         ->where('st_lokasi',$tipebarang)
                         ->where('st_prdcd',$request->plu)
                         ->get();
@@ -497,16 +497,16 @@ class InputPenyesuaianController extends Controller
                     $V_AVGCOST = 0;
 
                     if(count($cek) > 0){
-                        $V_AVGCOST = DB::connection($_SESSION['connection'])->table(DB::RAW('tbmaster_stock,tbmaster_prodmast'))
+                        $V_AVGCOST = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_stock,tbmaster_prodmast'))
                             ->selectRaw("NVL (ST_AVGCOST, 0) * CASE
                         WHEN PRD_UNIT = 'KG'
                            THEN 1
                         ELSE PRD_FRAC
                         END avgcost")
-                            ->where('st_kodeigr',$_SESSION['kdigr'])
+                            ->where('st_kodeigr',Session::get('kdigr'))
                             ->where('st_lokasi',$tipebarang)
                             ->where('st_prdcd',$request->plu)
-                            ->where('prd_kodeigr',$_SESSION['kdigr'])
+                            ->where('prd_kodeigr',Session::get('kdigr'))
                             ->where('prd_prdcd',$request->plu)
                             ->first();
 
@@ -537,9 +537,9 @@ class InputPenyesuaianController extends Controller
     }
 
     public function doc_select(Request $request){
-        $doc = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+        $doc = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
             ->select('trbo_nodoc','trbo_tgldoc','trbo_noreff','trbo_tglreff','trbo_flagdisc1','trbo_flagdisc2',DB::RAW('SUM(trbo_gross) total, count(trbo_gross) totalitem'))
-            ->where('trbo_kodeigr',$_SESSION['kdigr'])
+            ->where('trbo_kodeigr',Session::get('kdigr'))
             ->where('trbo_nodoc',$request->nodoc)
             ->where('trbo_typetrn','X')
             ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
@@ -552,7 +552,7 @@ class InputPenyesuaianController extends Controller
 
     public function doc_new(){
         $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
+        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PYS','Nomor Penyesuaian Persediaan','A'
 							|| TO_CHAR (SYSDATE, 'yy'),5,FALSE); END;");
         oci_bind_by_name($s, ':ret', $r, 32);
         oci_execute($s);
@@ -560,7 +560,7 @@ class InputPenyesuaianController extends Controller
     }
 
     public function doc_save(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $ty_mpp = $request->tipempp;
         $ty_brg = $request->tipebarang;
         $totalitem = $request->totalitem;
@@ -578,7 +578,7 @@ class InputPenyesuaianController extends Controller
         $jenisdoc = $request->jenisdoc;
 
         if($ty_mpp == '1' || ($ty_mpp != '1' && $totalitem < 2)){
-            $frac = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $frac = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_frac')
                 ->where('prd_kodeigr',$kodeigr)
                 ->where('prd_prdcd',$prdcd)
@@ -587,7 +587,7 @@ class InputPenyesuaianController extends Controller
             if(($qty * $frac + $qtyk) < 0){
                 $prdcdlama = $prdcd;
 
-                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->select('trbo_prdcd','trbo_flagdisc2')
                     ->where('trbo_nodoc',$nodoc)
                     ->where('trbo_qty','>',0)
@@ -598,7 +598,7 @@ class InputPenyesuaianController extends Controller
                     $prdcdbaru = $data->trbo_prdcd;
                     $lokbaru = $data->trbo_flagdisc2;
 
-                    $prdcdold = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                    $prdcdold = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                         ->select('kvp_pluold')
                         ->where('kvp_kodeigr',$kodeigr)
                         ->where('kvp_kodetipe','M')
@@ -615,7 +615,7 @@ class InputPenyesuaianController extends Controller
             else{
                 $prdcdbaru = $prdcd;
 
-                $data = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->select('trbo_prdcd','trbo_flagdisc2')
                     ->where('trbo_nodoc',$nodoc)
                     ->where('trbo_qty','<',0)
@@ -626,7 +626,7 @@ class InputPenyesuaianController extends Controller
                     $prdcdlama = $data->trbo_prdcd;
                     $loklama = $data->trbo_flagdisc2;
 
-                    $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                    $temp = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                         ->select('kvp_pluold')
                         ->where('kvp_kodeigr',$kodeigr)
                         ->where('kvp_kodetipe','M')
@@ -646,7 +646,7 @@ class InputPenyesuaianController extends Controller
 
             $fgantiplu = 0;
 
-            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                 ->join('tbmaster_prodmast',function($join){
                     $join->on('prd_kodeigr','st_kodeigr');
                     $join->on('prd_prdcd','st_prdcd');
@@ -664,7 +664,7 @@ class InputPenyesuaianController extends Controller
                 $v_avgcost = 0;
             }
 
-            $jum = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            $jum = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->where('trbo_kodeigr',$kodeigr)
                 ->where('trbo_flagdoc','*')
                 ->where('trbo_recordid','2')
@@ -672,7 +672,7 @@ class InputPenyesuaianController extends Controller
                 ->where('trbo_prdcd',$prdcd)
                 ->first();
 
-            $cekstock = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+            $cekstock = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                 ->select('st_saldoakhir')
                 ->where('st_kodeigr',$kodeigr)
                 ->where('st_lokasi',$ty_brg)
@@ -685,13 +685,13 @@ class InputPenyesuaianController extends Controller
 
             if($prdcd != null){
                 if(!$jum){
-                    $frac = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                    $frac = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                         ->selectRaw("NVL(prd_frac,0) frac")
                         ->where('prd_kodeigr',$kodeigr)
                         ->where('prd_prdcd',$prdcd)
                         ->first()->frac;
 
-                    $jum = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                    $jum = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                         ->select('trbo_nodoc')
                         ->where('trbo_nodoc',$nodoc)
                         ->where('trbo_typetrn','X')
@@ -699,14 +699,14 @@ class InputPenyesuaianController extends Controller
                         ->where('trbo_prdcd',$prdcd)
                         ->first();
 
-                    $ksup = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                    $ksup = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                         ->select('prd_kodesupplier')
                         ->where('prd_kodeigr',$kodeigr)
                         ->where('prd_prdcd',$prdcd)
                         ->first()->prd_kodesupplier;
 
                     if($ty_mpp == '3'){
-                        $fgantiplu = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                        $fgantiplu = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                             ->select('st_prdcd')
                             ->where('st_kodeigr',$kodeigr)
                             ->where('st_lokasi',$ty_brg)
@@ -719,7 +719,7 @@ class InputPenyesuaianController extends Controller
                         else $fgantiplu = 0;
                     }
 
-                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                    $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                         ->select('st_avgcost','st_saldoakhir')
                         ->where('st_kodeigr',$kodeigr)
                         ->where('st_lokasi',$ty_brg)
@@ -736,7 +736,7 @@ class InputPenyesuaianController extends Controller
                     }
 
                     if(!$jum){
-                        $seqno = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                        $seqno = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                             ->selectRaw("NVL(MAX(trbo_seqno),0) + 1 seqno")
                             ->where('trbo_kodeigr',$kodeigr)
                             ->where('trbo_typetrn','X')
@@ -773,7 +773,7 @@ class InputPenyesuaianController extends Controller
                             'trbo_averagecost' => $trboavgcost,
                             'trbo_keterangan' => $keterangan,
                             'trbo_create_dt' => DB::RAW("sysdate"),
-                            'trbo_create_by' => $_SESSION['usid'],
+                            'trbo_create_by' => Session::get('usid'),
                             'trbo_kodesupplier' => $ksup,
                             'trbo_oldcost' => $v_avgcost,
                             'trbo_posqty' => $posqty,
@@ -785,26 +785,26 @@ class InputPenyesuaianController extends Controller
 
 
                         try{
-                            DB::connection($_SESSION['connection'])->beginTransaction();
+                            DB::connection(Session::get('connection'))->beginTransaction();
                             if($jenisdoc == 'lama'){
-                                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->insert($insert);
                             }
                             else{
                                 $c = loginController::getConnectionProcedure();
-                                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
+                                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PYS','Nomor Penyesuaian Persediaan','A'
 							            || TO_CHAR (SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $r, 32);
                                 oci_execute($s);
 
                                 $insert['trbo_nodoc'] = $r;
 
-                                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->insert($insert);
                             }
                         }
                         catch (QueryException $e){
-                            DB::connection($_SESSION['connection'])->rollBack();
+                            DB::connection(Session::get('connection'))->rollBack();
 
                             $status = 'error';
                             $title = 'ORACLE ERROR';
@@ -812,7 +812,7 @@ class InputPenyesuaianController extends Controller
                             return compact(['status','title','message']);
                         }
                         finally{
-                            DB::connection($_SESSION['connection'])->commit();
+                            DB::connection(Session::get('connection'))->commit();
                         }
                     }
                     else{
@@ -829,9 +829,9 @@ class InputPenyesuaianController extends Controller
                         else $trboavgcost = $avgcost;
 
                         try{
-                            DB::connection($_SESSION['connection'])->beginTransaction();
+                            DB::connection(Session::get('connection'))->beginTransaction();
                             if($jenisdoc == 'lama'){
-                                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->where('trbo_kodeigr',$kodeigr)
                                     ->where('trbo_typetrn','X')
                                     ->where('trbo_nodoc',$nodoc)
@@ -847,11 +847,11 @@ class InputPenyesuaianController extends Controller
                                         'trbo_gross' => $subtotal,
                                         'trbo_averagecost' => $trboavgcost,
                                         'trbo_keterangan' => $keterangan,
-                                        'trbo_modify_by' => $_SESSION['usid'],
+                                        'trbo_modify_by' => Session::get('usid'),
                                         'trbo_modify_dt' => DB::RAW("sysdate")
                                     ]);
 
-                                DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                                DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                     ->where('lks_prdcd',$prdcd)
                                     ->whereRaw("SUBSTR(lks_prdcd,1,1) = 'D'")
                                     ->update([
@@ -876,7 +876,7 @@ class InputPenyesuaianController extends Controller
                                     'trbo_averagecost' => $trboavgcost,
                                     'trbo_keterangan' => $keterangan,
                                     'trbo_create_dt' => DB::RAW("sysdate"),
-                                    'trbo_create_by' => $_SESSION['usid'],
+                                    'trbo_create_by' => Session::get('usid'),
                                     'trbo_kodesupplier' => $ksup,
                                     'trbo_oldcost' => $v_avgcost,
                                     'trbo_posqty' => $posqty,
@@ -886,19 +886,19 @@ class InputPenyesuaianController extends Controller
                                 $insert = $insert[0];
 
                                 $c = loginController::getConnectionProcedure();
-                                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
+                                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PYS','Nomor Penyesuaian Persediaan','A'
 							            || TO_CHAR (SYSDATE, 'yy'),5,TRUE); END;");
                                 oci_bind_by_name($s, ':ret', $r, 32);
                                 oci_execute($s);
 
                                 $insert['trbo_nodoc'] = $r;
 
-                                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                                     ->insert($insert);
                             }
                         }
                         catch (QueryException $e){
-                            DB::connection($_SESSION['connection'])->rollBack();
+                            DB::connection(Session::get('connection'))->rollBack();
 
                             $status = 'error';
                             $title = 'ORACLE ERROR';
@@ -906,12 +906,12 @@ class InputPenyesuaianController extends Controller
                             return compact(['status','title','message']);
                         }
                         finally{
-                            DB::connection($_SESSION['connection'])->commit();
+                            DB::connection(Session::get('connection'))->commit();
                         }
 
                         if(1 == 0){//$sts == 0
                             $c = loginController::getConnectionProcedure();
-                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".$_SESSION['kdigr']."','PYS','Nomor Penyesuaian Persediaan','A'
+                            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','PYS','Nomor Penyesuaian Persediaan','A'
 							|| TO_CHAR (SYSDATE, 'yy'),5,FALSE); END;");
                             oci_bind_by_name($s, ':ret', $r, 32);
                             oci_execute($s);
@@ -921,7 +921,7 @@ class InputPenyesuaianController extends Controller
 
                         if($ty_mpp != '1'){
                             if($qty + $qtyk > 0){
-                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->selectRaw("NVL(st_saldoakhir,0) st_qty, NVL(st_avgcost,0) st_acost")
                                     ->where('st_kodeigr',$kodeigr)
                                     ->where('st_lokasi',$ty_brg)
@@ -935,8 +935,8 @@ class InputPenyesuaianController extends Controller
                                     try{
                                         $update = (($qty * $frac + $qtyk) * ($hrgsatuan / $frac) + ($st_acost * $st_qty)) / (($qty * $frac + $qtyk) + $st_qty) * $frac;
 
-                                        DB::connection($_SESSION['connection'])->beginTransaction();
-                                        DB::connection($_SESSION['connection'])->table('tbtr_backofficce')
+                                        DB::connection(Session::get('connection'))->beginTransaction();
+                                        DB::connection(Session::get('connection'))->table('tbtr_backofficce')
                                             ->where('trbo_kodeigr',$kodeigr)
                                             ->where('trbo_typetrn','X')
                                             ->where('trbo_nodoc',$nodoc)
@@ -947,7 +947,7 @@ class InputPenyesuaianController extends Controller
                                             ]);
                                     }
                                     catch (QueryException $e){
-                                        DB::connection($_SESSION['connection'])->rollBack();
+                                        DB::connection(Session::get('connection'))->rollBack();
 
                                         $status = 'error';
                                         $title = 'ORACLE ERROR';
@@ -955,7 +955,7 @@ class InputPenyesuaianController extends Controller
                                         return compact(['status','title','message']);
                                     }
                                     finally{
-                                        DB::connection($_SESSION['connection'])->commit();
+                                        DB::connection(Session::get('connection'))->commit();
                                     }
                                 }
                             }
@@ -981,11 +981,11 @@ class InputPenyesuaianController extends Controller
     }
 
     public function doc_delete(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $nodoc = $request->nodoc;
         $prdcd = $request->prdcd;
 
-        $doc = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+        $doc = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
             ->where('trbo_kodeigr',$kodeigr)
             ->where('trbo_nodoc',$nodoc)
             ->where('trbo_typetrn','X')
@@ -993,7 +993,7 @@ class InputPenyesuaianController extends Controller
             ->first();
 
         if($doc){
-            $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->where('trbo_kodeigr',$kodeigr)
                 ->where('trbo_nodoc',$nodoc)
                 ->where('trbo_prdcd',$prdcd)
@@ -1009,20 +1009,20 @@ class InputPenyesuaianController extends Controller
             }
             else{
                 try{
-                    DB::connection($_SESSION['connection'])->beginTransaction();
-                    DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                    DB::connection(Session::get('connection'))->beginTransaction();
+                    DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                         ->where('trbo_kodeigr',$kodeigr)
                         ->where('trbo_nodoc',$nodoc)
                         ->where('trbo_typetrn','X')
                         ->where('trbo_prdcd',$prdcd)
                         ->update([
                             'trbo_recordid' => '1',
-                            'trbo_modify_by' => $_SESSION['usid'],
+                            'trbo_modify_by' => Session::get('usid'),
                             'trbo_modify_dt' => DB::RAW("sysdate")
                         ]);
                 }
                 catch (QueryException $e){
-                    DB::connection($_SESSION['connection'])->rollBack();
+                    DB::connection(Session::get('connection'))->rollBack();
 
                     $status = 'error';
                     $title = 'ORACLE ERROR!';
@@ -1030,7 +1030,7 @@ class InputPenyesuaianController extends Controller
                     return compact(['status','title','message']);
                 }
                 finally{
-                    DB::connection($_SESSION['connection'])->commit();
+                    DB::connection(Session::get('connection'))->commit();
 
                     $status = 'success';
                     $title = 'Berhasil menghapus data!';

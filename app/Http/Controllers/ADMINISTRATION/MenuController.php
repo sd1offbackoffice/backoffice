@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ADMINISTRATION;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,8 +18,8 @@ class MenuController extends Controller
     }
 
     public function getData(){
-        if(in_array($_SESSION['usid'], ['DEV','SUP'])){
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        if(in_array(Session::get('usid'), ['DEV','SUP'])){
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
             acc_name, acc_url, acc_level, acc_create_by, to_char(acc_create_dt, 'dd/mm/yyyy hh24:mi:ss') acc_create_dt,
             acc_modify_by, to_char(acc_modify_dt, 'dd/mm/yyyy hh24:mi:ss') acc_modify_dt")
@@ -32,7 +32,7 @@ class MenuController extends Controller
                 ->get();
         }
         else{
-            $data = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $data = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
             acc_name, acc_url, acc_level, acc_create_by, to_char(acc_create_dt, 'dd/mm/yyyy hh24:mi:ss') acc_create_dt,
             acc_modify_by, to_char(acc_modify_dt, 'dd/mm/yyyy hh24:mi:ss') acc_modify_dt")
@@ -50,7 +50,7 @@ class MenuController extends Controller
     }
 
     public function add(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
             ->where('acc_group','=',$request->group)
             ->where('acc_subgroup1','=',$request->subgroup1)
             ->where('acc_subgroup2','=',$request->subgroup2)
@@ -67,7 +67,7 @@ class MenuController extends Controller
             }
 
 
-            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->whereRaw("acc_id like '".$acronym."%'")
                 ->orderBy('acc_id','desc')
                 ->first();
@@ -80,7 +80,7 @@ class MenuController extends Controller
 
             $id = $acronym.substr('000'.($i+1),-3);
 
-            DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->insert([
                     'acc_id' => $id,
                     'acc_group' => $request->group,
@@ -90,13 +90,13 @@ class MenuController extends Controller
                     'acc_name' => $request->name,
                     'acc_level' => $request->level,
                     'acc_url' => $request->url,
-                    'acc_create_by' => $_SESSION['usid'],
+                    'acc_create_by' => Session::get('usid'),
                     'acc_create_dt' => DB::RAW("SYSDATE"),
                     'acc_status' => 1
                 ]);
 
-            if(substr($_SESSION['connection'],0,3) == 'igr'){
-                DB::connection('sim'.substr($_SESSION['connection'],-3))->table('tbmaster_access_migrasi')
+            if(substr(Session::get('connection'),0,3) == 'igr'){
+                DB::connection('sim'.substr(Session::get('connection'),-3))->table('tbmaster_access_migrasi')
                     ->insert([
                         'acc_id' => $id,
                         'acc_group' => $request->group,
@@ -106,7 +106,7 @@ class MenuController extends Controller
                         'acc_name' => $request->name,
                         'acc_level' => $request->level,
                         'acc_url' => $request->url,
-                        'acc_create_by' => $_SESSION['usid'],
+                        'acc_create_by' => Session::get('usid'),
                         'acc_create_dt' => DB::RAW("SYSDATE"),
                         'acc_status' => 1
                     ]);
@@ -124,12 +124,12 @@ class MenuController extends Controller
     }
 
     public function edit(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
             ->where('acc_id','=',$request->id)
             ->first();
 
         if($temp){
-            DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->where('acc_id','=',$request->id)
                 ->update([
                     'acc_group' => $request->group,
@@ -139,12 +139,12 @@ class MenuController extends Controller
                     'acc_name' => $request->name,
                     'acc_level' => $request->level,
                     'acc_url' => $request->url,
-                    'acc_modify_by' => $_SESSION['usid'],
+                    'acc_modify_by' => Session::get('usid'),
                     'acc_modify_dt' => DB::RAW("SYSDATE")
                 ]);
 
-            if(substr($_SESSION['connection'],0,3) == 'igr'){
-                DB::connection('sim'.substr($_SESSION['connection'],-3))->table('tbmaster_access_migrasi')
+            if(substr(Session::get('connection'),0,3) == 'igr'){
+                DB::connection('sim'.substr(Session::get('connection'),-3))->table('tbmaster_access_migrasi')
                     ->where('acc_id','=',$request->id)
                     ->update([
                         'acc_group' => $request->group,
@@ -154,7 +154,7 @@ class MenuController extends Controller
                         'acc_name' => $request->name,
                         'acc_level' => $request->level,
                         'acc_url' => $request->url,
-                        'acc_modify_by' => $_SESSION['usid'],
+                        'acc_modify_by' => Session::get('usid'),
                         'acc_modify_dt' => DB::RAW("SYSDATE")
                     ]);
             }
@@ -171,12 +171,12 @@ class MenuController extends Controller
     }
 
     public function delete(Request $request){
-        $temp = DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+        $temp = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
             ->where('acc_id','=',$request->id)
             ->first();
 
         if($temp){
-            DB::connection($_SESSION['connection'])->table('tbmaster_access_migrasi')
+            DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->where('acc_id','=',$request->id)
                 ->delete();
 

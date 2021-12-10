@@ -3,7 +3,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Schema;
@@ -17,20 +17,20 @@ class restoreController extends Controller
 
     public function restoreNow(Request $request){
         try{
-            $kodeigr= $_SESSION['kdigr'];
-            $userid = $_SESSION['usid'];
+            $kodeigr= Session::get('kdigr');
+            $userid = Session::get('usid');
             $month = $request->month;
             $year = $request->year;
 
             $p_sukses = 'FALSE';
             $errtxt = "";
             $namaf = "TBMASTER_STOCK_".$year."_".$month;
-            $data = DB::connection($_SESSION['connection'])->select("SELECT LAST_DAY(TO_DATE('01-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END , 'DD-MM-YYYY')) a, TO_CHAR( TO_DATE(CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END,'YYYY-MM'),'YYYYMM') b FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = ".$kodeigr);
+            $data = DB::connection(Session::get('connection'))->select("SELECT LAST_DAY(TO_DATE('01-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END , 'DD-MM-YYYY')) a, TO_CHAR( TO_DATE(CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN TO_NUMBER(PRS_TAHUNBERJALAN)-1 ELSE TO_NUMBER(PRS_TAHUNBERJALAN) END || '-' || CASE WHEN (TO_NUMBER(PRS_BULANBERJALAN) -1) = 0 THEN 12 ELSE (TO_NUMBER(PRS_BULANBERJALAN) -1) END,'YYYY-MM'),'YYYYMM') b FROM TBMASTER_PERUSAHAAN WHERE PRS_KODEIGR = ".$kodeigr);
 
             $txtPeriode = $data[0]->a;
             $parameterPeriode = $data[0]->b;
 
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
             if($year.$month != $parameterPeriode){
                 return response()->json(['kode' => 2, 'msg' => "Periode Restore Data Salah !!"]);
             }else{
@@ -74,10 +74,10 @@ class restoreController extends Controller
                     $query = oci_parse($connect, "CREATE TABLE TBTR_REKAPSALESBULANAN AS ( SELECT * FROM TBTR_REKAPSALESBULANAN_".$year."_".$month.")");
                     oci_execute($query);
 
-                    DB::connection($_SESSION['connection'])->table("TBMASTER_PERUSAHAAN")
+                    DB::connection(Session::get('connection'))->table("TBMASTER_PERUSAHAAN")
                         ->where('PRS_KODEIGR','=',$kodeigr)
                         ->update(['PRS_BULANBERJALAN' => $month, 'PRS_TAHUNBERJALAN' => $year, 'PRS_FMFLCS' => 'Y']);
-                    DB::connection($_SESSION['connection'])->commit();
+                    DB::connection(Session::get('connection'))->commit();
                     return response()->json(['kode' => 1, 'msg' => $errtxt]);
                 }else{
                     $errtxt = 'Proses Restore Data GAGAL! --> '.$errtxt;

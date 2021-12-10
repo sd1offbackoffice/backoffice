@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\NullLogger;
 
@@ -12,7 +12,7 @@ class inqueryProdSuppController extends Controller
 {
     public function index()
     {
-//        $supplier = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+//        $supplier = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
 //            ->join('tbmaster_supplier', function ($join) {
 //                $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
 //                    ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
@@ -24,7 +24,7 @@ class inqueryProdSuppController extends Controller
 //            return 'not-found';
 //        }else{
 
-            $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+            $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
                 ->select('sup_kodesupplier', 'sup_namasupplier')
                 ->where('sup_kodeigr', '=', '22')
                 ->orderBy('sup_kodesupplier')
@@ -38,7 +38,7 @@ class inqueryProdSuppController extends Controller
     {
         $kodesupp = $request->kodesupp;
 
-        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+        $result = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
             ->join('tbmaster_supplier', function ($join) {
                 $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
                     ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
@@ -89,7 +89,7 @@ class inqueryProdSuppController extends Controller
 
     public function helpSelect(Request $request)
     {
-        $result = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('*')
             ->where('sup_kodesupplier', $request->value)
             ->first();

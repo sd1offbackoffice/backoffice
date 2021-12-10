@@ -186,7 +186,7 @@
                                 $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                kodeigr = '{{ $_SESSION['kdigr'] }}';
+                                kodeigr = '{{ Session::get('kdigr') }}';
                                 periode = $('#periode').val().split('/');
                                 tipe = ['FK','LT','OB'];
 

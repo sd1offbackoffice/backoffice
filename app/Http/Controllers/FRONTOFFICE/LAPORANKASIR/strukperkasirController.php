@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,7 +25,7 @@ class strukperkasirController extends Controller
 
     public function printstruk(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -33,7 +33,7 @@ class strukperkasirController extends Controller
         $typeTransaksi = $request->type;
 
         if($typeTransaksi == 'S'){
-            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||username jh_cashier, jh_transactionno, jh_transactionamt
+            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||username jh_cashier, jh_transactionno, jh_transactionamt
 FROM TBTR_JUALHEADER, TBMASTER_PERUSAHAAN, TBMASTER_USER
 WHERE jh_kodeigr = prs_kodeigr
   AND prs_kodeigr = '$kodeigr'
@@ -43,7 +43,7 @@ WHERE jh_kodeigr = prs_kodeigr
   AND jh_recordid IS NULL
 ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno");
         }else{ //type R dan lain lain
-            $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||us1.username jh_cashier, jh_transactionno, jh_transactionamt,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||us1.username jh_cashier, jh_transactionno, jh_transactionamt,
 	   jh_referencedate, jh_referencecashierid||'-'||us2.username jh_referencecashierid, jh_referenceno
 FROM TBTR_JUALHEADER, TBMASTER_PERUSAHAAN, TBMASTER_USER us1, TBMASTER_USER us2
 WHERE jh_kodeigr = prs_kodeigr
@@ -61,7 +61,7 @@ ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno")
 //        }
 
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
@@ -85,7 +85,7 @@ ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno")
     }
 
     public function printwaktu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -96,7 +96,7 @@ ORDER BY jh_transactiondate, jh_cashierstation, jh_cashierid, jh_transactionno")
             $periode = 'TANGGAL: '.$dateA;
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          TRUNC (jh_transactiondate) jh_transactiondate,
          TO_CHAR (jh_create_dt, 'HH24:MI:SS') waktu,
@@ -119,7 +119,7 @@ ORDER BY jh_transactiondate,
 
 
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
         return view('FRONTOFFICE.LAPORANKASIR.lap_strk_waktu-pdf',

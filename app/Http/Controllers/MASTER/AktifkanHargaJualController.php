@@ -5,7 +5,7 @@ namespace App\Http\Controllers\MASTER;
 use App\AllModel;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -18,7 +18,7 @@ class AktifkanHargaJualController extends Controller
     public function getProdmast(Request  $request){
         $search = $request->value;
 
-        $prodmast   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
+        $prodmast   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->select('prd_prdcd', 'PRD_DESKRIPSIPANJANG')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')
@@ -31,7 +31,7 @@ class AktifkanHargaJualController extends Controller
         sleep(1);
         $plu    = $request->plu;
 
-        $prod   = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast a')
+        $prod   = DB::connection(Session::get('connection'))->table('tbmaster_prodmast a')
             ->select('a.PRD_PRDCD', 'a.PRD_KODEDIVISI', 'a.PRD_KODEDEPARTEMENT', 'a.PRD_KODEKATEGORIBARANG', 'a.PRD_DESKRIPSIPANJANG',
                 'a.PRD_TglHrgJual3', 'a.PRD_HRGJUAL', 'a.PRD_HRGJUAL3', 'b.div_namadivisi', 'c.dep_namadepartement', 'd.kat_namakategori')
             ->leftJoin('tbmaster_divisi b', 'a.prd_kodedivisi', 'b.div_kodedivisi')
@@ -49,10 +49,10 @@ class AktifkanHargaJualController extends Controller
     public function aktifkanHarga(Request $request){
         sleep(1);
         $plu    = $request->plu;
-        $user   = $_SESSION['usid'];
+        $user   = Session::get('usid');
         $model  = new AllModel();
         $getData= $model->getKodeigr();
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 //        $jenistimbangan = 1;
         $jenistimbangan = $getData[0]->prs_jenistimbangan;
         $errm  = '';

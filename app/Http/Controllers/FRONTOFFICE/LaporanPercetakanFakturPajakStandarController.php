@@ -5,7 +5,7 @@ namespace App\Http\Controllers\FRONTOFFICE;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -26,7 +26,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          tgl_struk,
          customer,
@@ -243,7 +243,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
 ORDER BY tgl_struk, no_seri_fp");
         $filename = 'igr-fo-cetak-fpstd';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();
@@ -270,7 +270,7 @@ ORDER BY tgl_struk, no_seri_fp");
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection($_SESSION['connection'])->select(" select prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select(" select prs_namaperusahaan,
          prs_namacabang, customer,
          nomor_faktur,
          tgl_faktur,
@@ -288,7 +288,7 @@ group by kodemember, nama,
 order by customer");
         $filename = 'igr-fo-cetak-fpstd-nonpkp';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
 //        $date = Carbon::now();
@@ -318,7 +318,7 @@ order by customer");
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          transactiondate tgl_struk,
          kodemember || ' ' || perusahaan customer,
@@ -334,7 +334,7 @@ order by customer");
          AND EXISTS
                 (SELECT 1
                    FROM tbmaster_customer
-                  WHERE     cus_kodeigr = '" . $_SESSION['kdigr'] . "'
+                  WHERE     cus_kodeigr = '" . Session::get('kdigr') . "'
                         AND cus_jenismember = 'T'
                         AND cus_kodemember = kodemember
                         AND NVL (cus_flagpkp, 'N') <> 'Y')
@@ -345,7 +345,7 @@ order by customer");
 ORDER BY transactiondate, nomor_faktur");
         $filename = 'igr-fo-cetak-fpstd-tminonpkp';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();
@@ -373,7 +373,7 @@ ORDER BY transactiondate, nomor_faktur");
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          trjd_transactiondate tgl_struk,
          FKT_kodemember || ' - ' || nama customer,
@@ -620,11 +620,11 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                    TRJD_CREATE_BY,
                    trjd_transactiondate) d,
          tbmaster_perusahaan
-   WHERE prs_kodeigr = '" . $_SESSION['kdigr'] . "'
+   WHERE prs_kodeigr = '" . Session::get('kdigr') . "'
 ORDER BY trjd_transactiondate, nofak");
         $filename = 'igr-fo-cetak-fpstd-ominonpkp';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();
@@ -652,7 +652,7 @@ ORDER BY trjd_transactiondate, nofak");
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          TRUNC (transactiondate) tgl_struk,
          perusahaan customer,
@@ -695,7 +695,7 @@ ORDER BY trjd_transactiondate, nofak");
 ORDER BY tgl_struk, no_seri_fp");
         $filename = 'igr-fo-cetak-fpstd-freepassklik';
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         $date = Carbon::now();

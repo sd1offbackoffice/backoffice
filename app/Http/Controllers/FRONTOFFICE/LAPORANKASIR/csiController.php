@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,9 +26,9 @@ class csiController extends Controller
     public function getNmr(Request $request)
     {
         $search = $request->val;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
             ->where('sup_kodesupplier','=', $search)
@@ -40,10 +40,10 @@ class csiController extends Controller
 
     public function getModal(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('distinct sup_kodesupplier as sup_kodesupplier')
             ->selectRaw('sup_namasupplier')
 
@@ -61,7 +61,7 @@ class csiController extends Controller
     }
 
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -85,7 +85,7 @@ class csiController extends Controller
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -124,7 +124,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         }
     }
     public function CheckDataK(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -148,7 +148,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -190,7 +190,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         }
     }
     public function CheckDataR(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->dateA;
         $dateB = $request->dateB;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -214,7 +214,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -257,7 +257,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
     }
 
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
@@ -283,7 +283,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -330,12 +330,12 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
 
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('FRONTOFFICE.LAPORANKASIR.csi-pdf',['kodeigr' => $kodeigr, 'judul' => $judul ,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
     }
 
     public function printDocumentK(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
@@ -361,7 +361,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -397,7 +397,7 @@ GROUP BY A.TANGGAL, A.PLU, prd_deskripsipanjang, sup_kodesupplier,
       sup_namasupplier, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
 ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 
@@ -405,7 +405,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
     }
 
     public function printDocumentR(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('m-d-Y', $dateA)->format('d-m-Y');
@@ -431,7 +431,7 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         if($sup1 != '' && $sup2 != ''){
             $andsupp = " and HGB_kodesupplier between '".$sup1."' and '".$sup2."'";
         }
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT A.TANGGAL, A.PLU, PRD_DESKRIPSIPANJANG, SUP_KODESUPPLIER,
               SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
               PRS_NAMAWILAYAH,SUM(A.QTY) QTY, SUM(A.NILAI) NILAI
 FROM(
@@ -467,7 +467,7 @@ GROUP BY A.TANGGAL, A.PLU, prd_deskripsipanjang, sup_kodesupplier,
       sup_namasupplier, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
 ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         //PRINT
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
 

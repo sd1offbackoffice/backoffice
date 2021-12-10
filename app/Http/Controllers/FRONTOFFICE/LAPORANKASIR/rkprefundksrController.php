@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -25,13 +25,13 @@ class rkprefundksrController extends Controller
 
     public function print(Request $request)
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT tanggal, jh_transactionno,jh_referenceno, tglrefund,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT tanggal, jh_transactionno,jh_referenceno, tglrefund,
       jh_referencecashierid, username, SUM(jh_transactionamt) nilai,
       prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM
@@ -104,7 +104,7 @@ ORDER BY tglrefund, tanggal, jh_referencecashierid");
         //PRINT
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.rkprefundksr-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'perusahaan' => $perusahaan, 'val' => $val,

@@ -7,14 +7,14 @@ use Yajra\DataTables\DataTables;
 use function foo\func;
 use PDF;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class PBOtomatisController extends Controller
 {
     public function index(){
-        $mtrsup     = DB::connection($_SESSION['connection'])->table('TBTR_MONITORINGSUPPLIER')->select('MSU_KODEMONITORING', 'MSU_NAMAMONITORING')->orderBy('MSU_KODEMONITORING')->groupBy(['MSU_KODEMONITORING', 'MSU_NAMAMONITORING'])->get();
-        $departemen = DB::connection($_SESSION['connection'])->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')->orderBy('DEP_KODEDEPARTEMENT')->get();
+        $mtrsup     = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGSUPPLIER')->select('MSU_KODEMONITORING', 'MSU_NAMAMONITORING')->orderBy('MSU_KODEMONITORING')->groupBy(['MSU_KODEMONITORING', 'MSU_NAMAMONITORING'])->get();
+        $departemen = DB::connection(Session::get('connection'))->table('TBMASTER_DEPARTEMENT')->select('DEP_KODEDEPARTEMENT', 'DEP_NAMADEPARTEMENT')->orderBy('DEP_KODEDEPARTEMENT')->get();
 
         return view('BACKOFFICE.PBOtomatis', compact( 'mtrsup', 'departemen'));
 //        return view('BACKOFFICE.PBOtomatis', compact('supplier', 'mtrsup', 'departemen'));
@@ -23,7 +23,7 @@ class PBOtomatisController extends Controller
     public function getDataModalSupplier(Request  $request) {
         $search = $request->value;
 
-        $supplier = DB::connection($_SESSION['connection'])->table('TBMASTER_SUPPLIER')
+        $supplier = DB::connection(Session::get('connection'))->table('TBMASTER_SUPPLIER')
             ->select('SUP_NAMASUPPLIER', 'SUP_KODESUPPLIER')
             ->where('sup_kodesupplier','LIKE', '%'.$search.'%')
             ->orWhere('sup_namasupplier','LIKE', '%'.$search.'%')
@@ -37,7 +37,7 @@ class PBOtomatisController extends Controller
         $dep1   = $request->dept1;
         $dep2   = $request->dept2;
 
-        $kategori = DB::connection($_SESSION['connection'])->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
+        $kategori = DB::connection(Session::get('connection'))->table('TBMASTER_KATEGORI')->select('KAT_KODEDEPARTEMENT', 'KAT_KODEKATEGORI', 'KAT_NAMAKATEGORI')
             ->whereBetween('KAT_KODEDEPARTEMENT',[$dep1,$dep2])
             ->orderBy('KAT_KODEDEPARTEMENT')
             ->orderBy('KAT_KODEKATEGORI')
@@ -56,10 +56,10 @@ class PBOtomatisController extends Controller
         $kat2   = $request->kat2;
         $mtrSup = $request->mtrSup;
         $tipe   = $request->tipePB;
-        $kodeigr= $_SESSION['kdigr'];
-        $userid = $_SESSION['usid'];
-        $sessid = $_SESSION['id'];
-        $ppn    = $_SESSION['ppn'];
+        $kodeigr= Session::get('kdigr');
+        $userid = Session::get('usid');
+        $sessid = Session::get('id');
+        $ppn    = Session::get('ppn');
         $model  = new AllModel();
         $conn   = $model->connectionProcedure();
         $date   = date('d-M-y');
@@ -72,7 +72,7 @@ class PBOtomatisController extends Controller
         if ($sup1   == null) { $sup1    = ' '; }
         if ($sup2   == null) { $sup2    = 'ZZZZZ'; }
 
-        $sup_cur    = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')->select('sup_kodesupplier', 'sup_namasupplier')
+        $sup_cur    = DB::connection(Session::get('connection'))->table('tbmaster_supplier')->select('sup_kodesupplier', 'sup_namasupplier')
             ->whereBetween('sup_kodesupplier', [$sup1,$sup2])
             ->whereNotIn('sup_flagdiscontinuesupplier', ['Y'])
             ->get()->toArray();
@@ -110,13 +110,13 @@ class PBOtomatisController extends Controller
             $kode   = 1;
             $msg    = 'Proses PB otomatis berhasil! Nomor PB : '. $nomorPB;
 
-            $temp1  = DB::connection($_SESSION['connection'])->table('temp_go')->select('isi_toko', 'per_awal_pdisc_go', 'per_akhir_pdisc_go')->where('kodeigr', $kodeigr)->get()->toArray();
+            $temp1  = DB::connection(Session::get('connection'))->table('temp_go')->select('isi_toko', 'per_awal_pdisc_go', 'per_akhir_pdisc_go')->where('kodeigr', $kodeigr)->get()->toArray();
 
             if ($temp1[0]->isi_toko == 'Y' && (date('Y-m-d', strtotime($date >= $temp1[0]->per_awal_pdisc_go)) && date('Y-m-d', strtotime($date >= $temp1[0]->per_akhir_pdisc_go)) )){
-                DB::connection($_SESSION['connection'])->table('tbtr_pb_d')->where('pbd_nopb', $nomorPB)->update(['pbd_fdxrev' => 'T']);
+                DB::connection(Session::get('connection'))->table('tbtr_pb_d')->where('pbd_nopb', $nomorPB)->update(['pbd_fdxrev' => 'T']);
             }
 
-            $temp2  = DB::connection($_SESSION['connection'])->table('tbtr_tolakanpb')->whereRaw('TRUNC(tlk_create_dt) = TRUNC(SYSDATE)')->get()->toArray();
+            $temp2  = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')->whereRaw('TRUNC(tlk_create_dt) = TRUNC(SYSDATE)')->get()->toArray();
 
             if (sizeof($temp2) > 0){
                 if ($sup1   == ' ') { $sup1    = 'null'; }
@@ -149,7 +149,7 @@ class PBOtomatisController extends Controller
 
         if ($sup1   == 'null') { $sup1    = ' '; }
 
-        $datas  = DB::connection($_SESSION['connection'])->table('TBMASTER_PERUSAHAAN')
+        $datas  = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->selectRaw("PRS_KODEIGR, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRUNC (TLK_TGLPB) TGLPB, TLK_NOPB NOPB,
                                    PRD_KODEDIVISI DIV, DIV_NAMADIVISI DIVNAME, PRD_KODEDEPARTEMENT DEP,
                                    DEP_NAMADEPARTEMENT DEPNAME, PRD_KODEKATEGORIBARANG KAT, KAT_NAMAKATEGORI KATNAME,

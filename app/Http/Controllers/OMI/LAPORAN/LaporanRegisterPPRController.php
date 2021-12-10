@@ -10,7 +10,7 @@ namespace App\Http\Controllers\OMI\LAPORAN;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -29,7 +29,7 @@ class LaporanRegisterPPRController extends Controller
         $search = $request->value;
         $tipe = $request->tipe;
         if ($tipe == 'OMI') {
-            $data = DB::connection($_SESSION['connection'])->table('TBTR_RETUROMI')
+            $data = DB::connection(Session::get('connection'))->table('TBTR_RETUROMI')
                 ->select('rom_nodokumen as nodoc')
                 ->Where('rom_nodokumen', 'LIKE', '%' . $search . '%')
                 ->orderBy('rom_nodokumen', 'desc')
@@ -37,7 +37,7 @@ class LaporanRegisterPPRController extends Controller
                 ->limit(100)
                 ->get();
         } else if ($tipe == 'IDM') {
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_piutang')
+            $data = DB::connection(Session::get('connection'))->table('tbtr_piutang')
                 ->select('trpt_salesinvoiceno as nodoc')
                 ->Where('trpt_salesinvoiceno', 'LIKE', '%' . $search . '%')
                 ->orderBy('trpt_salesinvoiceno', 'desc')
@@ -68,7 +68,7 @@ class LaporanRegisterPPRController extends Controller
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and rom_nodokumen between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
             }
-            $data = DB::connection($_SESSION['connection'])->select("SELECT   ROM_NODOKUMEN, TGLDOK, ROM_NOREFERENSI, ROM_MEMBER, ROM_KODETOKO, CUS_NAMAMEMBER, CUS_NPWP,
+            $data = DB::connection(Session::get('connection'))->select("SELECT   ROM_NODOKUMEN, TGLDOK, ROM_NOREFERENSI, ROM_MEMBER, ROM_KODETOKO, CUS_NAMAMEMBER, CUS_NPWP,
          SUM (ROM_QTY) QTY, SUM (ROM_QTYTLR) QTYTLR, SUM (HRGSAT) HRGSAT, SUM (ROM_TTL) TOTAL,
          SUM (PPN) PPN, SUM (ITEM) ITEM, SUM (HARGA) HARGA, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
          PRS_NAMAWILAYAH
@@ -99,7 +99,7 @@ class LaporanRegisterPPRController extends Controller
                  END PPN,
                  PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH
             FROM TBTR_RETUROMI, TBMASTER_CUSTOMER, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
-           WHERE ROM_KODEIGR = '" . $_SESSION['kdigr'] . "'
+           WHERE ROM_KODEIGR = '" . Session::get('kdigr') . "'
              AND TRUNC (ROM_TGLDOKUMEN) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
             " . $and_doc . "
              AND EXISTS (SELECT 1 FROM TBMASTER_TOKOIGR WHERE TKO_KODESBU='O' AND TKO_KODECUSTOMER=ROM_MEMBER)
@@ -129,11 +129,11 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and trpt_salesinvoiceno between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
             }
-            $data = DB::connection($_SESSION['connection'])->select("SELECT trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
+            $data = DB::connection(Session::get('connection'))->select("SELECT trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
                         tko_kodeomi, tko_kodesbu, CUS_NAMAMEMBER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH,
                         (trpt_cus_kodemember  || ' - ' || CUS_NAMAMEMBER) member
                         FROM tbtr_piutang, tbmaster_tokoigr, tbmaster_customer, tbmaster_perusahaan
-                        WHERE trpt_kodeigr = '" . $_SESSION['kdigr'] . "'AND TRUNC(trpt_salesinvoicedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy') AND trpt_type = 'D'
+                        WHERE trpt_kodeigr = '" . Session::get('kdigr') . "'AND TRUNC(trpt_salesinvoicedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy') AND trpt_type = 'D'
                         " . $and_doc . "
                         AND tko_kodeigr = trpt_kodeigr
                         AND tko_kodecustomer = trpt_cus_kodemember
@@ -148,7 +148,7 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
             $filename = 'igr-bo-lapregppr-idm';
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
 //        $date = Carbon::now();
@@ -175,15 +175,15 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
     public function cp_nonota($nodokumen, $tgldok, $rom_kodetoko)
     {
         $cp_nonota = '';
-        $temp = DB::connection($_SESSION['connection'])->select("SELECT count(1) count
+        $temp = DB::connection(Session::get('connection'))->select("SELECT count(1) count
                        FROM TBTR_RETUROMI, TBMASTER_PERUSAHAAN
-                      WHERE ROM_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                      WHERE ROM_KODEIGR = '" . Session::get('kdigr') . "'
                         AND ROM_NODOKUMEN = '" . $nodokumen . "'
                         AND ROM_FLAGBKP = 'Y'
                         AND TRUNC (ROM_TGLDOKUMEN) = to_date('" . substr($tgldok, 0, 10) . "','yyyy-mm-dd')
                         AND PRS_KODEIGR = ROM_KODEIGR")[0]->count;
         if ($temp > 0) {
-            $nopajak = DB::connection($_SESSION['connection'])->select("SELECT NOPAJAK
+            $nopajak = DB::connection(Session::get('connection'))->select("SELECT NOPAJAK
       FROM (SELECT DISTINCT ROWNUM NOURUT, ROM_KODETOKO,
                             CASE
                                 WHEN NVL (ROM_NOFP1, 0) <> 0
@@ -203,7 +203,7 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
     )
                             END NOPAJAK
                        FROM TBTR_RETUROMI, TBMASTER_PERUSAHAAN
-                      WHERE ROM_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                      WHERE ROM_KODEIGR = '" . Session::get('kdigr') . "'
     AND ROM_NODOKUMEN = '" . $nodokumen . "'
     AND ROM_FLAGBKP = 'Y'
     AND TRUNC (ROM_TGLDOKUMEN) = to_date('" . substr($tgldok, 0, 10) . "','yyyy-mm-dd')
@@ -219,7 +219,7 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
 
     public function cp_reffp($nodokumen,$cus_npwp){
         $cp_reffp='';
-        $reffp = DB::connection($_SESSION['connection'])->select("SELECT LPAD (TO_CHAR (ROM_REFERENSIFP), 13, '0') reffp
+        $reffp = DB::connection(Session::get('connection'))->select("SELECT LPAD (TO_CHAR (ROM_REFERENSIFP), 13, '0') reffp
       FROM (SELECT   ROM_REFERENSIFP
                 FROM TBTR_RETUROMI
                WHERE ROM_NODOKUMEN = '".$nodokumen."'
@@ -239,7 +239,7 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
 
     public function cf_item($trpt_invoicetaxno, $tko_kodeomi)
     {
-        $cf_item = DB::connection($_SESSION['connection'])->select("SELECT nvl(COUNT(1),0) count
+        $cf_item = DB::connection(Session::get('connection'))->select("SELECT nvl(COUNT(1),0) count
   FROM tbtr_wt_interface WHERE docno = '" . $trpt_invoicetaxno . "' AND shop = '" . $tko_kodeomi . "'")[0]->count;
         return $cf_item;
 

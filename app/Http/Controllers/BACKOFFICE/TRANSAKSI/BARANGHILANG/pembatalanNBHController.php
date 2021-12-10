@@ -4,15 +4,15 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\BARANGHILANG;
 
 use App\AllModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 class pembatalanNBHController extends Controller
 {
     public function index(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $result = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_kodeigr','=',$kodeigr)
             ->where('msth_typetrn','=','H')
@@ -27,9 +27,9 @@ class pembatalanNBHController extends Controller
     public function lovNBH(Request $request){
 
         $search = $request->search;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $result = DB::connection($_SESSION['connection'])->table('tbtr_mstran_h')
+        $result = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->select('msth_nodoc', 'msth_tgldoc')
             ->whereRaw("msth_nodoc LIKE '%".$search."%'")
             ->where('msth_kodeigr','=',$kodeigr)
@@ -45,9 +45,9 @@ class pembatalanNBHController extends Controller
     public function showData(Request $request){
 
         $nonbh = $request->nonbh;
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $result = DB::connection($_SESSION['connection'])->select(" select mstd_nodoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
+        $result = DB::connection(Session::get('connection'))->select(" select mstd_nodoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
 											mstd_qty, mstd_hrgsatuan, mstd_gross
 									from tbtr_mstran_d, tbmaster_prodmast
 									where mstd_nodoc = '$nonbh'
@@ -61,14 +61,14 @@ class pembatalanNBHController extends Controller
 
     public function deleteData(Request $request){
 
-        $kodeigr = $_SESSION['kdigr'];
-        $userid = $_SESSION['usid'];
+        $kodeigr = Session::get('kdigr');
+        $userid = Session::get('usid');
         $nonbh = $request->nonbh;
         $model  = new AllModel();
 //        $date   = $model->getDate();
         $dateTime = $model->getDateTime();
 
-        $temp = DB::connection($_SESSION['connection'])->table('tbtr_mstran_d')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
             ->leftJoin('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->where('mstd_nodoc', '=', $nonbh)
             ->first();
@@ -77,7 +77,7 @@ class pembatalanNBHController extends Controller
             return response()->json(['kode' => 0, 'msg' => "Data Tidak Ada"]);
         }
 
-        $result = DB::connection($_SESSION['connection'])->select(" select mstd_prdcd, mstd_nodoc, mstd_tgldoc, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan,
+        $result = DB::connection(Session::get('connection'))->select(" select mstd_prdcd, mstd_nodoc, mstd_tgldoc, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan,
                                       mstd_flagdisc1 fdisc1, mstd_hrgsatuan price, mstd_frac frac, mstd_unit unit, prd_frac, mstd_kodedivisi div,
                                       mstd_kodedepartement, mstd_kodekategoribrg kat, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk,
                                       mstd_qty, mstd_hrgsatuan, mstd_gross, prd_avgcost acost,
@@ -110,14 +110,14 @@ class pembatalanNBHController extends Controller
 
                 // Update Data tbMaster_prodmast
 
-                DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->whereRaw("substr(prd_prdcd,1,6) = substr('$data->mstd_prdcd',1,6)")
                     ->where('prd_kodeigr', $kodeigr)
                     ->update(['prd_avgcost' => $tempAvg]);
             }
 
             // Simpan Data History Average Costs
-            DB::connection($_SESSION['connection'])->table('tbhistory_cost')
+            DB::connection(Session::get('connection'))->table('tbhistory_cost')
                 ->insert(['hcs_kodeigr' => $kodeigr, 'hcs_typetrn' => 'H', 'hcs_lokasi' => str_pad($data->fdisc1,2,0),
                     'hcs_prdcd' => $data->mstd_prdcd, 'hcs_tglbpb' => $data->mstd_tgldoc, 'hcs_nodocbpb' => $data->mstd_nodoc,
                     'hcs_qtybaru' => $data->mstd_qty, 'hcs_qtylama' => $data->st_saldoakhir, 'hcs_avglama' => ($data->st_avgcost * $data->frac),
@@ -151,7 +151,7 @@ class pembatalanNBHController extends Controller
 
         // Update tbTr_MSTRAN_H [ MSTH_RECORDID = '1' : Status DELETE ]
 
-        DB::connection($_SESSION['connection'])->table('tbTr_MSTRAN_H')
+        DB::connection(Session::get('connection'))->table('tbTr_MSTRAN_H')
             ->where('msth_nodoc', '=', $nonbh)
             ->where('msth_kodeigr', '=', $kodeigr)
             ->where('msth_typetrn', '=', 'H')
@@ -159,7 +159,7 @@ class pembatalanNBHController extends Controller
 
         // Update tbTr_MSTRAN_D [ MSTD_RECORDID = '1' : Status DELETE ]
 
-        DB::connection($_SESSION['connection'])->table('tbTr_MSTRAN_D')
+        DB::connection(Session::get('connection'))->table('tbTr_MSTRAN_D')
             ->where('mstd_nodoc','=', $nonbh)
             ->where('mstd_kodeigr', '=', $kodeigr)
             ->where('mstd_typetrn','=', 'H')

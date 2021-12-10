@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BTAS\MONITORING;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
@@ -18,9 +18,9 @@ class PerItemController extends Controller
 
     public function index()
     {
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
                              SUM (CUST) CUST
                         FROM (SELECT TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC,
                                      NVL (TRJD_QUANTITY, 0) QTY, 1 CUST
@@ -42,7 +42,7 @@ class PerItemController extends Controller
         for($i=0;$i<sizeof($datas);$i++){
             $pewpew = $datas[$i]->trjd_prdcd;
 
-            $sjas = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as count
+            $sjas = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as count
               FROM TBTR_SJAS_H, TBTR_SJAS_D
              WHERE SJH_KODEIGR = '$kodeigr'
                AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -53,7 +53,7 @@ class PerItemController extends Controller
             if($sjas[0]->count == 0){
                 $qtysj[$i] = "0";
             }else{
-                $temp = DB::connection($_SESSION['connection'])->table("TBTR_SJAS_D")
+                $temp = DB::connection(Session::get('connection'))->table("TBTR_SJAS_D")
                     ->selectRaw("(NVL (SJD_QTYSJAS, 0)) SJ")
                     ->LeftJoin('TBTR_SJAS_H',function($join){
                         $join->on('SJD_NOSJAS','SJH_NOSJAS');
@@ -71,9 +71,9 @@ class PerItemController extends Controller
         return view('BTAS.MONITORING.PerItem',['datas'=>$datas,'qtysj'=>$qtysj]);
     }
     public function GetData(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
                              SUM (CUST) CUST
                         FROM (SELECT TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC,
                                      NVL (TRJD_QUANTITY, 0) QTY, 1 CUST
@@ -95,7 +95,7 @@ class PerItemController extends Controller
         for($i=0;$i<sizeof($datas);$i++){
             $pewpew = $datas[$i]->trjd_prdcd;
 
-            $sjas = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as count
+            $sjas = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as count
               FROM TBTR_SJAS_H, TBTR_SJAS_D
              WHERE SJH_KODEIGR = '$kodeigr'
                AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -106,7 +106,7 @@ class PerItemController extends Controller
             if($sjas[0]->count == 0){
                 $qtysj[$i] = "0";
             }else{
-                $temp = DB::connection($_SESSION['connection'])->table("TBTR_SJAS_D")
+                $temp = DB::connection(Session::get('connection'))->table("TBTR_SJAS_D")
                     ->selectRaw("(NVL (SJD_QTYSJAS, 0)) SJ")
                     ->LeftJoin('TBTR_SJAS_H',function($join){
                         $join->on('SJD_NOSJAS','SJH_NOSJAS');
@@ -124,9 +124,9 @@ class PerItemController extends Controller
     }
 
     public function SortDesc(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC, SUM (QTY) STRUK,
                              SUM (CUST) CUST
                         FROM (SELECT TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT, PRD_FRAC,
                                      NVL (TRJD_QUANTITY, 0) QTY, 1 CUST
@@ -145,7 +145,7 @@ class PerItemController extends Controller
         for($i=0;$i<sizeof($datas);$i++){
             $pewpew = $datas[$i]->trjd_prdcd;
 
-            $sjas = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) as count
+            $sjas = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as count
               FROM TBTR_SJAS_H, TBTR_SJAS_D
              WHERE SJH_KODEIGR = '$kodeigr'
                AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -156,7 +156,7 @@ class PerItemController extends Controller
             if($sjas[0]->count == 0){
                 $qtysj[$i] = "0";
             }else{
-                $temp = DB::connection($_SESSION['connection'])->table("TBTR_SJAS_D")
+                $temp = DB::connection(Session::get('connection'))->table("TBTR_SJAS_D")
                     ->selectRaw("(NVL (SJD_QTYSJAS, 0)) SJ")
                     ->LeftJoin('TBTR_SJAS_H',function($join){
                         $join->on('SJD_NOSJAS','SJH_NOSJAS');
@@ -174,10 +174,10 @@ class PerItemController extends Controller
     }
 
     public function GetDetail(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $prdcd = $request->prdcd;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT SJH_KODECUSTOMER, SJH_NOSTRUK,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT DISTINCT SJH_KODECUSTOMER, SJH_NOSTRUK,
             SUBSTR (SJH_NOSTRUK, 1, 2) || '.' || SUBSTR (SJH_NOSTRUK, 3, 3) || '.' || SUBSTR (SJH_NOSTRUK, 6, 5) modelStruk,
                                 TRUNC (SJH_TGLPENITIPAN) SJH_TGLPENITIPAN
                            FROM TBTR_SJAS_H, TBTR_JUALDETAIL
@@ -196,11 +196,11 @@ class PerItemController extends Controller
             $kodcus = $datas[$i]->sjh_kodecustomer;
 
             //Customer Name
-            $tempCus = DB::connection($_SESSION['connection'])->select("SELECT CUS_NAMAMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_KODEMEMBER = '$kodcus' AND ROWNUM = 1");
+            $tempCus = DB::connection(Session::get('connection'))->select("SELECT CUS_NAMAMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_KODEMEMBER = '$kodcus' AND ROWNUM = 1");
             $customer[$i] = $tempCus[0]->cus_namamember;
 
             //Quantity Titipan
-            $tempTitip = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (TRJD_QUANTITY, 0)) STRUK
+            $tempTitip = DB::connection(Session::get('connection'))->select("SELECT SUM (NVL (TRJD_QUANTITY, 0)) STRUK
           FROM TBTR_SJAS_H, TBTR_JUALDETAIL
          WHERE SJH_KODEIGR = '$kodeigr'
            AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -215,7 +215,7 @@ class PerItemController extends Controller
             $qtyTitip[$i] = $tempTitip[0]->struk;
 
             //Check apakah sudah pernah mengembalikan sebagian (ada atau tidaknya SJAS)
-            $tempCheck = DB::connection($_SESSION['connection'])->select("SELECT NVL (COUNT (1), 0) temp
+            $tempCheck = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) temp
           FROM TBTR_SJAS_H, TBTR_SJAS_D
          WHERE SJH_KODEIGR = '$kodeigr'
            AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -226,7 +226,7 @@ class PerItemController extends Controller
             if($tempCheck[0]->temp == "0"){
                 $qtysjdet[$i] = 0;
             }else{
-                $tempqtysjas = DB::connection($_SESSION['connection'])->select("SELECT SUM (NVL (SJD_QTYSJAS, 0)) SJ
+                $tempqtysjas = DB::connection(Session::get('connection'))->select("SELECT SUM (NVL (SJD_QTYSJAS, 0)) SJ
               FROM TBTR_SJAS_H, TBTR_SJAS_D
              WHERE SJH_KODEIGR = '$kodeigr'
                AND NVL (SJH_FLAGSELESAI, 'N') <> 'Y'
@@ -243,9 +243,9 @@ class PerItemController extends Controller
 
 
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, UNIT, PRD_PRDCD, SUM (QTY) STRUK, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, UNIT, PRD_PRDCD, SUM (QTY) STRUK, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK,
 TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info, 'POSISI BARANG TITIPAN per ' || TO_CHAR(SYSDATE, 'dd-MM-yy') HEAD, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG
 FROM (SELECT TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT || '/' ||  PRD_FRAC UNIT, PRD_PRDCD,
 NVL (TRJD_QUANTITY, 0) QTY, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG
@@ -271,10 +271,10 @@ ORDER BY TRJD_PRDCD");
         }
     }
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, UNIT, PRD_PRDCD, SUM (QTY) STRUK, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   TRJD_PRDCD, PRD_DESKRIPSIPENDEK, UNIT, PRD_PRDCD, SUM (QTY) STRUK, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK,
 TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') info, 'POSISI BARANG TITIPAN per ' || TO_CHAR(SYSDATE, 'dd-MM-yy') HEAD, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG
 FROM (SELECT TRJD_PRDCD, PRD_DESKRIPSIPENDEK, PRD_UNIT || '/' ||  PRD_FRAC UNIT, PRD_PRDCD,
 NVL (TRJD_QUANTITY, 0) QTY, TRJD_CUS_KODEMEMBER, CUS_NAMAMEMBER, SJH_TGLSTRUK, SJH_NOSTRUK, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG
@@ -296,12 +296,12 @@ ORDER BY TRJD_PRDCD");
             $prdcd = $datas[$i]->trjd_prdcd;
             $kodMem = $datas[$i]->trjd_cus_kodemember;
 
-            $tempSjas = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NVL(SJD_QTYSJAS,0)),0) SJ FROM TBTR_SJAS_H, TBTR_SJAS_D
+            $tempSjas = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NVL(SJD_QTYSJAS,0)),0) SJ FROM TBTR_SJAS_H, TBTR_SJAS_D
 	WHERE SJH_KODEIGR = '$kodeigr' AND NVL(SJH_FLAGSELESAI, 'N') <> 'Y'  AND SJD_NOSJAS = SJH_NOSJAS AND SJD_KODECUSTOMER = SJH_KODECUSTOMER
 	AND SJD_PRDCD = '$prdcd'");
             $sjasAll[$i] = $tempSjas[0]->sj;
 
-            $tempSjas = DB::connection($_SESSION['connection'])->select("SELECT NVL(SUM(NVL(SJD_QTYSJAS,0)),0) SJ FROM TBTR_SJAS_H, TBTR_SJAS_D
+            $tempSjas = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NVL(SJD_QTYSJAS,0)),0) SJ FROM TBTR_SJAS_H, TBTR_SJAS_D
 	WHERE SJH_KODEIGR = '$kodeigr' AND NVL(SJH_FLAGSELESAI, 'N') <> 'Y'  AND SJD_NOSJAS = SJH_NOSJAS AND SJD_KODECUSTOMER = '$kodMem'
 	AND SJD_PRDCD = '$prdcd'");
             $sisa[$i] = ($datas[$i]->struk)-($tempSjas[0]->sj);
@@ -309,7 +309,7 @@ ORDER BY TRJD_PRDCD");
 
         //PRINT
         $path = 'BTAS.MONITORING.PerItem-pdf';
-        $perusahaan = DB::connection($_SESSION['connection'])->table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $pdf = PDF::loadview($path,
             ['kodeigr' => $kodeigr, 'data' => $datas, 'sjasAll' => $sjasAll, 'sisa' => $sisa, 'perusahaan' => $perusahaan]);

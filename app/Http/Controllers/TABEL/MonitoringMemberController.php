@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,7 +18,7 @@ class MonitoringMemberController extends Controller
     }
 
     public function getLovMonitoring(){
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringmember')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringmember')
             ->selectRaw("mem_kodemonitoring kode, mem_namamonitoring nama")
             ->whereNotNull('mem_kodemonitoring')
             ->distinct()
@@ -28,9 +28,9 @@ class MonitoringMemberController extends Controller
     }
 
     public function getMonitoring(Request $request){
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringmember')
-            ->where('mem_kodeigr','=',$_SESSION['kdigr'])
+            ->where('mem_kodeigr','=',Session::get('kdigr'))
             ->where('mem_kodemonitoring','=',$request->kode)
             ->first();
 
@@ -50,25 +50,25 @@ class MonitoringMemberController extends Controller
         $search = $request->plu;
 
         if($search == ''){
-            $member = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
-                ->where('cus_kodeigr','=',$_SESSION['kdigr'])
+                ->where('cus_kodeigr','=',Session::get('kdigr'))
                 ->orderBy('cus_kodemember')
                 ->limit(100)
                 ->get();
         }
         else if(is_numeric($search)){
-            $member = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
-                ->where('cus_kodeigr','=',$_SESSION['kdigr'])
+                ->where('cus_kodeigr','=',Session::get('kdigr'))
                 ->where('cus_kodemember','like',DB::RAW("'%".$search."%'"))
                 ->orderBy('cus_kodemember')
                 ->get();
         }
         else{
-            $member = DB::connection($_SESSION['connection'])->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
-                ->where('cus_kodeigr','=',$_SESSION['kdigr'])
+                ->where('cus_kodeigr','=',Session::get('kdigr'))
                 ->Where('cus_namamember','like',DB::RAW("'%".$search."%'"))
                 ->orderBy('cus_kodemember')
                 ->get();
@@ -78,7 +78,7 @@ class MonitoringMemberController extends Controller
     }
 
     public function getMember(Request $request){
-        $temp = DB::connection($_SESSION['connection'])
+        $temp = DB::connection(Session::get('connection'))
             ->selectOne("select *
 	from (
 				SELECT cus_kodeigr kdigr, cus_kodemember kdmbr FROM TBMASTER_CUSTOMER WHERE cus_kodemember NOT IN (SELECT mem_kodemember FROM TBTR_MONITORINGMEMBER WHERE mem_kodemonitoring = '".$request->kodemonitoring."')
@@ -93,10 +93,10 @@ class MonitoringMemberController extends Controller
             ], 500);
         }
         else{
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->table('tbmaster_customer')
                 ->where('cus_kodemember','=',$request->kodemember)
-                ->where('cus_kodeigr','<>',$_SESSION['kdigr'])
+                ->where('cus_kodeigr','<>',Session::get('kdigr'))
                 ->where('cus_flagmemberkhusus','=','Y')
                 ->first();
 
@@ -106,7 +106,7 @@ class MonitoringMemberController extends Controller
                 ], 500);
             }
             else{
-                $member = DB::connection($_SESSION['connection'])
+                $member = DB::connection(Session::get('connection'))
                     ->selectOne("SELECT CUS_NAMAMEMBER, CUS_KODEOUTLET, OUT_NAMAOUTLET, CUS_FLAGPKP
 			FROM  (
 					  	SELECT cus_kodeigr kdigr, cus_kodemember kdmbr
@@ -134,7 +134,7 @@ class MonitoringMemberController extends Controller
     }
 
     public function getData(Request $request){
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT mem_kodemember, cus_namamember, cus_kodeoutlet, cus_flagpkp,out_namaoutlet
                 FROM( SELECT mem_kodemember, cus_namamember, cus_kodeoutlet, cus_flagpkp,out_namaoutlet
                 FROM TBTR_MONITORINGMEMBER,
@@ -150,7 +150,7 @@ class MonitoringMemberController extends Controller
 
     public function addData(Request $request){
         try{
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->selectOne("select *
 	from (
 				SELECT cus_kodeigr kdigr, cus_kodemember kdmbr FROM TBMASTER_CUSTOMER WHERE cus_kodemember NOT IN (SELECT mem_kodemember FROM TBTR_MONITORINGMEMBER WHERE mem_kodemonitoring = '".$request->kodemonitoring."')
@@ -165,10 +165,10 @@ class MonitoringMemberController extends Controller
                 ], 500);
             }
             else{
-                $temp = DB::connection($_SESSION['connection'])
+                $temp = DB::connection(Session::get('connection'))
                     ->table('tbmaster_customer')
                     ->where('cus_kodemember','=',$request->kodemember)
-                    ->where('cus_kodeigr','<>',$_SESSION['kdigr'])
+                    ->where('cus_kodeigr','<>',Session::get('kdigr'))
                     ->where('cus_flagmemberkhusus','=','Y')
                     ->first();
 
@@ -178,9 +178,9 @@ class MonitoringMemberController extends Controller
                     ], 500);
                 }
                 else{
-                    $temp = DB::connection($_SESSION['connection'])
+                    $temp = DB::connection(Session::get('connection'))
                         ->table('tbtr_monitoringmember')
-                        ->where('mem_kodeigr','=',$_SESSION['kdigr'])
+                        ->where('mem_kodeigr','=',Session::get('kdigr'))
                         ->where('mem_kodemember','=',$request->kodemember)
                         ->first();
 
@@ -190,28 +190,28 @@ class MonitoringMemberController extends Controller
                         ], 500);
                     }
                     else{
-                        DB::connection($_SESSION['connection'])
+                        DB::connection(Session::get('connection'))
                             ->table('tbtr_monitoringmember')
                             ->insert([
-                                'mem_kodeigr' => $_SESSION['kdigr'],
+                                'mem_kodeigr' => Session::get('kdigr'),
                                 'mem_kodemonitoring' => $request->kodemonitoring,
                                 'mem_namamonitoring' => $request->namamonitoring,
                                 'mem_kodemember' => $request->kodemember,
-                                'mem_create_by' => $_SESSION['usid'],
+                                'mem_create_by' => Session::get('usid'),
                                 'mem_create_dt' => Carbon::now()
                             ]);
                     }
                 }
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Kode member sudah masuk ke kode monitoring '.$request->mon_kode.' !'
             ], 200);
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -221,17 +221,17 @@ class MonitoringMemberController extends Controller
 
     public function deleteData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $temp = DB::connection($_SESSION['connection'])
+            $temp = DB::connection(Session::get('connection'))
                 ->table('tbtr_monitoringmember')
-                ->where('mem_kodeigr','=',$_SESSION['kdigr'])
+                ->where('mem_kodeigr','=',Session::get('kdigr'))
                 ->where('mem_kodemonitoring','=',$request->kodemonitoring)
                 ->where('mem_namamonitoring','=',$request->namamonitoring)
                 ->where('mem_kodemember','=',$request->kodemember)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             if(!$temp){
                 return response()->json([
@@ -245,7 +245,7 @@ class MonitoringMemberController extends Controller
             }
         }
         catch(\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -254,17 +254,17 @@ class MonitoringMemberController extends Controller
     }
 
     public function print(Request $request){
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
-        $monitoring = DB::connection($_SESSION['connection'])
+        $monitoring = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringmember')
             ->selectRaw("mem_kodemonitoring kode, mem_namamonitoring nama")
             ->where('mem_kodemonitoring','=',$request->mon)
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT mem_kodemember, cus_namamember, cus_kodeoutlet, cus_flagpkp,out_namaoutlet
                 FROM( SELECT mem_kodemember, cus_namamember, cus_kodeoutlet, cus_flagpkp,out_namaoutlet
                 FROM TBTR_MONITORINGMEMBER,

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FRONTOFFICE\POINTREWARDMEMBERMERAH;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -27,7 +27,7 @@ class PenggunaanPointRewardPerTanggal extends Controller
         $tgl2 = $request->tgl2;
 
             $filename = 'igr-fo-rwd-tkr-dtl';
-            $data = DB::connection($_SESSION['connection'])->select("SELECT PRS_NAMAPERUSAHAAN,
+            $data = DB::connection(Session::get('connection'))->select("SELECT PRS_NAMAPERUSAHAAN,
          PRS_NAMACABANG,
          KODEMEMBER,
          NAMAMEMBER,
@@ -55,14 +55,14 @@ class PenggunaanPointRewardPerTanggal extends Controller
             FROM TBTR_PENUKARANmyPOIN, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN
            WHERE     CUS_KODEMEMBER(+) = POT_KODEMEMBER
                  AND PRS_KODEIGR = POT_KODEIGR
-                 AND POT_KODEIGR = '" . $_SESSION['kdigr'] . "'
+                 AND POT_KODEIGR = '" . Session::get('kdigr') . "'
                  AND POT_RECORDID IS NULL
                  AND POT_KODETRANSAKSI NOT LIKE '%R'
                  AND TO_DATE (SUBSTR (POT_KODETRANSAKSI, 1, 8), 'YYYY-MM-DD') BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
                                                                                   AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
 ORDER BY TGL, KODEMEMBER");
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
         if (sizeof($data) != 0) {

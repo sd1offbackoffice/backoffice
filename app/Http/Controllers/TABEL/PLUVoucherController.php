@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -24,9 +24,9 @@ class PLUVoucherController extends Controller
             ], 500);
         }
         else{
-            $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT VCS_JOINPROMO
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT VCS_JOINPROMO
                     FROM TBTABEL_VOUCHERSUPPLIER
-                    WHERE VCS_KODEIGR = '".$_SESSION['kdigr']."'
+                    WHERE VCS_KODEIGR = '".Session::get('kdigr')."'
                     AND TRIM(VCS_NAMASUPPLIER) = TRIM('".$request->kode."')");
 
             if(!$temp){
@@ -41,13 +41,13 @@ class PLUVoucherController extends Controller
                     ], 500);
                 }
                 else{
-                    $header = DB::connection($_SESSION['connection'])->selectOne("SELECT vcs_namasupplier, 'Voucher @Rp.' || TO_CHAR(vcs_nilaivoucher,'9,999,999') nilai,
+                    $header = DB::connection(Session::get('connection'))->selectOne("SELECT vcs_namasupplier, 'Voucher @Rp.' || TO_CHAR(vcs_nilaivoucher,'9,999,999') nilai,
                     vcs_keterangan, to_char(vcs_tglmulai, 'dd/mm/yyyy') vcs_tglmulai, to_char(vcs_tglakhir,'dd/mm/yyyy') vcs_tglakhir
                     FROM tbtabel_vouchersupplier
-                    where vcs_kodeigr = '".$_SESSION['kdigr']."'
+                    where vcs_kodeigr = '".Session::get('kdigr')."'
                     and vcs_namasupplier = trim('".$request->kode."')");
 
-                    $detail = DB::connection($_SESSION['connection'])->table('tbtabel_produkvoucher')
+                    $detail = DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')
                         ->join('tbmaster_hargabeli',function($join){
                             $join->on('hgb_kodeigr','=','pvc_kodeigr');
                             $join->on('hgb_prdcd','=','pvc_prdcd');
@@ -61,7 +61,7 @@ class PLUVoucherController extends Controller
                             $join->on('prd_prdcd','=','pvc_prdcd');
                         })
                         ->selectRaw("pvc_prdcd prdcd, prd_deskripsipanjang desk, sup_kodesupplier kodesupplier, sup_namasupplier namasupplier")
-                        ->where('pvc_kodeigr','=',$_SESSION['kdigr'])
+                        ->where('pvc_kodeigr','=',Session::get('kdigr'))
                         ->whereRaw("trim(pvc_idvoucher) = trim('".$request->kode."')")
                         ->orderBy('pvc_nourut','asc')
                         ->get();
@@ -74,7 +74,7 @@ class PLUVoucherController extends Controller
 
 
     public function getLovVoucher(){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT vcs_namasupplier, 'Voucher @Rp.' || TO_CHAR(vcs_nilaivoucher,'9,999,999') nilai,
+        $data = DB::connection(Session::get('connection'))->select("SELECT vcs_namasupplier, 'Voucher @Rp.' || TO_CHAR(vcs_nilaivoucher,'9,999,999') nilai,
             vcs_keterangan, to_char(vcs_tglmulai, 'dd/mm/yyyy') vcs_tglmulai, to_char(vcs_tglakhir,'dd/mm/yyyy') vcs_tglakhir
             FROM tbtabel_vouchersupplier");
 
@@ -82,18 +82,18 @@ class PLUVoucherController extends Controller
     }
 
     public function getLovSupplier(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('sup_kodesupplier kode, sup_namasupplier nama')
-            ->where('sup_kodeigr','=',$_SESSION['kdigr'])
+            ->where('sup_kodeigr','=',Session::get('kdigr'))
             ->get();
 
         return DataTables::of($data)->make(true);
     }
 
     public function getSupplier(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('sup_kodesupplier kode, sup_namasupplier nama')
-            ->where('sup_kodeigr','=',$_SESSION['kdigr'])
+            ->where('sup_kodeigr','=',Session::get('kdigr'))
             ->where('sup_kodesupplier','=',$request->kodesupplier)
             ->first();
 
@@ -108,13 +108,13 @@ class PLUVoucherController extends Controller
     }
 
     public function getDataPLUSupplier(Request $request){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_hargabeli')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
             ->join('tbmaster_prodmast',function($join){
                 $join->on('prd_kodeigr','=','hgb_kodeigr');
                 $join->on('prd_prdcd','=','hgb_prdcd');
             })
             ->selectRaw('hgb_prdcd prdcd, prd_deskripsipanjang desk, prd_kodetag tag')
-            ->where('hgb_kodeigr','=',$_SESSION['kdigr'])
+            ->where('hgb_kodeigr','=',Session::get('kdigr'))
             ->where('hgb_kodesupplier','=',$request->supplier)
             ->orderBy('hgb_prdcd','asc')
             ->get();
@@ -136,15 +136,15 @@ class PLUVoucherController extends Controller
             ], 500);
         }
 
-        $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT prd_prdcd, prd_deskripsipanjang
+        $temp = DB::connection(Session::get('connection'))->selectOne("SELECT prd_prdcd, prd_deskripsipanjang
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
-         WHERE prd_kodeigr = '".$_SESSION['kdigr']."'
+         WHERE prd_kodeigr = '".Session::get('kdigr')."'
            AND prd_prdcd = brc_prdcd(+)
            AND (prd_prdcd = TRIM ('".$plu."') OR brc_barcode = TRIM ('".$plu."'))");
 
         if(!$temp){
             return response()->json([
-                'message' => 'Kode PLU '.$plu.' - '.$_SESSION['kdigr'].' tidak terdaftar di Master Barang!'
+                'message' => 'Kode PLU '.$plu.' - '.Session::get('kdigr').' tidak terdaftar di Master Barang!'
             ], 500);
         }
 
@@ -153,9 +153,9 @@ class PLUVoucherController extends Controller
             'desk' => $temp->prd_deskripsipanjang
         ];
 
-        $temp = DB::connection($_SESSION['connection'])->selectOne("SELECT HGB_KODESUPPLIER, SUP_NAMASUPPLIER
+        $temp = DB::connection(Session::get('connection'))->selectOne("SELECT HGB_KODESUPPLIER, SUP_NAMASUPPLIER
 			FROM TBMASTER_HARGABELI, TBMASTER_SUPPLIER
-			WHERE HGB_KODEIGR = '".$_SESSION['kdigr']."'
+			WHERE HGB_KODEIGR = '".Session::get('kdigr')."'
 			AND HGB_TIPE = '2'
 			AND HGB_PRDCD = '".$plu."'
 			AND SUP_KODEIGR = HGB_KODEIGR
@@ -171,7 +171,7 @@ class PLUVoucherController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             $insert = [];
             $nourut = 1;
@@ -179,7 +179,7 @@ class PLUVoucherController extends Controller
             foreach($request->dataPLU as $r){
                 if($r['prdcd'] != null){
                     $insert[] = [
-                        'pvc_kodeigr' => $_SESSION['kdigr'],
+                        'pvc_kodeigr' => Session::get('kdigr'),
                         'pvc_idvoucher' => $request->kodevoucher,
                         'pvc_nourut' => $nourut,
                         'pvc_kodesupplier' => $r['kodesupplier'],
@@ -193,14 +193,14 @@ class PLUVoucherController extends Controller
                 }
             }
 
-            $old = DB::connection($_SESSION['connection'])->table('tbtabel_produkvoucher')
-                ->where('pvc_kodeigr','=',$_SESSION['kdigr'])
+            $old = DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')
+                ->where('pvc_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("trim(pvc_idvoucher) = trim('".$request->kodevoucher."')")
                 ->orderBy('pvc_nourut','asc')
                 ->get();
 
-            DB::connection($_SESSION['connection'])->table('tbtabel_produkvoucher')
-                ->where('pvc_kodeigr','=',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')
+                ->where('pvc_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("trim(pvc_idvoucher) = trim('".$request->kodevoucher."')")
                 ->delete();
 
@@ -209,26 +209,26 @@ class PLUVoucherController extends Controller
                 if($i < count($old)){
                     $insert[$i]['pvc_create_by'] = $old[$i]->pvc_create_by;
                     $insert[$i]['pvc_create_dt'] = $old[$i]->pvc_create_dt;
-                    $insert[$i]['pvc_modify_by'] = $_SESSION['usid'];
+                    $insert[$i]['pvc_modify_by'] = Session::get('usid');
                     $insert[$i]['pvc_modify_dt'] = DB::RAW("SYSDATE");
                 }
                 else{
-                    $insert[$i]['pvc_create_by'] = $_SESSION['usid'];
+                    $insert[$i]['pvc_create_by'] = Session::get('usid');
                     $insert[$i]['pvc_create_dt'] = DB::RAW("SYSDATE");
                 }
 
-                DB::connection($_SESSION['connection'])->table('tbtabel_produkvoucher')
+                DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')
                     ->insert($insert[$i]);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Berhasil menyimpan data!'
             ], 200);
         }
         catch (\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'messsage' => 'Gagal menyimpan data!',
@@ -238,7 +238,7 @@ class PLUVoucherController extends Controller
     }
 
     public function getListSupplier(Request $request){
-        $dataSupplier = DB::connection($_SESSION['connection'])->table('tbtabel_produkvoucher')
+        $dataSupplier = DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')
             ->join('tbmaster_supplier',function($join){
                 $join->on('sup_kodeigr','=','pvc_kodeigr');
                 $join->on('sup_kodesupplier','=','pvc_kodesupplier');

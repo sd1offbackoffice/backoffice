@@ -5,7 +5,7 @@ namespace App\Http\Controllers\OMI\TRANSFERORDERDARIOMIIDM;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,7 +18,7 @@ class ProsesTolakanCLOPBOMIController extends Controller
     }
 
     public function getData(){
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->table('tbtr_tolakanpbomi_clo')
             ->selectRaw("tlkc_kodeomi, tlkc_nopb, to_char(tlkc_tglpb, 'dd/mm/yyyy') tlkc_tglpb,
                 tlkc_max_kredit, tlkc_tagihan, tlkc_nilai_pb, tlkc_jml_kredit, tlkc_status, tlkc_namaomi,
@@ -31,29 +31,29 @@ class ProsesTolakanCLOPBOMIController extends Controller
 
     public function saveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
             foreach($request->changedData as $cd){
-                $test = DB::connection($_SESSION['connection'])
+                $test = DB::connection(Session::get('connection'))
                     ->table('tbtr_tolakanpbomi_clo')
                     ->where('tlkc_kodeomi','=',$cd['tlkc_kodeomi'])
                     ->where('tlkc_nopb','=',$cd['tlkc_nopb'])
                     ->whereDate('tlkc_tglpb','=',Carbon::createFromFormat('d/m/Y',$cd['tlkc_tglpb']))
                     ->update([
                         'tlkc_status' => $cd['tlkc_status'],
-                        'tlkc_modify_by' => $_SESSION['usid'],
+                        'tlkc_modify_by' => Session::get('usid'),
                         'tlkc_modify_dt' => Carbon::now()
                     ]);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Perubahan berhasil disimpan!'
             ], 200);
         }
         catch (\Exception $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()

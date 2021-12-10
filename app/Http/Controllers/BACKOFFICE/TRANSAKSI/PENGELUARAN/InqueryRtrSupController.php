@@ -6,7 +6,7 @@ use App\Http\Controllers\Connection;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Object_;
 use Yajra\DataTables\DataTables;
@@ -23,9 +23,9 @@ class InqueryRtrSupController extends Controller
 
     public function getDataLov()
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_namasupplier', 'sup_kodesupplier')
-            ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->get();
 
         return Datatables::of($data)->make(true);
@@ -35,9 +35,9 @@ class InqueryRtrSupController extends Controller
     {
         $kdsup = $request->kdsup;
 
-        $supplier = DB::connection($_SESSION['connection'])->table('tbmaster_supplier')
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('sup_namasupplier||case when sup_singkatansupplier is not null then \' / \'||sup_singkatansupplier else \'\' end supplier,sup_alamatsupplier1||\', \'||sup_alamatsupplier2||\', \'||sup_kotasupplier3 alamat,sup_telpsupplier telp, sup_contactperson cp')
-            ->where('sup_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->where('sup_kodesupplier', '=', $kdsup)
             ->first();
 
@@ -46,7 +46,7 @@ class InqueryRtrSupController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         } else {
-            $datas = DB::connection($_SESSION['connection'])->table('TBMASTER_HARGABELI')
+            $datas = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
                 ->join('TBMASTER_STOCK', 'ST_PRDCD', 'HGB_PRDCD')
                 ->join('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
                 ->where('HGB_KODESUPPLIER', '=', $kdsup)
@@ -72,7 +72,7 @@ class InqueryRtrSupController extends Controller
     {
         $kdsup = $request->kdsup;
 
-        $result = DB::connection($_SESSION['connection'])->table('TBMASTER_HARGABELI')
+        $result = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
             ->join('TBMASTER_STOCK', 'ST_PRDCD', 'HGB_PRDCD')
             ->join('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
             ->selectRaw('HGB_PRDCD plu, PRD_DESKRIPSIPANJANG barang, PRD_UNIT||\'/\'||PRD_FRAC SATUAN, PRD_KODETAG tag, ST_SALDOAKHIR qty')
@@ -89,12 +89,12 @@ class InqueryRtrSupController extends Controller
     public function report(Request $request)
     {
         $kdsup = $request->kdsup;
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
-            ->where('prs_kodeigr', '=', $_SESSION['kdigr'])
+            ->where('prs_kodeigr', '=', Session::get('kdigr'))
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])->table('TBMASTER_HARGABELI')
+        $data = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
             ->join('TBMASTER_STOCK', 'ST_PRDCD', 'HGB_PRDCD')
             ->join('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
             ->selectRaw('HGB_PRDCD plu, PRD_DESKRIPSIPANJANG barang, PRD_UNIT||\'/\'||PRD_FRAC SATUAN, PRD_KODETAG tag, ST_SALDOAKHIR qty')

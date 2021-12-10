@@ -5,7 +5,7 @@ namespace App\Http\Controllers\TABEL;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -20,7 +20,7 @@ class MonitoringSupplierController extends Controller
 
     public function getLovMonitoring()
     {
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
             ->selectRaw("msu_kodemonitoring kode, msu_namamonitoring nama")
             ->orderBy("msu_kodemonitoring")
             ->distinct()
@@ -31,7 +31,7 @@ class MonitoringSupplierController extends Controller
     public function getMonitoring(Request $request)
     {
         $search = $request->supplier;
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
             ->where('msu_kodemonitoring', '=', $search)
             ->first();
         if (!$data) {
@@ -39,7 +39,7 @@ class MonitoringSupplierController extends Controller
                 'message' => 'Kode monitoring tidak valid!'
             ], 500);
         } else {
-            $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+            $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
                 ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'msu_kodesupplier')
                 ->where('msu_kodemonitoring', '=', $search)
                 ->orderBy("msu_kodemonitoring")
@@ -52,7 +52,7 @@ class MonitoringSupplierController extends Controller
     {
         $search = $request->supplier;
 
-        $data = DB::connection($_SESSION['connection'])->table("tbmaster_supplier")
+        $data = DB::connection(Session::get('connection'))->table("tbmaster_supplier")
             ->select("sup_kodesupplier", "sup_namasupplier", "sup_pkp")
             ->whereRaw("(sup_kodesupplier like '%" . $search . "%' or sup_namasupplier like '%" . $search . "%')")
             ->orderBy('sup_kodesupplier')
@@ -64,7 +64,7 @@ class MonitoringSupplierController extends Controller
     public function cekData(Request $request)
     {
         $search = $request->kodemonitoring;
-        $data = DB::connection($_SESSION['connection'])->table('tbtr_monitoringsupplier')
+        $data = DB::connection(Session::get('connection'))->table('tbtr_monitoringsupplier')
             ->where('msu_kodemonitoring', '=', $search)
             ->first();
         return compact(['data']);
@@ -76,21 +76,21 @@ class MonitoringSupplierController extends Controller
         $namamtr = $request->namamonitoring;
         $kodesupplier = $request->kodesupplier;
         try {
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $temp = DB::connection($_SESSION['connection'])->table("tbtr_monitoringsupplier")
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $temp = DB::connection(Session::get('connection'))->table("tbtr_monitoringsupplier")
                 ->where("msu_kodemonitoring", $kodemtr)
                 ->where("msu_kodesupplier", $kodesupplier)
                 ->first();
 
             if (!$temp) {
-                DB::connection($_SESSION['connection'])
+                DB::connection(Session::get('connection'))
                     ->table('tbtr_monitoringsupplier')
                     ->insert([
-                        'msu_kodeigr' => $_SESSION['kdigr'],
+                        'msu_kodeigr' => Session::get('kdigr'),
                         'msu_kodemonitoring' => $kodemtr,
                         'msu_namamonitoring' => $namamtr,
                         'msu_kodesupplier' => $kodesupplier,
-                        'msu_create_by' => $_SESSION['usid'],
+                        'msu_create_by' => Session::get('usid'),
                         'msu_create_dt' => Carbon::now()
                     ]);
 
@@ -102,14 +102,14 @@ class MonitoringSupplierController extends Controller
                 ], 500);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
                 'message' => 'Supplier ' . $kodesupplier . ' sudah masuk ke kode monitoring ' . $kodemtr . ' !',
                 'status' => 'success'
             ], 200);
         } catch (\Exception $e) {
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -122,8 +122,8 @@ class MonitoringSupplierController extends Controller
         $kodemtr = $request->kodemonitoring;
         $kodesupplier = $request->kodesupplier;
         try {
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $temp = DB::connection($_SESSION['connection'])->table("tbtr_monitoringsupplier")
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $temp = DB::connection(Session::get('connection'))->table("tbtr_monitoringsupplier")
                 ->where("msu_kodemonitoring", $kodemtr)
                 ->where("msu_kodesupplier", $kodesupplier)
                 ->first();
@@ -133,12 +133,12 @@ class MonitoringSupplierController extends Controller
                     'message' => 'Kode tidak terdaftar!'
                 ], 500);
             } else {
-                $temp = DB::connection($_SESSION['connection'])->table("tbtr_monitoringsupplier")
+                $temp = DB::connection(Session::get('connection'))->table("tbtr_monitoringsupplier")
                     ->where("msu_kodemonitoring", $kodemtr)
                     ->where("msu_kodesupplier", $kodesupplier)
                     ->delete();
 
-                DB::connection($_SESSION['connection'])->commit();
+                DB::connection(Session::get('connection'))->commit();
 
                 if ($temp == 0) {
                     return response()->json([
@@ -151,7 +151,7 @@ class MonitoringSupplierController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => $e->getMessage()
@@ -161,17 +161,17 @@ class MonitoringSupplierController extends Controller
 
     public function print(Request $request)
     {
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
-        $monitoring = DB::connection($_SESSION['connection'])
+        $monitoring = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringsupplier')
             ->selectRaw("msu_kodemonitoring kode, msu_namamonitoring nama")
             ->where('msu_kodemonitoring', '=', $request->mon)
             ->first();
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select("SELECT msu_kodemonitoring, msu_namamonitoring, msu_kodesupplier, sup_namasupplier, sup_pkp
                     FROM TBTR_MONITORINGSUPPLIER, TBMASTER_SUPPLIER
                     WHERE msu_kodesupplier = sup_kodesupplier

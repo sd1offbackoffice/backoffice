@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Mockery\Exception;
@@ -16,29 +16,29 @@ use Yajra\DataTables\DataTables;
 class LaporanEvaluasiSalesMemberController extends Controller
 {
     public function index(){
-        $outlet = DB::connection($_SESSION['connection'])
+        $outlet = DB::connection(Session::get('connection'))
             ->table('tbmaster_outlet')
             ->select('out_kodeoutlet','out_namaoutlet')
             ->orderBy('out_kodeoutlet')
             ->get();
 
-        $suboutlet = DB::connection($_SESSION['connection'])
+        $suboutlet = DB::connection(Session::get('connection'))
             ->table('tbmaster_suboutlet')
             ->orderBy('sub_kodeoutlet')
             ->orderBy('sub_kodesuboutlet')
             ->get();
 
-        $group = DB::connection($_SESSION['connection'])
+        $group = DB::connection(Session::get('connection'))
             ->table('tbmaster_jenismember')
             ->select('jm_kode','jm_keterangan')
             ->orderBy('jm_kode')
             ->get();
 
-        $segmentasi = DB::connection($_SESSION['connection'])->table('tbmaster_segmentasi')
+        $segmentasi = DB::connection(Session::get('connection'))->table('tbmaster_segmentasi')
             ->orderBy('seg_id')
             ->get();
 
-        $monitoringMember = DB::connection($_SESSION['connection'])
+        $monitoringMember = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringmember')
             ->select('mem_namamonitoring')
             ->whereNotNull('mem_namamonitoring')
@@ -46,7 +46,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
             ->orderBy('mem_namamonitoring')
             ->get();
 
-        $monitoringPLU = DB::connection($_SESSION['connection'])
+        $monitoringPLU = DB::connection(Session::get('connection'))
             ->table('tbtr_monitoringplu')
             ->select('mpl_kodemonitoring','mpl_namamonitoring')
             ->whereNotNull('mpl_kodemonitoring')
@@ -101,7 +101,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
             $whereMonitoringPLU = " AND mpl_kodemonitoring   = '" . $monitoringPLU . "'";
         }
 
-        $perusahaan = DB::connection($_SESSION['connection'])
+        $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
 
@@ -392,7 +392,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                      AND non_prdcd(+) =
                                             SUBSTR (trjd_prdcd, 1, 6) || '0'
                                      AND trjd_recordid IS NULL
-                                     AND trjd_kodeigr = '".$_SESSION['kdigr']."'
+                                     AND trjd_kodeigr = '".Session::get('kdigr')."'
                                      ".$whereGroup."
                                      ".$whereSegmentasi."
                                      ".$whereOutlet."
@@ -460,7 +460,7 @@ GROUP BY trjd_cus_kodemember,cus_namamember";
 
 //        return $query;
 
-        $data = DB::connection($_SESSION['connection'])
+        $data = DB::connection(Session::get('connection'))
             ->select($query);
 
 //        dd($data);

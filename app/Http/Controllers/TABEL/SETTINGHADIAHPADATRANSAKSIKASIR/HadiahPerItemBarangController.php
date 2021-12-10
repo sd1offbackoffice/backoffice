@@ -11,7 +11,7 @@ namespace App\Http\Controllers\TABEL\SETTINGHADIAHPADATRANSAKSIKASIR;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -26,10 +26,10 @@ class HadiahPerItemBarangController extends Controller
     }
 
     public function ModalPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
             ->selectRaw("PRD_DESKRIPSIPANJANG")
             ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
             ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
@@ -69,7 +69,7 @@ class HadiahPerItemBarangController extends Controller
             ->limit(1000)
             ->get();
 
-//        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_PRODMAST")
+//        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
 //            ->selectRaw("PRD_DESKRIPSIPANJANG")
 //            ->selectRaw("PRD_UNIT || '/' || PRD_FRAC FRAC")
 //            ->selectRaw("TO_CHAR(PRD_HRGJUAL, '999g999g999') HRGJUAL")
@@ -85,10 +85,10 @@ class HadiahPerItemBarangController extends Controller
     }
 
     public function ModalHadiah(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $search = $request->value;
 
-        $datas = DB::connection($_SESSION['connection'])->table("TBMASTER_BRGPROMOSI")
+        $datas = DB::connection(Session::get('connection'))->table("TBMASTER_BRGPROMOSI")
             ->selectRaw("BPRP_KETPANJANG")
             ->selectRaw("BPRP_PRDCD")
             ->selectRaw("BPRP_UNIT || '/' || BPRP_FRACKONVERSI as satuan")
@@ -102,9 +102,9 @@ class HadiahPerItemBarangController extends Controller
     }
 
     public function ModalHistory(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT ISD_PRDCD, TO_CHAR(ISD_TGLAWAL, 'dd-MM-yyyy') || ' s/d ' || TO_CHAR(ISD_TGLAKHIR,'dd-MM-yyyy') BERLAKU,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT ISD_PRDCD, TO_CHAR(ISD_TGLAWAL, 'dd-MM-yyyy') || ' s/d ' || TO_CHAR(ISD_TGLAKHIR,'dd-MM-yyyy') BERLAKU,
 ISH_KETERANGAN, ISD_KODEPROMOSI, PRD_DESKRIPSIPANJANG, PRD_UNIT || '/' || PRD_FRAC as satuan FROM TBTR_INSTORE_DTL, TBTR_INSTORE_HDR, TBMASTER_PRODMAST
 WHERE ISD_KODEIGR = '$kodeigr' AND ISD_JENISPROMOSI = 'I' AND ISH_KODEIGR = ISD_KODEIGR
 AND ISH_JENISPROMOSI = ISD_JENISPROMOSI AND ISH_KODEPROMOSI = ISD_KODEPROMOSI AND TRUNC(ISH_TGLAWAL) = TRUNC(ISD_TGLAWAL)
@@ -115,10 +115,10 @@ ORDER BY BERLAKU, ISD_PRDCD");
     }
 
     public function CheckPlu(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $prd = $request->prd;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
          WHERE prd_kodeigr = '22'
            AND prd_prdcd = brc_prdcd(+)
@@ -126,7 +126,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
 
         if(sizeof($datas) != 0){
             //#NOTE# :TXT_KODE di program lama nilainya di program lama untuk menampung kode plu yang dipilih untuk dilihat history nya
-            $temp = DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+            $temp = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                 ->selectRaw("NVL(COUNT(1),0) as result")
                 ->where("ISD_KODEIGR",'=',$kodeigr)
                 ->where("ISD_JENISPROMOSI",'=','I')
@@ -145,11 +145,11 @@ ORDER BY BERLAKU, ISD_PRDCD");
     }
 
     public function GetHistory(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $prdcd = $request->prdcd;
         $kode = $request->kode;
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT ISH_TGLAWAL, ISH_TGLAKHIR, ISD_MINPCS, ISD_MINRPH, ISD_MAXPCS, ISD_MAXRPH,
 	  	ISH_PRDCDHADIAH, ISH_JMLHADIAH, ISH_KELIPATANHADIAH, ISH_MAXJMLHARI, ISH_MAXFREKHARI, ISH_MAXOUTHARI,
 	  	ISH_QTYALOKASI, NVL(ISH_QTYALOKASIOUT,0) as pakai, ISH_REGULER, ISH_REGULERBIRUPLUS, ISH_FREEPASS, ISH_RETAILER, ISH_SILVER,
 	  	ISH_GOLD1, ISH_GOLD2, ISH_GOLD3, ISH_PLATINUM, ISH_KETERANGAN, ISH_MAXFREKEVENT, ISH_MAXJMLEVENT
@@ -162,9 +162,9 @@ ORDER BY BERLAKU, ISD_PRDCD");
 
     public function SaveData(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
-            $kodeigr = $_SESSION['kdigr'];
-            $usid = $_SESSION['usid'];
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
+            $usid = Session::get('usid');
 
             $status = $request->status;
             $plu = $request->plu;
@@ -203,7 +203,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                 $nomor = '';
                 $connect = loginController::getConnectionProcedure();
 
-                $query = oci_parse($connect, "BEGIN :cREG := F_IGR_GET_NOMOR('" . $_SESSION['kdigr'] . "','I' || TO_CHAR(SYSDATE, 'yy'),
+                $query = oci_parse($connect, "BEGIN :cREG := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','I' || TO_CHAR(SYSDATE, 'yy'),
                                'Nomor Promo InStore',
                                'H' || CHR (TO_CHAR (SYSDATE, 'yy') + 48), --'H',  tgl 3Jan17 minta ditambahin tahun agar tidak bentrok dengan kode tahun sebelumnya
                                3, --4,
@@ -212,7 +212,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                 oci_bind_by_name($query, ':cREG', $nomor, 32);
                 oci_execute($query);
 
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->insert([
                         "ISH_KODEIGR" => $kodeigr,
                         "ISH_KODEPROMOSI" => $nomor,
@@ -247,7 +247,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISH_GOLD3" => $gold3,
                         "ISH_PLATINUM" => $platinum
                     ]);
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                     ->insert([
                         "ISD_KODEIGR" => $kodeigr,
                         "ISD_KODEPROMOSI" => $nomor,
@@ -263,7 +263,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISD_CREATE_DT" => DB::Raw('SYSDATE')
                     ]);
             }else{
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_HDR")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->where("ISH_KODEIGR",'=',$kodeigr)
                     ->where("ISH_JENISPROMOSI",'=','I')
                     ->where("ISH_KODEPROMOSI",'=',$status)
@@ -293,7 +293,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISH_MODIFY_DT" => DB::Raw('SYSDATE')
                     ]);
 
-                DB::connection($_SESSION['connection'])->table("TBTR_INSTORE_DTL")
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
                     ->where("ISD_KODEIGR",'=',$kodeigr)
                     ->where("ISD_JENISPROMOSI",'=','I')
                     ->where("ISD_KODEPROMOSI",'=',$status)
@@ -309,10 +309,10 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISD_MODIFY_DT" => DB::Raw('SYSDATE')
                     ]);
             }
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
             return response()->json(['title' => 'Data Sudah Disimpan !!'],200);
         }catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'title' => 'Gagal menyimpan data!'

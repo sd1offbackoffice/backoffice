@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -22,12 +22,12 @@ class KunjunganBKLController extends Controller
         return view('BACKOFFICE.LAPORAN.KunjunganBKL');
     }
     public function CheckData(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $date = $request->date;
         $theDate = DateTime::createFromFormat('m-Y', $date)->format('m-Y');
         $parameter_hari = '';
 
-        $p_hari = DB::connection($_SESSION['connection'])->select("SELECT     LEVEL,
+        $p_hari = DB::connection(Session::get('connection'))->select("SELECT     LEVEL,
                     CASE
                         WHEN (TRIM
                                   (TO_CHAR
@@ -189,7 +189,7 @@ class KunjunganBKLController extends Controller
             $parameter_hari = $parameter_hari.TRIM($p_hari[$i]->hari).'  ';
         }
 
-        $cursor = DB::connection($_SESSION['connection'])->select("SELECT hasil2.*,  (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / dtg) * 100) sskunj,
+        $cursor = DB::connection(Session::get('connection'))->select("SELECT hasil2.*,  (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / dtg) * 100) sskunj,
 (nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) jml, (hari1 + hari2 + hari3 + hari4 + hari5 + hari6 + hari7) haridtg,
 (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / (hari1 + hari2 + hari3 + hari4 + hari5 + hari6 + hari7)) * 100) ssdtg FROM (
 SELECT hasil.*, CASE WHEN minggu = 'Y' THEN (LENGTH(REPLACE(hari, ',')) - nvl(LENGTH(REPLACE(REPLACE(hari, ','), 'su')),0)) / 2 ELSE 0 END nilai1,
@@ -247,14 +247,14 @@ ORDER BY mstd_kodesupplier ) hasil
     }
 
     public function printDocument(Request $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $date = $request->date;
         $today = date('d-m-Y');
         $theDate = DateTime::createFromFormat('m-Y', $date)->format('m-Y');
         $periode = DateTime::createFromFormat('m-Y', $date)->format('m-Y');
         $parameter_hari = '';
 
-        $p_hari = DB::connection($_SESSION['connection'])->select("SELECT     LEVEL,
+        $p_hari = DB::connection(Session::get('connection'))->select("SELECT     LEVEL,
                     CASE
                         WHEN (TRIM
                                   (TO_CHAR
@@ -416,7 +416,7 @@ ORDER BY mstd_kodesupplier ) hasil
             $parameter_hari = $parameter_hari.TRIM($p_hari[$i]->hari).'  ';
         }
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT hasil2.*,  (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / dtg) * 100) sskunj,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT hasil2.*,  (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / dtg) * 100) sskunj,
 (nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) jml, (hari1 + hari2 + hari3 + hari4 + hari5 + hari6 + hari7) haridtg,
 (((nilai1 + nilai2 + nilai3 + nilai4 + nilai5 + nilai6 + nilai7) / (hari1 + hari2 + hari3 + hari4 + hari5 + hari6 + hari7)) * 100) ssdtg FROM (
 SELECT hasil.*, CASE WHEN minggu = 'Y' THEN (LENGTH(REPLACE(hari, ',')) - nvl(LENGTH(REPLACE(REPLACE(hari, ','), 'su')),0)) / 2 ELSE 0 END nilai1,

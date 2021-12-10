@@ -5,31 +5,29 @@ namespace App\Http\Middleware;
 use App\Http\Controllers\ADMINISTRATION\AccessController;
 use Closure;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 
-if (!isset($_SESSION)) {
-    session_start();
-}
 
 class CheckLogin
 {
     public function handle($request, Closure $next)
     {
-        if (isset($_SESSION['usid']) && $_SESSION['usid']!='') {
+        if (Session::get('usid')!=null && Session::get('usid')!='') {
 
             $isChanged = false;
 
-            $_SESSION['menu'] = AccessController::getListMenu($_SESSION['usid']);
+            Session::put('menu', AccessController::getListMenu(Session::get('usid')));
 
-            if(!in_array($_SESSION['usid'], ['DEV','SUP'])) {
+            if(!in_array(Session::get('usid'), ['DEV','SUP'])) {
                 if(!AccessController::isAccessible(\Request::getPathInfo())){
                     abort(403);
                 }
             }
 
 
-//            if(count($menu) == count($_SESSION['menu'])){
+//            if(count($menu) == count(Session::get('menu'))){
 //                for($i=0;$i<count($menu);$i++){
-//                    if($menu[$i]->acc_id != $_SESSION['menu'][$i]->acc_id){
+//                    if($menu[$i]->acc_id != Session::get('menu')[$i]->acc_id){
 //                        $isChanged = true;
 //                        break;
 //                    }

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -30,7 +30,7 @@ class ProsesLPPController extends Controller
 
 
         $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN SP_PROSES_LPP2('" . $_SESSION['kdigr'] . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),false,:p_sukses,:err_txt); END;";
+        $sql = "BEGIN SP_PROSES_LPP2('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),false,:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':p_sukses', $p_sukses, 200);

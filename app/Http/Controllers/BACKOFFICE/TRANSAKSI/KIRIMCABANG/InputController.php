@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,7 +18,7 @@ class InputController extends Controller
     }
 
     public function getDataLovTrn(){
-        $lov = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+        $lov = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
             ->selectRaw("TRBO_NODOC,TO_CHAR(TRBO_TGLDOC, 'DD/MM/YYYY') TRBO_TGLDOC,
                     CASE
                         WHEN TRBO_FLAGDOC='*' THEN TRBO_NONOTA
@@ -33,9 +33,9 @@ class InputController extends Controller
     }
 
     public function getDataLovCabang(){
-        $lov = DB::connection($_SESSION['connection'])->table('tbmaster_cabang')
+        $lov = DB::connection(Session::get('connection'))->table('tbmaster_cabang')
             ->select('cab_kodecabang','cab_namacabang')
-            ->where('cab_kodeigr',$_SESSION['kdigr'])
+            ->where('cab_kodeigr',Session::get('kdigr'))
             ->orderBy('cab_kodecabang')
             ->get();
 
@@ -43,9 +43,9 @@ class InputController extends Controller
     }
 
     public function getDataLovPlu(){
-        $lov = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $lov = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw("PRD_PRDCD, PRD_UNIT||'/'||TO_CHAR(PRD_FRAC) SATUAN, PRD_DESKRIPSIPANJANG")
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,9)<>1")
             ->orderBy('prd_prdcd')
@@ -56,13 +56,13 @@ class InputController extends Controller
     }
 
     public function getDataLovIpb(){
-        $lov = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT
+        $lov = DB::connection(Session::get('connection'))->select("SELECT DISTINCT
                 IPB_NOIPB,IPB_TGLIPB,IPB_KODECABANG2,CAB_NAMACABANG
                 FROM TBTR_IPB,TBMASTER_CABANG
                 WHERE IPB_KODECABANG2=CAB_KODECABANG AND
-                      CAB_KODEIGR = '".$_SESSION['kdigr']."' AND
-                     IPB_KODEIGR='".$_SESSION['kdigr']."' AND
-                      IPB_KODECABANG1='".$_SESSION['kdigr']."' AND
+                      CAB_KODEIGR = '".Session::get('kdigr')."' AND
+                     IPB_KODEIGR='".Session::get('kdigr')."' AND
+                      IPB_KODECABANG1='".Session::get('kdigr')."' AND
                       (NVL(IPB_RECORDID,' ')=' ' OR IPB_RECORDID IS NULL)
                 ORDER BY IPB_NOIPB");
 
@@ -70,17 +70,17 @@ class InputController extends Controller
     }
 
     public function getNewNoTrn(){
-        $ip = $_SESSION['ip'];
+        $ip = Session::get('ip');
 
         $arrip = explode('.',$ip);
 
         $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,FALSE); END;");
+        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".Session::get('kdigr')."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,FALSE); END;");
         oci_bind_by_name($s, ':ret', $no, 32);
         oci_execute($s);
 
-        DB::connection($_SESSION['connection'])->table('tbtr_tac')
-            ->where('tac_kodeigr',$_SESSION['kdigr'])
+        DB::connection(Session::get('connection'))->table('tbtr_tac')
+            ->where('tac_kodeigr',Session::get('kdigr'))
             ->where('tac_nodoc',$no)
             ->delete();
 
@@ -88,7 +88,7 @@ class InputController extends Controller
     }
 
     public function getDataTrn(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT DISTINCT TRBO_NODOC, TO_CHAR(TRBO_TGLDOC, 'DD/MM/YYYY') TRBO_TGLDOC, TRBO_PRDCD,
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_NODOC, TO_CHAR(TRBO_TGLDOC, 'DD/MM/YYYY') TRBO_TGLDOC, TRBO_PRDCD,
                     TRBO_QTY, TRBO_HRGSATUAN, TRBO_PPNRPH, TRBO_LOC, TRBO_GROSS, TRBO_GDG, TRBO_FLAGDOC,
                     TRBO_KETERANGAN, PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT, PRD_AVGCOST,
 	                PRD_KODETAG,ST_SALDOAKHIR,PRD_FLAGBKP1, CAB_NAMACABANG
@@ -99,7 +99,7 @@ class InputController extends Controller
                         PRD_KODEIGR = ST_KODEIGR(+) AND
                         ST_LOKASI(+)='01' AND
                         CAB_KODECABANG = TRBO_LOC AND
-                        TRBO_KODEIGR = '".$_SESSION['kdigr']."' AND
+                        TRBO_KODEIGR = '".Session::get('kdigr')."' AND
                         TRBO_NODOC = '".$request->notrn."' AND
                         TRBO_TYPETRN='O'
                     ORDER BY TRBO_PRDCD");
@@ -109,25 +109,25 @@ class InputController extends Controller
 
     public function deleteTrn(Request $request){
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_tac')
-                ->where('tac_kodeigr',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtr_tac')
+                ->where('tac_kodeigr',Session::get('kdigr'))
                 ->where('tac_nodoc',$request->notrn)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->where('trbo_typetrn','O')
                 ->where('trbo_nodoc',$request->notrn)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $status = 'success';
             $title = 'Berhasil menghapus data '.$request->notrn;
         }
         catch (QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $title = 'Gagal menghapus data '.$request->notrn;
@@ -138,19 +138,19 @@ class InputController extends Controller
     }
 
     public function getDataPlu(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,
+        $data = DB::connection(Session::get('connection'))->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,
                                     PRD_AVGCOST,ST_AVGCOST,PRD_FLAGBKP1,ST_SALDOAKHIR
                                   FROM TBMASTER_PRODMAST,TBMASTER_STOCK
                                   WHERE PRD_KODEIGR = ST_KODEIGR(+) AND
                                       PRD_PRDCD = ST_PRDCD(+) AND
-                                      PRD_KODEIGR = '".$_SESSION['kdigr']."' AND
+                                      PRD_KODEIGR = '".Session::get('kdigr')."' AND
                                       ST_LOKASI(+)='01' AND PRD_PRDCD='".$request->prdcd."'");
 
         return response()->json($data[0]);
     }
 
     public function getDataLKS(Request $request){
-        $data = DB::connection($_SESSION['connection'])->select("SELECT   LKS_KODEIGR KODEIGR, LKS_PRDCD PRDCD,
+        $data = DB::connection(Session::get('connection'))->select("SELECT   LKS_KODEIGR KODEIGR, LKS_PRDCD PRDCD,
             LKS_KODERAK
          || '.'
          || LKS_KODESUBRAK
@@ -207,12 +207,12 @@ ORDER BY PRDCD,
 
         for($i=0;$i<count($lokasi);$i++){
             $ins = [];
-            $ins['tac_kodeigr'] = $_SESSION['kdigr'];
+            $ins['tac_kodeigr'] = Session::get('kdigr');
             $ins['tac_nodoc'] = $nodoc;
             $ins['tac_prdcd'] = $prdcd;
             $ins['tac_lokasi'] = $lokasi[$i];
             $ins['tac_qty'] = ($frac * $ctn[$i]) + $pcs[$i];
-            $ins['tac_create_by'] = $_SESSION['usid'];
+            $ins['tac_create_by'] = Session::get('usid');
             $ins['tac_create_dt'] = DB::RAW("SYSDATE");
 
             if($ins['tac_qty'] > 0)
@@ -220,21 +220,21 @@ ORDER BY PRDCD,
         }
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_tac')
-                ->where('tac_kodeigr',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtr_tac')
+                ->where('tac_kodeigr',Session::get('kdigr'))
                 ->where('tac_nodoc',$nodoc)
                 ->where('tac_prdcd',$prdcd)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_tac')
+            DB::connection(Session::get('connection'))->table('tbtr_tac')
                 ->insert($insert);
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -248,21 +248,21 @@ ORDER BY PRDCD,
         $nodoc = $request->nodoc;
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            DB::connection($_SESSION['connection'])->table('tbtr_tac')
-                ->where('tac_kodeigr',$_SESSION['kdigr'])
+            DB::connection(Session::get('connection'))->table('tbtr_tac')
+                ->where('tac_kodeigr',Session::get('kdigr'))
                 ->where('tac_nodoc',$nodoc)
                 ->where('tac_prdcd',$prdcd)
                 ->delete();
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $status = 'success';
             $message = '';
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $message = $e->getMessage();
@@ -284,44 +284,44 @@ ORDER BY PRDCD,
         $trbo_stokqty = $request->trbo_stokqty;
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $cek = DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+            $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->where('trbo_nodoc',$nodoc)
                 ->where('trbo_typetrn','O')
-                ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                ->where('trbo_kodeigr',Session::get('kdigr'))
                 ->count();
 
             if($cek == 0){
-                $ip = $_SESSION['ip'];
+                $ip = Session::get('ip');
 
                 $arrip = explode('.',$ip);
 
                 $c = loginController::getConnectionProcedure();
-                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".$_SESSION['kdigr']."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,TRUE); END;");
+                $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".Session::get('kdigr')."','SJK','Nomor Surat Jalan',".$arrip[3]."||'3',6,TRUE); END;");
                 oci_bind_by_name($s, ':ret', $no, 32);
                 oci_execute($s);
 
                 $nodoc = $no;
             }
             else{
-                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->where('trbo_nodoc',$nodoc)
                     ->where('trbo_typetrn','O')
-                    ->where('trbo_kodeigr',$_SESSION['kdigr'])
+                    ->where('trbo_kodeigr',Session::get('kdigr'))
                     ->delete();
 
-                $tac = DB::connection($_SESSION['connection'])->table('tbtr_tac')
+                $tac = DB::connection(Session::get('connection'))->table('tbtr_tac')
                     ->select('tac_prdcd')
-                    ->where('tac_kodeigr',$_SESSION['kdigr'])
+                    ->where('tac_kodeigr',Session::get('kdigr'))
                     ->where('tac_nodoc',$nodoc)
                     ->get();
 
                 foreach($tac as $t){
                     if(!in_array($t->tac_prdcd,$trbo_prdcd)){
-                        DB::connection($_SESSION['connection'])->table('tbtr_tac')
+                        DB::connection(Session::get('connection'))->table('tbtr_tac')
                             ->select('tac_prdcd')
-                            ->where('tac_kodeigr',$_SESSION['kdigr'])
+                            ->where('tac_kodeigr',Session::get('kdigr'))
                             ->where('tac_nodoc',$nodoc)
                             ->where('tac_prdcd',$t->tac_prdcd)
                             ->delete();
@@ -329,7 +329,7 @@ ORDER BY PRDCD,
                 }
             }
 
-            $records = DB::connection($_SESSION['connection'])->select("SELECT TAC_NODOC, TAC_PRDCD, TAC_LOKASI, TAC_QTY, LKS_QTY, PRD_DESKRIPSIPANJANG
+            $records = DB::connection(Session::get('connection'))->select("SELECT TAC_NODOC, TAC_PRDCD, TAC_LOKASI, TAC_QTY, LKS_QTY, PRD_DESKRIPSIPANJANG
                   FROM TBTR_TAC, TBMASTER_LOKASI, TBMASTER_PRODMAST
                  WHERE TAC_LOKASI =
                               LKS_KODERAK
@@ -343,38 +343,38 @@ ORDER BY PRDCD,
                            || LKS_NOURUT
                    AND TAC_PRDCD = LKS_PRDCD
                    AND TAC_PRDCD = PRD_PRDCD
-                   AND TAC_KODEIGR = '".$_SESSION['kdigr']."'
+                   AND TAC_KODEIGR = '".Session::get('kdigr')."'
                    AND TAC_NODOC = '".$nodoc."'");
 
             foreach($records as $rec){
-                $temp = DB::connection($_SESSION['connection'])->select("SELECT spb_jenis
+                $temp = DB::connection(Session::get('connection'))->select("SELECT spb_jenis
                   FROM TBTR_ANTRIANSPB
                  WHERE SPB_JENIS = 'TAC ' || '".$nodoc."'
                    AND SPB_PRDCD = '".$rec->tac_prdcd."'
                    AND SPB_LOKASIASAL = '".$rec->tac_lokasi."'");
 
                 if(count($temp) == 0){
-                    $seq = DB::connection($_SESSION['connection'])->select("SELECT SEQ_SPB.NEXTVAL seq FROM DUAL")[0]->seq;
-                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTR_ANTRIANSPB
+                    $seq = DB::connection(Session::get('connection'))->select("SELECT SEQ_SPB.NEXTVAL seq FROM DUAL")[0]->seq;
+                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBTR_ANTRIANSPB
                         (SPB_PRDCD, SPB_LOKASIASAL, SPB_LOKASITUJUAN, SPB_JENIS,
                          SPB_CREATE_BY, SPB_CREATE_DT, SPB_QTY, SPB_MINUS,
                          SPB_DESKRIPSI, SPB_ID
                         )
-                 VALUES ('".$rec->tac_prdcd."', '".$rec->tac_lokasi."', 'S.T.A.C.'||'".$_SESSION['kdigr']."', 'TAC ' || '".$rec->tac_nodoc."',
-                         '".$_SESSION['usid']."', SYSDATE, '".$rec->lks_qty."', '".$rec->tac_qty."',
+                 VALUES ('".$rec->tac_prdcd."', '".$rec->tac_lokasi."', 'S.T.A.C.'||'".Session::get('kdigr')."', 'TAC ' || '".$rec->tac_nodoc."',
+                         '".Session::get('usid')."', SYSDATE, '".$rec->lks_qty."', '".$rec->tac_qty."',
                          '".$rec->prd_deskripsipanjang."', '".$seq."' )");
 
-                    DB::connection($_SESSION['connection'])->insert("INSERT INTO TBTEMP_ANTRIANSPB
+                    DB::connection(Session::get('connection'))->insert("INSERT INTO TBTEMP_ANTRIANSPB
                         (SPB_PRDCD, SPB_LOKASIASAL, SPB_LOKASITUJUAN, SPB_JENIS,
                          SPB_CREATE_BY, SPB_CREATE_DT, SPB_QTY, SPB_MINUS,
                          SPB_DESKRIPSI, SPB_ID
                         )
-                 VALUES ('".$rec->tac_prdcd."', '".$rec->tac_lokasi."', 'S.T.A.C.'||'".$_SESSION['kdigr']."', 'TAC ' || '".$rec->tac_nodoc."',
-                         '".$_SESSION['usid']."', SYSDATE, '".$rec->lks_qty."', '".$rec->tac_qty."',
+                 VALUES ('".$rec->tac_prdcd."', '".$rec->tac_lokasi."', 'S.T.A.C.'||'".Session::get('kdigr')."', 'TAC ' || '".$rec->tac_nodoc."',
+                         '".Session::get('usid')."', SYSDATE, '".$rec->lks_qty."', '".$rec->tac_qty."',
                          '".$rec->prd_deskripsipanjang."', '".$seq."' )");
                 }
                 else{
-                    DB::connection($_SESSION['connection'])->table('tbtr_antrianspb')
+                    DB::connection(Session::get('connection'))->table('tbtr_antrianspb')
                         ->where('spb_jenis','TAC '.$rec->tac_nodoc)
                         ->where('spb_prdcd',$rec->tac_prdcd)
                         ->where('spb_lokasiasal',$rec->tac_lokasi)
@@ -382,7 +382,7 @@ ORDER BY PRDCD,
                             'spb_minus' => $rec->tac_qty
                         ]);
 
-                    DB::connection($_SESSION['connection'])->table('tbtemp_antrianspb')
+                    DB::connection(Session::get('connection'))->table('tbtemp_antrianspb')
                         ->where('spb_jenis','TAC '.$rec->tac_nodoc)
                         ->where('spb_prdcd',$rec->tac_prdcd)
                         ->where('spb_lokasiasal',$rec->tac_lokasi)
@@ -392,7 +392,7 @@ ORDER BY PRDCD,
                 }
             }
 
-            DB::connection($_SESSION['connection'])->update("UPDATE TBTR_ANTRIANSPB
+            DB::connection(Session::get('connection'))->update("UPDATE TBTR_ANTRIANSPB
                            SET SPB_RECORDID = '2'
                          WHERE SPB_JENIS = 'TAC ' || '".$nodoc."'
                            AND NOT EXISTS (
@@ -401,7 +401,7 @@ ORDER BY PRDCD,
                                         WHERE TAC_NODOC = '".$nodoc."' AND SPB_PRDCD = TAC_PRDCD
                                               AND SPB_LOKASIASAL = TAC_LOKASI)");
 
-            DB::connection($_SESSION['connection'])->update("UPDATE TBTEMP_ANTRIANSPB
+            DB::connection(Session::get('connection'))->update("UPDATE TBTEMP_ANTRIANSPB
                            SET SPB_RECORDID = '2'
                          WHERE SPB_JENIS = 'TAC ' || '".$nodoc."'
                            AND NOT EXISTS (
@@ -423,30 +423,30 @@ ORDER BY PRDCD,
                 $ins['trbo_averagecost'] = $trbo_averagecost[$i];
                 $ins['trbo_stokqty'] = $trbo_stokqty[$i];
 
-                $ins['trbo_kodeigr'] = $_SESSION['kdigr'];
+                $ins['trbo_kodeigr'] = Session::get('kdigr');
                 $ins['trbo_typetrn'] = 'O';
                 $ins['trbo_nodoc'] = $nodoc;
                 $ins['trbo_tgldoc'] = DB::RAW("TO_DATE('".$tgldoc."','DD/MM/YYYY')");
                 $ins['trbo_loc'] = $loc;
-                $ins['trbo_create_by'] = $_SESSION['usid'];
+                $ins['trbo_create_by'] = Session::get('usid');
                 $ins['trbo_create_dt'] = DB::RAW("SYSDATE");
 
                 $inserts[] = $ins;
             }
 
             foreach($inserts as $insert){
-                DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->insert($insert);
             }
 
-            DB::connection($_SESSION['connection'])->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             $status = 'success';
             $title = 'Berhasil menyimpan data nomor '.$nodoc;
             $message = '';
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $title = 'Gagal menyimpan data nomor '.$nodoc;
@@ -457,10 +457,10 @@ ORDER BY PRDCD,
     }
 
     public function test(){
-        DB::connection($_SESSION['connection'])->table('tbtr_backoffice')
+        DB::connection(Session::get('connection'))->table('tbtr_backoffice')
             ->where('trbo_nodoc','2343000001')
             ->where('trbo_typetrn','O')
-            ->where('trbo_kodeigr',$_SESSION['kdigr'])
+            ->where('trbo_kodeigr',Session::get('kdigr'))
             ->delete();
     }
 }

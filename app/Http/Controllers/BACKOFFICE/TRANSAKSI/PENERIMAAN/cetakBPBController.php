@@ -4,9 +4,8 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use PDF;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class cetakBPBController extends Controller {
@@ -15,9 +14,9 @@ class cetakBPBController extends Controller {
     }
 
     public function showPO(){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT tpoh_nopo, sup_kodesupplier || '-' || sup_namasupplier supplier
+        $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, sup_kodesupplier || '-' || sup_namasupplier supplier
                                   FROM tbtr_po_h, tbmaster_supplier
                                  WHERE     tpoh_kodeigr = '$kodeigr'
                                        AND NVL (tpoh_recordid, '9') <> '1'
@@ -29,10 +28,10 @@ class cetakBPBController extends Controller {
     }
 
     public function searchPO(Request  $request){
-        $kodeigr = $_SESSION['kdigr'];
+        $kodeigr = Session::get('kdigr');
         $value  = $request->value;
 
-        $data = DB::connection($_SESSION['connection'])->select("SELECT tpoh_nopo, sup_kodesupplier || '-' || sup_namasupplier supplier
+        $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, sup_kodesupplier || '-' || sup_namasupplier supplier
                                   FROM tbtr_po_h, tbmaster_supplier
                                  WHERE     tpoh_kodeigr = '$kodeigr'
                                        AND NVL (tpoh_recordid, '9') <> '1'
@@ -44,7 +43,7 @@ class cetakBPBController extends Controller {
     }
 
     public function cetakLaporan(Request  $request){ // 1 => Draf || 2 => Rincian
-        $kodeigr    = $_SESSION['kdigr'];
+        $kodeigr    = Session::get('kdigr');
         $typeTrn    = $request->typeTrn;
         $startDate  = $request->startDate;
         $endDate    = $request->endDate;
@@ -71,7 +70,7 @@ class cetakBPBController extends Controller {
         $endDate    = date('Y-m-d', strtotime($date2));
 
         if ($typeLaporan == 'B1'){
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT *
+            $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_BACKOFFICE
                                         WHERE TRBO_KODEIGR = '$kodeigr'
                                         AND TRBO_TYPETRN = '$typeTrn'
@@ -86,7 +85,7 @@ class cetakBPBController extends Controller {
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             }
         } else if ($typeLaporan == 'B2'){
-            $temp = DB::connection($_SESSION['connection'])->select("SELECT *
+            $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_MSTRAN_H
                                         WHERE MSTH_KODEIGR = '$kodeigr'
                                         AND MSTH_TYPETRN = '$typeTrn'
@@ -166,7 +165,7 @@ class cetakBPBController extends Controller {
             $datas = $this->IGR_BO_LISTDRAFT_PO1($data);
 
             foreach ($datas as $value){
-                $satjual = DB::connection($_SESSION['connection'])->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
+                $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
                                             from tbmaster_prodmast
                                             where substr(prd_prdcd,1,6)= substr('$value->prd_prdcd',1,6)
                                             and prd_kodeigr = '$value->prs_kodecabang'");
@@ -185,7 +184,7 @@ class cetakBPBController extends Controller {
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
             foreach ($datas as $value){
-                $satjual = DB::connection($_SESSION['connection'])->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
+                $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
                                             from tbmaster_prodmast
                                             where substr(prd_prdcd,1,6)= substr('$value->tpod_prdcd',1,6)
                                             and prd_kodeigr = '$value->prs_kodecabang'");
@@ -204,7 +203,7 @@ class cetakBPBController extends Controller {
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
             foreach ($datas as $value){
-                $satjual = DB::connection($_SESSION['connection'])->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
+                $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
                                             from tbmaster_prodmast
                                             where substr(prd_prdcd,1,6)= substr('$value->tpod_prdcd',1,6)
                                             and prd_kodeigr = '$value->prs_kodecabang'");
@@ -230,7 +229,7 @@ class cetakBPBController extends Controller {
         $endDate = $data['endDate'];
         $typeTrn = $data['typeTrn'];
 
-        $datas = DB::connection($_SESSION['connection'])->select(" SELECT trbo_nodoc,
+        $datas = DB::connection(Session::get('connection'))->select(" SELECT trbo_nodoc,
                                      trbo_tgldoc,
                                      jkwkt,
                                      status,
@@ -292,7 +291,7 @@ class cetakBPBController extends Controller {
         $endDate = $data['endDate'];
         $typeTrn = $data['typeTrn'];
 
-        $datas = DB::connection($_SESSION['connection'])->select(" SELECT    mstd_nodoc
+        $datas = DB::connection(Session::get('connection'))->select(" SELECT    mstd_nodoc
                                              || ' '
                                              || CASE WHEN msth_flagdoc = 'Y' THEN '(REPRINT)' ELSE '' END
                                                 nomor,
@@ -369,7 +368,7 @@ class cetakBPBController extends Controller {
         $kodeigr = $data['kodeigr'];
         $noPO   = $data['noPO'];
 
-        $datas = DB::connection($_SESSION['connection'])->select("SELECT TPOH_NOPO,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT TPOH_NOPO,
                                            TPOH_TGLPO,
                                            TPOH_KODESUPPLIER,
                                            TPOH_NOPO,
@@ -463,7 +462,7 @@ class cetakBPBController extends Controller {
         $kodeigr = $data['kodeigr'];
         $noPO   = $data['noPO'];
 
-        $datas = DB::connection($_SESSION['connection'])->select(" SELECT tpoh_nopo,
+        $datas = DB::connection(Session::get('connection'))->select(" SELECT tpoh_nopo,
                                          tpoh_tglpo,
                                          tpod_prdcd,
                                          tpod_satuanbeli || '/' || tpod_isibeli satuan,

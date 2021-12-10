@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\MASTER;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
@@ -14,7 +14,7 @@ class KubikasiPlanoController extends Controller
     public function index()
     {
         Self::fillKubikasi();
-        $koderak = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $koderak = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->select('lks_koderak')
             ->whereIn('lks_jenisrak', ['S'])
             ->where('lks_koderak', 'like', '%C')
@@ -22,7 +22,7 @@ class KubikasiPlanoController extends Controller
             ->distinct()
             ->get();
 
-        $produk = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'), '=', '0')
             ->orderBy('prd_deskripsipanjang')
@@ -33,7 +33,7 @@ class KubikasiPlanoController extends Controller
 
     public function lovSubrak(Request $request)
     {
-        $subrak = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $subrak = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->select('lks_koderak', 'lks_kodesubrak')
             ->whereIn('lks_jenisrak', ['S'])
             ->where('lks_koderak', 'like', '%C')
@@ -48,7 +48,7 @@ class KubikasiPlanoController extends Controller
 
     public function lovShelving(Request $request)
     {
-        $shelving = DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+        $shelving = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->select('lks_koderak', 'lks_kodesubrak', 'lks_shelvingrak')
             ->whereIn('lks_jenisrak', ['S'])
             ->where('lks_koderak', 'like', '%C')
@@ -66,13 +66,13 @@ class KubikasiPlanoController extends Controller
     public function lovSearch(Request $request)
     {
         if (is_numeric($request->value)) {
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->selectRaw('prd_prdcd,prd_deskripsipanjang,prd_deskripsipendek s_desk,prd_unit || \'/\' || prd_frac s_sat,(NVL(prd_dimensilebar, 0) * NVL(prd_dimensipanjang, 0) * NVL(prd_dimensitinggi, 0)) s_vol')
                 ->where('prd_prdcd', 'like', '%' . $request->value . '%')
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         } else {
-            $result = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->selectRaw('prd_prdcd,prd_deskripsipanjang,prd_deskripsipendek s_desk,prd_unit || \'/\' || prd_frac s_sat,(NVL(prd_dimensilebar, 0) * NVL(prd_dimensipanjang, 0) * NVL(prd_dimensitinggi, 0)) s_vol')
                 ->where('prd_deskripsipanjang', 'like', '%' . $request->value . '%')
                 ->orderBy('prd_deskripsipanjang')
@@ -84,7 +84,7 @@ class KubikasiPlanoController extends Controller
     public function dataRakKecil()
     {
         try {
-            $shelving = DB::connection($_SESSION['connection'])->select('SELECT kbp_koderak,
+            $shelving = DB::connection(Session::get('connection'))->select('SELECT kbp_koderak,
                                          kbp_kodesubrak,
                                          kbp_shelvingrak,
                                          kbp_volumeshell,
@@ -144,7 +144,7 @@ class KubikasiPlanoController extends Controller
 
     public function dataRakKecilParam(Request $request)
     {
-        $shelving = DB::connection($_SESSION['connection'])->select('SELECT kbp_koderak,
+        $shelving = DB::connection(Session::get('connection'))->select('SELECT kbp_koderak,
                                          kbp_kodesubrak,
                                          kbp_shelvingrak,
                                          kbp_volumeshell,
@@ -206,12 +206,12 @@ class KubikasiPlanoController extends Controller
     {
         if (isset($request->value)) {
             for ($i = 0; $i < sizeof($request->value['koderak']); $i++) {
-                $opo = DB::connection($_SESSION['connection'])->table('tbmaster_kubikasiplano')
+                $opo = DB::connection(Session::get('connection'))->table('tbmaster_kubikasiplano')
                     ->where('kbp_koderak', $request->value['koderak'][$i])
                     ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
                     ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])->get();
                 if ($opo) {
-                    DB::connection($_SESSION['connection'])->table('tbmaster_kubikasiplano')
+                    DB::connection(Session::get('connection'))->table('tbmaster_kubikasiplano')
                         ->where('kbp_koderak', $request->value['koderak'][$i])
                         ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
                         ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])
@@ -232,9 +232,9 @@ class KubikasiPlanoController extends Controller
 
     public function fillKubikasi()
     {
-        DB::connection($_SESSION['connection'])->insert("INSERT INTO TBMASTER_KUBIKASIPLANO
+        DB::connection(Session::get('connection'))->insert("INSERT INTO TBMASTER_KUBIKASIPLANO
         (KBP_KODERAK, KBP_KODESUBRAK, KBP_SHELVINGRAK, KBP_VOLUMESHELL, KBP_ALLOWANCE, KBP_CREATE_BY, KBP_CREATE_DT)
-        SELECT LKS_KODERAK, LKS_KODESUBRAK, LKS_SHELVINGRAK, 0, 0, '" . $_SESSION['usid'] . "', SYSDATE
+        SELECT LKS_KODERAK, LKS_KODESUBRAK, LKS_SHELVINGRAK, 0, 0, '" . Session::get('usid') . "', SYSDATE
           FROM (SELECT DISTINCT LKS_KODERAK, LKS_KODESUBRAK, LKS_SHELVINGRAK
                            FROM TBMASTER_LOKASI
                           WHERE LKS_KODERAK LIKE '%C'

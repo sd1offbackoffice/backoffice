@@ -54,7 +54,7 @@
 @php
     $globalColor =  '#0b6fc7';
     $globalNavbarColor =  '';
-    if(substr($_SESSION['connection'],0,3) == 'sim' ){
+    if(substr(Session::get('connection'),0,3) == 'sim' ){
         $globalColor =  '#ce1729';
     }
 @endphp
@@ -73,7 +73,7 @@
                 </button>
                 <li class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        @if($_SESSION['usid'] == 'XXX')
+                        @if(Session::get('usid') == 'XXX')
                             <li class="dropdown">
                                 <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
@@ -456,7 +456,7 @@
                             <li class="dropdown" style="position: relative; right:0px;">
                                 <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">{{$_SESSION['usid']}}</a>
+                                   aria-expanded="false">{{Session::get('usid')}}</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a href="{{url("/logout")}}">Logout</a>
                                     </li>
@@ -469,7 +469,7 @@
                                 $tempsubgroup2 = '';
                                 $tempsubgroup3 = '';
                             @endphp
-                            @foreach($_SESSION['menu'] as $m)
+                            @foreach(Session::get('menu') as $m)
                                 @if($tempgroup != $m->acc_group)
                                     @if($tempgroup != '')
                     </ul>
@@ -561,7 +561,7 @@
                 @endif
                 <li><a href="{{url($m->acc_url)}}">{{ $m->acc_name }}</a></li>
                 @endforeach
-                @if(count($_SESSION['menu']) > 0)
+                @if(count(Session::get('menu')) > 0)
                 </ul>
                 </li>
                 @endif
@@ -570,7 +570,7 @@
                 <li class="dropdown" style="position: relative; right:0px;">
                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">{{$_SESSION['usid']}}</a>
+                       aria-expanded="false">{{Session::get('usid')}}</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a href="{{url("/logout")}}">Logout</a>
                         </li>

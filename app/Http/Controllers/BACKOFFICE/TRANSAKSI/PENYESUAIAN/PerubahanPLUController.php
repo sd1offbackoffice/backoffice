@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENYESUAIAN;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,9 +18,9 @@ class PerubahanPLUController extends Controller
     }
 
     public function getDataLov(){
-        $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
-            ->where('prd_kodeigr',$_SESSION['kdigr'])
+            ->where('prd_kodeigr',Session::get('kdigr'))
             ->where('prd_recordid',null)
             ->whereRaw("SUBSTR(prd_prdcd,7,1) = '0'")
             ->orderBy('prd_prdcd')
@@ -32,14 +32,14 @@ class PerubahanPLUController extends Controller
     public function getData(Request $request){
         $prdcd = $request->prdcd;
 
-        $data = DB::connection($_SESSION['connection'])->select("Select prd_deskripsipanjang desk,
+        $data = DB::connection(Session::get('connection'))->select("Select prd_deskripsipanjang desk,
                                 'SATUAN : '||prd_unit||'/'||prd_frac||'  STOK : '||nvl(st_saldoakhir,0) satuan
                                 From tbmaster_prodmast, tbmaster_stock
                                 Where
                                 PRD_PRDCD = '".$prdcd."' AND
                                 PRD_PRDCD = ST_PRDCD(+) AND
                                 ST_LOKASI(+) = '01' AND
-                                PRD_KodeIGR = '".$_SESSION['kdigr']."'");
+                                PRD_KodeIGR = '".Session::get('kdigr')."'");
 
         return response()->json($data[0]);
     }
@@ -52,22 +52,22 @@ class PerubahanPLUController extends Controller
         $updplu = false;
 
         try{
-            DB::connection($_SESSION['connection'])->beginTransaction();
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $dataplulama = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $dataplulama = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
                 ->where('prd_prdcd',$plulama)
                 ->first();
 
-            $dataplubaru = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+            $dataplubaru = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
                 ->where('prd_prdcd',$plubaru)
                 ->first();
 
             if(true){
-                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                     ->where('st_prdcd',$plulama)
-                    ->where('st_kodeigr',$_SESSION['kdigr'])
+                    ->where('st_kodeigr',Session::get('kdigr'))
                     ->where('st_lokasi','01')
                     ->get()->count();
 
@@ -75,9 +75,9 @@ class PerubahanPLUController extends Controller
 
                 }
                 else{
-                    $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                    $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                         ->where('st_prdcd',$plubaru)
-                        ->where('st_kodeigr',$_SESSION['kdigr'])
+                        ->where('st_kodeigr',Session::get('kdigr'))
                         ->where('st_lokasi','01')
                         ->get()->count();
 
@@ -86,8 +86,8 @@ class PerubahanPLUController extends Controller
                     }
                     else{
                         if(true){
-                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
-                                ->where('st_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                ->where('st_kodeigr',Session::get('kdigr'))
                                 ->where('st_recordid',null)
                                 ->where('st_lokasi','01')
                                 ->where('st_prdcd',$plubaru)
@@ -96,10 +96,10 @@ class PerubahanPLUController extends Controller
                             if($temp == 0){
                                 $updplu = true;
 
-                                $data = DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                $data = DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->select('st_lastcost','st_avgcost')
                                     ->where('st_prdcd',$plulama)
-                                    ->where('st_kodeigr',$_SESSION['kdigr'])
+                                    ->where('st_kodeigr',Session::get('kdigr'))
                                     ->where('st_lokasi','01')
                                     ->first();
 
@@ -112,9 +112,9 @@ class PerubahanPLUController extends Controller
                                     $acost = 0;
                                 }
 
-                                DB::connection($_SESSION['connection'])->table('tbmaster_stock')
+                                DB::connection(Session::get('connection'))->table('tbmaster_stock')
                                     ->insert([
-                                        'st_kodeigr' => $_SESSION['kdigr'],
+                                        'st_kodeigr' => Session::get('kdigr'),
                                         'st_prdcd' => $plubaru,
                                         'st_saldoawal' => 0,
                                         'st_trfin' => 0,
@@ -126,238 +126,238 @@ class PerubahanPLUController extends Controller
                                         'st_lokasi' => '01',
                                         'st_lastcost' => $lcost,
                                         'st_avgcost' => $acost,
-                                        'st_create_by' => $_SESSION['usid'],
+                                        'st_create_by' => Session::get('usid'),
                                         'st_create_dt' => DB::RAW("SYSDATE")
                                     ]);
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbmaster_lokasi')
+                            DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
                                 ->where('lks_prdcd',$plulama)
-                                ->where('lks_kodeigr',$_SESSION['kdigr'])
+                                ->where('lks_kodeigr',Session::get('kdigr'))
                                 ->update([
                                     'lks_prdcd' => $plubaru,
-                                    'lks_modify_by' => $_SESSION['usid'],
+                                    'lks_modify_by' => Session::get('usid'),
                                     'lks_modify_dt' => DB::RAW("SYSDATE")
                                 ]);
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
-                                ->where('pkm_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
+                                ->where('pkm_kodeigr',Session::get('kdigr'))
                                 ->where('pkm_prdcd',$plulama)
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
-                                    ->where('pkm_kodeigr',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
+                                    ->where('pkm_kodeigr',Session::get('kdigr'))
                                     ->where('pkm_prdcd',$plubaru)
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                         ->where('pkm_prdcd',$plulama)
-                                        ->where('pkm_kodeigr',$_SESSION['kdigr'])
+                                        ->where('pkm_kodeigr',Session::get('kdigr'))
                                         ->delete();
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_kkpkm')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
                                         ->where('pkm_prdcd',$plulama)
-                                        ->where('pkm_kodeigr',$_SESSION['kdigr'])
+                                        ->where('pkm_kodeigr',Session::get('kdigr'))
                                         ->update([
                                             'pkm_prdcd' => $plubaru,
-                                            'pkm_modify_by' => $_SESSION['usid'],
+                                            'pkm_modify_by' => Session::get('usid'),
                                             'pkm_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
-                                ->where('pkmp_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+                                ->where('pkmp_kodeigr',Session::get('kdigr'))
                                 ->where('pkmp_prdcd',$plulama)
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
-                                    ->where('pkmp_kodeigr',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+                                    ->where('pkmp_kodeigr',Session::get('kdigr'))
                                     ->where('pkmp_prdcd',$plubaru)
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
-                                        ->where('pkmp_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+                                        ->where('pkmp_kodeigr',Session::get('kdigr'))
                                         ->where('pkmp_prdcd',$plulama)
                                         ->delete();
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_pkmplus')
-                                        ->where('pkmp_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+                                        ->where('pkmp_kodeigr',Session::get('kdigr'))
                                         ->where('pkmp_prdcd',$plulama)
                                         ->update([
                                             'pkmp_prdcd' => $plubaru,
-                                            'pkmp_modify_by' => $_SESSION['usid'],
+                                            'pkmp_modify_by' => Session::get('usid'),
                                             'pkmp_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
-                                ->where('pkmg_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
+                                ->where('pkmg_kodeigr',Session::get('kdigr'))
                                 ->where('pkmg_prdcd',$plulama)
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
-                                    ->where('pkmg_kodeigr',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
+                                    ->where('pkmg_kodeigr',Session::get('kdigr'))
                                     ->where('pkmg_prdcd',$plubaru)
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
-                                        ->where('pkmg_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
+                                        ->where('pkmg_kodeigr',Session::get('kdigr'))
                                         ->where('pkmg_prdcd',$plulama)
                                         ->delete();
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbtr_pkmgondola')
-                                        ->where('pkmg_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
+                                        ->where('pkmg_kodeigr',Session::get('kdigr'))
                                         ->where('pkmg_prdcd',$plulama)
                                         ->update([
                                             'pkmg_prdcd' => $plubaru,
-                                            'pkmg_modify_by' => $_SESSION['usid'],
+                                            'pkmg_modify_by' => Session::get('usid'),
                                             'pkmg_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
-                                ->where('gdl_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
+                                ->where('gdl_kodeigr',Session::get('kdigr'))
                                 ->where('gdl_prdcd',$plulama)
                                 ->where('gdl_recordid',null)
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbtr_gondola')
-                                    ->where('gdl_kodeigr',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
+                                    ->where('gdl_kodeigr',Session::get('kdigr'))
                                     ->where('gdl_prdcd',$plubaru)
                                     ->where('gdl_recordid',null)
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
-                                        ->where('gdl_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbtr_gondola')
+                                        ->where('gdl_kodeigr',Session::get('kdigr'))
                                         ->where('gdl_prdcd',$plulama)
                                         ->where('gdl_recordid',null)
                                         ->update([
                                             'gdl_recordid' => '1',
-                                            'gdl_modify_by' => $_SESSION['usid'],
+                                            'gdl_modify_by' => Session::get('usid'),
                                             'gdl_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbtr_gondola')
-                                        ->where('gdl_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbtr_gondola')
+                                        ->where('gdl_kodeigr',Session::get('kdigr'))
                                         ->where('gdl_prdcd',$plulama)
                                         ->where('gdl_recordid',null)
                                         ->update([
                                             'gdl_prdcd' => $plubaru,
-                                            'gdl_modify_by' => $_SESSION['usid'],
+                                            'gdl_modify_by' => Session::get('usid'),
                                             'gdl_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
-                                ->where('min_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
+                                ->where('min_kodeigr',Session::get('kdigr'))
                                 ->where('min_prdcd',$plulama)
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
-                                    ->where('min_kodeigr',$_SESSION['kdigr'])
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
+                                    ->where('min_kodeigr',Session::get('kdigr'))
                                     ->where('min_prdcd',$plubaru)
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
-                                        ->where('min_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
+                                        ->where('min_kodeigr',Session::get('kdigr'))
                                         ->where('min_prdcd',$plulama)
                                         ->delete();
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_minimumorder')
-                                        ->where('min_kodeigr',$_SESSION['kdigr'])
+                                    DB::connection(Session::get('connection'))->table('tbmaster_minimumorder')
+                                        ->where('min_kodeigr',Session::get('kdigr'))
                                         ->where('min_prdcd',$plulama)
                                         ->update([
                                             'min_prdcd' => $plubaru,
-                                            'min_modify_by' => $_SESSION['usid'],
+                                            'min_modify_by' => Session::get('usid'),
                                             'min_modify_dt' => DB::RAW("SYSDATE")
                                         ]);
                                 }
                             }
 
-                            DB::connection($_SESSION['connection'])->table('tbtr_promomd')
+                            DB::connection(Session::get('connection'))->table('tbtr_promomd')
                                 ->where('prmd_prdcd',$plulama)
-                                ->where('prmd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prmd_kodeigr',Session::get('kdigr'))
                                 ->update([
                                     'prmd_prdcd' => substr($plubaru,0,6).substr($plulama,-1),
-                                    'prmd_modify_by' => $_SESSION['usid'],
+                                    'prmd_modify_by' => Session::get('usid'),
                                     'prmd_modify_dt' => DB::RAW("SYSDATE")
                                 ]);
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                            $temp = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                                 ->where('kvp_pluold',$plulama)
                                 ->where('kvp_plunew',$plubaru)
-                                ->where('kvp_kodeigr',$_SESSION['kdigr'])
+                                ->where('kvp_kodeigr',Session::get('kdigr'))
                                 ->get()->count();
 
                             if($temp == 0){
-                                $konl = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $konl = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->select('prd_frac')
                                     ->where('prd_prdcd',$plulama)
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_recordid',null)
                                     ->first()->prd_frac;
 
-                                $konb = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                $konb = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                     ->select('prd_frac')
                                     ->where('prd_prdcd',$plubaru)
-                                    ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
                                     ->where('prd_recordid',null)
                                     ->first()->prd_frac;
 
-                                DB::connection($_SESSION['connection'])->table('tbtr_konversiplu')
+                                DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
                                     ->insert([
-                                        'kvp_kodeigr' => $_SESSION['kdigr'],
+                                        'kvp_kodeigr' => Session::get('kdigr'),
                                         'kvp_pluold' => $plulama,
                                         'kvp_plunew' => $plubaru,
                                         'kvp_kodetipe' => 'N',
                                         'kvp_tgl' => DB::RAW("SYSDATE"),
                                         'kvp_konversiold' => $konl,
                                         'kvp_konversinew' => $konb,
-                                        'kvp_create_by' => $_SESSION['usid'],
+                                        'kvp_create_by' => Session::get('usid'),
                                         'kvp_create_dt' => DB::RAW("SYSDATE")
                                     ]);
                             }
 
-                            $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
-                                ->where('pln_kodeigr',$_SESSION['kdigr'])
+                            $temp = DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
+                                ->where('pln_kodeigr',Session::get('kdigr'))
                                 ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plulama,0,6)."'")
                                 ->get()->count();
 
                             if($temp > 0){
-                                $temp = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
+                                $temp = DB::connection(Session::get('connection'))->table('tbhistory_barangbaru')
                                     ->whereRaw("SUBSTR(hpn_prdcd,1,6) = '".substr($plulama,0,6)."'")
-                                    ->where('hpn_kodeigr',$_SESSION['kdigr'])
+                                    ->where('hpn_kodeigr',Session::get('kdigr'))
                                     ->get()->count();
 
                                 if($temp == 0){
-//                                    $data = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
-//                                        ->where('pln_kodeigr',$_SESSION['kdigr'])
+//                                    $data = DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
+//                                        ->where('pln_kodeigr',Session::get('kdigr'))
 //                                        ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plulama,0,6)."'")
 //                                        ->first()->toArray();
 //
-//                                    DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
+//                                    DB::connection(Session::get('connection'))->table('tbhistory_barangbaru')
 //                                        ->insert($data);
 
-                                    DB::connection($_SESSION['connection'])->statement("INSERT INTO TBHISTORY_BARANGBARU
+                                    DB::connection(Session::get('connection'))->statement("INSERT INTO TBHISTORY_BARANGBARU
                                                 (HPN_KODEIGR, HPN_PRDCD, HPN_PKMTOKO, HPN_KODETAG,
                                                  HPN_TGLPENERIMAANBRG, HPN_TGLDAFTAR, HPN_CREATE_BY,
                                                  HPN_CREATE_DT, HPN_MODIFY_BY, HPN_MODIFY_DT)
@@ -366,28 +366,28 @@ class PerubahanPLUController extends Controller
                                                             PLN_MODIFY_DT
                                                        FROM TBMASTER_BARANGBARU
                                                       WHERE SUBSTR (PLN_PRDCD, 1, 6) = SUBSTR ('".$plulama."', 1, 6)
-                                                        AND PLN_KODEIGR = '".$_SESSION['kdigr']."')");
+                                                        AND PLN_KODEIGR = '".Session::get('kdigr')."')");
                                 }
 
-                                DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
-                                    ->where('pln_kodeigr',$_SESSION['kdigr'])
+                                DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
+                                    ->where('pln_kodeigr',Session::get('kdigr'))
                                     ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plulama,0,6)."'")
                                     ->delete();
                             }
                             else{
-                                $temp = DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
+                                $temp = DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
                                     ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plubaru,0,6)."'")
-                                    ->where('pln_kodeigr',$_SESSION['kdigr'])
+                                    ->where('pln_kodeigr',Session::get('kdigr'))
                                     ->get()->count();
 
                                 if($temp > 0){
-                                    $temp = DB::connection($_SESSION['connection'])->table('tbhistory_barangbaru')
+                                    $temp = DB::connection(Session::get('connection'))->table('tbhistory_barangbaru')
                                         ->whereRaw("SUBSTR(hpn_prdcd,1,6) = '".substr($plubaru,0,6)."'")
-                                        ->where('hpn_kodeigr',$_SESSION['kdigr'])
+                                        ->where('hpn_kodeigr',Session::get('kdigr'))
                                         ->get()->count();
 
                                     if($temp == 0){
-                                        DB::connection($_SESSION['connection'])->statement("INSERT INTO TBHISTORY_BARANGBARU
+                                        DB::connection(Session::get('connection'))->statement("INSERT INTO TBHISTORY_BARANGBARU
                                             (HPN_KODEIGR, HPN_PRDCD, HPN_PKMTOKO, HPN_KODETAG,
                                              HPN_TGLPENERIMAANBRG, HPN_TGLDAFTAR, HPN_CREATE_BY,
                                              HPN_CREATE_DT, HPN_MODIFY_BY, HPN_MODIFY_DT)
@@ -396,20 +396,20 @@ class PerubahanPLUController extends Controller
                                             PLN_MODIFY_BY, PLN_MODIFY_DT
                                        FROM TBMASTER_BARANGBARU
                                       WHERE SUBSTR (PLN_PRDCD, 1, 6) = SUBSTR ('".$plubaru."', 1, 6)
-                                        AND PLN_KODEIGR = '".$_SESSION['kdigr']."')");
+                                        AND PLN_KODEIGR = '".Session::get('kdigr')."')");
                                     }
 
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_barangbaru')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_barangbaru')
                                         ->whereRaw("SUBSTR(pln_prdcd,1,6) = '".substr($plubaru,0,6)."'")
-                                        ->where('pln_kodeigr',$_SESSION['kdigr'])
+                                        ->where('pln_kodeigr',Session::get('kdigr'))
                                         ->delete();
                                 }
                             }
 
-                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->select('prd_lastcost','prd_avgcost')
                                 ->where('prd_prdcd',$plubaru)
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_recordid',null)
                                 ->first();
 
@@ -422,10 +422,10 @@ class PerubahanPLUController extends Controller
                                 $updplu = true;
                             }
 
-                            $data = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->select('prd_lastcost','prd_avgcost')
                                 ->where('prd_prdcd',substr($plulama,0,6).'1')
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_recordid',null)
                                 ->first();
 
@@ -434,51 +434,51 @@ class PerubahanPLUController extends Controller
                                 $prdavg = $data->prd_avgcost;
                             }
 
-                            $records2 = DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                            $records2 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->select('prd_prdcd','prd_unit','prd_frac')
                                 ->whereRaw("SUBSTR(prd_prdcd,1,6) = '".substr($plubaru,0,6)."'")
-                                ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->get();
 
                             foreach($records2 as $rec2){
                                 if(substr($rec2->prd_prdcd, -1) == '1' || $rec2->prd_unit == 'KG'){
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->where('prd_prdcd',$rec2->prd_prdcd)
-                                        ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                        ->where('prd_kodeigr',Session::get('kdigr'))
                                         ->update([
                                             'prd_lastcost' => $prdlast,
                                             'prd_avgcost' => $prdavg
                                         ]);
 
                                     if($updplu){
-                                        DB::connection($_SESSION['connection'])->table('tbtr_update_plu_md')
+                                        DB::connection(Session::get('connection'))->table('tbtr_update_plu_md')
                                             ->insert([
-                                                'upd_kodeigr' => $_SESSION['kdigr'],
+                                                'upd_kodeigr' => Session::get('kdigr'),
                                                 'upd_prdcd' => $rec2->prd_prdcd,
                                                 'upd_harga' => $prdlast,
                                                 'upd_atribute1' => 'MPP2',
-                                                'upd_create_by' => $_SESSION['usid'],
+                                                'upd_create_by' => Session::get('usid'),
                                                 'upd_create_dt' => DB::RAW("SYSDATE")
                                             ]);
                                     }
                                 }
                                 else{
-                                    DB::connection($_SESSION['connection'])->table('tbmaster_prodmast')
+                                    DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                         ->where('prd_prdcd',$rec2->prd_prdcd)
-                                        ->where('prd_kodeigr',$_SESSION['kdigr'])
+                                        ->where('prd_kodeigr',Session::get('kdigr'))
                                         ->update([
                                             'prd_lastcost' => $prdlast * $rec2->prd_frac,
                                             'prd_avgcost' => $prdavg * $rec2->prd_frac
                                         ]);
 
                                     if($updplu){
-                                        DB::connection($_SESSION['connection'])->table('tbtr_update_plu_md')
+                                        DB::connection(Session::get('connection'))->table('tbtr_update_plu_md')
                                             ->insert([
-                                                'upd_kodeigr' => $_SESSION['kdigr'],
+                                                'upd_kodeigr' => Session::get('kdigr'),
                                                 'upd_prdcd' => $rec2->prd_prdcd,
                                                 'upd_harga' => $prdlast * $rec2->prd_frac,
                                                 'upd_atribute1' => 'MPP2',
-                                                'upd_create_by' => $_SESSION['usid'],
+                                                'upd_create_by' => Session::get('usid'),
                                                 'upd_create_dt' => DB::RAW("SYSDATE")
                                             ]);
                                     }
@@ -489,11 +489,11 @@ class PerubahanPLUController extends Controller
                 }
             }
 
-//            DB::connection($_SESSION['connection'])->commit();
+//            DB::connection(Session::get('connection'))->commit();
 
-            $_SESSION['pys_dataplulama'] = $dataplulama;
-            $_SESSION['pys_dataplubaru'] = $dataplubaru;
-            $_SESSION['pys_ukuran'] = $ukuran;
+            Session::put('pys_dataplulama',$dataplulama);
+            Session::put('pys_dataplubaru',$dataplubaru);
+            Session::put('pys_ukuran',$ukuran);
 
             $status = 'success';
             $title = 'Berhasil melakukan perubahan PLU!';
@@ -502,7 +502,7 @@ class PerubahanPLUController extends Controller
             return compact(['status','title','message']);
         }
         catch(QueryException $e){
-            DB::connection($_SESSION['connection'])->rollBack();
+            DB::connection(Session::get('connection'))->rollBack();
 
             $status = 'error';
             $title = 'Gagal melakukan perubahan PLU!';
@@ -513,11 +513,11 @@ class PerubahanPLUController extends Controller
     }
 
     public function laporan(){
-        $plulama = $_SESSION['pys_dataplulama'];
-        $plubaru = $_SESSION['pys_dataplubaru'];
-        $ukuran = $_SESSION['pys_ukuran'];
+        $plulama = Session::get('pys_dataplulama');
+        $plubaru = Session::get('pys_dataplubaru');
+        $ukuran = Session::get('pys_ukuran');
 
-        $perusahaan = DB::connection($_SESSION['connection'])->table('tbmaster_perusahaan')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
