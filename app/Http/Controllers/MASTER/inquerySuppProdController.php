@@ -13,7 +13,7 @@ class inquerySuppProdController extends Controller
     {
         $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_prdcd')
             ->limit(1000)
             ->get();

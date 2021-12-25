@@ -165,7 +165,7 @@ class InputPertemananController extends Controller
                     'pla_koderak' => $koderak,
                     'pla_subrak' => '01',
                     'pla_create_by' => Session::get('usid'),
-                    'pla_create_dt' => DB::RAW("SYSDATE"),
+                    'pla_create_dt' => Carbon::now(),
                 ]);
 
             return response()->json([
@@ -203,7 +203,7 @@ class InputPertemananController extends Controller
                     'pla_koderak' => $koderak,
                     'pla_subrak' => $subrak,
                     'pla_create_by' => Session::get('usid'),
-                    'pla_create_dt' => DB::RAW("SYSDATE"),
+                    'pla_create_dt' => Carbon::now(),
                 ]);
 
             return response()->json([
@@ -299,7 +299,7 @@ class InputPertemananController extends Controller
                         'pla_koderak' => $plano2['pla_koderak'],
                         'pla_subrak' => $plano2['pla_subrak'],
                         'pla_modify_by' => Session::get('usid'),
-                        'pla_modify_dt' => DB::RAW("SYSDATE")
+                        'pla_modify_dt' => Carbon::now()
                     ]);
 
                 DB::connection(Session::get('connection'))->table('tbmaster_plano')
@@ -309,7 +309,7 @@ class InputPertemananController extends Controller
                         'pla_koderak' => $plano1['pla_koderak'],
                         'pla_subrak' => $plano1['pla_subrak'],
                         'pla_modify_by' => Session::get('usid'),
-                        'pla_modify_dt' => DB::RAW("SYSDATE")
+                        'pla_modify_dt' => Carbon::now()
                     ]);
             }
             else{
@@ -319,7 +319,7 @@ class InputPertemananController extends Controller
                     ->update([
                         'pla_nourut' => $plano2['pla_nourut'],
                         'pla_modify_by' => Session::get('usid'),
-                        'pla_modify_dt' => DB::RAW("SYSDATE")
+                        'pla_modify_dt' => Carbon::now()
                     ]);
 
                 DB::connection(Session::get('connection'))->table('tbmaster_plano')
@@ -328,7 +328,7 @@ class InputPertemananController extends Controller
                     ->update([
                         'pla_nourut' => $plano1['pla_nourut'],
                         'pla_modify_by' => Session::get('usid'),
-                        'pla_modify_dt' => DB::RAW("SYSDATE")
+                        'pla_modify_dt' => Carbon::now()
                     ]);
 
                 DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_PLANO B

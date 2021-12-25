@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PERUBAHANSTATUS;
 
 use App\Http\Controllers\Auth\loginController;
+use Carbon\Carbon;
+use DateTime;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
@@ -202,28 +204,69 @@ class rubahStatusController extends Controller
 
     public function chooseSrt(Request $request){
         $kode = $request->kode;
-
-        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
-            ->selectRaw('SRT_NOSORTIR')
-            ->selectRaw('SRT_TGLSORTIR')
-            ->selectRaw('SRT_FLAGDISC3')
-            ->selectRaw('srt_gudangtoko')
-            ->selectRaw('SRT_PRDCD')
-            ->selectRaw('SRT_QTYKARTON')
-            ->selectRaw('SRT_QTYPCS')
-            ->selectRaw('SRT_HRGSATUAN')
-            ->selectRaw('prd_deskripsipanjang')
-            ->selectRaw('prd_frac')
-            ->selectRaw('prd_unit')
-            ->selectRaw('prd_perlakuanbarang')
-            ->selectRaw('HGB_STATUSBARANG')
-            ->selectRaw('SUP_FLAGPENANGANANPRODUK')
-            ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'srt_prdcd')
-            ->leftJoin('TBMASTER_HARGABELI','HGB_PRDCD','SRT_PRDCD')
-            ->leftJoin('TBMASTER_SUPPLIER','SUP_KODESUPPLIER','HGB_KODESUPPLIER')
-            ->where('SRT_NOSORTIR', $kode)
-            ->where('HGB_TIPE','=','2')
-            ->get();
+        $kodeigr= Session::get('kdigr');
+//        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
+//            ->selectRaw('SRT_NOSORTIR')
+//            ->selectRaw('SRT_TGLSORTIR')
+//            ->selectRaw('SRT_FLAGDISC3')
+//            ->selectRaw('srt_gudangtoko')
+//            ->selectRaw('SRT_PRDCD')
+//            ->selectRaw('SRT_QTYKARTON')
+//            ->selectRaw('SRT_QTYPCS')
+//            ->selectRaw('SRT_HRGSATUAN')
+//            ->selectRaw('prd_deskripsipanjang')
+//            ->selectRaw('prd_frac')
+//            ->selectRaw('prd_unit')
+//            ->selectRaw('prd_perlakuanbarang')
+//            ->selectRaw('HGB_STATUSBARANG')
+//            ->selectRaw('SUP_FLAGPENANGANANPRODUK')
+//            ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'srt_prdcd')
+//            ->leftJoin('TBMASTER_HARGABELI','HGB_PRDCD','SRT_PRDCD')
+//            ->leftJoin('TBMASTER_SUPPLIER','SUP_KODESUPPLIER','HGB_KODESUPPLIER')
+//            ->where('SRT_NOSORTIR', $kode)
+//            ->where('HGB_TIPE','=','2')
+//            ->get();
+        $datas = DB::connection(Session::get('connection'))->select("SELECT SRT_NOSORTIR, SRT_TGLSORTIR, SRT_KODESUPPLIER, SRT_PKP, SRT_PRDCD, SRT_SEQNO,
+               SRT_KODEDIVISI, SRT_KODEDEPARTEMENT, SRT_KODEKATEGORIBARANG, SRT_QTYKARTON,
+               SRT_QTYPCS, SRT_UNIT || '/' || SRT_FRAC, SRT_FRAC, SRT_UNIT, SRT_BKP, SRT_HRGSATUAN,
+               SRT_TTLHRG, SRT_GUDANGTOKO, PRD_DESKRIPSIPANJANG, 'B' AS DARI,
+               CASE
+                   WHEN HGB_STATUSBARANG = 'PT'
+                       THEN 'R'
+                   ELSE CASE
+                   WHEN HGB_STATUSBARANG = 'RT'
+                       THEN 'T'
+                   ELSE CASE
+                   WHEN HGB_STATUSBARANG = 'TG'
+                       THEN 'T'
+                   ELSE CASE
+                   WHEN SUP_FLAGPENANGANANPRODUK = 'PT'
+                       THEN 'R'
+                   ELSE CASE
+                   WHEN SUP_FLAGPENANGANANPRODUK = 'RT'
+                       THEN 'T'
+                   ELSE CASE
+                   WHEN SUP_FLAGPENANGANANPRODUK = 'TG'
+                       THEN 'T'
+                   ELSE ''
+               END
+               END
+               END
+               END
+               END
+               END AS KE
+          FROM TBTR_SORTIR_BARANG, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_HARGABELI
+         WHERE SRT_KODEIGR = '$kodeigr'
+           AND SRT_TYPE = 'S'
+           AND SRT_NOSORTIR = '$kode'
+           AND PRD_KODEIGR = SRT_KODEIGR
+           AND PRD_PRDCD = SRT_PRDCD
+           AND HGB_KODEIGR = SRT_KODEIGR
+           AND HGB_PRDCD = SRT_PRDCD
+           AND HGB_TIPE = '2'
+           AND SUP_KODEIGR = SRT_KODEIGR
+           AND SUP_KODESUPPLIER = HGB_KODESUPPLIER
+           AND NVL (SRT_QTYKARTON + SRT_QTYPCS, 0) > 0");
 
 //        $test = DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->limit(10)->get()->toArray();
 //        dd($datas);
@@ -249,9 +292,9 @@ class rubahStatusController extends Controller
             $userid = Session::get('usid');
             $kodeigr = Session::get('kdigr');
             $flagretur = $this->flag_retur;
-            $today  = date('Y-m-d H:i:s');
-            $tglDoc = date("Y-d-m", strtotime($request->tglDoc));
-            $tglSort = date("Y-d-m", strtotime($request->tglSort));
+            $today  = Carbon::now();
+            $tglDoc = DateTime::createFromFormat('d/m/Y',$request->tglDoc)->format('d/m/Y');
+            $tglSort = DateTime::createFromFormat('d/m/Y',$request->tglSort)->format('d/m/Y');
             $case = 0;
             $checker = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                 ->selectRaw('MSTD_TGLDOC')
@@ -565,8 +608,9 @@ class rubahStatusController extends Controller
                          5,
                          TRUE);END;");
                             oci_bind_by_name($query, ':ret', $result, 32);
+                            oci_execute($query);
+                            $dokumen = $result;
 
-                            $dokumen = oci_execute($query);
                             $this->nomor_retur = $dokumen;
                             $this->flag_retur = 'Y';
                         }
@@ -633,8 +677,8 @@ class rubahStatusController extends Controller
                          TRUE);END;");
                             oci_bind_by_name($query, ':ret', $result, 32);
 
-                            $dokumen = oci_execute($query);
-
+                            oci_execute($query);
+                            $dokumen = $result;
                             $this->nomor_putus = $dokumen;
                             $this->flag_putus = 'Y';
                         }
@@ -682,8 +726,8 @@ class rubahStatusController extends Controller
 
                     DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_H')
                         ->insert(['MSTH_KODEIGR' => $kodeigr, 'MSTH_TYPETRN' => 'Z', 'MSTH_NODOC' => $dokumen,
-                            'MSTH_TGLDOC' => $tglDoc, 'MSTH_NOPO' => $noDoc, 'MSTH_TGLPO' => $today, 'MSTH_NOFAKTUR' => $noSort,
-                            'MSTH_TGLFAKTUR' => $tglSort, 'MSTH_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTH_PKP' => $sortData->srt_pkp,
+                            'MSTH_TGLDOC' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglDoc."','dd/mm/yyyy')"), 'MSTH_NOPO' => $noDoc, 'MSTH_TGLPO' => $today, 'MSTH_NOFAKTUR' => $noSort,
+                            'MSTH_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglSort."','dd/mm/yyyy')"), 'MSTH_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTH_PKP' => $sortData->srt_pkp,
                             'MSTH_KETERANGAN_HEADER' => $txtKeterangan, 'MSTH_FLAGDOC' => '1', 'MSTH_CREATE_BY' => $userid, 'MSTH_CREATE_DT' => $today]);
                 }
 
@@ -843,8 +887,8 @@ class rubahStatusController extends Controller
                      5,
                      TRUE);END;");
                     oci_bind_by_name($query, ':ret', $result, 32);
-
-                    $dokumen = oci_execute($query);
+                    oci_execute($query);
+                    $dokumen = $result;
                     $this->flagisi = 'N';
                 }
 
@@ -872,7 +916,7 @@ class rubahStatusController extends Controller
 
                     DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                         ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $crDate,
-                            'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $crDate, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
+                            'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $crDate, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglSort."','dd/mm/yyyy')"),
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
                             'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
                             'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
@@ -889,8 +933,8 @@ class rubahStatusController extends Controller
 
                 }else{
                     DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
-                        ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $tglDoc,
-                            'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $tglDoc, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => $tglSort,
+                        ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglDoc."','dd/mm/yyyy')"),
+                            'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglDoc."','dd/mm/yyyy')"), 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglSort."','dd/mm/yyyy')"),
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
                             'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
                             'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
@@ -905,21 +949,51 @@ class rubahStatusController extends Controller
                             'MSTD_CREATE_BY' => $userid, 'MSTD_CREATE_DT' => $today, 'MSTD_MODIFY_BY' => null, 'MSTD_MODIFY_DT' => null]);
 
                 }
-            }DB::connection(Session::get('connection'))->commit();return response()->json(['kode' => 1, 'msg' => $noDoc]);
+            }DB::connection(Session::get('connection'))->commit();
+            return response()->json(['kode' => 1, 'msg' => $noDoc]);
         }
         catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
             // do task when error
             //echo $e->getMessage();   // insert query
             return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
         }
 
     }
+    public function checkDocument(Request $request){
+        $noDoc      = $request->noDoc;
+        $kodeigr = Session::get('kdigr');
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT MSTD_FLAGDISC4
+                                    from TBTR_MSTRAN_H,  TBTR_MSTRAN_D
+                                    where MSTH_KODEIGR = '$kodeigr'
+                                            AND MSTH_NOPO = '$noDoc'
+                                            AND MSTD_KODEIGR = MSTH_KODEIGR
+                                            AND MSTD_NOPO = MSTH_NOPO
+                                            AND MSTD_NODOC = MSTH_NODOC
+                                    order by MSTH_NODOC
+");
+        $barangRusak = "false";
+        $barangRetur = "false";
+        $perubahanStatus = "false";
+        for($i=0;$i<sizeof($datas);$i++){
+            if($datas[$i]->mstd_flagdisc4 == 'A'){
+                $barangRetur = "true";
+            }
+            if($datas[$i]->mstd_flagdisc4 == 'B'){
+                $barangRusak = "true";
+            }
+            if($datas[$i]->mstd_flagdisc4 == 'C'){
+                $perubahanStatus = "true";
+            }
+        }
+        return response()->json(['barangrusak' => $barangRusak, 'barangretur' => $barangRetur, 'perubahanstatus' => $perubahanStatus]);
+    }
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
+        $page       = $request->page;
         $kodeigr = Session::get('kdigr');
         $P_FLAG = '1';
-
-        $today  = date('Y-m-d');
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_NOFAKTUR, MSTH_KETERANGAN_HEADER,
                                         MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_FLAGDISC4,
@@ -971,14 +1045,20 @@ class rubahStatusController extends Controller
 
         DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.RubahStatus-laporan', ['datas' => $datas, 'today' => $today]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-        return $pdf->stream('RubahStatus-laporan.pdf');
+        $today  = date('d-m-Y H:i:s');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        if($page == 'barangrusak'){
+            return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.rubah-status-barang-rusak-laporan',
+                ['data' => $datas, 'perusahaan' => $perusahaan]);
+        }elseif($page == 'barangretur'){
+            return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.rubah-status-barang-retur-laporan',
+                ['data' => $datas, 'perusahaan' => $perusahaan]);
+        }elseif($page == 'perubahanstatus'){
+            return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.rubah-status-perubahan-status-laporan',
+                ['data' => $datas, 'perusahaan' => $perusahaan]);
+        }else{
+            return view('errors.404');
+        }
     }
 
     public function checkRak(Request $request){
@@ -1009,15 +1089,9 @@ class rubahStatusController extends Controller
                                 WHERE KODEIGR = '$kodeigr' AND NODOC = '$noDoc'
                                 AND PRS_KODEIGR = KODEIGR
 ");
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.RubahStatusRak-laporan', ['datas' => $datas, 'today' => $today]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-
-        return $pdf->stream('RubahStatusRak-laporan.pdf');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.rubah-status-rak-laporan',
+            ['data' => $datas, 'perusahaan' => $perusahaan]);
 
     }
 }

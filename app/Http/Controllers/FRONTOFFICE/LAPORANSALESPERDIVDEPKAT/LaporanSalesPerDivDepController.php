@@ -74,7 +74,7 @@ class LaporanSalesPerDivDepController extends Controller
         }
 
         $dataDivGroup = DB::connection(Session::get('connection'))
-            ->select("select kodedivisi,namadivisi nama,sum(round(margin/sales*100,2)) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
+            ->select("select kodedivisi,namadivisi nama,round(sum(margin)/sum(sales)*100,2) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
                                     select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,

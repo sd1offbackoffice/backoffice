@@ -13,6 +13,7 @@ use PDF;
 use XBase\TableReader;
 use Yajra\DataTables\DataTables;
 use File;
+use ZipArchive;
 
 class ReturController extends Controller
 {
@@ -29,10 +30,10 @@ class ReturController extends Controller
 
         $nomorEdit = '';
 
-        foreach($recs as $rec){
+        foreach($recs as $idx => $rec){
             $nomorEdit .= $rec->rom_nodokumen;
 
-            if(!array_key_last($rec))
+            if($idx !== array_key_last($recs))
                 $nomorEdit .= ', ';
         }
 
@@ -198,7 +199,7 @@ class ReturController extends Controller
             $data = DB::connection(Session::get('connection'))->table('tbtr_returomi')
                 ->join('tbmaster_prodmast','prd_prdcd','=','rom_prdcd')
                 ->leftJoin('tbhistory_hargastrukomi',function($join){
-                    $join->on('hso_prdcd','=',DB::RAW("substr(rom_prdcd,1,6) || '1'"));
+                    $join->on('hso_prdcd','=',DB::connection(Session::get('connection'))->raw("substr(rom_prdcd,1,6) || '1'"));
                     $join->on('hso_kodeigr','=','rom_kodeigr');
                     $join->on('hso_kodemember','=','rom_member');
                 })
@@ -485,13 +486,13 @@ class ReturController extends Controller
 
                 if($new){
                     $ins['rom_create_by'] = Session::get('usid');
-                    $ins['rom_create_dt'] = DB::RAW("sysdate");
+                    $ins['rom_create_dt'] = Carbon::now();
                 }
                 else{
                     $ins['rom_create_by'] = $create_by;
                     $ins['rom_create_dt'] = $create_dt;
                     $ins['rom_modify_by'] = Session::get('usid');
-                    $ins['rom_modify_dt'] = DB::RAW("sysdate");
+                    $ins['rom_modify_dt'] = Carbon::now();
                 }
 
                 if($request->typeRetur == 'M'){
@@ -523,10 +524,10 @@ class ReturController extends Controller
                 $ins['rom_ttlnilai'] = 0;
                 $ins['rom_kodeigr'] = Session::get('kdigr');
                 $ins['rom_nodokumen'] = $request->nodokumen;
-                $ins['rom_tgldokumen'] = DB::RAW("to_date('".$request->tgldokumen."','dd/mm/yyyy')");
-                $ins['rom_tgljatuhtempo'] = DB::RAW("to_date('".$request->tgldokumen."','dd/mm/yyyy') +".$top);
+                $ins['rom_tgldokumen'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldokumen."','dd/mm/yyyy')");
+                $ins['rom_tgljatuhtempo'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldokumen."','dd/mm/yyyy') +".$top);
                 $ins['rom_noreferensi'] = $request->noreferensi;
-                $ins['rom_tglreferensi'] = DB::RAW("to_date('".$request->tglreferensi."','dd/mm/yyyy')");
+                $ins['rom_tglreferensi'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tglreferensi."','dd/mm/yyyy')");
                 $ins['rom_kodetoko'] = $request->kodetoko;
                 $ins['rom_member'] = $request->kodemember;
                 $ins['rom_prdcd'] = $d['rom_prdcd'];
@@ -1553,7 +1554,7 @@ class ReturController extends Controller
                                     'rom_kodekasir' => 'SOS',
                                     'rom_staton' => '99',
                                     'rom_jenistransaksi' => $dokdriver,
-                                    'rom_tgltransaksi' => DB::RAW("SYSDATE")
+                                    'rom_tgltransaksi' => Carbon::now()
                                 ]);
                         }
                     }
@@ -1690,7 +1691,7 @@ class ReturController extends Controller
                                  ".$rpretur.",
                                  ".$rpretur." - ".$ppnretur.",
                                  ".$ppnretur.",
-                                 ".DB::RAW("SYSDATE + ".intval($top)).",
+                                 ".DB::connection(Session::get('connection'))->raw("SYSDATE + ".intval($top)).",
                                  '".Session::get('usid')."',
                                  SYSDATE,
                                  0,
@@ -2387,7 +2388,45 @@ ORDER BY rom_nodokumen, rom_prdcd");
     public function transferFileR(Request $request){
         set_time_limit(0);
 
+        $isZip = false;
         $fileR = $request->file('fileR');
+
+        if(strtoupper($fileR->getClientOriginalExtension()) === 'ZIP'){
+            File::delete(public_path('RETUROMI'));
+
+            $zip = new ZipArchive;
+
+            $list = [];
+
+            if ($zip->open($fileR) === TRUE) {
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $entry = $zip->getNameIndex($i);
+                    $list[] = $entry;
+                }
+
+                $zip->extractTo(public_path('RETUROMI'));
+                $zip->close();
+            } else {
+                $status = 'error';
+                $alert = 'Terjadi kesalahan!';
+                $message = 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!';
+
+                return compact(['status', 'alert', 'message']);
+            }
+
+            $temp = File::files(public_path('RETUROMI'));
+
+            if(count($temp) != 1){
+                return response()->json([
+                    'message' => 'File zip hanya boleh berisi satu file saja!',
+                    'status' => 'error'
+                ], 500);
+            }
+            else{
+                $isZip = true;
+                $fileR = $temp[0];
+            }
+        }
 
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
@@ -2398,7 +2437,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
 //            dd($sesiproc);
 
-            $v_filename = substr($fileR->getClientOriginalName(), 0, 8).'.DBF';
+            $v_filename = substr($isZip ? $fileR->getFilename() : $fileR->getClientOriginalName(), 0, 8).'.DBF';
             $v_file = $fileR;
 
 //            $pdo = DB::getPdo();
@@ -2415,7 +2454,6 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
             $insert = [];
 
-
             while($recs = $dataFileR->nextRecord()){
                 $temp = [];
                 $temp['RECID'] = $recs->get('recid');
@@ -2424,7 +2462,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 $temp['LOKASI'] = $recs->get('lokasi');
                 $temp['RTYPE'] = $recs->get('rtype');
                 $temp['BUKTI_NO'] = $recs->get('bukti_no');
-                $temp['BUKTI_TGL'] = $recs->get('bukti_tgl');
+                $temp['BUKTI_TGL'] = Carbon::createFromFormat('Ymd',$recs->get('bukti_tgl'));
                 $temp['SUPCO'] = $recs->get('supco');
                 $temp['CR_TERM'] = $recs->get('cr_term');
                 $temp['PRDCD'] = $recs->get('prdcd');
@@ -2444,20 +2482,22 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 $temp['DISC4RR'] = $recs->get('disc4rr');
                 $temp['DISC4JR'] = $recs->get('disc4jr');
                 $temp['INVNO'] = $recs->get('invno');
-                $temp['INV_DATE'] = $recs->get('inv_date');
+                $temp['INV_DATE'] = is_int($recs->get('inv_date')) ? Carbon::createFromFormat('Ymd',$recs->get('inv_date')) : null;
                 $temp['PO_NO'] = $recs->get('po_no');
-                $temp['PO_DATE'] = $recs->get('po_date');
+                $temp['PO_DATE'] = is_int($recs->get('po_date')) ? Carbon::createFromFormat('Ymd',$recs->get('po_date')) : null;
                 $temp['ISTYPE'] = $recs->get('istype');
                 $temp['BKL'] = $recs->get('bkl');
                 $temp['JAM'] = $recs->get('jam');
                 $temp['KETER'] = $recs->get('keter');
                 $temp['NOSPH'] = $recs->get('nosph');
-                $temp['TGLSPH'] = $recs->get('tglsph');
+                $temp['TGLSPH'] = is_int($recs->get('tglsph')) ? Carbon::createFromFormat('Ymd',$recs->get('tglsph')) : null;
                 $temp['SESSID'] = $sesiproc;
                 $temp['NAMAFILE'] = $v_filename;
 
                 $insert[] = $temp;
             }
+
+//            dd($insert);
 
             DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->insert($insert);
@@ -2522,7 +2562,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                     ->update([
                         'tko_flagvb' => 'Y',
                         'tko_modify_by' => 'RTR',
-                        'tko_modify_dt' => DB::RAW("SYSDATE")
+                        'tko_modify_dt' => Carbon::now()
                     ]);
             }
             else $paramVB = 'N';
@@ -2566,14 +2606,14 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 ->join('tbtr_returomi',function($join){
                     $join->on('rom_noreferensi','=','bukti_no');
                     $join->on('rom_kodetoko','=','gudang');
-                    $join->on(DB::RAW("TO_CHAR(rom_tglreferensi,'YYYY')"),'=',DB::RAW("TO_CHAR(bukti_tgl,'YYYY')"));
+                    $join->on(DB::connection(Session::get('connection'))->raw("TO_CHAR(rom_tglreferensi,'YYYY')"),'=',DB::connection(Session::get('connection'))->raw("TO_CHAR(bukti_tgl,'YYYY')"));
                 })
                 ->where('rom_kodeigr','=',Session::get('kdigr'))
                 ->where('sessid','=',$sesiproc)
                 ->where('namafile','=',$namaFileR)
                 ->first();
 
-            if(!$temp){
+            if($temp){
                 DB::connection(Session::get('connection'))->table('temp_retur_omi')
                     ->where('sessid','=',$sesiproc)
                     ->where('namafile','=',$namaFileR)
@@ -2955,7 +2995,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     ->update([
                                                         'tko_flagvb' => 'Y',
                                                         'tko_modify_by' => 'RTR',
-                                                        'tko_modify_dt' => DB::RAW("SYSDATE")
+                                                        'tko_modify_dt' => Carbon::now()
                                                     ]);
                                             }
 
@@ -3000,7 +3040,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     ->insert([
                                                         'rpj_kodeigr' => Session::get('kdigr'),
                                                         'rpj_nodokumen' => $nodoc,
-                                                        'rpj_tgldokumen' => DB::RAW("SYSDATE"),
+                                                        'rpj_tgldokumen' => Carbon::now(),
                                                         'rpj_prdcd' => $recno->prd_prdcd,
                                                         'rpj_nofp1' => substr($recpjk->istype, 2,7),
                                                         'rpj_nofp2' => substr($recpjk->nosph, 2,7),
@@ -3010,7 +3050,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                         'rpj_referensitglfp' => $recpjk->po_date,
                                                         'rpj_nilai' => ($recpjk->gross + self::nvl($recpjk->ppn, 0)),
                                                         'rpj_create_by' => Session::get('usid'),
-                                                        'rpj_create_dt' => DB::RAW("SYSDATE")
+                                                        'rpj_create_dt' => Carbon::now()
                                                     ]);
                                             }
 
@@ -3018,8 +3058,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                 ->insert([
                                                     'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
-                                                    'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
-                                                    'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_TGLDOKUMEN' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
+                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".$top),
                                                     'ROM_NOREFERENSI' => $recno->bukti_no,
                                                     'ROM_TGLREFERENSI' => $recno->bukti_tgl,
                                                     'ROM_KODETOKO' => $recno->gudang,
@@ -3039,7 +3079,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_STATUSDATA' => '2',
                                                     'ROM_STATUSTRF' => '1',
                                                     'ROM_CREATE_BY' => Session::get('usid'),
-                                                    'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
+                                                    'ROM_CREATE_DT' => Carbon::now(),
                                                     'ROM_HRGSATUAN' => 0,
                                                     'ROM_TTLNILAI' => 0,
                                                     'ROM_QTYTLR' => 0,
@@ -3051,8 +3091,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                 ->insert([
                                                     'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
-                                                    'ROM_TGLDOKUMEN' => DB::RAW("TRUNC(SYSDATE)"),
-                                                    'ROM_TGLJATUHTEMPO' => DB::RAW("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_TGLDOKUMEN' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
+                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".$top),
                                                     'ROM_NOREFERENSI' => $recno->bukti_no,
                                                     'ROM_TGLREFERENSI' => $recno->bukti_tgl,
                                                     'ROM_KODETOKO' => $recno->gudang,
@@ -3072,7 +3112,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_STATUSDATA' => '2',
                                                     'ROM_STATUSTRF' => '1',
                                                     'ROM_CREATE_BY' => Session::get('usid'),
-                                                    'ROM_CREATE_DT' => DB::RAW("SYSDATE"),
+                                                    'ROM_CREATE_DT' => Carbon::now(),
                                                     'ROM_HRGSATUAN' => 0,
                                                     'ROM_TTLNILAI' => 0,
                                                     'ROM_QTYTLR' => 0
@@ -3119,7 +3159,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                             'ptg_kodemember' => $memberomi,
                                             'ptg_amtar' => $rpretur * (-1),
                                             'ptg_create_by' => Session::get('usid'),
-                                            'ptg_create_dt' => DB::RAW("SYSDATE"),
+                                            'ptg_create_dt' => Carbon::now(),
                                             'ptg_amtpayment' => 0
                                         ]);
                                 }
@@ -3164,7 +3204,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                         ->insert([
                                             'TRPT_KODEIGR' => Session::get('kdigr'),
                                             'TRPT_TYPE' => 'D',
-                                            'TRPT_SALESINVOICEDATE' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'TRPT_SALESINVOICEDATE' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'TRPT_SALESINVOICENO' => $nokasir,
                                             'TRPT_CASHIERSTATION' => '99',
                                             'TRPT_CUS_KODEMEMBER' => $memberomi,
@@ -3172,13 +3212,13 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                             'TRPT_INVOICETAXNO' => $no_nrb,
                                             'TRPT_INVOICETAXDATE' => $tgl_nrb,
                                             'TRPT_DOCNO' => $nodoc,
-                                            'TRPT_RECEIVEDATE' => DB::RAW("SYSDATE"),
+                                            'TRPT_RECEIVEDATE' => Carbon::now(),
                                             'TRPT_SALESVALUE' => $rpretur,
                                             'TRPT_NETSALES' => $rpretur - $ppnretur,
                                             'TRPT_PPNTAXVALUE' => $ppnretur,
-                                            'TRPT_SALESDUEDATE' => DB::RAW("SYSDATE + ".$top),
+                                            'TRPT_SALESDUEDATE' => DB::connection(Session::get('connection'))->raw("SYSDATE + ".$top),
                                             'TRPT_CREATE_BY' => Session::get('usid'),
-                                            'TRPT_CREATE_DT' => DB::RAW("SYSDATE"),
+                                            'TRPT_CREATE_DT' => Carbon::now(),
                                             'TRPT_SPH_AMOUNT' => 0,
                                             'TRPT_PAYMENTVALUE' => 0,
                                             'TRPT_DISTFEE' => 0,

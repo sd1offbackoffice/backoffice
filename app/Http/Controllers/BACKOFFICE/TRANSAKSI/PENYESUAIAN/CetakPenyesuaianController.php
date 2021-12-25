@@ -89,6 +89,7 @@ class CetakPenyesuaianController extends Controller
 
             if(Session::get('pys_jenis') == '1'){
                 if(Session::get('pys_reprint') == '0'){
+
                     DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                         ->whereIn('trbo_nodoc',Session::get('pys_nodoc'))
                         ->update([
@@ -143,7 +144,7 @@ class CetakPenyesuaianController extends Controller
                     $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
                     $canvas = $dompdf ->get_canvas();
-                    $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                    $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
                 }
 
                 $dompdf = $pdf;
@@ -254,7 +255,7 @@ class CetakPenyesuaianController extends Controller
                                                 'mstd_kodeigr' => Session::get('kdigr'),
                                                 'mstd_typetrn' => $r->trbo_typetrn,
                                                 'mstd_nodoc' => $r->trbo_nodoc,
-                                                'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                                'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                                 'mstd_kodesupplier' => $r->trbo_kodesupplier,
                                                 'mstd_seqno' => $r->trbo_seqno,
                                                 'mstd_prdcd' => $r->trbo_prdcd,
@@ -270,7 +271,7 @@ class CetakPenyesuaianController extends Controller
                                                 'mstd_bkp' => $r->prd_flagbkp1,
                                                 'mstd_cterm' => $r->sup_top,
                                                 'mstd_create_by' => Session::get('usid'),
-                                                'mstd_create_dt' => DB::RAW("SYSDATE"),
+                                                'mstd_create_dt' => Carbon::now(),
                                                 'mstd_hrgsatuan' => self::nvl($r->trbo_hrgsatuan,0),
                                                 'mstd_qtybonus1' => self::nvl($r->trbo_qtybonus1,0),
                                                 'mstd_qtybonus2' => self::nvl($r->trbo_qtybonus2,0),
@@ -308,10 +309,10 @@ class CetakPenyesuaianController extends Controller
                                             ->where('st_prdcd',$r->trbo_prdcd)
                                             ->where('st_lokasi', substr('0'.$r->trbo_flagdisc2,-2))
                                             ->update([
-                                                'st_adj' => DB::RAW("NVL(st_adj,0) + ".self::nvl($r->trbo_qty,0)),
-                                                'st_saldoakhir' => DB::RAW("NVL(st_saldoakhir,0) + ".self::nvl($r->trbo_qty,0)),
+                                                'st_adj' => DB::connection(Session::get('connection'))->raw("NVL(st_adj,0) + ".self::nvl($r->trbo_qty,0)),
+                                                'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("NVL(st_saldoakhir,0) + ".self::nvl($r->trbo_qty,0)),
                                                 'st_modify_by' => Session::get('usid'),
-                                                'st_modify_dt' => DB::RAW('SYSDATE')
+                                                'st_modify_dt' => Carbon::now()
                                             ]);
 
                                         $step = 8;
@@ -330,11 +331,11 @@ class CetakPenyesuaianController extends Controller
                                                     'msth_kodeigr' => Session::get('kdigr'),
                                                     'msth_typetrn' => 'X',
                                                     'msth_nodoc' => $n,
-                                                    'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                                    'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                                     'msth_flagdoc' => '1',
                                                     'msth_kodesupplier' => $r->trbo_kodesupplier,
                                                     'msth_create_by' => Session::get('usid'),
-                                                    'msth_create_dt' => DB::RAW('SYSDATE'),
+                                                    'msth_create_dt' => Carbon::now(),
                                                     'msth_pkp' => $r->sup_pkp,
                                                     'msth_cterm' => $r->sup_top,
                                                     'msth_keterangan_header' => $r->trbo_keterangan,
@@ -514,7 +515,7 @@ class CetakPenyesuaianController extends Controller
                                                         'upd_harga' => $ceklcost,
                                                         'upd_atribute1' => 'MPP1',
                                                         'upd_create_by' => Session::get('usid'),
-                                                        'upd_create_dt' => DB::RAW("SYSDATE")
+                                                        'upd_create_dt' => Carbon::now()
                                                     ]);
                                             }
                                         } else {
@@ -534,7 +535,7 @@ class CetakPenyesuaianController extends Controller
                                                         'upd_harga' => $ceklcost * $r2->prd_frac,
                                                         'upd_atribute1' => 'MPP1',
                                                         'upd_create_by' => Session::get('usid'),
-                                                        'upd_create_dt' => DB::RAW("SYSDATE")
+                                                        'upd_create_dt' => Carbon::now()
                                                     ]);
                                             }
                                         }
@@ -682,9 +683,9 @@ class CetakPenyesuaianController extends Controller
                                                     'st_avgcostmonthend' => 0,
                                                     'st_rpsaldoawal' => 0,
                                                     'st_rpsaldoawal2' => 0,
-                                                    'st_tglavgcost' => DB::RAW("TRUNC(SYSDATE)"),
+                                                    'st_tglavgcost' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                                     'st_create_by' => Session::get('usid'),
-                                                    'st_create_dt' => DB::RAW("SYSDATE")
+                                                    'st_create_dt' => Carbon::now()
                                                 ]);
                                         }
                                     }
@@ -740,7 +741,7 @@ class CetakPenyesuaianController extends Controller
                                             'mstd_kodeigr' => Session::get('kdigr'),
                                             'mstd_typetrn' => $r->trbo_typetrn,
                                             'mstd_nodoc' => $r->trbo_nodoc,
-                                            'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'mstd_kodesupplier' => $r->trbo_kodesupplier,
                                             'mstd_seqno' => $r->trbo_seqno,
                                             'mstd_prdcd' => $r->trbo_prdcd,
@@ -756,7 +757,7 @@ class CetakPenyesuaianController extends Controller
                                             'mstd_bkp' => $r->prd_flagbkp1,
                                             'mstd_cterm' => $r->sup_top,
                                             'mstd_create_by' => Session::get('usid'),
-                                            'mstd_create_dt' => DB::RAW("SYSDATE"),
+                                            'mstd_create_dt' => Carbon::now(),
                                             'mstd_hrgsatuan' => self::nvl($r->trbo_hrgsatuan, 0),
                                             'mstd_qtybonus1' => self::nvl($r->trbo_qtybonus1, 0),
                                             'mstd_qtybonus2' => self::nvl($r->trbo_qtybonus2, 0),
@@ -808,7 +809,7 @@ class CetakPenyesuaianController extends Controller
                                                     'sta_intransit' => 0,
                                                     'sta_saldoakhir' => 0,
                                                     'sta_create_by' => Session::get('usid'),
-                                                    'sta_create_dt' => DB::RAW("sysdate")
+                                                    'sta_create_dt' => Carbon::now()
                                                 ]);
                                         }
 
@@ -839,20 +840,20 @@ class CetakPenyesuaianController extends Controller
                                                 'acm_kodeigr' => Session::get('kdigr'),
                                                 'acm_typetrn' => 'X',
                                                 'acm_nodokumen' => $r->trbo_nodoc,
-                                                'acm_tgldokumen' => DB::RAW('SYSDATE'),
+                                                'acm_tgldokumen' => Carbon::now(),
                                                 'acm_prdcd' => $r->trbo_prdcd,
                                                 'acm_qtystock' => $qtyst,
                                                 'acm_qtycmo' => $qtycmo,
                                                 'acm_qty' => $qtyadj,
                                                 'acm_create_by' => Session::get('usid'),
-                                                'acm_create_dt' => DB::RAW('SYSDATE')
+                                                'acm_create_dt' => Carbon::now()
                                             ]);
 
                                         DB::connection(Session::get('connection'))->table('tbmaster_stock_cab_anak')
                                             ->where('sta_prdcd', $r->trbo_prdcd)
                                             ->where('sta_lokasi', '01')
                                             ->update([
-                                                'sta_adj' => DB::RAW('NVL(sta_adj,0) + ' . $qtyadj)
+                                                'sta_adj' => DB::connection(Session::get('connection'))->raw('NVL(sta_adj,0) + ' . $qtyadj)
                                             ]);
                                     }
 
@@ -875,7 +876,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', $v_plubaru)
                                                 ->update([
-                                                    'prd_lastcost' => DB::RAW("CASE
+                                                    'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $r->prd_lastcost . "
                                                        ELSE PRD_LASTCOST
@@ -908,7 +909,7 @@ class CetakPenyesuaianController extends Controller
                                                     substr($v_plubaru, 0, 6) . '3',
                                                 ])
                                                 ->update([
-                                                    'prd_lastcost' => DB::RAW("CASE
+                                                    'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $v_lcplulama1 . "
                                                        ELSE PRD_LASTCOST
@@ -946,7 +947,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->where('prd_prdcd', $r->trbo_prdcd)
                                                 ->update([
-                                                    'prd_lastcost' => DB::RAW("CASE
+                                                    'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $v_lcplulama1 . "
                                                        ELSE PRD_LASTCOST
@@ -979,7 +980,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
                                                 ->where('prd_kodeigr', Session::get('kdigr'))
                                                 ->update([
-                                                    'prd_lastcost' => DB::RAW("CASE
+                                                    'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $v_lcplulama1 . "
                                                        ELSE PRD_LASTCOST
@@ -1005,7 +1006,7 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
                                                     ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
-                                                        'prd_lastcost' => DB::RAW("CASE
+                                                        'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $v_lcplulama1 . "
                                                        ELSE PRD_LASTCOST
@@ -1018,7 +1019,7 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '2')
                                                     ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
-                                                        'prd_lastcost' => DB::RAW("CASE
+                                                        'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                        WHEN NVL (PRD_LASTCOST, 0) = 0
                                                            THEN " . $v_oldprdacost1 . " * PRD_FRAC
                                                        ELSE PRD_LASTCOST
@@ -1045,7 +1046,7 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                                     ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
-                                                        'prd_lastcost' => DB::RAW("CASE
+                                                        'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                            WHEN NVL (PRD_LASTCOST, 0) = 0
                                                                THEN " . $v_lcplulama1 . "
                                                            ELSE PRD_LASTCOST
@@ -1058,7 +1059,7 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('prd_prdcd', substr($prdcdlama, 0, 6) . '3')
                                                     ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->update([
-                                                        'prd_lastcost' => DB::RAW("CASE
+                                                        'prd_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                            WHEN NVL (PRD_LASTCOST, 0) = 0
                                                                THEN " . $v_oldprdacost1 . " * PRD_FRAC
                                                            ELSE PRD_LASTCOST
@@ -1100,14 +1101,14 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                     ->update([
-                                                        'st_adj' => DB::RAW("NVL(st_adj,0) + " . $r->trbo_qty),
-                                                        'st_saldoakhir' => DB::RAW("NVL(st_saldoakhir,0) + " . $r->trbo_qty),
-                                                        'st_avgcost' => DB::RAW("CASE
+                                                        'st_adj' => DB::connection(Session::get('connection'))->raw("NVL(st_adj,0) + " . $r->trbo_qty),
+                                                        'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("NVL(st_saldoakhir,0) + " . $r->trbo_qty),
+                                                        'st_avgcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                            WHEN NVL (ST_AVGCOST, 0) = 0
                                                                THEN " . $oldacost . "
                                                        ELSE ST_AVGCOST
                                                        END"),
-                                                        'st_lastcost' => DB::RAW("CASE
+                                                        'st_lastcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                            WHEN NVL (ST_LASTCOST, 0) = 0
                                                                THEN " . $oldlcostx . "
                                                            ELSE ST_LASTCOST
@@ -1139,7 +1140,7 @@ class CetakPenyesuaianController extends Controller
                                                                 'st_lastcost' => $oldlcostx,
                                                                 'st_avgcost' => $oldacost,
                                                                 'st_create_by' => Session::get('usid'),
-                                                                'st_create_dt' => DB::RAW("SYSDATE")
+                                                                'st_create_dt' => Carbon::now()
                                                             ]);
                                                     }
                                                 } else {
@@ -1163,10 +1164,10 @@ class CetakPenyesuaianController extends Controller
                                                     ->where('st_prdcd', $r->trbo_prdcd)
                                                     ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                     ->update([
-                                                        'st_adj' => DB::RAW("NVL(ST_ADJ,0) + " . $r->trbo_qty),
-                                                        'st_saldoakhir' => DB::RAW("NVL(ST_SALDOAKHIR,0) + " . $r->trbo_qty),
+                                                        'st_adj' => DB::connection(Session::get('connection'))->raw("NVL(ST_ADJ,0) + " . $r->trbo_qty),
+                                                        'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("NVL(ST_SALDOAKHIR,0) + " . $r->trbo_qty),
                                                         'st_modify_by' => Session::get('usid'),
-                                                        'st_modify_dt' => DB::RAW("SYSDATE")
+                                                        'st_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $v_prd1st0 = 0;
@@ -1204,8 +1205,8 @@ class CetakPenyesuaianController extends Controller
                                                 ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                                 ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                                 ->update([
-                                                    'st_adj' => DB::RAW("NVL(st_adj,0) + " . self::nvl($r->trbo_qty,0)),
-                                                    'st_saldoakhir' => DB::RAW("NVL(st_saldoakhir,0) + " . self::nvl($r->trbo_qty,0))
+                                                    'st_adj' => DB::connection(Session::get('connection'))->raw("NVL(st_adj,0) + " . self::nvl($r->trbo_qty,0)),
+                                                    'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("NVL(st_saldoakhir,0) + " . self::nvl($r->trbo_qty,0))
                                                 ]);
                                         }
                                     } else {
@@ -1216,8 +1217,8 @@ class CetakPenyesuaianController extends Controller
                                             ->where('st_lokasi', substr('00' . $r->trbo_flagdisc2, -2))
                                             ->where('st_prdcd', substr($r->trbo_prdcd, 0, 6) . '0')
                                             ->update([
-                                                'st_adj' => DB::RAW("NVL(st_adj,0) + " . $r->trbo_qty),
-                                                'st_saldoakhir' => DB::RAW("NVL(st_saldoakhir,0) + " . $r->trbo_qty)
+                                                'st_adj' => DB::connection(Session::get('connection'))->raw("NVL(st_adj,0) + " . $r->trbo_qty),
+                                                'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("NVL(st_saldoakhir,0) + " . $r->trbo_qty)
                                             ]);
                                     }
 
@@ -1299,7 +1300,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->where('prd_kodeigr', Session::get('kdigr'))
                                                         ->where('prd_prdcd', $r->trbo_prdcd)
                                                         ->update([
-                                                            'prd_avgcost' => DB::RAW("CASE
+                                                            'prd_avgcost' => DB::connection(Session::get('connection'))->raw("CASE
                                                                WHEN NVL (PRD_AVGCOST, 0) = 0
                                                                    THEN " . $r->trbo_hrgsatuan . "
                                                                ELSE PRD_AVGCOST
@@ -1613,7 +1614,7 @@ class CetakPenyesuaianController extends Controller
                                                     ->update([
                                                         'lks_prdcd' => $prdcdbaru,
                                                         'lks_modify_by' => Session::get('usid'),
-                                                        'lks_modify_dt' => DB::RAW("SYSDATE")
+                                                        'lks_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 126;
@@ -1682,7 +1683,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '0',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("sysdate")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             $step = 139;
@@ -1692,7 +1693,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '1',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("sysdate")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             $step = 140;
@@ -1702,7 +1703,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '2',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("sysdate")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             $step = 141;
@@ -1712,7 +1713,7 @@ class CetakPenyesuaianController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcdbaru, 0, 6) . '3',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("sysdate")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             $step = 142;
@@ -1850,7 +1851,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->update([
                                                             'pkm_prdcd' => $prdcdbaru,
                                                             'pkm_modify_by' => Session::get('usid'),
-                                                            'pkm_modify_dt' => DB::RAW("SYSDATE")
+                                                            'pkm_modify_dt' => Carbon::now()
                                                         ]);
 
                                                     $step = 150;
@@ -1917,7 +1918,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->update([
                                                             'pkmg_prdcd' => $prdcdbaru,
                                                             'pkmg_modify_by' => Session::get('usid'),
-                                                            'pkmg_modify_dt' => DB::RAW("SYSDATE")
+                                                            'pkmg_modify_dt' => Carbon::now()
                                                         ]);
 
                                                     $step = 156;
@@ -1982,7 +1983,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->update([
                                                             'pkmp_prdcd' => $prdcdbaru,
                                                             'pkmp_modify_by' => Session::get('usid'),
-                                                            'pkmp_modify_dt' => DB::RAW("SYSDATE")
+                                                            'pkmp_modify_dt' => Carbon::now()
                                                         ]);
 
                                                     DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
@@ -2048,7 +2049,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->update([
                                                             'gdl_prdcd' => $prdcdbaru,
                                                             'gdl_modify_by' => Session::get('usid'),
-                                                            'gdl_modify_dt' => DB::RAW("SYSDATE")
+                                                            'gdl_modify_dt' => Carbon::now()
                                                         ]);
 
                                                     $step = 168;
@@ -2115,7 +2116,7 @@ class CetakPenyesuaianController extends Controller
                                                         ->update([
                                                             'min_prdcd' => $prdcdbaru,
                                                             'min_modify_by' => Session::get('usid'),
-                                                            'min_modify_dt' => DB::RAW("SYSDATE")
+                                                            'min_modify_dt' => Carbon::now()
                                                         ]);
 
                                                     $step = 175;
@@ -2156,14 +2157,14 @@ class CetakPenyesuaianController extends Controller
                                                             'kvp_pluold' => $prdcdlama,
                                                             'kvp_plunew' => $prdcdbaru,
                                                             'kvp_kodetipe' => 'M',
-                                                            'kvp_tgl' => DB::RAW("CASE
+                                                            'kvp_tgl' => DB::connection(Session::get('connection'))->raw("CASE
                                                                  WHEN REC.TRBO_MODIFY_DT IS NOT NULL
                                                                      THEN REC.TRBO_MODIFY_DT
                                                                  ELSE REC.TRBO_CREATE_DT
                                                              END"),
                                                             'kvp_konversiold' => $fracold,
                                                             'kvp_konversinew' => $fracnew,
-                                                            'kvp_create_dt' => DB::RAW("SYSDATE"),
+                                                            'kvp_create_dt' => Carbon::now(),
                                                             'kvp_create_by' => Session::get('usid')
                                                         ]);
                                                 }
@@ -2185,11 +2186,11 @@ class CetakPenyesuaianController extends Controller
                                         'msth_kodeigr' => Session::get('kdigr'),
                                         'msth_typetrn' => 'X',
                                         'msth_nodoc' => $n,
-                                        'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                        'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                         'msth_flagdoc' => '1',
                                         'msth_kodesupplier' => $v_supp,
                                         'msth_create_by' => Session::get('usid'),
-                                        'msth_create_dt' => DB::RAW("SYSDATE"),
+                                        'msth_create_dt' => Carbon::now(),
                                         'msth_pkp' => $v_pkp,
                                         'msth_cterm' => $v_cterm,
                                         'msth_keterangan_header' => $v_kethdr,
@@ -2211,8 +2212,8 @@ class CetakPenyesuaianController extends Controller
 
                 DB::connection(Session::get('connection'))->commit();
 
-                $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-                    ->select('prs_namaperusahaan','prs_namacabang')
+                $perusahaan = DB::connection(Session::get('connection'))
+                    ->table('tbmaster_perusahaan')
                     ->first();
 
                 $nodoc = "(";
@@ -2258,8 +2259,11 @@ class CetakPenyesuaianController extends Controller
                 $data = [
                     'perusahaan' => $perusahaan,
                     'report' => $report,
-                    'ukuran' => $ukuran
+                    'ukuran' => $ukuran,
+                    'reprint' => Session::get('pys_reprint')
                 ];
+
+//                dd($perusahaan);
 
                 $dompdf = new PDF();
 
@@ -2271,7 +2275,7 @@ class CetakPenyesuaianController extends Controller
                 $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
                 $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
                 $dompdf = $pdf;
 

@@ -25,7 +25,7 @@ class PembatalanController extends Controller
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
-            ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
+            ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->limit(1000)
             ->get();
@@ -46,7 +46,7 @@ class PembatalanController extends Controller
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $noNPB)
-            ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
+            ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->get();
         $datas = [];
@@ -76,7 +76,7 @@ class PembatalanController extends Controller
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $no_npb)
-            ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
+            ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->first();
         $tgltran = $tgltran->tgl;
@@ -103,7 +103,7 @@ class PembatalanController extends Controller
                 })
                 ->join('tbmaster_stock', function ($join) {
                     $join->on('st_kodeigr', 'prd_kodeigr');
-                    $join->on('st_prdcd', DB::Raw('substr(prd_prdcd,1,6)||\'0\''));
+                    $join->on('st_prdcd', DB::connection(Session::get('connection'))->raw('substr(prd_prdcd,1,6)||\'0\''));
                 })
                 ->selectRaw('msth_kodeigr,msth_nodoc,msth_tgldoc,mstd_prdcd,mstd_qty,mstd_unit, mstd_frac,mstd_avgcost, mstd_kodesupplier,case when trim(prd_unit) = \'KG\' then 1 else prd_frac end prd_frac,st_avgcost, st_saldoakhir')
                 ->where('msth_nodoc', '=', $no_npb)
@@ -112,7 +112,7 @@ class PembatalanController extends Controller
                 ->get();
             foreach ($datas as $data) {
                 $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
-                    ->where('st_prdcd', '=', DB::Raw('substr(' . $data->mstd_prdcd . ',1,6)||\'0\''))
+                    ->where('st_prdcd', '=', DB::connection(Session::get('connection'))->raw('substr(' . $data->mstd_prdcd . ',1,6)||\'0\''))
                     ->where('st_kodeigr', '=', $data->msth_kodeigr)
                     ->where('st_lokasi', '=', '02')
                     ->count();
@@ -120,7 +120,7 @@ class PembatalanController extends Controller
                 if ($temp == 0) {
                     DB::connection(Session::get('connection'))->table('tbmaster_stock')->insert([
                         'st_kodeigr' => $data->msth_kodeigr,
-                        'st_prdcd' => DB::Raw('substr(' . $data->mstd_prdcd . ', 1, 6) || \'0\''),
+                        'st_prdcd' => DB::connection(Session::get('connection'))->raw('substr(' . $data->mstd_prdcd . ', 1, 6) || \'0\''),
                         'st_lokasi' => '02'
                     ]);
                 }
@@ -168,10 +168,10 @@ class PembatalanController extends Controller
                     ->update(
                         [
                             'st_avgcost' => $nnilai,
-                            'st_saldoakhir' => DB::Raw('nvl(st_saldoakhir, 0) + ' . $data->mstd_qty),
-                            'st_trfout' => DB::Raw('nvl(st_trfout, 0) - ' . $data->mstd_qty),
+                            'st_saldoakhir' => DB::connection(Session::get('connection'))->raw('nvl(st_saldoakhir, 0) + ' . $data->mstd_qty),
+                            'st_trfout' => DB::connection(Session::get('connection'))->raw('nvl(st_trfout, 0) - ' . $data->mstd_qty),
                             'st_modify_by' => Session::get('usid'),
-                            'st_modify_dt' => DB::Raw('trunc(sysdate)')
+                            'st_modify_dt' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)')
                         ]
                     );
 

@@ -13,7 +13,7 @@ class InputController extends Controller
 {
     public function index(){
         $penyesuaian = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-            ->select('trbo_nodoc',DB::RAW("to_char(trbo_tgldoc,'dd/mm/yyyy') trbo_tgldoc"))
+            ->select('trbo_nodoc',DB::connection(Session::get('connection'))->raw("to_char(trbo_tgldoc,'dd/mm/yyyy') trbo_tgldoc"))
             ->where('trbo_kodeigr',Session::get('kdigr'))
             ->where('trbo_typetrn','X')
             ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
@@ -22,7 +22,7 @@ class InputController extends Controller
             ->limit(100)
             ->get();
 
-        $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+        $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
             ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
             ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
             ->whereRaw("st_lokasi(+) = '01'")
@@ -41,7 +41,7 @@ class InputController extends Controller
         $tipebarang = $request->lokasi;
 
         if(is_numeric($search)){
-            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                 ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
@@ -52,13 +52,13 @@ class InputController extends Controller
                 ->get();
         }
         else{
-            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                 ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
                 ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,-1) = '0'")
-                ->where('prd_deskripsipanjang','like',DB::RAW("'%".$search."%'"))
+                ->where('prd_deskripsipanjang','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
                 ->orderBy('prd_prdcd')
                 ->get();
         }
@@ -146,7 +146,7 @@ class InputController extends Controller
                     $frac = $response->frac;
 
                     if(substr($request->plu,-1) == '1'){
-                        $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                        $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                             ->selectRaw("NVL(st_saldoakhir,0) persediaan, 0 persediaan2, st_avgcost hargasatuan,
                         ST_AVGCOST * CASE
                         WHEN TRIM (PRD_UNIT) = 'KG'
@@ -180,7 +180,7 @@ class InputController extends Controller
                                 ->first()->jum;
 
                             if($cek > 0){
-                                $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                                     ->selectRaw("
                                 CASE
                                    WHEN PRD_UNIT = 'PCS'
@@ -265,7 +265,7 @@ class InputController extends Controller
                                 ->first()->jum;
 
                             if($cek > 0){
-                                $data = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                                     ->selectRaw("
                                 CASE
                                    WHEN PRD_UNIT = 'PCS'
@@ -343,7 +343,7 @@ class InputController extends Controller
                         $subtotal = 0;
 
                         if(substr($request->plu,-1) == '1' ){
-                            $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                            $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                                 ->selectRaw("NVL (ST_AVGCOST, 0) hrgsatuan")
                                 ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                 ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
@@ -365,7 +365,7 @@ class InputController extends Controller
                                 else $cek = 0;
 
                                 if($cek > 0){
-                                    $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast,tbmaster_stock"))
+                                    $hrgsatuan = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
                                         ->selectRaw("NVL (ST_AVGCOST, 0) hrgsatuan")
                                         ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")
                                         ->whereRaw("st_lokasi(+) = '".$tipebarang."'")
@@ -483,7 +483,7 @@ class InputController extends Controller
                     $V_AVGCOST = 0;
 
                     if(count($cek) > 0){
-                        $V_AVGCOST = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_stock,tbmaster_prodmast'))
+                        $V_AVGCOST = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbmaster_stock,tbmaster_prodmast'))
                             ->selectRaw("NVL (ST_AVGCOST, 0) * CASE
                         WHEN PRD_UNIT = 'KG'
                            THEN 1
@@ -524,7 +524,7 @@ class InputController extends Controller
 
     public function doc_select(Request $request){
         $doc = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-            ->select('trbo_nodoc','trbo_tgldoc','trbo_noreff','trbo_tglreff','trbo_flagdisc1','trbo_flagdisc2',DB::RAW('SUM(trbo_gross) total, count(trbo_gross) totalitem'))
+            ->select('trbo_nodoc','trbo_tgldoc','trbo_noreff','trbo_tglreff','trbo_flagdisc1','trbo_flagdisc2',DB::connection(Session::get('connection'))->raw('SUM(trbo_gross) total, count(trbo_gross) totalitem'))
             ->where('trbo_kodeigr',Session::get('kdigr'))
             ->where('trbo_nodoc',$request->nodoc)
             ->where('trbo_typetrn','X')
@@ -747,7 +747,7 @@ class InputController extends Controller
                             'trbo_recordid' => null,
                             'trbo_typetrn' => 'X',
                             'trbo_nodoc' => $nodoc,
-                            'trbo_tgldoc' => DB::RAW("to_date('".$tglpys."','dd/mm/yyyy')"),
+                            'trbo_tgldoc' => DB::connection(Session::get('connection'))->raw("to_date('".$tglpys."','dd/mm/yyyy')"),
                             'trbo_noreff' => $noreff,
                             'trbo_tglreff' => $tglreff,
                             'trbo_prdcd' => $prdcd,
@@ -758,7 +758,7 @@ class InputController extends Controller
                             'trbo_gross' => $subtotal,
                             'trbo_averagecost' => $trboavgcost,
                             'trbo_keterangan' => $keterangan,
-                            'trbo_create_dt' => DB::RAW("sysdate"),
+                            'trbo_create_dt' => Carbon::now(),
                             'trbo_create_by' => Session::get('usid'),
                             'trbo_kodesupplier' => $ksup,
                             'trbo_oldcost' => $v_avgcost,
@@ -834,7 +834,7 @@ class InputController extends Controller
                                         'trbo_averagecost' => $trboavgcost,
                                         'trbo_keterangan' => $keterangan,
                                         'trbo_modify_by' => Session::get('usid'),
-                                        'trbo_modify_dt' => DB::RAW("sysdate")
+                                        'trbo_modify_dt' => Carbon::now()
                                     ]);
 
                                 DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
@@ -850,7 +850,7 @@ class InputController extends Controller
                                     'trbo_recordid' => null,
                                     'trbo_typetrn' => 'X',
                                     'trbo_nodoc' => $nodoc,
-                                    'trbo_tgldoc' => DB::RAW("to_date('".$tglpys."','dd/mm/yyyy')"),
+                                    'trbo_tgldoc' => DB::connection(Session::get('connection'))->raw("to_date('".$tglpys."','dd/mm/yyyy')"),
                                     'trbo_noreff' => $noreff,
                                     'trbo_tglreff' => $tglreff,
                                     'trbo_prdcd' => $prdcd,
@@ -861,7 +861,7 @@ class InputController extends Controller
                                     'trbo_gross' => $subtotal,
                                     'trbo_averagecost' => $trboavgcost,
                                     'trbo_keterangan' => $keterangan,
-                                    'trbo_create_dt' => DB::RAW("sysdate"),
+                                    'trbo_create_dt' => Carbon::now(),
                                     'trbo_create_by' => Session::get('usid'),
                                     'trbo_kodesupplier' => $ksup,
                                     'trbo_oldcost' => $v_avgcost,
@@ -1004,7 +1004,7 @@ class InputController extends Controller
                         ->update([
                             'trbo_recordid' => '1',
                             'trbo_modify_by' => Session::get('usid'),
-                            'trbo_modify_dt' => DB::RAW("sysdate")
+                            'trbo_modify_dt' => Carbon::now()
                         ]);
                 }
                 catch (QueryException $e){

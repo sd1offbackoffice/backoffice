@@ -55,7 +55,7 @@
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: @yield('paper_size','595pt 842pt');
+        size: @yield('paper_size','595pt 442pt');
         /*size: 842pt 638pt;*/
     }
 
@@ -223,7 +223,7 @@
     @yield('custom_style')
 </style>
 <body class="bg-gray">
-    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px">
+    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px; top: 0;">
         <button class="btn-print" onclick="window.print()">CETAK</button>
     </div>
     <div class="bg-white content-wrapper">

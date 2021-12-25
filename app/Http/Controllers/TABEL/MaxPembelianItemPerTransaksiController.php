@@ -127,7 +127,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
                     'mtr_qtygold3' => $request->mtr_qtygold3,
                     'mtr_qtyplatinum' => $request->mtr_qtyplatinum,
                     'mtr_create_by' => Session::get('usid'),
-                    'mtr_create_dt' => DB::raw('sysdate')
+                    'mtr_create_dt' => Carbon::now()
                 ]);
             $message = "Data PLU " . $plu . " Berhasil Disimpan!";
             $status = "success";
@@ -147,7 +147,7 @@ class MaxPembelianItemPerTransaksiController extends Controller
                     'mtr_qtygold3' => $request->mtr_qtygold3,
                     'mtr_qtyplatinum' => $request->mtr_qtyplatinum,
                     'mtr_create_by' => Session::get('usid'),
-                    'mtr_create_dt' => DB::raw('sysdate')
+                    'mtr_create_dt' => Carbon::now()
                 ]);
             $message = "Data PLU " . $plu . " Berhasil Diupdate!";
             $status = "success";

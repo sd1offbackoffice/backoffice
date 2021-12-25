@@ -148,6 +148,45 @@
         $('#menuG input').val('').change();
     }
     function menuGCetak(){
-        alert('cetak menu G');
+        let sup1 = $('#menu4Sup1Input').val();
+        let sup2 = $('#menu4Sup2Input').val();
+        let phari = "";
+        if(sup1 != '' || sup2 != ''){
+            if(sup1 > sup2){
+                temp = sup1;
+                sup1 = sup2;
+                sup2 = temp;
+            }
+        }
+
+        if($('#menuGCheckMinggu').prop("checked")){
+            phari = "'MINGGU',";
+        }
+        if($('#menuGCheckSenin').prop("checked")){
+            phari = phari+"'SENIN',";
+        }
+        if($('#menuGCheckSelasa').prop("checked")){
+            phari = phari+"'SELASA',";
+        }
+        if($('#menuGCheckRabu').prop("checked")){
+            phari = phari+"'RABU',";
+        }
+        if($('#menuGCheckKamis').prop("checked")){
+            phari = phari+"'KAMIS',";
+        }
+        if($('#menuGCheckJumat').prop("checked")){
+            phari = phari+"'JUMAT',";
+        }
+        if($('#menuGCheckSabtu').prop("checked")){
+            phari = phari+"'SABTU',";
+        }
+
+        if(phari.slice(-1) == ","){
+            phari = phari.slice(0, -1);
+            //phari = phari.substring(0, phari.length - 1);
+        }
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-supplier-by-hari-kunjungan?sup1=${sup1}&sup2=${sup2}&phari=${phari}`, '_blank');
     }
 </script>

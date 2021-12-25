@@ -455,7 +455,7 @@
                     } else if(result.kode == '2'){
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
-                        swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!');
+                        swal('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!','','info');
                     }else {
                         swal('ERROR', "Something's Error", 'error')
                     }
@@ -578,7 +578,7 @@
                     } else if(result.kode == '2'){
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
-                        swal.fire('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!')
+                        swal('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!','','info')
                         window.open('{{ url()->current() }}/print-document/'+result.msg+'/');
                         clearField();
                     }else {
@@ -867,7 +867,7 @@
                                                     <input onclick="TheRowNum(this)" onchange="getPlu(this)" type="text" class="form-control plu" value="">
                                                      <button onclick="TheRowNum(this)" type="button" class="btn btn-lov ml-3" data-toggle="modal"
                                                         data-target="#pilihPlu">
-                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
+                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
                                                 </td>
                                                 <td style="width: 32%"><input disabled type="text"  class="form-control deskripsi" value=""></td>

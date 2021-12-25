@@ -71,7 +71,15 @@
                             </div>
 
                         </div>
-                        <div class="row form-group justify-content-end">
+                        <div class="row form-group">
+                            <div class="float-left col-sm-3">
+                                <button class="col btn btn-danger" id="btn-reset" onclick="reloadPage()">Reset
+                                </button>
+                            </div>
+                            <div class="col-sm-3 offset-3">
+                                <button class="col btn btn-primary" id="btn-show-report" onclick="showReport()">Lihat Laporan
+                                </button>
+                            </div>
                             <div id="col-btn-print" class="col-sm-3">
                                 <button class="col btn btn-primary" id="btn-print" onclick="printReport()">Cetak
                                 </button>
@@ -87,10 +95,7 @@
                                     <i class="fas fa-file-pdf nav-icon"></i> PDF
                                 </button>
                             </div>
-                            <div class="col-sm-3">
-                                <button class="col btn btn-primary" onclick="showReport()">Lihat Laporan
-                                </button>
-                            </div>
+
                         </div>
                     </div>
                 </fieldset>
@@ -188,7 +193,6 @@
             });
             $('.tanggal').datepicker('setDate', new Date());
             $('#tableData').DataTable();
-            // getData();
         });
 
         $('.tanggal').daterangepicker({
@@ -206,17 +210,11 @@
             $('#tanggal-1').val('');
             $('#tanggal-2').val('');
         });
-        // $(document).on('click', '#lihat', function () {
-        //     val = $(this).val();
-        //     if ($(this).prop('checked') == true) {
-        //         checked.push(val);
-        //     } else {
-        //         const index = checked.indexOf(val);
-        //         if (index > -1) {
-        //             checked.splice(index, 1);
-        //         }
-        //     }
-        // });
+
+        function reloadPage() {
+            window.location = `{{ url()->current() }}`;
+        }
+
         function showReport() {
             getData();
         }
@@ -244,7 +242,12 @@
         });
 
         function getData() {
+            $(document).find('select').prop('disabled',true);
+            $(document).find('input').prop('disabled',true);
+            $('#btn-show-report').prop('disabled',true);
+
             if ($.fn.DataTable.isDataTable('#tableData')) {
+                $('#tableData').find('tbody tr').remove();
                 $('#tableData').DataTable().destroy();
             }
 
@@ -410,7 +413,9 @@
         $(document).on('click', '.child', function () {
             var currentButton = $(this);
             var departement = currentButton.find('td').eq(1).text();
-            window.open(`{{ url()->current() }}/../laporan-sales-per-departemen-kategori?departemen=${departement}`, '_blank');
+            var tanggal1 = $('#tanggal-1').val();
+            var tanggal2 = $('#tanggal-2').val();
+            window.open(`{{ url()->current() }}/../laporan-sales-per-departemen-kategori?departemen=${departement}&tanggal1=${tanggal1}&tanggal2=${tanggal2}`, '_blank');
 
         });
     </script>

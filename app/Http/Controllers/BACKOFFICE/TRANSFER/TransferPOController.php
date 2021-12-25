@@ -59,7 +59,7 @@ class TransferPOController extends Controller
                 DB::connection(Session::get('connection'))->table('tb_log_aj')
                     ->insert([
                         'nm_procedure' => $nodoc[$i],
-                        'tgl_create' => DB::RAW("TRUNC(SYSDATE)")
+                        'tgl_create' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
                     ]);
 
                 $kodewil = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -79,7 +79,7 @@ class TransferPOController extends Controller
 
                 DB::connection(Session::get('connection'))->table('tb_log_aj')
                     ->where('nm_procedure','=',$nodoc[$i])
-                    ->where('tgl_create','=',DB::RAW("TRUNC(SYSDATE)"))
+                    ->where('tgl_create','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
                     ->delete();
 
                 $newpo = $nodoc[$i];

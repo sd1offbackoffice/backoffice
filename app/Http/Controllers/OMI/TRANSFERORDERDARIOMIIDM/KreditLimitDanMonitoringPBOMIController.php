@@ -140,7 +140,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                     ->where('mcl_kodeproxy', '=', $txt_proxy)
                     ->update([
                         'mcl_maxnilaicl' => $txt_nilaicl,
-                        'mcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                        'mcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                         'mcl_top' => $txt_top,
                         'mcl_nontop' => $txt_nontop,
                     ]);
@@ -150,11 +150,11 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                     'mcl_kodemember' => $txt_kdcus,
                     'mcl_kodeomi' => $txt_kdomi,
                     'mcl_maxnilaicl' => $txt_nilaicl,
-                    'mcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                    'mcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                     'mcl_top' => $txt_top,
                     'mcl_nontop' => $txt_nontop,
                     'mcl_create_by' => Session::get('usid'),
-                    'mcl_create_dt' => DB::raw('sysdate')
+                    'mcl_create_dt' => Carbon::now()
                 ]);
             }
             DB::connection(Session::get('connection'))->table('tbhistory_clomi')->insert([
@@ -162,13 +162,13 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                 'hcl_kodemember' => $txt_kdcus,
                 'hcl_kodeomi' => $txt_kdomi,
                 'hcl_maxnilaicl' => $txt_nilaicl,
-                'hcl_tgl' => DB::raw('sysdate'),
+                'hcl_tgl' => Carbon::now(),
                 'hcl_tipetransaksi' => 'M',
                 'hcl_nilaitransaksi' => $txt_nilaicl,
                 'hcl_nilaicl' => $txt_nilaicl,
                 'hcl_create_by' => Session::get('usid'),
-                'hcl_create_dt' => DB::raw('sysdate'),
-                'hcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                'hcl_create_dt' => Carbon::now(),
+                'hcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                 'hcl_top' => $txt_top,
                 'hcl_nontop' => $txt_nontop,
                 ]);
@@ -179,7 +179,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                     ->update([
                         'cus_top' => $txt_top,
                         'cus_modify_by' => Session::get('usid'),
-                        'cus_modify_dt' => DB::raw('sysdate')
+                        'cus_modify_dt' => Carbon::now()
                     ]);
             }
             $message = "Data sudah disimpan!";
@@ -244,7 +244,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                 ->where('mcl_kodeproxy', '=', $txt_proxy)
                 ->update([
                     'mcl_maxnilaicl' => $txt_nilaicl,
-                    'mcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                    'mcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                     'mcl_top' => $txt_top,
                     'mcl_nontop' => $txt_nontop,
                 ]);
@@ -255,7 +255,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                     'mcl_kodemember' => $txt_kdcus,
                     'mcl_kodeomi' => $txt_kdomi,
                     'mcl_maxnilaicl' => $txt_nilaicl,
-                    'mcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                    'mcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                     'mcl_top' => $txt_top,
                     'mcl_create_by' => Session::get('usid'),
                     'mcl_create_dt' => Carbon::now(),
@@ -275,7 +275,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                 'hcl_nilaicl' => $txt_nilaicl,
                 'hcl_create_by' => Session::get('usid'),
                 'hcl_create_dt' => Carbon::now(),
-                'hcl_tgltop' => DB::raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
+                'hcl_tgltop' => DB::connection(Session::get('connection'))->raw("to_date('" . $txt_tgltop . "','dd/mm/yyyy')"),
                 'hcl_top' => $txt_top,
                 'hcl_nontop' => $txt_nontop,
             ]);
@@ -363,7 +363,7 @@ class KreditLimitDanMonitoringPBOMIController extends Controller
                 ]);
         } else if ($value == 3) {
             $c = loginController::getConnectionProcedure();
-            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','BA','Nomor Berita Acara PB','BAP'||" . DB::raw("TO_CHAR (SYSDATE, 'yy') || SUBSTR ('ABCDEFGHIJKL', TO_CHAR (SYSDATE, 'MM'), 1)") . ",6,TRUE); END;");
+            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','BA','Nomor Berita Acara PB','BAP'||" . DB::connection(Session::get('connection'))->raw("TO_CHAR (SYSDATE, 'yy') || SUBSTR ('ABCDEFGHIJKL', TO_CHAR (SYSDATE, 'MM'), 1)") . ",6,TRUE); END;");
             oci_bind_by_name($s, ':ret', $noba,32);
             oci_execute($s);
 

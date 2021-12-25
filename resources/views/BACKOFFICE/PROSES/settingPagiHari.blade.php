@@ -14,13 +14,13 @@
                                     <div class="form-group row mb-0">
                                         <label for="tgl-transKmrn" class="col-sm-5 col-form-label text-right">Tanggal Transaksi Kemarin</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="tgl-transKmrn">
+                                            <input type="text" class="form-control" id="tgl-transKmrn" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label for="tgl-sistemSkrg" class="col-sm-5 col-form-label text-right">Tanggal Sistem Sekarang</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" id="tgl-sistemSkrg">
+                                            <input type="text" class="form-control" id="tgl-sistemSkrg" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">

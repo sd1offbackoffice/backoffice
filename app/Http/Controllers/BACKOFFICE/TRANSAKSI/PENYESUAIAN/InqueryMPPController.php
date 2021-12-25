@@ -35,13 +35,19 @@ class InqueryMPPController extends Controller
         $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->join('tbtr_mstran_d','mstd_nodoc','=','msth_nodoc')
             ->join('tbmaster_prodmast','prd_prdcd','=','mstd_prdcd')
-            ->selectRaw("mstd_tgldoc, mstd_nopo, mstd_tglpo, mstd_prdcd, prd_deskripsipanjang,
+            ->selectRaw("to_char(mstd_tgldoc, 'dd/mm/yyyy') mstd_tgldoc, mstd_nopo, mstd_tglpo, mstd_prdcd, prd_deskripsipanjang,
 					prd_unit, mstd_qty, mstd_hrgsatuan, mstd_gross,
 					msth_noref3, msth_tgref3")
             ->where('mstd_typetrn','X')
             ->where('msth_nodoc',$nompp)
             ->orderBy('mstd_prdcd')
             ->get();
+
+        if(count($data) == 0){
+            return response()->json([
+                'message' => 'Nomor MPP salah!'
+            ], 500);
+        }
 
         $detail = [];
 

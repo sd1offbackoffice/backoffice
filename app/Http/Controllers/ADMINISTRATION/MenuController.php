@@ -91,7 +91,7 @@ class MenuController extends Controller
                     'acc_level' => $request->level,
                     'acc_url' => $request->url,
                     'acc_create_by' => Session::get('usid'),
-                    'acc_create_dt' => DB::RAW("SYSDATE"),
+                    'acc_create_dt' => Carbon::now(),
                     'acc_status' => 1
                 ]);
 
@@ -107,7 +107,7 @@ class MenuController extends Controller
                         'acc_level' => $request->level,
                         'acc_url' => $request->url,
                         'acc_create_by' => Session::get('usid'),
-                        'acc_create_dt' => DB::RAW("SYSDATE"),
+                        'acc_create_dt' => Carbon::now(),
                         'acc_status' => 1
                     ]);
             }
@@ -140,7 +140,7 @@ class MenuController extends Controller
                     'acc_level' => $request->level,
                     'acc_url' => $request->url,
                     'acc_modify_by' => Session::get('usid'),
-                    'acc_modify_dt' => DB::RAW("SYSDATE")
+                    'acc_modify_dt' => Carbon::now()
                 ]);
 
             if(substr(Session::get('connection'),0,3) == 'igr'){
@@ -155,7 +155,7 @@ class MenuController extends Controller
                         'acc_level' => $request->level,
                         'acc_url' => $request->url,
                         'acc_modify_by' => Session::get('usid'),
-                        'acc_modify_dt' => DB::RAW("SYSDATE")
+                        'acc_modify_dt' => Carbon::now()
                     ]);
             }
 

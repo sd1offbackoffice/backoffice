@@ -12,9 +12,6 @@
     <meta http-equiv='pragma' content='no-cache'>
 
 
-    <!-- CSS -->
-    {{--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">--}}
-
     {{-- JS --}}
     <script src={{asset('/js/jquery.js')}}></script>
     <script src="{{asset('/js/jquery-ui.js')}}"></script>
@@ -22,15 +19,12 @@
     <script src={{asset('/js/moment.min.js')}}></script>
     <script src={{asset('/js/sweetalert.js')}}></script>
     <script src={{asset('/js/datatables.js')}}></script>
-    <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
     <script src="{{asset('/js/dataTables-treeGrid.js')}}"></script>
-    {{--<script src={{asset('/js/datatables_bootstrap.js')}}></script>--}}
+    <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>
     <script src={{asset('/js/script.js')}}></script>
     <script src={{asset('/js/boostable.js')}}></script>
     <script src={{asset('/js/sticktable.js')}}></script>
     <script src="{{ asset('/js/MonthPicker.js') }}"></script>
-    {{--<script src="vendor/daterangepicker/moment.min.js"></script>--}}
-    {{--<script src="vendor/daterangepicker/daterangepicker.js"></script>--}}
     <script src="{{ asset('login_assets/vendor/daterangepicker/moment.min.js')}}"></script>
     <script src="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.js')}}"></script>
 
@@ -39,24 +33,22 @@
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-select.css') }}"/>
     <link rel="stylesheet" href="{{ asset('/css/jquery-ui.css') }}">
     <link rel="stylesheet" href={{ asset('css/datatables.css') }} rel="stylesheet">
-    {{--<link rel="stylesheet" href={{ asset('css/datatables_bootstrap.css') }} rel="stylesheet">--}}
     <link rel="stylesheet" href={{ asset('css/sticktable.css') }}  rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}">
     <link rel="stylesheet" href="{{ asset('css/MonthPicker.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.css')}}">
 
-    {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" >--}}
-    {{--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" >--}}
-
-
     <title id="title">@yield('title')</title>
 </head>
 @php
-    $globalColor =  '#0b6fc7';
     $globalNavbarColor =  '';
-    if(substr(Session::get('connection'),0,3) == 'sim' ){
+    if(substr(Session::get('connection'),0,3) == 'sim'){
         $globalColor =  '#ce1729';
     }
+    else if(substr(Session::get('connection'),0,3) == 'igr'){
+        $globalColor =  '#0b6fc7';
+    }
+    else $globalColor =  'black';
 @endphp
 <body>
 <div id="menu_area" class="menu-area">
@@ -456,7 +448,7 @@
                             <li class="dropdown" style="position: relative; right:0px;">
                                 <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">{{Session::get('usid')}}</a>
+                                   aria-expanded="false">{{Session::get('usid')}} @ {{ strtoupper(Session::get('connection')) }}</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a href="{{url("/logout")}}">Logout</a>
                                     </li>
@@ -570,7 +562,7 @@
                 <li class="dropdown" style="position: relative; right:0px;">
                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">{{Session::get('usid')}}</a>
+                       aria-expanded="false">[{{ strtoupper(Session::get('connection')) }}] {{Session::get('usid')}}</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a href="{{url("/logout")}}">Logout</a>
                         </li>

@@ -218,8 +218,8 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISH_KODEPROMOSI" => $nomor,
                         "ISH_NAMAPROMOSI" => 'Promosi InStore per Item',
                         "ISH_JENISPROMOSI" => 'I',
-                        "ISH_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISH_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISH_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISH_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISH_PRDCDHADIAH" => $pluhdh,
                         "ISH_JMLHADIAH" => $jmlhadiah,
                         "ISH_KELIPATANHADIAH" => $kelipatan,
@@ -235,7 +235,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISH_MAXJMLEVENT" => $maxjmlprevent,
                         "ISH_MAXFREKEVENT" => $maxfrekprevent,
                         "ISH_CREATE_BY" => $usid,
-                        "ISH_CREATE_DT" => DB::Raw('SYSDATE'),
+                        "ISH_CREATE_DT" => Carbon::now(),
                         "ISH_QTYALOKASIOUT" => 0,
                         "ISH_MINSTRUK" => 0,
                         "ISH_MINSPONSOR" => 0,
@@ -252,15 +252,15 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISD_KODEIGR" => $kodeigr,
                         "ISD_KODEPROMOSI" => $nomor,
                         "ISD_JENISPROMOSI" => 'I',
-                        "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISD_PRDCD" => $plu,
                         "ISD_MINPCS" => $minjmlstruk,
                         "ISD_MINRPH" => $minrphstruk,
                         "ISD_MAXPCS" => $maxjmlstruk,
                         "ISD_MAXRPH" => $maxrphstruk,
                         "ISD_CREATE_BY" => $usid,
-                        "ISD_CREATE_DT" => DB::Raw('SYSDATE')
+                        "ISD_CREATE_DT" => Carbon::now()
                     ]);
             }else{
                 DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
@@ -268,8 +268,8 @@ ORDER BY BERLAKU, ISD_PRDCD");
                     ->where("ISH_JENISPROMOSI",'=','I')
                     ->where("ISH_KODEPROMOSI",'=',$status)
                     ->update([
-                        "ISH_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISH_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISH_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISH_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISH_PRDCDHADIAH" => $pluhdh,
                         "ISH_JMLHADIAH" => $jmlhadiah,
                         "ISH_KELIPATANHADIAH" => $kelipatan,
@@ -290,7 +290,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
                         "ISH_MAXJMLEVENT" => $maxjmlprevent,
                         "ISH_MAXFREKEVENT" => $maxfrekprevent,
                         "ISH_MODIFY_BY" => $usid,
-                        "ISH_MODIFY_DT" => DB::Raw('SYSDATE')
+                        "ISH_MODIFY_DT" => Carbon::now()
                     ]);
 
                 DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
@@ -299,14 +299,14 @@ ORDER BY BERLAKU, ISD_PRDCD");
                     ->where("ISD_KODEPROMOSI",'=',$status)
                     ->where("ISD_PRDCD",'=',$plu)
                     ->update([
-                        "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISD_MINPCS" => $minjmlstruk,
                         "ISD_MINRPH" => $minrphstruk,
                         "ISD_MAXPCS" => $maxjmlstruk,
                         "ISD_MAXRPH" => $maxrphstruk,
                         "ISD_MODIFY_BY" => $usid,
-                        "ISD_MODIFY_DT" => DB::Raw('SYSDATE')
+                        "ISD_MODIFY_DT" => Carbon::now()
                     ]);
             }
             DB::connection(Session::get('connection'))->commit();

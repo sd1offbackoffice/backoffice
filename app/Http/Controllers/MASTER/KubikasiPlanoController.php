@@ -24,7 +24,7 @@ class KubikasiPlanoController extends Controller
 
         $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'), '=', '0')
+            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'), '=', '0')
             ->orderBy('prd_deskripsipanjang')
             ->limit(1000)
             ->get();
@@ -215,7 +215,7 @@ class KubikasiPlanoController extends Controller
                         ->where('kbp_koderak', $request->value['koderak'][$i])
                         ->where('kbp_kodesubrak', $request->value['kodesubrak'][$i])
                         ->where('kbp_shelvingrak', $request->value['shelvingrak'][$i])
-                        ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => DB::RAW('sysdate'), 'KBP_MODIFY_BY' => 'WEB']);
+                        ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => Carbon::now(), 'KBP_MODIFY_BY' => 'WEB']);
                 }
             }
             $message = 'Data Berhasil Terupdate!';

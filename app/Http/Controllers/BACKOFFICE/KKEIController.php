@@ -287,19 +287,19 @@ class KKEIController extends Controller
                     $kkei['kke_kodeigr'] = $kodeigr;
 
                     if($kkei['kke_tglkirim01'] != '' || $kkei['kke_tglkirim01'] != null)
-                        $kkei['kke_tglkirim01'] = DB::RAW("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
+                        $kkei['kke_tglkirim01'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
                     else $kkei['kke_tglkirim01'] = '';
                     if($kkei['kke_tglkirim02'] != '' || $kkei['kke_tglkirim02'] != null)
-                        $kkei['kke_tglkirim02'] = DB::RAW("to_date('".$kkei['kke_tglkirim02']."','dd/mm/yyyy')");
+                        $kkei['kke_tglkirim02'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim02']."','dd/mm/yyyy')");
                     else $kkei['kke_tglkirim02'] = '';
                     if($kkei['kke_tglkirim03'] != '' || $kkei['kke_tglkirim03'] != null)
-                        $kkei['kke_tglkirim03'] = DB::RAW("to_date('".$kkei['kke_tglkirim03']."','dd/mm/yyyy')");
+                        $kkei['kke_tglkirim03'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim03']."','dd/mm/yyyy')");
                     else $kkei['kke_tglkirim03'] = '';
                     if($kkei['kke_tglkirim04'] != '' || $kkei['kke_tglkirim04'] != null)
-                        $kkei['kke_tglkirim04'] = DB::RAW("to_date('".$kkei['kke_tglkirim04']."','dd/mm/yyyy')");
+                        $kkei['kke_tglkirim04'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim04']."','dd/mm/yyyy')");
                     else $kkei['kke_tglkirim04'] = '';
                     if($kkei['kke_tglkirim05'] != '' || $kkei['kke_tglkirim05'] != null)
-                        $kkei['kke_tglkirim05'] = DB::RAW("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
+                        $kkei['kke_tglkirim05'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim05']."','dd/mm/yyyy')");
                     else $kkei['kke_tglkirim05'] = '';
 
                     array_push($prdcd, $kkei['kke_prdcd']);

@@ -250,11 +250,11 @@ class TitipController extends Controller
                     ->insert([
                         'sjh_kodeigr' => Session::get('kdigr'),
                         'sjh_nostruk' => $request->station.$request->kasir.$request->notrx,
-                        'sjh_tglstruk' => DB::RAW("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
+                        'sjh_tglstruk' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
                         'sjh_kodecustomer' => $request->cus_kode,
-                        'sjh_tglpenitipan' => DB::RAW("SYSDATE"),
+                        'sjh_tglpenitipan' => Carbon::now(),
                         'sjh_create_by' => Session::get('usid'),
-                        'sjh_create_dt' => DB::RAW("SYSDATE")
+                        'sjh_create_dt' => Carbon::now()
                     ]);
             }
         }
@@ -263,11 +263,11 @@ class TitipController extends Controller
                 ->insert([
                     'sjh_kodeigr' => Session::get('kdigr'),
                     'sjh_nostruk' => $request->station.$request->kasir.$request->notrx,
-                    'sjh_tglstruk' => DB::RAW("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
+                    'sjh_tglstruk' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$request->tgl."','dd/mm/yyyy')"),
                     'sjh_kodecustomer' => $request->cus_kode,
-                    'sjh_tglpenitipan' => DB::RAW("SYSDATE"),
+                    'sjh_tglpenitipan' => Carbon::now(),
                     'sjh_create_by' => Session::get('usid'),
-                    'sjh_create_dt' => DB::RAW("SYSDATE")
+                    'sjh_create_dt' => Carbon::now()
                 ]);
         }
     }

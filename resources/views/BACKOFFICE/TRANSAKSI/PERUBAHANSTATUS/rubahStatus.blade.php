@@ -29,7 +29,7 @@
                                         <span id="printdoc" class="col-sm-2 btn btn-success btn-block" onclick="printDocument()">PRINT</span>
                                         <label for="i_tgldokumen" class="col-sm-4 col-form-label">Tanggal Dokumen</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" id="i_tgldokumen">
+                                            <input type="text" class="form-control" id="i_tgldokumen" disabled>
                                         </div>
                                         <div class="col-sm-1" style="margin-right: -34px">
                                             {{--this div just for filling space--}}
@@ -210,7 +210,7 @@
         function rsnLoad(value){
             let rsnTable = $('#rsnTable').DataTable({
                 "ajax": {
-                    'url' : '{{ url('/bo/transaksi/perubahanstatus/rubahStatus/modalrsn') }}',
+                    'url' : '{{ url()->current() }}/modalrsn',
                     "data" : {
                         'value' : value
                     },
@@ -249,7 +249,7 @@
         function srtLoad(value){
             let srtTable = $('#srtTable').DataTable({
                 "ajax": {
-                    'url' : '{{ url('/bo/transaksi/perubahanstatus/rubahStatus/modalsrt') }}',
+                    'url' : '{{ url()->current() }}/modalsrt',
                     "data" : {
                         'value' : value
                     },
@@ -557,24 +557,26 @@
                             }
                             $('.baris').remove();
                             for (i = 0; i< result.length; i++) {
-                                let tempPT = "";
-                                let tempRT = "";
+                                // let tempPT = "";
+                                // let tempRT = "";
+                                let tempPT = result[i].dari;
+                                let tempRT = result[i].ke;
+                                // tempPT = "B";
+                                // if(result[i].hgb_statusbarang = "PT"){
+                                //     tempRT = "R"
+                                // }else if(result[i].hgb_statusbarang = "RT"){
+                                //     tempRT = "T"
+                                // }else if(result[i].hgb_statusbarang = "TG"){
+                                //     tempRT = "T"
+                                // }else if(result[i].sup_flagpenangananproduk = "PT"){
+                                //     tempRT = "R"
+                                // }else if(result[i].sup_flagpenangananproduk = "RT"){
+                                //     tempRT = "T"
+                                // }else if(result[i].sup_flagpenangananproduk = "TG"){
+                                //     tempRT = "T"
+                                // }
                                 let temppcs = 0;
                                 let tempktn = 0;
-                                tempPT = "B";
-                                if(result[i].hgb_statusbarang = "PT"){
-                                    tempRT = "R"
-                                }else if(result[i].hgb_statusbarang = "RT"){
-                                    tempRT = "T"
-                                }else if(result[i].hgb_statusbarang = "TG"){
-                                    tempRT = "T"
-                                }else if(result[i].sup_flagpenangananproduk = "PT"){
-                                    tempRT = "R"
-                                }else if(result[i].sup_flagpenangananproduk = "RT"){
-                                    tempRT = "T"
-                                }else if(result[i].sup_flagpenangananproduk = "TG"){
-                                    tempRT = "T"
-                                }
                                 if(result[i].srt_qtykarton != null){
                                     tempktn = parseInt(result[i].srt_qtykarton);
                                 }
@@ -587,13 +589,13 @@
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
                                             <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].srt_unit +` / `+ result[i].srt_frac +`"></td>
                                             <td><input disabled type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input disabled type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input disabled type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
                                             <td><input disabled type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
                                             <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].srt_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
                                     $('#tbody').append(temp);
                                 }else{
@@ -602,13 +604,13 @@
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
                                             <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].srt_unit +` / `+ result[i].srt_frac +`"></td>
                                             <td><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
                                             <td><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
                                             <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].srt_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
                                     $('#tbody').append(temp);
                                 }
@@ -669,13 +671,13 @@
                                                 <input disabled type="text" class="form-control plu" value="`+ result[i].srt_prdcd +`">
                                             </td>
                                             <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
-                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                            <td><input disabled type="text" class="form-control satuan" value="`+ result[i].srt_unit +` / `+ result[i].srt_frac +`"></td>
                                             <td><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
                                             <td><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
                                             <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
-                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].prd_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
+                                            <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].srt_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
 
                             $('#tbody').append(temp);
@@ -704,7 +706,27 @@
             if(doc && docSort && keterangan === '* TAMBAH' || doc && docSort && keterangan === '*KOREKSI*'){
                 saveData('cetak');
             } else {
-                window.open('url(\'/bo/transaksi/pengeluaran/inqueryrtrsup/get-data-detail\')transaksi/perubahanstatus/rubahStatus/printdoc/'+doc+'/','_blank');
+                $.ajax({
+                    type: "post",
+                    url: "{{ url()->current() }}/check-document",
+                    data: {noDoc:doc},
+                    beforeSend: function () {
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (result) {
+                        $('#modal-loader').modal('hide');
+                        if(result.barangrusak == 'true'){
+                            window.open(`{{ url()->current() }}/printdoc?doc=${doc}&page=barangrusak`, '_blank');
+                        }
+                        if(result.barangretur == 'true'){
+                            window.open(`{{ url()->current() }}/printdoc?doc=${doc}&page=barangretur`, '_blank');
+                        }
+                        if(result.perubahanstatus == 'true'){
+                            window.open(`{{ url()->current() }}/printdoc?doc=${doc}&page=perubahanstatus`, '_blank');
+                        }
+                    }
+                });
+
 
                 ajaxSetup();
                 $.ajax({
@@ -850,7 +872,26 @@
                 success: function (result) {
                     if(result.kode == '1'){
                         if (status == 'cetak'){
-                            window.open('{{ url()->current() }}/printdoc/'+result.msg+'/','_blank');
+                            $.ajax({
+                                type: "post",
+                                url: "{{ url()->current() }}/check-document",
+                                data: {noDoc:noDoc},
+                                beforeSend: function () {
+                                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                },
+                                success: function (result) {
+                                    $('#modal-loader').modal('hide');
+                                    if(result.barangrusak == 'true'){
+                                        window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=barangrusak`, '_blank');
+                                    }
+                                    if(result.barangretur == 'true'){
+                                        window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=barangretur`, '_blank');
+                                    }
+                                    if(result.perubahanstatus == 'true'){
+                                        window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=perubahanstatus`, '_blank');
+                                    }
+                                }
+                            });
                             $.ajax({
                                 type: "post",
                                 url: "{{ url()->current() }}/checkrak",
@@ -869,7 +910,26 @@
                         swal('', result.msg, 'warning');
                     } else if(result.kode == '3'){
                         swal('Revisi Tidak Diperkenankan Lagi Karena Data Sudah Dicetak !!');
-                        window.open('{{ url()->current() }}/printdoc/'+result.msg+'/','_blank');
+                        $.ajax({
+                            type: "post",
+                            url: "{{ url()->current() }}/check-document",
+                            data: {noDoc:noDoc},
+                            beforeSend: function () {
+                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            },
+                            success: function (result) {
+                                $('#modal-loader').modal('hide');
+                                if(result.barangrusak == 'true'){
+                                    window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=barangrusak`, '_blank');
+                                }
+                                if(result.barangretur == 'true'){
+                                    window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=barangretur`, '_blank');
+                                }
+                                if(result.perubahanstatus == 'true'){
+                                    window.open(`{{ url()->current() }}/printdoc?doc=${noDoc}&page=perubahanstatus`, '_blank');
+                                }
+                            }
+                        });
                         $.ajax({
                             type: "post",
                             url: "{{ url()->current() }}/checkrak",
@@ -889,8 +949,9 @@
                     //$('#saveData').attr("disabled", true)
                     clearField();
                 }, error: function (e) {
-                    console.log(e);
-                    alert('error');
+                    swal('ERROR', e.msg, 'error');
+                    // console.log(e);
+                    // alert('error');
                 }
             })
         }

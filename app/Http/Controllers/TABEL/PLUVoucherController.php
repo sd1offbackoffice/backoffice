@@ -210,11 +210,11 @@ class PLUVoucherController extends Controller
                     $insert[$i]['pvc_create_by'] = $old[$i]->pvc_create_by;
                     $insert[$i]['pvc_create_dt'] = $old[$i]->pvc_create_dt;
                     $insert[$i]['pvc_modify_by'] = Session::get('usid');
-                    $insert[$i]['pvc_modify_dt'] = DB::RAW("SYSDATE");
+                    $insert[$i]['pvc_modify_dt'] = Carbon::now();
                 }
                 else{
                     $insert[$i]['pvc_create_by'] = Session::get('usid');
-                    $insert[$i]['pvc_create_dt'] = DB::RAW("SYSDATE");
+                    $insert[$i]['pvc_create_dt'] = Carbon::now();
                 }
 
                 DB::connection(Session::get('connection'))->table('tbtabel_produkvoucher')

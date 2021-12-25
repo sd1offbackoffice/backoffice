@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PEMUSNAHAN;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -226,7 +227,8 @@ class barangRusakController extends Controller
             $p_reprint = '';
         }
 
-        $datas = DB::connection(Session::get('connection'))->select("select PRS_NAMAPERUSAHAAN, cab_namacabang, cab_alamat2, nvl(rsk_recordid,'8') ,
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+        $data = DB::connection(Session::get('connection'))->select("select PRS_NAMAPERUSAHAAN, cab_namacabang, cab_alamat2, nvl(rsk_recordid,'8') ,
                                               rsk_nodoc, rsk_tgldoc, rsk_prdcd, FLOOR(rsk_qty/prd_frac) qty, mod(rsk_qty,prd_frac) qtyk,rsk_hrgsatuan, rsk_nilai,
                                               rsk_keterangan, rap_store_manager,  rap_logistic_supervisor, rap_administrasi,
                                               prd_deskripsipanjang, prd_unit||'/'||prd_frac SATUAN, case when '$p_reprint' = 'Y' then 'REPRINT' else '' end reprint
@@ -238,18 +240,18 @@ class barangRusakController extends Controller
                                               and prd_prdcd(+)=rsk_prdcd
                                               and prd_kodeigr(+)=rsk_kodeigr
                                               and rap_kodeigr(+)=rsk_kodeigr
-                                    order by rsk_seqno
-");
+                                    order by rsk_seqno");
+
 
 //                Update rsk_recordid
         DB::connection(Session::get('connection'))->table('tbtr_barangrusak')->where('rsk_nodoc', $noDoc)->whereNull('rsk_recordid')->update(['rsk_recordid' => '9']);
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.barangRusak-laporan', ['datas' => $datas]);
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.barangRusak-laporan', ['data' => $data, 'perusahaan'=>$perusahaan]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('BarangRusak-laporan.pdf');
     }

@@ -14,7 +14,7 @@ class PBManualController extends Controller
     {
         $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'), '=', '0')
+            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'), '=', '0')
             ->orderBy('prd_deskripsipanjang')
             ->get();
         $pb = DB::connection(Session::get('connection'))->table('tbTr_PB_H')
@@ -132,11 +132,11 @@ class PBManualController extends Controller
             $pbd = DB::connection(Session::get('connection'))->table('tbtr_pb_d')
                 ->join('tbmaster_prodmast', 'PBD_PRDCD', 'PRD_PRDCD')
                 ->leftJoin('tbmaster_stock', function ($join) {
-                    $join->on('pbd_prdcd', 'st_prdcd')->On('st_lokasi', DB::RAW('01'));
+                    $join->on('pbd_prdcd', 'st_prdcd')->On('st_lokasi', DB::connection(Session::get('connection'))->raw('01'));
                 })
                 ->join('tbmaster_supplier', 'pbd_kodesupplier', 'sup_kodesupplier')
-                ->leftJoin(DB::RAW('(' . $pluomi . ')'), 'pbd_prdcd', 'pluomi')
-                ->leftJoin(DB::RAW('(' . $pluidm . ')'), 'pbd_prdcd', 'pluidm')
+                ->leftJoin(DB::connection(Session::get('connection'))->raw('(' . $pluomi . ')'), 'pbd_prdcd', 'pluomi')
+                ->leftJoin(DB::connection(Session::get('connection'))->raw('(' . $pluidm . ')'), 'pbd_prdcd', 'pluidm')
                 ->leftJoin('tbmaster_minimumorder', 'prd_prdcd', 'min_prdcd')
                 ->selectRaw('DISTINCT pbd_nourut, PBD_PRDCD,PRD_DESKRIPSIPANJANG,PRD_DESKRIPSIPENDEK, PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_FRAC, PRD_UNIT,PRD_KODETAG,SUM(PBD_QTYPB) PBD_QTYPB,ST_SALDOAKHIR,PRD_FLAGBKP1,PBD_KODESUPPLIER,SUP_NAMASUPPLIER,
                 CASE WHEN NVL(PLUOMI,\' \')=\' \' THEN \'N\' ELSE \'Y\' END F_OMI,
@@ -146,7 +146,7 @@ class PBManualController extends Controller
                 NVL(PRD_ISIBELI,1) vPrdisiBeli,
                 PBD_FDXREV,PBD_HRGSATUAN,PBD_RPHDISC1,PBD_PERSENDISC1,PBD_RPHDISC2,PBD_PERSENDISC2,PBD_BONUSPO1,PBD_BONUSPO2,PBD_GROSS,PBD_PPN,PBD_PPNBM,PBD_PPN,PBD_PPNBOTOL,PRD_HRGJUAL,PBD_PKMT,PBD_SALDOAKHIR')
                 ->where('PBD_NOPB', $request->value)
-                ->groupBy(DB::raw('pbd_nourut,PBD_PRDCD,PRD_DESKRIPSIPANJANG,PRD_DESKRIPSIPENDEK,PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_FRAC,PRD_UNIT,
+                ->groupBy(DB::connection(Session::get('connection'))->raw('pbd_nourut,PBD_PRDCD,PRD_DESKRIPSIPANJANG,PRD_DESKRIPSIPENDEK,PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_FRAC,PRD_UNIT,
                     PRD_KODETAG,ST_SALDOAKHIR,PRD_FLAGBKP1,PBD_KODESUPPLIER,SUP_NAMASUPPLIER,
                     CASE WHEN NVL(PLUOMI,\' \')=\' \' THEN \'N\' ELSE \'Y\' END,
                     CASE WHEN NVL(PLUIDM,\' \')=\' \' THEN \'N\' ELSE \'Y\' END,
@@ -340,9 +340,9 @@ class PBManualController extends Controller
                     'PBD_FDXREV' => $request->data['fdxrev'][$i],
                     'PBD_FLAGGUDANGPUSAT' => '',
                     'PBD_CREATE_BY' => Session::get('usid'),
-                    'PBD_CREATE_DT' => DB::Raw('trunc(sysdate)'),
+                    'PBD_CREATE_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)'),
                     'PBD_MODIFY_BY' => Session::get('usid'),
-                    'PBD_MODIFY_DT' => DB::Raw('trunc(sysdate)')]);
+                    'PBD_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)')]);
         }
         $pbh = DB::connection(Session::get('connection'))->table('tbtr_pb_h')
             ->select('pbh_tglpb', 'pbh_tipepb', 'pbh_jenispb', 'pbh_flagdoc', 'pbh_keteranganpb', 'pbh_tgltransfer')
@@ -369,7 +369,7 @@ class PBManualController extends Controller
                     ->groupBy('pbd_nopb', 'pbd_kodesupplier', 'sup_minkarton', 'sup_minrph')
                     ->toSql();
 
-                $pbdsupp = DB::connection(Session::get('connection'))->table(DB::raw('(' . $pbdsuppSub . ') a'))
+                $pbdsupp = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('(' . $pbdsuppSub . ') a'))
                     ->select('pbd_kodesupplier')
                     ->whereRaw('( a.quantity < a.sup_minkarton AND a.sup_minkarton <> 0 AND pbd_nopb = ' . $request->nopb . ' ) OR (a.rupiah < a.sup_minrph AND a.sup_minrph <> 0)')
                     ->toSql();
@@ -411,7 +411,7 @@ class PBManualController extends Controller
                             'tlk_kodesupplier' => $pbd->pbd_kodesupplier,
                             'tlk_keterangantolakan' => '< DARI MINOR CARTON/RP PER SUPPLIER',
                             'tlk_create_by' => Session::get('usid'),
-                            'tlk_create_dt' => DB::raw('sysdate')]);
+                            'tlk_create_dt' => Carbon::now()]);
                 }
 
 //	  ----->>>> Detele PB Tolakan Item
@@ -460,7 +460,7 @@ class PBManualController extends Controller
                 ->insert(['PBH_KODEIGR' => Session::get('kdigr'),
                     'PBH_RECORDID' => '',
                     'PBH_NOPB' => $request->nopb,
-                    'PBH_TGLPB' => DB::raw('to_date(\'' . $request->tglpb . '\',\'dd/mm/yyyy\')'),
+                    'PBH_TGLPB' => DB::connection(Session::get('connection'))->raw('to_date(\'' . $request->tglpb . '\',\'dd/mm/yyyy\')'),
                     'PBH_TIPEPB' => $request->typepb,
                     'PBH_JENISPB' => $request->flag,
                     'PBH_FLAGDOC' => '0',
@@ -478,9 +478,9 @@ class PBManualController extends Controller
                     'PBH_KETERANGANPB' => $request->keterangan,
                     'PBH_TGLTRANSFER' => '',
                     'PBH_CREATE_BY' => Session::get('usid'),
-                    'PBH_CREATE_DT' => DB::raw('trunc(sysdate)'),
+                    'PBH_CREATE_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)'),
                     'PBH_MODIFY_BY' => Session::get('usid'),
-                    'PBH_MODIFY_DT' => DB::raw('trunc(sysdate)')]);
+                    'PBH_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)')]);
         }
         return compact(['message', 'status']);
     }

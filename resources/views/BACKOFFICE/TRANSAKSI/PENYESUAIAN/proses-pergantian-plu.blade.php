@@ -12,7 +12,7 @@
                         <div class="row form-group">
                             <label for="tanggal" class="col-sm-2 text-right col-form-label">PLU LAMA</label>
                             <div class="col-sm-3 buttonInside">
-                                <input type="text" class="form-control text-left" id="plulama" disabled>
+                                <input type="text" class="form-control text-left" id="plulama">
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov"onclick="tipe = 'lama'" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -33,7 +33,7 @@
                         <div class="row form-group">
                             <label for="tanggal" class="col-sm-2 text-right col-form-label">PLU BARU</label>
                             <div class="col-sm-3 buttonInside">
-                                <input type="text" class="form-control text-left" id="plubaru" disabled>
+                                <input type="text" class="form-control text-left" id="plubaru">
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov"onclick="tipe = 'baru'" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -147,7 +147,7 @@
 
         $(document).ready(function(){
             lov = $('#table_lov').DataTable({
-                "ajax": '{{ url('/bo/transaksi/penyesuaian/perubahanplu/get-data-lov') }}',
+                "ajax": '{{ url()->current() }}/get-data-lov',
                 "columns": [
                     {data: 'prd_prdcd', name: 'prd_prdcd'},
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
@@ -179,10 +179,28 @@
             getData(prdcd);
         });
 
+        $('#plulama').on('keypress',function(e){
+            if(e.which == 13){
+                tipe = 'lama';
+                plu = convertPlu($(this).val());
+                $(this).val(plu);
+                getData(plu);
+            }
+        });
+
+        $('#plubaru').on('keypress',function(e){
+            if(e.which == 13){
+                tipe = 'baru';
+                plu = convertPlu($(this).val());
+                $(this).val(plu);
+                getData(plu);
+            }
+        });
+
         function getData(prdcd){
             $.ajax({
                 type: "GET",
-                url: "{{ url('/bo/transaksi/penyesuaian/perubahanplu/get-data') }}",
+                url: "{{ url()->current() }}/get-data",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -206,8 +224,7 @@
                     $('#modal-loader').modal('hide');
                     // handle error
                     swal({
-                        title: error.responseJSON.exception,
-                        text: error.responseJSON.message,
+                        title: error.responseJSON.message,
                         icon: 'error'
                     }).then(() => {
 
@@ -245,7 +262,7 @@
                         if(ukuran){
                             $.ajax({
                                 type: "POST",
-                                url: "{{ url('/bo/transaksi/penyesuaian/perubahanplu/proses') }}",
+                                url: "{{ url()->current() }}/proses",
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
@@ -265,7 +282,7 @@
                                         icon: response.status,
                                     }).then(() => {
                                         if(response.status == 'success'){
-                                            window.open('{{ url('/bo/transaksi/penyesuaian/perubahanplu/laporan') }}','_blank');
+                                            window.open('{{ url()->current() }}/laporan','_blank');
                                         }
                                     });
                                 },
@@ -273,8 +290,7 @@
                                     $('#modal-loader').modal('hide');
                                     // handle error
                                     swal({
-                                        title: error.responseJSON.exception,
-                                        text: error.responseJSON.message,
+                                        title: error.responseJSON.message,
                                         icon: 'error'
                                     }).then(() => {
 

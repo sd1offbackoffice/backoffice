@@ -71,7 +71,7 @@ class PLUNonRefundController extends Controller
                     'non_kodeigr' => Session::get('kdigr'),
                     'non_prdcd' => $request->plu,
                     'non_create_by' => Session::get('usid'),
-                    'non_create_dt' => DB::RAW("SYSDATE")
+                    'non_create_dt' => Carbon::now()
                 ]);
 
             return response()->json([
@@ -183,7 +183,7 @@ class PLUNonRefundController extends Controller
                         'non_kodeigr' => Session::get('kdigr'),
                         'non_prdcd' => $d->prd_prdcd,
                         'non_create_by' => Session::get('usid'),
-                        'non_create_dt' => DB::RAW("SYSDATE")
+                        'non_create_dt' => Carbon::now()
                     ]);
             }
         }

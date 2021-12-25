@@ -23,7 +23,7 @@ class JenisItemController extends Controller
             ->select('prd_prdcd','prd_deskripsipanjang')
             ->where('prd_prdcd','LIKE', '%'.$search.'%')
             ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
-            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
             ->orderBy('prd_deskripsipanjang')
             ->limit(100)
             ->get();

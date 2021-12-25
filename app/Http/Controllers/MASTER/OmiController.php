@@ -74,12 +74,12 @@ class OmiController extends Controller
         $kodeCust=$request->kodeCust;
 //        $tglGo=$request->tglGo;
 //        $tglTutup=$request->tglTutup;
-        $tglGo      = ($request->tglGo) ? DB::raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
-        $tglTutup   = ($request->tglTutup) ?DB::raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
+        $tglGo      = ($request->tglGo) ? DB::connection(Session::get('connection'))->raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
+        $tglTutup   = ($request->tglTutup) ?DB::connection(Session::get('connection'))->raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
         $statusToko=$request->statusToko;
         $jamBuka=$request->jamBuka;
         $jamTutup=$request->jamTutup;
-        $tglUpdate= ($request->tglUpdate) ?DB::raw( "to_date('$request->tglUpdate', 'DD/MM/YYYY')") : '';;
+        $tglUpdate= ($request->tglUpdate) ?DB::connection(Session::get('connection'))->raw( "to_date('$request->tglUpdate', 'DD/MM/YYYY')") : '';;
         $flagPB=$request->flagPB;
         $hari=$request->hari;
         $jadwalKirim = str_replace('_', ' ', $hari);
@@ -111,8 +111,8 @@ class OmiController extends Controller
         $flagKph    =$request->flagKph;
         $kodeCust   =$request->kodeCust;
 //        $tglGo      = ($request->tglGo) ? date('Y/m/d', strtotime($request->tglGo)) : '';
-        $tglGo      = ($request->tglGo) ? DB::raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
-        $tglTutup   = ($request->tglTutup) ?DB::raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
+        $tglGo      = ($request->tglGo) ? DB::connection(Session::get('connection'))->raw( "to_date('$request->tglGo', 'DD/MM/YYYY')") : '';
+        $tglTutup   = ($request->tglTutup) ?DB::connection(Session::get('connection'))->raw( "to_date('$request->tglTutup', 'DD/MM/YYYY')") : '';
         $user       = Session::get('usid');
         $kodeigr    = Session::get('kdigr');
         date_default_timezone_set('Asia/Jakarta');

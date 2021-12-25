@@ -82,7 +82,7 @@ class InformasiHistoryProductController extends Controller
         $produk = DB::connection(Session::get('connection'))->table('TBMASTER_CABANG')->Join('TBMASTER_PRODMAST', function ($join) {
             $join->on('CAB_KODECABANG', '=', 'PRD_KODEIGR')->On('CAB_KODEIGR', '=', 'PRD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
-            $join->On(DB::raw('SUBSTR (ST_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'))->On('ST_KODEIGR', '=', 'PRD_KODEIGR')->On('ST_LOKASI', '=', 01);
+            $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (ST_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (PRD_PRDCD, 1, 6)'))->On('ST_KODEIGR', '=', 'PRD_KODEIGR')->On('ST_LOKASI', '=', 01);
         })->Join('TBMASTER_DIVISI', function ($join) {
             $join->On('DIV_KODEDIVISI', '=', 'PRD_KODEDIVISI')->On('DIV_KODEIGR', '=', 'PRD_KODEIGR');
         })->Join('TBMASTER_DEPARTEMENT', function ($join) {
@@ -90,7 +90,7 @@ class InformasiHistoryProductController extends Controller
         })->Join('TBMASTER_KATEGORI', function ($join) {
             $join->On('KAT_KODEKATEGORI', '=', 'PRD_KODEKATEGORIBARANG')->On('KAT_KODEIGR', '=', 'PRD_KODEIGR')->On('KAT_KODEDEPARTEMENT', '=', 'DEP_KODEDEPARTEMENT');
         })->leftJoin('TBMASTER_MINIMUMORDER', function ($join) {
-            $join->On(DB::raw('SUBSTR (MIN_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'))->On('MIN_KODEIGR', '=', 'PRD_KODEIGR')->On('KAT_KODEDEPARTEMENT', '=', 'DEP_KODEDEPARTEMENT');
+            $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (MIN_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (PRD_PRDCD, 1, 6)'))->On('MIN_KODEIGR', '=', 'PRD_KODEIGR')->On('KAT_KODEDEPARTEMENT', '=', 'DEP_KODEDEPARTEMENT');
         })->leftJoin('TBTR_PROMOMD', function ($join) {
             $join->On('PRMD_PRDCD', '=', 'PRD_PRDCD')->On('PRMD_KODEIGR', '=', 'PRD_KODEIGR');
         })->leftJoin('TBMASTER_BARCODE', function ($join) {
@@ -134,7 +134,7 @@ class InformasiHistoryProductController extends Controller
                    NVL (PRD_FLAGIDM, \'N\') IDM,
                    NVL (PRD_FLAGIGR, \'N\') IGR')
             ->where('prd_prdcd', '=', $request->value)
-            ->groupBy(DB::raw('PRD_PRDCD,
+            ->groupBy(DB::connection(Session::get('connection'))->raw('PRD_PRDCD,
                    PRD_DESKRIPSIPANJANG,
                    PRD_KODETAG,
                    PRD_FLAGBKP1,
@@ -320,7 +320,7 @@ class InformasiHistoryProductController extends Controller
         $sj = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')->leftJoin('TBTR_PROMOMD', function ($join) {
             $join->on('PRD_PRDCD', '=', 'PRMD_PRDCD')->On('PRD_KODEIGR', '=', 'PRMD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
-            $join->On(DB::raw('SUBSTR (PRD_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
+            $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (PRD_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
         })->SelectRaw('PRD_PRDCD,
                                 PRD_MINJUAL MINJ,
                                 PRD_FLAGBKP1 PKP,
@@ -344,7 +344,7 @@ class InformasiHistoryProductController extends Controller
                                 PRMD_JAMAWAL FMFRHR,
                                 PRMD_JAMAKHIR FMTOHR ')
             ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\'' . $request->value . '\', 1, 6)')
-            ->groupBy(DB::raw('PRD_PRDCD,
+            ->groupBy(DB::connection(Session::get('connection'))->raw('PRD_PRDCD,
                          PRD_MINJUAL,
                          PRD_FLAGBKP1,
                          PRD_FLAGBKP2,
@@ -781,7 +781,7 @@ class InformasiHistoryProductController extends Controller
         $pb = DB::connection(Session::get('connection'))->table('tbtr_po_d')
             ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
             ->join('tbtr_pb_d', function ($join) {
-                $join->On(DB::raw('SUBSTR (pbd_prdcd, 1, 6)'), '=', DB::raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
+                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (pbd_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
             })->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
             ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
                                     tpod_prdcd,
@@ -1017,7 +1017,7 @@ class InformasiHistoryProductController extends Controller
             $so_tgl = date('Y-m-d');
         }
 
-        $tempadjustso = DB::Raw('(Select ADJ_KODEIGR,
+        $tempadjustso = DB::connection(Session::get('connection'))->raw('(Select ADJ_KODEIGR,
                                 ADJ_TGLSO,
                                 ADJ_PRDCD,
                                 ADJ_LOKASI,
@@ -1031,7 +1031,7 @@ class InformasiHistoryProductController extends Controller
         $so = DB::connection(Session::get('connection'))->table('TBTR_BA_STOCKOPNAME')
             ->join('TBMASTER_PRODMAST', 'PRD_PRDCD', '=', 'SOP_PRDCD')
             ->leftJoin($tempadjustso, function ($join) {
-                $join->On(DB::raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::raw('trunc(B.ADJ_TGLSO)'), '=', DB::raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
+                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::connection(Session::get('connection'))->raw('trunc(B.ADJ_TGLSO)'), '=', DB::connection(Session::get('connection'))->raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
             })
             ->selectRaw('SOP_QTYSO,
                         SOP_QTYLPP,
@@ -1339,7 +1339,7 @@ class InformasiHistoryProductController extends Controller
         $qty_soic = $qty_soic->qty;
         $stockcarton = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->join('tbmaster_stock', function ($join) {
-                $join->On(DB::raw('substr(st_prdcd, 1, 6)'), '=', DB::raw('substr(prd_prdcd, 1, 6)'));
+                $join->On(DB::connection(Session::get('connection'))->raw('substr(st_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('substr(prd_prdcd, 1, 6)'));
             })
             ->selectRaw('prd_frac frac,
                                     st_lokasi,

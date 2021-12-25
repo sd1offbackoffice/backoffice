@@ -28,15 +28,38 @@ class PLUNonChargeController extends Controller
         return $data;
     }
 
-    public function getLovPLU(){
-        $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->selectRaw("prd_prdcd plu, prd_deskripsipanjang desk, prd_unit || '/' || prd_frac satuan")
-            ->where('prd_kodeigr','=',Session::get('kdigr'))
-            ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
-            ->orderBy('prd_prdcd')
-            ->get();
+    public function getLovPLU(Request $request){
+        $search = $request->plu;
 
-        return DataTables::of($data)->make(true);
+        if($search == ''){
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
+                ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
+                ->orderBy('prd_prdcd')
+                ->limit(100)
+                ->get();
+        }
+        else if(is_numeric($search)){
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
+                ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
+                ->where('prd_prdcd','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
+                ->orderBy('prd_prdcd','asc')
+                ->get();
+        }
+        else{
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
+                ->selectRaw("prd_prdcd,prd_deskripsipanjang, prd_unit || '/' || prd_frac satuan")
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) <> '0'")
+                ->where('prd_deskripsipanjang','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
+                ->orderBy('prd_prdcd','asc')
+                ->get();
+        }
+
+        return DataTables::of($produk)->make(true);
     }
 
     public function getPLUDetail(Request $request){
@@ -71,7 +94,7 @@ class PLUNonChargeController extends Controller
                     'non_kodeigr' => Session::get('kdigr'),
                     'non_prdcd' => $request->plu,
                     'non_create_by' => Session::get('usid'),
-                    'non_create_dt' => DB::RAW("SYSDATE")
+                    'non_create_dt' => Carbon::now()
                 ]);
 
             return response()->json([

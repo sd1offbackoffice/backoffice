@@ -618,7 +618,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 ->update([
                     'TRPT_CUS_KODEMEMBER' => $pkp,
                     'TRPT_INVOICETAXNO' => $invno1,
-                    'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
+                    'TRPT_INVOICETAXDATE' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')")
                 ]);
 
             if($bkl == 'Y'){
@@ -688,7 +688,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 ->update([
                     'TRPT_CUS_KODEMEMBER' => $pkp,
                     'TRPT_INVOICETAXNO' => $invno1,
-                    'TRPT_INVOICETAXDATE' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')")
+                    'TRPT_INVOICETAXDATE' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')")
                 ]);
 
             $PESAN = 'PBOMI - BKL';
@@ -721,8 +721,8 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                 ->where("PTG_KODEIGR",'=',$kodeigr)
                 ->where("PTG_KODEMEMBER",'=','$ptkp')
                 ->update([
-                    'PTG_AMTAR' => DB::raw("PTG_AMTAR - $jmlhutang"),
-                    'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT - $jmlbayar")
+                    'PTG_AMTAR' => DB::connection(Session::get('connection'))->raw("PTG_AMTAR - $jmlhutang"),
+                    'PTG_AMTPAYMENT' => DB::connection(Session::get('connection'))->raw("PTG_AMTPAYMENT - $jmlbayar")
                 ]);
 
             $PESAN = 'Cek Piutang PKP';
@@ -742,7 +742,7 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         'PTG_AMTAR' => $jmlhutang,
                         'PTG_AMTPAYMENT' => $jmlbayar,
                         'PTG_CREATE_BY' => $usid,
-                        'PTG_CREATE_DT' => DB::RAW("SYSDATE")]);
+                        'PTG_CREATE_DT' => Carbon::now()]);
             }else{
                 $PESAN = 'Update Piutang PKP';
 
@@ -750,8 +750,8 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                     ->where("PTG_KODEIGR",'=',$kodeigr)
                     ->where("PTG_KODEMEMBER",'=','$pkp')
                     ->update([
-                        'PTG_AMTAR' => DB::raw("PTG_AMTAR + $jmlhutang"),
-                        'PTG_AMTPAYMENT' => DB::raw("PTG_AMTPAYMENT + $jmlbayar")
+                        'PTG_AMTAR' => DB::connection(Session::get('connection'))->raw("PTG_AMTAR + $jmlhutang"),
+                        'PTG_AMTPAYMENT' => DB::connection(Session::get('connection'))->raw("PTG_AMTPAYMENT + $jmlbayar")
                     ]);
             }
 
@@ -790,13 +790,13 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         ->insert([
                             'FKT_KODEIGR' => $kodeigr,
                             'FKT_TIPE' => 'S',
-                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGL' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_NOFAKTUR' => $invno1,
-                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_KODEMEMBER' => $pkp,
                             'FKT_SIGN' => 'PINDAH STATUS',
                             'FKT_CREATE_BY' => $usid,
-                            'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
+                            'FKT_CREATE_DT' => Carbon::now(),
                             'FKT_NOSERI' => $serial1]);
                 }else{
                     $PESAN = 'Update FP';
@@ -806,8 +806,8 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         ->where("FKT_NOFAKTUR",'=',$invno1)
                         ->where("FKT_TIPE",'=','S')
                         ->update([
-                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGL' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_KODEMEMBER' => $pkp,
                             'FKT_SIGN' => 'PINDAH STATUS',
                         ]);
@@ -847,13 +847,13 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         ->insert([
                             'FKT_KODEIGR' => $kodeigr,
                             'FKT_TIPE' => 'S',
-                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGL' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_NOFAKTUR' => $invno2,
-                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_KODEMEMBER' => $pkp,
                             'FKT_SIGN' => 'PINDAH STATUS',
                             'FKT_CREATE_BY' => $usid,
-                            'FKT_CREATE_DT' => DB::RAW("SYSDATE"),
+                            'FKT_CREATE_DT' => Carbon::now(),
                             'FKT_NOSERI' => $serial2]);
                 }else{
                     $PESAN = 'Update FP 2';
@@ -863,8 +863,8 @@ class PerubahanStatusOmiPtkpToPkpController extends Controller
                         ->where("FKT_NOFAKTUR",'=',$invno2)
                         ->where("FKT_TIPE",'=','S')
                         ->update([
-                            'FKT_TGL' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
-                            'FKT_TGLFAKTUR' => DB::RAW("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGL' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
+                            'FKT_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('$tglfp','DD-MM-YYYY')"),
                             'FKT_KODEMEMBER' => $pkp,
                             'FKT_SIGN' => 'PINDAH STATUS',
                         ]);

@@ -124,8 +124,8 @@ class userController extends Controller
         $accessgroup = DB::connection(Session::get('connection'))->table('tbmaster_access')->leftJoin('tbmaster_useraccess', function ($join) use ($id) {
             $join->on('tbmaster_access.accessgroup', '=', 'tbmaster_useraccess.accessgroup')
                 ->on('tbmaster_access.accesscode', '=', 'tbmaster_useraccess.accesscode')
-                ->on('tbmaster_useraccess.userid', DB::RAW("'" . $id . "'"))
-                ->on('tbmaster_useraccess.kodeigr', '=', DB::raw(Session::get('kdigr')));
+                ->on('tbmaster_useraccess.userid', $id)
+                ->on('tbmaster_useraccess.kodeigr', '=', Session::get('kdigr'));
         })
             ->selectRaw('tbmaster_access.accessgroup')
             ->where('tbmaster_access.kodeigr', '=', Session::get('kdigr'))
@@ -149,7 +149,7 @@ class userController extends Controller
                 DB::connection(Session::get('connection'))->table('tbmaster_useraccess')
                     ->where('userid', '=', $request->userid)
                     ->where('accesscode', '=', $request->value['accesscode'][$i])
-                    ->update(['baca' => $request->value['baca'][$i], 'tambah' => $request->value['tambah'][$i], 'koreksi' => $request->value['koreksi'][$i], 'hapus' => $request->value['hapus'][$i], 'modify_by' => Session::get('usid'), 'modify_dt' => DB::raw('sysdate')]);
+                    ->update(['baca' => $request->value['baca'][$i], 'tambah' => $request->value['tambah'][$i], 'koreksi' => $request->value['koreksi'][$i], 'hapus' => $request->value['hapus'][$i], 'modify_by' => Session::get('usid'), 'modify_dt' => Carbon::now()]);
             } else {
                 $accessgroup = DB::connection(Session::get('connection'))->table('tbmaster_access')
                     ->selectRaw('accessgroup,accessname')
@@ -165,7 +165,7 @@ class userController extends Controller
                         'koreksi' => $request->value['koreksi'][$i],
                         'hapus' => $request->value['hapus'][$i],
                         'kodeigr' => Session::get('kdigr'),
-                        'create_dt' => DB::Raw('sysdate'),
+                        'create_dt' => Carbon::now(),
                         'create_by' => Session::get('usid')
                     ]);
             }
@@ -188,7 +188,14 @@ class userController extends Controller
             $status = 'error';
         } else {
             if (DB::connection(Session::get('connection'))->table('TBMASTER_COMPUTER')->insert(
-                ['ip' => $request->ip, 'station' => $request->station, 'computername' => $request->computername, 'create_by' => Session::get('usid'), 'create_dt' => DB::raw('sysdate'), 'kodeigr' => Session::get('kdigr')])) {
+                [
+                    'ip' => $request->ip,
+                    'station' => $request->station,
+                    'computername' => $request->computername,
+                    'create_by' => Session::get('usid'),
+                    'create_dt' => Carbon::now(),
+                    'kodeigr' => Session::get('kdigr')
+                ])) {
                 $message = 'IP Berhasil Disimpan!';
                 $status = 'success';
             } else {
@@ -203,7 +210,7 @@ class userController extends Controller
         for ($i = 0; $i < sizeof($request->value['ip']); $i++) {
             DB::connection(Session::get('connection'))->table('TBMASTER_COMPUTER')
                 ->where('ip', '=', $request->value['ip'][$i])
-                ->update(['station' => $request->value['station'][$i], 'computername' => $request->value['computername'][$i], 'modify_by' => Session::get('usid'), 'modify_dt' => DB::RAW('sysdate')]);
+                ->update(['station' => $request->value['station'][$i], 'computername' => $request->value['computername'][$i], 'modify_by' => Session::get('usid'), 'modify_dt' => Carbon::now()]);
         }
         $message = 'IP berhasil di update!';
         $status = 'success';

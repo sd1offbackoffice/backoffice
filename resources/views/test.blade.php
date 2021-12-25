@@ -3,7 +3,7 @@
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7 col-sm-8">
+            <div class="col-md-10 col-sm-8">
                 <fieldset class="card">
                     <legend  class="w-auto ml-5">IGR BO PEMUSNAHAN</legend>
                     <div class="card-body cardForm">

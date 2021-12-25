@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\REPACKING;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +29,10 @@ class repackController extends Controller
         //Session::get('ip') = "172.20.28.123";
 
         //Bila ip nya 3 digit, +1 nya dihapus
-        $ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3)+1,'.'),3),3,'0',STR_PAD_LEFT);
-
+        //$ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3)+1,'.'),3),3,'0',STR_PAD_LEFT);
+        //new get last 3 digit of ip
+        $ip = explode('.', Session::get('ip'));
+        $ip = str_pad($ip[3],3,"0",STR_PAD_LEFT);
 
         $connect = loginController::getConnectionProcedure();
 
@@ -160,6 +163,7 @@ class repackController extends Controller
             DB::connection(Session::get('connection'))->commit();
             return response()->json(['kode' => 1]);
         }catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
             return response()->json(['kode' => 2]);
         }
     }
@@ -358,6 +362,7 @@ class repackController extends Controller
             }
             DB::connection(Session::get('connection'))->commit();
         }catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
             //dd($e);
         }
     }
@@ -444,6 +449,7 @@ class repackController extends Controller
 
 
         }catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
         }
 
 
@@ -451,6 +457,7 @@ class repackController extends Controller
 
     public function printDocument(Request $request){
         $noDoc      = $request->doc;
+        $type       = $request->type;
         $kodeigr = Session::get('kdigr');
 
         $today  = date('Y-m-d');
@@ -487,18 +494,28 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         //dd($datas);
 
                 //-------------------------PRINT-----------------------------
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-        return $pdf->stream('repack-laporan.pdf');
-
+//        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+//
+//        return $pdf->stream('repack-laporan.pdf');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        if($type == "sudah"){
+            return view('BACKOFFICE.TRANSAKSI.REPACKING.repack-sudah-diolah-laporan',
+                ['data' => $datas, 'RePrint' => $RePrint, 'perusahaan' => $perusahaan]);
+        }elseif ($type == "belum"){
+            return view('BACKOFFICE.TRANSAKSI.REPACKING.repack-belum-diolah-laporan',
+                ['data' => $datas, 'RePrint' => $RePrint, 'perusahaan' => $perusahaan]);
+        }else{
+            return view('errors.404');
+        }
     }
     public function printDocumentKecil(Request $request){
         $noDoc      = $request->doc;
+        $type       = $request->type;
         $kodeigr = Session::get('kdigr');
 
         $today  = date('Y-m-d');
@@ -535,15 +552,24 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
         //dd($datas);
 
         //-------------------------PRINT-----------------------------
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan-kecil', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-        return $pdf->stream('repack-laporan-kecil.pdf');
-
+//        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.REPACKING.repack-laporan-kecil', ['datas' => $datas, 'today' => $today, 'RePrint' => $RePrint]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+//
+//        return $pdf->stream('repack-laporan-kecil.pdf');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        if($type == "sudah"){
+            return view('BACKOFFICE.TRANSAKSI.REPACKING.repack-sudah-diolah-laporan-kecil',
+                ['data' => $datas, 'RePrint' => $RePrint, 'perusahaan' => $perusahaan]);
+        }elseif ($type == "belum"){
+            return view('BACKOFFICE.TRANSAKSI.REPACKING.repack-belum-diolah-laporan-kecil',
+                ['data' => $datas, 'RePrint' => $RePrint, 'perusahaan' => $perusahaan]);
+        }else{
+            return view('errors.404');
+        }
     }
 
     public function simpan(Request $request){
@@ -1352,7 +1378,7 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
             //dd("Jangan commit dulu cuy");
             DB::connection(Session::get('connection'))->commit();
         }catch(\Exception $e){
-            dd($e);
+            DB::connection(Session::get('connection'))->rollBack();
         }
     }
 }

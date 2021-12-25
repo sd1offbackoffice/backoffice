@@ -1,10 +1,10 @@
 @extends('navbar')
-@section('title','PEMUSNAHAN | PEMBATALAN BA PEMUSNAHAN')
+@section('title','PEMUSNAHAN | INQUERY BA PEMUSNAHAN')
 @section('content')
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-body cardForm">
                         <div class="row">

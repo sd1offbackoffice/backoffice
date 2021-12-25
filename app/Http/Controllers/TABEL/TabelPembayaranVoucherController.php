@@ -122,10 +122,10 @@ class TabelPembayaranVoucherController extends Controller
                             'BYR_SINGKATANSUPPLIER'=>$sing,
                             'BYR_PRDCD'=>$datas[$i]->hgb_prdcd,
                             'BYR_QTYMAXVOUCHER'=>0,
-                            'BYR_TGLAWAL'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                            'BYR_TGLAKHIR'=>DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                            'BYR_TGLAWAL'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                            'BYR_TGLAKHIR'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                             'BYR_CREATE_BY'=>$usid,
-                            'BYR_CREATE_DT'=>DB::RAW("trunc(SYSDATE)"),
+                            'BYR_CREATE_DT'=>DB::connection(Session::get('connection'))->raw("trunc(SYSDATE)"),
                             'BYR_RECORDID'=>0,
                         ]);
                 }

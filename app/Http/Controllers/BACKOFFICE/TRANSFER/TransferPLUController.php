@@ -78,7 +78,7 @@ class TransferPLUController extends Controller
         oci_execute($s);
 
         $data = DB::connection(Session::get('connection'))->table('dir_list_tmp')
-            ->select('filename as full_filename', DB::RAW("SUBSTR (filename, INSTR (filename, '/', -1) + 1) filename"))
+            ->select('filename as full_filename', DB::connection(Session::get('connection'))->raw("SUBSTR (filename, INSTR (filename, '/', -1) + 1) filename"))
             ->where('req_id', '=', $N_REQ_ID)
             ->orderBy('filename')
             ->get();
@@ -91,10 +91,10 @@ class TransferPLUController extends Controller
             }
             if (substr($x->filename, 0, 4) == 'DTA4') {
                 $JUM = DB::connection(Session::get('connection'))->table('TBTR_TRANSFERFILE')
-                    ->select(DB::RAW("NVL (COUNT (1), 0) as count"))
+                    ->select(DB::connection(Session::get('connection'))->raw("NVL (COUNT (1), 0) as count"))
                     ->where('TRF_KODEIGR', Session::get('kdigr'))
                     ->where('TRF_NAMAPROG', 'IGR_BO_TRF_PLU_CSV')
-                    ->where('TRF_NAMAFILE', DB::RAW("SUBSTR ('" . $x->filename . "', 1, LENGTH ('" . $x->filename . "') - 3)"))
+                    ->where('TRF_NAMAFILE', DB::connection(Session::get('connection'))->raw("SUBSTR ('" . $x->filename . "', 1, LENGTH ('" . $x->filename . "') - 3)"))
                     ->first()->count;
 
                 if ($JUM > 0) {
@@ -165,7 +165,7 @@ class TransferPLUController extends Controller
 
 //                --**cetak lap**--
                 $JUM = DB::connection(Session::get('connection'))->table('TEMP_HGBELI')
-                    ->select(DB::RAW("NVL (COUNT (1), 0) count"))
+                    ->select(DB::connection(Session::get('connection'))->raw("NVL (COUNT (1), 0) count"))
                     ->first()->count;
 
                 if ($JUM > 0 && !isset($V_RESULT_HGB)) {
@@ -232,7 +232,7 @@ class TransferPLUController extends Controller
                 oci_execute($s);
 
                 $JUM = DB::connection(Session::get('connection'))->table('TEMP_BRX_OMI')
-                    ->select(DB::RAW("NVL (COUNT (1), 0) count"))
+                    ->select(DB::connection(Session::get('connection'))->raw("NVL (COUNT (1), 0) count"))
                     ->where('SESSID', $N_REQ_ID)
                     ->first()->count;
 

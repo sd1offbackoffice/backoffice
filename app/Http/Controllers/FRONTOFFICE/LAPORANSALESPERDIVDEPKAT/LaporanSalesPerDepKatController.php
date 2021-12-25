@@ -6,7 +6,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -18,6 +19,9 @@ class LaporanSalesPerDepKatController extends Controller
     public function index(Request $request)
     {
         $selected_dep = $request->departemen;
+        $selected_tanggal1 = $request->tanggal1;
+        $selected_tanggal2 = $request->tanggal2;
+
         $group = DB::connection(Session::get('connection'))->table('tbmaster_jenismember')
             ->orderBy('jm_kode')
             ->get();
@@ -43,7 +47,7 @@ class LaporanSalesPerDepKatController extends Controller
             ->orderBy('dep_kodedepartement')
             ->get();
 
-        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-departemen-kategori', compact(['group', 'outlet', 'suboutlet', 'segmentasi','divisi','departement','selected_dep']));
+        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-departemen-kategori', compact(['group', 'outlet', 'suboutlet', 'segmentasi','divisi','departement','selected_dep','selected_tanggal1','selected_tanggal2']));
     }
 
     public function getData(Request $request)
@@ -55,6 +59,8 @@ class LaporanSalesPerDepKatController extends Controller
         $suboutlet = $request->suboutlet;
         $tanggal1 = $request->tanggal1;
         $tanggal2 = $request->tanggal2;
+        $divisi = $request->divisi;
+        $departemen = $request->departemen;
 
 
         $p_member = '';
@@ -62,6 +68,8 @@ class LaporanSalesPerDepKatController extends Controller
         $p_segmentasi = '';
         $p_outlet = '';
         $p_suboutlet = '';
+        $p_divisi = '';
+        $p_departemen = '';
 
         if ($member != 'ALL') {
             if ($member == 'Y') {
@@ -82,12 +90,18 @@ class LaporanSalesPerDepKatController extends Controller
         if ($suboutlet != 'ALL') {
             $p_suboutlet = " AND cus_kodesuboutlet = '" . $suboutlet . "'";
         }
+        if ($divisi != 'ALL') {
+            $p_divisi = " AND div_kodedivisi = '" . $divisi . "'";
+        }
+        if ($departemen != 'ALL') {
+            $p_departemen = " AND dep_kodedepartement = '" . $departemen . "'";
+        }
 
-        $dataDivGroup = DB::connection(Session::get('connection'))
-            ->select("select kodedivisi,namadivisi nama,sum(round(margin/sales*100,2)) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
+        $dataDepGroup = DB::connection(Session::get('connection'))
+            ->select("select kodedepartement,namadepartement nama,round(sum(margin)/sum(sales)*100,2) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
-                                    select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,
+                                    select dep_kodedepartement kodedepartement,dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_namakategori namakategori,
                                           SUM (
                                             CASE
                                                WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -159,25 +173,28 @@ class LaporanSalesPerDepKatController extends Controller
                                         inner join tbmaster_customer on trjd_cus_kodemember = cus_kodemember
                                         left join TBMASTER_CUSTOMERCRM ON crm_kodemember = cus_kodemember
                                         inner join tbmaster_departement on div_kodedivisi = dep_kodedivisi and dep_kodedepartement = prd_kodedepartement
+                                        inner join tbmaster_kategori on dep_kodedepartement = kat_kodedepartement and kat_kodekategori = prd_kodekategoribarang
                                     where trunc(trjd_transactiondate) between to_date('" . $tanggal1 . "','dd/mm/yyyy') and to_date('" . $tanggal2 . "','dd/mm/yyyy')
                                     " . $p_member . "
                                     " . $p_group . "
                                     " . $p_segmentasi . "
                                     " . $p_outlet . "
                                     " . $p_suboutlet . "
-                                    group by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
-                                    order by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
+                                    " . $p_divisi . "
+                                    " . $p_departemen . "
+                                    group by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
+                                    order by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
                                 ) a
                             )
-                            group by kodedivisi,namadivisi
-                            order by kodedivisi
+                            group by kodedepartement,namadepartement
+                            order by kodedepartement
 
         ");
 
-        $dataDiv = DB::connection(Session::get('connection'))
+        $dataDep = DB::connection(Session::get('connection'))
             ->select("select a.*,round(margin/sales*100,2) marginpersen
                             from(
-                                select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kode,dep_namadepartement nama,
+                                select dep_kodedepartement kodedepartement,dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_namakategori nama,
                                       SUM (
                                         CASE
                                            WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -249,14 +266,17 @@ class LaporanSalesPerDepKatController extends Controller
                                     inner join tbmaster_customer on trjd_cus_kodemember = cus_kodemember
                                     left join TBMASTER_CUSTOMERCRM ON crm_kodemember = cus_kodemember
                                     inner join tbmaster_departement on div_kodedivisi = dep_kodedivisi and dep_kodedepartement = prd_kodedepartement
+                                    inner join tbmaster_kategori on dep_kodedepartement = kat_kodedepartement and kat_kodekategori = prd_kodekategoribarang
                                 where trunc(trjd_transactiondate) between to_date('" . $tanggal1 . "','dd/mm/yyyy') and to_date('" . $tanggal2 . "','dd/mm/yyyy')
                                 " . $p_member . "
                                 " . $p_group . "
                                 " . $p_segmentasi . "
                                 " . $p_outlet . "
                                 " . $p_suboutlet . "
-                                group by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
-                                order by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
+                                " . $p_divisi . "
+                                " . $p_departemen . "
+                                group by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
+                                order by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
                             ) a
         ");
 
@@ -266,29 +286,27 @@ class LaporanSalesPerDepKatController extends Controller
         $totalmargingroup = 0;
 
         $data = array();
-        $childrenData = array();
-        for ($i = 0; $i < sizeof($dataDivGroup); $i++) {
-            $totalsalesgroup += $dataDivGroup[$i]->sales;
-            $totalmargingroup += $dataDivGroup[$i]->margin;
+        for ($i = 0; $i < sizeof($dataDepGroup); $i++) {
+            $totalsalesgroup += $dataDepGroup[$i]->sales;
+            $totalmargingroup += $dataDepGroup[$i]->margin;
         }
-        for ($i = 0; $i < sizeof($dataDiv); $i++) {
-            $totalsales += $dataDiv[$i]->sales;
-            $totalmargin += $dataDiv[$i]->margin;
+        for ($i = 0; $i < sizeof($dataDep); $i++) {
+            $totalsales += $dataDep[$i]->sales;
+            $totalmargin += $dataDep[$i]->margin;
         }
-        $tempdiv = 0;
 
-        for ($i = 0; $i < sizeof($dataDivGroup); $i++) {
-            $dataDivGroup[$i]->constsales = round($dataDivGroup[$i]->sales / $totalsalesgroup * 100, 2);
-            $dataDivGroup[$i]->constmargin = round($dataDivGroup[$i]->margin / $totalsalesgroup * 100, 2);
-            $dataDivGroup[$i]->children = array();
-            for ($j = 0; $j < sizeof($dataDiv); $j++) {
-                if ($dataDivGroup[$i]->kodedivisi == $dataDiv[$j]->kodedivisi) {
-                    $dataDiv[$j]->constsales = round($dataDiv[$j]->sales / $totalsales * 100, 2);
-                    $dataDiv[$j]->constmargin = round($dataDiv[$j]->margin / $totalmargin * 100, 2);
-                    array_push($dataDivGroup[$i]->children, $dataDiv[$j]);
+        for ($i = 0; $i < sizeof($dataDepGroup); $i++) {
+            $dataDepGroup[$i]->constsales = round($dataDepGroup[$i]->sales / $totalsalesgroup * 100, 2);
+            $dataDepGroup[$i]->constmargin = round($dataDepGroup[$i]->margin / $totalsalesgroup * 100, 2);
+            $dataDepGroup[$i]->children = array();
+            for ($j = 0; $j < sizeof($dataDep); $j++) {
+                if ($dataDepGroup[$i]->kodedepartement == $dataDep[$j]->kodedepartement) {
+                    $dataDep[$j]->constsales = round($dataDep[$j]->sales / $totalsales * 100, 2);
+                    $dataDep[$j]->constmargin = round($dataDep[$j]->margin / $totalmargin * 100, 2);
+                    array_push($dataDepGroup[$i]->children, $dataDep[$j]);
                 }
             }
-            array_push($data, $dataDivGroup[$i]);
+            array_push($data, $dataDepGroup[$i]);
         }
 
         return DataTables::of($data)->make(true);
@@ -304,12 +322,16 @@ class LaporanSalesPerDepKatController extends Controller
         $tanggal1 = $request->tanggal1;
         $tanggal2 = $request->tanggal2;
         $jenislaporan = $request->jenislaporan;
+        $divisi = $request->divisi;
+        $departemen = $request->departemen;
 
         $p_member = '';
         $p_group = '';
         $p_segmentasi = '';
         $p_outlet = '';
         $p_suboutlet = '';
+        $p_divisi = '';
+        $p_departemen = '';
 
         if ($member != 'ALL') {
             if ($member == 'Y') {
@@ -330,11 +352,17 @@ class LaporanSalesPerDepKatController extends Controller
         if ($suboutlet != 'ALL') {
             $p_suboutlet = " AND cus_kodesuboutlet = '" . $suboutlet . "'";
         }
+        if ($divisi != 'ALL') {
+            $p_divisi = " AND div_kodedivisi = '" . $divisi . "'";
+        }
+        if ($departemen != 'ALL') {
+            $p_departemen = " AND dep_kodedepartement = '" . $departemen . "'";
+        }
 
         $data = DB::connection(Session::get('connection'))
             ->select("select a.*,round(margin/sales*100,2) marginpersen
                             from(
-                                select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,
+                                select dep_kodedepartement kodedepartement,dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_namakategori namakategori,
                                       SUM (
                                         CASE
                                            WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -406,17 +434,20 @@ class LaporanSalesPerDepKatController extends Controller
                                     inner join tbmaster_customer on trjd_cus_kodemember = cus_kodemember
                                     left join TBMASTER_CUSTOMERCRM ON crm_kodemember = cus_kodemember
                                     inner join tbmaster_departement on div_kodedivisi = dep_kodedivisi and dep_kodedepartement = prd_kodedepartement
+                                    inner join tbmaster_kategori on dep_kodedepartement = kat_kodedepartement and kat_kodekategori = prd_kodekategoribarang
                                 where trunc(trjd_transactiondate) between to_date('" . $tanggal1 . "','dd/mm/yyyy') and to_date('" . $tanggal2 . "','dd/mm/yyyy')
                                 " . $p_member . "
                                 " . $p_group . "
                                 " . $p_segmentasi . "
                                 " . $p_outlet . "
                                 " . $p_suboutlet . "
-                                group by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
-                                order by div_kodedivisi,div_namadivisi,dep_kodedepartement,dep_namadepartement
+                                " . $p_divisi . "
+                                " . $p_departemen . "
+                                group by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
+                                order by dep_kodedepartement,dep_namadepartement,kat_kodekategori,kat_namakategori
                             ) a
         ");
-        $filename = 'laporan-sales-per-divisi-departemen';
+        $filename = 'laporan-sales-per-departemen-kategori';
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
@@ -441,8 +472,8 @@ class LaporanSalesPerDepKatController extends Controller
 
             $filename = $filename . '.csv';
             $columnHeader = [
-                'DIVISI',
                 'DEPARTEMENT',
+                'KATEGORI',
                 'QTY',
                 'SALES',
                 'MARGIN',
@@ -454,8 +485,8 @@ class LaporanSalesPerDepKatController extends Controller
             $linebuffs = array();
             foreach ($data as $d) {
                 $tempdata = [
-                    $d->kodedivisi . '-' . $d->namadivisi,
                     $d->kodedepartement . '-' . $d->namadepartement,
+                    $d->kodekategori . '-' . $d->namakategori,
                     number_format($d->qty, 0, ".", ","),
                     number_format($d->sales, 0, ".", ","),
                     number_format($d->margin, 0, ".", ","),

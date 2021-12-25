@@ -66,7 +66,7 @@ class DevController extends Controller
                 ->update([
                     'acc_status' => 1,
                     'acc_modify_by' => Session::get('usid'),
-                    'acc_modify_dt' => DB::RAW("SYSDATE")
+                    'acc_modify_dt' => Carbon::now()
                 ]);
 
             if($request->menu){
@@ -76,7 +76,7 @@ class DevController extends Controller
                         ->update([
                             'acc_status' => 0,
                             'acc_modify_by' => Session::get('usid'),
-                            'acc_modify_dt' => DB::RAW("SYSDATE")
+                            'acc_modify_dt' => Carbon::now()
                         ]);
                 }
             }

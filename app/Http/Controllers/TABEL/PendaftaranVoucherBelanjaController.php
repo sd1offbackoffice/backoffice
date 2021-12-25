@@ -89,14 +89,14 @@ class PendaftaranVoucherBelanjaController extends Controller
                     'vcs_kodeigr' => Session::get('kdigr'),
                     'vcs_namasupplier' => $supp,
                     'vcs_nilaivoucher' => $request->vcs_nilaivoucher,
-                    'vcs_tglmulai' => DB::raw("to_date('" . $request->vcs_tglmulai . "','yyyy-mm-dd')"),
-                    'vcs_tglakhir' => DB::raw("to_date('" . $request->vcs_tglakhir . "','yyyy-mm-dd')"),
+                    'vcs_tglmulai' => DB::connection(Session::get('connection'))->raw("to_date('" . $request->vcs_tglmulai . "','yyyy-mm-dd')"),
+                    'vcs_tglakhir' => DB::connection(Session::get('connection'))->raw("to_date('" . $request->vcs_tglakhir . "','yyyy-mm-dd')"),
                     'vcs_maxvoucher' => $request->vcs_maxvoucher,
                     'vcs_joinpromo' => $request->vcs_joinpromo,
                     'vcs_keterangan' => $request->vcs_keterangan,
                     'vcs_minstruk' => $request->vcs_minstruk,
                     'vcs_create_by' => Session::get('usid'),
-                    'vcs_create_dt' => DB::raw('sysdate')
+                    'vcs_create_dt' => Carbon::now()
                 ]);
             $message = "Data supp " . $supp . " Berhasil Disimpan!";
             $status = "success";
@@ -107,14 +107,14 @@ class PendaftaranVoucherBelanjaController extends Controller
                 ->where('vcs_namasupplier', '=', $supp)
                 ->update([
                     'vcs_nilaivoucher' => $request->vcs_nilaivoucher,
-                    'vcs_tglmulai' => DB::raw("to_date('" . $request->vcs_tglmulai . "','yyyy-mm-dd')"),
-                    'vcs_tglakhir' => DB::raw("to_date('" . $request->vcs_tglakhir . "','yyyy-mm-dd')"),
+                    'vcs_tglmulai' => DB::connection(Session::get('connection'))->raw("to_date('" . $request->vcs_tglmulai . "','yyyy-mm-dd')"),
+                    'vcs_tglakhir' => DB::connection(Session::get('connection'))->raw("to_date('" . $request->vcs_tglakhir . "','yyyy-mm-dd')"),
                     'vcs_maxvoucher' => $request->vcs_maxvoucher,
                     'vcs_joinpromo' => $request->vcs_joinpromo,
                     'vcs_keterangan' => $request->vcs_keterangan,
                     'vcs_minstruk' => $request->vcs_minstruk,
                     'vcs_create_by' => Session::get('usid'),
-                    'vcs_create_dt' => DB::raw('sysdate')
+                    'vcs_create_dt' => Carbon::now()
                 ]);
             $message = "Data " . $supp . " Berhasil Diupdate!";
             $status = "success";

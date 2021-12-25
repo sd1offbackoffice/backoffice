@@ -12,7 +12,7 @@
                             <div class="form-group row mb-0">
                                 <label class="col-sm-1 col-form-label" for="nomorTrn">NOMOR TRN</label>
                                 <div class="col-sm-2 buttonInside">
-                                    <input onchange="getNmrTrn()" type="text" class="form-control" id="nomorTrn">
+                                    <input type="text" class="form-control" id="nomorTrn">
                                     <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
                                             data-target="#pilihNmr">
                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -349,6 +349,11 @@
         .dropdown-item:hover{
             cursor: pointer;
         }
+
+        .selected{
+            background-color: rgba(0,0,0,0.4) !important;
+            color: #fff !important;;
+        }
     </style>
     <script>
         let rowNum;
@@ -566,6 +571,7 @@
 
         function showDesPanjang(e) {
             $('#deskripsi').val(deskripsiPanjang[e.rowIndex-2]);
+            $(e).addClass('selected').siblings().removeClass('selected');
         }
 
         function rDinamis(index){
@@ -1145,7 +1151,7 @@
         });
 
         function clearForm(){
-            $('#hapusDoc').attr('disabled','disabled');
+            $('#hapusDoc').prop("disabled",true);
             $('#model').val('');
 
             $('#nomorTrn').val('');
@@ -1208,16 +1214,30 @@
                                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                                 },
                                 success: function (result) {
-                                    $('#hapusDoc').attr('disabled','disabled');
-                                    $('#nomorTrn').val(result.noDoc);
+                                    $('#modal-loader').modal('hide')
+                                    // $('.baris').remove();
+                                    // for (i = 0; i< 10; i++) {
+                                    //     $('#body-table-header').append(tempTable());
+                                    // }
+                                    // $('#hapusDoc').removeAttr('disabled');
+                                    // $('#nomorTrn').val(result.noDoc);
+                                    // noDoc = result.noDoc;
+                                    // $('#tanggalTrn').val(formatDate('now'));
+                                    // tglDoc = formatDate('now');
+                                    // model = result.model;
+                                    // $('#model').val(model);
+                                    // noReff = result.noReff;
+                                    // trbo_flagdoc = '';
+
+                                    clearForm();
                                     noDoc = result.noDoc;
-                                    $('#tanggalTrn').val(formatDate('now'));
-                                    tglDoc = formatDate('now');
+                                    $('#nomorTrn').val(noDoc);
                                     model = result.model;
                                     $('#model').val(model);
                                     noReff = result.noReff;
-                                    $('#modal-loader').modal('hide')
-                                    trbo_flagdoc = '';
+                                    tglDoc = formatDate('now');
+                                    $('#tanggalTrn').val(tglDoc)
+                                    $('#hapusDoc').removeAttr('disabled');
                                 }, error: function () {
                                     alert('error');
                                     $('#modal-loader').modal('hide');
@@ -1228,7 +1248,7 @@
                         }
                     })
                 } else {
-                    chooseTrn(val);
+                    getNmrTrn();
                 }
             }
         });
@@ -1272,7 +1292,7 @@
                     $('.baris').remove();
 
                     if(rec.length != 0) {
-                        $('#hapusDoc').removeAttr('disabled');
+                        //$('#hapusDoc').removeAttr('disabled');
                         noDoc = rec[0].trbo_nodoc;
                         $('#nomorTrn').val(noDoc);
                         tglDoc = formatDate(rec[0].trbo_tgldoc);
@@ -1318,6 +1338,7 @@
                         if (model == '* KOREKSI *') {
                             if (trbo_flagdoc == '*') {
                                 model = '* NOTA SUDAH DICETAK *';
+                                $('#hapusDoc').prop("disabled",true);
                                 $('#model').val(model);
                                 saveBool = false;
                                 //disable savedata dan update data
@@ -1325,6 +1346,7 @@
                                 $('.baris td button').attr('hidden',true);
                                 $('#addRow').attr('hidden',true);
                             } else {
+                                $('#hapusDoc').removeAttr('disabled');
                                 saveBool = true;
                                 //enable savedata dan update data
                                 if(rubahPlu == 'Y'){
@@ -1341,6 +1363,7 @@
 
                             }
                         } else {
+                            $('#hapusDoc').removeAttr('disabled');
                             saveBool = true;
                             //enable savedata dan update data
                             if($('#perubahanPlu').value == 'Y'){
@@ -1545,6 +1568,18 @@
                     //     trbo_flagdoc = '1';
                     // }
                     saveData();
+                    let counter = 0;
+                    for(i = 0; i < $('.plu').length; i++) {
+                        if ($('.plu')[i].value != '') {
+                            counter++;
+                            if((parseInt($('.ctn-kuantum')[i].value) + parseInt($('.pcs-kuantum')[i].value)) === 0){
+                                return false;
+                            }
+                        }
+                    }
+                    if(counter === 0 || $('#nomorTrn').val() === ''){
+                        return false;
+                    }
                     if(true){
                         ajaxSetup();
                         $.ajax({
@@ -1557,9 +1592,11 @@
                             },
                             success: function () {
                                 if($('#jenisKertas').val() == 'Biasa'){
-                                    window.open('{{ url()->current() }}/printdoc/'+nomorTrn+'/','_blank');
+                                    window.open(`{{ url()->current() }}/printdoc?doc=${nomorTrn}&type=belum`, '_blank');
+                                    window.open(`{{ url()->current() }}/printdoc?doc=${nomorTrn}&type=sudah`, '_blank');
                                 }else if($('#jenisKertas').val() == 'Kecil'){
-                                    window.open('{{ url()->current() }}/printdockecil/'+nomorTrn+'/','_blank');
+                                    window.open(`{{ url()->current() }}/printdockecil?doc=${nomorTrn}&type=belum`, '_blank');
+                                    window.open(`{{ url()->current() }}/printdockecil?doc=${nomorTrn}&type=sudah`, '_blank');
                                 }
                                 clearForm();
                             }, error: function () {

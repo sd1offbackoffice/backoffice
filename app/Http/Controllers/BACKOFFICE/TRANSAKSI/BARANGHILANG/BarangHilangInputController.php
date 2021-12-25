@@ -97,10 +97,10 @@ class barangHilangInputController extends Controller
         $ppn = '';
         $trim = 0;
 
-        $result = DB::connection(Session::get('connection'))->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST as hrgsatuan,
+        $result = DB::connection(Session::get('connection'))->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST,
                 ST_AVGCOST,NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD,Nvl(ST_SALDOAKHIR,0) as ST_SALDOAKHIR, PRD_KODESUPPLIER
                 FROM TBMASTER_PRODMAST tp
-                LEFT JOIN TBMASTER_STOCK ts ON prd_prdcd = st_prdcd and st_lokasi = '01'
+                LEFT JOIN TBMASTER_STOCK ts ON tp.prd_prdcd = ts.st_prdcd and st_lokasi = '01'
                 where  PRD_PRDCD = '$noplu'");
 
         if (!$result) {
@@ -118,12 +118,12 @@ class barangHilangInputController extends Controller
                 $avgcost = $result[0]->prd_avgcost;
             } else {
                 if ($result[0]->prd_unit == 'KG') {
-                    $trim = $result[0]->prd_frac / 1000;
+                    $hrgsatuan = $result[0]->st_avgcost * $result[0]->prd_frac / 1000;
+                    $avgcost = $result[0]->st_avgcost * $result[0]->prd_frac / 1000;
                 } else {
-                    $trim = $result[0]->prd_frac;
+                    $hrgsatuan = $result[0]->st_avgcost * $result[0]->prd_frac;
+                    $avgcost = $result[0]->st_avgcost * $result[0]->prd_frac;
                 }
-                $hrgsatuan = $result[0]->st_avgcost * $trim;
-                $avgcost = $result[0]->st_avgcost * $trim;
             }
             return response()->json(['noplu' => 1, 'message' => '', 'data' => $result, 'hrgsatuan' => $hrgsatuan, 'avgcost' => $avgcost]);
         }

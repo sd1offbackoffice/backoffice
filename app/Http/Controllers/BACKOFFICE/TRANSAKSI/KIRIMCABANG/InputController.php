@@ -213,7 +213,7 @@ ORDER BY PRDCD,
             $ins['tac_lokasi'] = $lokasi[$i];
             $ins['tac_qty'] = ($frac * $ctn[$i]) + $pcs[$i];
             $ins['tac_create_by'] = Session::get('usid');
-            $ins['tac_create_dt'] = DB::RAW("SYSDATE");
+            $ins['tac_create_dt'] = Carbon::now();
 
             if($ins['tac_qty'] > 0)
                 $insert[] = $ins;
@@ -426,10 +426,10 @@ ORDER BY PRDCD,
                 $ins['trbo_kodeigr'] = Session::get('kdigr');
                 $ins['trbo_typetrn'] = 'O';
                 $ins['trbo_nodoc'] = $nodoc;
-                $ins['trbo_tgldoc'] = DB::RAW("TO_DATE('".$tgldoc."','DD/MM/YYYY')");
+                $ins['trbo_tgldoc'] = DB::connection(Session::get('connection'))->raw("TO_DATE('".$tgldoc."','DD/MM/YYYY')");
                 $ins['trbo_loc'] = $loc;
                 $ins['trbo_create_by'] = Session::get('usid');
-                $ins['trbo_create_dt'] = DB::RAW("SYSDATE");
+                $ins['trbo_create_dt'] = Carbon::now();
 
                 $inserts[] = $ins;
             }

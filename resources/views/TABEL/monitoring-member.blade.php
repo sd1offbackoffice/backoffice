@@ -24,7 +24,7 @@
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Nama Monitoring</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control text-left" id="mon_nama" disabled>
+                                        <input type="text" class="form-control text-left" id="mon_nama" maxlength="10" disabled>
                                     </div>
                                     <div class="col-sm-2">
                                         <button class="col-sm btn btn-primary" id="btn_print">PRINT</button>
@@ -467,9 +467,15 @@
                         $('#mon_nama').val('');
                     },
                     success: function (response) {
-                        $('#mon_nama').val(response.nama);
+                        $('#modal-loader').modal('hide');
+                        if(response.nama != null){
+                            $('#mon_nama').val(response.nama).attr('disabled',true);
 
-                        getData();
+                            getData();
+                        }
+                        else{
+                            $('#mon_nama').attr('disabled',false).select();
+                        }
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');

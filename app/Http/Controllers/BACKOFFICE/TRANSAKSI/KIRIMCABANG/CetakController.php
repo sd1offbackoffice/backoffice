@@ -181,7 +181,7 @@ class CetakController extends Controller
                                     'mstd_kodeigr' => Session::get('kdigr'),
                                     'mstd_typetrn' => $d->trbo_typetrn,
                                     'mstd_nodoc' => $vnodoc,
-                                    'mstd_tgldoc' => DB::RAW("trunc(sysdate)"),
+                                    'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("trunc(sysdate)"),
                                     'mstd_pkp' => $d->prd_flagbkp1,
                                     'mstd_noref3' => $d->trbo_noreff,
                                     'mstd_tgref3' => $d->trbo_tglreff,
@@ -200,7 +200,7 @@ class CetakController extends Controller
                                     'mstd_fobkp' => $d->prd_flagbkp2,
                                     'mstd_ppnrph' => $d->trbo_ppnrph,
                                     'mstd_create_by' => Session::get('usid'),
-                                    'mstd_create_dt' => DB::RAW("sysdate"),
+                                    'mstd_create_dt' => Carbon::now(),
                                     'mstd_hrgsatuan' => $d->trbo_hrgsatuan,
                                     'mstd_kodedivisi' => $d->prd_kodedivisi,
                                     'mstd_kodedepartement' => $d->prd_kodedepartement,
@@ -242,7 +242,7 @@ class CetakController extends Controller
                                 'MSTH_RECORDID' => '',
                                 'MSTH_TYPETRN' => 'O',
                                 'MSTH_NODOC' => $vnodoc,
-                                'MSTH_TGLDOC' => DB::RAW("TRUNC(SYSDATE)"),
+                                'MSTH_TGLDOC' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                 'MSTH_NOPO' => '',
                                 'MSTH_TGLPO' => null,
                                 'MSTH_NOFAKTUR' => null,
@@ -261,9 +261,9 @@ class CetakController extends Controller
                                 'MSTH_FURGNT' => null,
                                 'MSTH_FLAGDOC' => '1',
                                 'MSTH_CREATE_BY' => Session::get('usid'),
-                                'MSTH_CREATE_DT' => DB::RAW("SYSDATE"),
+                                'MSTH_CREATE_DT' => Carbon::now(),
                                 'MSTH_MODIFY_BY' => Session::get('usid'),
-                                'MSTH_MODIFY_DT' => DB::RAW("SYSDATE"),
+                                'MSTH_MODIFY_DT' => Carbon::now(),
                             ]);
 
                         DB::connection(Session::get('connection'))->table('tbtr_backoffice')
@@ -271,7 +271,7 @@ class CetakController extends Controller
                             ->where('trbo_typetrn','=','O')
                             ->update([
                                 'trbo_nonota' => $vnodoc,
-                                'trbo_tglnota' => DB::RAW("SYSDATE"),
+                                'trbo_tglnota' => Carbon::now(),
                                 'trbo_recordid' => '2',
                                 'trbo_flagdoc' => '*'
                             ]);

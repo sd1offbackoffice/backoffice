@@ -70,7 +70,7 @@ class PerusahaanController extends Controller
             else if ($obj == 'tglcmo') {
                 DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                     ->update([
-                        'PRS_TGLCMO' => DB::raw("to_date('".$tglcmo."','dd/mm/yyyy')")
+                        'PRS_TGLCMO' => DB::connection(Session::get('connection'))->raw("to_date('".$tglcmo."','dd/mm/yyyy')")
                     ]);
                 $status = 'success';
                 $message = 'Tanggal CMO sudah diupdate';

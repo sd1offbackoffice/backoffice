@@ -58,7 +58,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
             ->with(compact(['outlet','suboutlet','group','segmentasi','monitoringMember','monitoringPLU']));
     }
 
-    public function viewReport(Request $request){
+    public static function getData($request){
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
         $group = $request->group;
@@ -97,13 +97,20 @@ class LaporanEvaluasiSalesMemberController extends Controller
             $whereMonitoringMember = " AND mem_kodemonitoring = '" . $monitoringMember . "'";
         }
 
-        if($monitoringMember != 'ALL') {
+        if($monitoringPLU != 'ALL') {
             $whereMonitoringPLU = " AND mpl_kodemonitoring   = '" . $monitoringPLU . "'";
         }
 
-        $perusahaan = DB::connection(Session::get('connection'))
-            ->table("tbmaster_perusahaan")
-            ->first();
+        switch($sort){
+            case 'NAMAMEMBER' : $whereSort = 'ORDER BY cus_namamember';break;
+            case 'KUNJUNGAN' : $whereSort = 'ORDER BY kunj';break;
+            case 'STRUK' : $whereSort = 'ORDER BY struk';break;
+            case 'PRODUK' : $whereSort = 'ORDER BY qty';break;
+            case 'SALESNET' : $whereSort = 'ORDER BY sales';break;
+            case 'SALESGROSS' : $whereSort = 'ORDER BY salesgross';break;
+            case 'MARGIN' : $whereSort = 'ORDER BY margin';break;
+            default : $whereSort = 'ORDER BY trjd_cus_kodemember';break;
+        }
 
         $query = " SELECT trjd_cus_kodemember,
          SUM (qty) qty,
@@ -456,15 +463,91 @@ class LaporanEvaluasiSalesMemberController extends Controller
                            trjd_prdcd,
                            TANGGAL,
                            cus_namamember) detail)
-GROUP BY trjd_cus_kodemember,cus_namamember";
+GROUP BY trjd_cus_kodemember,cus_namamember
+".$whereSort;
 
 //        return $query;
 
-        $data = DB::connection(Session::get('connection'))
+        return DB::connection(Session::get('connection'))
             ->select($query);
+    }
 
-//        dd($data);
+    public function viewReport(Request $request){
+        $perusahaan = DB::connection(Session::get('connection'))
+            ->table("tbmaster_perusahaan")
+            ->first();
+
+        $data = self::getData($request);
 
         return DataTables::of($data)->make(true);
+    }
+
+    public function print(Request $request){
+        $perusahaan = DB::connection(Session::get('connection'))
+            ->table("tbmaster_perusahaan")
+            ->first();
+
+        $data = self::getData($request);
+
+        $tgl1 = $request->tgl1;
+        $tgl2 = $request->tgl2;
+        $sort = $request->sort;
+
+        return view('FRONTOFFICE.laporan-evaluasi-sales-member-pdf',compact(['perusahaan','data','tgl1','tgl2','sort']));
+    }
+
+    public function getCSV(Request $request){
+        $data = self::getData($request);
+
+        $filename = 'LAPORAN EVALUASI SALES MEMBER.csv';
+
+        $columnHeader = [
+            'KODE',
+            'MEMBER',
+            'KUNJ',
+            'STRUK',
+            'PRODUK',
+            'SALES GROSS',
+            'SALES NET',
+            'PPN',
+            'MARGIN',
+            '%'
+        ];
+
+        $linebuffs = array();
+
+        foreach ($data as $d) {
+            $tempdata = [
+                $d->trjd_cus_kodemember,
+                $d->cus_namamember,
+                $d->kunj,
+                $d->struk,
+                number_format($d->qty, 0, '.', ','),
+                number_format($d->salesgross, 0, '.', ','),
+                number_format($d->sales, 0, '.', ','),
+                number_format($d->sales * 0.1, 0, '.', ','),
+                number_format($d->margin, 0, '.', ','),
+                number_format($d->margin / $d->sales * 100, 2, '.', ',').'%',
+            ];
+
+            array_push($linebuffs, $tempdata);
+        }
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $file = fopen($filename, 'w');
+
+        fputcsv($file, $columnHeader, '|');
+        foreach ($linebuffs as $linebuff) {
+            fputcsv($file, $linebuff, '|');
+        }
+        fclose($file);
+
+        return response()->download(public_path($filename))->deleteFileAfterSend(true);
     }
 }

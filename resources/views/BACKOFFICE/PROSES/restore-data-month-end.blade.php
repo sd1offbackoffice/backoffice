@@ -1,5 +1,5 @@
 @extends('navbar')
-{{--@section('title','Restore')--}}
+@section('title','Restore Data Month End')
 @section('content')
 
     <div class="container-fluid mt-4">

@@ -22,7 +22,7 @@ class InputController extends Controller
     public function getDataLovTrn()
     {
         $data = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-            ->select('trbo_nodoc', DB::raw('TO_CHAR(TRBO_TGLDOC, \'DD/MM/YYYY\') TRBO_TGLDOC'), DB::raw('CASE
+            ->select('trbo_nodoc', DB::connection(Session::get('connection'))->raw('TO_CHAR(TRBO_TGLDOC, \'DD/MM/YYYY\') TRBO_TGLDOC'), DB::connection(Session::get('connection'))->raw('CASE
                                             WHEN TRBO_FLAGDOC=\'*\' THEN TRBO_NONOTA
                                             ELSE \'Belum Cetak Nota\' END NOTA'))
             ->where('TRBO_TYPETRN', '=', 'K')
@@ -180,11 +180,11 @@ class InputController extends Controller
             })
             ->select('TRBO_PRDCD',
                 'PRD_DESKRIPSIPENDEK',
-                DB::Raw("PRD_UNIT || '/' || PRD_FRAC SATUAN"),
+                DB::connection(Session::get('connection'))->raw("PRD_UNIT || '/' || PRD_FRAC SATUAN"),
                 'PRD_FLAGBKP1',
                 'TRBO_POSQTY',
                 'PRD_FRAC',
-                DB::Raw('SUM(TRBO_QTY) QTY'),
+                DB::connection(Session::get('connection'))->raw('SUM(TRBO_QTY) QTY'),
                 'TRBO_KETERANGAN',
                 'PRD_DESKRIPSIPANJANG',
                 'PRD_UNIT',
@@ -213,7 +213,7 @@ class InputController extends Controller
                 [
                     'TRBO_PRDCD',
                     'PRD_DESKRIPSIPENDEK',
-                    DB::Raw("PRD_UNIT || '/' || PRD_FRAC"),
+                    DB::connection(Session::get('connection'))->raw("PRD_UNIT || '/' || PRD_FRAC"),
                     'PRD_FLAGBKP1',
                     'TRBO_POSQTY',
                     'PRD_FRAC',
@@ -400,7 +400,7 @@ class InputController extends Controller
         $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
             ->leftJoin('TBMASTER_STOCK', function ($join) {
                 $join->on('TBMASTER_STOCK.ST_PRDCD', '=', 'TBMASTER_PRODMAST.PRD_PRDCD')
-                    ->on('TBMASTER_STOCK.ST_LOKASI', '=', DB::raw('02'));
+                    ->on('TBMASTER_STOCK.ST_LOKASI', '=', DB::connection(Session::get('connection'))->raw('02'));
             })
             ->join('TEMP_URUT_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
             ->selectRaw("PRD_DESKRIPSIPANJANG, PRD_DESKRIPSIPENDEK, PRD_FRAC, PRD_UNIT, PRD_FLAGBKP1,

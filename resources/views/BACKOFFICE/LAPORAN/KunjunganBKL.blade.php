@@ -21,7 +21,7 @@
             </div>
         </div>
     </div>
-    <<script>
+    <script>
 
         $("#datepicker").datepicker( {
             dateFormat: 'mm/yy',

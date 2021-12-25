@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\BACKOFFICE;
+namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-class restoreController extends Controller
+class RestoreDataMonthEndController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE.restore');
+        return view('BACKOFFICE.PROSES.restore-data-month-end');
     }
 
     public function restoreNow(Request $request){
@@ -86,8 +86,8 @@ class restoreController extends Controller
 
             }
         }catch (\Exception $e){
-            dd($e->getMessage());
-            //return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
+            //dd($e->getMessage());
+            return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
         }
     }
 }

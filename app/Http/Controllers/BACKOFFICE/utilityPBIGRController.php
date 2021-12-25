@@ -388,7 +388,7 @@ class utilityPBIGRController extends Controller
             ->leftJoin('tbmaster_prodcrm c','c.prc_pluigr','a.thp_prdcd')
             ->leftJoin('tbmaster_prodmast d','d.prd_prdcd','a.thp_prdcd')
             ->leftJoin('tbmaster_pkmplus e','e.pkmp_prdcd','a.thp_prdcd')
-            ->join(DB::raw(" ((SELECT pid,
+            ->join(DB::connection(Session::get('connection'))->raw(" ((SELECT pid,
                                             prdcd pluold,
                                             NVL (ksl_mean, 0) kphold,
                                             NVL (minor, 0) minold
@@ -406,7 +406,7 @@ class utilityPBIGRController extends Controller
                                       WHERE rn = 2)) kphold"), function ($join){
                 $join->on('pluold', '=', 'c.prc_pluidm');
             })
-            ->join(DB::raw("((SELECT pid,
+            ->join(DB::connection(Session::get('connection'))->raw("((SELECT pid,
                                             prdcd,
                                             ksl_mean,
                                             minor
@@ -424,17 +424,17 @@ class utilityPBIGRController extends Controller
                                       WHERE rn = 1)) kph"), function ($join){
                 $join->on('prdcd', '=','c.prc_pluidm');
             })
-            ->join(DB::raw("(SELECT DISTINCT lks_prdcd prdcdB
+            ->join(DB::connection(Session::get('connection'))->raw("(SELECT DISTINCT lks_prdcd prdcdB
                                       FROM tbmaster_lokasi
                                      WHERE lks_noid LIKE '%B') lokB"), function($join){
                 $join->on('prdcdB', '=', 'a.thp_prdcd');
             })
-            ->join(DB::raw("(SELECT DISTINCT lks_prdcd prdcdC
+            ->join(DB::connection(Session::get('connection'))->raw("(SELECT DISTINCT lks_prdcd prdcdC
                                       FROM tbmaster_lokasi
                                      WHERE lks_noid NOT LIKE '%B') lokC"), function($join){
                 $join->on('prdcdC', '=', 'a.thp_prdcd');
             })
-            ->join(DB::raw("((SELECT thp_prdcd prdcdex, thp_mplusi mplusiex
+            ->join(DB::connection(Session::get('connection'))->raw("((SELECT thp_prdcd prdcdex, thp_mplusi mplusiex
                                       FROM tbtr_hitung_pb
                                      WHERE thp_periode = (SELECT thp_periode
                                                             FROM (  SELECT DISTINCT thp_periode
@@ -444,7 +444,7 @@ class utilityPBIGRController extends Controller
                                                            WHERE ROWNUM = 1)) mplus2"), function($join){
                 $join->on('prdcdex', 'a.thp_prdcd');
             })
-            ->join(DB::raw("((SELECT thp_prdcd prdcdex2, thp_mpluso mplusoex
+            ->join(DB::connection(Session::get('connection'))->raw("((SELECT thp_prdcd prdcdex2, thp_mpluso mplusoex
                                       FROM tbtr_hitung_pb
                                      WHERE thp_periode = (SELECT thp_periode
                                                             FROM (  SELECT DISTINCT thp_periode

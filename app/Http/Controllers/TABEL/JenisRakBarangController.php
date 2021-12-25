@@ -26,14 +26,14 @@ class JenisRakBarangController extends Controller
             $data = DB::connection(Session::get('connection'))
                 ->table("tbtabel_jenisrak")
                 ->select('jrak_kodejenisrak', 'jrak_namajenisrak', 'jrak_mindisplay')
-                ->orderBy(DB::raw('rownum'))
+                ->orderBy(DB::connection(Session::get('connection'))->raw('rownum'))
                 ->first();
         }else{
             $data = DB::connection(Session::get('connection'))
                 ->table("tbtabel_jenisrak")
                 ->select('jrak_kodejenisrak', 'jrak_namajenisrak','jrak_mindisplay')
                 ->where('jrak_kodejenisrak','=',$koderak)
-                ->orderBy(DB::raw('rownum'))
+                ->orderBy(DB::connection(Session::get('connection'))->raw('rownum'))
                 ->first();
         }
         return compact(['data']);

@@ -59,7 +59,7 @@
                 <th rowspan="2" style="vertical-align: middle; text-align: right">HRG JUAL</th>
                 <th colspan="3" style="vertical-align: middle; text-align: center">------------ M A R G I N ------------</th>
                 <th rowspan="2" style="vertical-align: middle; text-align: right">STOCK</th>
-                <th rowspan="2" style="vertical-align: middle; text-align: right">AVG SLS</th>
+                <th rowspan="2" style="vertical-align: middle; text-align: right">AVG SLS&nbsp;&nbsp;&nbsp;&nbsp;</th>
                 <th rowspan="2" style="vertical-align: middle">TAG</th>
                 <th rowspan="2" style="vertical-align: middle">KETERANGAN</th>
             </tr>
@@ -125,9 +125,13 @@
                     <td style="text-align: right">{{twoDigit($cp_nlcmargin[$i])}}%</td>
                     <td style="text-align: right">{{twoDigit($cp_nacmargin[$i])}}%</td>
                     <td style="text-align: right">{{zeroDigit($data[$i]->qty)}}</td>
-                    <td style="text-align: right">{{--CF_avgsls--}}</td>
+                    <td style="text-align: right">{{twoDigit($avgsls[$i])}}&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>{{$data[$i]->tag}}</td>
-                    <td style="text-align: left">{{--CF_ket--}}</td>
+                    @if($data[$i]->spot_prdcd != '')
+                        <td style="text-align: left">PROMO</td>
+                    @else
+                        <td style="text-align: left">{{--CF_ket--}}</td>
+                    @endif
                 </tr>
                 {{--MAIN TABLE--}}
                 @php

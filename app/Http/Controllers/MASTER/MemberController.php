@@ -347,20 +347,24 @@ class MemberController extends Controller
 
         if($checkcus){
             for($i=0;$i<sizeof($request->customer);$i++) {
-                if (substr($request->keycustomer[$i], 0, 7) == 'cus_tgl')
-                    $update_cus[$request->keycustomer[$i]] = DB::RAW("to_date('" . $request->customer[$request->keycustomer[$i]] . "','dd/mm/yyyy')");
+                if (substr($request->keycustomer[$i], 0, 7) == 'cus_tgl' && $request->customer[$request->keycustomer[$i]] != null){
+                    //                    $update_cus[$request->keycustomer[$i]] = DB::connection(Session::get('connection'))->raw("to_date('" . $request->customer[$request->keycustomer[$i]] . "','dd/mm/yyyy')");
+                    $update_cus[$request->keycustomer[$i]] = Carbon::createFromFormat('d/m/Y',  substr($request->customer[$request->keycustomer[$i]], 0,10));
+                }
                 else $update_cus[$request->keycustomer[$i]] = $request->customer[$request->keycustomer[$i]];
             }
             $update_cus['cus_modify_by'] = Session::get('usid');
-            $update_cus['cus_modify_dt'] = DB::raw('SYSDATE');
+            $update_cus['cus_modify_dt'] = Carbon::now();
 
             for($i=0;$i<sizeof($request->customercrm);$i++){
-                if(substr($request->keycustomercrm[$i],0,7) == 'crm_tgl')
-                    $update_crm[$request->keycustomercrm[$i]] = DB::RAW("to_date('".$request->customercrm[$request->keycustomercrm[$i]]."','dd/mm/yyyy')");
+                if(substr($request->keycustomercrm[$i],0,7) == 'crm_tgl' && $request->customercrm[$request->keycustomercrm[$i]] != null){
+                    //                    $update_crm[$request->keycustomercrm[$i]] = DB::connection(Session::get('connection'))->raw("to_date('".$request->customercrm[$request->keycustomercrm[$i]]."','dd/mm/yyyy')");
+                    $update_crm[$request->keycustomercrm[$i]] = Carbon::createFromFormat('d/m/Y',  substr($request->customercrm[$request->keycustomercrm[$i]],0,10));
+                }
                 else $update_crm[$request->keycustomercrm[$i]] = $request->customercrm[$request->keycustomercrm[$i]];
             }
             $update_crm['crm_modify_by'] = Session::get('usid');
-            $update_crm['crm_modify_dt'] = DB::raw('SYSDATE');
+            $update_crm['crm_modify_dt'] = Carbon::now();
             $update_crm['crm_kodeigr'] = Session::get('kdigr');
 
             if($request->hobby != null){
@@ -401,7 +405,7 @@ class MemberController extends Controller
                         ->update([
                             'lmt_nilai' => $request->customer['cus_creditlimit'],
                             'lmt_modify_by' => $userId,
-                            'lmt_modify_dt' => DB::raw('SYSDATE')
+                            'lmt_modify_dt' => Carbon::now()
                         ]);
                 }
                 else{
@@ -411,7 +415,7 @@ class MemberController extends Controller
                             'lmt_kodemember' => $kodemember,
                             'lmt_nilai' => $request->customer['cus_creditlimit'],
                             'lmt_create_by' => $userId,
-                            'lmt_create_dt' => DB::raw('SYSDATE')
+                            'lmt_create_dt' => Carbon::now()
                         ]);
                 }
 
@@ -426,12 +430,12 @@ class MemberController extends Controller
 
                 if(!empty($request->bank)){
                     if(sizeof($request->bank) == 1){
-                        $update_customerfasilitasbank = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[0], 'cub_create_by' => $userId, 'cub_create_dt' => DB::RAW('SYSDATE')];
+                        $update_customerfasilitasbank = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[0], 'cub_create_by' => $userId, 'cub_create_dt' => Carbon::now()];
 
                     }
                     else{
                         for($i=0;$i<sizeof($request->bank);$i++){
-                            $update_customerfasilitasbank[$i] = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[$i], 'cub_modify_by' => $userId, 'cub_modify_dt' => DB::RAW('SYSDATE')];
+                            $update_customerfasilitasbank[$i] = ['cub_kodeigr' => $kodeigr, 'cub_kodemember' => $kodemember, 'cub_kodefasilitasbank' => $request->bank[$i], 'cub_modify_by' => $userId, 'cub_modify_dt' => Carbon::now()];
                         }
                     }
                 }
@@ -646,100 +650,6 @@ class MemberController extends Controller
         }
     }
 
-    public function exportCRMOld(Request $request){
-        $resultcus = false;
-        $resultcrm = false;
-
-        $kodemember = $request->kodemember;
-        $kodeigr = Session::get('kdigr');
-
-        $checkigr = DB::connection(Session::get('connection'))->table('tbmaster_customer')
-            ->select('cus_kodeigr')
-            ->where('cus_kodemember',$kodemember)
-            ->first();
-
-        if($checkigr->cus_kodeigr != $kodeigr){
-            $status = 'failed';
-            $message = 'Member tidak sesuai dengan cabang anda!';
-        }
-        else {
-//            sleep(3); // Dikoemen dlu karena langsung merubah table production igrcrm
-            try {
-                DB::connection('igrcrm')->beginTransaction();
-//                $checkcus = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                $checkcus = DB::connection('igrcrm')
-                    ->table(DB::RAW('tbmaster_customer_testias'))
-                    ->where('cus_kodemember', $kodemember)
-                    ->first();
-                if ($checkcus) {
-//                    DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    DB::connection('igrcrm')
-                        ->table(DB::RAW('tbmaster_customer_testias'))
-                        ->where('cus_kodemember', $kodemember)
-                        ->delete();
-                }
-
-//                $checkcrm = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                $checkcrm = DB::connection('igrcrm')
-                    ->table(DB::RAW('tbmaster_customercrm_testias'))
-                    ->where('crm_kodemember', $kodemember)
-                    ->get()->toArray();
-
-//                dd($checkcrm);
-                if ($checkcrm) {
-//                    DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    DB::connection('igrcrm')
-                        ->table(DB::RAW('tbmaster_customercrm_testias'))
-                        ->where('crm_kodemember', $kodemember)
-                        ->delete();
-                }
-
-                $exportcus = DB::connection(Session::get('connection'))
-                    ->table('tbmaster_customer')
-                    ->where('cus_kodemember', $kodemember)
-                    ->first();
-
-                if ($exportcus) {
-                    $arrexportcus = (array)$exportcus;
-//                    $resultcus = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customer_interface@igrcrm'))
-                    $resultcus = DB::connection('igrcrm')
-                        ->table(DB::RAW('tbmaster_customer_testias'))
-                        ->insert($arrexportcus);
-                }
-
-                $exportcrm = DB::connection(Session::get('connection'))
-                    ->table('tbmaster_customercrm')
-                    ->where('crm_kodemember', $kodemember)
-                    ->first();
-
-                if ($exportcrm) {
-                    $arrexportcrm = (array)$exportcrm;
-//                    $resultcrm = DB::connection(Session::get('connection'))->table(DB::RAW('tbmaster_customercrm_interface@igrcrm'))
-                    $resultcrm = DB::connection('igrcrm')
-                        ->table(DB::RAW('tbmaster_customercrm_testias'))
-                        ->insert($arrexportcrm);
-                }
-
-                if ($resultcus && $resultcrm) {
-                    $status = 'success';
-                    $message = 'Berhasil export ke CRM!';
-//                    DB::connection('igrcrm')->commit();
-                } else {
-                    $status = 'failed';
-                    $message = 'Gagal export ke CRM!';
-
-                }
-            }
-            catch (QueryException $e) {
-                DB::connection('igrcrm')->rollBack();
-                $status = 'failed';
-                $message = $e->getMessage();
-            }
-        }
-
-        return compact(['status','message']);
-    }
-
     public function saveQuisioner(Request $request){
         $arrquisioner = [];
         $quisioner = '';
@@ -770,7 +680,7 @@ class MemberController extends Controller
                             'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                             'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
                             'fpm_modify_by' => Session::get('usid'),
-                            'fpm_modify_dt' => DB::RAW('sysdate')
+                            'fpm_modify_dt' => Carbon::now()
                         );
                         $arrquisioner[] = $quisioner;
 
@@ -792,7 +702,7 @@ class MemberController extends Controller
                                 'fpm_create_by' => $oldQuisioner[$i]->fpm_create_by,
                                 'fpm_create_dt' => $oldQuisioner[$i]->fpm_create_dt,
                                 'fpm_modify_by' => Session::get('usid'),
-                                'fpm_modify_dt' => DB::RAW('sysdate')
+                                'fpm_modify_dt' => Carbon::now()
                             );
                             if($j < sizeof($oldQuisioner) - 1)
                                 $j++;
@@ -806,7 +716,7 @@ class MemberController extends Controller
                                 'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                                 'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                                 'fpm_create_by' => Session::get('usid'),
-                                'fpm_create_dt' => DB::RAW('sysdate'),
+                                'fpm_create_dt' => Carbon::now(),
                                 'fpm_modify_by' => '',
                                 'fpm_modify_dt' => ''
                             );
@@ -828,7 +738,7 @@ class MemberController extends Controller
                         'fpm_flagbeliigr' => $request->arrdata[$i]['fpm_flagbeliigr'],
                         'fpm_flagbelilain' => $request->arrdata[$i]['fpm_flagbelilain'],
                         'fpm_create_by' => Session::get('usid'),
-                        'fpm_create_dt' => DB::RAW('sysdate'),
+                        'fpm_create_dt' => Carbon::now(),
                         'fpm_modify_by' => '',
                         'fpm_modify_dt' => ''
                     );
@@ -912,7 +822,7 @@ class MemberController extends Controller
 
         $cus = (array) $cus;
         $cus['cus_create_by'] = 'LEO';
-        $cus['cus_create_dt'] = DB::RAW('sysdate');
+        $cus['cus_create_dt'] = Carbon::now();
 
         try{
             DB::connection(Session::get('connection'))->beginTransaction();

@@ -139,7 +139,7 @@ class BatalTransferController extends Controller
                                     'del_avgcostold' => $avgstk,
                                     'del_stokqtyold' => $qtystk,
                                     'del_create_by' => Session::get('usid'),
-                                    'del_create_dt' => DB::RAW("SYSDATE")
+                                    'del_create_dt' => Carbon::now()
                                 ]);
                         }
                         else{
@@ -161,7 +161,7 @@ class BatalTransferController extends Controller
                                     'del_avgcostold' => $avgstk,
                                     'del_stokqtyold' => $qtystk,
                                     'del_create_by' => Session::get('usid'),
-                                    'del_create_dt' => DB::RAW("SYSDATE")
+                                    'del_create_dt' => Carbon::now()
                                 ]);
                         }
                     }
@@ -279,7 +279,7 @@ class BatalTransferController extends Controller
                                     'hcs_typetrn' => $rec2->hcs_typetrn,
                                     'hcs_lokasi' => $rec2->hcs_lokasi,
                                     'hcs_prdcd' => $rec2->hcs_prdcd,
-                                    'hcs_tglbpb' => DB::RAW("SYSDATE"),
+                                    'hcs_tglbpb' => Carbon::now(),
                                     'hcs_nodocbpb' => $rec2->hcs_nodocbpb,
                                     'hcs_qtybaru' => $qtystk - $rec2->hcs_qtylama,
                                     'hcs_qtylama' => $rec2->hcs_lastqty,
@@ -289,7 +289,7 @@ class BatalTransferController extends Controller
                                     'hcs_lastcostbaru' => $rec2->hcs_lastcostbaru,
                                     'hcs_lastcostlama' => $rec2->hcs_lastcostlama,
                                     'hcs_create_by' => Session::get('usid'),
-                                    'hcs_create_dt' => DB::RAW('SYSDATE')
+                                    'hcs_create_dt' => Carbon::now()
                                 ]);
                         }
                     }
@@ -301,7 +301,7 @@ class BatalTransferController extends Controller
                         ->update([
                             'mstd_recordid' => '1',
                             'mstd_modify_by' => Session::get('usid'),
-                            'mstd_modify_dt' => DB::RAW('SYSDATE')
+                            'mstd_modify_dt' => Carbon::now()
                         ]);
 
                     DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
@@ -311,7 +311,7 @@ class BatalTransferController extends Controller
                         ->update([
                             'msth_recordid' => '1',
                             'msth_modify_by' => Session::get('usid'),
-                            'msth_modify_dt' => DB::RAW('SYSDATE')
+                            'msth_modify_dt' => Carbon::now()
                         ]);
                 }
             }

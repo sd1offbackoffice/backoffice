@@ -46,6 +46,30 @@
         </thead>
         <tbody style="text-align: center; vertical-align: middle">
         @for($i=0;$i<sizeof($data);$i++)
+            @if($divisi != $data[$i]->div)
+                <tr>
+                    <td colspan="10" style="text-align: left; font-weight: bold">DIVISI : {{$data[$i]->div}}</td>
+                </tr>
+                @php
+                $divisi = $data[$i]->div;
+                @endphp
+            @endif
+            @if($departemen != $data[$i]->dep)
+                <tr>
+                    <td colspan="10" style="text-align: left; font-weight: bold">DEPARTEMEN : {{$data[$i]->dep}}</td>
+                </tr>
+                @php
+                    $departemen = $data[$i]->dep;
+                @endphp
+            @endif
+            @if($kategori != $data[$i]->kat)
+                <tr>
+                    <td colspan="10" style="text-align: left; font-weight: bold">KATEGORI : {{$data[$i]->kat}}</td>
+                </tr>
+                @php
+                    $kategori = $data[$i]->kat;
+                @endphp
+            @endif
             <tr>
                 <td style="text-align: left">{{$data[$i]->prd_prdcd}}&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td style="text-align: left">{{$data[$i]->prd_deskripsipanjang}}&nbsp;&nbsp;&nbsp;&nbsp;</td>

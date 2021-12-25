@@ -156,9 +156,11 @@ class beritaAcaraPemusnahanController extends Controller
 
     public function printDocument(Request $request){
         $noDoc  = $request->doc;
+        $ukuran = $request->ukuran;
         $kodeigr= Session::get('kdigr');
         $userid = Session::get('usid');
         $today  = date('Y-m-d H:i:s');
+
 
 //        Get No Ref/PBBR
         $getNoPBBR  = DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')->select('brsk_tgldoc', 'brsk_noref', 'brsk_tglref')->where('brsk_nodoc', $noDoc)->first();
@@ -247,7 +249,8 @@ class beritaAcaraPemusnahanController extends Controller
 
 
 //        Get Data to Print
-        $datas = DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+        $data = DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_alamat1', 'prs_alamat3', 'prs_npwp', 'prs_namawilayah', 'brsk_prdcd', 'brsk_qty_real', 'brsk_hrgsatuan', 'brsk_nilai',
                                 'brsk_keterangan', 'brsk_noref', 'brsk_nodoc', 'brsk_tgldoc', 'brsk_flagdoc', 'prd_deskripsipanjang', 'prd_unit', 'prd_frac', 'rap_store_manager', 'rap_store_adm', 'rap_logistic_supervisor','rap_stockkeeper_ii')
             ->leftJoin('tbmaster_perusahaan', 'prs_kodeigr', 'brsk_kodeigr')
@@ -257,14 +260,16 @@ class beritaAcaraPemusnahanController extends Controller
             ->orderBy('brsk_seqno')
             ->get()->toArray();
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['datas' => $datas]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['data' => $data, 'perusahaan' => $perusahaan]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(507, 77.75, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        return $pdf->stream('BApemusnahan-laporan.pdf');
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-        return $pdf->stream('BApemusnahan-laporan.pdf');
+        return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['data' => $data, 'perusahaan' => $perusahaan, 'ukuran' => $ukuran]);
     }
 
 }

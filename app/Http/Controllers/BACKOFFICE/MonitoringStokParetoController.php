@@ -137,9 +137,9 @@ class MonitoringStokParetoController extends Controller
                 $v_pluold = $temp->kvp_pluold;
 
                 $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
                       '".$v_pluold."',
                       'Y',
                       :QTYB1,
@@ -163,9 +163,9 @@ class MonitoringStokParetoController extends Controller
             }
 
             $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
                       '".$d->plu."',
                       'Y',
                       :QTY1,
@@ -294,9 +294,9 @@ class MonitoringStokParetoController extends Controller
                 $v_pluold = $temp->kvp_pluold;
 
                 $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
                       '".$v_pluold."',
                       'Y',
                       :QTYB1,
@@ -320,9 +320,9 @@ class MonitoringStokParetoController extends Controller
             }
 
             $sql = "BEGIN SP_PKM_SALES ('".Session::get('kdigr')."',
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
-                      ".DB::RAW("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-1)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-2)").",
+                      ".DB::connection(Session::get('connection'))->raw("ADD_MONTHS(TRUNC(SYSDATE),-3)").",
                       '".$d->plu."',
                       'Y',
                       :QTY1,

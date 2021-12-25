@@ -4,7 +4,7 @@
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-10">
                 <div class="card border-dark">
                     <div class="card-body cardForm">
                         <div class="row">
@@ -48,29 +48,29 @@
                             <div class="col-sm-12">
                                 <div class="tableFixedHeader" style="border-bottom: 1px solid black">
                                     <table class="table table-striped table-bordered" id="table2">
-                                        <thead class="theadDataTables">
+                                        <thead>
                                         <tr class="d-flex text-center">
-                                            <th style="width: 150px">PLU</th>
-                                            <th style="width: 400px">Deskripsi</th>
-                                            <th style="width: 130px">Satuan</th>
-                                            <th style="width: 150px">Hrg. Satuan</th>
-                                            <th style="width: 80px">Qty Rsk</th>
-                                            <th style="width: 80px">Qty Real</th>
-                                            <th style="width: 150px">Nilai</th>
-                                            <th style="width: 350px">Keterangan</th>
+                                            <th width="10%">PLU</th>
+                                            <th width="25%">Deskripsi</th>
+                                            <th width="8%">Satuan</th>
+                                            <th width="10%">Hrg. Satuan</th>
+                                            <th width="5%">Qty Rsk</th>
+                                            <th width="5%">Qty Real</th>
+                                            <th width="12%">Nilai</th>
+                                            <th width="25%">Keterangan</th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbody">
                                         @for($i = 0; $i< 9; $i++)
                                             <tr class="d-flex baris">
-                                                <td style="width: 150px"><input disabled type="text" class="form-control plu"></td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control qtyRsk text-right"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control qtyReal text-right"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control nilai text-right"></td>
-                                                <td style="width: 350px"><input disabled type="text" class="form-control keterangan"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control plu"></td>
+                                                <td width="25%"><input disabled type="text"  class="form-control deskripsi"></td>
+                                                <td width="8%"><input disabled type="text" class="form-control satuan"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control harga text-right"></td>
+                                                <td width="5%"><input disabled type="text" class="form-control qtyRsk text-right"></td>
+                                                <td width="5%"><input type="text" class="form-control qtyReal text-right"></td>
+                                                <td width="12%"><input disabled type="text" class="form-control nilai text-right"></td>
+                                                <td width="25%"><input disabled type="text" class="form-control keterangan"></td>
                                             </tr>
                                         @endfor
                                         </tbody>
@@ -211,7 +211,8 @@
         function  getDataModalDocument(val) {
             let tableModalDocument = $('#tableModalDocument').DataTable({
                 "ajax": {
-                    'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnodoc') }}',
+{{--                    'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnodoc') }}',--}}
+                    'url' : '{{url()->current() }}/getnodoc',
                     "data" : {
                         'value': val
                     },
@@ -261,7 +262,8 @@
         function  getDataModalPBBR(val) {
             let tableModalDocument = $('#tableModalPBBR').DataTable({
                 "ajax": {
-                    'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnopbbr') }}',
+                    {{--'url' : '{{ url('bo/transaksi/pemusnahan/bapemusnahan/getnopbbr') }}',--}}
+                    'url' : '{{url()->current() }}/getnopbbr',
                     "data" : {
                         'value': val
                     },
@@ -295,7 +297,7 @@
                     let val = $(this).val().toUpperCase(); console.log(val);
 
                     tableModalDocument.destroy();
-                    getDataModalDocument(val);
+                    getDataModalPBBR(val);
                 }
             })
         }
@@ -345,14 +347,14 @@
                         $('.baris').remove();
                         for (i = 0; i< result.data.length; i++) {
                             let temp =  `  <tr class="d-flex baris" onclick="putDesPanjang('`+ result.data[i].prd_deskripsipanjang+`')">
-                                                <td style="width: 150px"><input disabled type="text" class="form-control plu" value="`+ result.data[i].brsk_prdcd +`"></td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result.data[i].prd_deskripsipendek +`"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result.data[i].prd_unit +`/`+ result.data[i].prd_frac +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result.data[i].brsk_hrgsatuan) +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control qtyRsk text-right" value="`+ result.data[i].brsk_qty_rsk +`"></td>
-                                                <td style="width: 80px"><input onblur="calculateQty(this.value,this.id)"  type="text" class="form-control qtyReal text-right" id="`+ i +`" value="`+ result.data[i].brsk_qty_real +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control nilai text-right" value="`+ convertToRupiah(result.data[i].brsk_nilai) +`"></td>
-                                                <td style="width: 350px"><input disabled type="text" class="form-control keterangan" value="`+ result.data[i].brsk_keterangan +`"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control plu" value="`+ result.data[i].brsk_prdcd +`"></td>
+                                                <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result.data[i].prd_deskripsipendek +`"></td>
+                                                <td width="8%"><input disabled type="text" class="form-control satuan" value="`+ result.data[i].prd_unit +`/`+ result.data[i].prd_frac +`"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result.data[i].brsk_hrgsatuan) +`"></td>
+                                                <td width="5%"><input disabled type="text" class="form-control qtyRsk text-right" value="`+ result.data[i].brsk_qty_rsk +`"></td>
+                                                <td width="5%"><input onblur="calculateQty(this.value,this.id)"  type="text" class="form-control qtyReal text-right" id="`+ i +`" value="`+ result.data[i].brsk_qty_real +`"></td>
+                                                <td width="12%"><input disabled type="text" class="form-control nilai text-right" value="`+ convertToRupiah(result.data[i].brsk_nilai) +`"></td>
+                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result.data[i].brsk_keterangan,' ') +`"></td>
                                             </tr>`;
 
                             $('#tbody').append(temp);
@@ -412,14 +414,14 @@
                         $('.baris').remove();
                         for (i = 0; i< result.data.length; i++) {
                             let temp =  `  <tr class="d-flex baris" onclick="putDesPanjang('`+ (result.data[i].prd_deskripsipanjang).replace("'", "`") +`')">
-                                                <td style="width: 150px"><input disabled type="text" class="form-control plu" value="`+ result.data[i].rsk_prdcd +`"></td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi" value="`+ result.data[i].prd_deskripsipendek +`"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan" value="`+ result.data[i].prd_unit +`/`+ result.data[i].prd_frac +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result.data[i].rsk_hrgsatuan) +`"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control qtyRsk text-right" value="`+ result.data[i].rsk_qty +`"></td>
-                                                <td style="width: 80px"><input onblur="calculateQty(this.value,this.id)"  type="text" class="form-control qtyReal text-right" id="`+ i +`" value="`+ result.data[i].rsk_qty +`"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control nilai text-right" value="`+ convertToRupiah(result.data[i].rsk_nilai) +`"></td>
-                                                <td style="width: 350px"><input disabled type="text" class="form-control keterangan" value="`+ result.data[i].rsk_keterangan +`"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control plu" value="`+ result.data[i].rsk_prdcd +`"></td>
+                                                <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result.data[i].prd_deskripsipendek +`"></td>
+                                                <td width="8%"><input disabled type="text" class="form-control satuan" value="`+ result.data[i].prd_unit +`/`+ result.data[i].prd_frac +`"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result.data[i].rsk_hrgsatuan) +`"></td>
+                                                <td width="5%"><input disabled type="text" class="form-control qtyRsk text-right" value="`+ result.data[i].rsk_qty +`"></td>
+                                                <td width="5%"><input onblur="calculateQty(this.value,this.id)"  type="text" class="form-control qtyReal text-right" id="`+ i +`" value="`+ result.data[i].rsk_qty +`"></td>
+                                                <td width="12%"><input disabled type="text" class="form-control nilai text-right" value="`+ convertToRupiah(result.data[i].rsk_nilai) +`"></td>
+                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result.data[i].brsk_keterangan,' ') +`"></td>
                                             </tr>`;
 
                             $('#tbody').append(temp);
@@ -568,8 +570,29 @@
                         $('#modal-loader').modal('hide');
                         if(result.kode == '1'){
                             if (status == 'cetak'){
-                                window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');
-                                // clearField();
+                                swal({
+                                    title: 'Pilih ukuran cetakan',
+                                    icon: 'warning',
+                                    buttons: {
+                                        cancel: 'Cancel',
+                                        besar: {
+                                            text: 'Besar',
+                                            value: 'besar'
+                                        },
+                                        kecil: {
+                                            text: 'Kecil',
+                                            value: 'kecil'
+                                        }
+                                    },
+                                    dangerMode: true
+                                }).then((size) => {
+                                    if (size){
+                                        window.open('{{ url()->current() }}/printdoc/'+doc+'/'+size+'/');
+                                        clearField();
+
+                                    }
+                                });
+                                {{--window.open('{{ url()->current() }}/printdoc/'+result.msg+'/');--}}
                             } else {
                                 swal('Dokumen Berhasil disimpan','','success')
                             }
@@ -600,8 +623,28 @@
             if(doc && keterangan === '* TAMBAH *' || doc && keterangan === '* KOREKSI *'){
                 saveData('cetak');
             } else {
-                window.open('{{ url()->current() }}/printdoc/'+doc+'/');
-                clearField();
+                swal({
+                    title: 'Pilih ukuran cetakan',
+                    icon: 'warning',
+                    buttons: {
+                        cancel: 'Cancel',
+                        besar: {
+                            text: 'Besar',
+                            value: 'besar'
+                        },
+                        kecil: {
+                            text: 'Kecil',
+                            value: 'kecil'
+                        }
+                    },
+                    dangerMode: true
+                }).then((size) => {
+                    if (size){
+                        window.open('{{ url()->current() }}/printdoc/'+doc+'/'+size+'/');
+                        clearField();
+
+                    }
+                });
             }
 
             // window.open('/BackOffice/public/bo/transaksi/pemusnahan/bapemusnahan/printdoc/');
@@ -614,14 +657,14 @@
 
         function tempTable() {
             let temp = `<tr class="d-flex baris">
-                                                <td style="width: 150px"><input disabled type="text" class="form-control plu"></td>
-                                                <td style="width: 400px"><input disabled type="text"  class="form-control deskripsi"></td>
-                                                <td style="width: 130px"><input disabled type="text" class="form-control satuan"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control harga text-right"></td>
-                                                <td style="width: 80px"><input disabled type="text" class="form-control qtyRsk text-right"></td>
-                                                <td style="width: 80px"><input type="text" class="form-control qtyReal text-right"></td>
-                                                <td style="width: 150px"><input disabled type="text" class="form-control nilai text-right"></td>
-                                                <td style="width: 350px"><input disabled type="text" class="form-control keterangan"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control plu"></td>
+                                                <td width="25%"><input disabled type="text"  class="form-control deskripsi"></td>
+                                                <td width="8%"><input disabled type="text" class="form-control satuan"></td>
+                                                <td width="10%"><input disabled type="text" class="form-control harga text-right"></td>
+                                                <td width="5%"><input disabled type="text" class="form-control qtyRsk text-right"></td>
+                                                <td width="5%"><input type="text" class="form-control qtyReal text-right"></td>
+                                                <td width="12%"><input disabled type="text" class="form-control nilai text-right"></td>
+                                                <td width="25%"><input disabled type="text" class="form-control keterangan"></td>
                                             </tr>`
 
             return temp;

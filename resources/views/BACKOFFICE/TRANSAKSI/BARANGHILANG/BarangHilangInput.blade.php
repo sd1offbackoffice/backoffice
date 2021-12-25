@@ -599,9 +599,9 @@
                         $('.bkp')[index].value = data.prd_flagbkp1;
                         $('.ctn')[index].value = '0';
                         $('.pcs')[index].value = '0';
-                        $('.hrgsatuan')[index].value = convertToRupiah(data.hrgsatuan);
+                        $('.hrgsatuan')[index].value = convertToRupiah(result.hrgsatuan);
                         $('.stock')[index].value = convertToRupiah2(data.st_saldoakhir);
-                        $('#avg-cost').val(convertToRupiah(data.hrgsatuan));
+                        $('#avg-cost').val(convertToRupiah(result.avgcost));
                         $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
 
                         for (i = 0; i < $('.plu').length; i++) {
@@ -624,9 +624,9 @@
                         $('.bkp')[index].value = data.prd_flagbkp1;
                         $('.ctn')[index].value = '0';
                         $('.pcs')[index].value = '0';
-                        $('.hrgsatuan')[index].value = convertToRupiah(data.hrgsatuan);
+                        $('.hrgsatuan')[index].value = convertToRupiah(result.hrgsatuan);
                         $('.stock')[index].value = convertToRupiah2(data.st_saldoakhir);
-                        $('#avg-cost').val(convertToRupiah(data.hrgsatuan));
+                        $('#avg-cost').val(convertToRupiah(result.hrgsatuan));
                         $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
 
                         for (i = 0; i < $('.plu').length; i++) {
@@ -818,7 +818,7 @@
                                                 <td class="buttonInside" style="width: 7%">
                                                     <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`">
                                                      <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="`+ index +`">
-                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
+                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
                                                 </td>
                                                 <td style="width: 27%"><input disabled type="text" class="form-control deskripsi"></td>
@@ -909,3 +909,4 @@
     </script>
 
 @endsection
+  

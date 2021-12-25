@@ -63,11 +63,13 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Tanggal</label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control tanggal" id="tanggal-1">
+                                <input type="text" class="form-control tanggal" id="tanggal-1"
+                                       value="{{$selected_tanggal1}}">
                             </div>
                             <label class="col-sm-2 pt-1 text-center">s/d</label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control tanggal" id="tanggal-2">
+                                <input type="text" class="form-control tanggal" id="tanggal-2"
+                                       value="{{$selected_tanggal2}}">
                             </div>
 
                         </div>
@@ -87,20 +89,31 @@
                                     <option value="ALL">ALL</option>
                                     @foreach($departement as $dep)
                                         @if($selected_dep == $dep->dep_namadepartement)
-                                            <option selected value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
+                                            <option selected
+                                                    value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
                                         @else
-                                            <option value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
+                                            <option
+                                                value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
                                         @endif
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="row form-group justify-content-end">
+                        <div class="row form-group">
+                            <div class="float-left col-sm-3">
+                                <button class="col btn btn-danger" id="btn-reset" onclick="reloadPage()">Reset
+                                </button>
+                            </div>
+                            <div class="col-sm-3 offset-3">
+                                <button class="col btn btn-primary" id="btn-show-report" onclick="showReport()">Lihat Laporan
+                                </button>
+                            </div>
                             <div id="col-btn-print" class="col-sm-3">
                                 <button class="col btn btn-primary" id="btn-print" onclick="printReport()">Cetak
                                 </button>
                             </div>
-                            <div class="btn-group col-sm-3" role="group" id="btn-group-extension" style="display: none;">
+                            <div class="btn-group col-sm-3" role="group" id="btn-group-extension"
+                                 style="display: none;">
                                 <button type="button" id="btn-export-csv"
                                         class="btn btn-success">
                                     <i class="fas fa-file-csv nav-icon"></i> CSV
@@ -110,10 +123,7 @@
                                     <i class="fas fa-file-pdf nav-icon"></i> PDF
                                 </button>
                             </div>
-                            <div class="col-sm-3">
-                                <button class="col btn btn-primary" onclick="showReport()">Lihat Laporan
-                                </button>
-                            </div>
+
                         </div>
                     </div>
                 </fieldset>
@@ -209,10 +219,14 @@
             $('.tanggal').datepicker({
                 "dateFormat": "dd/mm/yy",
             });
-            $('.tanggal').datepicker('setDate', new Date());
 
-            if($('#group').val()){
-                $('#tableData').DataTable();
+            if ($('#tanggal-1').val() == '') {
+                $('.tanggal').datepicker('setDate', new Date());
+            }
+
+            $('#tableData').DataTable();
+            if ($('#departemen').val() != 'ALL') {
+                getData();
             }
         });
 
@@ -231,17 +245,10 @@
             $('#tanggal-1').val('');
             $('#tanggal-2').val('');
         });
-        // $(document).on('click', '#lihat', function () {
-        //     val = $(this).val();
-        //     if ($(this).prop('checked') == true) {
-        //         checked.push(val);
-        //     } else {
-        //         const index = checked.indexOf(val);
-        //         if (index > -1) {
-        //             checked.splice(index, 1);
-        //         }
-        //     }
-        // });
+
+        function reloadPage() {
+            window.location = `{{ url()->current() }}`;
+        }
         function showReport() {
             getData();
         }
@@ -254,35 +261,28 @@
         $('#btn-export-csv, #btn-export-pdf').on('click', function () {
             var currentButton = $(this);
             var buttonName = '';
-            var jenislaporan ='';
+            var jenislaporan = '';
 
             if (currentButton.attr('id') === 'btn-export-csv') {
                 jenislaporan = 'csv';
-            }
-            else {
+            } else {
                 jenislaporan = 'pdf';
             }
             $('#btn-group-extension').hide();
             $('#col-btn-print').show(250);
 
-            window.open(`{{ url()->current() }}/cetak?jenislaporan=${jenislaporan}&member=${$('#member').val()}&group=${$('#group').val()}&segmentasi=${$('#segmentasi').val()}&outlet=${$('#outlet').val()}&suboutlet=${$('#suboutlet').val()}&tanggal1=${$('#tanggal-1').val()}&tanggal2=${$('#tanggal-2').val()}`, '_blank');
+            window.open(`{{ url()->current() }}/cetak?jenislaporan=${jenislaporan}&member=${$('#member').val()}&group=${$('#group').val()}&segmentasi=${$('#segmentasi').val()}&outlet=${$('#outlet').val()}&suboutlet=${$('#suboutlet').val()}&tanggal1=${$('#tanggal-1').val()}&tanggal2=${$('#tanggal-2').val()}&divisi=${$('#divisi').val()}&departemen=${$('#departemen').val()}`, '_blank');
 
         });
 
         function getData() {
+            $(document).find('select').prop('disabled',true);
+            $(document).find('input').prop('disabled',true);
+            $('#btn-show-report').prop('disabled',true);
+
             if ($.fn.DataTable.isDataTable('#tableData')) {
-                $('#tableData').DataTable().destroy();
+                $('#tableData').DataTable().treeGrid().destroy();
             }
-
-            // $('#tableData_filter input').off().on('keypress', function (e) {
-            //     if (e.which == 13) {
-            //         let val = $(this).val();
-            //
-            //         tableData.destroy();
-            //         getData(val);
-            //     }
-            // })
-
             var columns = [
                 {
                     title: '',
@@ -354,17 +354,19 @@
 
             ];
 
-            tableData = $('#tableData').DataTable({
+            $('#tableData').DataTable({
                 "ajax": {
                     'url': '{{ url()->current().'/get-data' }}',
                     "data": {
-                        member : $('#member').val(),
-                        group : $('#group').val(),
-                        segmentasi : $('#segmentasi').val(),
-                        outlet : $('#outlet').val(),
-                        suboutlet : $('#suboutlet').val(),
-                        tanggal1 : $('#tanggal-1').val(),
-                        tanggal2 : $('#tanggal-2').val(),
+                        member: $('#member').val(),
+                        group: $('#group').val(),
+                        segmentasi: $('#segmentasi').val(),
+                        outlet: $('#outlet').val(),
+                        suboutlet: $('#suboutlet').val(),
+                        tanggal1: $('#tanggal-1').val(),
+                        tanggal2: $('#tanggal-2').val(),
+                        divisi: $('#divisi').val(),
+                        departemen: $('#departemen').val(),
                     },
                 },
                 "columns": columns,
@@ -373,7 +375,6 @@
                     'expandIcon': '<span>+</span>',
                     'collapseIcon': '<span>-</span>'
                 },
-                "buttons": ['csv','pdf'],
                 "paging": true,
                 "lengthChange": true,
                 "searching": true,
@@ -385,6 +386,8 @@
                     $(row).addClass('modalRow');
                     if (!data.children) {
                         $(row).addClass('child');
+                    }else {
+                        $(row).attr('data',data);
                     }
                 },
                 "columnDefs": [
@@ -433,10 +436,12 @@
             });
         }
 
-        $(document).on('click','.child', function () {
+        $(document).on('click', '.child', function () {
             var currentButton = $(this);
-            var departement = currentButton.find('td').eq(1).text();
-
+            var kategori = currentButton.find('td').eq(1).text();
+            var tanggal1 = $('#tanggal-1').val();
+            var tanggal2 = $('#tanggal-2').val();
+            window.open(`{{ url()->current() }}/../laporan-sales-per-kategori-produk?kategori=${kategori}&tanggal1=${tanggal1}&tanggal2=${tanggal2}`, '_blank');
         });
     </script>
 

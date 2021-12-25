@@ -222,10 +222,10 @@ class MonitoringController extends Controller
                     'pln_prdcd' => $request->plu,
                     'pln_pkmt' => $request->pkmt,
                     'pln_flagtag' => $request->tag,
-                    'pln_tglbpb' => DB::RAW("TO_DATE('".$request->tglbpb."', 'dd/mm/yy')"),
-                    'pln_tglaktif' => DB::RAW("TO_DATE('".$request->tgldaftar."', 'dd/mm/yy')"),
+                    'pln_tglbpb' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$request->tglbpb."', 'dd/mm/yy')"),
+                    'pln_tglaktif' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$request->tgldaftar."', 'dd/mm/yy')"),
                     'pln_create_by' => Session::get('usid'),
-                    'pln_create_dt' => DB::RAW("SYSDATE")
+                    'pln_create_dt' => Carbon::now()
                 ]);
 
             return [
@@ -274,7 +274,7 @@ class MonitoringController extends Controller
                         'PKM_PERIODE2' => $date,
                         'PKM_PERIODE3' => $date,
                         'PKM_CREATE_BY' => Session::get('usid'),
-                        'PKM_CREATE_DT' => DB::RAW("SYSDATE")
+                        'PKM_CREATE_DT' => Carbon::now()
                     ]);
             }
             else{
@@ -287,7 +287,7 @@ class MonitoringController extends Controller
                         'PKM_PERIODE2' => $date,
                         'PKM_PERIODE3' => $date,
                         'PKM_MODIFY_BY' => Session::get('usid'),
-                        'PKM_MODIFY_DT' => DB::RAW("SYSDATE")
+                        'PKM_MODIFY_DT' => Carbon::now()
                     ]);
             }
 

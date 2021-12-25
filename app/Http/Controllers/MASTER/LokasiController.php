@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MASTER;
 
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
@@ -229,7 +230,7 @@ class LokasiController extends Controller
                             'lks_depanbelakang' => '1',
                             'lks_atasbawah' => '1',
                             'lks_modify_by' => Session::get('usid'),
-                            'lks_modify_dt' => DB::RAW('SYSDATE'),
+                            'lks_modify_dt' => Carbon::now(),
                             'lks_jenisrak' => $jenisrak
                         ]);
                     DB::connection(Session::get('connection'))->commit();
@@ -282,7 +283,7 @@ class LokasiController extends Controller
                         'lks_depanbelakang' => '1',
                         'lks_atasbawah' => '1',
                         'lks_modify_by' => Session::get('usid'),
-                        'lks_modify_dt' => DB::RAW('SYSDATE')
+                        'lks_modify_dt' => Carbon::now()
                     ]);
                 DB::connection(Session::get('connection'))->commit();
             }
@@ -320,7 +321,7 @@ class LokasiController extends Controller
                         'lks_depanbelakang' => '1',
                         'lks_atasbawah' => '1',
                         'lks_modify_by' => Session::get('usid'),
-                        'lks_modify_dt' => DB::RAW('SYSDATE')
+                        'lks_modify_dt' => Carbon::now()
                     ]);
                 DB::connection(Session::get('connection'))->commit();
             }
@@ -334,7 +335,7 @@ class LokasiController extends Controller
                 ->select('lks_prdcd','lks_noid')
                 ->where('lks_koderak','like','D%')
                 ->whereRaw("lks_tiperak = 'B' OR lks_tiperak = 'N' OR lks_tiperak like 'I%'")
-                ->whereRaw(DB::RAW("SUBSTR(LKS_NOID, -1)").'='.DB::RAW("SUBSTR ('".$request->data['lks_noid']."', -1)"))
+                ->whereRaw(DB::connection(Session::get('connection'))->raw("SUBSTR(LKS_NOID, -1)").'='.DB::connection(Session::get('connection'))->raw("SUBSTR ('".$request->data['lks_noid']."', -1)"))
                 ->whereRaw("(NVL(LKS_NOID, '123456') <> '123456' OR TRIM(LKS_NOID) <> '')")
                 ->get();
 
@@ -364,7 +365,7 @@ class LokasiController extends Controller
             ->update([
                 'lks_noid' => $request->data['lks_noid'],
                 'lks_modify_by' => Session::get('usid'),
-                'lks_modify_dt' => DB::RAW('SYSDATE')
+                'lks_modify_dt' => Carbon::now()
             ]);
         DB::connection(Session::get('connection'))->commit();
 
@@ -384,7 +385,7 @@ class LokasiController extends Controller
                         ->update([
                             'dpd_recordid' => '1',
                             'dpd_modify_by' => Session::get('usid'),
-                            'dpd_modify_dt' => DB::RAW('sysdate')
+                            'dpd_modify_dt' => Carbon::now()
                         ]);
                 }
                 else {
@@ -397,7 +398,7 @@ class LokasiController extends Controller
                             'dpd_tiperak' => $request->data['lks_tiperak'],
                             'dpd_shelvingrak' => $request->data['lks_tiperak'],
                             'dpd_nourut' => $request->data['lks_nourut'],
-                            'dpd_create_dt' => DB::RAW('sysdate'),
+                            'dpd_create_dt' => Carbon::now(),
                             'dpd_create_by' => Session::get('usid')
                         ]);
                 }
@@ -438,7 +439,7 @@ class LokasiController extends Controller
                     'lks_fmmsqr' => null,
                     'lks_flagupdate' => null,
                     'lks_modify_by' => Session::get('usid'),
-                    'lks_modify_dt' => DB::RAW('sysdate'),
+                    'lks_modify_dt' => Carbon::now(),
                     'lks_qty' => '0',
                     'lks_expdate' => null,
                     'lks_booked' => null,
@@ -655,7 +656,7 @@ class LokasiController extends Controller
                     'lks_jenisrak' => $insert['lks_jenisrak'],
                     'lks_delete' => $insert['lks_delete'],
                     'lks_create_by' => Session::get('usid'),
-                    'lks_create_dt' => DB::RAW('sysdate'),
+                    'lks_create_dt' => Carbon::now(),
                     'lks_kodeigr' => Session::get('kdigr')
                 ]);
 
@@ -735,7 +736,7 @@ class LokasiController extends Controller
             if(count($cek) > 0){
                 $temp = [
                     'dpd_modify_by' => Session::get('usid'),
-                    'dpd_modify_dt' => DB::RAW('sysdate')
+                    'dpd_modify_dt' => Carbon::now()
                 ];
                 $update = array_merge($data, $temp);
 
@@ -747,7 +748,7 @@ class LokasiController extends Controller
                 $temp = [
                     'dpd_kodeigr' => '22',
                     'dpd_create_by' => Session::get('usid'),
-                    'dpd_create_dt' => DB::RAW('sysdate')
+                    'dpd_create_dt' => Carbon::now()
                 ];
                 $insert = array_merge($data, $temp);
 

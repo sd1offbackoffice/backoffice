@@ -325,8 +325,8 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_KODEPROMOSI" => $kodegab,
                         "ISH_NAMAPROMOSI" => $deskripsievent,
                         "ISH_JENISPROMOSI" => 'H',
-                        "ISH_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISH_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISH_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISH_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISH_PRDCDHADIAH" => $hadiah,
                         "ISH_JMLHADIAH" => $jumlahhadiah,
                         "ISH_KELIPATANHADIAH" => $kelipatan,
@@ -346,7 +346,7 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_FREEPASS" => $freepass,
                         "ISH_RETAILER" => $retailer,
                         "ISH_CREATE_BY" => $usid,
-                        "ISH_CREATE_DT" => DB::Raw('SYSDATE'),
+                        "ISH_CREATE_DT" => Carbon::now(),
                         "ISH_REGULERBIRUPLUS" => $regulerbiruplus,
                         "ISH_SILVER" => $silver,
                         "ISH_GOLD1" => $gold1,
@@ -360,15 +360,15 @@ class HadiahUntukGabunganItemController extends Controller
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
                             "ISD_JENISPROMOSI" => 'H',
-                            "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                            "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                            "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                            "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                             "ISD_PRDCD" => 'ALLITEM',
                             "ISD_MINPCS" => 0,
                             "ISD_MINRPH" => 0,
                             "ISD_MAXPCS" => 0,
                             "ISD_MAXRPH" => 0,
                             "ISD_CREATE_BY" => $usid,
-                            "ISD_CREATE_DT" => DB::Raw('SYSDATE')
+                            "ISD_CREATE_DT" => Carbon::now()
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
@@ -377,15 +377,15 @@ class HadiahUntukGabunganItemController extends Controller
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,
                                 "ISD_JENISPROMOSI" => 'H',
-                                "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                                "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                                "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                                "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                                 "ISD_PRDCD" => $produk[$i],
                                 "ISD_MINPCS" => 0,
                                 "ISD_MINRPH" => 0,
                                 "ISD_MAXPCS" => 0,
                                 "ISD_MAXRPH" => 0,
                                 "ISD_CREATE_BY" => $usid,
-                                "ISD_CREATE_DT" => DB::Raw('SYSDATE')
+                                "ISD_CREATE_DT" => Carbon::now()
                             ]);
                     }
                 }
@@ -405,8 +405,8 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_KODEPROMOSI" => $kodegab,
                         "ISH_NAMAPROMOSI" => $deskripsievent,
                         "ISH_JENISPROMOSI" => 'H',
-                        "ISH_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                        "ISH_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                        "ISH_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                        "ISH_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                         "ISH_PRDCDHADIAH" => $hadiah,
                         "ISH_JMLHADIAH" => $jumlahhadiah,
                         "ISH_KELIPATANHADIAH" => $kelipatan,
@@ -428,7 +428,7 @@ class HadiahUntukGabunganItemController extends Controller
                         "ISH_CREATE_BY" => $creator,
                         "ISH_CREATE_DT" => $create_dt,
                         "ISH_MODIFY_BY" => $usid,
-                        "ISH_MODIFY_DT" => DB::Raw('SYSDATE'),
+                        "ISH_MODIFY_DT" => Carbon::now(),
                         "ISH_REGULERBIRUPLUS" => $regulerbiruplus,
                         "ISH_SILVER" => $silver,
                         "ISH_GOLD1" => $gold1,
@@ -442,8 +442,8 @@ class HadiahUntukGabunganItemController extends Controller
                             "ISD_KODEIGR" => $kodeigr,
                             "ISD_KODEPROMOSI" => $kodegab,
                             "ISD_JENISPROMOSI" => 'H',
-                            "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                            "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                            "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                            "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                             "ISD_PRDCD" => 'ALLITEM',
                             "ISD_MINPCS" => 0,
                             "ISD_MINRPH" => 0,
@@ -452,7 +452,7 @@ class HadiahUntukGabunganItemController extends Controller
                             "ISD_CREATE_BY" => $creator,
                             "ISD_CREATE_DT" => $create_dt,
                             "ISD_MODIFY_BY" => $usid,
-                            "ISD_MODIFY_DT" => DB::Raw('SYSDATE')
+                            "ISD_MODIFY_DT" => Carbon::now()
                         ]);
                 }else{
                     for($i=0;$i<sizeof($produk);$i++){
@@ -461,8 +461,8 @@ class HadiahUntukGabunganItemController extends Controller
                                 "ISD_KODEIGR" => $kodeigr,
                                 "ISD_KODEPROMOSI" => $kodegab,
                                 "ISD_JENISPROMOSI" => 'H',
-                                "ISD_TGLAWAL" => DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                                "ISD_TGLAKHIR" => DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                                "ISD_TGLAWAL" => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                                "ISD_TGLAKHIR" => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                                 "ISD_PRDCD" => $produk[$i],
                                 "ISD_MINPCS" => 0,
                                 "ISD_MINRPH" => 0,
@@ -471,7 +471,7 @@ class HadiahUntukGabunganItemController extends Controller
                                 "ISD_CREATE_BY" => $creator,
                                 "ISD_CREATE_DT" => $create_dt,
                                 "ISD_MODIFY_BY" => $usid,
-                                "ISD_MODIFY_DT" => DB::Raw('SYSDATE')
+                                "ISD_MODIFY_DT" => Carbon::now()
                             ]);
                     }
                 }

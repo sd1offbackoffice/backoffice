@@ -36,12 +36,18 @@ class PembatalanMPPController extends Controller
             ->join('tbtr_mstran_d','mstd_nodoc','=','msth_nodoc')
             ->join('tbmaster_prodmast','prd_prdcd','=','mstd_prdcd')
             ->selectRaw("mstd_tgldoc, mstd_nopo, mstd_tglpo, mstd_prdcd, prd_deskripsipanjang,
-					prd_unit, mstd_qty, mstd_hrgsatuan, mstd_gross,
-					msth_noref3, msth_tgref3")
+					prd_unit || '/' || prd_frac kemasan, mstd_qty, mstd_hrgsatuan, mstd_gross,
+					msth_noref3, msth_tgref3, prd_frac")
             ->where('mstd_typetrn','X')
             ->where('msth_nodoc',$nompp)
             ->orderBy('mstd_prdcd')
             ->get();
+
+        if(count($data) == 0){
+            return response()->json([
+                'message' => 'Nomor MPP salah!'
+            ], 500);
+        }
 
         return $data;
     }
@@ -133,10 +139,10 @@ class PembatalanMPPController extends Controller
                                     ->where('st_lokasi',$rec->lokasi)
                                     ->where('st_kodeigr',Session::get('kdigr'))
                                     ->update([
-                                        'st_saldoakhir' => DB::RAW('st_saldoakhir - '.$rec->mstd_qty),
-                                        'st_adj' => DB::RAW("st_adj - ".$rec->mstd_qty),
+                                        'st_saldoakhir' => DB::connection(Session::get('connection'))->raw('st_saldoakhir - '.$rec->mstd_qty),
+                                        'st_adj' => DB::connection(Session::get('connection'))->raw("st_adj - ".$rec->mstd_qty),
                                         'st_modify_by' => Session::get('usid'),
-                                        'st_modify_dt' => DB::RAW("TRUNC(SYSDATE)")
+                                        'st_modify_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
                                     ]);
 
                                 $temp = DB::connection(Session::get('connection'))->table('tbtr_hapusplu')
@@ -156,7 +162,7 @@ class PembatalanMPPController extends Controller
                                             'del_flagtipe2' => $rec->mstd_flagdisc2,
                                             'del_avgcostnew' => $rec->st_avgcost,
                                             'del_stokqtyold' => $rec->st_saldoakhir,
-                                            'del_create_dt' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'del_create_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'del_create_by' => Session::get('usid')
                                         ]);
                                 }
@@ -245,7 +251,7 @@ class PembatalanMPPController extends Controller
                                             'del_flagtipe2' => $rec->mstd_flagdisc2,
                                             'del_avgcostnew' => $rec->st_avgcost,
                                             'del_stokqtyold' => $rec->st_saldoakhir,
-                                            'del_create_dt' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'del_create_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'del_create_by' => Session::get('usid')
                                         ]);
                                 }
@@ -278,10 +284,10 @@ class PembatalanMPPController extends Controller
                                     ->where('st_lokasi',$rec->lokasi)
                                     ->where('st_kodeigr',Session::get('kdigr'))
                                     ->update([
-                                        'st_saldoakhir' => DB::RAW("st_saldoakhir - ".$rec->mstd_qty),
-                                        'st_adj' => DB::RAW("st_adj - ".$rec->mstd_qty),
+                                        'st_saldoakhir' => DB::connection(Session::get('connection'))->raw("st_saldoakhir - ".$rec->mstd_qty),
+                                        'st_adj' => DB::connection(Session::get('connection'))->raw("st_adj - ".$rec->mstd_qty),
                                         'st_modify_by' => Session::get('usid'),
-                                        'st_modify_dt' => DB::RAW("TRUNC(SYSDATE)")
+                                        'st_modify_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
                                     ]);
 
                                 $step = 22;
@@ -317,7 +323,7 @@ class PembatalanMPPController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcda,0,6).'0',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("SYSDATE")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             DB::connection(Session::get('connection'))->table('tbtr_promomd')
@@ -326,7 +332,7 @@ class PembatalanMPPController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcda,0,6).'1',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("SYSDATE")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             DB::connection(Session::get('connection'))->table('tbtr_promomd')
@@ -335,7 +341,7 @@ class PembatalanMPPController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcda,0,6).'2',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("SYSDATE")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             DB::connection(Session::get('connection'))->table('tbtr_promomd')
@@ -344,7 +350,7 @@ class PembatalanMPPController extends Controller
                                                 ->update([
                                                     'prmd_prdcd' => substr($prdcda,0,6).'3',
                                                     'prmd_modify_by' => Session::get('usid'),
-                                                    'prmd_modify_dt' => DB::RAW("SYSDATE")
+                                                    'prmd_modify_dt' => Carbon::now()
                                                 ]);
 
                                             $step = 39;
@@ -363,7 +369,7 @@ class PembatalanMPPController extends Controller
                                                     ->update([
                                                         'lks_prdcd' => $prdcda,
                                                         'lks_modify_by' => Session::get('usid'),
-                                                        'lks_modify_dt' => DB::RAW("SYSDATE")
+                                                        'lks_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 41;
@@ -451,7 +457,7 @@ class PembatalanMPPController extends Controller
                                                             'pln_pkmt' => $pkmt,
                                                             'pln_flagtag' => $tag,
                                                             'pln_create_by' => Session::get('usid'),
-                                                            'pln_create_dt' => DB::RAW("SYSDATE")
+                                                            'pln_create_dt' => Carbon::now()
                                                         ]);
                                                 }
 
@@ -479,7 +485,7 @@ class PembatalanMPPController extends Controller
                                                     ->update([
                                                         'pkm_prdcd' => $prdcda,
                                                         'pkm_modify_by' => Session::get('usid'),
-                                                        'pkm_modify_dt' => DB::RAW("SYSDATE")
+                                                        'pkm_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 55;
@@ -535,7 +541,7 @@ class PembatalanMPPController extends Controller
                                                     ->update([
                                                         'pkmg_prdcd' => $prdcda,
                                                         'pkmg_modify_by' => Session::get('usid'),
-                                                        'pkmg_modify_dt' => DB::RAW("SYSDATE")
+                                                        'pkmg_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 60;
@@ -640,7 +646,7 @@ class PembatalanMPPController extends Controller
                                                     ->update([
                                                         'gdl_prdcd' => $prdcda,
                                                         'gdl_modify_by' => Session::get('usid'),
-                                                        'gdl_modify_dt' => DB::RAW("SYSDATE")
+                                                        'gdl_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 72;
@@ -696,7 +702,7 @@ class PembatalanMPPController extends Controller
                                                     ->update([
                                                         'min_prdcd' => $prdcda,
                                                         'min_modify_by' => Session::get('usid'),
-                                                        'min_modify_dt' => DB::RAW("SYSDATE")
+                                                        'min_modify_dt' => Carbon::now()
                                                     ]);
 
                                                 $step = 77;
@@ -800,7 +806,7 @@ class PembatalanMPPController extends Controller
                                                         'pln_pkmt' => $pkmt,
                                                         'pln_flagtag' => $tag,
                                                         'pln_create_by' => Session::get('usid'),
-                                                        'pln_create_dt' => DB::RAW("SYSDATE")
+                                                        'pln_create_dt' => Carbon::now()
                                                     ]);
                                             }
 
@@ -827,7 +833,7 @@ class PembatalanMPPController extends Controller
                             ->update([
                                 'msth_recordid' => 1,
                                 'msth_modify_by' => Session::get('usid'),
-                                'msth_modify_dt' => DB::RAW("SYSDATE")
+                                'msth_modify_dt' => Carbon::now()
                             ]);
 
                         $step = 94;
@@ -839,7 +845,7 @@ class PembatalanMPPController extends Controller
                             ->update([
                                 'mstd_recordid' => 1,
                                 'mstd_modify_by' => Session::get('usid'),
-                                'mstd_modify_dt' => DB::RAW("SYSDATE")
+                                'mstd_modify_dt' => Carbon::now()
                             ]);
 
                         DB::connection(Session::get('connection'))->commit();

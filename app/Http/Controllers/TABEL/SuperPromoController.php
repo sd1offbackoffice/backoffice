@@ -88,15 +88,15 @@ class SuperPromoController extends Controller
             DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
                 ->insert([
                     'spot_kodeigr'=>$kodeigr,
-                    'spot_periodeawal'=>DB::RAW("TO_DATE('$sDate','DD-MM-YYYY')"),
-                    'spot_periodeakhir'=>DB::RAW("TO_DATE('$eDate','DD-MM-YYYY')"),
+                    'spot_periodeawal'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                    'spot_periodeakhir'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
                     'spot_prdcd'=>$datas[$i]['plu'],
                     'spot_fmtrgq'=>$datas[$i]['qty'],
                     'spot_fmtrgs'=>$datas[$i]['sales'],
                     'spot_fmtrgg'=>$datas[$i]['margin'],
                     'spot_hrgjual'=>$datas[$i]['hrg'],
                     'spot_create_by'=>Session::get('usid'),
-                    'spot_create_dt'=>DB::RAW("trunc(SYSDATE)"),
+                    'spot_create_dt'=>DB::connection(Session::get('connection'))->raw("trunc(SYSDATE)"),
                     'spot_modify_by'=>'',
                     'spot_modify_dt'=>'',
                 ]);

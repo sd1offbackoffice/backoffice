@@ -110,6 +110,9 @@
             <div class="col-sm-1">
                 <input id="menuFTag5" class="form-control" type="text">
             </div>
+            <div class="col-sm-1">
+                <input id="menuFTag6" class="form-control" type="text">
+            </div>
         </div>
         <br>
     </fieldset>
@@ -376,23 +379,43 @@
             $('#menuFTag4').focus();
         }
     });
+    $('#menuFTag6').on('focus',function(){
+        if($('#menuFTag1').val() == ''){
+            $('#menuFTag1').focus();
+        }else if($('#menuFTag2').val() == ''){
+            $('#menuFTag2').focus();
+        }else if($('#menuFTag3').val() == ''){
+            $('#menuFTag3').focus();
+        }else if($('#menuFTag4').val() == ''){
+            $('#menuFTag4').focus();
+        }else if($('#menuFTag5').val() == ''){
+            $('#menuFTag5').focus();
+        }
+    });
     $('#menuFTag1').on('change',function(){
         $('#menuFTag2').val('');
         $('#menuFTag3').val('');
         $('#menuFTag4').val('');
         $('#menuFTag5').val('');
+        $('#menuFTag6').val('');
     });
     $('#menuFTag2').on('change',function(){
         $('#menuFTag3').val('');
         $('#menuFTag4').val('');
         $('#menuFTag5').val('');
+        $('#menuFTag6').val('');
     });
     $('#menuFTag3').on('change',function(){
         $('#menuFTag4').val('');
         $('#menuFTag5').val('');
+        $('#menuFTag6').val('');
     });
     $('#menuFTag4').on('change',function(){
         $('#menuFTag5').val('');
+        $('#menuFTag6').val('');
+    });
+    $('#menuFTag5').on('change',function(){
+        $('#menuFTag6').val('');
     });
 
     function menuFChoose(val){
@@ -458,6 +481,74 @@
         $('#menuFSortBy').val(1);
     }
     function menuFCetak(){
-        alert('cetak menu 3');
+        //DIV & DEP & KAT
+        let temp = '';
+        let div1 = $('#menuFDiv1Input').val();
+        let div2 = $('#menuFDiv2Input').val();
+        let dep1 = $('#menuFDep1Input').val();
+        let dep2 = $('#menuFDep2Input').val();
+        let kat1 = $('#menuFKat1Input').val();
+        let kat2 = $('#menuFKat2Input').val();
+
+        if(div1 != '' || div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
+            if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
+                temp = div1;
+                div1 = div2;
+                div2 = temp;
+                temp = dep1;
+                dep1 = dep2;
+                dep2 = temp;
+                temp = kat1;
+                kat1 = kat2;
+                kat2 = temp;
+            }
+        }
+
+        // TAG
+        let tag1 = $('#menuFTag1').val();
+        let tag2 = $('#menuFTag2').val();
+        let tag3 = $('#menuFTag3').val();
+        let tag4 = $('#menuFTag4').val();
+        let tag5 = $('#menuFTag5').val();
+        let tag6 = $('#menuFTag6').val();
+        let ptag = '';
+        if(tag1 != '' && tag2 != '' && tag3 != '' && tag4 != '' && tag5 != ''){
+            if(tag1 != ''){
+                ptag = "'"+tag1+"'";
+            }else{
+                ptag = "'b'";
+            }
+            if(tag2 != ''){
+                ptag = ptag+",'"+tag2+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag3 != ''){
+                ptag = ptag+",'"+tag3+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag4 != ''){
+                ptag = ptag+",'"+tag4+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag5 != ''){
+                ptag = ptag+",'"+tag5+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+            if(tag6 != ''){
+                ptag = ptag+",'"+tag6+"'";
+            }else{
+                ptag = ptag+",'b'";
+            }
+        }
+
+        //sortby
+        let sort = $('#menuFSortBy').val();
+
+        //PRINT
+        window.open(`{{ url()->current() }}/print-daftar-margin-negatif-vs-mcg?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&ptag=${ptag}&sort=${sort}`, '_blank');
     }
 </script>

@@ -119,7 +119,7 @@ return [
             'driver' => 'oracle',
             'host' => '192.168.222.191',
             'port' => '1521',
-            'database' => 'IGRBDG',
+            'database' => 'IGRBDG2',
             'username' => 'IGRbdg',
             'password' => 'Ind0gros1r2018',
             'charset' => 'AL32UTF8',

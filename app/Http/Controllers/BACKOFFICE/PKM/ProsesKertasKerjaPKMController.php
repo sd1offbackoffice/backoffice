@@ -123,7 +123,7 @@ class ProsesKertasKerjaPKMController extends Controller
                 'pkm_pkm' => $pkm,
                 'pkm_pkmt' => $pkm + $qtymplus,
                 'pkm_adjust_by' => Session::get('usid'),
-                'pkm_adjust_dt' => DB::RAW("SYSdATE")
+                'pkm_adjust_dt' => Carbon::now()
             ]);
 
         $temp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
@@ -173,7 +173,7 @@ class ProsesKertasKerjaPKMController extends Controller
                             'pkmg_nilaipkmb' => $pkmt + $ftngdla,
                             'pkmg_nilaimpkm' => $mpkm,
                             'pkmg_nilaipkmt' => $pkmt,
-                            'pkmg_create_dt' => DB::RAW("SYSDATE"),
+                            'pkmg_create_dt' => Carbon::now(),
                             'pkmg_create_by' => Session::get('usid'),
                         ]);
                 }
@@ -186,7 +186,7 @@ class ProsesKertasKerjaPKMController extends Controller
                             'pkmg_nilaipkmb' => $ftngdla + $pkmt,
                             'pkmg_nilaimpkm' => $mpkm,
                             'pkmg_nilaipkmt' => $pkmt,
-                            'pkmg_modify_dt' => DB::RAW("SYSDATE"),
+                            'pkmg_modify_dt' => Carbon::now(),
                             'pkmg_modify_by' => Session::get('usid')
                         ]);
                 }

@@ -38,6 +38,9 @@
             @yield('subtitle',date("d/m/Y"))
         </p>
     </div>
+{{--    <div class="center" style="clear:both">--}}
+{{--        @yield('header_optional')--}}
+{{--    </div>--}}
 </header>
 
 

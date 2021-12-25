@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\FRONTOFFICE;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -453,7 +454,7 @@ class spbmanualController extends Controller
                             'SPB_MINUS' => $qtyCase,
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
-                            'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                            'SPB_CREATE_DT' => Carbon::now()]);
                     DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
@@ -464,7 +465,7 @@ class spbmanualController extends Controller
                             'SPB_MINUS' => $qtyCase,
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
-                            'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                            'SPB_CREATE_DT' => Carbon::now()]);
                     $qty = $qty - (int)$rec[$i]->qtys;
                 }else{
                     if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
@@ -515,7 +516,7 @@ class spbmanualController extends Controller
                                     'SPB_MINUS' => $qtyCase,
                                     'SPB_ID' => $seq[0]->nextval,
                                     'SPB_CREATE_BY' => $usid,
-                                    'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                    'SPB_CREATE_DT' => Carbon::now()]);
 
 
                             DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
@@ -528,7 +529,7 @@ class spbmanualController extends Controller
                                     'SPB_MINUS' => $qtyCase,
                                     'SPB_ID' => $seq[0]->nextval,
                                     'SPB_CREATE_BY' => $usid,
-                                    'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                    'SPB_CREATE_DT' => Carbon::now()]);
 
                         }
                         $qty = $qty - (int)$rec[$i]->qtys;
@@ -598,7 +599,7 @@ class spbmanualController extends Controller
                             'SPB_MINUS' => $qtyCase,
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
-                            'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                            'SPB_CREATE_DT' => Carbon::now()]);
                     DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                         ->insert(['SPB_PRDCD' => $plu,
                             'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
@@ -609,7 +610,7 @@ class spbmanualController extends Controller
                             'SPB_MINUS' => $qtyCase,
                             'SPB_ID' => $seq[0]->nextval,
                             'SPB_CREATE_BY' => $usid,
-                            'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                            'SPB_CREATE_DT' => Carbon::now()]);
                     $qty = $qty - (int)$rec[$i]->qtys;
                 }else{
                     if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
@@ -660,7 +661,7 @@ class spbmanualController extends Controller
                                     'SPB_MINUS' => $qtyCase,
                                     'SPB_ID' => $seq[0]->nextval,
                                     'SPB_CREATE_BY' => $usid,
-                                    'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                    'SPB_CREATE_DT' => Carbon::now()]);
 
 
                             DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
@@ -673,7 +674,7 @@ class spbmanualController extends Controller
                                     'SPB_MINUS' => $qtyCase,
                                     'SPB_ID' => $seq[0]->nextval,
                                     'SPB_CREATE_BY' => $usid,
-                                    'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                    'SPB_CREATE_DT' => Carbon::now()]);
 
                         }
                         $qty = $qty - (int)$rec[$i]->qtys;
@@ -743,7 +744,7 @@ class spbmanualController extends Controller
                                 'SPB_MINUS' => $qtyCase,
                                 'SPB_ID' => $seq[0]->nextval,
                                 'SPB_CREATE_BY' => $usid,
-                                'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                'SPB_CREATE_DT' => Carbon::now()]);
                         DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
                             ->insert(['SPB_PRDCD' => $plu,
                                 'SPB_DESKRIPSI' => $rec[$i]->prd_deskripsipanjang,
@@ -754,7 +755,7 @@ class spbmanualController extends Controller
                                 'SPB_MINUS' => $qtyCase,
                                 'SPB_ID' => $seq[0]->nextval,
                                 'SPB_CREATE_BY' => $usid,
-                                'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                'SPB_CREATE_DT' => Carbon::now()]);
                         $qty = $qty - (int)$rec[$i]->qtys;
                     }else{
                         if((int)$rec[$i]->qtys > (int)$rec[$i]->antrian){
@@ -805,7 +806,7 @@ class spbmanualController extends Controller
                                         'SPB_MINUS' => $qtyCase,
                                         'SPB_ID' => $seq[0]->nextval,
                                         'SPB_CREATE_BY' => $usid,
-                                        'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                        'SPB_CREATE_DT' => Carbon::now()]);
 
 
                                 DB::connection(Session::get('connection'))->table("TBTR_ANTRIANSPB")
@@ -818,7 +819,7 @@ class spbmanualController extends Controller
                                         'SPB_MINUS' => $qtyCase,
                                         'SPB_ID' => $seq[0]->nextval,
                                         'SPB_CREATE_BY' => $usid,
-                                        'SPB_CREATE_DT' => DB::RAW("SYSDATE")]);
+                                        'SPB_CREATE_DT' => Carbon::now()]);
 
                             }
                             $qty = $qty - (int)$rec[$i]->qtys;

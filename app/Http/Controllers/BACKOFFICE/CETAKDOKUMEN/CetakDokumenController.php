@@ -281,7 +281,7 @@ class CetakDokumenController extends Controller
 
                         ])
                         ->update([
-                            'TRBO_TGLFAKTUR' => DB::raw("trunc(sysdate)"),
+                            'TRBO_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("trunc(sysdate)"),
                             'TRBO_NOFAKTUR' => $nofak
                         ]);
                 }

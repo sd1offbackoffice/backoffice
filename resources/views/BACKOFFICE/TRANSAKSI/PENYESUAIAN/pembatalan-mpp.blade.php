@@ -13,7 +13,7 @@
                             <div class="row form-group">
                                 <label for="tanggal" class="col-sm-2 text-right col-form-label">No MPP :</label>
                                 <div class="col-sm-3 buttonInside">
-                                    <input type="text" class="form-control text-left" id="nompp" disabled>
+                                    <input type="text" class="form-control text-left" id="nompp">
                                     <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov" disabled>
                                         <i class="fas fa-question"></i>
                                     </button>
@@ -29,12 +29,16 @@
                             <table id="table_data" class="table table-sm table-striped table-bordered mb-3 text-left">
                                 <thead class="text-center">
                                 <tr>
-                                    <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Kemasan</th>
-                                    <th>Kuantum</th>
-                                    <th>HPP</th>
-                                    <th>Total</th>
+                                    <th rowspan="2">Kode</th>
+                                    <th rowspan="2">Nama Barang</th>
+                                    <th rowspan="2">Kemasan</th>
+                                    <th colspan="2">Kuantum</th>
+                                    <th rowspan="2">HPP</th>
+                                    <th rowspan="2">Total</th>
+                                </tr>
+                                <tr>
+                                    <th>CTN</th>
+                                    <th>PCS</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -139,9 +143,10 @@
     <script>
         var nompp;
         var lov;
+        var tableData;
 
         $(document).ready(function(){
-            $('#table_data').DataTable({
+            tableData = $('#table_data').DataTable({
                 "paging": true,
                 "lengthChange": true,
                 "searching": true,
@@ -149,8 +154,6 @@
                 "info": true,
                 "autoWidth": true,
                 "responsive": true,
-                "createdRow": function (row, data, dataIndex) {
-                },
                 "order": []
             });
 
@@ -185,6 +188,16 @@
             getData(nompp);
         });
 
+        $('#m_lov').on('shown.bs.modal',function(){
+            lov.search('').draw();
+        })
+
+        $('#nompp').on('keypress',function(e){
+            if(e.which == 13){
+                getData($(this).val());
+            }
+        });
+
         function getData(nompp){
             $.ajax({
                 type: "GET",
@@ -210,10 +223,11 @@
                         html = `<tr>
                                     <td>${response[i].mstd_prdcd}</td>
                                     <td>${response[i].prd_deskripsipanjang.length > 55 ? response[i].prd_deskripsipanjang.substr(0,55) +  '...' : response[i].prd_deskripsipanjang}</td>
-                                    <td>${response[i].prd_unit}</td>
-                                    <td class="text-right">${response[i].mstd_qty}</td>
-                                    <td class="text-right">${convertToRupiah(response[i].mstd_hrgsatuan)}</td>
-                                    <td class="text-right">${convertToRupiah2(response[i].mstd_gross)}</td>
+                                    <td>${response[i].kemasan}</td>
+                                    <td class="text-right">${ Math.floor(parseInt(response[i].mstd_qty) / parseInt(response[i].prd_frac)) }</td>
+                                    <td class="text-right">${ parseInt(response[i].mstd_qty) % parseInt(response[i].prd_frac) }</td>
+                                    <td class="text-right">${ convertToRupiah(response[i].mstd_hrgsatuan) }</td>
+                                    <td class="text-right">${ convertToRupiah2(response[i].mstd_gross) }</td>
                                 </tr>`;
 
                         $('#table_data tbody').append(html);
@@ -236,11 +250,28 @@
                     $('#modal-loader').modal('hide');
                     // handle error
                     swal({
-                        title: error.responseJSON.exception,
-                        text: error.responseJSON.message,
+                        title: error.responseJSON.message,
                         icon: 'error'
                     }).then(() => {
-                        $('#table_data tbody tr').remove();
+                        if ($.fn.DataTable.isDataTable('#table_data')) {
+                            $('#table_data').DataTable().destroy();
+                            $("#table_data tbody [role='row']").remove();
+
+                            $('#table_data').DataTable({
+                                "paging": true,
+                                "lengthChange": true,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": false,
+                                "responsive": true,
+                                "createdRow": function (row, data, dataIndex) {
+                                },
+                                "order": []
+                            });
+
+                            $('#nompp').select();
+                        }
                     });
                 }
             });

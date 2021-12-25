@@ -89,6 +89,9 @@
                 $total_jumlahmember += $data[$i]->jumlahmember;
             @endphp
             @if( !isset($data[$i+1]->kodedivisi)  || (isset($data[$i+1]->kodedivisi) && $tempDiv != $data[$i+1]->kodedivisi) )
+                @php
+                    $subtotal_marginpersen = $subtotal_margin/$subtotal_sales*100;
+                @endphp
                 <tr>
                     <th colspan="2" class="right"><b>Subtotal</b></th>
                     <th class="right">{{ number_format($subtotal_qty,0,".",",") }}</th>

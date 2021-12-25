@@ -1035,7 +1035,7 @@
                     $('#add-ip-4').focus();
                     valid = false;
                 }
-                else if(station=''){
+                else if(station==''){
                     $('#validate-station').text('Station tidak boleh kosong!');
                     $('#add-station-ip').focus();
                     valid = false;
@@ -1047,7 +1047,6 @@
                         url: '{{ url()->current() }}/saveIp',
                         type: 'POST',
                         data: {
-                            "_token": "{{ csrf_token() }}",
                             ip: ip,
                             station: station,
                             computername: computername

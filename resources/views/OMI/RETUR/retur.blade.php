@@ -798,7 +798,7 @@
                                 <td class="align-middle"><input disabled class="form-control text-right harga" value="${convertToRupiah2(response[i].rom_hrg)}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right total" value="${convertToRupiah2(response[i].rom_ttl)}"></td>
                                 <td class="align-middle"><input type="number" onchange="fnQTY(${i}, event, true)" onkeypress="fnQTY(${i}, event, false)" class="form-control text-right qty" value="${response[i].rom_qty}"></td>
-                                <td class="align-middle"><input disabled class="form-control text-right realisasi" value="${response[i].rom_qtyrealisasi}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right realisasi" value="${response[i].rom_qtyrealisasi}" onkeyup="checkQty(this.value, ${response[i].rom_qty}, event)"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right selisih" value="${response[i].rom_qtyselisih}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right jual" value="${response[i].rom_qtymlj}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right nonjual" value="${response[i].rom_qtytlj}"></td>
@@ -876,6 +876,17 @@
                     });
                 }
             });
+        }
+
+        function checkQty(qtyRealisasi, qtyRetur, event){
+            if(qtyRealisasi > qtyRetur){
+                swal({
+                    title: 'Qty realisasi tidak boleh lebih besar dari qty retur!',
+                    icon: 'error'
+                }).then(() => {
+                    $(event.target).val(0).select();
+                });
+            }
         }
 
         function showDesc(index){
@@ -1531,7 +1542,7 @@
 
                             swal({
                                 title: response.message,
-                                icon: 'success'
+                                icon: response.status
                             }).then(function(ok){
                                 $('#m_transfer').modal('hide');
                                 $('#modal-loader').modal('hide');

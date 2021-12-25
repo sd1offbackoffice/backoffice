@@ -8,10 +8,10 @@ use Yajra\DataTables\DataTables;
 
 class TemplateController extends Controller
 {
-    public function __construct()
-    {
-
-    }
+//    public function __construct()
+//    {
+//
+//    }
 
     public function index(){
         return view('template');

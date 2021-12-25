@@ -104,6 +104,9 @@
                             <div class="col-sm-3">
                                 <button class="col btn btn-primary" onclick="viewReport()">VIEW REPORT</button>
                             </div>
+                            <div class="col-sm-3">
+                                <button class="col btn btn-primary" onclick="print()">EXPORT</button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -301,7 +304,7 @@
                 "scrollY": "40vh",
                 "lengthChange": true,
                 "searching": true,
-                "ordering": true,
+                "ordering": false,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
@@ -328,26 +331,28 @@
         }
 
         function print(){
-            periode = $('#periode').val().split(' - ');
+            tanggal = $('#tanggal').val().split(' - ');
 
-            periode1 = periode[0];
-            periode2 = periode[1];
+            tgl1 = tanggal[0];
+            tgl2 = tanggal[1];
 
-            div1 = nvl($('#divisi1').val(), '0');
-            div2 = nvl($('#divisi2').val(), '9');
-            dep1 = nvl($('#departement1').val(), '00');
-            dep2 = nvl($('#departement2').val(), '99');
-            kat1 = nvl($('#kategori1').val(), '00');
-            kat2 = nvl($('#kategori2').val(), '99');
-            plu1 = nvl($('#plu1').val(), '0000000');
-            plu2 = nvl($('#plu2').val(), '9999999');
-            laporan = nvl($('#laporan').val(), 'DETAIL');
-
-            if(laporan == 'REKAP')
-                url = '{{ url()->current() }}/print-rekap?periode1=' + periode1 + '&periode2=' + periode2 + '&div1=' + div1 + '&div2=' + div2 + '&dep1=' + dep1 + '&dep2=' + dep2 + '&kat1=' + kat1 + '&kat2=' + kat2 + '&plu1=' + plu1 + '&plu2=' + plu2 + '&laporan=' + laporan;
-            else url = '{{ url()->current() }}/print-detail?periode1=' + periode1 + '&periode2=' + periode2 + '&div1=' + div1 + '&div2=' + div2 + '&dep1=' + dep1 + '&dep2=' + dep2 + '&kat1=' + kat1 + '&kat2=' + kat2 + '&plu1=' + plu1 + '&plu2=' + plu2 + '&laporan=' + laporan;
-
-            window.open(url);
+            swal({
+                title: 'Pilih format laporan!',
+                icon: 'warning',
+                buttons: {
+                    pdf: 'PDF',
+                    csv: 'CSV'
+                },
+                dangerMode: true,
+            }).then(function(result){
+                if(result == 'pdf'){
+                    url = '{{ url()->current() }}/print?tgl1='+tgl1+'&tgl2='+tgl2+'&group='+$('#group').val()+'&outlet='+$('#outlet').val()+'&suboutlet='+$('#suboutlet').val()+'&segmentasi='+$('#segmentasi').val()+'&monitoringMember='+$('#monitoringMember').val()+'&monitoringPLU='+$('#monitoringPLU').val()+'&member='+$('#member').val()+'&sort='+$('#sort').val();
+                }
+                else if(result == 'csv'){
+                    url = '{{ url()->current() }}/get-csv?tgl1='+tgl1+'&tgl2='+tgl2+'&group='+$('#group').val()+'&outlet='+$('#outlet').val()+'&suboutlet='+$('#suboutlet').val()+'&segmentasi='+$('#segmentasi').val()+'&monitoringMember='+$('#monitoringMember').val()+'&monitoringPLU='+$('#monitoringPLU').val()+'&member='+$('#member').val()+'&sort='+$('#sort').val();
+                }
+                window.open(url);
+            });
         }
     </script>
 

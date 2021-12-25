@@ -23,7 +23,7 @@ class HargaBeliController extends Controller
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
 //                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
-//            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+//            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
                 ->orderBy('prd_deskripsipanjang')
                 ->limit(100)
                 ->get();
@@ -34,7 +34,7 @@ class HargaBeliController extends Controller
 //                ->where('prd_prdcd','LIKE', '%'.$search.'%')
 //                ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
-//            ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+//            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
                 ->orderBy('prd_deskripsipanjang')
                 ->limit(100)
                 ->get();
@@ -88,7 +88,7 @@ class HargaBeliController extends Controller
             $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_prdcd','like','%'.$request->value.'%')
-                ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+                ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         }
@@ -98,7 +98,7 @@ class HargaBeliController extends Controller
             $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd','prd_deskripsipanjang')
                 ->where('prd_deskripsipanjang','like','%'.$request->value.'%')
-                ->where(DB::RAW('SUBSTR(prd_prdcd,7,1)'),'=','0')
+                ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         }

@@ -397,15 +397,18 @@
         $('#menu3Tag3').val('');
         $('#menu3Tag4').val('');
         $('#menu3Tag5').val('');
+        $('#menu3Tag6').val('');
     });
     $('#menu3Tag2').on('change',function(){
         $('#menu3Tag3').val('');
         $('#menu3Tag4').val('');
         $('#menu3Tag5').val('');
+        $('#menu3Tag6').val('');
     });
     $('#menu3Tag3').on('change',function(){
         $('#menu3Tag4').val('');
         $('#menu3Tag5').val('');
+        $('#menu3Tag6').val('');
     });
     $('#menu3Tag4').on('change',function(){
         $('#menu3Tag5').val('');

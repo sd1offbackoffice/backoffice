@@ -14,7 +14,11 @@ $datetime->setTimezone($timezone);
     <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
             {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}
+            {{ $perusahaan->prs_namacabang }}<br><br>
+            NPWP : {{ $perusahaan->prs_npwp }}<br><br>
+            @if($reprint == 1)
+                <strong>REPRINT</strong>
+            @endif
         </p>
     </div>
     <div style="float:right; margin-top: 0px; line-height: 8px !important;">
@@ -23,7 +27,7 @@ $datetime->setTimezone($timezone);
             <i>User ID</i> : {{ Session::get('usid') }}<br><br>
             Hal. :
     </div>
-    <h2 style="text-align: center">** EDIT NOTA PENYESUAIAN PERSEDIAAN **</h2>
+    <h2 style="text-align: center">** MEMO PENYESUAIAN PERSEDIAAN **</h2>
 </header>
 
 <footer>
@@ -55,17 +59,15 @@ $datetime->setTimezone($timezone);
             <td>DIPERIKSA</td>
             <td>MENYETUJUI</td>
             <td>PELAKSANA</td>
-            <td>PENERIMA</td>
         </tr>
         <tr class="blank-row">
-            <td colspan="5">ttd</td>
+            <td colspan="4">ttd</td>
         </tr>
         <tr>
             <td>ADMINISTRASI</td>
             <td>KEPALA GUDANG</td>
             <td>STORE MANAGER</td>
             <td>STOCK CLERK / PETUGAS GUDANG</td>
-            <td>CABANG PENERIMA</td>
         </tr>
     </table>
     <div class="page-break"></div>
@@ -102,6 +104,10 @@ $datetime->setTimezone($timezone);
                 <br>
                 <span style="color:white">.</span>
             </td>
+            <td>
+                {{ $perusahaan->prs_namacabang }}<br>
+                {{ $perusahaan->prs_alamat1 }} {{ $perusahaan->prs_alamat3 }}
+            </td>
         </tr>
     </table>
 
@@ -113,9 +119,6 @@ $datetime->setTimezone($timezone);
             <th class="tengah" rowspan="2">NAMA BARANG</th>
             <th class="tengah" rowspan="2">KEMASAN</th>
             <th colspan="2">KWANTUM</th>
-            <th colspan="3">PPN</th>
-            <th colspan="3">RPH</th>
-            <th colspan="2">QTY</th>
             <th class="tengah">HARGA</th>
             <th class="tengah" rowspan="2">TOTAL</th>
             <th class="tengah" rowspan="2">KETERANGAN</th>
@@ -123,14 +126,6 @@ $datetime->setTimezone($timezone);
         <tr>
             <th>BESAR</th>
             <th>KECIL</th>
-            <th>RPH</th>
-            <th>BMRPH</th>
-            <th>BTLRPH</th>
-            <th>DISC 1</th>
-            <th>DISC 2</th>
-            <th>DISC 3</th>
-            <th>BONUS 1</th>
-            <th>BONUS 2</th>
             <th>IN CTN</th>
         </tr>
         </thead>
@@ -141,16 +136,8 @@ $datetime->setTimezone($timezone);
             <td>{{ $d->mstd_prdcd }}</td>
             <td class="left">{{ $d->prd_deskripsipanjang }}</td>
             <td>{{ $d->kemasan }}</td>
-            <td>{{ number_format($d->mstd_qty / $d->mstd_frac,0) }}</td>
+            <td>{{ number_format(floor($d->mstd_qty / $d->mstd_frac),0) }}</td>
             <td>{{ $d->mstd_qty % $d->mstd_frac }}</td>
-            <td>{{ $d->mstd_ppnrph }}</td>
-            <td>{{ $d->mstd_ppnbmrph }}</td>
-            <td>{{ $d->mstd_ppnbtlrph }}</td>
-            <td>{{ $d->mstd_rphdisc1 }}</td>
-            <td>{{ $d->mstd_rphdisc2 }}</td>
-            <td>{{ $d->mstd_rphdisc3 }}</td>
-            <td>{{ $d->mstd_qtybonus1}}</td>
-            <td>{{ $d->mstd_qtybonus2 }}</td>
             <td>{{ number_format($d->mstd_hrgsatuan,2) }}</td>
             <td>{{ number_format($d->mstd_gross,1) }}</td>
             <td>{{ $d->mstd_keterangan }}</td>
@@ -160,30 +147,31 @@ $datetime->setTimezone($timezone);
         </tbody>
         <tfoot style="text-align: center">
         <tr>
-            <td colspan="13"></td>
+            <td colspan="5"></td>
             <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-            <td>{{ $total }}</td>
+            <td>{{ number_format($total,1) }}</td>
             <td></td>
         </tr>
         </tfoot>
     </table>
     <table style="width: 100%; font-weight: bold" class="table-ttd">
         <tr>
-            <td>DIBUAT</td>
-            <td>DIPERIKSA</td>
-            <td>MENYETUJUI</td>
-            <td>PELAKSANA</td>
-            <td>PENERIMA</td>
+            <td style="border-left: 1px solid black">DIBUAT</td>
+            <td style="border-left: 1px solid black">DIPERIKSA</td>
+            <td style="border-left: 1px solid black">MENYETUJUI</td>
+            <td style="border-left: 1px solid black">PELAKSANA</td>
         </tr>
         <tr class="blank-row">
-            <td colspan="5">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
         </tr>
         <tr>
-            <td>ADMINISTRASI</td>
-            <td>KEPALA GUDANG</td>
-            <td>STORE MANAGER</td>
-            <td>STOCK CLERK / PETUGAS GUDANG</td>
-            <td>CABANG PENERIMA</td>
+            <td style="border-left: 1px solid black">ADMINISTRASI</td>
+            <td style="border-left: 1px solid black">KEPALA GUDANG</td>
+            <td style="border-left: 1px solid black">STORE MANAGER</td>
+            <td style="border-left: 1px solid black">STOCK CLERK / PETUGAS GUDANG</td>
         </tr>
     </table>
 </main>
@@ -246,7 +234,7 @@ $datetime->setTimezone($timezone);
     }
     .table{
         width: 100%;
-        font-size: 6px;
+        font-size: 8px;
         /*white-space: nowrap;*/
         color: #212529;
         /*padding-top: 20px;*/
@@ -254,6 +242,7 @@ $datetime->setTimezone($timezone);
     }
     .table-ttd{
         width: 15%;
+        border: 1px solid black;
     }
     .table tbody td {
         /*font-size: 6px;*/
@@ -291,6 +280,11 @@ $datetime->setTimezone($timezone);
 
     .tengah{
         vertical-align: middle !important;
+    }
+
+    .blank-row{
+        line-height: 70px!important;
+        color: white;
     }
 </style>
 </html>

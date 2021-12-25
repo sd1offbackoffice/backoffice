@@ -96,7 +96,7 @@ class PluTimbanganController extends Controller
                         'tmb_kode' => $kode,
                         'tmb_deskripsi1' => $desk,
                         'tmb_create_by' => Session::get('usid'),
-                        'tmb_create_dt' => DB::RAW("SYSDATE")
+                        'tmb_create_dt' => Carbon::now()
                     ]);
                 DB::connection(Session::get('connection'))->commit();
                 return response()->json(2);
@@ -104,7 +104,7 @@ class PluTimbanganController extends Controller
                 DB::connection(Session::get('connection'))->beginTransaction();
                 DB::connection(Session::get('connection'))->table('tbtabel_plutimbangan')
                     ->where('tmb_prdcd', '=',substr($plu,0,6).'0')
-                    ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => Session::get('usid'), 'tmb_MODIFY_DT' => DB::RAW("SYSDATE")]);
+                    ->update(['tmb_kode' => $kode, 'tmb_deskripsi1' => $desk, 'tmb_MODIFY_BY' => Session::get('usid'), 'tmb_MODIFY_DT' => Carbon::now()]);
                 DB::connection(Session::get('connection'))->commit();
                 return response()->json(3);
             }

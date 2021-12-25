@@ -261,7 +261,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                                 'PKMG_NILAIPKMB' => $d->pkm_pkmt + $ftngdla,
                                 'PKMG_NILAIMPKM' => $d->pkm_mpkm,
                                 'PKMG_NILAIPKMT' => $d->pkm_pkmt,
-                                'PKMG_CREATE_DT' => DB::RAW("SYSDATE"),
+                                'PKMG_CREATE_DT' => Carbon::now(),
                                 'PKMG_CREATE_BY' => Session::get('usid'),
                                 'PKMG_NILAIGONDOLA' => $ftngdla,
                                 'PKMG_TGLAWALPKM' => $gdl_tglawal,
@@ -277,7 +277,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                                 'PKMG_NILAIPKMB' => $d->pkm_pkmt + $ftngdla,
                                 'PKMG_NILAIMPKM' => $d->pkm_mpkm,
                                 'PKMG_NILAIPKMT' => $d->pkm_pkmt,
-                                'PKMG_MODIFY_DT' => DB::RAW("SYSDATE"),
+                                'PKMG_MODIFY_DT' => Carbon::now(),
                                 'PKMG_MODIFY_BY' => Session::get('usid'),
                                 'PKMG_NILAIGONDOLA' => $ftngdla,
                                 'PKMG_TGLAWALPKM' => $gdl_tglawal,
@@ -502,7 +502,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                         'PKM_KODEDEPARTEMENT' => $rec->prd_kodedepartement,
                         'PKM_KODEKATEGORIBARANG' => $rec->prd_kodekategoribarang,
                         'PKM_CREATE_BY' => Session::get('usid'),
-                        'PKM_CREATE_DT' => DB::RAW("SYSDATE")
+                        'PKM_CREATE_DT' => Carbon::now()
                     ]);
             }
 
@@ -514,7 +514,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                     'pkm_pkm' => $pkm,
                     'pkm_pkmt' => $pkmt,
                     'pkm_adjust_by' => Session::get('usid'),
-                    'pkm_adjust_dt' => DB::RAW("SYSDATE")
+                    'pkm_adjust_dt' => Carbon::now()
                 ]);
 
             $temp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
@@ -569,7 +569,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                                 'PKMG_NILAIPKMB' => $pkmt + $ftngdla,
                                 'PKMG_NILAIMPKM' => $mpkm,
                                 'PKMG_NILAIPKMT' => $pkmt,
-                                'PKMG_CREATE_DT' => DB::RAW("SYSDATE"),
+                                'PKMG_CREATE_DT' => Carbon::now(),
                                 'PKMG_CREATE_BY' => Session::get('usid'),
                                 'PKMG_TGLAWALPKM' => $gdl_tglawal,
                                 'PKMG_TGLAKHIRPKM' => $gdl_tglakhir
@@ -584,7 +584,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                                 'PKMG_NILAIPKMB' => $pkmt + $ftngdla,
                                 'PKMG_NILAIMPKM' => $mpkm,
                                 'PKMG_NILAIPKMT' => $pkmt,
-                                'PKMG_MODIFY_DT' => DB::RAW("SYSDATE"),
+                                'PKMG_MODIFY_DT' => Carbon::now(),
                                 'PKMG_MODIFY_BY' => Session::get('usid'),
                                 'PKMG_TGLAWALPKM' => $gdl_tglawal,
                                 'PKMG_TGLAKHIRPKM' => $gdl_tglakhir

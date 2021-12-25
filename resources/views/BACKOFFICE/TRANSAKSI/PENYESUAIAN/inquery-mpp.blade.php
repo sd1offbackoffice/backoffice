@@ -13,7 +13,7 @@
                             <div class="row form-group">
                                 <label for="tanggal" class="col-sm-2 text-right col-form-label">No MPP :</label>
                                 <div class="col-sm-3 buttonInside">
-                                    <input type="text" class="form-control text-left" id="nompp" disabled>
+                                    <input type="text" class="form-control text-left" id="nompp">
                                     <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov" disabled>
                                         <i class="fas fa-question"></i>
                                     </button>
@@ -294,6 +294,12 @@
             getData(nompp);
         });
 
+        $('#nompp').on('keypress',function(e){
+            if(e.which == 13){
+                getData($(this).val());
+            }
+        });
+
         function getData(nompp){
             $.ajax({
                 type: "GET",
@@ -317,6 +323,7 @@
 
                     total = 0;
 
+                    $('#tglmpp').val(response.data[0].mstd_tgldoc);
                     $('#noref').val(response.data[0].msth_noref3);
                     $('#tglref').val(response.data[0].msth_tgref3);
 
@@ -354,15 +361,35 @@
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
+
+                    detail = [];
+
                     // handle error
                     swal({
-                        title: error.responseJSON.exception,
-                        text: error.responseJSON.message,
+                        title: error.responseJSON.message,
                         icon: 'error'
                     }).then(() => {
                         $('#noref').val('');
                         $('#tglref').val('');
-                        $('#table_data tbody tr').remove();
+
+                        if ($.fn.DataTable.isDataTable('#table_data')) {
+                            $('#table_data').DataTable().destroy();
+                            $("#table_data tbody [role='row']").remove();
+
+                            $('#table_data').DataTable({
+                                "paging": true,
+                                "lengthChange": true,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": false,
+                                "responsive": true,
+                                "createdRow": function (row, data, dataIndex) {
+                                },
+                                "order": []
+                            });
+                        }
+
                         $('#totalitem').val('');
                         $('#total').val('');
                     });

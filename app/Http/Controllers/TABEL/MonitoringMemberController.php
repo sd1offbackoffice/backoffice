@@ -36,8 +36,8 @@ class MonitoringMemberController extends Controller
 
         if(!$data){
             return response()->json([
-                'message' => 'Kode monitoring tidak terdaftar!'
-            ], 500);
+                'nama' => null
+            ], 200);
         }
         else{
             return response()->json([
@@ -50,7 +50,7 @@ class MonitoringMemberController extends Controller
         $search = $request->plu;
 
         if($search == ''){
-            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
                 ->where('cus_kodeigr','=',Session::get('kdigr'))
                 ->orderBy('cus_kodemember')
@@ -58,18 +58,18 @@ class MonitoringMemberController extends Controller
                 ->get();
         }
         else if(is_numeric($search)){
-            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
                 ->where('cus_kodeigr','=',Session::get('kdigr'))
-                ->where('cus_kodemember','like',DB::RAW("'%".$search."%'"))
+                ->where('cus_kodemember','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
                 ->orderBy('cus_kodemember')
                 ->get();
         }
         else{
-            $member = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_customer"))
+            $member = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_customer"))
                 ->selectRaw("cus_kodemember,cus_namamember")
                 ->where('cus_kodeigr','=',Session::get('kdigr'))
-                ->Where('cus_namamember','like',DB::RAW("'%".$search."%'"))
+                ->Where('cus_namamember','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
                 ->orderBy('cus_kodemember')
                 ->get();
         }

@@ -118,7 +118,7 @@ class PenerimaanTransferController extends Controller
                         ->update([
                             'tsj_keteranganx' => $keterx,
                             'tsj_modify_by' => Session::get('usid'),
-                            'tsj_modify_dt' => DB::RAW("SYSDATE")
+                            'tsj_modify_dt' => Carbon::now()
                         ]);
                 }
 
@@ -259,9 +259,9 @@ class PenerimaanTransferController extends Controller
                                     ->where('pln_kodeigr','=',Session::get('kdigr'))
                                     ->where('pln_prdcd','=',$rec->tsj_prdcd)
                                     ->update([
-                                        'pln_tglbpb' => DB::RAW("TRUNC(SYSDATE)"),
+                                        'pln_tglbpb' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                         'pln_modify_by' => Session::get('usid'),
-                                        'pln_modify_dt' => DB::RAW("SYSDATE")
+                                        'pln_modify_dt' => Carbon::now()
                                     ]);
                             }
 
@@ -311,7 +311,7 @@ class PenerimaanTransferController extends Controller
                                     ->update([
                                         'mstd_recordid' => $rec->tsj_recordid,
                                         'mstd_nodoc' => $ndoc,
-                                        'mstd_tgldoc' => DB::RAW("SYSDATE"),
+                                        'mstd_tgldoc' => Carbon::now(),
                                         'mstd_nopo' => $rec->tsj_nodokumen,
                                         'mstd_tglpo' => $rec->tsj_tgldokumen,
                                         'mstd_nofaktur' => $rec->tsj_noreferensi1,
@@ -359,7 +359,7 @@ class PenerimaanTransferController extends Controller
                                         'mstd_ocost' => $ocost2 * $rec->tsj_fraction,
                                         'mstd_posqty' => $osqty2 + ($rec->tsj_qty * $rec->tsj_fraction + $rec->tsj_qtyk),
                                         'mstd_modify_by' => Session::get('usid'),
-                                        'mstd_modify_dt' => DB::RAW("SYSDATE")
+                                        'mstd_modify_dt' => Carbon::now()
                                     ]);
                             }
                             else{
@@ -371,7 +371,7 @@ class PenerimaanTransferController extends Controller
                                         'mstd_recordid' => $rec->tsj_recordid,
                                         'mstd_nodoc' => $ndoc,
                                         'mstd_typetrn' => 'I',
-                                        'mstd_tgldoc' => DB::RAW("SYSDATE"),
+                                        'mstd_tgldoc' => Carbon::now(),
                                         'mstd_nopo' => $rec->tsj_nodokumen,
                                         'mstd_tglpo' => $rec->tsj_tgldokumen,
                                         'mstd_nofaktur' => $rec->tsj_noreferensi1,
@@ -419,7 +419,7 @@ class PenerimaanTransferController extends Controller
                                         'mstd_ocost' => $ocost2 * $rec->tsj_fraction,
                                         'mstd_posqty' => $osqty2 + ($rec->tsj_qty * $rec->tsj_fraction + $rec->tsj_qtyk),
                                         'mstd_create_by' => Session::get('usid'),
-                                        'mstd_create_dt' => DB::RAW("SYSDATE")
+                                        'mstd_create_dt' => Carbon::now()
                                     ]);
 
                                 $jum = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
@@ -435,7 +435,7 @@ class PenerimaanTransferController extends Controller
                                             'msth_recordid' => $rec->tsj_recordid,
                                             'msth_typetrn' => 'I',
                                             'msth_nodoc' => $ndoc,
-                                            'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'msth_nopo' => $rec->tsj_nodokumen,
                                             'msth_tglpo' => $rec->tsj_tgldokumen,
                                             'msth_nofaktur' => $rec->tsj_noreferensi1,
@@ -450,7 +450,7 @@ class PenerimaanTransferController extends Controller
                                             'msth_loc2' => $rec->tsj_lokasikirim,
                                             'msth_keterangan_header' => $rec->tsj_keterangan,
                                             'msth_create_by' => Session::get('usid'),
-                                            'msth_create_dt' => DB::RAW("SYSDATE")
+                                            'msth_create_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -467,7 +467,7 @@ class PenerimaanTransferController extends Controller
                                         'dokref' => $rec->tsj_nodokumen,
                                         'tglref' => $rec->tsj_tgldokumen,
                                         'nodokumen' => $ndoc,
-                                        'tgldokumen' => DB::RAW("SYSDATE"),
+                                        'tgldokumen' => Carbon::now(),
                                         'lokasikirim' => $rec->tsj_lokasikirim
                                     ]);
                             }
@@ -513,7 +513,7 @@ class PenerimaanTransferController extends Controller
                                                 'spd_hrgbtb1' => ($rec->tsj_gross - $rec->tsj_discrp + $rec->tsj_ppnbrgmewah + $rec->tsj_ppnbotol) / (($rec->tsj_qty * $rec->tsj_fraction + $rec->tsj_qtyk) * $q),
                                                 'spd_ttlhrg1' => $rec->tsj_gross - $rec->tsj_discrp + $rec->tsj_ppnbrgmewah + $rec->tsj_ppnbotol,
                                                 'spd_create_by' => Session::get('usid'),
-                                                'spd_create_dt' => DB::RAW("SYSDATE")
+                                                'spd_create_dt' => Carbon::now()
                                             ]);
                                     }
                                     else{
@@ -566,9 +566,9 @@ class PenerimaanTransferController extends Controller
                                             'st_lastcost' => 0,
                                             'st_avgcost' => 0,
                                             'st_avgcostmonthend' => 0,
-                                            'st_tglavgcost' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'st_tglavgcost' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'st_create_by' => Session::get('usid'),
-                                            'st_create_dt' => DB::RAW("SYSDATE")
+                                            'st_create_dt' => Carbon::now()
                                         ]);
 
                                     $step = 35;
@@ -777,7 +777,7 @@ class PenerimaanTransferController extends Controller
                                             'st_trfin' => $old->st_trfin + ($rec->tsj_qty * $rec->tsj_fraction + $rec->tsj_qtyk + $rec->tsj_qbns1),
                                             'st_lastcost' => $lc,
                                             'st_modify_by' => Session::get('usid'),
-                                            'st_modify_dt' => DB::RAW("SYSDATE")
+                                            'st_modify_dt' => Carbon::now()
                                         ]);
 
                                     $step = 64;
@@ -805,7 +805,7 @@ class PenerimaanTransferController extends Controller
                                                 'hcs_qtylama' => $stqty,
                                                 'hcs_lastqty' => $stqty + ($rec->tsj_qty * $rec->tsj_fraction + $rec->tsj_qtyk + $rec->tsj_qbns1),
                                                 'hcs_create_by' => Session::get('usid'),
-                                                'hcs_create_dt' => DB::RAW("SYSDATE")
+                                                'hcs_create_dt' => Carbon::now()
                                             ]);
                                     }
                                 }
@@ -941,7 +941,7 @@ class PenerimaanTransferController extends Controller
                     ->insert([
                         'to_flag' => 0,
                         'to_nomr' => $data[0]['DOCNO'],
-                        'to_tagl' => DB::RAW("TO_DATE('".$data[0]['DATEO']."','YYYY-MM-DD HH24:MI:SS')"),
+                        'to_tagl' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$data[0]['DATEO']."','YYYY-MM-DD HH24:MI:SS')"),
                         'to_item' => count($data)
                     ]);
 
@@ -997,17 +997,17 @@ class PenerimaanTransferController extends Controller
                     ->whereIn('docno',$no)
                     ->get();
 
-                $jammulai = DB::RAW("TO_CHAR(SYSDATE,'HH24:MI:SS')");
+                $jammulai = DB::connection(Session::get('connection'))->raw("TO_CHAR(SYSDATE,'HH24:MI:SS')");
 
                 DB::connection(Session::get('connection'))->table('tbtr_status')
                     ->insert([
                         'sts_kodeigr' => Session::get('kdigr'),
                         'sts_program' => 'IGR_BO_TRF_SJ',
                         'sts_user' => Session::get('usid'),
-                        'sts_tanggal' => DB::RAW("TRUNC(SYSDATE)"),
+                        'sts_tanggal' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                         'sts_jammulai' => $jammulai,
                         'sts_create_by' => Session::get('usid'),
-                        'sts_create_dt' => DB::RAW("TRUNC(SYSDATE)")
+                        'sts_create_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
                     ]);
 
                 foreach($recs as $rec){
@@ -1028,17 +1028,17 @@ class PenerimaanTransferController extends Controller
                         $step = 3;
                         $prosesx = 1;
                         $temp = 0;
-//                        $jammulai = DB::RAW("TO_CHAR(SYSDATE,'HH24:MI:SS')");
+//                        $jammulai = DB::connection(Session::get('connection'))->raw("TO_CHAR(SYSDATE,'HH24:MI:SS')");
 //
 //                        DB::connection(Session::get('connection'))->table('tbtr_status')
 //                            ->insert([
 //                                'sts_kodeigr' => Session::get('kdigr'),
 //                                'sts_program' => 'IGR_BO_TRF_SJ',
 //                                'sts_user' => Session::get('usid'),
-//                                'sts_tanggal' => DB::RAW("TRUNC(SYSDATE)"),
+//                                'sts_tanggal' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
 //                                'sts_jammulai' => $jammulai,
 //                                'sts_create_by' => Session::get('usid'),
-//                                'sts_create_dt' => DB::RAW("TRUNC(SYSDATE)")
+//                                'sts_create_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
 //                            ]);
 
                         $step = 4;
@@ -1146,7 +1146,7 @@ class PenerimaanTransferController extends Controller
 
                             $jum = DB::connection(Session::get('connection'))->table('tbtr_ipb')
                                 ->where('ipb_noipb','=',$rec->noref1)
-                                ->where('ipb_tglipb','=',DB::RAW("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
+                                ->where('ipb_tglipb','=',DB::connection(Session::get('connection'))->raw("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
                                 ->where('ipb_prdcd','=',substr($rec->prdcd,0,6).'0')
                                 ->where('ipb_kodeigr','=',Session::get('kdigr'))
                                 ->first();
@@ -1154,7 +1154,7 @@ class PenerimaanTransferController extends Controller
                             if($jum){
                                 DB::connection(Session::get('connection'))->table('tbtr_ipb')
                                     ->where('ipb_noipb','=',$rec->noref1)
-                                    ->where('ipb_tglipb','=',DB::RAW("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
+                                    ->where('ipb_tglipb','=',DB::connection(Session::get('connection'))->raw("TO_DATE(TRIM('".$rec->tgref1."'),'DD-MON-YY')"))
                                     ->where('ipb_prdcd','=',substr($rec->prdcd,0,6).'0')
                                     ->where('ipb_kodeigr','=',Session::get('kdigr'))
                                     ->update([
@@ -1192,18 +1192,18 @@ class PenerimaanTransferController extends Controller
                                     ->where('mstd_kodeigr','=',Session::get('kdigr'))
                                     ->update([
                                         'mstd_recordid' => $rec->recid,
-                                        'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                        'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                         'mstd_nopo' => $rec->docno,
-                                        'mstd_tglpo' => DB::RAW("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglpo' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_nofaktur' => $rec->noref1,
-                                        'mstd_tglfaktur' => DB::RAW("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglfaktur' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_docno2' => $rec->docno2,
-                                        'mstd_date2' => DB::RAW("TO_DATE('".$rec->date2."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_date2' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date2."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_istype' => $rec->istype,
                                         'mstd_invno' => $rec->invno,
-                                        'mstd_date3' => DB::RAW("TO_DATE('".$rec->date3."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_date3' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date3."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_nott' => $rec->nott,
-                                        'mstd_tgltt' => DB::RAW("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tgltt' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_kodesupplier' => $rec->loc,
                                         'mstd_pkp' => $rec->pkp,
                                         'mstd_cterm' => null,
@@ -1235,12 +1235,12 @@ class PenerimaanTransferController extends Controller
                                         'mstd_ppnbtlrph' => $rec->btlrp,
                                         'mstd_keterangan' => $rec->keter,
                                         'mstd_fk' => $rec->fk,
-                                        'mstd_tglfp' => DB::RAW("TO_DATE('".$rec->tglfp."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglfp' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tglfp."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_kodetag' => $rec->mtag,
                                         'mstd_ocost' => $ocost * $rec->frac,
                                         'mstd_posqty' => $osqty + ($rec->qty * $rec->frac + $rec->qtyk),
                                         'mstd_modify_by' => Session::get('usid'),
-                                        'mstd_modify_dt' => DB::RAW("SYSDATE")
+                                        'mstd_modify_dt' => Carbon::now()
                                     ]);
                             }
                             else{
@@ -1253,18 +1253,18 @@ class PenerimaanTransferController extends Controller
                                         'mstd_recordid' => $rec->recid,
                                         'mstd_typetrn' => 'I',
                                         'mstd_nodoc' => $docnoa,
-                                        'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                        'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                         'mstd_nopo' => $rec->docno,
-                                        'mstd_tglpo' => DB::RAW("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglpo' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_nofaktur' => $rec->noref1,
-                                        'mstd_tglfaktur' => DB::RAW("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglfaktur' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_docno2' => $rec->docno2,
-                                        'mstd_date2' => DB::RAW("TO_DATE('".$rec->date2."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_date2' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date2."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_istype' => $rec->istype,
                                         'mstd_invno' => $rec->invno,
-                                        'mstd_date3' => DB::RAW("TO_DATE('".$rec->date3."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_date3' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date3."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_nott' => $rec->nott,
-                                        'mstd_tgltt' => DB::RAW("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tgltt' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_kodesupplier' => $rec->loc,
                                         'mstd_pkp' => $rec->pkp,
                                         'mstd_cterm' => null,
@@ -1296,12 +1296,12 @@ class PenerimaanTransferController extends Controller
                                         'mstd_ppnbtlrph' => $rec->btlrp,
                                         'mstd_keterangan' => $rec->keter,
                                         'mstd_fk' => $rec->fk,
-                                        'mstd_tglfp' => DB::RAW("TO_DATE('".$rec->tglfp."','YYYY-MM-DD HH24:MI:SS')"),
+                                        'mstd_tglfp' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tglfp."','YYYY-MM-DD HH24:MI:SS')"),
                                         'mstd_kodetag' => $rec->mtag,
                                         'mstd_ocost' => $ocost * $rec->frac,
                                         'mstd_posqty' => $osqty + ($rec->qty * $rec->frac + $rec->qtyk),
                                         'mstd_create_by' => Session::get('usid'),
-                                        'mstd_create_dt' => DB::RAW("SYSDATE")
+                                        'mstd_create_dt' => Carbon::now()
                                     ]);
 
                                 $step = 24;
@@ -1319,22 +1319,22 @@ class PenerimaanTransferController extends Controller
                                             'msth_recordid' => $rec->recid,
                                             'msth_typetrn' => 'I',
                                             'msth_nodoc' => $docnoa,
-                                            'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'msth_nopo' => $rec->docno,
-                                            'msth_tglpo' => DB::RAW("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
+                                            'msth_tglpo' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->dateo."','YYYY-MM-DD HH24:MI:SS')"),
                                             'msth_nofaktur' => $rec->noref1,
-                                            'msth_tglfaktur' => DB::RAW("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
+                                            'msth_tglfaktur' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS')"),
                                             'msth_istype' => $rec->istype,
                                             'msth_invno' => $rec->invno,
                                             'msth_nott' => $rec->nott,
-                                            'msth_tgltt' =>DB::RAW("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
+                                            'msth_tgltt' =>DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->date4."','YYYY-MM-DD HH24:MI:SS')"),
                                             'msth_kodesupplier' => $rec->loc,
                                             'msth_pkp' => $rec->pkp,
                                             'msth_loc' => Session::get('kdigr'),
                                             'msth_loc2' => $rec->loc,
                                             'msth_keterangan_header' => $rec->keter,
                                             'msth_create_by' => Session::get('usid'),
-                                            'msth_create_dt' => DB::RAW("SYSDATE")
+                                            'msth_create_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -1403,7 +1403,7 @@ class PenerimaanTransferController extends Controller
                                                 'spd_hrgbtb1' => ($rec->gross - $rec->discrp + $rec->bmrp + $rec->btlrp) / ($rec->qty * $rec->frac + $rec->qtyk) * $q,
                                                 'spd_ttlhrg1' => $rec->gross - $rec->discrp + $rec->bmrp + $rec->btlrp,
                                                 'spd_create_by' => Session::get('usid'),
-                                                'spd_create_dt' => DB::RAW("SYSDATE")
+                                                'spd_create_dt' => Carbon::now()
                                             ]);
                                     }
                                     else{
@@ -1433,7 +1433,7 @@ class PenerimaanTransferController extends Controller
                                                 'spd_ttlhrg2' => $jum->spd_ttlhrg1,
                                                 'spd_ttlhrg1' => $rec->gross - $rec->discrp + $rec->bmrp + $rec->btlrp,
                                                 'spd_modify_by' => Session::get('usid'),
-                                                'spd_modify_dt' => DB::RAW("SYSDATE")
+                                                'spd_modify_dt' => Carbon::now()
                                             ]);
                                     }
                                 }
@@ -1465,9 +1465,9 @@ class PenerimaanTransferController extends Controller
                                             'st_lastcost' => 0,
                                             'st_avgcost' => 0,
                                             'st_avgcostmonthend' => 0,
-                                            'st_tglavgcost' => DB::RAW("TRUNC(SYSDATE)"),
+                                            'st_tglavgcost' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                             'st_create_by' => Session::get('usid'),
-                                            'st_create_dt' => DB::RAW("SYSDATE")
+                                            'st_create_dt' => Carbon::now()
                                         ]);
 
                                     $step = 36;
@@ -1699,7 +1699,7 @@ class PenerimaanTransferController extends Controller
                                             'hcs_qtylama' => $stqty,
                                             'hcs_lastqty' => $stqty + ($rec->qty * $rec->frac + $rec->qtyk + $rec->qbns1),
                                             'hcs_create_by' => Session::get('usid'),
-                                            'hcs_create_dt' => DB::RAW("SYSDATE")
+                                            'hcs_create_dt' => Carbon::now()
                                         ]);
                                 }
 
@@ -1717,7 +1717,7 @@ class PenerimaanTransferController extends Controller
                                         ->where('pln_prdcd','=',$rec->prdcd)
                                         ->where('pln_kodeigr','=',Session::get('kdigr'))
                                         ->update([
-                                            'pln_tglbpb' => DB::RAW("SYSDATE")
+                                            'pln_tglbpb' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -1777,7 +1777,7 @@ class PenerimaanTransferController extends Controller
                                         'tsj_nodokumen' => $rec->docno,
                                         'tsj_tgldokumen' => $rec->dateo,
                                         'tsj_noreferensi1' => $rec->noref1,
-                                        'tsj_tglreferensi1' => DB::RAW("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS"),
+                                        'tsj_tglreferensi1' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$rec->tgref1."','YYYY-MM-DD HH24:MI:SS"),
                                         'tsj_noreferensi2' => $rec->noref2,
                                         'tsj_tglreferensi2' => $rec->tgref2,
                                         'tsj_nodokumen2' => $rec->docno2,
@@ -1827,7 +1827,7 @@ class PenerimaanTransferController extends Controller
                                         'tsj_kodegudang' => $rec->gdg,
                                         'tsj_keteranganx' => $ketv,
                                         'tsj_create_by' => Session::get('usid'),
-                                        'tsj_create_dt' => DB::RAW("SYSDATE")
+                                        'tsj_create_dt' => Carbon::now()
                                     ]);
                             }
                         }
@@ -1868,9 +1868,9 @@ class PenerimaanTransferController extends Controller
                     ->where('sts_program','=','IGR_BO_TRF_SJ')
                     ->where('sts_jammulai','=',$jammulai)
                     ->update([
-                        'sts_jamselesai' => DB::RAW("TO_CHAR(SYSDATE,'HH24:MI:SS')"),
+                        'sts_jamselesai' => DB::connection(Session::get('connection'))->raw("TO_CHAR(SYSDATE,'HH24:MI:SS')"),
                         'sts_modify_by' => Session::get('usid'),
-                        'sts_modify_dt' => DB::RAW("SYSDATE")
+                        'sts_modify_dt' => Carbon::now()
                     ]);
 
                 $jum = DB::connection(Session::get('connection'))->table('tbtr_to')

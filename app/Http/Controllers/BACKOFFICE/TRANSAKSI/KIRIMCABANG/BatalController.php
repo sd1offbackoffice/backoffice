@@ -101,7 +101,7 @@ class BatalController extends Controller
 //                oci_execute($exec);
                 }
 
-                DB::raw("INSERT INTO tbtr_hapusplu (DEL_KODEIGR,DEL_RTYPE,DEL_NODOKUMEN,DEL_TGLDOKUMEN,
+                DB::connection(Session::get('connection'))->raw("INSERT INTO tbtr_hapusplu (DEL_KODEIGR,DEL_RTYPE,DEL_NODOKUMEN,DEL_TGLDOKUMEN,
   								DEL_STOKQTYOLD,DEL_AVGCOSTOLD, DEL_CREATE_BY,DEL_CREATE_DT,DEL_PRDCD)
  					    SELECT mstd_kodeigr, mstd_typetrn, mstd_nodoc, mstd_tgldoc,
   							   mstd_qty, mstd_avgcost,	'".Session::get('usid')."', sysdate,mstd_prdcd

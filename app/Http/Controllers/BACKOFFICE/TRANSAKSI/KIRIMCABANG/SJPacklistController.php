@@ -166,7 +166,7 @@ class SJPacklistController extends Controller
                                 'msth_kodeigr' => Session::get('kdigr'),
                                 'msth_typetrn' => 'O',
                                 'msth_nodoc' => $v_nodoc,
-                                'msth_tgldoc' => DB::RAW("SYSDATE"),
+                                'msth_tgldoc' => Carbon::now(),
                                 'msth_nofaktur' => $rec->trbo_noreff,
                                 'msth_tglfaktur' => $rec->trbo_tglreff,
                                 'msth_nopo' => $sesikom,
@@ -177,7 +177,7 @@ class SJPacklistController extends Controller
                                 'msth_loc2' => '',
                                 'msth_flagdoc' => '9',
                                 'msth_create_by' => Session::get('usid'),
-                                'msth_create_dt' => DB::RAW("SYSDATE")
+                                'msth_create_dt' => Carbon::now()
                             ]);
                     }
 
@@ -215,7 +215,7 @@ class SJPacklistController extends Controller
                                 'mstd_tglfp' => null,
                                 'mstd_kodetag' => ' ',
                                 'mstd_create_by' => Session::get('usid'),
-                                'mstd_create_dt' => DB::RAW("SYSDATE")
+                                'mstd_create_dt' => Carbon::now()
                             ]);
                     }
 
@@ -228,7 +228,7 @@ class SJPacklistController extends Controller
                         ->update([
                             'trbo_flagdoc' => '9',
                             'trbo_nonota' => $v_nodoc,
-                            'trbo_tglnota' => DB::RAW("SYSDATE"),
+                            'trbo_tglnota' => Carbon::now(),
                             'trbo_stokqty' => $qtystk
                         ]);
                 }

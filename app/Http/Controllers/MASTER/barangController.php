@@ -20,7 +20,7 @@ class barangController extends Controller
 
         $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang', 'prd_plusupplier', 'prd_deskripsipendek')
-            ->where(DB::RAW('substr(prd_prdcd,7,1)'), '=', '0')
+            ->where(DB::connection(Session::get('connection'))->raw('substr(prd_prdcd,7,1)'), '=', '0')
             ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
             ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
             ->orderBy('prd_prdcd')
@@ -121,7 +121,7 @@ class barangController extends Controller
 //                ->on('EXP_KODEIGR','=','PRD_KodeIGR');
 //            })
 //            ->Join('TBMASTER_MINIMUMORDER', function ($join) {
-//                $join->On(DB::raw('MIN_PRDCD'), '=', DB::raw('PRD_PRDCD'))
+//                $join->On(DB::connection(Session::get('connection'))->raw('MIN_PRDCD'), '=', DB::connection(Session::get('connection'))->raw('PRD_PRDCD'))
 //                    ->On('MIN_KODEIGR', '=', 'PRD_KODEIGR')
 //                    ->On('KAT_KODEDEPARTEMENT', '=', 'DEP_KODEDEPARTEMENT');
 //            })

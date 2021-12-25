@@ -98,7 +98,7 @@ class PLUMROController extends Controller
                         'mro_kodekategoribrg' => $data->prd_kodekategoribarang,
                         'mro_prdcd' => $plu,
                         'mro_create_by' => Session::get('usid'),
-                        'mro_create_dt' => DB::RAW("SYSDATE")
+                        'mro_create_dt' => Carbon::now()
                     ]);
 
                 DB::connection(Session::get('connection'))->commit();
@@ -125,7 +125,7 @@ class PLUMROController extends Controller
         $search = $request->plu;
 
         if($search == ''){
-            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
@@ -134,20 +134,20 @@ class PLUMROController extends Controller
                 ->get();
         }
         else if(is_numeric($search)){
-            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
-                ->where('prd_prdcd','like',DB::RAW("'%".$search."%'"))
+                ->where('prd_prdcd','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
                 ->orderBy('prd_prdcd')
                 ->get();
         }
         else{
-            $produk = DB::connection(Session::get('connection'))->table(DB::RAW("tbmaster_prodmast"))
+            $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast"))
                 ->select('prd_deskripsipanjang','prd_prdcd')
                 ->where('prd_kodeigr',Session::get('kdigr'))
                 ->whereRaw("substr(prd_prdcd,7,1) = '0'")
-                ->where('prd_deskripsipanjang','like',DB::RAW("'%".$search."%'"))
+                ->where('prd_deskripsipanjang','like',DB::connection(Session::get('connection'))->raw("'%".$search."%'"))
                 ->orderBy('prd_prdcd')
                 ->get();
         }

@@ -188,11 +188,11 @@ class SJASController extends Controller
                 oci_bind_by_name($s, ':ret', $nosj, 32);
                 oci_execute($s);
 
-                $tglsj = DB::RAW("SYSDATE");
+                $tglsj = Carbon::now();
             }
             else{
                 $nosj = $temp->sjh_nosjas;
-                $tglsj = DB::RAW("to_date('".$temp->sjh_tglsjas."','dd/mm/yyyy')");
+                $tglsj = DB::connection(Session::get('connection'))->raw("to_date('".$temp->sjh_tglsjas."','dd/mm/yyyy')");
             }
 
             if($temp->sjh_frektahapan == null)
@@ -207,14 +207,14 @@ class SJASController extends Controller
                 $ins['sjd_tglsjas'] = $tglsj;
                 $ins['sjd_kodecustomer'] = $request->kodecustomer;
                 $ins['sjd_tahapan'] = $tahapan;
-                $ins['sjd_tgltahapan'] = DB::RAW("SYSDATE");
+                $ins['sjd_tgltahapan'] = Carbon::now();
                 $ins['sjd_prdcd'] = $d['prdcd'];
                 $ins['sjd_seqno'] = $d['seqno'];
                 $ins['sjd_qtystruk'] = $d['qtytitip'];
                 $ins['sjd_qtysjas'] = $d['qtyambil'];
                 $ins['sjd_flagcetak'] = '1';
                 $ins['sjd_create_by'] = Session::get('usid');
-                $ins['sjd_create_dt'] = DB::RAW("SYSDATE");
+                $ins['sjd_create_dt'] = Carbon::now();
 
                 DB::connection(Session::get('connection'))->table('tbtr_sjas_d')
                     ->insert($ins);
@@ -232,7 +232,7 @@ class SJASController extends Controller
             DB::connection(Session::get('connection'))->table('tbtr_sjas_h')
                 ->where('sjh_kodeigr','=',Session::get('kdigr'))
                 ->where('sjh_nostruk','=',$request->nostruk)
-                ->where('sjh_tglstruk','=',DB::RAW("to_date('".$request->tglstruk."','dd/mm/yyyy')"))
+                ->where('sjh_tglstruk','=',DB::connection(Session::get('connection'))->raw("to_date('".$request->tglstruk."','dd/mm/yyyy')"))
                 ->where('sjh_kodecustomer','=',$request->kodecustomer)
                 ->update([
                     'sjh_nosjas' => $nosj,
@@ -240,7 +240,7 @@ class SJASController extends Controller
                     'sjh_flagselesai' => $fok,
                     'sjh_frektahapan' => $tahapan,
                     'sjh_modify_by' => Session::get('usid'),
-                    'sjh_modify_dt' => DB::RAW("SYSDATE")
+                    'sjh_modify_dt' => Carbon::now()
                 ]);
 
             DB::connection(Session::get('connection'))->commit();

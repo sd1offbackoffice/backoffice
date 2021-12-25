@@ -65,7 +65,7 @@ class ReorderPBGOController extends Controller
             ->join('tbmaster_hargabeli','hgb_prdcd','prd_prdcd')
             ->join('tbmaster_supplier','sup_kodesupplier','hgb_kodesupplier')
             ->join('tbmaster_stock',function($join){
-                $join->on('st_prdcd',DB::RAW("SUBSTR(prd_prdcd,1,6) || '0'"));
+                $join->on('st_prdcd',DB::connection(Session::get('connection'))->raw("SUBSTR(prd_prdcd,1,6) || '0'"));
                 $join->where('st_lokasi','01');
             })
             ->where('tpod_kodeigr',Session::get('kdigr'))
@@ -348,7 +348,7 @@ class ReorderPBGOController extends Controller
                 ->whereRaw($where)
                 ->update([
                     'tpod_kodetag' => '*',
-                    'tpod_pdate' => DB::RAW('sysdate')
+                    'tpod_pdate' => Carbon::now()
                 ]);
         }
         catch (QueryException $e){
@@ -361,7 +361,7 @@ class ReorderPBGOController extends Controller
 
         $pbprint = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->where('recid',null)
-            ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
+            ->whereRaw(DB::connection(Session::get('connection'))->raw("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
             ->orderBy('supco')
             ->get();
@@ -399,7 +399,7 @@ class ReorderPBGOController extends Controller
             }
 
             $y = DB::connection(Session::get('connection'))->table('temp_pbprint')
-                ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
+                ->whereRaw(DB::connection(Session::get('connection'))->raw("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
                 ->where('docno',$NOPB)
                 ->whereIn('supco',$supco)
                 ->whereIn('prdcd',$prdcd)
@@ -411,7 +411,7 @@ class ReorderPBGOController extends Controller
 
         $pbmast = DB::connection(Session::get('connection'))->table('temp_pbprint')
             ->whereRaw("recid is null")
-            ->whereRaw(DB::RAW("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
+            ->whereRaw(DB::connection(Session::get('connection'))->raw("TRUNC(tgl) = TRUNC(to_date('".$TGLAKHIR."','YYYY-MM-DD  HH24:MI:SS'))"))
             ->where('docno',$NOPB)
             ->get();
 
@@ -455,7 +455,7 @@ class ReorderPBGOController extends Controller
             $data_tbtr_pb_d['pbd_kodetag'] = $pbm->ptag;
             $data_tbtr_pb_d['pbd_ostpo'] = $pbm->out_po;
             $data_tbtr_pb_d['pbd_ostpb'] = $pbm->out_pb;
-            $data_tbtr_pb_d['pbd_create_dt'] = DB::RAW("sysdate");
+            $data_tbtr_pb_d['pbd_create_dt'] = Carbon::now();
             $data_tbtr_pb_d['pbd_create_by'] = Session::get('usid');
             $data_tbtr_pb_d['pbd_fdxrev'] = 'T';
 
@@ -476,7 +476,7 @@ class ReorderPBGOController extends Controller
         $insert_tbtr_pb_h['pbh_tglpb'] = $TGLAKHIR;
         $insert_tbtr_pb_h['pbh_keteranganpb'] = 'PB REORDER';
         $insert_tbtr_pb_h['pbh_create_by'] = Session::get('usid');
-        $insert_tbtr_pb_h['pbh_create_dt'] = DB::RAW("sysdate");
+        $insert_tbtr_pb_h['pbh_create_dt'] = Carbon::now();
 
         try{
             DB::connection(Session::get('connection'))->table('tbtr_pb_d')

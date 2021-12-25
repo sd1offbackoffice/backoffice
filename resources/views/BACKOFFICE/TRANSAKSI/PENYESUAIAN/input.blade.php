@@ -173,6 +173,8 @@
                                                         </div>
                                                         <hr color="black">
                                                         <div class="form-group row">
+                                                            <button id="btn-save" class="col-sm-3 btn btn-primary ml-3" onclick="lihatDaftar()">LIHAT DAFTAR</button>
+                                                            <div class="col-sm"></div>
                                                             <button id="btn-save" class="col-sm-3 btn btn-success ml-3" onclick="simpan()">REKAM</button>
                                                             <button id="btn-print" class="col-sm-3 btn btn-danger ml-2" onclick="hapus()">HAPUS</button>
                                                         </div>
@@ -270,6 +272,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_list" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-striped table-bordered" id="table_list">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>PLU</th>
+                                        <th>DESKRIPSI</th>
+                                        <th>KEMASAN</th>
+                                        <th>QTY</th>
+                                        <th>QTYK</th>
+                                        <th>H.P.P</th>
+                                        <th>GROSS</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <style>
         body {
@@ -302,13 +339,16 @@
             text-transform: uppercase;
         }
 
-
+        .dataTables_scrollBody{
+            overflow-x: hidden !important;
+        }
     </style>
 
     <script>
         trlov = $('#table_lov_plu tbody').html();
         no = 'doc';
         jenisdoc = '';
+        var list;
 
         $(document).ready(function(){
             $('#table_lov_plu').DataTable({
@@ -594,7 +634,7 @@
                 else{
                     $.ajax({
                         url: '{{url('/bo/transaksi/penyesuaian/input/doc_select')}}',
-                        type: 'POST',
+                        type: 'GET',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -607,11 +647,16 @@
                         success: function (response) {
                             $('#modal-loader').modal('toggle');
 
+                            generateListData(response.list);
+
+                            response = response.doc;
+
                             if(response != null){
                                 jenisdoc = 'lama';
 
                                 $('#tgl_penyesuaian').attr('disabled',true);
 
+                                console.log(response['trbo_nodoc']);
                                 $('#no_penyesuaian').val(response['trbo_nodoc']);
                                 $('#tgl_penyesuaian').val(formatDate(response['trbo_tgldoc']));
                                 $('#no_referensi').val(response['trbo_noreff']);
@@ -822,6 +867,41 @@
                     });
                 }
             });
+        }
+
+        function lihatDaftar(){
+            $('#m_list').modal('show');
+        }
+
+        $('#m_list').on('shown.bs.modal',function(){
+            $('#table_list').dataTable({
+                ordering: false,
+                searching: false,
+                lengthChange: false,
+                paging: false,
+                scrollY: "350px"
+            });
+        });
+
+        function generateListData(data){
+            if ($.fn.DataTable.isDataTable('#table_list')) {
+                $('#table_list').DataTable().destroy();
+                $("#table_list tbody [role='row']").remove();
+            }
+
+            for(i=0;i<data.length;i++){
+                $('#table_list tbody').append(`
+                    <tr>
+                        <td>${ data[i].trbo_prdcd }</td>
+                        <td>${ data[i].prd_deskripsipendek }</td>
+                        <td>${ data[i].kemasan }</td>
+                        <td>${ data[i].qty }</td>
+                        <td>${ data[i].qtyk }</td>
+                        <td>${ data[i].trbo_hrgsatuan }</td>
+                        <td>${ data[i].trbo_gross }</td>
+                    </tr>
+                `);
+            }
         }
 
     </script>

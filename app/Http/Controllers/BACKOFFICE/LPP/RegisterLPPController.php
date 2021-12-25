@@ -2195,7 +2195,7 @@ order by prd_kodedivisi,
                         ->Where('DIV', '=', $data->prd_kodedivisi)
                         ->Where('DEPT', '=', $data->prd_kodedepartement)
                         ->Where('KATB', '=', $data->prd_kodekategoribarang)
-                        ->update(['BEGBAL_RP' => DB::raw('NVL(' . $data->begbal_rp . ', 0) + NVL(' . $data->st_rpsaldoawal . ', 0)')]);
+                        ->update(['BEGBAL_RP' => DB::connection(Session::get('connection'))->raw('NVL(' . $data->begbal_rp . ', 0) + NVL(' . $data->st_rpsaldoawal . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
                         'PRDCD' => $data->st_prdcd,
@@ -2242,7 +2242,7 @@ order by prd_kodedivisi,
                         ->Where('DIV', '=', $rec2->prd_kodedivisi)
                         ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                         ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
-                        ->update(['AKHIR_RP' => DB::raw('NVL(AKHIR_RP, 0) + NVL(' . $rec2->lpp_rphakhir . ', 0)')]);
+                        ->update(['AKHIR_RP' => DB::connection(Session::get('connection'))->raw('NVL(AKHIR_RP, 0) + NVL(' . $rec2->lpp_rphakhir . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
                         'PRDCD' => $rec2->st_prdcd,

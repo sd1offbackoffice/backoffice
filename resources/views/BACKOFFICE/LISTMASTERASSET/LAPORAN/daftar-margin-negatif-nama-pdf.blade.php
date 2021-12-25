@@ -83,9 +83,13 @@
                     <td style="text-align: right">{{twoDigit($cp_nlcmargin[$i])}}%</td>
                     <td style="text-align: right">{{twoDigit($cp_nacmargin[$i])}}%</td>
                     <td style="text-align: right">{{zeroDigit($data[$i]->qty)}}</td>
-                    <td style="text-align: right">{{--CF_avgsls--}}</td>
+                    <td style="text-align: right">{{$avgsls[$i]}}</td>
                     <td>{{$data[$i]->tag}}</td>
-                    <td style="text-align: left">{{--CF_ket--}}</td>
+                    @if($data[$i]->spot_prdcd != '')
+                        <td style="text-align: left">PROMO</td>
+                    @else
+                        <td style="text-align: left">{{--CF_ket--}}</td>
+                    @endif
                 </tr>
                 {{--MAIN TABLE--}}
                 @php

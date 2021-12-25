@@ -185,16 +185,6 @@ class EntrySortirBarangController extends Controller
             $userid = Session::get('usid');
             $today  = date('Y-m-d H:i:s');
 
-////        *** Get Doc No ***
-//            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
-//            'Nomor Sortir Barang',
-//               'S'
-//            || TO_CHAR (SYSDATE, 'yy')
-//            || SUBSTR ('123456789ABC', TO_CHAR (SYSDATE, 'MM'), 1),
-//            5,
-//            TRUE); END;");
-//            oci_bind_by_name($query, ':ret', $docNo, 32);
-//            oci_execute($query);
 
 //        *** Search DocNo for Edit ***
             $getDoc = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')->where('srt_nosortir', $noSrt)->first();
@@ -255,6 +245,18 @@ class EntrySortirBarangController extends Controller
                 return response()->json(['kode' => 1, 'msg' => $getDoc->srt_nosortir]);
             } else {
 //              *** Insert Data ***
+                $connect = loginController::getConnectionProcedure();
+                //menjalankan procedure untuk counter nomor dokumen
+            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','S',
+            'Nomor Sortir Barang',
+               'S'
+            || TO_CHAR (SYSDATE, 'yy')
+            || SUBSTR ('123456789ABC', TO_CHAR (SYSDATE, 'MM'), 1),
+            5,
+            TRUE); END;");
+            oci_bind_by_name($query, ':ret', $noSrt, 32);
+            oci_execute($query);
+
                 for ($i = 1; $i < sizeof($datas); $i++){
                     $temp = $datas[$i];
 
@@ -287,6 +289,7 @@ class EntrySortirBarangController extends Controller
                 return response()->json(['kode' => 1, 'msg' => $noSrt]);
             }
         }catch (\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
             return response()->json(['kode' => 2, 'msg' => $e->getMessage()]);
         }
 
@@ -334,13 +337,9 @@ class EntrySortirBarangController extends Controller
         DB::connection(Session::get('connection'))->beginTransaction();
         DB::connection(Session::get('connection'))->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
         DB::connection(Session::get('connection'))->commit();
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang-laporan', ['datas' => $datas]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-        return $pdf->stream('entry-sortir-barang-laporan.pdf');
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang-laporan',
+            ['data' => $datas, 'perusahaan' => $perusahaan]);
     }
 }

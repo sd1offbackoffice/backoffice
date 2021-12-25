@@ -280,7 +280,7 @@ class OldCetakDokumenController extends Controller
 
                         ])
                         ->update([
-                            'trbo_tglfaktur' => DB::raw("trunc(sysdate)"),
+                            'trbo_tglfaktur' => DB::connection(Session::get('connection'))->raw("trunc(sysdate)"),
                             'trbo_nofaktur' => $nofak
                         ]);
                 }
@@ -414,7 +414,7 @@ class OldCetakDokumenController extends Controller
                         'frm_tglbo' => $dataInsert->trbo_tgldoc,
                         'frm_referensifp' => $dataInsert->referensifp,
                         'frm_create_by' => Session::get('usid'),
-                        'frm_create_dt' => DB::RAW("SYSDATE")
+                        'frm_create_dt' => Carbon::now()
                     ]);
 
 //                DB::connection(Session::get('connection'))->insert(" INSERT INTO TBHISTORY_FAKTURRM(FRM_KODEIGR,
@@ -991,7 +991,7 @@ class OldCetakDokumenController extends Controller
                                     'mstd_recordid' => $rec->trbo_recordid,
                                     'mstd_typetrn' => $doc,
                                     'mstd_nodoc' => $f_plubkp == 'Y' ? $nodocbkp : $nodocbtkp,
-                                    'mstd_tgldoc' => DB::RAW("SYSDATE"),
+                                    'mstd_tgldoc' => Carbon::now(),
                                     'mstd_docno2' => $rec->trbo_invno != 'P' ? $nofak : null,
                                     'mstd_date2' => $rec->trbo_tglfaktur,
                                     'mstd_istype' => $rec->trbo_istype,
@@ -1041,9 +1041,9 @@ class OldCetakDokumenController extends Controller
                                     'mstd_keterangan' => $rec->trbo_keterangan,
                                     'mstd_kodetag' => $rec->prd_kodetag,
                                     'mstd_create_by' => Session::get('usid'),
-                                    'mstd_create_dt' => DB::RAW("SYSDATE"),
+                                    'mstd_create_dt' => Carbon::now(),
                                     'mstd_modify_by' => Session::get('usid'),
-                                    'mstd_modify_dt' => DB::RAW("SYSDATE"),
+                                    'mstd_modify_dt' => Carbon::now(),
                                     'mstd_noref3' => $rec->trbo_noreff,
                                 ]);
 
@@ -1090,7 +1090,7 @@ class OldCetakDokumenController extends Controller
                                     'hsr_qtypb' => $qtypb,
                                     'hsr_qtyretur' => $rec->trbo_qty,
                                     'hsr_create_by' => Session::get('usid'),
-                                    'hsr_create_dt' => DB::RAW("SYSDATE"),
+                                    'hsr_create_dt' => Carbon::now(),
                                     'hsr_refbpb' => $rec->trbo_noreff
                                 ]);
 
@@ -1213,11 +1213,11 @@ class OldCetakDokumenController extends Controller
                                     'MSTH_RECORDID' => '',
                                     'MSTH_TYPETRN' => $doc,
                                     'MSTH_NODOC' => $nodocbtkp,
-                                    'MSTH_TGLDOC' => DB::RAW("TRUNC(SYSDATE)"),
+                                    'MSTH_TGLDOC' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                     'MSTH_NOPO' => '',
                                     'MSTH_TGLPO' => null,
                                     'MSTH_NOFAKTUR' => null,
-                                    'MSTH_TGLFAKTUR' => DB::RAW("TRUNC(SYSDATE)"),
+                                    'MSTH_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                                     'MSTH_NOREF3' => null,
                                     'MSTH_TGREF3' => null,
                                     'MSTH_ISTYPE' => null,
@@ -1234,9 +1234,9 @@ class OldCetakDokumenController extends Controller
                                     'MSTH_FURGNT' => null,
                                     'MSTH_FLAGDOC' => 1,
                                     'MSTH_CREATE_BY' => Session::get('usid'),
-                                    'MSTH_CREATE_DT' => DB::RAW("SYSDATE"),
+                                    'MSTH_CREATE_DT' => Carbon::now(),
                                     'MSTH_MODifY_BY' => Session::get('usid'),
-                                    'MSTH_MODifY_DT' => DB::RAW("SYSDATE")
+                                    'MSTH_MODifY_DT' => Carbon::now()
                                 ]);
                         }
 

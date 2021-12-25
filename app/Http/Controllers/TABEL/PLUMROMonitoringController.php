@@ -36,8 +36,8 @@ class PLUMROMonitoringController extends Controller
 
         if(!$data){
             return response()->json([
-                'message' => 'Kode monitoring tidak terdaftar!'
-            ], 500);
+                'nama' => null
+            ], 200);
         }
         else{
             return response()->json([

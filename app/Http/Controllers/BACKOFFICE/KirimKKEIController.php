@@ -17,7 +17,7 @@ class KirimKKEIController extends Controller
             ->select('kke_periode')
             ->whereRaw("nvl(kke_upload,'N') <> 'Y'")
             ->distinct()
-            ->orderBy(DB::RAW("to_date(kke_periode,'ddMMyyyy')"),'desc')
+            ->orderBy(DB::connection(Session::get('connection'))->raw("to_date(kke_periode,'ddMMyyyy')"),'desc')
             ->get();
 
         foreach($kkei as $k){
@@ -30,21 +30,21 @@ class KirimKKEIController extends Controller
             ->distinct()
             ->toSql();
 
-        $query2 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_pb_d@igrgij'))
-            ->join(DB::RAW('tbtr_pb_h@igrgij'),'pbd_nopb','pbh_nopb')
-            ->leftJoin(DB::RAW('tbtr_po_h@igrgij'),'pbd_nopo','tpoh_nopo')
+        $query2 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_pb_d@igrgij'))
+            ->join(DB::connection(Session::get('connection'))->raw('tbtr_pb_h@igrgij'),'pbd_nopb','pbh_nopb')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('tbtr_po_h@igrgij'),'pbd_nopo','tpoh_nopo')
             ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo','pbh_cab_penerima')
             ->distinct()
             ->toSql();
 
-        $query3 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_mstran_h@igrgij'))
+        $query3 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'))
             ->select('msth_nodoc','msth_tgldoc','msth_nopo','msth_typetrn')
             ->toSql();
 
-        $data = DB::connection(Session::get('connection'))->table(DB::RAW('tbdownload_kkei@igrgij'))
-            ->join(DB::RAW('('.$query1.')'),'kke_periode','kki_periode')
-            ->leftJoin(DB::RAW('('.$query2.')'),'kke_nomorpb','pbd_nopb')
-            ->leftJoin(DB::RAW('('.$query3.')'),'pbd_nopo','msth_nopo')
+        $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbdownload_kkei@igrgij'))
+            ->join(DB::connection(Session::get('connection'))->raw('('.$query1.')'),'kke_periode','kki_periode')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query2.')'),'kke_nomorpb','pbd_nopb')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query3.')'),'pbd_nopo','msth_nopo')
             ->where('pbh_cab_penerima',$kodeigr)
             ->where('msth_typetrn','B')
             ->whereRaw("TO_CHAR (kki_periode, 'yyyyMM') >= TO_CHAR (SYSDATE - 90, 'yyyyMM')")
@@ -108,21 +108,21 @@ class KirimKKEIController extends Controller
             ->distinct()
             ->toSql();
 
-        $query2 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_pb_d@igrgij'))
-            ->join(DB::RAW('tbtr_pb_h@igrgij'),'pbd_nopb','pbh_nopb')
-            ->leftJoin(DB::RAW('tbtr_po_h@igrgij'),'pbd_nopo','tpoh_nopo')
+        $query2 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_pb_d@igrgij'))
+            ->join(DB::connection(Session::get('connection'))->raw('tbtr_pb_h@igrgij'),'pbd_nopb','pbh_nopb')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('tbtr_po_h@igrgij'),'pbd_nopo','tpoh_nopo')
             ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo','pbh_cab_penerima')
             ->distinct()
             ->toSql();
 
-        $query3 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_mstran_h@igrgij'))
+        $query3 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'))
             ->select('msth_nodoc','msth_tgldoc','msth_nopo','msth_typetrn')
             ->toSql();
 
-        $data = DB::connection(Session::get('connection'))->table(DB::RAW('tbdownload_kkei@igrgij'))
-            ->join(DB::RAW('('.$query1.')'),'kke_periode','kki_periode')
-            ->leftJoin(DB::RAW('('.$query2.')'),'kke_nomorpb','pbd_nopb')
-            ->leftJoin(DB::RAW('('.$query3.')'),'pbd_nopo','msth_nopo')
+        $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbdownload_kkei@igrgij'))
+            ->join(DB::connection(Session::get('connection'))->raw('('.$query1.')'),'kke_periode','kki_periode')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query2.')'),'kke_nomorpb','pbd_nopb')
+            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query3.')'),'pbd_nopo','msth_nopo')
             ->where('pbh_cab_penerima',$kodeigr)
             ->where('msth_typetrn','B')
             ->whereRaw("TO_CHAR (kki_periode, 'yyyyMM') >= TO_CHAR (SYSDATE - 90, 'yyyyMM')")
@@ -135,21 +135,21 @@ class KirimKKEIController extends Controller
     }
 
     public function test(){
-//        $subquery2 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_pb_d@igrgij'))
-//            ->join(DB::RAW('tbtr_pb_h@igrgij'),'pbd_nopb','=','pbh_nopb')
-//            ->rightJoin(DB::RAW('tbtr_po_h@igrgij'),function($join){
+//        $subquery2 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_pb_d@igrgij'))
+//            ->join(DB::connection(Session::get('connection'))->raw('tbtr_pb_h@igrgij'),'pbd_nopb','=','pbh_nopb')
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw('tbtr_po_h@igrgij'),function($join){
 //                $join->on('tpoh_nopo','pbd_nopo');
 //            })
 //            ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo')
 //            ->whereRaw('pbh_cab_penerima = '.$kodeigr)
 //            ->distinct();
 
-//        $subquery3 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_mstran_h@igrgij'))
+//        $subquery3 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'))
 //            ->select('msth_nodoc','msth_tgldoc','msth_nopo')
 //            ->where('msth_typetrn','B');
 
-//        $subquery23 = DB::connection(Session::get('connection'))->table(DB::raw("({$subquery2->toSql()})"))
-//            ->rightJoin(DB::RAW('tbtr_mstran_h@igrgij'),function($join){
+//        $subquery23 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("({$subquery2->toSql()})"))
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'),function($join){
 //                $join->on('msth_nopo','pbd_nopo');
 //            })
 //            ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo','msth_nodoc','msth_tgldoc','msth_nopo')
@@ -157,9 +157,9 @@ class KirimKKEIController extends Controller
 
 //        dd($subquery23);
 
-//        $query = DB::connection(Session::get('connection'))->table(DB::RAW('tbdownload_kkei@igrgij'))
+//        $query = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbdownload_kkei@igrgij'))
 //            ->join('tbupload_kkei','kke_periode','kki_periode')
-//            ->rightJoin(DB::raw("({$subquery23->toSql()})"),function($join){
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw("({$subquery23->toSql()})"),function($join){
 //                $join->on('pbd_nopo','kke_nomorpb');
 //            })
 //            ->selectRaw("kke_periode,
@@ -174,14 +174,14 @@ class KirimKKEIController extends Controller
 //            ->where('kke_cabang',$kodeigr)
 //            ->orderBy('kke_periode','desc');
 //
-//        $q = DB::connection('simkmy')->table(DB::raw("({$query->toSql()})"))->get();
+//        $q = DB::connection('simkmy')->table(DB::connection(Session::get('connection'))->raw("({$query->toSql()})"))->get();
 //
 //        dd($q);
 
 
-        //        $subquery2 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_pb_d@igrgij'))
-//            ->join(DB::RAW('tbtr_pb_h@igrgij'),'pbd_nopb','=','pbh_nopb')
-//            ->rightJoin(DB::RAW('tbtr_po_h@igrgij'),function($join){
+        //        $subquery2 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_pb_d@igrgij'))
+//            ->join(DB::connection(Session::get('connection'))->raw('tbtr_pb_h@igrgij'),'pbd_nopb','=','pbh_nopb')
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw('tbtr_po_h@igrgij'),function($join){
 //                $join->on('tpoh_nopo','pbd_nopo');
 //            })
 //            ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo')
@@ -190,12 +190,12 @@ class KirimKKEIController extends Controller
 
 //        dd($subquery2->get());
 
-//        $subquery3 = DB::connection(Session::get('connection'))->table(DB::RAW('tbtr_mstran_h@igrgij'))
+//        $subquery3 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'))
 //            ->select('msth_nodoc','msth_tgldoc','msth_nopo')
 //            ->where('msth_typetrn','B');
 
-//        $subquery23 = DB::connection(Session::get('connection'))->table(DB::raw("(".$subquery2->toSql().")"))
-//            ->rightJoin(DB::RAW('tbtr_mstran_h@igrgij'),function($join){
+//        $subquery23 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("(".$subquery2->toSql().")"))
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'),function($join){
 //                $join->on('msth_nopo','pbd_nopo');
 //            })
 //            ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo','msth_nodoc','msth_tgldoc','msth_nopo')
@@ -203,9 +203,9 @@ class KirimKKEIController extends Controller
 
 //        dd($subquery23);
 
-//        $query = DB::connection(Session::get('connection'))->table(DB::RAW('tbdownload_kkei@igrgij'))
+//        $query = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbdownload_kkei@igrgij'))
 //            ->join('tbupload_kkei','kke_periode','kki_periode')
-//            ->rightJoin(DB::raw("({$subquery23->toSql()})"),function($join){
+//            ->rightJoin(DB::connection(Session::get('connection'))->raw("({$subquery23->toSql()})"),function($join){
 //                $join->on('pbd_nopo','kke_nomorpb');
 //            })
 //            ->selectRaw("kke_periode,
@@ -220,7 +220,7 @@ class KirimKKEIController extends Controller
 //            ->where('kke_cabang',$kodeigr)
 //            ->orderBy('kke_periode','desc');
 //
-//        $q = DB::connection('simkmy')->table(DB::raw("({$query->toSql()})"))->get();
+//        $q = DB::connection('simkmy')->table(DB::connection(Session::get('connection'))->raw("({$query->toSql()})"))->get();
 //
 //        dd($q);
 

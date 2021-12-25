@@ -122,7 +122,7 @@ class KonversiController extends Controller
                         'st_prdcd' => $utuh_prdcd,
                         'st_lokasi' => '01',
                         'st_create_by' => Session::get('usid'),
-                        'st_create_dt' => DB::RAW("SYSDATE")
+                        'st_create_dt' => Carbon::now()
                     ]);
             }
 
@@ -138,7 +138,7 @@ class KonversiController extends Controller
                         'st_prdcd' => $olah_prdcd,
                         'st_lokasi' => '01',
                         'st_create_by' => Session::get('usid'),
-                        'st_create_dt' => DB::RAW("SYSDATE")
+                        'st_create_dt' => Carbon::now()
                     ]);
             }
 
@@ -173,7 +173,7 @@ class KonversiController extends Controller
                     'mstd_kodeigr' => Session::get('kdigr'),
                     'mstd_typetrn' => 'A',
                     'mstd_nodoc' => $no_knv,
-                    'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                    'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                     'mstd_seqno' => 1,
                     'mstd_prdcd' => $utuh_prdcd,
                     'mstd_kodedivisi' => $divisi,
@@ -191,7 +191,7 @@ class KonversiController extends Controller
                     'mstd_posqty' => $oldstock,
                     'mstd_flagdisc1' => 'U',
                     'mstd_create_by' => Session::get('usid'),
-                    'mstd_create_dt' => DB::RAW("SYSDATE")
+                    'mstd_create_dt' => Carbon::now()
                 ]);
 
             $avgcost = (100 / (100 - ( ( ($utuh_qty - $olah_qty) / $utuh_qty) * 100))) * $harga;
@@ -240,7 +240,7 @@ class KonversiController extends Controller
                     'mstd_kodeigr' => Session::get('kdigr'),
                     'mstd_typetrn' => 'A',
                     'mstd_nodoc' => $no_knv,
-                    'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                    'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                     'mstd_seqno' => 2,
                     'mstd_prdcd' => $olah_prdcd,
                     'mstd_kodedivisi' => $divisi,
@@ -259,7 +259,7 @@ class KonversiController extends Controller
                     'mstd_flagdisc1' => 'O',
                     'mstd_flagdisc2' => 'I',
                     'mstd_create_by' => Session::get('usid'),
-                    'mstd_create_dt' => DB::RAW("SYSDATE")
+                    'mstd_create_dt' => Carbon::now()
                 ]);
 
             DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_STOCK
@@ -300,7 +300,7 @@ class KonversiController extends Controller
 
             $temp = DB::connection(Session::get('connection'))->table('tbhistory_cost')
                 ->where('hcs_prdcd','=',$olah_prdcd)
-                ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
+                ->where('hcs_tglbpb','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
                 ->where('hcs_nodocbpb','=',$no_knv)
                 ->count();
 
@@ -311,7 +311,7 @@ class KonversiController extends Controller
                         'hcs_lokasi' => Session::get('kdigr'),
                         'hcs_typetrn' => 'A',
                         'hcs_prdcd' => $olah_prdcd,
-                        'hcs_tglbpb' => DB::RAW("TRUNC(SYSDATE)"),
+                        'hcs_tglbpb' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                         'hcs_nodocbpb' => $no_knv,
                         'hcs_qtybaru' => $olah_qty,
                         'hcs_qtylama' => $oldstock,
@@ -319,13 +319,13 @@ class KonversiController extends Controller
                         'hcs_avgbaru' => $avgcost,
                         'hcs_lastqty' => $newqty,
                         'hcs_create_by' => Session::get('usid'),
-                        'hcs_create_dt' => DB::RAW("SYSDATE")
+                        'hcs_create_dt' => Carbon::now()
                     ]);
             }
 
             DB::connection(Session::get('connection'))->table('tbhistory_cost')
                 ->where('hcs_prdcd','=',$olah_prdcd)
-                ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
+                ->where('hcs_tglbpb','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
                 ->where('hcs_nodocbpb','=',$no_knv)
                 ->update([
                     'hcs_lastcostbaru' => $newlcost,
@@ -351,10 +351,10 @@ class KonversiController extends Controller
                     'msth_kodeigr' => Session::get('kdigr'),
                     'msth_typetrn' => 'A',
                     'msth_nodoc' => $no_knv,
-                    'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                    'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                     'msth_flagdoc' => '1',
                     'msth_create_by' => Session::get('usid'),
-                    'msth_create_dt' => DB::RAW("TRUNC(SYSDATE)"),
+                    'msth_create_dt' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                 ]);
 
             return ([
@@ -427,7 +427,7 @@ class KonversiController extends Controller
                                 'st_prdcd' => $o['plu'],
                                 'st_lokasi' => '01',
                                 'st_create_by' => Session::get('usid'),
-                                'st_create_dt' => DB::RAW("SYSDATE")
+                                'st_create_dt' => Carbon::now()
                             ]);
                     }
                 }
@@ -477,7 +477,7 @@ class KonversiController extends Controller
                             'mstd_kodeigr' => Session::get('kdigr'),
                             'mstd_typetrn' => 'A',
                             'mstd_nodoc' => $no_knv,
-                            'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                            'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                             'mstd_seqno' => $seqno,
                             'mstd_prdcd' => $o['plu'],
                             'mstd_kodedivisi' => $divisi,
@@ -496,7 +496,7 @@ class KonversiController extends Controller
                             'mstd_flagdisc1' => 'O',
                             'mstd_flagdisc2' => 'O',
                             'mstd_create_by' => Session::get('usid'),
-                            'mstd_create_dt' => DB::RAW("SYSDATE"),
+                            'mstd_create_dt' => Carbon::now(),
                         ]);
 
                     DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_STOCK
@@ -558,7 +558,7 @@ class KonversiController extends Controller
                         'mstd_kodeigr' => Session::get('kdigr'),
                         'mstd_typetrn' => 'A',
                         'mstd_nodoc' => $no_knv,
-                        'mstd_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                        'mstd_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                         'mstd_seqno' => $seqno + 1,
                         'mstd_prdcd' => $mix_plu,
                         'mstd_kodedivisi' => $divisi,
@@ -576,7 +576,7 @@ class KonversiController extends Controller
                         'mstd_posqty' => $oldstock,
                         'mstd_flagdisc1' => 'M',
                         'mstd_create_by' => Session::get('usid'),
-                        'mstd_create_dt' => DB::RAW("SYSDATE"),
+                        'mstd_create_dt' => Carbon::now(),
                     ]);
 
                 DB::connection(Session::get('connection'))->update("UPDATE TBMASTER_STOCK
@@ -617,7 +617,7 @@ class KonversiController extends Controller
 
                 $temp = DB::connection(Session::get('connection'))->table('tbhistory_cost')
                     ->where('hcs_prdcd','=',$mix_plu)
-                    ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
+                    ->where('hcs_tglbpb','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
                     ->where('hcs_nodocbpb','=',$no_knv)
                     ->first();
 
@@ -628,7 +628,7 @@ class KonversiController extends Controller
                             'HCS_LOKASI' => Session::get('kdigr'),
                             'HCS_TYPETRN' => 'A',
                             'HCS_PRDCD' => $mix_plu,
-                            'HCS_TGLBPB' => DB::RAW("TRUNC(SYSDATE)"),
+                            'HCS_TGLBPB' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                             'HCS_NODOCBPB' => $no_knv,
                             'HCS_QTYBARU' => $mix_qty,
                             'HCS_QTYLAMA' => $oldstock,
@@ -636,13 +636,13 @@ class KonversiController extends Controller
                             'HCS_AVGBARU' => $avgcost,
                             'HCS_LASTQTY' => $newqty,
                             'HCS_CREATE_BY' => Session::get('usid'),
-                            'HCS_CREATE_DT' => DB::RAW("SYSDATE"),
+                            'HCS_CREATE_DT' => Carbon::now(),
                         ]);
                 }
 
                 DB::connection(Session::get('connection'))->table('tbhistory_cost')
                     ->where('hcs_prdcd','=',$mix_plu)
-                    ->where('hcs_tglbpb','=',DB::RAW("TRUNC(SYSDATE)"))
+                    ->where('hcs_tglbpb','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
                     ->where('hcs_nodocbpb','=',$no_knv)
                     ->update([
                         'hcs_lastcostbaru' => $newlcost,
@@ -667,10 +667,10 @@ class KonversiController extends Controller
                         'msth_kodeigr' => Session::get('kdigr'),
                         'msth_typetrn' => 'A',
                         'msth_nodoc' => $no_knv,
-                        'msth_tgldoc' => DB::RAW("TRUNC(SYSDATE)"),
+                        'msth_tgldoc' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
                         'msth_flagdoc' => '1',
                         'msth_create_by' => Session::get('usid'),
-                        'msth_create_dt' => DB::RAW("SYSDATE")
+                        'msth_create_dt' => Carbon::now()
                     ]);
             }
 

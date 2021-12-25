@@ -25,7 +25,7 @@ class InqueryController extends Controller
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
-            ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
+            ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->limit(1000)
             ->get();
@@ -49,7 +49,7 @@ class InqueryController extends Controller
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $noNPB)
-            ->where(DB::Raw("nvl(msth_recordid,'0')"), '<>', '1')
+            ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->get();
         $datas = [];
@@ -80,7 +80,7 @@ class InqueryController extends Controller
             ->leftJoin('tbmaster_stock', function ($join) {
                 $join->on('st_kodeigr', 'prd_kodeigr');
                 $join->on('st_prdcd', 'prd_prdcd');
-                $join->on('st_lokasi', DB::Raw('02'));
+                $join->on('st_lokasi', DB::connection(Session::get('connection'))->raw('02'));
             })
             ->selectRaw('mstd_prdcd plu, prd_deskripsipanjang barang, mstd_unit||\'/\'||mstd_frac kemasan, prd_kodetag tag, prd_flagbandrol bandrol, mstd_bkp bkp, prd_frac, case when st_lastcost is null or st_lastcost =0 then  prd_lastcost else st_lastcost * case when prd_unit=\'KG\' then 1 else prd_frac end end lastcost, st_avgcost * case when prd_unit =\'KG\' then 1 else prd_frac end avgcost, mstd_hrgsatuan hrgsat, floor(mstd_qty/prd_frac) qty, prd_unit unit, mod(mstd_qty,prd_frac) qtyk,
              mstd_gross gross, mstd_discrph discrph, mstd_ppnrph ppnrph, mstd_keterangan ket, st_saldoakhir')

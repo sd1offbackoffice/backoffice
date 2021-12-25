@@ -11,10 +11,10 @@ use Mockery\Exception;
 use PDF;
 use Yajra\DataTables\DataTables;
 
-class PerubahanPLUController extends Controller
+class ProsesPergantianPLUController extends Controller
 {
     public function index(){
-        return view('BACKOFFICE.TRANSAKSI.PENYESUAIAN.perubahan-plu');
+        return view('BACKOFFICE.TRANSAKSI.PENYESUAIAN.proses-pergantian-plu');
     }
 
     public function getDataLov(){
@@ -32,7 +32,7 @@ class PerubahanPLUController extends Controller
     public function getData(Request $request){
         $prdcd = $request->prdcd;
 
-        $data = DB::connection(Session::get('connection'))->select("Select prd_deskripsipanjang desk,
+        $data = DB::connection(Session::get('connection'))->selectOne("Select prd_deskripsipanjang desk,
                                 'SATUAN : '||prd_unit||'/'||prd_frac||'  STOK : '||nvl(st_saldoakhir,0) satuan
                                 From tbmaster_prodmast, tbmaster_stock
                                 Where
@@ -41,13 +41,82 @@ class PerubahanPLUController extends Controller
                                 ST_LOKASI(+) = '01' AND
                                 PRD_KodeIGR = '".Session::get('kdigr')."'");
 
-        return response()->json($data[0]);
+        if(!$data){
+            return response()->json([
+                'message' => 'PLU tidak ditemukan!'
+            ], 500);
+        }
+
+        return response()->json($data);
     }
 
     public function proses(Request $request){
         $plulama = $request->prdcdlama;
         $plubaru = $request->prdcdbaru;
         $ukuran = $request->ukuran;
+
+        $valid = true;
+
+        if($plulama == $plubaru){
+            return response()->json([
+                'message' => 'Salah isian, PLU asal tidak boleh sama dengan PLU baru!'
+            ], 500);
+        }
+
+        if(substr($plulama, -1) == '1'){
+            return response()->json([
+                'message' => 'Salah isian, PLU lama harus diisi dengan satuan jual 0!'
+            ], 500);
+        }
+
+        if(substr($plubaru, -1) == '1'){
+            return response()->json([
+                'message' => 'Salah isian, PLU baru harus diisi dengan satuan jual 0!'
+            ], 500);
+        }
+
+        $dataplulama = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
+            ->where('prd_prdcd',$plulama)
+            ->first();
+
+        if(!$dataplulama){
+            return response()->json([
+                'message' => 'Salah isian, PLU lama tidak terdaftar di prodmast!'
+            ], 500);
+        }
+
+        $dataplubaru = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->selectRaw("prd_prdcd, prd_deskripsipanjang, prd_unit || ' / ' || prd_frac kemasan")
+            ->where('prd_prdcd',$plubaru)
+            ->first();
+
+        if(!$dataplubaru){
+            return response()->json([
+                'message' => 'Salah isian, PLU baru tidak terdaftar di PRODMAST!'
+            ], 500);
+        }
+
+        $stock = DB::connection(Session::get('connection'))
+            ->table('tbmaster_stock')
+            ->select('st_saldoakhir')
+            ->where('st_kodeigr','=',Session::get('kdigr'))
+            ->where('st_prdcd','=',$plulama)
+            ->where('st_lokasi','=','01')
+            ->first();
+
+        if($stock){
+            if($stock->st_saldoakhir > 0){
+                return response()->json([
+                    'message' => 'Salah isian, stok masih ada, jalankan program MPP!'
+                ], 500);
+            }
+        }
+        else{
+            return response()->json([
+                'message' => 'Salah isian, PLU PLU lama tidak terdaftar di STOCK!'
+            ], 500);
+        }
 
         $updplu = false;
 
@@ -66,23 +135,17 @@ class PerubahanPLUController extends Controller
 
             if(true){
                 $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                    ->select('st_saldoakhir')
                     ->where('st_prdcd',$plulama)
                     ->where('st_kodeigr',Session::get('kdigr'))
                     ->where('st_lokasi','01')
-                    ->get()->count();
+                    ->first();
 
-                if($temp == 0){
-
-                }
-                else{
-                    $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
-                        ->where('st_prdcd',$plubaru)
-                        ->where('st_kodeigr',Session::get('kdigr'))
-                        ->where('st_lokasi','01')
-                        ->get()->count();
-
-                    if($temp > 0){
-
+                if($temp){
+                    if($temp->st_saldoakhir > 0){
+                        return response()->json([
+                            'message' => 'Stop1'
+                        ], 500);
                     }
                     else{
                         if(true){
@@ -127,7 +190,7 @@ class PerubahanPLUController extends Controller
                                         'st_lastcost' => $lcost,
                                         'st_avgcost' => $acost,
                                         'st_create_by' => Session::get('usid'),
-                                        'st_create_dt' => DB::RAW("SYSDATE")
+                                        'st_create_dt' => Carbon::now()
                                     ]);
                             }
 
@@ -137,7 +200,7 @@ class PerubahanPLUController extends Controller
                                 ->update([
                                     'lks_prdcd' => $plubaru,
                                     'lks_modify_by' => Session::get('usid'),
-                                    'lks_modify_dt' => DB::RAW("SYSDATE")
+                                    'lks_modify_dt' => Carbon::now()
                                 ]);
 
                             $temp = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
@@ -164,7 +227,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'pkm_prdcd' => $plubaru,
                                             'pkm_modify_by' => Session::get('usid'),
-                                            'pkm_modify_dt' => DB::RAW("SYSDATE")
+                                            'pkm_modify_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -193,7 +256,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'pkmp_prdcd' => $plubaru,
                                             'pkmp_modify_by' => Session::get('usid'),
-                                            'pkmp_modify_dt' => DB::RAW("SYSDATE")
+                                            'pkmp_modify_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -222,7 +285,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'pkmg_prdcd' => $plubaru,
                                             'pkmg_modify_by' => Session::get('usid'),
-                                            'pkmg_modify_dt' => DB::RAW("SYSDATE")
+                                            'pkmg_modify_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -248,7 +311,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'gdl_recordid' => '1',
                                             'gdl_modify_by' => Session::get('usid'),
-                                            'gdl_modify_dt' => DB::RAW("SYSDATE")
+                                            'gdl_modify_dt' => Carbon::now()
                                         ]);
                                 }
                                 else{
@@ -259,7 +322,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'gdl_prdcd' => $plubaru,
                                             'gdl_modify_by' => Session::get('usid'),
-                                            'gdl_modify_dt' => DB::RAW("SYSDATE")
+                                            'gdl_modify_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -288,7 +351,7 @@ class PerubahanPLUController extends Controller
                                         ->update([
                                             'min_prdcd' => $plubaru,
                                             'min_modify_by' => Session::get('usid'),
-                                            'min_modify_dt' => DB::RAW("SYSDATE")
+                                            'min_modify_dt' => Carbon::now()
                                         ]);
                                 }
                             }
@@ -299,7 +362,7 @@ class PerubahanPLUController extends Controller
                                 ->update([
                                     'prmd_prdcd' => substr($plubaru,0,6).substr($plulama,-1),
                                     'prmd_modify_by' => Session::get('usid'),
-                                    'prmd_modify_dt' => DB::RAW("SYSDATE")
+                                    'prmd_modify_dt' => Carbon::now()
                                 ]);
 
                             $temp = DB::connection(Session::get('connection'))->table('tbtr_konversiplu')
@@ -329,11 +392,11 @@ class PerubahanPLUController extends Controller
                                         'kvp_pluold' => $plulama,
                                         'kvp_plunew' => $plubaru,
                                         'kvp_kodetipe' => 'N',
-                                        'kvp_tgl' => DB::RAW("SYSDATE"),
+                                        'kvp_tgl' => Carbon::now(),
                                         'kvp_konversiold' => $konl,
                                         'kvp_konversinew' => $konb,
                                         'kvp_create_by' => Session::get('usid'),
-                                        'kvp_create_dt' => DB::RAW("SYSDATE")
+                                        'kvp_create_dt' => Carbon::now()
                                     ]);
                             }
 
@@ -458,7 +521,7 @@ class PerubahanPLUController extends Controller
                                                 'upd_harga' => $prdlast,
                                                 'upd_atribute1' => 'MPP2',
                                                 'upd_create_by' => Session::get('usid'),
-                                                'upd_create_dt' => DB::RAW("SYSDATE")
+                                                'upd_create_dt' => Carbon::now()
                                             ]);
                                     }
                                 }
@@ -479,7 +542,7 @@ class PerubahanPLUController extends Controller
                                                 'upd_harga' => $prdlast * $rec2->prd_frac,
                                                 'upd_atribute1' => 'MPP2',
                                                 'upd_create_by' => Session::get('usid'),
-                                                'upd_create_dt' => DB::RAW("SYSDATE")
+                                                'upd_create_dt' => Carbon::now()
                                             ]);
                                     }
                                 }
@@ -487,9 +550,14 @@ class PerubahanPLUController extends Controller
                         }
                     }
                 }
+                else{
+                    return response()->json([
+                        'message' => 'Stop1'
+                    ], 500);
+                }
             }
 
-//            DB::connection(Session::get('connection'))->commit();
+            DB::connection(Session::get('connection'))->commit();
 
             Session::put('pys_dataplulama',$dataplulama);
             Session::put('pys_dataplubaru',$dataplubaru);
@@ -523,7 +591,7 @@ class PerubahanPLUController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENYESUAIAN.perubahan-plu-pdf',compact(['perusahaan','plulama','plubaru','ukuran']));
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENYESUAIAN.proses-pergantian-plu-pdf',compact(['perusahaan','plulama','plubaru','ukuran']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -531,7 +599,7 @@ class PerubahanPLUController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

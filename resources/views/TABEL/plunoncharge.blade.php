@@ -14,9 +14,9 @@
                             <div class="card-body py-0">
                                 <div class="row form-group">
                                     <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
-                                    <div class="col-sm-3 buttonInside">
-                                        <input type="text" class="form-control text-left" id="plu">
-                                        <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovPLU()">
+                                    <div class="col-sm-2 buttonInside">
+                                        <input type="text" class="form-control text-left" id="plu" disabled>
+                                        <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
@@ -74,30 +74,32 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="m_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered" role="document">
+    <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
-                <br>
+                <div class="modal-header">
+                    <h5 class="modal-title">LOV PLU</h5>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col lov">
-                                <table class="table table-sm mb-0 text-center" id="table_plu">
-                                    <thead class="thColor">
+                                <table class="table table-striped table-bordered" id="table_lov_plu">
+                                    <thead class="theadDataTables">
                                     <tr>
-                                        <th>PLU</th>
                                         <th>Deskripsi</th>
+                                        <th>PLU</th>
                                         <th>Satuan</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="">
+                                    <tbody>
                                     </tbody>
-                                    <tfoot></tfoot>
                                 </table>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
                 </div>
             </div>
         </div>
@@ -156,6 +158,8 @@
     <script>
         $(document).ready(function(){
             getData();
+
+            getModalData('');
         });
 
         function getData(){
@@ -236,46 +240,68 @@
             );
         }
 
-        function showLovPLU(){
-            $('#m_plu').modal('show');
+        $('#m_lov_plu').on('shown.bs.modal',function(){
+            $('#table_lov_plu_filter input').val('');
+            $('#table_lov_plu_filter input').select();
+        });
 
-            if(!$.fn.DataTable.isDataTable('#table_plu')){
-                getLovPLU();
+        function getModalData(value){
+            if ($.fn.DataTable.isDataTable('#table_lov_plu')) {
+                $('#table_lov_plu').DataTable().destroy();
+                $("#table_lov_plu tbody [role='row']").remove();
             }
-        }
 
-        function getLovPLU() {
-            $('#table_plu').DataTable({
-                "ajax": '{{ url()->current().'/get-lov-plu' }}',
+            if(!$.isNumeric(value)){
+                search = value.toUpperCase();
+            }
+            else search = value;
+
+            $('#table_lov_plu').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current() }}/get-lov-plu',
+                    "data" : {
+                        'plu' : search
+                    },
+                },
                 "columns": [
-                    {data: 'plu'},
-                    {data: 'desk'},
-                    {data: 'satuan'}
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'satuan', name: 'satuan'},
                 ],
                 "paging": true,
                 "lengthChange": true,
                 "searching": true,
-                "ordering": true,
+                "ordering": false,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).find(':eq(0)').addClass('text-center');
-                    $(row).find(':eq(1)').addClass('text-left');
-                    $(row).find(':eq(2)').addClass('text-center');
-                    $(row).addClass('row-plu').css({'cursor': 'pointer'});
+                    $(row).addClass('row-plu');
                 },
-                "order": [],
-                "initComplete": function () {
+                "initComplete" : function(){
+                    $('#table_lov_plu_filter input').val(value).select();
+
+                    $(".row-plu").prop("onclick", null).off("click");
+
                     $(document).on('click', '.row-plu', function (e) {
-                        $('#plu').val($(this).find('td:eq(0)').html());
-                        $('#desk').val($(this).find('td:eq(1)').html());
+                        $('#plu').val($(this).find('td:eq(1)').html());
+                        $('#desk').val($(this).find('td:eq(0)').html());
                         $('#satuan').val($(this).find('td:eq(2)').html());
 
-                        $('#m_plu').modal('hide');
+                        $('#m_lov_plu').modal('hide');
 
                         $('#btn_add').focus();
                     });
+                }
+            });
+
+            $('#table_lov_plu_filter input').val(value);
+
+            $('#table_lov_plu_filter input').off().on('keypress', function (e){
+                if (e.which === 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getModalData(val);
                 }
             });
         }
