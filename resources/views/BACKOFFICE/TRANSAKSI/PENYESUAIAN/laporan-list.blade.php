@@ -106,7 +106,7 @@
         <tr>
             <td colspan="5"></td>
             <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-            <td>{{ $total }}</td>
+            <td>{{ number_format($total,1) }}</td>
             <td></td>
         </tr>
         </tfoot>

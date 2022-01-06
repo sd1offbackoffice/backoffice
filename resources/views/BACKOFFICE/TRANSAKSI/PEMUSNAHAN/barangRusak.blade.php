@@ -395,9 +395,9 @@
 
                             let temp =  ` <tr class="d-flex baris" onclick="putDesPanjang(this)">
                                                 <td width="3%" class="text-center">
-                                                    <button class="btn btn-danger btn-delete"  width="10%" onclick="deleteRow(this)">X</button>
+                                                    <button class="btn btn-danger btn-delete"   onclick="deleteRow(this)">X</button>
                                                 </td>
-                                                <td class="buttonInside" style="width: 150px">
+                                                <td class="buttonInside" width="10%">
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].st_prdcd +`">
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
@@ -422,6 +422,8 @@
                         $('#modal-loader').modal('hide')
                     }
                 })
+            } else {
+                clearField()
             }
         })
 

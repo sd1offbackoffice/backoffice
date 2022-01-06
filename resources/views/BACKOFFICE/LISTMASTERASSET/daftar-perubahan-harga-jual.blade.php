@@ -160,8 +160,7 @@
         }
     });
     $('#menu2Kat1Input, #menu2BtnKat1').on('focus',function(){
-        $('#minKat').val($('#menu2Dep1Input').val());
-        $('#maxKat').val($('#menu2Dep1Input').val()).change();
+        $('#limitKat').val($('#menu2Dep1Input').val()).change();
 
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
@@ -177,8 +176,7 @@
         }
     });
     $('#menu2Kat2Input, #menu2BtnKat2').on('focus',function(){
-        $('#minKat').val($('#menu2Dep2Input').val());
-        $('#maxKat').val($('#menu2Dep2Input').val()).change();
+        $('#limitKat').val($('#menu2Dep2Input').val()).change();
 
         if($('#menu2Div1Input').val() == ''){
             $('#menu2Div1Input').focus();
@@ -269,7 +267,7 @@
         if($('#menu2Dep1Input').val() == ''){
             $('#menu2BtnDep2').prop("hidden",true);
 
-            $('#minKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menu2Dep1Input').val());
             if(index){
@@ -294,7 +292,7 @@
             $('#menu2BtnKat1').prop("hidden",true);
 
 
-            $('#maxKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menu2Dep2Input').val());
             if(index){
@@ -320,11 +318,11 @@
             let index = checkKatExist($('#menu2Kat1Input').val());
             if(index){
                 $('#menu2Kat1Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                // $('#minKat').val($('#menu2Kat1Input').val()).change();
+
                 $('#menu2BtnKat2').prop("hidden",false);
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menu2Kat1Input').val('').change();
             }
         }
@@ -340,7 +338,7 @@
                 $('#menu2Kat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menu2Kat2Input').val('').change();
             }
         }
@@ -475,8 +473,8 @@
         }
         if(kat1 != ''){
             //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-            $('#minKat').val(dep1);
-            $('#maxKat').val(dep1);
+
+            $('#limitKat').val(dep1);
             if(checkKatExist(kat1) == false){
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
                 return false;
@@ -484,26 +482,26 @@
         }
         if(kat2 != ''){
             //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-            $('#minKat').val(dep2);
-            $('#maxKat').val(dep2);
+
+            $('#limitKat').val(dep2);
             if(checkKatExist(kat2) == false){
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
                 return false;
             }
         }
-        if(div1 != '' || div2 != ''){
-            if(parseInt(div1) > parseInt(div2)){
-                temp = div1;
-                div1 = div2;
-                div2 = temp;
-                temp = dep1;
-                dep1 = dep2;
-                dep2 = temp;
-                temp = kat1;
-                kat1 = kat2;
-                kat2 = temp;
-            }
-        }
+        // if(div1 != '' && div2 != ''){
+        //     if(parseInt(div1) > parseInt(div2)){
+        //         temp = div1;
+        //         div1 = div2;
+        //         div2 = temp;
+        //         temp = dep1;
+        //         dep1 = dep2;
+        //         dep2 = temp;
+        //         temp = kat1;
+        //         kat1 = kat2;
+        //         kat2 = temp;
+        //     }
+        // }
 
         //sortby
         let sort = $('#menu2SortBy').val();

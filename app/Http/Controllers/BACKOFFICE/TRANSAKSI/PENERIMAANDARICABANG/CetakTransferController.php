@@ -44,7 +44,7 @@ class CetakTransferController extends Controller
                                 'TRANSFER ANTAR CABANG'
                     end jenis,
                     msth_nodoc,
-                    msth_tgldoc,
+                    to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                     cab_namacabang,
                     msth_nopo,
                     msth_tglpo,
@@ -85,21 +85,23 @@ class CetakTransferController extends Controller
 
 //        dd($data);
 
-        $dompdf = new PDF();
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAANDARICABANG.cetak-transfer-pdf', compact(['perusahaan','data','ukuran']));
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAANDARICABANG.cetak-transfer-pdf', compact(['perusahaan','data','ukuran']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($data[0]->jenis.'.pdf');
+//        $dompdf = new PDF();
+//
+//        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAANDARICABANG.cetak-transfer-pdf', compact(['perusahaan','data','ukuran']));
+//
+//        error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//        $dompdf = $pdf;
+//
+//        return $dompdf->stream($data[0]->jenis.'.pdf');
     }
 
     public function test(){

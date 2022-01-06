@@ -88,15 +88,23 @@ class ListMasterController extends Controller
     {
         $kodeigr = Session::get('kdigr');
         $search = $request->value;
+        $min = $request->min;
+        if($min != ''){ //masukkin where cus_kodeigr disini agar whereRaw tidak kosong
+            $where_min = "cus_kodeigr = '".$kodeigr."' and cus_kodemember >= '".$min."'";
+        }else{
+            $where_min = "cus_kodeigr = '".$kodeigr."'";
+        }
 
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->selectRaw('cus_kodemember')
             ->where("cus_namamember",'LIKE', '%'.$search.'%')
-            ->where('cus_kodeigr','=',$kodeigr)
+            //->where('cus_kodeigr','=',$kodeigr)
+            ->whereRaw($where_min)
 
             ->orWhere("cus_kodemember",'LIKE', '%'.$search.'%')
-            ->where('cus_kodeigr','=',$kodeigr)
+            //->where('cus_kodeigr','=',$kodeigr)
+            ->whereRaw($where_min)
             ->limit(1000)
             ->get();
 
@@ -688,7 +696,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         $datas = DB::connection(Session::get('connection'))->select("select /*+ ORDERED */ prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2, prd_lastcost, prd_avgcost,
       prd_hrgjual price_a, prd_kodetag tag, prd_lastcost, prd_unit unit, prd_frac frac,
       prd_unit||'/'|| case when substr(prd_prdcd,-1) = '0' then prd_frac else 1 end satuan,
-      st_prdcd, nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end avgcost, case when sls_prdcd <> '' then call igr_bo_daftar_margin_negatif(sysdate, prd_prdcd, '$kodeigr', @val as val)  else '0' end avgsls,
+      st_prdcd, nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end avgcost,
       nvl(st_avgcost,0) st_acost, st_saldoakhir qty,
 nvl(PRMD_HRGJUAL, 0) FMJUAL,
                          nvl(PRMD_POTONGANPERSEN, 0) FMPOTP, nvl(PRMD_POTONGANRPH, 0) FMPOTR, prmd_prdcd,
@@ -733,8 +741,8 @@ where prd_kodeigr = '$kodeigr'
      and spot_periodeawal(+) <= sysdate AND spot_periodeakhir(+) >= sysdate
      and sls_prdcd(+) = substr(prd_prdcd,0,6)||'0'
      and sls_kodeigr(+)= prd_kodeigr
+     --and (1-((nvl(st_avgcost,0) * case prd_unit = 'KG' then 1 else prd_frac))/prd_hrgjual) < 0 --ini masih coba:
 ".$p_orderby);
-        dd($datas);
 
         $ac_margin = [];
         $lc_margin = [];
@@ -745,6 +753,7 @@ where prd_kodeigr = '$kodeigr'
         $cp_nAcMargin = [];
         $avgsls = [];
 
+        $prd_prdcd = [];
         for($i=0;$i<sizeof($datas);$i++){
             //### AC_MARGIN ###
             if($datas[$i]->unit == 'KG'){
@@ -808,7 +817,7 @@ where prd_kodeigr = '$kodeigr'
                         $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor ) * 100;
                     }
                 }
-                $ac_margin[$i] = $nMargin;
+                $ac_margin[$i] = round($nMargin,0);
             }else{
                 $ac_margin[$i] = 0;
             }
@@ -1017,6 +1026,7 @@ where prd_kodeigr = '$kodeigr'
             $cp_nAcMargin[$i] = $nAcMargin;
 
             //CF_AVGSLS
+            $prd_prdcd[$i] = $datas[$i]->prd_prdcd;
 
             if($datas[$i]->sls_prdcd != ''){
                 $prdcd = $datas[$i]->prd_prdcd;
@@ -1158,7 +1168,7 @@ where prd_kodeigr = '$kodeigr'
         $sub1 = $request->suboutlet1;
         $sub2 = $request->suboutlet2;
         if($sub1 != '' && $sub2 != ''){
-            $and_sub = " and CUS_KODESUBOUTLET(+) BETWEEN ".$sub1." AND ".$sub2;
+            $and_sub = " and CUS_KODESUBOUTLET(+) BETWEEN '".$sub1."' AND '".$sub2."'";
         }else{
             $and_sub = " ";
         }
@@ -1884,7 +1894,8 @@ and out_kodeoutlet(+)= cus_kodeoutlet
         }else{
             $and_status = " ";
         }
-        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac, prd_flagbarcode1,
+
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac  prd_unit_prd_frac, prd_flagbarcode1,
 dep_kodedepartement||'-'||dep_namadepartement dep,
 kat_kodekategori||'-'||kat_namakategori kat,
 prs_namaperusahaan, prs_namacabang
@@ -2360,7 +2371,7 @@ and bb.sup_kodeigr='$kodeigr'
 and prs_kodeigr=sup_kodeigr
 order by urut, sk");
 
-        //CETAK_DAFTARSUPPLIER(IGR_BO_DAFTARSUPPLIER.jsp)
+        //CETAK_DAFTARMSUPPLIERHARI(IGR_BO_DAFTARSUPPLIERHARI.jsp)
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-supplier-by-hari-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);

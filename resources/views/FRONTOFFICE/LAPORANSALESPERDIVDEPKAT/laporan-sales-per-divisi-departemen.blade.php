@@ -1,10 +1,10 @@
 @extends('navbar')
 
-@section('title','BO | LAPORAN PER DIVISI DEPARTEMENT')
+@section('title','FO | LAPORAN PER DIVISI DEPARTEMENT')
 
 @section('content')
 
-    <div class="container" id="main_view">
+    <div class="container-fluid" id="main_view">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -103,7 +103,7 @@
         </div>
     </div>
     <br>
-    <div class="container" id="second_view">
+    <div class="container-fluid" id="second_view">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -389,14 +389,23 @@
                     {
                         targets: [5],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [6],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [7],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [8],
@@ -417,6 +426,34 @@
             var tanggal2 = $('#tanggal-2').val();
             window.open(`{{ url()->current() }}/../laporan-sales-per-departemen-kategori?departemen=${departement}&tanggal1=${tanggal1}&tanggal2=${tanggal2}`, '_blank');
 
+        });
+
+        $(document).on('change', '#outlet', function () {
+            var currentButton = $(this);
+            var outlet = $(this).val();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-sub-outlet',
+                type: 'GET',
+                data: {
+                    outlet: outlet,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#suboutlet").empty();
+                    $("#suboutlet").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#suboutlet").append(`<option value="`+response[i].sub_kodesuboutlet+`">`+response[i].sub_namasuboutlet+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
         });
     </script>
 

@@ -12,7 +12,7 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Nomor SJ</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="nosj" disabled>
+                                <input type="text" class="form-control" id="nosj">
                                 <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -141,6 +141,12 @@
             });
         });
 
+        $('#nosj').on('keypress',function(e){
+            if(e.which == 13){
+                batal();
+            }
+        });
+
         function batal(){
             if($('#nosj').val() == ''){
                 swal({
@@ -177,7 +183,7 @@
 
                                     }
                                     else{
-
+                                        $('#nosj').select();
                                     }
                                 });
                             },

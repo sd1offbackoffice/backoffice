@@ -619,10 +619,10 @@
                         data['lks_shelvingrak'] = row.children().first().next().next().next().text();
                     }
                     else{
-                        data['lks_koderak'] = $('#lks_koderak').val();
-                        data['lks_kodesubrak'] =  $('#lks_kodesubrak').val();
-                        data['lks_tiperak'] = $('#lks_tiperak').val();
-                        data['lks_shelvingrak'] = $('#lks_shelvingrak').val();
+                        data['lks_koderak'] = $('#lks_koderak').val().toUpperCase();
+                        data['lks_kodesubrak'] =  $('#lks_kodesubrak').val().toUpperCase();
+                        data['lks_tiperak'] = $('#lks_tiperak').val().toUpperCase();
+                        data['lks_shelvingrak'] = $('#lks_shelvingrak').val().toUpperCase();
                     }
 
                     $.ajax({

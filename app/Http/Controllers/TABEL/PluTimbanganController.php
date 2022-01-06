@@ -378,10 +378,14 @@ class PluTimbanganController extends Controller
     }
 
     public function shareDir(){
-        $ip = $ip = Session::get('ip');
+        //$ip = Session::get('ip');
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->selectRaw("PRS_IPSERVER")->first();
+        $path = $perusahaan->prs_ipserver;
+
         //$dir = "S:\\";
 //        system('net use S:  /delete');//tidak perlu delete, karena bila drive S: sudah di mapping, maka meski di mapping kembali tidak masalah
-        system('net use S: "\\\\'.$ip.'\share"  /persistent:no>nul 2>&1');
+        //system('net use S: "\\\\'.$ip.'\d"  /persistent:no>nul 2>&1');
+        system('net use S: "\\'.$path.'"  /persistent:no>nul 2>&1');
 //        if(file_exists($dir)){
 //            return response()->json(false); //mengembalikan false bila file ada
 //        }else{
@@ -410,7 +414,7 @@ class PluTimbanganController extends Controller
 
     public function CheckDir(Request $request){
         $path = $request->path;
-        $ip = Session::get('ip');
+//        $ip = Session::get('ip');
         $dir = "S:".$path;
         if(file_exists($dir)){
             return response()->json(true);

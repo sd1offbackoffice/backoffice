@@ -96,10 +96,14 @@
                 @endphp
             @endif
         @endfor
+            <tr>
+                <td colspan="9" style="border-top: 2px solid black"></td>
+                <td style="border-top: 2px solid black; text-align: right">TOTAL : {{$cs_total}}</td>
+            </tr>
         </tbody>
     </table>
-    <hr>
-    <p style="margin-left: 650px;margin-top: -8px;margin-bottom: 2px">TOTAL : {{$cs_total}}</p>
+{{--    <hr>--}}
+{{--    <p style="margin-left: 650px;margin-top: -8px;margin-bottom: 2px">TOTAL : {{$cs_total}}</p>--}}
     <hr>
     <p style="text-align: left">KETERANGAN : {{$data[0]->msth_keterangan_header}}</p>
 @endsection

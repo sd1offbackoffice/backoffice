@@ -794,23 +794,37 @@ class PemutihanPluController extends Controller
                 ->delete();
 
             //---->>>>> update master_prodmast <<<<<----
-            $values = DB::connection(Session::get('connection'))->table("TBHISTORY_PERUBAHANDATAPLU")
-                ->selectRaw("HRP_KODECABANG_N, HRP_KATEGORITOKO_N, HRP_KODETAG_N")
-                ->leftJoin("TBMASTER_PRODMAST","PRD_PRDCD","=","HRP_PRDCD")
-                ->whereRaw("HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')")
-                ->get();
-
-            if(sizeof($values) != 0){
-                DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
-                    ->whereRaw("EXISTS (SELECT 1
+            DB::connection(Session::get('connection'))->raw("UPDATE TBMASTER_PRODMAST
+       SET PRD_KODECABANG = (SELECT HRP_KODECABANG_N
+                               FROM TBHISTORY_PERUBAHANDATAPLU
+                              WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')),
+           PRD_KATEGORITOKO = (SELECT HRP_KATEGORITOKO_N
+                                 FROM TBHISTORY_PERUBAHANDATAPLU
+                                WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')),
+           PRD_KODETAG = (SELECT HRP_KODETAG_N
+                            FROM TBHISTORY_PERUBAHANDATAPLU
+                           WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY'))
+     WHERE EXISTS (SELECT 1
                      FROM TBHISTORY_PERUBAHANDATAPLU
-                    WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')")
-                    ->update([
-                        'PRD_KODECABANG' => $values[0]->hrp_kodecabang_n,
-                        'PRD_KATEGORITOKO' => $values[0]->hrp_kategoritoko_n,
-                        'PRD_KODETAG' => $values[0]->hrp_kodetag_n
-                    ]);
-            }
+                    WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY'))");
+
+//            $values = DB::connection(Session::get('connection'))->table("TBHISTORY_PERUBAHANDATAPLU")
+//                ->selectRaw("HRP_KODECABANG_N, HRP_KATEGORITOKO_N, HRP_KODETAG_N")
+//                ->leftJoin("TBMASTER_PRODMAST","PRD_PRDCD","=","HRP_PRDCD")
+//                ->whereRaw("HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')")
+//                ->get();
+//
+//            if(sizeof($values) != 0){
+//                DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
+//                    ->whereRaw("EXISTS (SELECT 1
+//                     FROM TBHISTORY_PERUBAHANDATAPLU
+//                    WHERE HRP_PRDCD = PRD_PRDCD AND HRP_PERIODE = TO_DATE('$lastproses','DD-MM-YYYY')")
+//                    ->update([
+//                        'PRD_KODECABANG' => $values[0]->hrp_kodecabang_n,
+//                        'PRD_KATEGORITOKO' => $values[0]->hrp_kategoritoko_n,
+//                        'PRD_KODETAG' => $values[0]->hrp_kodetag_n
+//                    ]);
+//            }
 //            for($i=0;$i<sizeof($values);$i++){
             //not sure if this gonna work
             //            DB::connection(Session::get('connection'))->table("TBMASTER_PRODMAST")
@@ -878,5 +892,278 @@ class PemutihanPluController extends Controller
 
             return response()->json(['status' => $status,'message' => $message]);
         }
+    }
+
+    public function pemutihanBarcode(Request $request){
+        try {
+            DB::connection(Session::get('connection'))->beginTransaction();
+            $kodeigr = Session::get('kdigr');
+            $userid = Session::get('usid');
+            $lastproses = $request->lastproses;
+            $lastproses = DateTime::createFromFormat('Y-m-d', $lastproses)->format('d-m-Y');
+
+            //---->>>>> delete master_barcode yang PLU nya gak ada di prodmast <<<<<----
+            $values = DB::connection(Session::get('connection'))->select("SELECT * FROM TBMASTER_BARCODE
+         WHERE NOT EXISTS (SELECT 1
+                              FROM TBMASTER_PRODMAST
+                             WHERE PRD_PRDCD = BRC_PRDCD)");
+
+            for($i=0;$i<sizeof($values);$i++){
+                DB::connection(Session::get('connection'))->table("TBHISTORY_PEMUTIHANBARCODE")
+                    ->insert([
+                        'HBRC_PRDCD' => $values[$i]->brc_prdcd,
+                        'HBRC_BARCODE' => $values[$i]->brc_barcode,
+                        'HBRC_STATUS' => $values[$i]->brc_status,
+                        'HBRC_CREATE_BY' => $values[$i]->brc_create_by,
+                        'HBRC_CREATE_DT' => $values[$i]->brc_create_dt,
+                        'HBRC_MODIFY_BY' => $values[$i]->brc_modify_by,
+                        'HBRC_MODIFY_DT' => $values[$i]->brc_modify_dt,
+                        'HHGB_PROSES_DT' => Carbon::now(),
+                        'HHGB_PROSES_BY' => $userid
+                    ]);
+            }
+            DB::connection(Session::get('connection'))->table("TBMASTER_BARCODE")
+                ->whereRaw("NOT EXISTS (SELECT 1
+                              FROM TBMASTER_PRODMAST
+                             WHERE PRD_PRDCD = BRC_PRDCD)")
+                ->delete();
+
+            //---->>>>> insert barcode yang ada di MD gak ada di IGR <<<<<----
+            DB::connection(Session::get('connection'))->raw("INSERT INTO TBMASTER_BARCODE
+                (BRC_PRDCD, BRC_BARCODE, BRC_STATUS, BRC_CREATE_BY, BRC_CREATE_DT)
+        SELECT    SUBSTR (FMKPLU, 1, 6)
+               || CASE
+                      WHEN (FMKCAB = '18' OR FMKCAB = '16') AND FMTSJL = '4'
+                          THEN 1
+                      ELSE FMTSJL
+                  END FMKPLU,
+               FMBARC, 'BC', '$userid', SYSDATE
+          FROM TBTEMP_PLUDATAMD
+         WHERE FMKCAB = '$kodeigr'
+           AND CASE
+             WHEN FMKCAB = '18' OR FMKCAB = '16'
+                 THEN FMTSJL
+             ELSE 0
+         			END <> '1'
+           AND FMBARC IS NOT NULL
+           AND NOT EXISTS (SELECT 1
+                             FROM TBMASTER_BARCODE
+                            WHERE FMBARC = BRC_BARCODE)
+           AND FMBARC NOT LIKE 'X%'
+           AND FMBARC NOT LIKE 'NOBRC%'
+           AND NVL (FMTAGP, '9') NOT IN ('N', 'A', 'X')
+           AND TGLPROSES = TO_DATE('$lastproses','DD-MM-YYYY')");
+
+            return response()->json(['status' => "sukses",'message' => "PEMUTIHAN BARCODE SELESAI"]);
+        }catch(QueryException $e){
+            DB::connection(Session::get('connection'))->rollBack();
+            $status = 'Pemulihan Error';
+            $message = $e->getMessage();
+
+            return response()->json(['status' => $status,'message' => $message]);
+        }
+    }
+
+    public function printLap1(Request $request){
+        //IGR_BO_PEMUTIHANPLUQTY.jsp
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+        $qty = $request->qty; //parameter 1 di program lama
+        $mutasi = $request->mutasi; // parameter 2 di program lama
+
+
+        if($qty == '0'){
+            if($mutasi == 'Y'){
+                $ket = "DENGAN STOCK = 0 DAN ADA MUTASI LPP";
+                $kosong = "TIDAK ADA PLU YANG BEDA DENGAN STOCK = 0 DAN ADA MUTASI LPP";
+            }else{
+                $ket = "DENGAN STOCK = 0 DAN TIDAK ADA MUTASI LPP";
+                $kosong = "TIDAK ADA PLU YANG BEDA DENGAN STOCK = 0 DAN TIDAK ADA MUTASI LPP";
+            }
+        }else{
+            $ket = "DENGAN STOCK > 0";
+            $kosong = "TIDAK ADA PLU YANG BEDA DENGAN STOCK > 0";
+        }
+
+        if($qty == '0'){
+            $p_qty = "AND NVL (HPT_SALDOAKHIR, 0) <= 0";
+        }else{
+            $p_qty = "AND NVL (HPT_SALDOAKHIR, 0) > 0";
+        }
+
+        if($mutasi == 'Y'){
+            $p_mutasi = "AND HPT_MUTASI = 'Y'";
+        }else{
+            $p_mutasi = "AND HPT_MUTASI = 'N'";
+        }
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TO_CHAR (HPT_PERIODE, 'DD-MM-YY') PERIODE, HPT_PRDCD,
+         PRD_DESKRIPSIPANJANG, PRD_UNIT || ' / ' || PRD_FRAC SATUAN, HPT_KODECABANG, HPT_KATEGORITOKO,
+         HPT_KODETAG, HPT_SALDOAKHIR
+    FROM TBHISTORY_PEMUTIHANPLU, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+   WHERE HPT_PRDCD = PRD_PRDCD
+     AND HPT_KODEIGR = PRS_KODEIGR
+     AND PRS_KODEIGR = '$kodeigr'
+     AND NVL (HPT_PROSES, 'zz') = 'zz'
+     AND hpt_periode = TO_DATE('$periode','DD-MM-YYYY')
+     ".$p_qty."
+     ".$p_mutasi."
+ORDER BY HPT_PRDCD");
+        if(sizeof($datas) != 0){
+            $periode_db = $datas[0]->periode;
+        }else{
+            $periode_db = '';
+        }
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap1-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+                'periode' => $periode_db, 'ket' => $ket, 'kosong' => $kosong]);
+    }
+
+    public function printLap2(Request $request){
+        //IGR_BO_PEMUTIHANPLUMDYIGRN.jsp
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, HMI_PRDCD, HMI_KODECABANG, HMI_KATEGORITOKO,
+         HMI_KODETAG
+    FROM TBHISTORY_PLUMDY_IGRN, TBMASTER_PERUSAHAAN
+   WHERE PRS_KODEIGR = HMI_KODEIGR AND HMI_KODEIGR = '$kodeigr' AND HMI_PERIODE = TO_DATE('$periode','DD-MM-YYYY')
+and not exists (select 1 from tbmaster_prodmast where prd_prdcd=hmi_prdcd)
+ORDER BY HMI_PRDCD");
+
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap2-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+    }
+
+    public function printLap3(Request $request){
+        //IGR_BO_PEMUTIHANPLUSYNC.jsp
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, HRP_PRDCD, PRD_DESKRIPSIPANJANG, HRP_KODECABANG_O,
+         HRP_KODECABANG_N, HRP_KATEGORITOKO_O, HRP_KATEGORITOKO_N, HRP_KODETAG_O, HRP_KODETAG_N
+    FROM TBHISTORY_PERUBAHANDATAPLU, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+   WHERE HRP_KODEIGR = PRS_KODEIGR
+     AND PRS_KODEIGR = '$kodeigr'
+     AND HRP_PRDCD = PRD_PRDCD
+     AND HRP_PERIODE = TO_DATE('$periode','DD-MM-YYYY')
+     AND HRP_PROSES IS NULL
+ORDER BY HRP_PRDCD");
+
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap3-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+    }
+
+    public function printLap4(Request $request){
+        //IGR_BO_PTHBRC_IGRYMDN.jsp
+        //--igr ada md gak ada
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, BRC_PRDCD, PRD_DESKRIPSIPANJANG, PRD_KODETAG,
+         BRC_BARCODE, BRC_STATUS
+    FROM TBMASTER_BARCODE, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+   WHERE BRC_STATUS = 'BC'
+     AND NOT EXISTS (
+             SELECT 1
+               FROM (SELECT    SUBSTR (FMKPLU, 1, 6)
+                            || CASE
+                                   WHEN (FMKCAB = '18' OR FMKCAB = '16') AND FMTSJL = '4'
+                                       THEN 1
+                                   ELSE FMTSJL
+                               END FMKPLU,
+                            FMBARC
+                       FROM TBTEMP_PLUDATAMD
+                      WHERE TRUNC (TGLPROSES) = TRUNC (TO_DATE('$periode','DD-MM-YYYY'))
+                        AND CASE
+                                WHEN FMKCAB = '18' OR FMKCAB = '16'
+                                    THEN FMTSJL
+                                ELSE 0
+                            END <> '1'
+                        AND FMBARC IS NOT NULL)
+              WHERE FMBARC = BRC_BARCODE)
+     AND BRC_PRDCD = PRD_PRDCD(+)
+ORDER BY BRC_PRDCD");
+
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap4-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+    }
+
+    public function printLap5(Request $request){
+        //IGR_BO_PTHBRC_IGRNMDY.jsp
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
+            SUBSTR (FMKPLU, 1, 6)
+         || CASE
+                WHEN (FMKCAB = '18' OR FMKCAB = '16') AND FMTSJL = '4'
+                    THEN 1
+                ELSE FMTSJL
+            END FMKPLU,
+         PRD_DESKRIPSIPANJANG, FMTAGP, FMBARC
+    FROM TBTEMP_PLUDATAMD, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN
+   WHERE PRS_KODEIGR = FMKCAB
+     AND FMKCAB = '$kodeigr'
+     AND CASE
+             WHEN FMKCAB = '18' OR FMKCAB = '16'
+                 THEN FMTSJL
+             ELSE 0
+         END <> '1'
+     AND FMBARC IS NOT NULL
+     AND NOT EXISTS (SELECT 1
+                       FROM TBMASTER_BARCODE
+                      WHERE FMBARC = BRC_BARCODE)
+     AND FMKPLU = PRD_PRDCD(+)
+     AND FMBARC NOT LIKE 'X%'
+     AND FMBARC NOT LIKE 'NOBRC%'
+     AND NVL (FMTAGP, '9') NOT IN ('N', 'A', 'X')
+     AND TRUNC (TGLPROSES) = TRUNC (TO_DATE('$periode','DD-MM-YYYY'))
+ORDER BY FMKPLU");
+
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap5-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
+    }
+
+    public function printLap6(Request $request){
+        //IGR_BO_PTHBRC_CMPR.jsp
+        $kodeigr = Session::get('kdigr');
+        $periode = $request->lastproses;
+        $periode = DateTime::createFromFormat('Y-m-d', $periode)->format('d-m-Y');
+        $flag = $request->flag;
+
+        if($flag == 1){
+            $ket = "DAFTAR PERBANDINGAN BARCODE";
+            $where_clause = "";
+        }else{
+            $ket = "DAFTAR PERBANDINGAN BARCODE YANG BERBEDA";
+            $where_clause = "and nvl(brc_igr,'ZZ')  <> nvl(brc_md,'ZZ')";
+        }
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT a.* , prd_deskripsipanjang FROM TEMP_COMPAREbrc a, tbmaster_prodmast
+WHERE plu=prd_prdcd(+)
+".$where_clause."
+ORDER BY plu");
+
+        //PRINT
+        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        return view('BACKOFFICE.PROSES.pemutihan-plu-lap6-pdf',
+            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+                'ket' => $ket]);
     }
 }

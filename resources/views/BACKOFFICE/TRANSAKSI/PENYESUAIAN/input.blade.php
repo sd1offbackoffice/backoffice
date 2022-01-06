@@ -133,7 +133,7 @@
                                                             <label for="hrgsatuan" class="col-sm-2 col-form-label">Hrg. Satuan</label>
                                                             <label for="hrgsatuan" class="col-sm-1 col-form-label"><strong>Rp.</strong></label>
                                                             <div class="col-sm-3 pl-0">
-                                                                <input type="text" class="form-control text-right" id="hrgsatuan">
+                                                                <input type="text" class="form-control text-right" id="hrgsatuan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
@@ -285,13 +285,13 @@
                                 <table class="table table-striped table-bordered" id="table_list">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>DESKRIPSI</th>
-                                        <th>KEMASAN</th>
-                                        <th>QTY</th>
-                                        <th>QTYK</th>
-                                        <th>H.P.P</th>
-                                        <th>GROSS</th>
+                                        <th class="text-center">PLU</th>
+                                        <th class="text-center">DESKRIPSI</th>
+                                        <th class="text-center">KEMASAN</th>
+                                        <th class="text-center">QTY</th>
+                                        <th class="text-center">QTYK</th>
+                                        <th class="text-center">H.P.P</th>
+                                        <th class="text-center">GROSS</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -349,6 +349,8 @@
         no = 'doc';
         jenisdoc = '';
         var list;
+        var dataPLU;
+        var listPLU = [];
 
         $(document).ready(function(){
             $('#table_lov_plu').DataTable({
@@ -474,68 +476,6 @@
             });
         }
 
-        {{--$('#i_lov_plu').on('keypress',function(e){--}}
-        {{--    if(e.which == 13){--}}
-        {{--        if($(this).val() == ''){--}}
-        {{--            $('#table_lov_plu .row_lov').remove();--}}
-        {{--            $('#table_lov_plu').append(trlov);--}}
-        {{--        }--}}
-        {{--        else{--}}
-        //             if($.isNumeric($(this).val())){
-        //                 search = convertPlu($(this).val());
-        //             }
-        //             else{
-        //                 search = $(this).val().toUpperCase();
-        //             }
-        {{--            $.ajax({--}}
-        {{--                url: '{{url('/bo/transaksi/penyesuaian/input/lov_plu_search')}}',--}}
-        {{--                type: 'POST',--}}
-        //                 headers: {
-        //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //                 },
-        {{--                data: {plu: search, lokasi: $('#tipe_barang').val()},--}}
-        {{--                beforeSend: function(){--}}
-        {{--                    $('#modal-loader').modal('show');--}}
-        {{--                },--}}
-        {{--                success: function (response) {--}}
-        {{--                    // $('#table_lov_plu .row_lov').remove();--}}
-        {{--                    html = "";--}}
-
-        {{--                    if ($.fn.DataTable.isDataTable('#table_lov_plu')) {--}}
-        {{--                        $('#table_lov_plu').DataTable().destroy();--}}
-        {{--                        $("#table_lov_plu tbody [role='row']").remove();--}}
-        {{--                    }--}}
-
-        {{--                    for (i = 0; i < response.length; i++) {--}}
-        {{--                        html =  '<tr class="row_lov" onclick=plu_select("' + response[i].prd_prdcd + '")>' +--}}
-        {{--                            '<td>' + response[i].prd_deskripsipanjang + '</td>' +--}}
-        {{--                            '<td>' + response[i].prd_prdcd + '</td></tr>';--}}
-
-        {{--                        $('#table_lov_plu').append(html);--}}
-        {{--                    }--}}
-
-        {{--                    $('#table_lov_plu').DataTable({--}}
-        {{--                        "paging": true,--}}
-        {{--                        "lengthChange": true,--}}
-        {{--                        "searching": true,--}}
-        {{--                        "ordering": true,--}}
-        {{--                        "info": true,--}}
-        {{--                        "autoWidth": true,--}}
-        {{--                        "responsive": true,--}}
-        {{--                        "createdRow": function (row, data, dataIndex) {--}}
-        {{--                        },--}}
-        {{--                        "order": []--}}
-        {{--                    });--}}
-
-        {{--                    $('#modal-loader').modal('hide');--}}
-
-        {{--                    $('#i_lov_plu').select();--}}
-        {{--                }--}}
-        {{--            });--}}
-        {{--        }--}}
-        {{--    }--}}
-        {{--});--}}
-
         $('#plu').on('keypress',function(e){
             if(e.which == 13){
                 plu_select($(this).val());
@@ -560,6 +500,8 @@
                     $('#modal-loader').modal('show');
                 },
                 success: function (response) {
+                    dataPLU = response;
+
                     $('#modal-loader').modal('hide');
                     $('#m_lov_plu').modal('hide');
                     if(typeof response.title !== 'undefined'){
@@ -617,15 +559,17 @@
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
                                 beforeSend: function () {
-                                    $('#modal-loader').modal('toggle');
+                                    $('#modal-loader').modal('show');
                                 },
                                 success: function (response) {
                                     jenisdoc = 'baru';
 
-                                    $('#modal-loader').modal('toggle');
+                                    $('#modal-loader').modal('hide');
 
                                     $('#no_penyesuaian').val(response);
                                     $('#tgl_penyesuaian').select();
+
+                                    $('#totalitem').val(0);
                                 }
                             });
                         }
@@ -642,16 +586,19 @@
                             nodoc: nodoc
                         },
                         beforeSend: function(){
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
-                            generateListData(response.list);
+                            listPLU = response.list;
+                            generateListData(listPLU);
 
                             response = response.doc;
 
                             if(response != null){
+                                $('input').val('');
+
                                 jenisdoc = 'lama';
 
                                 $('#tgl_penyesuaian').attr('disabled',true);
@@ -663,12 +610,15 @@
                                 $('#tgl_referensi').val(response['trbo_tglreff']);
                                 $('#tipe_mpp').val(response['trbo_flagdisc1']);
 
-                                if(response['trbo_flagdisc2'].length == 1)
-                                    tipebarang = '0' + response['trbo_flagdisc2'];
-                                else tipebarang = response['trbo_flagdisc2'];
+                                if(response['trbo_flagdisc2'] != null){
+                                    if(response['trbo_flagdisc2'].length == 1){
+                                        tipebarang = '0' + response['trbo_flagdisc2'];
+                                    }
+                                    else tipebarang = response['trbo_flagdisc2'];
+                                }
                                 $('#tipe_barang').val('0'+response['trbo_flagdisc2']);
                                 $('#total').val(convertToRupiah(response['total']));
-                                $('#totalitem').val(response['totalitem']);
+                                $('#totalitem').val(listPLU.length);
                             }
                             else{
                                 jenisdoc = 'xxx';
@@ -684,7 +634,7 @@
                             }
 
                             if($('#m_lov_penyesuaian').is(':visible')){
-                                $('#m_lov_penyesuaian').modal('toggle');
+                                $('#m_lov_penyesuaian').modal('hide');
                                 $('#plu').select();
                             }
                         }
@@ -694,7 +644,7 @@
             else if(no == 'reff'){
                 if($('#no_penyesuaian').val() == '' || $('#tgl_penyesuaian').val() == ''){
                     if($('#m_lov_penyesuaian').is(':visible')){
-                        $('#m_lov_penyesuaian').modal('toggle');
+                        $('#m_lov_penyesuaian').modal('hide');
                     }
 
                     swal({
@@ -715,10 +665,10 @@
                             nodoc: nodoc
                         },
                         beforeSend: function(){
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
                             if(response != null){
                                 $('#no_referensi').val(response['trbo_nodoc']);
@@ -726,7 +676,7 @@
                             }
 
                             if($('#m_lov_penyesuaian').is(':visible')){
-                                $('#m_lov_penyesuaian').modal('toggle');
+                                $('#m_lov_penyesuaian').modal('hide');
                                 $('#plu').select();
                             }
                         }
@@ -737,27 +687,307 @@
 
         $('#qty').on('keypress',function(e){
             if(e.which == 13){
-                hitung();
+                hitungQTY();
 
                 $('#qtyk').select();
             }
         });
 
         $('#qty').on('change',function(){
-            hitung();
+            hitungQTY();
         });
 
-        function hitung(){
+        $('#qtyk').on('keypress',function(e){
+            if(e.which == 13){
+                hitungQTYK();
+
+                $('#keterangan').select();
+            }
+        });
+
+        $('#qtyk').on('change',function(){
+            hitungQTYK();
+        });
+
+        function hitungQTY(){
             qty = parseFloat($('#qty').val());
             qtyk = parseFloat($('#qtyk').val());
             harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
             frac = parseFloat($('#kemasan').val().split('/').pop());
 
-            console.log(qty * frac + qtyk);
+            if(dataPLU.persediaan + qty < 0){
+                swal({
+                    title: 'Persediaan Negatif!',
+                    icon: 'warning'
+                }).then(() => {
+                    $('#qty').val('').select();
+                });
+            }
+            else{
+                if($('#tipe_mpp').val() == '1'){
+                    if(dataPLU.hrgsatuan > 0){
+                        subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                    }
+                    validateMPP();
+                }
+                else{
+                    if(qtyk != null && $('#tipe_mpp').val() != '1'){
+                        if(qtyk > 0 && $('#totalitem').val() == 0){
+                            swal({
+                                title: 'Quantity pertama harus diisi minus!',
+                                icon: 'warning'
+                            }).then(() => {
+                                $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
+                                $('#qty').val(parseInt($('#qty').val()) * -1).select();
 
-            subtotal = harga * (qty * frac + qtyk) / frac;
+                                qty = parseFloat($('#qty').val());
+                                qtyk = parseFloat($('#qtyk').val());
 
-            $('#subtotal').val(convertToRupiah(subtotal));
+                                subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                                $('#subtotal').val(subtotal);
+                            });
+                        }
+
+                        if(dataPLU.hrgsatuan > 0){
+                            subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                        }
+                    }
+                    else if(qty != null){
+                        if(dataPLU.hrgsatuan > 0){
+                            subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                        }
+                        validateMPP();
+                    }
+                }
+
+                $('#subtotal').val(convertToRupiah(subtotal));
+            }
+        }
+
+        function hitungQTYK(){
+            qty = parseFloat($('#qty').val());
+            qtyk = parseFloat($('#qtyk').val());
+            harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
+            frac = parseFloat($('#kemasan').val().split('/').pop());
+
+            lqtyk = 0;
+
+            v_lastrec = 0;
+
+            for(i=0;i<listPLU.length;i++){
+                if(listPLU[i].trbo_prdcd == $('#plu').val()){
+                    v_lastrec = i;
+                    break;
+                }
+            }
+
+            if(v_lastrec == 0 && $('#tipe_mpp').val() != '1'){
+                if(qty > 0){
+                    $.ajax({
+                        url: '{{ url()->current() }}/hitung-qtyk',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            nodoc: $('#no_penyesuaian').val(),
+                        },
+                        beforeSend: function () {
+
+                        },
+                        success: function (response) {
+                            jum = response.jum;
+
+                            if(jum == 0){
+                                swal({
+                                    title: 'QTY item pertama harus diisi minus!',
+                                    icon: 'error'
+                                }).then(() => {
+                                    $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
+                                    $('#qty').val(parseInt($('#qty').val()) * -1).select();
+
+                                    qty = parseFloat($('#qty').val());
+                                    qtyk = parseFloat($('#qtyk').val());
+
+                                    subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                                    $('#subtotal').val(subtotal);
+
+                                    lqtyk = 1;
+                                });
+                            }
+                        }
+                    });
+                }
+                else if(qtyk > 0){
+                    $.ajax({
+                        url: '{{ url()->current() }}/hitung-qtyk',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            nodoc: $('#no_penyesuaian').val(),
+                        },
+                        beforeSend: function () {
+
+                        },
+                        success: function (response) {
+                            jum = response.jum;
+
+                            if(jum == 0){
+                                $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
+                                $('#qty').val(parseInt($('#qty').val()) * -1).select();
+
+                                qty = parseFloat($('#qty').val());
+                                qtyk = parseFloat($('#qtyk').val());
+
+                                subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                                $('#subtotal').val(subtotal);
+
+                                swal({
+                                    title: 'QTY item pertama harus diisi minus!',
+                                    icon: 'error'
+                                }).then(() => {
+
+                                    lqtyk = 1;
+                                });
+                            }
+                        }
+                    });
+                }
+
+                if(lqtyk == 1){
+                    $('#qty').select();
+                }
+                else $('#subtotal').select();
+
+                if(qtyk == 0 && qty == 0){
+                    swal({
+                        title: 'Quantity harus diisi!',
+                        icon: 'warning'
+                    });
+                }
+            }
+
+            if(qtyk != null && v_lastrec > 1 && $('#tipe_mpp').val() != '1'){
+                validateMPP();
+            }
+
+            if(dataPLU.hrgsatuan > 0){
+                if($('#tipe_mpp').val() == '1'){
+                    qty = qty + qtyk / frac;
+                }
+                else{
+                    $.ajax({
+                        url: '{{ url()->current() }}/hitung-qtyk',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            nodoc: $('#no_penyesuaian').val(),
+                        },
+                        beforeSend: function () {
+
+                        },
+                        success: function (response) {
+                            jum = response.jum;
+
+                            if(jum < 1){
+                                if(qty > 0){
+                                    qty = ((qty * -1) + qtyk) / frac;
+                                }
+                                else qty = (qty + qtyk) / frac;
+                            }
+                            else qty = (qty + qtyk) / frac;
+                        }
+                    });
+                }
+
+                qtyk = qtyk % frac;
+                subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                $('#qty').val(parseInt(qty));
+                $('#qtyk').val(qtyk);
+                $('#subtotal').val(subtotal);
+            }
+        }
+
+        function validateMPP(){
+            qty = parseFloat($('#qty').val());
+            qtyk = parseFloat($('#qtyk').val());
+            harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
+            frac = parseFloat($('#kemasan').val().split('/').pop());
+
+            $.ajax({
+                url: '{{ url()->current() }}/validate-mpp',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    nodoc: $('#no_penyesuaian').val(),
+                },
+                beforeSend: function () {
+
+                },
+                success: function (response) {
+                    jum = response.jum;
+                    hpp = response.hpp;
+
+                    if($('#tipe_mpp').val() == '2' || $('#tipe_mpp').val() == '3'){
+                        if(jum == 0){
+                            if(qty >= 0 && $('#totalitem').val() > 0){
+                                swal({
+                                    title: 'QTY PLU Pertama harus diisi minus!',
+                                    icon: 'error'
+                                }).then(() => {
+                                    $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
+                                    $('#qty').val(parseInt($('#qty').val()) * -1).select();
+
+                                    qty = parseFloat($('#qty').val());
+                                    qtyk = parseFloat($('#qtyk').val());
+
+                                    subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                                    $('#subtotal').val(subtotal);
+
+                                    $('#qty').select();
+                                });
+                            }
+                            else if(qtyk >= 0 && $('#totalitem').val() > 0){
+                                swal({
+                                    title: 'QTYK PLU Pertama harus diisi minus!',
+                                    icon: 'error'
+                                }).then(() => {
+                                    $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
+                                    $('#qty').val(parseInt($('#qty').val()) * -1).select();
+
+                                    qty = parseFloat($('#qty').val());
+                                    qtyk = parseFloat($('#qtyk').val());
+
+                                    subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+
+                                    $('#subtotal').val(subtotal);
+
+                                    $('#qtyk').select();
+                                });
+                            }
+                        }
+                        else{
+                            if(dataPLU.hrgsatuan != hpp){
+                                swal({
+                                    title: 'Harga satuan PLU kedua harus sama dengan PLU pertama!',
+                                    icon: 'error'
+                                });
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function simpan(){
@@ -801,23 +1031,25 @@
                                 jenisdoc: jenisdoc
                             },
                             beforeSend: function () {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                $('#modal-loader').modal('toggle');
+                                $('#modal-loader').modal('hide');
 
                                 if(typeof response.message === 'undefined'){
                                     swal({
                                         title: response.title,
                                         icon: response.status
-                                    })
+                                    });
+
+                                    doc_select($('#no_penyesuaian').val());
                                 }
                                 else{
                                     swal({
                                         title: response.title,
                                         text: response.message,
                                         icon: response.status
-                                    })
+                                    });
                                 }
                             }
                         });
@@ -845,10 +1077,10 @@
                             prdcd: $('#plu').val()
                         },
                         beforeSend: function () {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('show');
                         },
                         success: function (response) {
-                            $('#modal-loader').modal('toggle');
+                            $('#modal-loader').modal('hide');
 
                             if(typeof response.message === 'undefined'){
                                 swal({
@@ -874,13 +1106,15 @@
         }
 
         $('#m_list').on('shown.bs.modal',function(){
-            $('#table_list').dataTable({
-                ordering: false,
-                searching: false,
-                lengthChange: false,
-                paging: false,
-                scrollY: "350px"
-            });
+            if (!$.fn.DataTable.isDataTable('#table_list')) {
+                $('#table_list').dataTable({
+                    ordering: false,
+                    searching: false,
+                    lengthChange: false,
+                    paging: false,
+                    scrollY: "350px"
+                });
+            }
         });
 
         function generateListData(data){
@@ -895,10 +1129,10 @@
                         <td>${ data[i].trbo_prdcd }</td>
                         <td>${ data[i].prd_deskripsipendek }</td>
                         <td>${ data[i].kemasan }</td>
-                        <td>${ data[i].qty }</td>
-                        <td>${ data[i].qtyk }</td>
-                        <td>${ data[i].trbo_hrgsatuan }</td>
-                        <td>${ data[i].trbo_gross }</td>
+                        <td class="text-right">${ convertToRupiah2(data[i].qty) }</td>
+                        <td class="text-right">${ convertToRupiah2(data[i].qtyk) }</td>
+                        <td class="text-right">${ convertToRupiah2(data[i].trbo_hrgsatuan) }</td>
+                        <td class="text-right">${ convertToRupiah2(data[i].trbo_gross) }</td>
                     </tr>
                 `);
             }

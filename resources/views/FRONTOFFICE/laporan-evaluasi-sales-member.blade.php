@@ -113,7 +113,7 @@
             </div>
         </div>
     </div>
-    <div class="container" id="">
+    <div class="container-fluid" id="">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">

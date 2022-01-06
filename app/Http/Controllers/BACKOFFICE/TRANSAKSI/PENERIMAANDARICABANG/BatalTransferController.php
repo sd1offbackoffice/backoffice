@@ -44,6 +44,13 @@ class BatalTransferController extends Controller
                 ->distinct()
                 ->first();
 
+            if(!$cek){
+                return response()->json([
+                    'status' => 'error',
+                    'title' => 'Data tidak ditemukan!'
+                ]);
+            }
+
             if($cek->tgl != $cek->tglnow){
                 $status = 'error';
                 $title = 'Tidak dapat melakukan pembatalan transfer antar cabang selain periode sekarang!';

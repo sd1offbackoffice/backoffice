@@ -799,6 +799,7 @@
             $.ajax({ // mapping drive S dahulu
                 url: '{{ url()->current() }}/check-share-directory',
                 type: 'GET',
+                async: false,
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
@@ -828,6 +829,7 @@
                     data: {
                         path: dir1
                     },
+                    async: false,
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
                     },
@@ -865,6 +867,7 @@
                 $.ajax({
                     url: '{{ url()->current() }}/check-directory',
                     type: 'GET',
+                    async: false,
                     data: {
                         path: dir2
                     },
@@ -873,6 +876,23 @@
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
+
+                            swal.fire({
+                                title: 'DISPLAY PLU TIMBANGAN',
+                                text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
+                                showDenyButton: true,
+                                confirmButtonText: `YA`,
+                                denyButtonText: `TIDAK`,
+                            }).then((result2) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result2.isConfirmed) {
+                                    //choice3 = true;
+                                } else if (result2.isDenied) {
+                                    //choice3 = false;
+                                } else{
+                                    cancel = false;
+                                }
+                            })
                         if(response){
                             swal.fire({
                                 title: 'DISPLAY PLU TIMBANGAN',
@@ -946,6 +966,7 @@
                     $.ajax({
                         url: '{{ url()->current() }}/check-directory',
                         type: 'GET',
+                        async: false,
                         data: {
                             path: dir3
                         },
@@ -983,7 +1004,13 @@
                         }
                     });
                 }
-                if(cancel){
+                transfer(choice1, choice2, choice3, choice4, cancel);
+            }
+        });
+
+        async function transfer(choice1, choice2, choice3, choice4, bool){
+            await new Promise(next => {
+                if(bool){
                     let date = $('#daterangepicker').val();
                     let dateA = date.substr(0,10);
                     let dateB = date.substr(13,10);
@@ -1026,8 +1053,10 @@
                         }
                     });
                 }
-            }
-        });
+                next();
+            });
+
+        }
 
         //Fungsi radio button
         $('input[type=radio][name=optSort]').change(function() {

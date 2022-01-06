@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -18,12 +20,16 @@ class HitungUlangStockController extends Controller
         return view('BACKOFFICE.PROSES.hitungulangstock');
     }
 
-    public function getDataLov()
+    public function getDataLov(Request $request)
     {
+        $search = $request->search;
+
         $lov = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->where('prd_kodeigr', '=', Session::get('kdigr'))
+            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
             ->orderBy('prd_prdcd')
+            ->limit(100)
             ->get();
         return DataTables::of($lov)->make(true);
     }

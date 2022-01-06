@@ -5,7 +5,6 @@ namespace App\Http\Controllers\MASTER;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 

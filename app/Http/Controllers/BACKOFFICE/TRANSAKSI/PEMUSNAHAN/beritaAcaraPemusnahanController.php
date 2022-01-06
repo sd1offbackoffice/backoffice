@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PEMUSNAHAN;
 
 use App\Http\Controllers\Auth\loginController;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
+use DateTime;
 
 class beritaAcaraPemusnahanController extends Controller
 {
@@ -104,9 +106,9 @@ class beritaAcaraPemusnahanController extends Controller
     public function saveData(Request $request){
         $datas  = $request->datas;
         $noDoc  = $request->doc;
-        $tglDoc = date('Y-M-d', strtotime($request->tglDoc));
+        $tglDoc= Carbon::createFromFormat('d/m/Y', $request->tglDoc)->format('Y/m/d');
         $noPBBR = $request->pbbr;
-        $tglPBBR= date('Y-M-d', strtotime($request->tglPBBR));
+        $tglPBBR= Carbon::createFromFormat('d/m/Y', $request->tglPBBR)->format('Y/m/d');
         $kodeigr= Session::get('kdigr');
         $userid = Session::get('usid');
         $today  = date('Y-m-d H:i:s');
@@ -246,6 +248,15 @@ class beritaAcaraPemusnahanController extends Controller
             }
 
         }
+
+//         Update tbTr_Barang_Rusak [TRBR_RECORDID = '2']
+        DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
+            ->where('rsk_kodeigr', $kodeigr)->where('rsk_nodoc', $getNoPBBR->brsk_noref)
+            ->update(['rsk_recordid' => '2']);
+
+        DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
+            ->where('brsk_kodeigr', $kodeigr)->where('brsk_nodoc', $noDoc)
+            ->update(['brsk_flagdoc' => 'P']);
 
 
 //        Get Data to Print

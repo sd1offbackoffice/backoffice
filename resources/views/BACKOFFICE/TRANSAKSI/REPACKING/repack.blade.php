@@ -932,6 +932,7 @@
             $.ajax({
                 url: '{{ url()->current() }}/saveData',
                 type: 'post',
+
                 data: {
                     nomorTrn:nomorTrn,
                     tanggalTrn:date,
@@ -979,6 +980,12 @@
             let row = elem.parentNode.parentNode.rowIndex-2;
 
             if ($('.plu')[row].value != ''){
+                if($('.ctn-stock')[row].value === ''){
+                    $('.ctn-stock')[row].value = 0;
+                }
+                if($('.pcs-stock')[row].value === ''){
+                    $('.pcs-stock')[row].value = 0;
+                }
                 let satuancounter   = $('.satuan')[row].value;
                 let fraccounter     = satuancounter.substr(satuancounter.indexOf('/')+1);
                 let ctnStock        = $('.ctn-stock')[row].value;
@@ -989,7 +996,19 @@
                 let totalKuantum = (parseInt(ctnKuantum) * parseInt(fraccounter)) + parseInt(pcsKuantum);
                 let totalStock = (parseInt(ctnStock) * parseInt(fraccounter)) + parseInt(pcsStock);
 
-                if(totalKuantum > totalStock){
+                let radioInput = $("input[type='radio'][name='optradio']:checked").val();
+                let prInput        = $('.pr')[row].value;
+
+                //limiter tak bisa isi pcs
+                // if((prInput === 'R' && radioInput === 'R') || (prInput === 'P' && radioInput === 'P')){
+                //     if(pcsKuantum > 0){
+                //         $('.ctn-kuantum')[row].value = ctnKuantum + pcsKuantum;
+                //         $('.pcs-kuantum')[row].value = 0;
+                //         ctnKuantum      = parseInt($('.ctn-kuantum')[row].value);
+                //         pcsKuantum      = parseInt($('.pcs-kuantum')[row].value);
+                //     }
+                // }
+                if(totalKuantum > totalStock && ((radioInput === 'R' && prInput === 'P') || (radioInput === 'P' && prInput === 'R'))){
                     swal({
                         title:'Kuantum > Stock',
                         text: ' ',
@@ -1426,6 +1445,7 @@
                 success: function (result) {
                     $('#modal-loader').modal('hide');
                     $('.plu')[index].value = kode;
+                    $('.plu')[index].focus();
 
                     if (result.kode === 1){
                         data = result.data;
@@ -1585,6 +1605,7 @@
                         $.ajax({
                             url: '{{ url()->current() }}/print',
                             type: 'post',
+
                             data: {
                                 nomorTrn:nomorTrn,
                                 noReff:noReff,

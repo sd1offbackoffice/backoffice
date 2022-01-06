@@ -16,7 +16,7 @@ class pembatalanNBHController extends Controller
             ->select('msth_nodoc', 'msth_tgldoc')
             ->where('msth_kodeigr','=',$kodeigr)
             ->where('msth_typetrn','=','H')
-            ->whereRaw("nvl(msth_recordid,9)<>1")
+            ->whereRaw("nvl(msth_recordid,9)<> '1'")
             ->orderBy('msth_nodoc')
             ->limit('100')
             ->get();
@@ -34,7 +34,7 @@ class pembatalanNBHController extends Controller
             ->whereRaw("msth_nodoc LIKE '%".$search."%'")
             ->where('msth_kodeigr','=',$kodeigr)
             ->where('msth_typetrn','=','H')
-            ->whereRaw("nvl(msth_recordid,9)<>1")
+            ->whereRaw("nvl(msth_recordid,9) <> '1'")
             ->orderBy('msth_nodoc')
             ->limit('100')
             ->get();
@@ -47,14 +47,15 @@ class pembatalanNBHController extends Controller
         $nonbh = $request->nonbh;
         $kodeigr = Session::get('kdigr');
 
-        $result = DB::connection(Session::get('connection'))->select(" select mstd_nodoc, mstd_prdcd, prd_deskripsipanjang, mstd_unit, mstd_frac,
-											mstd_qty, mstd_hrgsatuan, mstd_gross
-									from tbtr_mstran_d, tbmaster_prodmast
-									where mstd_nodoc = '$nonbh'
-											and mstd_kodeigr = '$kodeigr'
-											and mstd_typetrn = 'H'
-											and prd_prdcd = mstd_prdcd
-											and prd_kodeigr = mstd_kodeigr ");
+        $result = DB::connection(Session::get('connection'))
+            ->select("select mstd_prdcd, prd_deskripsipanjang, mstd_unit||'/'||mstd_frac satuan,
+                                            mstd_qty, mstd_frac, mstd_hrgsatuan, mstd_gross
+                                    from tbtr_mstran_d join tbmaster_prodmast on prd_prdcd=mstd_prdcd
+                                            and prd_kodeigr=mstd_kodeigr
+                                    where mstd_nodoc='".$nonbh."'
+                                            and mstd_kodeigr='".Session::get('kdigr')."'
+                                            and mstd_typetrn = 'H'
+                                            and mstd_recordid is null");
 
         return response()->json($result);
     }
@@ -106,7 +107,17 @@ class pembatalanNBHController extends Controller
 
             if($data->fdisc1 = '1' && (($data->qty + $nQtt)!=0)) {
 
-                $tempAvg = ($data->unit == 'KG') ? $nAcostBaru * 1 : ($data->frac <= 0) ? $nAcostBaru * 1 : $nAcostBaru * $data->frac;
+                if($data->unit = 'KG') {
+                    $tempAvg = $nAcostBaru * 1;
+                } else {
+                    if($data->frac <= 0) {
+                        $tempAvg = $nAcostBaru * 1;
+                    } else {
+                        $tempAvg = $nAcostBaru * $data->frac;
+                    }
+                }
+
+               // $tempAvg = ($data->unit == 'KG') ? $nAcostBaru * 1 : ($data->frac <= 0) ? $nAcostBaru * 1 : $nAcostBaru * $data->frac;
 
                 // Update Data tbMaster_prodmast
 

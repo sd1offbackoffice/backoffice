@@ -298,8 +298,18 @@
             rowNum = val.parentNode.parentNode.rowIndex-1;
         }
 
+        // $('#i_tgldokumen').daterangepicker({
+        //     singleDatePicker: true,
+        //     showDropdowns: true,
+        //     locale: {
+        //         format: 'DD/MM/YYYY',
+        //     }
+        // });
         $("#i_tgldokumen").datepicker({
             "dateFormat" : "dd/mm/yy",
+            onClose: function(){
+                this.focus()
+            }
         });
 
         function pluDi(evt){

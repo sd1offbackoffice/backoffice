@@ -37,9 +37,14 @@
 
 <script>
     //Fungsi isi berurutan
-    $('#menu4Sup2Input').on('focus',function(){
+    $('#menu4Sup1Input, #menu4BtnSup1').on('focus',function(){
+        $('#minSup').val('').change();
+    });
+    $('#menu4Sup2Input, #menu4BtnSup2').on('focus',function(){
         if($('#menu4Sup1Input').val() == ''){
             $('#menu4Sup1Input').focus();
+        }else{
+            $('#minSup').val($('#menu4Sup1Input').val()).change();
         }
     });
 
@@ -102,6 +107,7 @@
 
     function menu4Clear(){
         $('#menu4 input').val('').change();
+        $('#minSup').val('').change();
     }
     function menu4Cetak(){
         let sup1 = $('#menu4Sup1Input').val();
@@ -118,11 +124,13 @@
                 return false;
             }
         }
-        if(sup1 != '' || sup2 != ''){
+        if(sup1 != '' && sup2 != ''){
             if(sup1 > sup2){
-                temp = sup1;
-                sup1 = sup2;
-                sup2 = temp;
+                // temp = sup1;
+                // sup1 = sup2;
+                // sup2 = temp;
+                swal('', "Range Supplier Salah", 'warning');
+                return false;
             }
         }
         //PRINT

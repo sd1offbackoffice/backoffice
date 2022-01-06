@@ -29,6 +29,7 @@
                             <div class="col-sm-2">
                                 <select class="form-control" id="jenis" onchange="getData()">
                                     <option value="1">LIST</option>
+
                                     <option value="0">NOTA</option>
                                 </select>
                             </div>
@@ -108,8 +109,9 @@
     <script>
         var listNomor = [];
         var selected = [];
-        var updateLokasi;
-        var updatePkmt;
+        var updateLokasi = false;
+        var updatePkmt = false;
+
         $(document).ready(function(){
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy",
@@ -229,12 +231,31 @@
             }
             else{
                 if(reprint == 0){
-                    swal({
-                        title: 'Yakin ingin mencetak laporan?',
-                        icon: 'warning',
-                        buttons: true,
-                        dangerMode: true
-                    }).then((ok) => {
+                    checkUpdateLokasi();
+                }
+                else{
+                    doPrint();
+                }
+            }
+        }
+
+        function checkUpdateLokasi(){
+            $.ajax({
+                url: '{{ url()->current() }}/check-update-lokasi',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nodoc: selected,
+                },
+                beforeSend: function () {
+                    // $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    // $('#modal-loader').modal('hide');
+
+                    if(response == 'true'){
                         swal({
                             title: 'Update master lokasi dengan PLU baru?',
                             icon: 'warning',
@@ -251,164 +272,113 @@
                             },
                             dangerMode: true
                         }).then((ok) => {
-                            if(ok){
-                                if(ok == 'yes')
+                            if(ok) {
+                                if (ok == 'yes')
                                     updateLokasi = true;
                                 else updateLokasi = false;
+                            }
+                            checkUpdatePKMT();
+                        });
+                    }
+                    else doPrint();
+                },
+                error: function (error) {
+                    // $('#modal-loader').modal('hide');
 
+                    doPrint();
+                }
+            });
+        }
+
+        function checkUpdatePKMT(){
+            swal({
+                title: 'Update tabel PKMT dengan PLU baru?',
+                icon: 'warning', buttons: {
+                    cancel: 'Cancel',
+                    no: {
+                        text: 'Tidak',
+                        value: 'no'
+                    },
+                    yes: {
+                        text: 'Ya',
+                        value: 'yes'
+                    },
+                },
+                dangerMode: true
+            }).then((ok) => {
+                if (ok) {
+                    if (ok == 'yes')
+                        updatePkmt = true;
+                    else updatePkmt = false;
+                }
+                doPrint();
+            });
+        }
+
+        function doPrint(){
+            swal({
+                title: 'Pilih ukuran laporan',
+                icon: 'warning',
+                buttons: {
+                    cancel: 'Cancel',
+                    catch: {
+                        text: 'Kecil',
+                        value: 'kecil'
+                    },
+                    defeat: {
+                        text: 'Besar',
+                        value: 'besar'
+                    },
+                },
+                dangerMode: true
+            }).then((ok) => {
+                console.log(ok);
+                if(ok){
+                    ukuran = ok;
+
+                    $.ajax({
+                        url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            nodoc: selected,
+                            reprint: reprint,
+                            jenis: $('#jenis').val(),
+                            ukuran: ukuran,
+                            updateLokasi: updateLokasi,
+                            updatePkmt: updatePkmt
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            if(response == 'true'){
+                                window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
+                            }
+                            else{
                                 swal({
-                                    title: 'Update tabel PKMT dengan PLU baru?',
-                                    icon: 'warning', buttons: {
-                                        cancel: 'Cancel',
-                                        no: {
-                                            text: 'Tidak',
-                                            value: 'no'
-                                        },
-                                        yes: {
-                                            text: 'Ya',
-                                            value: 'yes'
-                                        },
-                                    },
-                                    dangerMode: true
-                                }).then((ok) => {
-                                    if(ok){
-                                        if(ok == 'yes')
-                                            updatePkmt = true;
-                                        else updatePkmt = false;
-
-                                        swal({
-                                            title: 'Pilih ukuran laporan',
-                                            icon: 'warning',
-                                            buttons: {
-                                                cancel: 'Cancel',
-                                                catch: {
-                                                    text: 'Kecil',
-                                                    value: 'kecil'
-                                                },
-                                                defeat: {
-                                                    text: 'Besar',
-                                                    value: 'besar'
-                                                },
-                                            },
-                                            dangerMode: true
-                                        }).then((ok) => {
-                                            console.log(ok);
-                                            if(ok){
-                                                ukuran = ok;
-
-                                                $.ajax({
-                                                    url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
-                                                    type: 'POST',
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                                    },
-                                                    data: {
-                                                        nodoc: selected,
-                                                        reprint: reprint,
-                                                        jenis: $('#jenis').val(),
-                                                        ukuran: ukuran,
-                                                        updateLokasi: updateLokasi,
-                                                        updatePkmt: updatePkmt
-                                                    },
-                                                    beforeSend: function () {
-                                                        $('#modal-loader').modal('show');
-                                                    },
-                                                    success: function (response) {
-                                                        $('#modal-loader').modal('hide');
-
-                                                        if(response == 'true'){
-                                                            window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
-                                                        }
-                                                        else{
-                                                            swal({
-                                                                title: 'Terjadi kesalahan!',
-                                                                text: 'Mohon coba kembali',
-                                                                icon: 'error',
-                                                            })
-                                                        }
-                                                    },
-                                                    error: function (error) {
-                                                        $('#modal-loader').modal('hide');
-                                                        swal({
-                                                            title: 'Terjadi kesalahan!',
-                                                            text: error.responseJSON.message,
-                                                            icon: 'error',
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
+                                    title: 'Terjadi kesalahan!',
+                                    text: 'Mohon coba kembali',
+                                    icon: 'error',
                                 })
                             }
-                        });
-                    });
-                }
-                else{
-                    swal({
-                        title: 'Pilih ukuran laporan',
-                        icon: 'warning',
-                        buttons: {
-                            cancel: 'Cancel',
-                            catch: {
-                                text: 'Kecil',
-                                value: 'kecil'
-                            },
-                            defeat: {
-                                text: 'Besar',
-                                value: 'besar'
-                            },
                         },
-                        dangerMode: true
-                    }).then((ok) => {
-                        console.log(ok);
-                        if(ok){
-                            ukuran = ok;
-
-                            $.ajax({
-                                url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
-                                type: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                data: {
-                                    nodoc: selected,
-                                    reprint: reprint,
-                                    jenis: $('#jenis').val(),
-                                    ukuran: ukuran,
-                                },
-                                beforeSend: function () {
-                                    $('#modal-loader').modal('show');
-                                },
-                                success: function (response) {
-                                    $('#modal-loader').modal('hide');
-
-                                    if(response == 'true'){
-                                        window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
-                                    }
-                                    else{
-                                        swal({
-                                            title: 'Terjadi kesalahan!',
-                                            text: 'Mohon coba kembali',
-                                            icon: 'error',
-                                        })
-                                    }
-                                },
-                                error: function (error) {
-                                    $('#modal-loader').modal('hide');
-                                    swal({
-                                        title: 'Terjadi kesalahan!',
-                                        text: error.responseJSON.message,
-                                        icon: 'error',
-                                    });
-                                }
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            swal({
+                                title: 'Terjadi kesalahan!',
+                                text: error.responseJSON.message,
+                                icon: 'error',
                             });
                         }
                     });
                 }
-            }
+            });
         }
-
 
     </script>
 

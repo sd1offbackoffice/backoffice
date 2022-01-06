@@ -159,8 +159,7 @@
         }
     });
     $('#menuAKat1Input, #menuABtnKat1').on('focus',function(){
-        $('#minKat').val($('#menuADep1Input').val());
-        $('#maxKat').val($('#menuADep1Input').val()).change();
+        $('#limitKat').val($('#menuADep1Input').val()).change();
 
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
@@ -176,8 +175,7 @@
         }
     });
     $('#menuAKat2Input, #menuABtnKat2').on('focus',function(){
-        $('#minKat').val($('#menuADep2Input').val());
-        $('#maxKat').val($('#menuADep2Input').val()).change();
+        $('#limitKat').val($('#menuADep2Input').val()).change();
 
         if($('#menuADiv1Input').val() == ''){
             $('#menuADiv1Input').focus();
@@ -268,7 +266,7 @@
         if($('#menuADep1Input').val() == ''){
             $('#menuABtnDep2').prop("hidden",true);
 
-            $('#minKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuADep1Input').val());
             if(index){
@@ -293,7 +291,7 @@
             $('#menuABtnKat1').prop("hidden",true);
 
 
-            $('#maxKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuADep2Input').val());
             if(index){
@@ -319,11 +317,11 @@
             let index = checkKatExist($('#menuAKat1Input').val());
             if(index){
                 $('#menuAKat1Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                // $('#minKat').val($('#menuAKat1Input').val()).change();
+
                 $('#menuABtnKat2').prop("hidden",false);
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuAKat1Input').val('').change();
             }
         }
@@ -339,7 +337,7 @@
                 $('#menuAKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuAKat2Input').val('').change();
             }
         }
@@ -441,7 +439,7 @@
         let dep2 = $('#menuADep2Input').val();
         let kat1 = $('#menuAKat1Input').val();
         let kat2 = $('#menuAKat2Input').val();
-        if(div1 != '' || div2 != ''){
+        if(div1 != '' && div2 != ''){
             if(parseInt(div1) > parseInt(div2)){
                 temp = div1;
                 div1 = div2;

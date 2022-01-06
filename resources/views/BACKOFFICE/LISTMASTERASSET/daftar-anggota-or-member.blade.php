@@ -98,6 +98,17 @@
 
 <script>
     //Fungsi isi berurutan
+    $('#menu5BtnMem1').on('focus',function(){
+        $('#minMem').val('');
+        //2 line dibawah bisa ditemukan di list-master.blade.php
+        tableMember.destroy();
+        getModalMember('');
+    });
+    $('#menu5BtnMem2').on('focus',function(){
+        $('#minMem').val($('#menu5Mem1Input').val());
+        tableMember.destroy();
+        getModalMember('');
+    });
     $('#menu5Mem2Input').on('focus',function(){
         if($('#menu5Mem1Input').val() == ''){
             $('#menu5Mem1Input').focus();
@@ -139,16 +150,20 @@
     });
 
     //Fungsi isi outlet berurutan
-    $('#menu5SOu1Input').on('focus',function(){
+    $('#menu5SOu1Input, #menu5BtnSOu1').on('focus',function(){
         if($('#menu5OutlInput').val() == ''){
             $('#menu5OutlInput').focus();
+        }else{
+            $('#minSubOutlet').val('').change();
         }
     });
-    $('#menu5SOu2Input').on('focus',function(){
+    $('#menu5SOu2Input, #menu5BtnSOu2').on('focus',function(){
         if($('#menu5OutlInput').val() == ''){
             $('#menu5OutlInput').focus();
         }else if($('#menu5SOu1Input').val() == ''){
             $('#menu5SOu1Input').focus();
+        }else{
+            $('#minSubOutlet').val($('#menu5SOu1Input').val()).change();
         }
     });
 
@@ -246,7 +261,6 @@
         $('#menu5OutlInput').val('').change();
         $('#menu5Pilihan').val(1);
         $('#menu5SortBy').val(1);
-        $('#outletFilterer').val('').change();
     }
     function menu5Cetak(){
         //DECLARE VARIABLE
@@ -258,27 +272,27 @@
         let subOutlet2 = $('#menu5SOu2Input').val();
         let sort = $('#menu5SortBy').val();
 
-        //CHECK DATA
-        if(mem1 != '' || mem2 != ''){
-            if(mem1 > mem2){
-                temp = mem1;
-                mem1 = mem2;
-                mem2 = temp;
-            }
-        }
+        // //CHECK DATA
+        // if(mem1 != '' && mem2 != ''){
+        //     if(mem1 > mem2){
+        //         temp = mem1;
+        //         mem1 = mem2;
+        //         mem2 = temp;
+        //     }
+        // }
 
         if(outlet == ''){
             swal('', "Silahkan Isi Kode Outlet Terlebih Dahulu", 'warning');
             return false;
         }
 
-        if(subOutlet1 != '' || subOutlet2 != ''){
-            if(subOutlet1 > subOutlet2){
-                temp = subOutlet1;
-                subOutlet1 = subOutlet2;
-                subOutlet2 = temp;
-            }
-        }
+        // if(subOutlet1 != '' && subOutlet2 != ''){
+        //     if(subOutlet1 > subOutlet2){
+        //         temp = subOutlet1;
+        //         subOutlet1 = subOutlet2;
+        //         subOutlet2 = temp;
+        //     }
+        // }
 
         //PRINT
         window.open(`{{ url()->current() }}/print-daftar-anggota-or-member?mem1=${mem1}&mem2=${mem2}&pilihan=${pilihan}&outlet=${outlet}&suboutlet1=${subOutlet1}&suboutlet2=${subOutlet2}&sort=${sort}`, '_blank');

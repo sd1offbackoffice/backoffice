@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+//use App\Http\Controllers\Controller;
+//use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class inputController extends Controller

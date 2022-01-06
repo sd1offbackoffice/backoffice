@@ -145,6 +145,7 @@
 
         function showDoc(nonbh){
             $('#modal-NBH').modal('hide');
+            $('#no-nbh').val(nonbh);
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/showData',
@@ -157,7 +158,7 @@
                     tableDetail.clear().draw();
                     $('#modal-loader').modal('hide');
                     // $('.baris').remove();
-                    if (result) {
+                    if (result.length != 0) {
                         console.log(result)
                         var html = "";
                         var i;
@@ -166,15 +167,18 @@
                             qtyk = result[i].mstd_qty % result[i].mstd_frac;
 
                             tableDetail.row.add(
-                                [result[i]['mstd_prdcd'], result[i]['prd_deskripsipanjang'].toUpperCase(), result[i]['mstd_unit'] + '/' + result[i]['mstd_frac'], Math.floor(qty),
+                                [result[i]['mstd_prdcd'], result[i]['prd_deskripsipanjang'].toUpperCase(), result[i]['satuan'], Math.floor(qty),
                                     Math.floor(qtyk), convertToRupiah(result[i]['mstd_hrgsatuan']), convertToRupiah(result[i]['mstd_gross'])]
                             ).draw();
-
-                            $('#no-nbh').val(result[i].mstd_nodoc);
                         }
                     } else {
-                        alert('Data Tidak Ada');
-                        $('#no-nbh').val('');
+                        swal({
+                            title: 'Data tidak ada!',
+                            icon: 'error'
+                        }).then(function(){
+                            $('#no-nbh').val('').select();
+                        });
+
                     }
                 }, error: function () {
                     alert('error');

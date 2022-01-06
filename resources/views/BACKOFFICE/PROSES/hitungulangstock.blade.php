@@ -8,7 +8,7 @@
                     <legend class="w-auto ml-5"></legend>
                     <div class="card-body cardForm ">
                         <div class="row justify-content-center">
-                            <div class="col-sm-7">
+                            <div class="col-sm-10">
                                 <form class="form">
                                     <div class="form-group row mb-1">
                                         <label class="col-sm-2 col-form-label text-sm-right">Periode </label>
@@ -26,18 +26,18 @@
                                         <div class="col-sm-4 buttonInside">
                                             <input type="text" class="form-control" id="plu1">
                                             <button type="button" class="btn btn-lov p-0" data-target="#m_lov"
-                                                    data-toggle="modal" id="btn-lov1" disabled>
-                                                <i class="fas fa-spinner fa-spin"></i>
-                                                {{--<img src="{{ (asset('image/icon/help.png')) }}" width="30px">--}}
+                                                    data-toggle="modal" id="btn-lov1" >
+{{--                                                <i class="fas fa-spinner fa-spin"></i>--}}
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <label class="col-sm-1 col-form-label text-sm-center">s/d</label>
                                         <div class="col-sm-4 buttonInside">
                                             <input type="text" class="form-control" id="plu2">
                                             <button type="button" class="btn btn-lov p-0" data-target="#m_lov"
-                                                    data-toggle="modal" id="btn-lov2" disabled>
-                                                <i class="fas fa-spinner fa-spin"></i>
-                                                {{--<img src="{{ (asset('image/icon/help.png')) }}" width="30px">--}}
+                                                    data-toggle="modal" id="btn-lov2" >
+{{--                                                <i class="fas fa-spinner fa-spin"></i>--}}
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
                                     </div>
 
                                     <div class="form-group row mb-1">
-                                        <label class="col-sm-10 col-form-label text-danger text-sm-right">* Untuk Hitung
+                                        <label class="col-sm-12 col-form-label text-danger text-sm-center">* Untuk Hitung
                                             Ulang Point dan Hapus Tahunan tidak diperlukan Paramater Inputan *</label>
                                     </div>
 
@@ -94,7 +94,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>
-                        Nomor NPB
+                        LOV PLU
                     </h5>
                 </div>
                 <div class="modal-body">
@@ -173,6 +173,8 @@
             var output2 = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + d.getFullYear();
             $('#periode1').val(output1);
             $('#periode2').val(output2);
+
+            getLovPLU('');
         });
 
         $('.daterange-periode').daterangepicker({
@@ -218,30 +220,57 @@
                 $('#plu2').val(plu);
             }
         });
-        {{--$('#table_lov').DataTable({--}}
-            {{--"ajax": '{{ url('/bo/proses/hitungulangstock/get-data-lov') }}',--}}
-            {{--"columns": [--}}
-                {{--{data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},--}}
-                {{--{data: 'prd_prdcd', name: 'prd_prdcd'},--}}
-            {{--],--}}
-            {{--"paging": true,--}}
-            {{--"lengthChange": true,--}}
-            {{--"searching": true,--}}
-            {{--"ordering": true,--}}
-            {{--"info": true,--}}
-            {{--"autoWidth": false,--}}
-            {{--"responsive": true,--}}
-            {{--"processing": true,--}}
-            {{--"serverSide": true,--}}
-            {{--"createdRow": function (row, data, dataIndex) {--}}
-                {{--$(row).addClass('row-lov').css({'cursor': 'pointer'});--}}
-                {{--$('#btn-lov1').attr('disabled',false);--}}
-                {{--$('#btn-lov2').attr('disabled',false);--}}
-                {{--$('#btn-lov1').empty().append("<img src=\"{{ (asset('image/icon/help.png')) }}\" width=\"30px\">");--}}
-                {{--$('#btn-lov2').empty().append("<img src=\"{{ (asset('image/icon/help.png')) }}\" width=\"30px\">");--}}
-            {{--},--}}
-            {{--"order": []--}}
-        {{--});--}}
+        function getLovPLU(val) {
+            if ($.fn.DataTable.isDataTable('#table_lov')) {
+                $('#table_lov').DataTable().destroy();
+            }
+            table_lov = $('#table_lov').DataTable({
+                "ajax": {
+                    url: '{{ url()->current() }}/get-data-lov',
+                    data: {
+                        search: val,
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('modalRow');
+                    $(row).addClass('row-lov');
+                },
+                "order": [],
+                "columnDefs": [
+                    {
+                        targets: [1],
+                        className: 'text-left'
+                    },
+                ],
+                "initComplete": function () {
+                    $(document).on('click', '.modalRowMember', function (e) {
+                        $('#' + obj).val($(this).find('td:eq(0)').html());
+                        $('#' + obj + '-nama').val($(this).find('td:eq(1)').html());
+                        $('#m_lov_member').modal('hide');
+                    });
+                }
+            });
+
+            $('#table_lov_filter input').val().focus();
+
+            $('#table_lov_filter input').off().on('keypress', function (e) {
+                if (e.which == 13) {
+                    table_lov.destroy();
+                    getLovPLU($(this).val().toUpperCase());
+                }
+            });
+        }
 
         $(document).on('click', '.row-lov', function () {
             var currentButton = $(this);
@@ -263,7 +292,7 @@
             }
             ajaxSetup();
             $.ajax({
-                url: "{{ url('/bo/proses/hitungulangstock/hitung-ulang-stock') }}",
+                url: '{{ url()->current() }}/hitung-ulang-stock',
                 type: 'post',
                 data: {
                     periode1: periode1,
@@ -281,7 +310,12 @@
                         console.log(response);
                         $('#mulai').val(response.mulai);
                         $('#akhir').val(response.akhir);
-                        swal(response.status, response.err_txt, response.status);
+                        swal(response.status, response.err_txt, response.status)
+                            .then((ok) => {
+                                if (ok) {
+                                    $('#modal-loader').modal('hide');
+                                }
+                            });
                     }
                     else {
                         alertError(response.status, response.message, response.status)
@@ -296,7 +330,7 @@
 
             ajaxSetup();
             $.ajax({
-                url: "{{ url('/bo/proses/hitungulangstock/hitung-ulang-point') }}",
+                url: '{{ url()->current() }}/hitung-ulang-point',
                 type: 'post',
                 data: {},
                 beforeSend: function () {
@@ -309,7 +343,12 @@
                         console.log(response);
                         $('#mulai').val(response.mulai);
                         $('#akhir').val(response.akhir);
-                        swal(response.status, response.err_txt, response.status);
+                        swal(response.status, response.err_txt, response.status)
+                            .then((ok) => {
+                                if (ok) {
+                                    $('#modal-loader').modal('hide');
+                                }
+                            });
                     }
                     else {
                         alertError(response.status, response.message, response.status)
@@ -332,7 +371,7 @@
                 if (confirm) {
                     ajaxSetup();
                     $.ajax({
-                        url: "{{ url('/bo/proses/hitungulangstock/hapus-point') }}",
+                        url: '{{ url()->current() }}/hapus-point',
                         type: 'post',
                         data: {
                             // periode1: periode1,
@@ -351,7 +390,12 @@
                                 $('#mulai').val(response.mulai);
                                 $('#akhir').val(response.akhir);
                                 window.open('{{ url()->current() }}/cetak');
-                                swal(response.status, response.err_txt, response.status);
+                                swal(response.status, response.err_txt, response.status)
+                                    .then((ok) => {
+                                        if (ok) {
+                                            $('#modal-loader').modal('hide');
+                                        }
+                                    });
                             }
                             else {
                                 alertError(response.status, response.err_txt, response.status)

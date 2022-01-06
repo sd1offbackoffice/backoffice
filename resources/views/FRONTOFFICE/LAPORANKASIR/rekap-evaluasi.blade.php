@@ -33,14 +33,14 @@
                         <div class="row form-group">
                             <label class="col-sm-3 text-right col-form-label pl-0">Outlet</label>
                             <div class="col-sm-2 buttonInside pl-0">
-                                <input type="text" class="form-control text-left input-outlet" id="outlet1" onchange="checkOutlet('outlet1')">
+                                <input type="text" class="form-control text-left input-outlet" id="outlet1" onchange="checkOutletValid('outlet1')">
                                 <button type="button" class="btn btn-primary btn-lov p-0 btn-lov-outlet" onclick="showLovOutlet('outlet1')" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             <label class="col-sm-1 pt-1 text-center">s/d</label>
                             <div class="col-sm-2 buttonInside p-0">
-                                <input type="text" class="form-control text-left input-outlet" id="outlet2" onchange="checkOutlet('outlet2')">
+                                <input type="text" class="form-control text-left input-outlet" id="outlet2" onchange="checkOutletValid('outlet2')">
                                 <button type="button" class="btn btn-primary btn-lov p-0 btn-lov-outlet" onclick="showLovOutlet('outlet2')" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -435,7 +435,7 @@
 
                         $('#m_lov_outlet').modal('hide');
 
-                        checkOutlet();
+                        checkOutletValid(fieldOutlet);
                     });
                 }
             });
@@ -455,9 +455,11 @@
             if(e.which == 13){
                 checkOutletValid($(this).attr('id'));
             }
-        })
+        });
 
-        function checkOutlet(){
+        function checkOutletValid(field){
+            valid = true;
+
             if($('#outlet1').val() && $('#outlet2').val() && $('#outlet1').val() > $('#outlet2').val()){
                 swal({
                     title: 'Kode outlet 1 lebih besar dari kode outlet 2!',
@@ -466,13 +468,10 @@
                     $('#'+fieldOutlet).val('').focus();
                 });
 
-                return false;
+                valid =  false;
             }
-            return true;
-        }
 
-        function checkOutletValid(field){
-            if(checkOutlet() && $('#'+field).val() != ''){
+            if(valid && $('#'+field).val() != ''){
                 $.ajax({
                     url: '{{ url()->current() }}/check-outlet',
                     type: 'GET',
@@ -497,6 +496,7 @@
                             });
                         }
                         else{
+                            getLovSubOutlet();
                             field == 'outlet1' ? $('#outlet2').select() : $('#suboutlet1').select();
                         }
                     }
@@ -505,8 +505,19 @@
         }
 
         function getLovSubOutlet(){
+            if ($.fn.DataTable.isDataTable('#table_lov_suboutlet')) {
+                $('#table_lov_suboutlet').DataTable().destroy();
+                $("#table_lov_suboutlet tbody [role='row']").remove();
+            }
+
             $('#table_lov_suboutlet').DataTable({
-                "ajax": '{{ url()->current() }}/get-lov-suboutlet',
+                "ajax": {
+                    url: '{{ url()->current() }}/get-lov-suboutlet',
+                    data: {
+                        outlet1: $('#outlet1').val(),
+                        outlet2: $('#outlet2').val()
+                    }
+                },
                 "columns": [
                     {data: 'sub_kodeoutlet'},
                     {data: 'sub_kodesuboutlet'},

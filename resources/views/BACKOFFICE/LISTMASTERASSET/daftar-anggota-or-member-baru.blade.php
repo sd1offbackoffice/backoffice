@@ -172,7 +172,7 @@
         let member1 = $('#menu7Kod1Input').val();
         let member2 = $('#menu7Kod2Input').val();
 
-        if(member1 != '' || member2 != ''){
+        if(member1 != '' && member2 != ''){
             if(member1 > member2){
                 temp = member1;
                 member1 = member2;

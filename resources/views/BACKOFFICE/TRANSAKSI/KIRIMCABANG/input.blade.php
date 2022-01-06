@@ -12,7 +12,7 @@
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR TRN</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="notrn" disabled>
+                                <input type="text" class="form-control" id="notrn">
                                 <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_trn" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -593,10 +593,18 @@
 
                         $('.row-'+currentRow+' .prdcd').val(prdcd);
 
-                        getDataPlu(prdcd);
+                        getDataPlu(null, prdcd);
                     });
                 }
             });
+        }
+
+        function getPLU(event,index){
+            if(event.which == 13){
+                currentRow = index;
+
+                getDataPlu(convertPlu($('.row-'+currentRow).find('.prdcd').val()));
+            }
         }
 
         function getDataPlu(prdcd){
@@ -613,36 +621,46 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
-                    data[`row-${currentRow}`] = response;
-
-                    row = $('.row-'+currentRow);
-
-                    row.find('.deskripsi').val(response.prd_deskripsipendek);
-                    row.find('.satuan').val(response.prd_unit+'/'+response.prd_frac);
-                    row.find('.tag').val(response.prd_kodetag);
-
-                    if(response.st_avgcost == null || response.st_avgcost == 0){
-                        row.find('.hrgsatuan').val(parseFloat(response.prd_avgcost).toFixed(2));
+                    if(response.length == 0){
+                        swal({
+                            title: 'PLU tidak ditemukan!',
+                            icon: 'error'
+                        }).then(function(){
+                            $('.row-'+currentRow).find('.prdcd').select();
+                        });
                     }
                     else{
-                        if(response.prd_unit == 'KG')
-                            row.find('.hrgsatuan').val(parseFloat(response.st_avgcost).toFixed(2));
-                        else row.find('.hrgsatuan').val(parseFloat(response.st_avgcost * response.prd_frac).toFixed(2));
+                        data[`row-${currentRow}`] = response;
+
+                        row = $('.row-'+currentRow);
+
+                        row.find('.deskripsi').val(response.prd_deskripsipendek);
+                        row.find('.satuan').val(response.prd_unit+'/'+response.prd_frac);
+                        row.find('.tag').val(response.prd_kodetag);
+
+                        if(response.st_avgcost == null || response.st_avgcost == 0){
+                            row.find('.hrgsatuan').val(parseFloat(response.prd_avgcost).toFixed(2));
+                        }
+                        else{
+                            if(response.prd_unit == 'KG')
+                                row.find('.hrgsatuan').val(parseFloat(response.st_avgcost).toFixed(2));
+                            else row.find('.hrgsatuan').val(parseFloat(response.st_avgcost * response.prd_frac).toFixed(2));
+                        }
+
+                        // if(response.prd_flagbkp1 == 'Y')
+                        //     row.find('.ppn').val(parseFloat(row.find('.gross').val() * 0).toFixed(2));
+                        // else
+                        row.find('.ppn').val('0.00');
+
+                        row.find('.sctn').val(parseInt(response.st_saldoakhir / response.prd_frac));
+                        row.find('.spcs').val(response.st_saldoakhir % response.prd_frac);
+
+                        row.find('.kctn').val('').select();
+                        row.find('.kpcs').val('');
+                        row.find('.gross').val('');
+
+                        hitungItem();
                     }
-
-                    // if(response.prd_flagbkp1 == 'Y')
-                    //     row.find('.ppn').val(parseFloat(row.find('.gross').val() * 0).toFixed(2));
-                    // else
-                    row.find('.ppn').val('0.00');
-
-                    row.find('.sctn').val(parseInt(response.st_saldoakhir / response.prd_frac));
-                    row.find('.spcs').val(response.st_saldoakhir % response.prd_frac);
-
-                    row.find('.kctn').val('').select();
-                    row.find('.kpcs').val('');
-                    row.find('.gross').val('');
-
-                    hitungItem();
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -657,6 +675,12 @@
                 }
             });
         }
+
+        $('#notrn').on('keypress',function(e){
+            if(e.which == 13){
+                getDataTrn(this.value);
+            }
+        });
 
         function getDataTrn(notrn){
             $.ajax({
@@ -699,8 +723,8 @@
                                 <td><button class="btn btn-sm btn-danger" onclick="hapusItem(${rowIndex})"><i class="fas fa-trash"></i></button></td>
                                 <td>
                                     <div class="" style="position: relative">
-                                        <input maxlength="7" type="text" class="form-control prdcd" value="${response[i].trbo_prdcd}">
-                                        <button type="button" class="btn btn-lov-cabang" data-toggle="modal" data-target="#m_lov_trn" onclick="currentRow = ${i}">
+                                        <input maxlength="7" type="text" class="form-control prdcd" value="${response[i].trbo_prdcd}" onkeypress="getPLU(event,${rowIndex})">
+                                        <button type="button" class="btn btn-lov-cabang" data-toggle="modal" data-target="#m_lov_plu" onclick="currentRow = ${i}">
                                             <img src="{{ asset('image/icon/help.png') }}" width="30px">
                                         </button>
                                     </div>
@@ -780,7 +804,7 @@
                 `<tr class="row-${rowIndex}" onmouseover="pointerIn(${rowIndex})" onmouseout="pointerOut()">
                 <td><button class="btn btn-sm btn-danger" onclick="hapusItem(${rowIndex})"><i class="fas fa-trash"></i></button></td>
                 <td><div class="" style="position: relative">
-                        <input maxlength="7" type="text" class="form-control prdcd">
+                        <input maxlength="7" type="text" class="form-control prdcd" onkeypress="getPLU(event,${rowIndex})">
                         <button type="button" class="btn btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu" onclick="currentRow = ${rowIndex}">
                             <img src="{{ asset('image/icon/help.png') }}" width="30px">
                         </button>

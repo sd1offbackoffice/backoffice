@@ -18,7 +18,8 @@ class LaporanSalesPerKatProdController extends Controller
 {
     public function index(Request $request)
     {
-        $selected_kat = $request->kategori;
+        $selected_dep = $request->departement;
+        $selected_kat = isset($request->kategori)?explode('-',$request->kategori)[1]:'';
         $selected_tanggal1 = $request->tanggal1;
         $selected_tanggal2 = $request->tanggal2;
 
@@ -51,9 +52,48 @@ class LaporanSalesPerKatProdController extends Controller
             ->orderBy('kat_kodekategori')
             ->get();
 
-        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-kategori-produk', compact(['group', 'outlet', 'suboutlet', 'segmentasi','divisi','departement','kategori','selected_kat','selected_tanggal1','selected_tanggal2']));
+        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-kategori-produk', compact(['group', 'outlet', 'suboutlet', 'segmentasi','divisi','departement','kategori','selected_dep','selected_kat','selected_tanggal1','selected_tanggal2']));
     }
+    public function getDataSubOutlet(Request $request)
+    {
+        $outlet = $request->outlet;
+        if($outlet=='ALL'){
+            $outlet='';
+        }
+        $suboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
+            ->where("sub_kodeoutlet",'=',$outlet)
+            ->orderBy('sub_kodeoutlet')
+            ->orderBy('sub_kodesuboutlet')
+            ->get();
 
+        return $suboutlet;
+    }
+    public function getDataDepartement(Request $request)
+    {
+        $divisi = $request->divisi;
+        if($divisi=='ALL'){
+            $divisi='';
+        }
+        $departemen = DB::connection(Session::get('connection'))->table('tbmaster_departement')
+            ->where("dep_kodedivisi",'=',$divisi)
+            ->orderBy('dep_kodedepartement')
+            ->get();
+
+        return $departemen;
+    }
+    public function getDataKategori(Request $request)
+    {
+        $departemen = $request->departemen;
+        if($departemen=='ALL'){
+            $departemen='';
+        }
+        $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
+            ->where("kat_kodedepartement",'=',$departemen)
+            ->orderBy('kat_kodekategori')
+            ->get();
+
+        return $kategori;
+    }
     public function getData(Request $request)
     {
         $member = $request->member;
@@ -110,7 +150,7 @@ class LaporanSalesPerKatProdController extends Controller
             ->select("select kodekategori,namakategori nama,round(sum(margin)/sum(sales)*100,2) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
-                                    select kat_kodekategori kodekategori, kat_namakategori namakategori, prd_prdcd||'-'||prd_deskripsipanjang plu,
+                                    select kat_kodekategori kodekategori, kat_kodekategori||'-'||kat_namakategori namakategori, prd_prdcd||'-'||prd_deskripsipanjang plu,
                                           SUM (
                                             CASE
                                                WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -483,7 +523,7 @@ class LaporanSalesPerKatProdController extends Controller
 
         if ($jenislaporan == 'pdf') {
 
-            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2']));
+            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2','member','group','segmentasi','outlet','suboutlet','divisi','departemen','kategori']));
 
         } else {
 
@@ -504,13 +544,13 @@ class LaporanSalesPerKatProdController extends Controller
                 $tempdata = [
                     $d->kodekategori . '-' . $d->namakategori,
                     $d->plu,
-                    number_format($d->qty, 0, ".", ","),
-                    number_format($d->sales, 0, ".", ","),
-                    number_format($d->margin, 0, ".", ","),
+                    $d->qty,
+                    $d->sales,
+                    $d->margin,
                     $d->marginpersen,
                     $d->constsales,
                     $d->constmargin,
-                    number_format($d->jumlahmember, 0, ".", ","),
+                    $d->jumlahmember,
                 ];
                 array_push($linebuffs, $tempdata);
             }

@@ -183,6 +183,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
         if(count($finalData) == 0){
             return response()->json([
                 'customData' => null,
+                'arrTanggal' => [],
                 'message' => 'Data tidak ditemukan!'
             ], 500);
         }
@@ -248,7 +249,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
                     $arrTanggal[] = $f['periode'];
                 }
 
-                $tempData[$f['periode']] = $f['sth_saldoakhir'];
+                $tempData[$f['periode']] = $f['sth_saldoawal'];
             }
             $arrTahun[count($arrTahun) - 1]['qty'] = $qtyTahun;
             $arrBulan[count($arrBulan) - 1]['qty'] = $qtyBulan;
@@ -262,7 +263,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
         }
     }
 
-    public function print(Request $request){
+    public function exportPDF(Request $request){
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
         $monitoringPLU = $request->monitoringPLU;
@@ -301,5 +302,82 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 
             return view('FRONTOFFICE.stock-barang-kosong-per-periode-dsi-pdf',compact(['perusahaan','tgl1','tgl2','monitoring','arrTahun','arrBulan','arrTanggal','data']));
         }
+    }
+
+    public function exportCSV(Request $request){
+        $data = json_decode(self::viewReport($request)->getContent());
+
+        $filename = 'Stock Barang Kosong Per Periode DSI.csv';
+
+        $columnHeader = [
+            'PRDCD',
+            'DESKRIPSI',
+            'FRAC',
+            'PO - FRQ',
+            'PO - QTY',
+            'BPB - FRQ',
+            'BPB - QTY',
+            'SL',
+            'AVG',
+        ];
+
+        $columnHeader = array_merge($columnHeader,$data->arrTanggal);
+
+        $columnHeader = array_merge($columnHeader,[
+            'AVG/DSI',
+            'QTY',
+            'HRG JUAL',
+            'RUPIAH'
+        ]);
+
+//        dd($columnHeader);
+
+        $customData = json_decode(json_encode($data->customData),true);
+
+//        dd($customData);
+
+        $linebuffs = array();
+        if($customData != null){
+            foreach ($customData as $d) {
+                $tempdata = [
+                    $d['sth_prdcd'],
+                    $d['desk'],
+                    $d['frac'],
+                    number_format($d['frqpo'],0),
+                    number_format($d['qtypo'],0),
+                    number_format($d['frqbpb'],0),
+                    number_format($d['qtybpb'],0),
+                    number_format($d['sl'],0),
+                    number_format($d['v_avg_qty'],0)
+                ];
+
+                foreach($data->arrTanggal as $tgl){
+                    $tempdata[] = number_format($d[$tgl], 0);
+                }
+
+                $tempdata[] = number_format($d['avgdsi'],0);
+                $tempdata[] = number_format($d['qty'],0);
+                $tempdata[] = number_format($d['hrgjual'],0);
+                $tempdata[] = number_format($d['rupiah'],0);
+
+                array_push($linebuffs, $tempdata);
+            }
+        }
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+        $file = fopen($filename, 'w');
+
+        fputcsv($file, $columnHeader, '|');
+        foreach ($linebuffs as $linebuff) {
+            fputcsv($file, $linebuff, '|');
+        }
+        fclose($file);
+
+        return response()->download(public_path($filename))->deleteFileAfterSend(true);
     }
 }

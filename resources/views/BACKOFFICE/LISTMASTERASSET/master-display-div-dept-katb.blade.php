@@ -151,8 +151,7 @@
         }
     });
     $('#menuEKat1Input, #menuEBtnKat1').on('focus',function(){
-        $('#minKat').val($('#menuEDep1Input').val());
-        $('#maxKat').val($('#menuEDep1Input').val()).change();
+        $('#limitKat').val($('#menuEDep1Input').val()).change();
 
         if($('#menuEDiv1Input').val() == ''){
             $('#menuEDiv1Input').focus();
@@ -168,8 +167,7 @@
         }
     });
     $('#menuEKat2Input, #menuEBtnKat2').on('focus',function(){
-        $('#minKat').val($('#menuEDep2Input').val());
-        $('#maxKat').val($('#menuEDep2Input').val()).change();
+        $('#limitKat').val($('#menuEDep2Input').val()).change();
 
         if($('#menuEDiv1Input').val() == ''){
             $('#menuEDiv1Input').focus();
@@ -272,7 +270,7 @@
         if($('#menuEDep1Input').val() == ''){
             $('#menuEBtnDep2').prop("hidden",true);
 
-            $('#minKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuEDep1Input').val());
             if(index){
@@ -301,7 +299,7 @@
             $('#menuEBtnKat1').prop("hidden",true);
 
 
-            $('#maxKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuEDep2Input').val());
             if(index){
@@ -331,11 +329,11 @@
             let index = checkKatExist($('#menuEKat1Input').val());
             if(index){
                 $('#menuEKat1Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                // $('#minKat').val($('#menuEKat1Input').val()).change();
+
                 $('#menuEBtnKat2').prop("hidden",false);
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuEKat1Input').val('').change();
             }
         }
@@ -356,7 +354,7 @@
                 $('#menuEKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuEKat2Input').val('').change();
             }
         }
@@ -387,7 +385,7 @@
                 }
             }else{
                 swal('', "Kode PLU tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuEPlu1Input').val('').change();
             }
         }
@@ -418,7 +416,7 @@
                 }
             }else{
                 swal('', "Kode PLU tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuEPlu2Input').val('').change();
             }
         }
@@ -554,7 +552,7 @@
         let plu2 = $('#menuEPlu2Input').val();
 
         let temp = '';
-        if(div1 != '' || div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
+        if(div1 != '' && div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
             if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
                 temp = div1;
                 div1 = div2;

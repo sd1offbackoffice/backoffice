@@ -442,9 +442,9 @@ Route::middleware(['CheckLogin'])->group(function () {
         /*MASTER HARGA BELI*/
         Route::prefix('/hargabeli')->group(function () {
             Route::get('/', 'MASTER\HargaBeliController@index');
-            Route::get('/get-prodmast', 'MASTER\HargaBeliController@getProdmast');
-            Route::get('/lov_search', 'MASTER\HargaBeliController@lovSearch');
-            Route::get('/lov_select', 'MASTER\HargaBeliController@lovSelect');
+            Route::get('/get-prodmPengiriast', 'MASTER\HargaBeliController@getProdmast');
+            Route::get('/lov-search', 'MASTER\HargaBeliController@lovSearch');
+            Route::get('/lov-select', 'MASTER\HargaBeliController@lovSelect');
         });
     });
 
@@ -689,6 +689,8 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/doc_new', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_new');
                     Route::post('/doc_save', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_save');
                     Route::post('/doc_delete', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@doc_delete');
+                    Route::post('/validate-mpp', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@validateMPP');
+                    Route::post('/hitung-qtyk', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\InputPenyesuaianController@hitungQTYK');
                 });
 
                 Route::prefix('/cetak')->group(function () {
@@ -697,6 +699,8 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/store-data', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@storeData');
                     Route::get('/laporan', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@laporan');
                     Route::get('/tes', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@tes');
+                    Route::post('/check-update-lokasi', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@checkUpdateLokasi');
+                    Route::post('/check-update-pkmt', 'BACKOFFICE\TRANSAKSI\PENYESUAIAN\CetakPenyesuaianController@checkUpdatePKMT');
                 });
 
                 Route::prefix('/inquerympp')->group(function () {
@@ -823,7 +827,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/showPlu', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@showPlu');
                     Route::post('/nmrBaruTrn', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@nmrBaruTrn');
                     Route::post('/saveDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@saveDoc');
-                    Route::post('/deleteDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@saveDoc');
+                    Route::post('/deleteDoc', 'BACKOFFICE\TRANSAKSI\BARANGHILANG\BarangHilangInputController@deleteDoc');
                 });
 
                 // BACK OFFICE / TRANSAKSI / BARANG HILANG / PEMBATALAN NBH
@@ -1016,6 +1020,13 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/startup','BACKOFFICE\PROSES\PemutihanPluController@startup');
                 Route::post('/proses','BACKOFFICE\PROSES\PemutihanPluController@proses');
                 Route::post('/pemutihan-plu','BACKOFFICE\PROSES\PemutihanPluController@pemutihanPlu');
+                Route::post('/pemutihan-barcode','BACKOFFICE\PROSES\PemutihanPluController@pemutihanBarcode');
+                Route::get('/print-lap1', 'BACKOFFICE\PROSES\PemutihanPluController@printLap1');
+                Route::get('/print-lap2', 'BACKOFFICE\PROSES\PemutihanPluController@printLap2');
+                Route::get('/print-lap3', 'BACKOFFICE\PROSES\PemutihanPluController@printLap3');
+                Route::get('/print-lap4', 'BACKOFFICE\PROSES\PemutihanPluController@printLap4');
+                Route::get('/print-lap5', 'BACKOFFICE\PROSES\PemutihanPluController@printLap5');
+                Route::get('/print-lap6', 'BACKOFFICE\PROSES\PemutihanPluController@printLap6');
             });
         });
 
@@ -1055,7 +1066,11 @@ Route::middleware(['CheckLogin'])->group(function () {
 
                 Route::get('/modalnmr', 'BACKOFFICE\LAPORAN\ServiceLevelItemParetoController@ModalNmr');
             });
-
+            /*Denni*/
+            Route::prefix('/daftar-pb-yang-tidak-terbentuk-po')->group(function () {
+                Route::get('/', 'BACKOFFICE\LAPORAN\DaftarPBYangTidakTerbentukPOController@index');
+                Route::get('/cetak', 'BACKOFFICE\LAPORAN\DaftarPBYangTidakTerbentukPOController@cetak');
+            });
             /*Michelle*/
             // LAPORAN / LAPORAN SERVICE LEVEL PO THD BPB
             Route::prefix('/laporan-service-level')->group(function () {
@@ -1137,6 +1152,12 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::prefix('/pb-ke-md')->group(function () {
                 Route::get('/', 'BACKOFFICE\TRANSFER\TransferPBkeMDController@index');
                 Route::post('/proses-transfer', 'BACKOFFICE\TRANSFER\TransferPBkeMDController@prosesTransfer');
+            });
+
+            Route::prefix('/transfer-perjanjian-sewa-gondola')->group(function () {
+                Route::get('/', 'BACKOFFICE\TRANSFER\TransferPerjanjianSewaGondolaController@index');
+                Route::post('/transfer-file-dbf', 'BACKOFFICE\TRANSFER\TransferPerjanjianSewaGondolaController@transferFileDBF');
+                Route::get('/print', 'BACKOFFICE\TRANSFER\TransferPerjanjianSewaGondolaController@print');
             });
         });
 
@@ -1722,18 +1743,24 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/laporan-sales-per-divisi-departemen')->group(function () {
             Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@index');
             Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@getData');
+            Route::get('/get-data-sub-outlet',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@getDataSubOutlet');
             Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDivDepController@cetak');
         });
 
         Route::prefix('/laporan-sales-per-departemen-kategori')->group(function () {
             Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@index');
             Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@getData');
+            Route::get('/get-data-sub-outlet',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@getDataSubOutlet');
+            Route::get('/get-data-departement',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@getDataDepartement');
             Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerDepKatController@cetak');
         });
 
         Route::prefix('/laporan-sales-per-kategori-produk')->group(function () {
             Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@index');
             Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@getData');
+            Route::get('/get-data-sub-outlet',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@getDataSubOutlet');
+            Route::get('/get-data-departement',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@getDataDepartement');
+            Route::get('/get-data-kategori',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@getDataKategori');
             Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerKatProdController@cetak');
         });
 
@@ -1741,6 +1768,9 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/',                 'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@index');
             Route::get('/lov-plu',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@lovPLU');
             Route::get('/get-data',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@getData');
+            Route::get('/get-data-sub-outlet',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@getDataSubOutlet');
+            Route::get('/get-data-departement',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@getDataDepartement');
+            Route::get('/get-data-kategori',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@getDataKategori');
             Route::get('/cetak',    'FRONTOFFICE\LAPORANSALESPERDIVDEPKAT\LaporanSalesPerProdMemController@cetak');
         });
 
@@ -1862,7 +1892,8 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/stock-barang-kosong-per-periode-dsi')->group(function(){
             Route::get('/','FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@index');
             Route::get('/view-report','FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@viewReport');
-            Route::get('/print','FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@print');
+            Route::get('/export-pdf','FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportPDF');
+            Route::get('/export-csv','FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportCSV');
         });
     });
 

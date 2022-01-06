@@ -72,10 +72,14 @@ class RekapEvaluasiController extends Controller
         return $data ? 'valid' : 'invalid';
     }
 
-    public function getLovSubOutlet(){
+    public function getLovSubOutlet(Request $request){
+        $outlet1 = $request->outlet1 ? $request->outlet1 : 0;
+        $outlet2 = $request->outlet2 ? $request->outlet2 : 6;
+
         $data = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
             ->select('sub_kodeoutlet','sub_kodesuboutlet','sub_namasuboutlet')
             ->where('sub_kodeigr','=',Session::get('kdigr'))
+            ->whereBetween('sub_kodeoutlet',[$outlet1, $outlet2])
             ->orderBy('sub_kodesuboutlet')
             ->get();
 

@@ -330,6 +330,9 @@
                     $('#modal-loader').modal('hide');
 
                     if (result.kode == '1') {
+                        console.log(result.data[0].brsk_tgldoc)
+                        console.log(formatDate(result.data[0].brsk_tgldoc))
+
                         $('#noPBBR').attr('disabled', true);
                         $('#tglDoc').attr('disabled', true);
                         $('#buttonPBBR').hide();
@@ -544,6 +547,10 @@
             let temp        = $('.plu');
             let datas   = [{'plu' : '', 'qtyRsk' : '', 'qtyReal' : '', 'harga' : '', 'total' : '', 'keterangan' : ''}];
 
+            // console.log(tglDoc)
+            // console.log(tglpbbr)
+            // return  false
+
             if (!doc || !pbbr){
                 swal('Data Tidak Boleh Kosong !')
                 return false;
@@ -599,7 +606,7 @@
                         } else {
                             swal('ERROR', "Something's Error", 'error')
                         }
-                        clearField()
+                        // clearField()
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0,100));

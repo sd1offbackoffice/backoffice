@@ -316,7 +316,7 @@ class InputPenyesuaianController extends Controller
                                     ->where('prd_prdcd',$plu)
                                     ->first();
 
-                                $persediaan = $data->persediaan;
+                                $persediaan = $data->persediaan1;
                                 $persediaan2 = $data->persediaan2;
                                 $hrgsatuan = $data->hrgsatuan;
                                 $avgcost = $data->avgcost;
@@ -346,15 +346,17 @@ class InputPenyesuaianController extends Controller
                     }
 
                     $cek = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                        ->selectRaw("NVL(COUNT(1),0) jum")
+                        ->selectRaw("TRBO_AVERAGECOST avgcost, TRUNC (NVL (TRBO_QTY, 0)) AS QTYB,
+                       (NVL (TRBO_QTY, 0)) AS QTYK, NVL (TRBO_GROSS, 0) subtotal,
+                       NVL (TRBO_HRGSATUAN, 0) hrgsatuan, TRBO_KETERANGAN keterangan")
                         ->where('trbo_kodeigr',Session::get('kdigr'))
                         ->where('trbo_prdcd',$request->plu)
                         ->where('trbo_nodoc',$request->nodoc)
                         ->where('trbo_typetrn','X')
                         ->whereRaw("NVL(trbo_recordid,0) <> '1'")
-                        ->first()->jum;
+                        ->first();
 
-                    if($cek == 0){
+                    if(!$cek){
                         $qty = 0;
                         $qtyk = 0;
                         $subtotal = 0;
@@ -416,27 +418,18 @@ class InputPenyesuaianController extends Controller
                         }
                     }
                     else{
-                        $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                            ->selectRaw("TRBO_AVERAGECOST avgcost, TRUNC (NVL (TRBO_QTY, 0)) AS QTYB,
-                       (NVL (TRBO_QTY, 0)) AS QTYK, NVL (TRBO_GROSS, 0) subtotal,
-                       NVL (TRBO_HRGSATUAN, 0) hrgsatuan, TRBO_KETERANGAN keterangan")
-                            ->where('trbo_nodoc',$nodoc)
-                            ->where('trbo_prdcd',$request->plu)
-                            ->where('trbo_typetrn','X')
-                            ->whereRaw("NVL(trbo_recordid,0) <> '1'")
-                            ->first();
-
-                        $avgcost = $data->avgcost;
-                        $qty = $data->qtyb / $frac;
-                        $qtyk = $data->qtyk % $frac;
-                        $subtotal = $data->subtotal;
-                        $hrgsatuan = $data->hrgsatuan;
-                        $keterangan = $data->keterangan;
+                        $avgcost = $cek->avgcost;
+                        $qty = $cek->qtyb / $frac;
+                        $qtyk = $cek->qtyk % $frac;
+                        $subtotal = $cek->subtotal;
+                        $hrgsatuan = $cek->hrgsatuan;
+                        $keterangan = $cek->keterangan;
                     }
 
                     if($tipempp != '1'){
                         if($totalitem > 0){
-                            $oldplu = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                            $oldplu = DB::connection(Session::get('connection'))
+                                ->table('tbtr_backoffice')
                                 ->select('trbo_prdcd')
                                 ->where('trbo_kodeigr',Session::get('kdigr'))
                                 ->where('trbo_nodoc',$nodoc)
@@ -450,13 +443,14 @@ class InputPenyesuaianController extends Controller
                                 ->where('prd_prdcd',$oldplu)
                                 ->first()->frac;
 
-                            $hrgsatuan = (DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                                        ->select('trbo_hrgsatuan hrgsatuan')
-                                        ->where('trbo_kodeigr',Session::get('kdigr'))
-                                        ->where('trbo_nodoc',$nodoc)
-                                        ->where('trbo_prdcd',$oldplu)
-                                        ->whereRaw("NVL(trbo_recordid,0) <> '1'")
-                                        ->first()->hrgsatuan / $oldfrac) * $frac;
+                            $hrgsatuan = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                                ->select('trbo_hrgsatuan')
+                                ->where('trbo_kodeigr',Session::get('kdigr'))
+                                ->where('trbo_nodoc',$nodoc)
+                                ->where('trbo_prdcd',$oldplu)
+                                ->whereRaw("NVL(trbo_recordid,0) <> '1'")
+                                ->first();
+                            $hrgsatuan = $hrgsatuan ? ($hrgsatuan->trbo_hrgsatuan / $oldfrac) * $frac : 0;
                         }
                     }
 
@@ -513,8 +507,8 @@ class InputPenyesuaianController extends Controller
                             ->where('prd_prdcd',$request->plu)
                             ->first();
 
-                        if($V_AVGCOST && $V_AVGCOST != 0)
-                            $hrgsatuan = $V_AVGCOST;
+                        if($V_AVGCOST && $V_AVGCOST->avgcost != 0)
+                            $hrgsatuan = $V_AVGCOST->avgcost;
                     }
                 }
 
@@ -541,7 +535,7 @@ class InputPenyesuaianController extends Controller
 
     public function doc_select(Request $request){
         $doc = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-            ->select('trbo_nodoc','trbo_tgldoc','trbo_noreff','trbo_tglreff','trbo_flagdisc1','trbo_flagdisc2',DB::connection(Session::get('connection'))->raw('SUM(trbo_gross) total, count(trbo_gross) totalitem'))
+            ->selectRaw("trbo_nodoc,trbo_tgldoc,trbo_noreff,trbo_tglreff,trbo_flagdisc1,trbo_flagdisc2,SUM(trbo_gross) total")
             ->where('trbo_kodeigr',Session::get('kdigr'))
             ->where('trbo_nodoc',$request->nodoc)
             ->where('trbo_typetrn','X')
@@ -557,8 +551,9 @@ class InputPenyesuaianController extends Controller
                 $join->on('prd_prdcd','=','trbo_prdcd');
             })
             ->selectRaw("trbo_prdcd, prd_deskripsipendek, prd_unit || '/' || prd_frac kemasan,
-                (trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_hrgsatuan, trbo_gross")
+                case when (trbo_qty/prd_frac) < 0 then ceil(trbo_qty/prd_frac) else floor(trbo_qty/prd_frac) end qty, mod(trbo_qty,prd_frac) qtyk, trbo_hrgsatuan, trbo_gross")
             ->where('trbo_nodoc','=',$request->nodoc)
+            ->orderBy('trbo_create_dt','asc')
             ->get();
 
         return response()->json(compact(['doc','list']));
@@ -1059,5 +1054,42 @@ class InputPenyesuaianController extends Controller
             $message = 'Data tidak ditemukan!';
             return compact(['status','title','message']);
         }
+    }
+
+    public function validateMPP(Request $request){
+        $jum = DB::connection(Session::get('connection'))
+            ->table('tbtr_backoffice')
+            ->where('trbo_nodoc','=',$request->nodoc)
+            ->where('trbo_typetrn','=','X')
+            ->whereRaw("nvl(trbo_recordid,0) <> '1'")
+            ->whereIn('trbo_flagdisc1',['2','3'])
+            ->get();
+
+        $hpp = DB::connection(Session::get('connection'))
+            ->table('tbtr_backoffice')
+            ->select('trbo_averagecost')
+            ->where('trbo_nodoc','=',$request->nodoc)
+            ->where('trbo_typetrn','=','X')
+            ->whereRaw("nvl(trbo_recordid,0) <> '1'")
+            ->where('trbo_flagdisc1','=','3')
+            ->first();
+
+        return response()->json([
+            'jum' => count($jum),
+            'hpp' => $hpp
+        ], 200);
+    }
+
+    public function hitungQTYK(Request $request){
+        $jum = DB::connection(Session::get('connection'))
+            ->table('tbtr_backoffice')
+            ->where('trbo_nodoc','=',$request->nodoc)
+            ->where('trbo_typetrn','=','X')
+            ->whereRaw("nvl(trbo_recordid,0) <> '1'")
+            ->get();
+
+        return response()->json([
+            'jum' => count($jum)
+        ], 200);
     }
 }

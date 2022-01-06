@@ -124,11 +124,11 @@ class LokasiController extends Controller
         sleep(1);
         if($request->data['lks_tiperak'] != 'S'){
             if($request->data['lks_prdcd'] != ''){
-                if($request->data['lks_qty'] > 0){
-                    $status = 'error';
-                    $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO';
-                    return compact(['status','message']);
-                }
+//                if($request->data['lks_qty'] > 0){
+//                    $status = 'error';
+//                    $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO';
+//                    return compact(['status','message']);
+//                }
 
                 $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->select('*')
@@ -263,11 +263,11 @@ class LokasiController extends Controller
                 }
             }
             else{
-                if($request->data['lks_qty'] > 0){
-                    $status = 'error';
-                    $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO!';
-                    return compact(['status','message']);
-                }
+//                if($request->data['lks_qty'] > 0){
+//                    $status = 'error';
+//                    $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO!';
+//                    return compact(['status','message']);
+//                }
 
                 DB::connection(Session::get('connection'))->beginTransaction();
                 DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
@@ -289,12 +289,13 @@ class LokasiController extends Controller
             }
         }
         else{
-            if($request->data['lks_qty'] > 0) {
-                $status = 'error';
-                $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO';
-                return compact(['status','message']);
-            }
-            else if($request->data['lks_prdcd'] != '') {
+//            if($request->data['lks_qty'] > 0) {
+//                $status = 'error';
+//                $message = 'Qty Plano masih ada, kosongkan terlebih dahulu dengan SO PLANO';
+//                return compact(['status','message']);
+//            }
+//            else
+            if($request->data['lks_prdcd'] != '') {
                 $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                     ->select('*')
                     ->where('prd_prdcd', $request->data['lks_prdcd'])
@@ -440,7 +441,7 @@ class LokasiController extends Controller
                     'lks_flagupdate' => null,
                     'lks_modify_by' => Session::get('usid'),
                     'lks_modify_dt' => Carbon::now(),
-                    'lks_qty' => '0',
+                    'lks_qty' => 0,
                     'lks_expdate' => null,
                     'lks_booked' => null,
                 ]);

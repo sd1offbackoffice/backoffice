@@ -2,7 +2,6 @@
 @section('title','MASTER | MASTER PERUSAHAAN')
 @section('content')
 
-
     <div class="container mt-4">
         <div class="row">
             <div class="col-sm-12">
@@ -435,7 +434,7 @@
             if (username != '' && password != '') {
                 ajaxSetup();
                 $.ajax({
-                    url: '{{ url() }}/update',
+                    url: '{{ url()->current() }}/update',
                     type: 'post',
                     data: {
                         obj: obj,

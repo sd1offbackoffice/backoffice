@@ -12,7 +12,7 @@
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR BPB</label>
                             <div class="col-sm-1 buttonInside">
-                                <input type="text" class="form-control" id="notrn" disabled>
+                                <input type="text" class="form-control" id="notrn">
                                 <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -310,6 +310,12 @@
             });
         }
 
+        $('#notrn').on('keypress',function(e){
+            if(e.which == 13){
+                getData(this.value);
+            }
+        })
+
         function getData(nosj){
             $.ajax({
                 type: "GET",
@@ -323,26 +329,48 @@
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
+                    if(response.length == 0){
+                        swal({
+                            title: 'Data tidak ditemukan!',
+                            icon: 'error'
+                        }).then(function(){
+                            if($.fn.DataTable.isDataTable('#table_daftar')){
+                                $('#table_daftar').DataTable().destroy();
+                                $("#table_daftar tbody [role='row']").remove();
+                            }
 
-                    if($.fn.DataTable.isDataTable('#table_daftar')){
-                        $('#table_daftar').DataTable().destroy();
-                        $("#table_daftar tbody [role='row']").remove();
+                            tabel = $('#table_daftar').DataTable({
+                                "scrollY": "50vh",
+                                "paging" : false,
+                                "sort": false,
+                                "bInfo": false,
+                                "searching": false
+                            });
+
+                            $('input').val('');
+                            $('#notrn').val(nosj).select();
+                        });
                     }
+                    else{
+                        if($.fn.DataTable.isDataTable('#table_daftar')){
+                            $('#table_daftar').DataTable().destroy();
+                            $("#table_daftar tbody [role='row']").remove();
+                        }
 
-                    $('#notrn').val(response[0].mstd_nodoc);
-                    $('#tgltrn').val(response[0].mstd_tgldoc);
-                    $('#noreff').val(response[0].mstd_nopo);
-                    $('#tglreff').val(response[0].mstd_tglpo);
-                    $('#cabang').val(response[0].mstd_loc2);
+                        $('#notrn').val(response[0].mstd_nodoc);
+                        $('#tgltrn').val(response[0].mstd_tgldoc);
+                        $('#noreff').val(response[0].mstd_nopo);
+                        $('#tglreff').val(response[0].mstd_tglpo);
+                        $('#cabang').val(response[0].mstd_loc2);
 
-                    $('#totalitem').val(response.length);
+                        $('#totalitem').val(response.length);
 
-                    data = response;
+                        data = response;
 
-                    total = 0;
+                        total = 0;
 
-                    for(i=0;i<response.length;i++){
-                        html = `<tr class="row${i})">
+                        for(i=0;i<response.length;i++){
+                            html = `<tr class="row${i})">
                                 <td><button class="btn btn-sm btn-primary" onclick="detailItem(${i})"><i class="fas fa-info"></i></button></td>
                                 <td>${response[i].mstd_prdcd}</td>
                                 <td class="text-left">${response[i].prd_deskripsipanjang}</td>
@@ -353,20 +381,21 @@
                                 <td class="text-right">${convertToRupiah(response[i].mstd_gross)}</td>
                             </tr>`;
 
-                        $('#table_daftar tbody').append(html);
+                            $('#table_daftar tbody').append(html);
 
-                        total += parseFloat(response[i].mstd_gross);
+                            total += parseFloat(response[i].mstd_gross);
+                        }
+
+                        $('#total').val(convertToRupiah(total));
+
+                        tabel = $('#table_daftar').DataTable({
+                            "scrollY": "50vh",
+                            "paging" : false,
+                            "sort": false,
+                            "bInfo": false,
+                            "searching": false
+                        });
                     }
-
-                    $('#total').val(convertToRupiah(total));
-
-                    tabel = $('#table_daftar').DataTable({
-                        "scrollY": "50vh",
-                        "paging" : false,
-                        "sort": false,
-                        "bInfo": false,
-                        "searching": false
-                    });
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');

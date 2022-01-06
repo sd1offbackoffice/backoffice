@@ -36,6 +36,21 @@ class LaporanSalesPerDivDepController extends Controller
         return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-divisi-departemen', compact(['group', 'outlet', 'suboutlet', 'segmentasi']));
     }
 
+    public function getDataSubOutlet(Request $request)
+    {
+        $outlet = $request->outlet;
+        if($outlet=='ALL'){
+            $outlet='';
+        }
+        $suboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
+            ->where("sub_kodeoutlet",'=',$outlet)
+            ->orderBy('sub_kodeoutlet')
+            ->orderBy('sub_kodesuboutlet')
+            ->get();
+
+        return $suboutlet;
+    }
+
     public function getData(Request $request)
     {
         $member = $request->member;
@@ -77,7 +92,7 @@ class LaporanSalesPerDivDepController extends Controller
             ->select("select kodedivisi,namadivisi nama,round(sum(margin)/sum(sales)*100,2) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
-                                    select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,
+                                    select div_kodedivisi kodedivisi,div_kodedivisi||'-'||div_namadivisi namadivisi,dep_kodedepartement kodedepartement,dep_namadepartement namadepartement,
                                           SUM (
                                             CASE
                                                WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -167,7 +182,7 @@ class LaporanSalesPerDivDepController extends Controller
         $dataDiv = DB::connection(Session::get('connection'))
             ->select("select a.*,round(margin/sales*100,2) marginpersen
                             from(
-                                select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kode,dep_namadepartement nama,
+                                select div_kodedivisi kodedivisi,div_namadivisi namadivisi,dep_kodedepartement kode,dep_kodedepartement||'-'||dep_namadepartement nama,
                                       SUM (
                                         CASE
                                            WHEN prd_unit = 'KG' THEN trjd_quantity
@@ -424,8 +439,7 @@ class LaporanSalesPerDivDepController extends Controller
         }
 
         if ($jenislaporan == 'pdf') {
-
-            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2']));
+            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2','member','group','segmentasi','outlet','suboutlet']));
 
         } else {
 
@@ -446,13 +460,13 @@ class LaporanSalesPerDivDepController extends Controller
                 $tempdata = [
                     $d->kodedivisi . '-' . $d->namadivisi,
                     $d->kodedepartement . '-' . $d->namadepartement,
-                    number_format($d->qty, 0, ".", ","),
-                    number_format($d->sales, 0, ".", ","),
-                    number_format($d->margin, 0, ".", ","),
+                    $d->qty,
+                    $d->sales,
+                    $d->margin,
                     $d->marginpersen,
                     $d->constsales,
                     $d->constmargin,
-                    number_format($d->jumlahmember, 0, ".", ","),
+                    $d->jumlahmember,
                 ];
                 array_push($linebuffs, $tempdata);
             }

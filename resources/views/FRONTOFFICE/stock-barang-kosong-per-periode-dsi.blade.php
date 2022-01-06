@@ -290,7 +290,7 @@
                                 <td class="text-right">${ convertToRupiah2(data[i].qtypo) }</td>
                                 <td class="text-right">${ convertToRupiah2(data[i].frqbpb) }</td>
                                 <td class="text-right">${ convertToRupiah2(data[i].qtybpb) }</td>
-                                <td class="text-right">${ convertToRupiah2(data[i].sth_saldoawal) }</td>
+                                <td class="text-right">${ convertToRupiah2(data[i].sl) }</td>
                                 <td class="text-right">${ nvl(convertToRupiah2(data[i].v_avg_qty, '-')) }</td>`;
 
                         for(j=0;j<arrTanggal.length;j++){
@@ -393,15 +393,15 @@
                 icon: 'warning',
                 buttons: {
                     pdf: 'PDF',
-                    // csv: 'CSV'
+                    csv: 'CSV'
                 },
                 dangerMode: true,
             }).then(function(result){
                 if(result == 'pdf'){
-                    url = `{{ url()->current() }}/print?tgl1=${tgl1}&tgl2=${tgl2}&monitoringPLU=${$('#monitoringPLU').val()}&dsi=${$('#dsi').val()}`;
+                    url = `{{ url()->current() }}/export-pdf?tgl1=${tgl1}&tgl2=${tgl2}&monitoringPLU=${$('#monitoringPLU').val()}&dsi=${$('#dsi').val()}`;
                 }
                 else if(result == 'csv'){
-                    url = '{{ url()->current() }}/get-csv?tgl1='+tgl1+'&tgl2='+tgl2+'&group='+$('#group').val()+'&outlet='+$('#outlet').val()+'&suboutlet='+$('#suboutlet').val()+'&segmentasi='+$('#segmentasi').val()+'&monitoringMember='+$('#monitoringMember').val()+'&monitoringPLU='+$('#monitoringPLU').val()+'&member='+$('#member').val()+'&sort='+$('#sort').val();
+                    url = '{{ url()->current() }}/export-csv?tgl1='+tgl1+'&tgl2='+tgl2+'&group='+$('#group').val()+'&outlet='+$('#outlet').val()+'&suboutlet='+$('#suboutlet').val()+'&segmentasi='+$('#segmentasi').val()+'&monitoringMember='+$('#monitoringMember').val()+'&monitoringPLU='+$('#monitoringPLU').val()+'&member='+$('#member').val()+'&sort='+$('#sort').val();
                 }
                 if(result)
                     window.open(url);

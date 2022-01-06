@@ -1,10 +1,10 @@
 @extends('navbar')
 
-@section('title','BO | LAPORAN PER KATEGORI PRODUK')
+@section('title','FO | LAPORAN PER KATEGORI PRODUK')
 
 @section('content')
 
-    <div class="container" id="main_view">
+    <div class="container-fluid" id="main_view">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -78,7 +78,13 @@
                                 <select class="form-control" id="departemen">
                                     <option value="ALL">ALL</option>
                                     @foreach($departement as $dep)
-                                        <option value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
+                                        @if($selected_dep == $dep->dep_namadepartement)
+                                            <option selected
+                                                    value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
+                                        @else
+                                            <option
+                                                value="{{$dep->dep_kodedepartement}}">{{$dep->dep_namadepartement}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -141,7 +147,7 @@
         </div>
     </div>
     <br>
-    <div class="container" id="second_view">
+    <div class="container-fluid" id="second_view">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -411,6 +417,11 @@
                 },
                 "columnDefs": [
                     {
+                        targets: [1],
+                        className: 'no-wrap',
+                        width: "50%"
+                    },
+                    {
                         targets: [2],
                         className: 'text-right',
                         render: function (data, type, row) {
@@ -434,14 +445,23 @@
                     {
                         targets: [5],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [6],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [7],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [8],
@@ -461,6 +481,90 @@
             var tanggal1 = $('#tanggal-1').val();
             var tanggal2 = $('#tanggal-2').val();
             window.open(`{{ url()->current() }}/../laporan-sales-per-produk-member?plu=${plu}&tanggal1=${tanggal1}&tanggal2=${tanggal2}`, '_blank');
+        });
+        $(document).on('change', '#outlet', function () {
+            var currentButton = $(this);
+            var outlet = $(this).val();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-sub-outlet',
+                type: 'GET',
+                data: {
+                    outlet: outlet,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#suboutlet").empty();
+                    $("#suboutlet").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#suboutlet").append(`<option value="`+response[i].sub_kodesuboutlet+`">`+response[i].sub_namasuboutlet+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
+        });
+
+        $(document).on('change', '#divisi', function () {
+            var currentButton = $(this);
+            var divisi = $(this).val();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-departement',
+                type: 'GET',
+                data: {
+                    divisi: divisi,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#kategori").empty();
+                    $("#kategori").append(`<option value="ALL">ALL</option>`);
+                    $("#departemen").empty();
+                    $("#departemen").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#departemen").append(`<option value="`+response[i].dep_kodedepartement+`">`+response[i].dep_namadepartement+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
+        });
+        $(document).on('change', '#departemen', function () {
+            var currentButton = $(this);
+            var departemen = $(this).val();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-kategori',
+                type: 'GET',
+                data: {
+                    departemen: departemen,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#kategori").empty();
+                    $("#kategori").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#kategori").append(`<option value="`+response[i].kat_kodekategori+`">`+response[i].kat_namakategori+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
         });
     </script>
 

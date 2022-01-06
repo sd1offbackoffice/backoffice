@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -138,7 +139,7 @@ class InputController extends Controller
     }
 
     public function getDataPlu(Request $request){
-        $data = DB::connection(Session::get('connection'))->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,
+        $data = DB::connection(Session::get('connection'))->selectOne("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,
                                     PRD_AVGCOST,ST_AVGCOST,PRD_FLAGBKP1,ST_SALDOAKHIR
                                   FROM TBMASTER_PRODMAST,TBMASTER_STOCK
                                   WHERE PRD_KODEIGR = ST_KODEIGR(+) AND
@@ -146,7 +147,7 @@ class InputController extends Controller
                                       PRD_KODEIGR = '".Session::get('kdigr')."' AND
                                       ST_LOKASI(+)='01' AND PRD_PRDCD='".$request->prdcd."'");
 
-        return response()->json($data[0]);
+        return response()->json($data);
     }
 
     public function getDataLKS(Request $request){

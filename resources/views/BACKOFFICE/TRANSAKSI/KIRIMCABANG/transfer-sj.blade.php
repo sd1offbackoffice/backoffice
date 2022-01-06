@@ -15,7 +15,7 @@
                                 <div class="row form-group">
                                     <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
                                     <div class="col-sm-2">
-                                        <input maxlength="10" type="text" class="form-control tanggal" id="tanggal" onchange="getData()">
+                                        <input maxlength="10" type="text" class="form-control tanggal" id="tanggal" onchange="getData()" autocomplete="off">
                                     </div>
                                 </div>
                             </div>

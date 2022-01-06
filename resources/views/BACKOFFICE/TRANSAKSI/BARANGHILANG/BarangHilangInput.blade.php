@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-5">Header</legend>
+{{--                    <legend class="w-auto ml-5">Header</legend>--}}
                     <div class="card-body shadow-lg cardForm">
                         {{--<div class="row">--}}
                             {{--<div class="col-sm-10">--}}
@@ -34,7 +34,7 @@
                                                     <option value="0">BARANG BAIK</option>
                                                     <option value="1">BARANG RETUR</option>
                                                 </select>
-                                                <button class="btn btn-danger btn-sm float-left" id="btn-hapus" onclick="deleteDoc()">
+                                                <button class="btn btn-danger btn-sm float-left" id="btn-hapus" onclick="deleteDoc(event)">
                                                     HAPUS DOKUMEN
                                                 </button>
                                                 <label for="model" class="col-sm-2 col-form-label"></label>
@@ -97,7 +97,7 @@
                                     <tfoot>
                                     <tr>
                                         <td>
-                                            <button class="btn btn-warning btn-block" id="btn-addRow" >
+                                            <button class="btn btn-primary btn-block" id="btn-addRow" >
                                                 TAMBAH BARIS BARU
                                             </button>
                                         </td>
@@ -229,7 +229,7 @@
                 <div class="modal-header">
                     <div class="form-row col-sm">
                         <input id="search-modal-2" class="form-control search-modal-2" type="text" placeholder="..." aria-label="Search">
-                        <div class="invalid-feedback"> Inputkan minimal 3 karakter</div>
+{{--                        <div class="invalid-feedback"> Inputkan minimal 3 karakter</div>--}}
                     </div>
                 </div>
                 <div class="modal-body">
@@ -297,7 +297,7 @@
         $("#tgl-doc").val(today)
 
         // $(document).ready(function () {
-        // //    panggil function yang mau di auto eksekusi saati web pertama kali dibuka
+        // //    panggil function yang mau di auto eksekusi saat web pertama kali dibuka
         //    alert("test");
         // });
 
@@ -305,7 +305,6 @@
             if(e.which == 13) {
                 e.preventDefault();
                 let nodoc = $('#no-trn').val();
-                chooseDoc(nodoc);
                 nmrBaruTrn(nodoc);
             }
         });
@@ -468,23 +467,30 @@
                 success: function (result) {
                     $('#modal-loader').modal('hide');
 
-                    for(i=0; i<result.length; i++){
-                        tempgross = parseFloat(tempgross) + parseFloat(result[i].trbo_gross)
+                    if(result.length == 0){
+                        swal({
+                            title: 'Data tidak ada!',
+                            icon: 'error'
+                        })
                     }
-                    $('#totalgross').val(convertToRupiah(tempgross));
-
-                    if(result[0].nota === 'Belum Cetak Nota'){
-                        console.log(result[0])
-                        var html = "";
-                        var i;
-                        $('.baris').remove();
-
+                    else{
                         for(i=0; i<result.length; i++){
-                            qtyctn = result[i].trbo_qty / result[i].prd_frac;
-                            qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                            // ppn = result[i].trbo_ppnrph * 0;
+                            tempgross = parseFloat(tempgross) + parseFloat(result[i].trbo_gross)
+                        }
+                        $('#totalgross').val(convertToRupiah(tempgross));
 
-                            html = `<tr class="d-flex baris">
+                        if(result[0].nota === 'Belum Cetak Nota'){
+                            //console.log(result[0])
+                            var html = "";
+                            var i;
+                            $('.baris').remove();
+
+                            for(i=0; i<result.length; i++){
+                                qtyctn = result[i].trbo_qty / result[i].prd_frac;
+                                qtypcs = result[i].trbo_qty % result[i].prd_frac;
+                                // ppn = result[i].trbo_ppnrph * 0;
+
+                                html = `<tr class="d-flex baris">
                                                 <td style="width: 3%" class="text-center">
                                                     <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -503,31 +509,31 @@
                                                 <td style="width: 15%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 
-                            $('#tbody').append(html);
-                            $('#no-trn').val(result[i].trbo_nodoc);
-                            $('#tgl-doc').val(formatDate(result[i].trbo_tgldoc));
-                            $('#model').val('* KOREKSI *');
-                            $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                            $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
-                            $('#total-item').val(result.length);
-                            $('#ppn').val('0');
-                            $('#btn-save').attr('disabled', false);
-                            $('#btn-hapus').attr('disabled', false);
-                            $('#btn-addRow').attr('disabled', false);
-                            // total = tempgross + ppn;
-                            $('#total').val(convertToRupiah(tempgross));
-                        }
-                    } else {
-                        var html = "";
-                        var i;
-                        $('.baris').remove();
+                                $('#tbody').append(html);
+                                $('#no-trn').val(result[i].trbo_nodoc);
+                                $('#tgl-doc').val(formatDate(result[i].trbo_tgldoc));
+                                $('#model').val('* KOREKSI *');
+                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
+                                $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
+                                $('#total-item').val(result.length);
+                                $('#ppn').val('0');
+                                $('#btn-save').attr('disabled', false);
+                                $('#btn-hapus').attr('disabled', false);
+                                $('#btn-addRow').attr('disabled', false);
+                                // total = tempgross + ppn;
+                                $('#total').val(convertToRupiah(tempgross));
+                            }
+                        } else {
+                            var html = "";
+                            var i;
+                            $('.baris').remove();
 
-                        for (i = 0; i < result.length; i++) {
-                            qtyctn = result[i].trbo_qty / result[i].prd_frac;
-                            qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                            // ppn = result[i].trbo_ppnrph * 0;
+                            for (i = 0; i < result.length; i++) {
+                                qtyctn = result[i].trbo_qty / result[i].prd_frac;
+                                qtypcs = result[i].trbo_qty % result[i].prd_frac;
+                                // ppn = result[i].trbo_ppnrph * 0;
 
-                            html = `<tr class="d-flex baris">
+                                html = `<tr class="d-flex baris">
                                                 <td style="width: 3%" class="text-center">
                                                     <button disabled class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
@@ -546,19 +552,20 @@
                                                 <td style="width: 15%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].trbo_keterangan, '') +`"></td>
                                             </tr>`;
 
-                            $('#tbody').append(html);
-                            $('#no-trn').val(result[i].trbo_nodoc);
-                            $('#tgl-doc').val(formatDate(result[i].trbo_tgldoc));
-                            $('#model').val('* NOTA SUDAH DICETAK *');
-                            $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                            $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
-                            $('#total-item').val(result.length);
-                            $('#ppn').val('0');
-                            $('#btn-save').attr('disabled', true);
-                            $('#btn-hapus').attr('disabled', true);
-                            $('#btn-addRow').attr('disabled', true);
-                            // total = tempgross + ppn;
-                            $('#total').val(convertToRupiah(tempgross));
+                                $('#tbody').append(html);
+                                $('#no-trn').val(result[i].trbo_nodoc);
+                                $('#tgl-doc').val(formatDate(result[i].trbo_tgldoc));
+                                $('#model').val('* NOTA SUDAH DICETAK *');
+                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
+                                $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
+                                $('#total-item').val(result.length);
+                                $('#ppn').val('0');
+                                $('#btn-save').attr('disabled', true);
+                                $('#btn-hapus').attr('disabled', true);
+                                $('#btn-addRow').attr('disabled', true);
+                                // total = tempgross + ppn;
+                                $('#total').val(convertToRupiah(tempgross));
+                            }
                         }
                     }
                 }
@@ -782,30 +789,59 @@
             $('.ctn')[index].focus()
         }
 
-        function deleteDoc() {
+        {{--$("#btn-hapus").click(function(){--}}
+        {{--    let nodoc = $('#no-trn').val();--}}
+        {{--   // var id = $(this).data("id");--}}
+        {{--    var token = $("meta[name='csrf-token']").attr("content");--}}
+
+        {{--    ajaxSetup();--}}
+        {{--    $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/deleteDoc',--}}
+        {{--            type: 'POST',--}}
+        {{--            data: {--}}
+        {{--                "nodoc": nodoc,--}}
+        {{--                "_token": token,--}}
+        {{--            }, success: function (){--}}
+        {{--                console.log("deleted");--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--});--}}
+
+        function deleteDoc(event) {
+            event.preventDefault();
             let nodoc = $('#no-trn').val();
-            $.ajax({
-                url: '{{ url()->current() }}/deleteDoc',
-                type: 'post',
-                data: {"_token": "{{ csrf_token() }}", nodoc: nodoc},
-                beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
-                success: function (result) {
-                    console.log(result)
-                    swal({
-                        title: 'Nomor Dokumen Dihapus?',
-                        icon: 'warning'
-                    }).then((confirm) => {
-                        $('#no-trn').val('');
-                        $('.baris').remove();
-                        clearField();
-                    });
-                },
-                complete: function () {
-                    $('#modal-loader').modal('hide');
-                }
-            });
+
+                swal({
+                    title: 'Nomor Dokumen Akan dihapus?',
+                    icon: 'warning',
+                    dangerMode: true,
+                    buttons: true,
+                }).then(function(confirm){
+                    if(confirm){
+                        ajaxSetup();
+                        $.ajax({
+                            url: '{{ url()->current() }}/deleteDoc',
+                            type: 'post',
+                            data: {nodoc: nodoc},
+                            beforeSend: function () {
+                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            },
+                            success: function (result){
+                                $('#modal-loader').modal('hide');
+                                clearField();
+                                swal({
+                                    title: result.msg,
+                                    icon: 'success'
+                                });
+                            }, error: function () {
+                                alert('error');
+                                $('#modal-loader').modal('hide')
+                            }
+                        })
+                    } else {
+                        console.log('Tidak dihapus');
+                    }
+                })
         }
 
         $('#btn-addRow').on('click', function() {
@@ -861,7 +897,7 @@
 
         function clearField(){
             $('#no-trn').val("");
-            $('#tgl-doc').val("");
+            $('#tgl-doc').val(today);
             $('#model').val("");
             $('#deskripsiPanjang').val("");
             $('#avg-cost').val("");
@@ -886,9 +922,9 @@
                                                     <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 7%">
-                                                    <input disabled type="text" class="form-control plu">
+                                                    <input type="text" class="form-control plu">
                                                      <button id="btn-no-plu" type="button" class="btn btn-lov ml-3 mt-1" onclick="getPlu(this)" no="` + i + `">
-                                                        <img src="../../../../../public/image/icon/help.png" width="30px">
+                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>
                                                 </td>
                                                 <td style="width: 27%"><input disabled type="text" class="form-control deskripsi"></td>
@@ -896,11 +932,11 @@
                                                 <td style="width: 5%"><input disabled type="text" class="form-control tag"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control bkp"></td>
                                                 <td style="width: 5%"><input disabled type="text" class="form-control stock"></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control hrgsatuan"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control ctn" id="`+ index +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control pcs" id="` + index + `"></td>
+                                                <td style="width: 8%"><input type="text" class="form-control hrgsatuan"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control ctn" id="`+ index +`"></td>
+                                                <td style="width: 5%"><input type="text" class="form-control pcs" id="` + index + `"></td>
                                                 <td style="width: 8%"><input disabled type="text" class="form-control gross"></td>
-                                                <td style="width: 15%"><input disabled type="text" class="form-control keterangan"></td>
+                                                <td style="width: 15%"><input type="text" class="form-control keterangan"></td>
                                             </tr>`;
 
             return tmptbl;
@@ -909,4 +945,3 @@
     </script>
 
 @endsection
-  

@@ -35,6 +35,9 @@ $datetime->setTimezone($timezone);
 </footer>
 
 <main>
+    @if(count($report) == 0)
+        <h4 class="center">@yield('nodata','TIDAK ADA DATA')</h4>
+    @else
     @php
         $temp = '';
         $i = 0;
@@ -46,28 +49,32 @@ $datetime->setTimezone($timezone);
     </tbody>
     <tfoot style="text-align: center">
     <tr>
-        <td colspan="13"></td>
+        <td colspan="5"></td>
         <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-        <td>{{ number_format($total,1) }}</td>
+        <td class="right">{{ number_format($total,1) }}</td>
         <td></td>
     </tr>
     </tfoot>
     </table>
+    <br>
     <table style="width: 100%; font-weight: bold" class="table-ttd">
         <tr>
-            <td>DIBUAT</td>
-            <td>DIPERIKSA</td>
-            <td>MENYETUJUI</td>
-            <td>PELAKSANA</td>
+            <td style="border-left: 1px solid black">DIBUAT</td>
+            <td style="border-left: 1px solid black">DIPERIKSA</td>
+            <td style="border-left: 1px solid black">MENYETUJUI</td>
+            <td style="border-left: 1px solid black">PELAKSANA</td>
         </tr>
         <tr class="blank-row">
-            <td colspan="4">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
+            <td style="border-left: 1px solid black">ttd</td>
         </tr>
         <tr>
-            <td>ADMINISTRASI</td>
-            <td>KEPALA GUDANG</td>
-            <td>STORE MANAGER</td>
-            <td>STOCK CLERK / PETUGAS GUDANG</td>
+            <td style="border-left: 1px solid black">ADMINISTRASI</td>
+            <td style="border-left: 1px solid black">KEPALA GUDANG</td>
+            <td style="border-left: 1px solid black">STORE MANAGER</td>
+            <td style="border-left: 1px solid black">STOCK CLERK / PETUGAS GUDANG</td>
         </tr>
     </table>
     <div class="page-break"></div>
@@ -138,8 +145,8 @@ $datetime->setTimezone($timezone);
             <td>{{ $d->kemasan }}</td>
             <td>{{ number_format(floor($d->mstd_qty / $d->mstd_frac),0) }}</td>
             <td>{{ $d->mstd_qty % $d->mstd_frac }}</td>
-            <td>{{ number_format($d->mstd_hrgsatuan,2) }}</td>
-            <td>{{ number_format($d->mstd_gross,1) }}</td>
+            <td class="right">{{ number_format($d->mstd_hrgsatuan,2) }}</td>
+            <td class="right">{{ number_format($d->mstd_gross,1) }}</td>
             <td>{{ $d->mstd_keterangan }}</td>
         </tr>
         @php $total += $d->mstd_gross; @endphp
@@ -149,11 +156,12 @@ $datetime->setTimezone($timezone);
         <tr>
             <td colspan="5"></td>
             <td colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-            <td>{{ number_format($total,1) }}</td>
+            <td class="right">{{ number_format($total,1) }}</td>
             <td></td>
         </tr>
         </tfoot>
     </table>
+    <br>
     <table style="width: 100%; font-weight: bold" class="table-ttd">
         <tr>
             <td style="border-left: 1px solid black">DIBUAT</td>
@@ -174,6 +182,7 @@ $datetime->setTimezone($timezone);
             <td style="border-left: 1px solid black">STOCK CLERK / PETUGAS GUDANG</td>
         </tr>
     </table>
+    @endif
 </main>
 
 <br>
@@ -268,6 +277,10 @@ $datetime->setTimezone($timezone);
 
     .left{
         text-align: left;
+    }
+
+    .right{
+        text-align: right;
     }
 
     .page-break {

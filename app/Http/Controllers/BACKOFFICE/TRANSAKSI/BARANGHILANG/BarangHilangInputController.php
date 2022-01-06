@@ -5,9 +5,11 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\BARANGHILANG;
 use App\Http\Controllers\Auth\loginController;
 use FontLib\WOFF\TableDirectoryEntry;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Yajra\DataTables\DataTables;
 
 class barangHilangInputController extends Controller
 {
@@ -84,6 +86,7 @@ class barangHilangInputController extends Controller
             ->selectRaw('trbo_averagecost')
             ->where('TRBO_TYPETRN', '=', 'H')
             ->where('TRBO_NODOC', '=', $nodoc)
+            ->whereNull('trbo_recordid')
             ->orderBy('TRBO_SEQNO')
             ->get();
 
@@ -138,10 +141,10 @@ class barangHilangInputController extends Controller
 
         $s = oci_parse($c, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','NBH','Nomor Barang Hilang',
                             " .$ip. " || '7', 6, FALSE); END;");
-        oci_bind_by_name($s, ':ret', $r, 32);
+        oci_bind_by_name($s, ':ret', $nodoc, 32);
         oci_execute($s);
 
-        return response()->json($r);
+        return response()->json($nodoc);
     }
 
     public function saveDoc(Request $request){
@@ -164,7 +167,6 @@ class barangHilangInputController extends Controller
 
         $getDoc = DB::connection(Session::get('connection'))->table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->first();
 
-
         if($getDoc){
             DB::connection(Session::get('connection'))->table('tbtr_backoffice')->where('trbo_nodoc', $nodoc)->delete();
 
@@ -175,7 +177,8 @@ class barangHilangInputController extends Controller
                     ->where('prd_kodeigr', $kodeigr)
                     ->where('prd_prdcd', $temp['plu'])
                     ->first();
-//update
+
+                //update data
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->insert([
                         'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $getDoc->trbo_nodoc,
@@ -231,12 +234,13 @@ class barangHilangInputController extends Controller
     public function deleteDoc(Request $request){
         $nodoc = $request->nodoc;
 
-        DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+        DB::connection(Session::get('connection'))
+            ->table('tbtr_backoffice')
             ->where('trbo_nodoc', $nodoc)
             ->where('trbo_typetrn','=','H')
             ->delete();
 
-        return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus!"]);
+        return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus"]);
     }
 
 }

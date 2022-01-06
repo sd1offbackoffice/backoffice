@@ -55,7 +55,7 @@
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: @yield('paper_size','595pt 442pt');
+        size: @yield('paper_size','595pt 842pt');
         /*size: 842pt 638pt;*/
     }
 
@@ -283,7 +283,7 @@
                         <div class="article">
                             <main>
                                 @if(sizeof($data) == 0)
-                                    <h4 class="center">TIDAK ADA DATA</h4>
+                                    <h4 class="center">@yield('nodata','TIDAK ADA DATA')</h4>
                                 @else
                                     @yield('content')
                                 @endif

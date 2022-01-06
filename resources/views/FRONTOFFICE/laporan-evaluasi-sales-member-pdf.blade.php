@@ -35,7 +35,15 @@
         </tr>
         </thead>
         <tbody>
-        @php $no = 1; @endphp
+        @php
+            $kunj = 0;
+            $struk = 0;
+            $qty = 0;
+            $salesgross = 0;
+            $salesnet = 0;
+            $ppn = 0;
+            $margin = 0;
+        @endphp
         @foreach($data as $d)
             <tr>
                 <td width="8%" class="center">{{ $d->trjd_cus_kodemember }}</td>
@@ -49,7 +57,28 @@
                 <td width="8%" class="right">{{ number_format($d->margin, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->margin / $d->sales * 100, 2, '.', ',') }}%</td>
             </tr>
+
+            @php
+                $kunj += $d->kunj;
+                $struk += $d->struk;
+                $qty += $d->qty;
+                $salesgross += $d->salesgross;
+                $salesnet += $d->sales;
+                $ppn += $d->sales * 0.1;
+                $margin += $d->margin;
+            @endphp
         @endforeach
+        <tr style="border-top: 1px solid black">
+            <td width="36%" class="left" colspan="2">TOTAL</td>
+            <td width="8%" class="left padding-left">{{ $kunj }}</td>
+            <td width="8%" class="tengah center">{{ $struk }}</td>
+            <td width="8%" class="right">{{ number_format($qty, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format($salesgross, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format($salesnet, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format($ppn, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format($margin, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format($margin / $salesnet * 100, 2, '.', ',') }}%</td>
+        </tr>
         </tbody>
         <tfoot>
         </tfoot>

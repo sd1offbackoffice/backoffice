@@ -211,21 +211,21 @@
         let member2 = $('#menu6Mem2Input').val();
 
         //CHECK DATA
-        if(outlet1 != '' || outlet2 != ''){
+        if(outlet1 != '' && outlet2 != ''){
             if(outlet1 > outlet2){
                 temp = outlet1;
                 outlet1 = outlet2;
                 outlet2 = temp;
             }
         }
-        if(member1 != '' || member2 != ''){
+        if(member1 != '' && member2 != ''){
             if(member1 > member2){
                 temp = member1;
                 member1 = member2;
                 member2 = temp;
             }
         }
-
+return false;
         //PRINT
         window.open(`{{ url()->current() }}/print-daftar-anggota-or-type-outlet?outlet1=${outlet1}&outlet2=${outlet2}&member1=${member1}&member2=${member2}`, '_blank');
     }

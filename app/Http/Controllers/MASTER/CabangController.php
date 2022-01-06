@@ -6,7 +6,6 @@ use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Mockery\Exception;
 
 class CabangController extends Controller

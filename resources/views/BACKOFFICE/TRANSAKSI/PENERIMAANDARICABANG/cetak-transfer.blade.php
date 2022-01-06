@@ -12,14 +12,14 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">No BPB</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="bpb1" disabled>
+                                <input type="text" class="form-control" id="bpb1" onchange="cekBPB()">
                                 <button id="btn_lov_plu_utuh" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 1;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             <label class="col-form-label">s/d</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="bpb2" disabled>
+                                <input type="text" class="form-control" id="bpb2" onchange="cekBPB()">
                                 <button id="btn_lov_plu_utuh" type="button" class="btn btn-primary btn-lov p-0 btn_lov" data-toggle="modal" data-target="#m_lov_trn" onclick="f_bpb = 2;" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>

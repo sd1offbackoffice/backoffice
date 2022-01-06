@@ -211,12 +211,7 @@
                 </div>
                 {{--UNTUK FILTER DATA--}}
                 <div hidden>
-                    <input type="text" id="minKat" name="minKat">
-                    <input type="text" id="maxKat" name="maxKat">
-                </div>
-                <div hidden>
-                    <input type="text" id="filtererKat" name="filtererKat">
-                    <input type="text" id="filtererKat_Dep" name="filtererKat_Dep">
+                    <input type="text" id="limitKat" name="limitKat">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -251,6 +246,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                {{--UNTUK FILTER DATA--}}
+                <div hidden>
+                    <input type="text" id="minSup" name="minSup">
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
@@ -283,6 +282,10 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                </div>
+                {{--UNTUK FILTER DATA--}}
+                <div hidden>
+                    <input type="text" id="minMem" name="minMem">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -386,6 +389,7 @@
                 {{--UNTUK FILTER DATA--}}
                 <div hidden>
                     <input type="text" id="outletFilterer" name="outletFilterer">
+                    <input type="text" id="minSubOutlet" name="minSubOutlet">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -486,6 +490,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                </div>
+                {{--UNTUK FILTER DATA--}}
+                <div hidden>
+                    <input type="text" id="rakColumn" name="rakColumn">
+                    <input type="text" id="theRak" name="theRak">
+                    <input type="text" id="theSubRak" name="theSubRak">
+                    <input type="text" id="theTipeRak" name="theTipeRak">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -594,7 +605,22 @@
             }
         }
 
+        function clearFilter(){
+            //filter tableMember
+            if($('#minMem').val() !== ''){
+                $('#minMem').val('');
+                tableMember.destroy();
+                getModalMember('');
+            }
+            //filter tableSubOutlet
+            if($('#outletFilterer').val() !== '' || $('#minSubOutlet').val() !== ''){
+                $('#outletFilterer').val('');
+                $('#minSubOutlet').val('').change();
+            }
+        }
+
         function clearAll(){
+            clearFilter();
             menu1Clear();
             menu2Clear();
             menu3Clear();
@@ -675,7 +701,7 @@
         /* Custom filtering function which will search data in column four between two values */
         //Custom Filtering untuk dept
         $.fn.dataTable.ext.search.push(
-            function( settings, data, dataIndex ) {
+            function( settings, data, dataIndex, rowData, counter ) {
 
                 if ( settings.nTable.id === 'tableModalDiv' ) {
                     return true; //no filtering on modal div
@@ -697,23 +723,21 @@
                     }
                 }
                 if ( settings.nTable.id === 'tableModalKat' ) {
-                    let min = parseInt( $('#minKat').val(), 10 );
-                    let max = parseInt( $('#maxKat').val(), 10 );
-                    let filter = parseInt( $('#filtererKat').val(), 10 ); //kodekategori
-                    let filterDep = parseInt( $('#filtererKat_Dep').val(), 10 ); //kodedepartement
-                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dep
-                    let val2 = parseFloat( data[1] ) || 0;
-                    //filter on table modalDept
-                    if ( ( isNaN( min ) && isNaN( max ) ) ||
-                        ( isNaN( min ) && val <= max ) ||
-                        ( min <= val   && isNaN( max ) ) ||
-                        ( min <= val   && val <= max ) )
-                    {
+                    let limit = $('#limitKat').val();
+                    let val = data[2]; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dep
+                    if(limit == '' || limit == val){
                         return true;
                     }
                 }
                 if ( settings.nTable.id === 'tableModalSup' ) {
-                    return true; //no filtering on modal Sup
+                    let min = $('#minSup').val();
+                    let val = data[1];
+                    if(min === ''){
+                        return true;
+                    }else if(min <= val){
+                        return true;
+                    }
+
                 }
                 if ( settings.nTable.id === 'tableModalMem' ) {
                     return true; //no filtering on modal Mem
@@ -722,15 +746,19 @@
                     return true; //no filtering on modal Mem
                 }
                 if ( settings.nTable.id === 'tableModalOutlet' ) {
-                    return true; //no filtering on modal Outlet
+                    return true; //no filtering on modal Sup
                 }
                 if ( settings.nTable.id === 'tableModalSubOutlet' ) {
                     let outlet = parseInt( $('#outletFilterer').val(), 10 );
-                    let val = parseInt( ( data[2] ), 10 ); // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    let min = $('#minSubOutlet').val();
+                    let val2 = parseInt( ( data[2] ), 10 ); // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    let val1 = data[1];
                     //filter on table modalDept
-                    if ( ( isNaN( outlet ) ) || ( val === outlet ) )
+                    if ( ( isNaN( outlet ) ) || ( val2 === outlet ) )
                     {
-                        return true;
+                        if(min === '' || min <= val1){
+                            return true;
+                        }
                     }
                 }
                 if ( settings.nTable.id === 'tableModalPlu' ) {
@@ -740,7 +768,58 @@
                     return true; //no filtering on modal Plu
                 }
                 if ( settings.nTable.id === 'tableModalRak' ) {
-                    return true; //no filtering on modal Rak
+                    let rak = data[0];
+                    let subrak = data[1];
+                    let tiperak = data[2];
+                    let shelving = data[3];
+
+                    let theRak = $('#theRak').val();
+                    let theSubRak = $('#theSubRak').val();
+                    let theTipeRak = $('#theTipeRak').val();
+
+                    if($('#rakColumn').val() === 'rak'){
+                        if (dataIndex === 0)
+                        {
+                            listRak = [];
+                        }
+                        if ($.inArray(rak,listRak) === -1)
+                        {
+                            listRak.push(rak);
+                            return true;
+                        }
+                    }else if($('#rakColumn').val() === 'subrak'){
+                        if (dataIndex === 0)
+                        {
+                            listSubRak = [];
+                        }
+                        if ($.inArray(subrak,listSubRak) === -1 && theRak === rak)
+                        {
+                            listSubRak.push(subrak);
+                            return true;
+                        }
+                    }else if($('#rakColumn').val() === 'tiperak'){
+                        if (dataIndex === 0)
+                        {
+                            listTipeRak = [];
+                        }
+                        if ($.inArray(tiperak,listTipeRak) === -1 && theRak === rak && theSubRak === subrak)
+                        {
+                            listTipeRak.push(tiperak);
+                            return true;
+                        }
+                    }else if($('#rakColumn').val() === 'shelving'){
+                        if (dataIndex === 0)
+                        {
+                            listShelving = [];
+                        }
+                        if ($.inArray(shelving,listShelving) === -1 && theRak === rak && theSubRak === subrak && theTipeRak === tiperak)
+                        {
+                            listShelving.push(shelving);
+                            return true;
+                        }
+                    }else{
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -748,11 +827,43 @@
         $('#minDep, #maxDep').change( function() {
             tableDepartemen.draw();
         } );
-        $('#minKat, #maxKat').change( function() {
+        $('#limitKat').change( function() {
             tableKategori.draw();
         } );
-        $('#outletFilterer').change( function() {
+        $('#minSup').change( function() {
+            tableSupplier.draw();
+        } );
+        $('#outletFilterer, #minSubOutlet').change( function() {
             tableSubOutlet.draw();
+        } );
+        $('#rakColumn').change( function() {
+            tableRak.column(0).visible(true);
+            tableRak.column(1).visible(true);
+            tableRak.column(2).visible(true);
+            tableRak.column(3).visible(true);
+            if($('#rakColumn').val() == 'rak'){
+                //let uniqueRak = tableRak.column(0).data().unique();
+                tableRak.column(1).visible(false);
+                tableRak.column(2).visible(false);
+                tableRak.column(3).visible(false);
+                tableRak.draw();
+
+            }else if($('#rakColumn').val() == 'subrak'){
+                tableRak.column(0).visible(false);
+                tableRak.column(2).visible(false);
+                tableRak.column(3).visible(false);
+                tableRak.draw();
+            }else if($('#rakColumn').val() == 'tiperak'){
+                tableRak.column(0).visible(false);
+                tableRak.column(1).visible(false);
+                tableRak.column(3).visible(false);
+                tableRak.draw();
+            }else if($('#rakColumn').val() == 'shelving'){
+                tableRak.column(0).visible(false);
+                tableRak.column(1).visible(false);
+                tableRak.column(2).visible(false);
+                tableRak.draw();
+            }
         } );
 
         //MODAL-MODAL
@@ -868,7 +979,8 @@
                 "ajax": {
                     'url' : '{{ url()->current().'/get-lov-member' }}',
                     "data" : {
-                        'value' : value
+                        'value' : value,
+                        'min'   : $('#minMem').val()
                     },
                 },
                 "columns": [
@@ -1271,19 +1383,15 @@
         }
 
         //Untuk periksa apakah kat ada
-        function checkKatExist(val, dep){
-            let min = 0;
-            let max = tableKategori.data().length;
+        function checkKatExist(val){
+            let limit = '';
 
-            if($('#minKat').val() != ''){
-                min = parseInt( $('#minKat').val(), 10 );
-            }
-            if($('#maxKat').val() != ''){
-                max = parseInt( $('#maxKat').val(), 10 );
+            if($('#limitKat').val() != ''){
+                limit = $('#limitKat').val();
             }
 
             for(i=0;i<tableKategori.data().length;i++){
-                if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
+                if(tableKategori.row(i).data()['kat_kodedepartement'] == limit || limit == ''){
                     if(tableKategori.row(i).data()['kat_kodekategori'] == val){
                         return i+1;
                     }
@@ -1408,6 +1516,57 @@
                 }
             });
             return result;
+        }
+
+        //Untuk periksa apakah rak ada
+        function checkRakExist(val){
+            let uniqueRak = tableRak.column(0).data().unique();
+            return $.inArray(val, uniqueRak) > -1;
+        }
+        //Untuk periksa apakah subrak ada
+        function checkSubRakExist(val){
+            for(i=0;i<tableRak.data().length;i++){
+                if(tableRak.row(i).data()['lks_koderak'] === $('#theRak').val()){
+                    if (tableRak.row(i).data()['lks_kodesubrak'] === val)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        //Untuk periksa apakah tiperak ada
+        function checkTipeRakExist(val){
+            for(i=0;i<tableRak.data().length;i++){
+                if(tableRak.row(i).data()['lks_koderak'] === $('#theRak').val()){
+                    if (tableRak.row(i).data()['lks_kodesubrak'] === $('#theSubRak').val())
+                    {
+                        if (tableRak.row(i).data()['lks_tiperak'] === val)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        //Untuk periksa apakah shelving ada
+        function checkShelvingExist(val){
+            for(i=0;i<tableRak.data().length;i++){
+                if(tableRak.row(i).data()['lks_koderak'] === $('#theRak').val()){
+                    if (tableRak.row(i).data()['lks_kodesubrak'] === $('#theSubRak').val())
+                    {
+                        if (tableRak.row(i).data()['lks_tiperak'] === $('#theTipeRak').val())
+                        {
+                            if (tableRak.row(i).data()['lks_shelvingrak'] === val)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
     </script>
 @endsection

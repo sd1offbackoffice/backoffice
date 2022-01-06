@@ -328,7 +328,9 @@ class repackController extends Controller
             }else{
                 //create new save data
                 $connect = loginController::getConnectionProcedure();
-                $ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3),'.')+1,3),3,'0',STR_PAD_LEFT);
+                //$ip =str_pad(substr(substr(Session::get('ip'),-3),strpos(substr(Session::get('ip'),-3),'.')+1,3),3,'0',STR_PAD_LEFT);
+                $ip = explode('.', Session::get('ip'));
+                $ip = str_pad($ip[3],3,"0",STR_PAD_LEFT);
                 $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('$kodeigr','PCK',
 									                       'Nomor Packing',
 				                                 '$ip'||'PC',

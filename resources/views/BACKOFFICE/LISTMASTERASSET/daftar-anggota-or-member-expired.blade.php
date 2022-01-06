@@ -120,9 +120,9 @@
         $('#menu9SortBy').val(1);
     }
     function menu9Cetak(){
-        let member1 = $('#menu8Kod1Input').val();
-        let member2 = $('#menu8Kod2Input').val();
-        if(member1 != '' || member2 != ''){
+        let member1 = $('#menu9Mem1Input').val();
+        let member2 = $('#menu9Mem2Input').val();
+        if(member1 != '' && member2 != ''){
             if(member1 > member2){
                 temp = member1;
                 member1 = member2;

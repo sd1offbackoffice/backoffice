@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | LAPORAN SALES PER PRODUK MEMBER')
+@section('title','FO | LAPORAN SALES PER PRODUK MEMBER')
 
 @section('content')
 
@@ -99,13 +99,7 @@
                                 <select class="form-control" id="kategori">
                                     <option value="ALL">ALL</option>
                                     @foreach($kategori as $kat)
-                                        @if($selected_kat == $kat->kat_namakategori)
-                                            <option selected
-                                                    value="{{$kat->kat_kodekategori}}">{{$kat->kat_namakategori}}</option>
-                                        @else
-                                            <option
-                                                value="{{$kat->kat_kodekategori}}">{{$kat->kat_namakategori}}</option>
-                                        @endif
+                                        <option value="{{$kat->kat_kodekategori}}">{{$kat->kat_namakategori}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -113,7 +107,7 @@
                         <div class="row form-group">
                             <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">PLU</label>
                             <div class="col-sm-3 buttonInside">
-                                <input id="plu" class="form-control" type="text">
+                                <input id="plu" class="form-control" type="text" value="{{explode('-',$selected_plu)[0]}}">
                                 <button type="button" class="btn btn-lov p-0" data-toggle="modal"
                                         data-target="#plu-modal">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -277,7 +271,7 @@
             }
 
             $('#tableData').DataTable();
-            if ($('#kategori').val() != 'ALL') {
+            if ($('#plu').val() != '') {
                 getData();
             }
         });
@@ -299,11 +293,17 @@
         });
 
         function pluModal(value) {
+            if ($.fn.DataTable.isDataTable('#table-lov-plu')) {
+                $('#table-lov-plu').DataTable().destroy();
+            }
             tablePlu = $('#table-lov-plu').DataTable({
                 "ajax": {
                     'url': '{{ url()->current().'/lov-plu' }}',
                     "data": {
-                        'value': value
+                        'value': value,
+                        'div': $('#divisi').val(),
+                        'dep': $('#departemen').val(),
+                        'kat': $('#kategori').val(),
                     },
                 },
                 "columns": [
@@ -348,7 +348,7 @@
         $(document).on('click', '.modalPlu', function () {
             let currentButton = $(this);
             var plu = currentButton.find('td').eq(0).text();
-
+            $('#plu-modal').modal('hide');
             $('#plu').val(plu);
         });
 
@@ -385,6 +385,8 @@
         function getData() {
             $(document).find('select').prop('disabled', true);
             $(document).find('input').prop('disabled', true);
+            $('.btn-lov').prop('disabled', true);
+
             $('#btn-show-report').prop('disabled', true);
             if ($.fn.DataTable.isDataTable('#tableData')) {
                 $('#tableData').DataTable().destroy();
@@ -416,6 +418,7 @@
                     data: function (item) {
                         if(item.memberkhusus!=null)
                         return item.memberkhusus;
+                        else return '';
                     }
                 },
                 {
@@ -522,6 +525,11 @@
                 },
                 "columnDefs": [
                     {
+                        targets: [1],
+                        className: 'no-wrap',
+                        width: "50%"
+                    },
+                    {
                         targets: [6],
                         className: 'text-right',
                         render: function (data, type, row) {
@@ -545,20 +553,117 @@
                     {
                         targets: [9],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [10],
                         className: 'text-right',
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
                     },
                     {
                         targets: [11],
                         className: 'text-right',
-                    }
+                        render: function (data, type, row) {
+                            return convertToRupiah(data)
+                        }
+                    },
                 ],
                 "order": []
             });
         }
+        $(document).on('change', '#outlet', function () {
+            var currentButton = $(this);
+            var outlet = $(this).val();
 
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-sub-outlet',
+                type: 'GET',
+                data: {
+                    outlet: outlet,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#suboutlet").empty();
+                    $("#suboutlet").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#suboutlet").append(`<option value="`+response[i].sub_kodesuboutlet+`">`+response[i].sub_namasuboutlet+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
+        });
+        $(document).on('change', '#divisi', function () {
+            var currentButton = $(this);
+            var divisi = $(this).val();
+            pluModal('');
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-departement',
+                type: 'GET',
+                data: {
+                    divisi: divisi,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#kategori").empty();
+                    $("#kategori").append(`<option value="ALL">ALL</option>`);
+                    $("#departemen").empty();
+                    $("#departemen").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#departemen").append(`<option value="`+response[i].dep_kodedepartement+`">`+response[i].dep_namadepartement+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
+        });
+        $(document).on('change', '#departemen', function () {
+            var currentButton = $(this);
+            var departemen = $(this).val();
+            pluModal('');
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-kategori',
+                type: 'GET',
+                data: {
+                    departemen: departemen,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $("#kategori").empty();
+                    $("#kategori").append(`<option value="ALL">ALL</option>`);
+                    for(i=0;i<response.length;i++){
+                        $("#kategori").append(`<option value="`+response[i].kat_kodekategori+`">`+response[i].kat_namakategori+`</option>
+`);
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(error);
+                }
+            });
+        });
+        $(document).on('change', '#kategori', function () {
+            pluModal('');
+        });
     </script>
 
 @endsection

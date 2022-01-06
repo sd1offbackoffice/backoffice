@@ -148,10 +148,10 @@
         $('#menuG input').val('').change();
     }
     function menuGCetak(){
-        let sup1 = $('#menu4Sup1Input').val();
-        let sup2 = $('#menu4Sup2Input').val();
+        let sup1 = $('#menuGSup1Input').val();
+        let sup2 = $('#menuGSup2Input').val();
         let phari = "";
-        if(sup1 != '' || sup2 != ''){
+        if(sup1 != '' && sup2 != ''){
             if(sup1 > sup2){
                 temp = sup1;
                 sup1 = sup2;

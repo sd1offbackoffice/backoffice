@@ -18,7 +18,7 @@ class LaporanSalesPerProdMemController extends Controller
 {
     public function index(Request $request)
     {
-        $selected_kat = $request->kategori;
+        $selected_plu = $request->plu;
         $selected_tanggal1 = $request->tanggal1;
         $selected_tanggal2 = $request->tanggal2;
 
@@ -51,20 +51,74 @@ class LaporanSalesPerProdMemController extends Controller
             ->orderBy('kat_kodekategori')
             ->get();
 
-        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-produk-member', compact(['group', 'outlet', 'suboutlet', 'segmentasi', 'divisi', 'departement', 'kategori', 'selected_kat', 'selected_tanggal1', 'selected_tanggal2']));
+        return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.laporan-sales-per-produk-member', compact(['group', 'outlet', 'suboutlet', 'segmentasi', 'divisi', 'departement', 'kategori', 'selected_plu', 'selected_tanggal1', 'selected_tanggal2']));
     }
+    public function getDataSubOutlet(Request $request)
+    {
+        $outlet = $request->outlet;
+        if($outlet=='ALL'){
+            $outlet='';
+        }
+        $suboutlet = DB::connection(Session::get('connection'))->table('tbmaster_suboutlet')
+            ->where("sub_kodeoutlet",'=',$outlet)
+            ->orderBy('sub_kodeoutlet')
+            ->orderBy('sub_kodesuboutlet')
+            ->get();
 
+        return $suboutlet;
+    }
+    public function getDataDepartement(Request $request)
+    {
+        $divisi = $request->divisi;
+        if($divisi=='ALL'){
+            $divisi='';
+        }
+        $departemen = DB::connection(Session::get('connection'))->table('tbmaster_departement')
+            ->where("dep_kodedivisi",'=',$divisi)
+            ->orderBy('dep_kodedepartement')
+            ->get();
+
+        return $departemen;
+    }
+    public function getDataKategori(Request $request)
+    {
+        $departemen = $request->departemen;
+        if($departemen=='ALL'){
+            $departemen='';
+        }
+        $kategori = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
+            ->where("kat_kodedepartement",'=',$departemen)
+            ->orderBy('kat_kodekategori')
+            ->get();
+
+        return $kategori;
+    }
     public function lovPLU(Request $request)
     {
         $search = $request->value;
+        $div = $request->div;
+        $dep = $request->dep;
+        $kat = $request->kat;
+        if($div=='ALL'){
+            $div='';
+        }
+        if($dep=='ALL'){
+            $dep='';
+        }
+        if($kat=='ALL'){
+            $kat='';
+        }
         $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where('prd_prdcd', 'LIKE', '%' . $search . '%')
-            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
+            ->where('prd_kodedivisi', 'LIKE', '%' . $div . '%')
+            ->where('prd_kodedepartement', 'LIKE', '%' . $dep . '%')
+            ->where('prd_kodekategoribarang', 'LIKE', '%' . $kat . '%')
+            ->whereRaw("(prd_prdcd LIKE '%" . $search . "%' or prd_deskripsipanjang LIKE '%" . $search . "%')")
+//            ->where("prd_prdcd', 'LIKE', '%' . $search . '%')
+//            ->orWhere('prd_deskripsipanjang', 'LIKE', '%' . $search . '%')
             ->orderBy('prd_prdcd')
             ->limit(100)
             ->get();
-
         return Datatables::of($data)->make(true);
     }
 
@@ -532,7 +586,7 @@ class LaporanSalesPerProdMemController extends Controller
 
         if ($jenislaporan == 'pdf') {
 
-            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2']));
+            return view('FRONTOFFICE.LAPORANSALESPERDIVDEPKAT.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2','member','group','segmentasi','outlet','suboutlet','divisi','departemen','kategori','plu']));
 
         } else {
 
@@ -560,9 +614,9 @@ class LaporanSalesPerProdMemController extends Controller
                     $d->membergroup,
                     $d->outlet,
                     $d->suboutlet,
-                    number_format($d->qty, 0, ".", ","),
-                    number_format($d->sales, 0, ".", ","),
-                    number_format($d->margin, 0, ".", ","),
+                    $d->qty,
+                    $d->sales,
+                    $d->margin,
                     $d->marginpersen,
                     $d->constsales,
                     $d->constmargin,

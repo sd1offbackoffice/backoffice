@@ -522,12 +522,12 @@ GROUP BY trjd_cus_kodemember,cus_namamember
                 $d->cus_namamember,
                 $d->kunj,
                 $d->struk,
-                number_format($d->qty, 0, '.', ','),
-                number_format($d->salesgross, 0, '.', ','),
-                number_format($d->sales, 0, '.', ','),
-                number_format($d->sales * 0.1, 0, '.', ','),
-                number_format($d->margin, 0, '.', ','),
-                number_format($d->margin / $d->sales * 100, 2, '.', ',').'%',
+                $d->qty,
+                $d->salesgross,
+                $d->sales,
+                $d->sales * 0.1,
+                $d->margin,
+                number_format($d->margin / $d->sales * 100, 2),
             ];
 
             array_push($linebuffs, $tempdata);

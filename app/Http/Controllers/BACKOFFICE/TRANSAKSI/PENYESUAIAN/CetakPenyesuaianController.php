@@ -144,7 +144,7 @@ class CetakPenyesuaianController extends Controller
                     $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
                     $canvas = $dompdf ->get_canvas();
-                    $canvas->page_text(507, 75.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                    $canvas->page_text(507, 77.50, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
                 }
 
                 $dompdf = $pdf;
@@ -2263,7 +2263,7 @@ class CetakPenyesuaianController extends Controller
                     'reprint' => Session::get('pys_reprint')
                 ];
 
-//                dd($perusahaan);
+//                dd($report);
 
                 $dompdf = new PDF();
 
@@ -2292,6 +2292,48 @@ class CetakPenyesuaianController extends Controller
 
     public function tes(){
 
+    }
+
+    public function checkUpdateLokasi(Request $request){
+        $nodoc = "(";
+
+        foreach($request->nodoc as $r){
+            $nodoc .= "'" . $r . "',";
+        }
+
+        $nodoc = substr($nodoc, 0, strlen($nodoc) - 1) . ")";
+
+        $rec = DB::connection(Session::get('connection'))->selectOne("SELECT   AA.*, ROWNUM NOURUT, PRD_UNIT, PRD_FRAC,
+                                                  PRD_KODETAG, PRD_FLAGBKP1, PRD_FLAGBKP2, SUP_PKP,
+                                                  SUP_TOP, PRD_LASTCOST, PRD_AVGCOST,
+                                                  PRD_KODEDIVISI, PRD_KODEDEPARTEMENT,
+                                                  PRD_KODEKATEGORIBARANG
+                                             FROM TBTR_BACKOFFICE AA,
+                                                  TBMASTER_PRODMAST BB,
+                                                  TBMASTER_SUPPLIER
+                                            WHERE TRBO_NODOC IN ".$nodoc."
+                                              AND PRD_PRDCD = TRBO_PRDCD
+                                              AND PRD_KODEIGR = '".Session::get('kdigr')."'
+                                              AND SUP_KODESUPPLIER(+) = TRBO_KODESUPPLIER
+                                              AND SUP_KODEIGR(+) = '".Session::get('kdigr')."'
+                                              AND NVL (TRBO_RECORDID, ' ') <> '1'
+                                              AND trbo_flagdisc1 = '3'
+                                              AND trbo_qty > 0
+                                         ORDER BY CASE
+                                                      WHEN NVL (TRBO_FLAGDISC1, '0') <> '1'
+                                                          THEN TO_NUMBER
+                                                                     (TO_CHAR (NVL (TRBO_MODIFY_DT,
+                                                                                    TRBO_CREATE_DT
+                                                                                   ),
+                                                                               'RRRRMMDDHH24MISS'
+                                                                              )
+                                                                     )
+                                                      ELSE TRBO_QTY
+                                                  END");
+
+//        dd($rec);
+
+        return $rec ? 'true' : 'false';
     }
 
     public function nvl($value, $defaultvalue){

@@ -72,7 +72,7 @@
                 <td class="right">{{ number_format($d['qtypo'],0) }}</td>
                 <td class="right">{{ number_format($d['frqbpb'],0) }}</td>
                 <td class="right">{{ number_format($d['qtybpb'],0) }}</td>
-                <td class="right">{{ number_format($d['sth_saldoawal'],0) }}</td>
+                <td class="right">{{ number_format($d['sl'],0) }}</td>
                 <td class="right">{{ number_format($d['v_avg_qty'],0) }}</td>
                 @foreach($arrTanggal as $at)
                     <td class="right">{{ number_format($d[$at],0) }}</td>

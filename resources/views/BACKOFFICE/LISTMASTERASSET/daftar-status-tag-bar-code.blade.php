@@ -107,8 +107,7 @@
         }
     });
     $('#menuCKat1Input, #menuCBtnKat1').on('focus',function(){
-        $('#minKat').val($('#menuCDep1Input').val());
-        $('#maxKat').val($('#menuCDep1Input').val()).change();
+        $('#limitKat').val($('#menuCDep1Input').val()).change();
 
         if($('#menuCDep1Input').val() == ''){
             $('#menuCDep1Input').focus();
@@ -118,8 +117,7 @@
         }
     });
     $('#menuCKat2Input, #menuCBtnKat2').on('focus',function(){
-        $('#minKat').val($('#menuCDep2Input').val());
-        $('#maxKat').val($('#menuCDep2Input').val()).change();
+        $('#limitKat').val($('#menuCDep2Input').val()).change();
 
         if($('#menuCDep1Input').val() == ''){
             $('#menuCDep1Input').focus();
@@ -144,7 +142,7 @@
         if($('#menuCDep1Input').val() == ''){
             $('#menuCBtnDep2').prop("hidden",true);
 
-            $('#minKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuCDep1Input').val());
             if(index){
@@ -153,7 +151,7 @@
                 $('#menuCBtnDep2').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#minKat').val('').change();
+                $('#limitKat').val('').change();
                 $('#menuCDep1Input').val('').change();
             }
         }
@@ -169,7 +167,7 @@
             $('#menuCBtnKat1').prop("hidden",true);
 
 
-            $('#maxKat').val('').change();
+            $('#limitKat').val('').change();
         }else{
             let index = checkDepExist($('#menuCDep2Input').val());
             if(index){
@@ -178,7 +176,7 @@
                 $('#menuCBtnKat1').prop("hidden",false);
             }else{
                 swal('', "Kode Departement tidak terdaftar", 'warning');
-                $('#maxKat').val('').change();
+                $('#limitKat').val('').change();
                 $('#menuCDep2Input').val('').change();
             }
         }
@@ -195,11 +193,11 @@
             let index = checkKatExist($('#menuCKat1Input').val());
             if(index){
                 $('#menuCKat1Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
-                // $('#minKat').val($('#menuCKat1Input').val()).change();
+
                 $('#menuCBtnKat2').prop("hidden",false);
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuCKat1Input').val('').change();
             }
         }
@@ -215,7 +213,7 @@
                 $('#menuCKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
                 swal('', "Kode Kategori tidak terdaftar", 'warning');
-                // $('#minKat').val('').change();
+
                 $('#menuCKat2Input').val('').change();
             }
         }
@@ -329,7 +327,7 @@
         let dep2 = $('#menuCDep2Input').val();
         let kat1 = $('#menuCKat1Input').val();
         let kat2 = $('#menuCKat2Input').val();
-        if(dep1 != '' || dep2 != ''){
+        if(dep1 != '' && dep2 != ''){
             if(parseInt(dep1) > parseInt(dep2)){
                 temp = dep1;
                 dep1 = dep2;
